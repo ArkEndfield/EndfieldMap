@@ -28,12 +28,14 @@ import { NDivider } from 'naive-ui';
 // @ts-ignore
 import points from './assets/output.json'
 import { entityInfo, entityData } from './data/entity';
+import { areaNameLayer } from './data/locations';
 
 const popupContainer = ref<HTMLElement>();
 const marker = (entry: entityData) => {
   const info = entityInfo[entry.entityDataIdKey]
   if (info?.pass) return 
-  const pos = [entry.position.x * 16 / 128 + 80, entry.position.z * 16 / 128 + 224] 
+  // const pos = [entry.position.x * 16 / 128 + 80, entry.position.z * 16 / 128 + 224] 
+  const pos = [entry.position.x * 16 / 128 + 96 + 32, entry.position.z * 16 / 128 + 128 + 32] 
   const feature = new Feature({
     geometry: new Point(pos),
     payload: entry,
@@ -56,20 +58,17 @@ const simpleProjection = new Projection({
 const transparentBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
 
 const features: Feature<Point>[] = []
-for (const point of points["map02_lv001"]) {
-  // if (point.entityDataIdKey != 'int_campfire_v2') continue
-  // if (!point.entityDataIdKey.includes('int_trchest')) continue
-  // console.log(point)
-  const feature = marker(point)
-  if (!feature) continue
-  features.push(feature)
+for (const m in points) {
+  if (!m.includes("map01")) continue
+  for (const point of points[m]) {
+    // if (point.entityDataIdKey != 'int_campfire_v2') continue
+    // if (!point.entityDataIdKey.includes('int_trchest')) continue
+    // console.log(point)
+    const feature = marker(point)
+    if (feature) features.push(feature)
+  }
 }
 
-const selectStyle = new Style({
-  image: new Icon({
-    src: '/assets/int_trchest_common.png',
-  })
-});
 const entity = ref<entityData>({
   sceneId: '',
   entityDataIdKey: '',
@@ -93,6 +92,10 @@ const tileLoad =  (imageTile: any, src) => {
 }
 
 onMounted(() => {
+  const feature = new Feature({
+    geometry: new Point([96, 128]),
+  })
+  if (feature) features.push(feature)
   overlay = new Overlay({
     element: popupContainer.value,
     autoPan: {
@@ -108,7 +111,7 @@ onMounted(() => {
       new TileLayer({
         source: new XYZ({
           projection: simpleProjection,
-          url: '/map/map002/{z}/{y}/{x}.png',
+          url: '/map/map001/{z}/{y}/{x}.png',
           tileLoadFunction: tileLoad
         }),
       }),
@@ -121,7 +124,7 @@ onMounted(() => {
     view: new View({
       projection: simpleProjection,
       center: [32, 184],
-      extent: [-64, 120, 180, 256],
+      extent: [-64, 0, 256, 256],
       zoom: 3,
       maxZoom: 5,
     }),
@@ -132,10 +135,16 @@ onMounted(() => {
     style: null
   });
   map.addInteraction(selectInteraction);
+  map.addLayer(areaNameLayer)
+  map.on('click', function(event) {
+    console.log(event.coordinate)
+  })
   selectInteraction.on('select', function(event) {
     const target = event.selected[0]
     if (target) {
-      entity.value = target.get('payload')
+      const data = target.get('payload')
+      if (!data) return
+      entity.value = data
       const coords = event.mapBrowserEvent.pixel;
       // popupContent.value!.innerHTML = `<p>You clicked here:</p><code>${coords}</code>`;
       overlay.setPosition(event.mapBrowserEvent.coordinate);

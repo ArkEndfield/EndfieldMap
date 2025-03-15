@@ -9,9 +9,9 @@ import L from 'leaflet';
 import points from './assets/output.json'
 const mapConfig = {
   map001: {
-    bounds: [-128, 144],
-    minZoom: 4,
-    maxZoom: 6
+    bounds: [-300, 628],
+    minZoom: 2,
+    maxZoom: 5
   },
   map002: {
     bounds: [-160, 128],
@@ -19,10 +19,11 @@ const mapConfig = {
     maxZoom: 5
   }
 }
-const selectMap = ref('map002')
+const selectMap = ref('map001')
 
 const func = (data: {x: number, z: number}): [number, number] => {
-  const temp: any = [data.z * 16 / 128 - 32, data.x * 16 / 128 + 80]
+  // const temp: any = [data.z * 16 / 128 - 32, data.x * 16 / 128 + 80]
+  const temp: any = [data.z * 16 / 128 - 96, data.x * 16 / 128 + 128]
   console.log(temp)
   return temp
 }
@@ -65,16 +66,17 @@ onMounted(() => {
   
   L.marker([0, 0]).addTo(map)
   L.marker([-32, 80]).addTo(map)
+  L.marker([-128, 96]).addTo(map)
   L.marker(mapConfig[selectMap.value].bounds).addTo(map)
 
   const chestIcon = L.icon({
-    iconUrl: '/assets/treasurechest_icon.png',
+    iconUrl: '/assets/default.png',
     iconSize:     [32, 32], 
     iconAnchor:   [16, 16],
   });
-  for (const point of points["map02_lv001"]) {
+  for (const point of points["map01_lv001"]) {
     // if (point.entityDataIdKey != 'int_campfire_v2') continue
-    if (!point.entityDataIdKey.includes('int_trchest')) continue
+    // if (!point.entityDataIdKey.includes('int_trchest')) continue
     console.log(point)
     L.marker(func(point.position), {icon: chestIcon}).addTo(map).openPopup();
   }
