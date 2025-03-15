@@ -149,7 +149,7 @@ async function onLeave(el: Element, onComplete: () => void) {
     display: flex;
     flex-direction: column;
     width: fit-content;
-    margin-top: -2.5em;
+    margin-top: -2.6em;
     position: absolute !important;
     right: calc(3rem * 3 + 2.4em);
     .zmd-sidebar-title-subtitle-line {
@@ -202,7 +202,7 @@ async function onLeave(el: Element, onComplete: () => void) {
         content: '';
         position: absolute;
         width: 0.17em;
-        height: 0.8em;
+        height: 1.1em;
         display: block;
         border: 0.15em solid #7a7a7a;
         bottom: 0.2em;

@@ -30,10 +30,11 @@ $square-color2: zmd.$side-bg-color-start;
   font-family: 'Outfit', sans-serif;
   color: #fdfb55;
   font-weight: 700;
-  font-size: 3rem;
+  font-size: 2.85rem;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  line-height: 1.25;
   .zmd-sidebar-title-big-title-line {
     width: fit-content;
     margin-top: -0.45em;

@@ -131,7 +131,7 @@ async function onLeave(el: Element, onComplete: () => void) {
 
 <style lang="scss" scoped>
 .zmd-sidebar-header {
-  margin-top: 1em;
+  margin-top: 1.8em;
   position: relative;
   * {
     position: relative;
