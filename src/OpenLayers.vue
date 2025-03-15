@@ -58,17 +58,19 @@ const simpleProjection = new Projection({
 const transparentBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
 
 const features: Feature<Point>[] = []
+const itemMap: any = {}
 for (const m in points) {
   if (!m.includes("map01")) continue
   for (const point of points[m]) {
-    // if (point.entityDataIdKey != 'int_campfire_v2') continue
+    if (!point.entityDataIdKey.includes('collection_coin')) continue
+    itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1
     // if (!point.entityDataIdKey.includes('int_trchest')) continue
     // console.log(point)
     const feature = marker(point)
     if (feature) features.push(feature)
   }
 }
-
+console.log('醚质总数:', features.length, itemMap)
 const entity = ref<entityData>({
   sceneId: '',
   entityDataIdKey: '',
@@ -124,7 +126,7 @@ onMounted(() => {
     view: new View({
       projection: simpleProjection,
       center: [32, 184],
-      extent: [-64, 0, 256, 256],
+      extent: [-15, 0, 256, 256],
       zoom: 3,
       maxZoom: 5,
     }),

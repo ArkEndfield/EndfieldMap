@@ -57,13 +57,16 @@ const simpleProjection = new Projection({
 const transparentBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
 
 const features: Feature<Point>[] = []
+const itemMap: any = {}
 for (const point of points["map02_lv001"]) {
-  // if (point.entityDataIdKey != 'int_campfire_v2') continue
+  if (!point.entityDataIdKey.includes('collection_coin')) continue
   // if (!point.entityDataIdKey.includes('int_trchest')) continue
   // console.log(point)
+  itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1
   const feature = marker(point)
   if (feature) features.push(feature)
 }
+console.log('醚质总数:', features.length, itemMap)
 
 const entity = ref<entityData>({
   sceneId: '',
@@ -103,7 +106,7 @@ onMounted(() => {
       new TileLayer({
         source: new XYZ({
           projection: simpleProjection,
-          url: '/map/map001/{z}/{y}/{x}.png',
+          url: '/map/map002/{z}/{y}/{x}.png',
           tileLoadFunction: tileLoad
         }),
       }),
