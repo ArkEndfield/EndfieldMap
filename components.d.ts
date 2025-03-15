@@ -7,8 +7,25 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    NButton: typeof import('naive-ui')['NButton']
-    NSpace: typeof import('naive-ui')['NSpace']
+    Zmd_alert: typeof import('./src/components/zmd_alert/index.vue')['default']
+    Zmd_sidebar: typeof import('./src/components/zmd_sidebar/index.vue')['default']
+    ZmdAlertCloseIcon: typeof import('./src/components/zmd_alert/icons/ZmdAlertCloseIcon.vue')['default']
+    ZmdAlertTickIcon: typeof import('./src/components/zmd_alert/icons/ZmdAlertTickIcon.vue')['default']
+    ZmdSidebarCheckboxCheckedIcon: typeof import('./src/components/zmd_sidebar/icons/ZmdSidebarCheckboxCheckedIcon.vue')['default']
+    ZmdSidebarDeleteIcon: typeof import('./src/components/zmd_sidebar/icons/ZmdSidebarDeleteIcon.vue')['default']
+    ZmdSidebarDotLine: typeof import('./src/components/zmd_sidebar/header/ZmdSidebarDotLine.vue')['default']
+    ZmdSidebarFilter: typeof import('./src/components/zmd_sidebar/ZmdSidebarFilter.vue')['default']
+    ZmdSidebarFilterToggle: typeof import('./src/components/zmd_sidebar/ZmdSidebarFilterToggle.vue')['default']
+    ZmdSidebarHeader: typeof import('./src/components/zmd_sidebar/ZmdSidebarHeader.vue')['default']
+    ZmdSidebarItem: typeof import('./src/components/zmd_sidebar/ZmdSidebarItem.vue')['default']
+    ZmdSidebarItemList: typeof import('./src/components/zmd_sidebar/ZmdSidebarItemList.vue')['default']
+    ZmdSidebarLines: typeof import('./src/components/zmd_sidebar/header/ZmdSidebarLines.vue')['default']
+    ZmdSidebarLocation: typeof import('./src/components/zmd_sidebar/ZmdSidebarLocation.vue')['default']
+    ZmdSidebarObject: typeof import('./src/components/zmd_sidebar/ZmdSidebarObject.vue')['default']
+    ZmdSidebarOperateButton: typeof import('./src/components/zmd_sidebar/ZmdSidebarOperateButton.vue')['default']
+    ZmdSidebarSwitch: typeof import('./src/components/zmd_sidebar/ZmdSidebarSwitch.vue')['default']
+    ZmdSidebarTitle: typeof import('./src/components/zmd_sidebar/header/ZmdSidebarTitle.vue')['default']
+    ZmdSidebarTitleArrow: typeof import('./src/components/zmd_sidebar/header/ZmdSidebarTitleArrow.vue')['default']
+    ZmdSidebarTitleBigTitle: typeof import('./src/components/zmd_sidebar/header/ZmdSidebarTitleBigTitle.vue')['default']
   }
 }
