@@ -34,15 +34,20 @@ export default defineConfig({
         chunkFileNames: 'js/[name]-[hash].js', // 引入文件名的名称
         entryFileNames: 'js/[name]-[hash].js', // 包的入口文件名称
         assetFileNames: '[ext]/[name]-[hash].[ext]', // 资源文件像 字体，图片等
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            const paths = id.toString().split('node_modules/')
-            if (paths[2]) {
-              return paths[2].split('/')[0].toString()
-            }
-            return paths[1].split('/')[0].toString()
+        experimentalMinChunkSize: 10 * 1024, // 单位b 没有副作用，合并较小的模块
+        manualChunks (id) {
+          if (id.includes('/lodash')) {
+            return 'lodash'
+          } else if (id.includes('/@vue')) {
+            return 'vue-use'
+          } else if (id.includes('/leaflet/')) {
+            return 'veleafletndor'
+          } else if (id.includes('/ol/')) {
+            return 'ol'
+          } else if (id.includes('/node_modules/')) {
+            return 'vendor'
           }
-        },
+        }
       },
     },
   },
