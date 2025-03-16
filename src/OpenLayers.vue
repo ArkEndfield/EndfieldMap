@@ -3,28 +3,77 @@
     id="map"
     class="absolute top-0 left-0 right-0 bottom-0 bg-[url('/assets/deco_map_bg.png')] bg-repeat"
   ></div>
+  <div
+    ref="controls"
+    class="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 bg-black/20 p-1 rounded-full backdrop-blur-md select-none text-white flex items-center gap-2"
+  >
+    <div class="zoom flex items-center gap-2">
+      <button
+        id="zoomOut"
+        class="w-8 h-8 flex justify-center items-center bg-black/30 rounded-full hover:bg-black/40 transition-colors active:bg-black/50 md:cursor-pointer"
+      >
+        <MinusIcon class="pointer-events-none" />
+      </button>
+      <input
+        type="range"
+        min="1.8"
+        max="5"
+        step="0.1"
+        v-model="zoomLevel"
+        class="w-24 h-2 bg-black/30 rounded-full appearance-none cursor-pointer"
+      />
+      <button
+        id="zoomIn"
+        class="w-8 h-8 flex justify-center items-center bg-black/30 rounded-full hover:bg-black/40 transition-colors active:bg-black/50 md:cursor-pointer"
+      >
+        <PlusIcon class="pointer-events-none" />
+      </button>
+    </div>
+  </div>
   <Transition
     @enter="onEnterPopup"
     @leave="onLeavePopup"
   >
     <div
-      class="ol-popup"
+      :class="
+        cn(
+          'ol-popup',
+          'absolute drop-shadow-md bottom-4 -left-[50px] min-w-[280px] origin-bottom-center will-change-transform will-change-opacity opacity-100 text-white origin-bottom',
+          'before:absolute before:top-full before:border-solid before:border-transparent before:border-t-[#272727] before:border-12 before:left-11.5 before:-ml-2 before:pointer-events-none'
+        )
+      "
       ref="popupContainer"
       v-show="isPopupVisible"
     >
-      <button
-        class="ol-popup-closer"
-        @click="closeToast"
-      ></button>
-      {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
-      <NDivider
-        class="!my-2 !text-sm"
-        title-placement="right"
-      >
-        id: {{ entity.entityDataIdKey }}
-      </NDivider>
-      坐标 ({{ entity.position.x }}, {{ entity.position.y }},
-      {{ entity.position.z }})
+      <div
+        class="w-full h-4 flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"
+      ></div>
+      <div class="bg-[#272727]">
+        <div class="p-4 pt-2">
+          <button
+            class="no-underline absolute top-[0.3em] right-[0.3em] text-2xl text-[#ece065]"
+            @click="closeToast"
+          >
+            <PowerIcon />
+          </button>
+          <div>
+            {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
+          </div>
+          <div class="!my-2 !text-sm">id: {{ entity.entityDataIdKey }}</div>
+          <div>
+            坐标 ({{ entity.position.x }}, {{ entity.position.y }},
+            {{ entity.position.z }})
+          </div>
+          <div class="flex items-center justify-end gap-2">
+            <label
+              :for="`get-${entity.entityDataIdKey}`"
+              class="text-sm"
+              >已获取</label
+            >
+            <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
+          </div>
+        </div>
+      </div>
     </div>
   </Transition>
 </template>
@@ -33,7 +82,7 @@
 import { onMounted, ref } from 'vue';
 import { Map, View } from 'ol';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
-
+import { cn } from '@/utils/tailwind';
 import { XYZ, Vector as VectorSource } from 'ol/source';
 import { Projection } from 'ol/proj';
 import Point from 'ol/geom/Point';
@@ -42,18 +91,19 @@ import { Feature } from 'ol';
 import { Icon, Style } from 'ol/style';
 import { Select } from 'ol/interaction';
 import { click } from 'ol/events/condition';
+import Control from 'ol/control/Control';
 import Overlay from 'ol/Overlay';
 
-import { NDivider } from 'naive-ui';
 import { animate, spring } from 'motion';
 
 // @ts-ignore
 import points from './assets/output.json';
 import { entityInfo, entityData } from './data/entity';
 import { areaNameLayer } from './data/locations';
-
 const popupContainer = ref<HTMLElement>();
 const isPopupVisible = ref(false);
+const controls = ref<HTMLElement>();
+const zoomLevel = ref(3);
 
 const marker = (entry: entityData) => {
   const info = entityInfo[entry.entityDataIdKey];
@@ -89,20 +139,20 @@ const simpleProjection = new Projection({
 const transparentBase64 =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
 
-const features: Feature<Point>[] = []
-const itemMap: any = {}
+const features: Feature<Point>[] = [];
+const itemMap: any = {};
 for (const m in points) {
   if (!m.includes('map01')) continue;
   for (const point of points[m]) {
-    if (!point.entityDataIdKey.includes('collection_coin')) continue
-    itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1
+    if (!point.entityDataIdKey.includes('collection_coin')) continue;
+    itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1;
     // if (!point.entityDataIdKey.includes('int_trchest')) continue
     // console.log(point)
     const feature = marker(point);
     if (feature) features.push(feature);
   }
 }
-console.log('醚质总数:', features.length, itemMap)
+console.log('醚质总数:', features.length, itemMap);
 const entity = ref<entityData>({
   sceneId: '',
   entityDataIdKey: '',
@@ -166,6 +216,45 @@ onMounted(() => {
       },
     },
   });
+  class ZoomControl extends Control {
+    element: HTMLElement;
+
+    constructor() {
+      super({
+        element: controls.value,
+      });
+      this.element = controls.value as HTMLElement;
+
+      this.element.addEventListener('click', e => {
+        const target = e.target as HTMLElement;
+        const view = this.getMap()?.getView();
+        const zoom = view?.getZoom() || 0;
+        if (target.id === 'zoomIn' && view) {
+          view.cancelAnimations(); // 取消之前的动画
+          const newZoom = zoom + 1 <= 5 ? zoom + 1 : 5;
+          view.animate({ zoom: newZoom, duration: 400 });
+          zoomLevel.value = newZoom;
+        } else if (target.id === 'zoomOut' && view) {
+          view.cancelAnimations(); // 取消之前的动画
+          const newZoom = zoom - 1 >= 1.8 ? zoom - 1 : 1.8;
+          view.animate({ zoom: newZoom, duration: 400 });
+          zoomLevel.value = newZoom;
+        }
+      });
+
+      // 添加滑块事件监听器
+      const slider = this.element.querySelector('input[type="range"]');
+      if (slider) {
+        slider.addEventListener('input', () => {
+          const view = this.getMap()?.getView();
+          view?.cancelAnimations(); // 取消之前的动画
+          view?.setZoom(Number(zoomLevel.value));
+        });
+      }
+    }
+  }
+
+  const zoomControl = new ZoomControl();
 
   const map = new Map({
     target: 'map',
@@ -189,9 +278,17 @@ onMounted(() => {
       extent: [-15, 0, 256, 256],
       zoom: 3,
       maxZoom: 5,
+      minZoom: 1.8,
+      rotation: 0,
     }),
     overlays: [overlay],
+    controls: [zoomControl],
   });
+
+  map.getView().on('change:resolution', function () {
+    zoomLevel.value = map.getView().getZoom() || 1.8;
+  });
+
   const selectInteraction = new Select({
     condition: click,
     style: null,
@@ -245,63 +342,52 @@ onMounted(() => {
 
 <style lang="scss">
 .ol-popup {
-  position: absolute;
-  background-color: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  border-radius: 10px;
-  border: 1px solid #cccccc;
-  bottom: 12px;
-  left: -50px;
-  min-width: 280px;
-  transform-origin: bottom center;
-  will-change: transform, opacity;
-  opacity: 1;
-}
-
-.ol-popup:after,
-.ol-popup:before {
-  top: 100%;
-  border: solid transparent;
-  content: ' ';
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-}
-.ol-popup:after {
-  border-top-color: white;
-  border-width: 10px;
-  left: 48px;
-  margin-left: -10px;
-}
-.ol-popup:before {
-  border-top-color: #cccccc;
-  border-width: 11px;
-  left: 48px;
-  margin-left: -11px;
-}
-
-.ol-popup-closer {
-  text-decoration: none;
-  position: absolute;
-  top: 2px;
-  right: 8px;
-}
-.ol-popup-closer:after {
-  content: '✖';
-}
-.ol-popup {
   &.v-enter-from,
   &.v-leave-to {
     opacity: 0;
     transform: scaleY(0.5);
   }
 
-  &.v-enter-to,
-  &.v-leave-from {
-    opacity: 1;
-    transform: scaleY(1);
+  .top-bar {
+    $height: 1rem;
+    $clip: polygon(0% 0%, calc(100% - $height) 0%, 100% 100%, 0% 100%);
+    -webkit-clip-path: $clip;
+    clip-path: $clip;
+  }
+}
+
+/* 自定义滑块样式 */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  background-image: linear-gradient(#ece065, #ece065);
+  background-repeat: no-repeat;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: #ece065;
+    cursor: pointer;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  &::-moz-range-thumb {
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: #ece065;
+    cursor: pointer;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+    border: none;
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 </style>

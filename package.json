@@ -11,9 +11,11 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.0.5",
     "@types/leaflet": "^1.9.16",
+    "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
     "motion": "^12.5.0",
     "ol": "^10.4.0",
+    "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.5",
     "unplugin-auto-import": "^19.0.0",
     "unplugin-vue-components": "^28.0.0",
@@ -22,7 +24,6 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
-    "naive-ui": "^2.41.0",
     "sass": "^1.85.1",
     "typescript": "~5.7.2",
     "vite": "^6.1.0",

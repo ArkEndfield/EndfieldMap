@@ -1,3 +1,44 @@
+<template>
+  <div
+    class="zmd-sidebar-map-icon"
+    @click="openSidebar"
+  >
+    124
+  </div>
+  <Transition
+    @enter="onEnter"
+    @leave="onLeave"
+  >
+    <div
+      class="zmd-sidebar"
+      v-show="isOpen"
+    >
+      <div class="zmd-sidebar-bg-start zmd-sidebar-top"></div>
+      <div class="zmd-sidebar-bg header-container">
+        <ZmdSidebarHeader :open="isOpen" />
+        <div
+          class="zmd-sidebar-collapse-arrows"
+          @click="closeSidebar"
+        >
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="zmd-sidebar-bg zmd-sidebar-main">
+        <div class="zmd-sidebar-content">
+          <Transition
+            @enter="onStatusEnter"
+            @leave="onLeave"
+          >
+            <ZmdSidebarFilter v-show="isOpen" />
+          </Transition>
+          <ZmdSidebarItemList :open="isOpen" />
+        </div>
+      </div>
+      <div class="zmd-sidebar-right-bar"></div>
+    </div>
+  </Transition>
+</template>
 <script setup lang="ts">
 import ZmdSidebarHeader from './ZmdSidebarHeader.vue';
 import ZmdSidebarFilter from './ZmdSidebarFilter.vue';
@@ -101,48 +142,6 @@ function openSidebar() {
   isOpen.value = true;
 }
 </script>
-<template>
-  <div
-    class="zmd-sidebar-map-icon"
-    @click="openSidebar"
-  >
-    124
-  </div>
-  <Transition
-    @enter="onEnter"
-    @leave="onLeave"
-  >
-    <div
-      class="zmd-sidebar"
-      v-show="isOpen"
-    >
-      <div class="zmd-sidebar-bg-start zmd-sidebar-top"></div>
-      <div class="zmd-sidebar-bg header-container">
-        <ZmdSidebarHeader :open="isOpen" />
-        <div
-          class="zmd-sidebar-collapse-arrows"
-          @click="closeSidebar"
-        >
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-      <div class="zmd-sidebar-bg zmd-sidebar-main">
-        <div class="zmd-sidebar-content">
-          <Transition
-            @enter="onStatusEnter"
-            @leave="onLeave"
-          >
-            <ZmdSidebarFilter v-show="isOpen" />
-          </Transition>
-          <ZmdSidebarItemList :open="isOpen" />
-        </div>
-      </div>
-      <div class="zmd-sidebar-right-bar"></div>
-    </div>
-  </Transition>
-</template>
-
 <style lang="scss" scoped>
 @use '../../styles/zmd.scss' as zmd;
 .zmd-sidebar-map-icon {
@@ -168,7 +167,8 @@ function openSidebar() {
   width: zmd.$side-width;
   max-width: 100%;
   top: zmd.$side-margin-y;
-  bottom: zmd.$side-margin-y;
+  // bottom: zmd.$side-margin-y;
+  bottom: 0;
   color: #ececec;
   z-index: 1000;
   display: flex;
@@ -221,7 +221,7 @@ function openSidebar() {
     .zmd-sidebar-collapse-arrows {
       position: absolute;
       right: 1em;
-      top: 0;
+      top: -0.5em;
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -229,6 +229,14 @@ function openSidebar() {
       height: 2em;
       width: 2em;
       justify-content: center;
+      transition: transform 0.2s;
+      transform-origin: right center;
+      &:hover {
+        transform: scale(1.1);
+      }
+      &:active {
+        transform: scale(0.8);
+      }
       span {
         $border: 0.2em solid #ececec;
         width: 0.8em;

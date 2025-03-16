@@ -1,10 +1,26 @@
 <template>
-  <div id="map" class="absolute top-0 left-0 right-0 bottom-0 bg-[url('/assets/deco_map_bg.png')] bg-repeat"></div>
-  <div class="ol-popup" ref="popupContainer">
-    <a href="#" class="ol-popup-closer" @click="closeToast"></a>
+  <div
+    id="map"
+    class="absolute top-0 left-0 right-0 bottom-0 bg-[url('/assets/deco_map_bg.png')] bg-repeat"
+  ></div>
+  <div
+    class="ol-popup"
+    ref="popupContainer"
+  >
+    <a
+      href="#"
+      class="ol-popup-closer"
+      @click="closeToast"
+    ></a>
     {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
-    <NDivider class="!my-2 !text-sm" title-placement="right"> id: {{ entity.entityDataIdKey }} </NDivider>
-    坐标 ({{ entity.position.x }}, {{ entity.position.y }}, {{ entity.position.z }})
+    <div
+      class="!my-2 !text-sm"
+      title-placement="right"
+    >
+      id: {{ entity.entityDataIdKey }}
+    </div>
+    坐标 ({{ entity.position.x }}, {{ entity.position.y }},
+    {{ entity.position.z }})
   </div>
 </template>
 
@@ -20,66 +36,72 @@ import Point from 'ol/geom/Point';
 import { Feature } from 'ol';
 import { Icon, Style } from 'ol/style';
 import { Select } from 'ol/interaction';
-import { click, pointerMove } from 'ol/events/condition';
+import { click } from 'ol/events/condition';
 import Overlay from 'ol/Overlay';
 
-import { NDivider } from 'naive-ui';
-
 // @ts-ignore
-import points from './assets/output.json'
+import points from './assets/output.json';
 import { entityInfo, entityData } from './data/entity';
 import { areaNameLayer } from './data/locations';
 
 const popupContainer = ref<HTMLElement>();
 const marker = (entry: entityData) => {
-  const info = entityInfo[entry.entityDataIdKey]
-  if (info?.pass) return 
-  const pos = [entry.position.x * 16 / 128 + 80, entry.position.z * 16 / 128 + 224] 
+  const info = entityInfo[entry.entityDataIdKey];
+  if (info?.pass) return;
+  const pos = [
+    (entry.position.x * 16) / 128 + 80,
+    (entry.position.z * 16) / 128 + 224,
+  ];
   const feature = new Feature({
     geometry: new Point(pos),
     payload: entry,
-  })
-  feature.setStyle(new Style({
-    image: new Icon({
-      src: `/assets/${entityInfo[entry.entityDataIdKey]?.point || 'default'}.png`,
-      scale: entityInfo[entry.entityDataIdKey]?.scale
+  });
+  feature.setStyle(
+    new Style({
+      image: new Icon({
+        src: `/assets/${
+          entityInfo[entry.entityDataIdKey]?.point || 'default'
+        }.png`,
+        scale: entityInfo[entry.entityDataIdKey]?.scale,
+      }),
     })
-  }))
-  return feature
-}
+  );
+  return feature;
+};
 // const pointFeature = new Feature(new Point([0, 0]));
 const simpleProjection = new Projection({
   code: 'SIMPLE',
   units: 'pixels',
-  extent: [0, 0, 256, 256]
+  extent: [0, 0, 256, 256],
 });
 
-const transparentBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
+const transparentBase64 =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
 
-const features: Feature<Point>[] = []
-const itemMap: any = {}
-for (const point of points["map02_lv001"]) {
-  if (!point.entityDataIdKey.includes('collection_coin')) continue
+const features: Feature<Point>[] = [];
+const itemMap: any = {};
+for (const point of points['map02_lv001']) {
+  if (!point.entityDataIdKey.includes('collection_coin')) continue;
   // if (!point.entityDataIdKey.includes('int_trchest')) continue
   // console.log(point)
-  itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1
-  const feature = marker(point)
-  if (feature) features.push(feature)
+  itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1;
+  const feature = marker(point);
+  if (feature) features.push(feature);
 }
-console.log('醚质总数:', features.length, itemMap)
+console.log('醚质总数:', features.length, itemMap);
 
 const entity = ref<entityData>({
   sceneId: '',
   entityDataIdKey: '',
-  position: {x: 0, y: 0, z: 0}
-})
+  position: { x: 0, y: 0, z: 0 },
+});
 
-let overlay: Overlay
+let overlay: Overlay;
 const closeToast = () => {
   overlay.setPosition(undefined);
 };
 
-const tileLoad =  (imageTile: any, src) => {
+const tileLoad = (imageTile: any, src) => {
   const img = new Image();
   img.onload = () => {
     imageTile.getImage().src = src;
@@ -88,7 +110,7 @@ const tileLoad =  (imageTile: any, src) => {
     imageTile.getImage().src = transparentBase64;
   };
   img.src = src;
-}
+};
 
 onMounted(() => {
   overlay = new Overlay({
@@ -99,7 +121,7 @@ onMounted(() => {
       },
     },
   });
- 
+
   const map = new Map({
     target: 'map',
     layers: [
@@ -107,13 +129,13 @@ onMounted(() => {
         source: new XYZ({
           projection: simpleProjection,
           url: '/map/map002/{z}/{y}/{x}.png',
-          tileLoadFunction: tileLoad
+          tileLoadFunction: tileLoad,
         }),
       }),
       new VectorLayer({
         source: new VectorSource({
-          features: features
-        })
+          features: features,
+        }),
       }),
     ],
     view: new View({
@@ -123,20 +145,20 @@ onMounted(() => {
       zoom: 3,
       maxZoom: 5,
     }),
-    overlays: [overlay]
+    overlays: [overlay],
   });
   const selectInteraction = new Select({
     condition: click,
-    style: null
+    style: null,
   });
   map.addInteraction(selectInteraction);
-  map.addLayer(areaNameLayer)
-  selectInteraction.on('select', function(event) {
-    const target = event.selected[0]
+  map.addLayer(areaNameLayer);
+  selectInteraction.on('select', function (event) {
+    const target = event.selected[0];
     if (target) {
-      const data = target.get('payload')
-      if (!data) return
-      entity.value = data
+      const data = target.get('payload');
+      if (!data) return;
+      entity.value = data;
       const coords = event.mapBrowserEvent.pixel;
       // popupContent.value!.innerHTML = `<p>You clicked here:</p><code>${coords}</code>`;
       overlay.setPosition(event.mapBrowserEvent.coordinate);
@@ -151,7 +173,7 @@ onMounted(() => {
 .ol-popup {
   position: absolute;
   background-color: white;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   padding: 15px;
   border-radius: 10px;
   border: 1px solid #cccccc;
@@ -159,10 +181,11 @@ onMounted(() => {
   left: -50px;
   min-width: 280px;
 }
-.ol-popup:after, .ol-popup:before {
+.ol-popup:after,
+.ol-popup:before {
   top: 100%;
   border: solid transparent;
-  content: " ";
+  content: ' ';
   height: 0;
   width: 0;
   position: absolute;
@@ -187,6 +210,6 @@ onMounted(() => {
   right: 8px;
 }
 .ol-popup-closer:after {
-  content: "✖";
+  content: '✖';
 }
 </style>
