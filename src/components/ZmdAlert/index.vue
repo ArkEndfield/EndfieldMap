@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from 'vue';
+import { ref, watch } from 'vue';
 import { animate } from 'motion';
 import ZmdAlertTickIcon from './icons/ZmdAlertTickIcon.vue';
 import ZmdAlertCloseIcon from './icons/ZmdAlertCloseIcon.vue';
@@ -107,8 +107,6 @@ const props = withDefaults(defineProps<ZmdAlertProps>(), {
 const emit = defineEmits(['update:open']);
 
 const backdropVisible = ref(false);
-const isInitialRender = ref(true);
-
 watch(
   () => props.open,
   newVal => {
@@ -116,54 +114,6 @@ watch(
   },
   { immediate: true }
 );
-
-// 在组件挂载后，如果弹窗默认是打开的，手动执行动画
-onMounted(async () => {
-  if (props.open && isInitialRender.value) {
-    backdropVisible.value = true;
-    await nextTick();
-
-    // 获取容器和内容元素
-    const container = document.querySelector(
-      '.zmd-alert-container'
-    ) as HTMLElement;
-    const contentElements = document.querySelectorAll(
-      '.zmd-alert-content, .zmd-alert-actions'
-    ) as NodeListOf<HTMLElement>;
-
-    if (container) {
-      container.style.opacity = '0';
-      container.style.transform = 'scaleY(0)';
-      container.style.transformOrigin = 'top';
-
-      // 执行容器动画
-      await animate(
-        container,
-        {
-          transform: ['scaleY(0)', 'scaleY(1)'],
-          opacity: 1,
-        },
-        {
-          duration: 0.15,
-        }
-      );
-    }
-
-    // 执行内容动画
-    if (contentElements.length) {
-      contentElements.forEach(async el => {
-        el.style.opacity = '0';
-        await animate(el, { opacity: 1 }, { duration: 0.1 });
-
-        await animate(el, { opacity: 0 }, { duration: 0.01, delay: 0.07 });
-
-        await animate(el, { opacity: 1 }, { duration: 0.01, delay: 0.01 });
-      });
-    }
-
-    isInitialRender.value = false;
-  }
-});
 
 const handleDismiss = () => {
   if (props.dismissible) {
@@ -220,35 +170,30 @@ const handleConfirm = () => {
 };
 
 async function animateAlertEnter(el: Element, done: () => void) {
-  // 只有在非初次渲染时才执行 Transition 的 enter 动画
-  if (!isInitialRender.value) {
-    const container = el as HTMLElement;
-    container.style.transformOrigin = 'top';
-    await animate(
-      container,
-      {
-        transform: ['scaleY(0)', 'scaleY(1)'],
-        opacity: 1,
-      },
-      {
-        duration: 0.15,
-      }
-    );
-  }
+  const container = el as HTMLElement;
+  container.style.transformOrigin = 'top';
+  await animate(
+    container,
+    {
+      transform: ['scaleY(0)', 'scaleY(1)'],
+      opacity: 1,
+    },
+    {
+      duration: 0.15,
+    }
+  );
   done();
 }
 
 async function animateAlertLeave(el: Element, done: () => void) {
   const container = el as HTMLElement;
   container.style.transformOrigin = 'bottom';
-
   await Promise.all([
     animate(
       container,
       { transform: ['scaleY(1)', 'scaleY(0)'] },
       { duration: 0.15 }
     ),
-
     animate(
       container,
       { opacity: 0 },
@@ -258,46 +203,22 @@ async function animateAlertLeave(el: Element, done: () => void) {
       }
     ),
   ]);
-
   backdropVisible.value = false;
   done();
 }
 
 async function animateAlertEnterContent(el: Element, done: () => void) {
-  // 只有在非初次渲染时才执行内容的 enter 动画
-  if (!isInitialRender.value) {
-    await animate(
-      el,
-      {
-        opacity: 1,
-      },
-      {
-        duration: 0.1,
-      }
-    );
-
-    await animate(
-      el,
-      {
-        opacity: 0,
-      },
-      {
-        duration: 0.01,
-        delay: 0.07,
-      }
-    );
-
-    await animate(
-      el,
-      {
-        opacity: 1,
-      },
-      {
-        duration: 0.01,
-        delay: 0.01,
-      }
-    );
-  }
+  await animate(
+    el,
+    {
+      opacity: 1,
+    },
+    {
+      duration: 0.1,
+    }
+  );
+  await animate(el, { opacity: 0 }, { duration: 0.01, delay: 0.07 });
+  await animate(el, { opacity: 1 }, { duration: 0.01, delay: 0.01 });
   done();
 }
 
@@ -308,7 +229,7 @@ async function animateAlertLeaveContent(el: Element, done: () => void) {
       opacity: 0,
     },
     {
-      duration: 0.01,
+      duration: 0.15,
     }
   );
   done();
@@ -332,7 +253,7 @@ $default-border-color: #a0a2a3;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 9999;
+  z-index: 60;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -359,7 +280,9 @@ $default-border-color: #a0a2a3;
     .zmd-alert-content {
       flex: 1;
       display: flex;
+      flex-direction: column;
       overflow-y: auto;
+      color: $primary-color;
       > * {
         margin: auto;
       }
@@ -369,6 +292,7 @@ $default-border-color: #a0a2a3;
       display: flex;
       justify-content: space-between;
       gap: 1em;
+      padding-top: 1em;
       &.single {
         justify-content: center;
       }

@@ -7,10 +7,17 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AppHeaderLeft: typeof import('./src/components/AppHeaderLeft.vue')['default']
+    AppHeaderLeft: typeof import('./src/components/Header/AppHeaderLeft.vue')['default']
+    ChatIcon: typeof import('./src/components/icons/ChatIcon.vue')['default']
+    FeedbackIcon: typeof import('./src/components/icons/FeedbackIcon.vue')['default']
+    FeedbackMenu: typeof import('./src/components/Header/FeedbackMenu.vue')['default']
+    GroupMenu: typeof import('./src/components/Header/GroupMenu.vue')['default']
+    HeaderMenu: typeof import('./src/components/Header/HeaderMenu.vue')['default']
+    LoginMenu: typeof import('./src/components/Header/LoginMenu.vue')['default']
     MinusIcon: typeof import('./src/components/icons/MinusIcon.vue')['default']
     PlusIcon: typeof import('./src/components/icons/PlusIcon.vue')['default']
     PowerIcon: typeof import('./src/components/icons/PowerIcon.vue')['default']
+    UserIcon: typeof import('./src/components/icons/UserIcon.vue')['default']
     ZmdAlert: typeof import('./src/components/ZmdAlert/index.vue')['default']
     ZmdAlertCloseIcon: typeof import('./src/components/ZmdAlert/icons/ZmdAlertCloseIcon.vue')['default']
     ZmdAlertTickIcon: typeof import('./src/components/ZmdAlert/icons/ZmdAlertTickIcon.vue')['default']

@@ -148,7 +148,7 @@ function openSidebar() {
   position: fixed;
   left: 1em;
   top: zmd.$side-margin-y;
-  z-index: 900;
+  z-index: 51;
   background: zmd.$side-bg-color-start;
   color: #ececec;
   padding: 0.5em;
@@ -170,7 +170,7 @@ function openSidebar() {
   // bottom: zmd.$side-margin-y;
   bottom: 0;
   color: #ececec;
-  z-index: 1000;
+  z-index: 52;
   display: flex;
   overflow: visible !important;
   flex-direction: column;
