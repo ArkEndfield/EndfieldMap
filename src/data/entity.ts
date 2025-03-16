@@ -12,6 +12,8 @@ export const entityInfo = {
     int_blackbox_entry_hard: { name: '高难故障机器人', point: 'icon_map_blackbox', scale: 0.7 },
     int_dungeon_entry_challenge: { name: '神秘副本', point: 'icon_map_dungeon', scale: 0.7 },
     int_dungeon_entry_resource: { name: '神秘副本', point: 'icon_map_dungeon', scale: 0.7 },
+    int_collection_coin: { name: '站桩醚质', point: 'item_colllection_ether', scale: 0.2 },
+    int_collection_coin_puzzle: { name: '并非站桩醚质', point: 'item_colllection_ether', scale: 0.2 },
 }
 
 export interface entityData {
