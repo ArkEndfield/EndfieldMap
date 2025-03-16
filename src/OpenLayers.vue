@@ -279,8 +279,8 @@ onMounted(() => {
     ],
     view: new View({
       projection: simpleProjection,
-      center: [32, 184],
-      extent: [-15, 0, 256, 256],
+      center: [44, 152],
+      extent: [-16, 0, 325, 288],
       zoom: 3,
       maxZoom: 5,
       minZoom: 1.8,
