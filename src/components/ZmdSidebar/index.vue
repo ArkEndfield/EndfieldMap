@@ -1,10 +1,11 @@
 <template>
-  <div
+  <!-- <div
     class="zmd-sidebar-map-icon"
     @click="openSidebar"
   >
     124
-  </div>
+  </div> -->
+  <ZmdSidebarOpenArrow @click="openSidebar" />
   <Transition
     @enter="onEnter"
     @leave="onLeave"
@@ -45,6 +46,7 @@ import ZmdSidebarFilter from './ZmdSidebarFilter.vue';
 import ZmdSidebarItemList from './ZmdSidebarItemList.vue';
 import { ref, onMounted, nextTick } from 'vue';
 import { animate, type AnimationPlaybackControls, spring } from 'motion';
+import ZmdSidebarOpenArrow from './ZmdSidebarOpenArrow.vue';
 
 const isOpen = ref(true);
 const isInitialRender = ref(true);
@@ -148,7 +150,7 @@ function openSidebar() {
   position: fixed;
   left: 1em;
   top: zmd.$side-margin-y;
-  z-index: 51;
+  z-index: 19;
   background: zmd.$side-bg-color-start;
   color: #ececec;
   padding: 0.5em;

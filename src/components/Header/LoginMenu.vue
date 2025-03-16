@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <UserIcon />
-    <template #popover>登录</template>
+    <template #title>登录</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"

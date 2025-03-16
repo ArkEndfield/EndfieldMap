@@ -38,6 +38,7 @@
       :class="
         cn(
           'ol-popup',
+          'border-b-6 border-[#656465]',
           'absolute drop-shadow-md bottom-4 -left-[50px] min-w-[280px] origin-bottom-center will-change-transform will-change-opacity opacity-100 text-white origin-bottom',
           'before:absolute before:top-full before:border-solid before:border-transparent before:border-t-[#272727] before:border-12 before:left-11.5 before:-ml-2 before:pointer-events-none'
         )
@@ -51,7 +52,7 @@
       <div class="bg-[#272727]">
         <div class="p-4 pt-2">
           <button
-            class="no-underline absolute top-[0.3em] right-[0.3em] text-2xl text-[#ece065]"
+            class="no-underline absolute top-3 right-5 text-3xl text-[#ece065]"
             @click="closeToast"
           >
             <PowerIcon />
@@ -60,17 +61,21 @@
             {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
           </div>
           <div class="!my-2 !text-sm">id: {{ entity.entityDataIdKey }}</div>
-          <div>
+          <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div>
+          <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
             坐标 ({{ entity.position.x }}, {{ entity.position.y }},
             {{ entity.position.z }})
           </div>
-          <div class="flex items-center justify-end gap-2">
-            <label
-              :for="`get-${entity.entityDataIdKey}`"
-              class="text-sm"
-              >已获取</label
-            >
-            <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
+          <div class="flex items-center justify-between gap-2 mt-4">
+            <div class="text-[#ece065] text-sm">视频链接：BV</div>
+            <div class="flex items-center justify-end gap-2">
+              <label
+                :for="`get-${entity.entityDataIdKey}`"
+                class="text-sm"
+                >已获取</label
+              >
+              <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
+            </div>
           </div>
         </div>
       </div>

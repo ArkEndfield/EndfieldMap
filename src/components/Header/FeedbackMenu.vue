@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <FeedbackIcon />
-    <template #popover>反馈</template>
+    <template #title>反馈</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"

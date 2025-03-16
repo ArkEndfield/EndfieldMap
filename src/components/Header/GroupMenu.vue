@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <ChatIcon />
-    <template #popover>加入社群</template>
+    <template #title>加入社群</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"

@@ -1,0 +1,25 @@
+<template>
+  <HeaderMenu v-on:click="onOpen">
+    <NotificationIcon />
+    <template #title>更新日志</template>
+  </HeaderMenu>
+  <ZmdAlert
+    v-model:open="openAlert"
+    hide-cancel
+  >
+    <h1 class="text-lg font-bold">更新日志</h1>
+    <p>更新日志</p>
+  </ZmdAlert>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const openAlert = ref(false);
+
+const onOpen = () => {
+  openAlert.value = true;
+};
+</script>
+
+<style lang="scss" scoped></style>
