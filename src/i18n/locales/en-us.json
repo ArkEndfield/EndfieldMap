@@ -1,0 +1,33 @@
+{
+  "delete": "Delete",
+  "select": "Select",
+  "select_all": "Select All",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "close": "Close",
+  "save": "Save",
+  "create": "Create",
+  "edit": "Edit",
+  "update": "Update",
+  "header": {
+    "menu": "Menu",
+    "join_community": "Community",
+    "feedback": "Feedback",
+    "login": "Login",
+    "changelog": "Changelog",
+    "language": "Language/语言",
+    "change_language": "Change Language"
+  },
+  "sidebar": {
+    "title": "EndField Map",
+    "display_marker_point_name": "Display marker point name",
+    "marker_point_filter": "Marker Point Filter",
+    "unfold": "Unfold",
+    "fold": "Fold",
+    "collection": {
+      "all": "All",
+      "marked": "Marked",
+      "not_marked": "Unmarked"
+    }
+  }
+}

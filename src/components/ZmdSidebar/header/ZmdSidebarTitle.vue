@@ -18,7 +18,7 @@
         </div>
       </Transition>
       <div class="zmd-sidebar-title-subtitle-content">
-        终末地互动地图
+        {{ $t('sidebar.title') }}
         <div class="triangle"></div>
       </div>
     </div>

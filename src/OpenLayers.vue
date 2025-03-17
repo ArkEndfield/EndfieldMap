@@ -1,7 +1,10 @@
 <template>
   <div
     id="map"
-    class="absolute top-0 left-0 right-0 bottom-0 bg-[url('/assets/deco_map_bg.png')] bg-repeat"
+    :style="{
+      backgroundImage: `url(${map_bg})`,
+    }"
+    class="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center"
   ></div>
   <div
     ref="controls"
@@ -49,32 +52,94 @@
       <div
         class="w-full h-4 flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"
       ></div>
-      <div class="bg-[#272727]">
-        <div class="p-4 pt-2">
-          <button
-            class="no-underline absolute top-3 right-5 text-3xl text-[#ece065]"
-            @click="closeToast"
-          >
-            <PowerIcon />
-          </button>
-          <div>
-            {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
-          </div>
-          <div class="!my-2 !text-sm">id: {{ entity.entityDataIdKey }}</div>
-          <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div>
-          <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
-            坐标 ({{ entity.position.x }}, {{ entity.position.y }},
-            {{ entity.position.z }})
-          </div>
-          <div class="flex items-center justify-between gap-2 mt-4">
-            <div class="text-[#ece065] text-sm">视频链接：BV</div>
-            <div class="flex items-center justify-end gap-2">
-              <label
-                :for="`get-${entity.entityDataIdKey}`"
-                class="text-sm"
-                >已获取</label
+      <div class="bg-[#272727] popup-content-container overflow-hidden">
+        <div
+          class="popup-slider"
+          :class="{ 'slide-to-video': showVideoInfo }"
+        >
+          <!-- 基本信息页面 -->
+          <div class="popup-page">
+            <div class="p-4 pt-2">
+              <button
+                class="no-underline absolute top-3 right-5 text-3xl text-[#ece065]"
+                @click="closeToast"
               >
-              <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
+                <PowerIcon />
+              </button>
+              <div>
+                {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
+              </div>
+              <div class="!my-2 !text-sm">id: {{ entity.entityDataIdKey }}</div>
+              <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div>
+              <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
+                坐标 ({{ entity.position.x }}, {{ entity.position.y }},
+                {{ entity.position.z }})
+              </div>
+              <div class="flex items-center justify-between gap-2 mt-4">
+                <button
+                  class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors md:cursor-pointer"
+                  @click="toggleVideoInfo(true)"
+                >
+                  视频链接
+                </button>
+                <div class="flex items-center justify-end gap-2">
+                  <label
+                    :for="`get-${entity.entityDataIdKey}`"
+                    class="text-sm"
+                    >已获取</label
+                  >
+                  <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 视频信息页面 -->
+          <div class="popup-page">
+            <div class="p-4 pt-2">
+              <button
+                class="no-underline absolute top-3 right-5 text-3xl text-[#ece065]"
+                @click="closeToast"
+              >
+                <PowerIcon />
+              </button>
+              <div class="flex items-center mb-3 gap-2">
+                <button
+                  class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors flex items-center md:cursor-pointer"
+                  @click="toggleVideoInfo(false)"
+                >
+                  <span class="inline-block mr-1">
+                    <ForwardLeftIcon />
+                  </span>
+                  返回
+                </button>
+                <div>视频信息</div>
+              </div>
+              <div class="border-b border-[#404140] pb-2 mb-3">
+                <div class="font-bold">
+                  {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="text-sm text-gray-400">视频BV号</div>
+                <div class="text-[#ece065] mt-1">
+                  {{ entityInfo[entity.entityDataIdKey]?.bvid || 'BV未知' }}
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="text-sm text-gray-400">视频地址</div>
+                <a
+                  :href="`https://www.bilibili.com/video/${
+                    entityInfo[entity.entityDataIdKey]?.bvid || ''
+                  }`"
+                  target="_blank"
+                  class="text-[#ece065] mt-1 block break-all hover:underline"
+                >
+                  https://www.bilibili.com/video/{{
+                    entityInfo[entity.entityDataIdKey]?.bvid || 'BV未知'
+                  }}
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -105,10 +170,14 @@ import { animate, spring } from 'motion';
 import points from './assets/output.json';
 import { entityInfo, entityData } from './data/entity';
 import { areaNameLayer } from './data/locations';
+import { defaults as interactionDefaults } from 'ol/interaction';
+import map_bg from '@/assets/images/bg/map_bg.png';
+
 const popupContainer = ref<HTMLElement>();
 const isPopupVisible = ref(false);
 const controls = ref<HTMLElement>();
 const zoomLevel = ref(3);
+const showVideoInfo = ref(false);
 
 const marker = (entry: entityData) => {
   const info = entityInfo[entry.entityDataIdKey];
@@ -168,7 +237,12 @@ let overlay: Overlay;
 let currentPosition: number[] | undefined;
 const closeToast = () => {
   isPopupVisible.value = false;
+  showVideoInfo.value = false; // 重置显示状态
   currentPosition = undefined;
+};
+
+const toggleVideoInfo = (show: boolean) => {
+  showVideoInfo.value = show;
 };
 
 // 添加动画效果函数
@@ -197,7 +271,7 @@ async function onLeavePopup(el: Element, onComplete: () => void) {
   onComplete();
 }
 
-const tileLoad = (imageTile: any, src) => {
+const tileLoad = (imageTile: any, src: string) => {
   const img = new Image();
   img.onload = () => {
     imageTile.getImage().src = src;
@@ -208,7 +282,7 @@ const tileLoad = (imageTile: any, src) => {
   img.src = src;
 };
 
-onMounted(() => {
+onMounted(async () => {
   const feature = new Feature({
     geometry: new Point([96, 128]),
   });
@@ -280,11 +354,15 @@ onMounted(() => {
     view: new View({
       projection: simpleProjection,
       center: [44, 152],
-      extent: [-16, 0, 325, 288],
+      extent: [-16, 0, 325, 344],
       zoom: 3,
       maxZoom: 5,
       minZoom: 1.8,
       rotation: 0,
+    }),
+    interactions: interactionDefaults({
+      altShiftDragRotate: false,
+      pinchRotate: false,
     }),
     overlays: [overlay],
     controls: [zoomControl],
@@ -322,6 +400,7 @@ onMounted(() => {
           // 使用setTimeout确保DOM更新和动画完成
           setTimeout(() => {
             entity.value = data; // 移到这里，在动画完成后才更新实体信息
+            showVideoInfo.value = false; // 重置显示状态
             overlay.setPosition(newPosition);
             currentPosition = [...newPosition];
             isPopupVisible.value = true;
@@ -329,6 +408,7 @@ onMounted(() => {
         } else {
           // 首次显示
           entity.value = data; // 首次显示时直接更新
+          showVideoInfo.value = false; // 重置显示状态
           overlay.setPosition(newPosition);
           currentPosition = [...newPosition];
           isPopupVisible.value = true;
@@ -339,6 +419,7 @@ onMounted(() => {
       }
     } else {
       isPopupVisible.value = false;
+      showVideoInfo.value = false; // 重置显示状态
       currentPosition = undefined;
     }
   });
@@ -358,6 +439,28 @@ onMounted(() => {
     $clip: polygon(0% 0%, calc(100% - $height) 0%, 100% 100%, 0% 100%);
     -webkit-clip-path: $clip;
     clip-path: $clip;
+  }
+
+  .popup-content-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .popup-slider {
+    display: flex;
+    width: 200%;
+    transition: transform 0.3s ease-in-out;
+
+    &.slide-to-video {
+      transform: translateX(-50%);
+    }
+  }
+
+  .popup-page {
+    width: 50%;
+    flex-shrink: 0;
+    position: relative;
   }
 }
 

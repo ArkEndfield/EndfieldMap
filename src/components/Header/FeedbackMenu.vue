@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <FeedbackIcon />
-    <template #title>反馈</template>
+    <template #title>{{ $t('header.feedback') }}</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"

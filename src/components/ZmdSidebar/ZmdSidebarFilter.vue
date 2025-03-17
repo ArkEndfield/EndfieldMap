@@ -3,7 +3,9 @@
     <ZmdSidebarSwitch>
       <div class="zmd-sidebar-filter-display-name">
         <div class="zmd-sidebar-filter-required">*</div>
-        <div class="zmd-sidebar-filter-label">显示标点名称</div>
+        <div class="zmd-sidebar-filter-label">
+          {{ $t('sidebar.display_marker_point_name') }}
+        </div>
       </div>
     </ZmdSidebarSwitch>
 
@@ -12,24 +14,39 @@
         <template #icon>
           <ZmdSidebarDeleteIcon />
         </template>
-        删除
+        {{ $t('delete') }}
         <template #subtitle>DELETE</template>
       </ZmdSidebarOperateButton>
       <ZmdSidebarOperateButton>
         <template #icon>
           <ZmdSidebarCheckboxCheckedIcon />
         </template>
-        全选
+        {{ $t('select_all') }}
         <template #subtitle>SELECT ALL</template>
       </ZmdSidebarOperateButton>
     </div>
 
     <div class="zmd-sidebar-filter-collect-filter">
-      <div class="title">标点显示</div>
+      <div class="title">{{ $t('sidebar.marker_point_filter') }}</div>
       <div class="list">
-        <ZmdSidebarFilterToggle>全部</ZmdSidebarFilterToggle>
-        <ZmdSidebarFilterToggle>已标记收集</ZmdSidebarFilterToggle>
-        <ZmdSidebarFilterToggle>未标记收集</ZmdSidebarFilterToggle>
+        <ZmdSidebarFilterToggle
+          :checked="filterCollected === FilterCollected.All"
+          @change="setFilterCollected(FilterCollected.All)"
+        >
+          {{ $t('sidebar.collection.all') }}
+        </ZmdSidebarFilterToggle>
+        <ZmdSidebarFilterToggle
+          :checked="filterCollected === FilterCollected.Collected"
+          @change="setFilterCollected(FilterCollected.Collected)"
+        >
+          {{ $t('sidebar.collection.marked') }}
+        </ZmdSidebarFilterToggle>
+        <ZmdSidebarFilterToggle
+          :checked="filterCollected === FilterCollected.NotCollected"
+          @change="setFilterCollected(FilterCollected.NotCollected)"
+        >
+          {{ $t('sidebar.collection.not_marked') }}
+        </ZmdSidebarFilterToggle>
       </div>
     </div>
   </div>
@@ -41,11 +58,23 @@ import ZmdSidebarOperateButton from './ZmdSidebarOperateButton.vue';
 import ZmdSidebarDeleteIcon from './icons/ZmdSidebarDeleteIcon.vue';
 import ZmdSidebarCheckboxCheckedIcon from './icons/ZmdSidebarCheckboxCheckedIcon.vue';
 import ZmdSidebarFilterToggle from './ZmdSidebarFilterToggle.vue';
+import { ref } from 'vue';
+enum FilterCollected {
+  All,
+  Collected,
+  NotCollected,
+}
+const filterCollected = ref<FilterCollected>(FilterCollected.All);
+
+const setFilterCollected = (collected: FilterCollected) => {
+  filterCollected.value = collected;
+};
 </script>
 
 <style lang="scss" scoped>
 .zmd-sidebar-filter {
   margin: 0 1em;
+  z-index: 2;
   .zmd-sidebar-filter-display-name {
     display: flex;
     align-items: center;

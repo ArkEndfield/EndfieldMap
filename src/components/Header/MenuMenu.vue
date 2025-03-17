@@ -3,7 +3,7 @@
     <button class="text-4xl block cursor-default md:cursor-pointer">
       <MenuIcon />
     </button>
-    <template #popover> 菜单 </template>
+    <template #popover> {{ $t('header.menu') }} </template>
   </Popover>
 </template>
 

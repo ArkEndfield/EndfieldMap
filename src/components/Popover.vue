@@ -14,7 +14,7 @@
         ref="popoverRef"
         v-show="showPopover"
         :class="[
-          'absolute mt-2 py-2 px-4 bg-[#1D1D1D]/60 rounded-lg shadow-lg w-max max-w-24 text-sm backdrop-blur-md',
+          'absolute mt-2 py-2 px-4 bg-[#1D1D1D]/60 rounded-lg shadow-lg w-max max-w-32 text-sm backdrop-blur-md',
         ]"
         :style="popoverStyle"
       >

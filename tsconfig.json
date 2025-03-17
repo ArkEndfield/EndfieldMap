@@ -16,13 +16,22 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "experimentalDecorators": true,
-    "lib": ["esnext", "dom"],
-    "types": ["vite/client"],
-    "typeRoots": ["./node_modules/@types/"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": [
+      "vite/client"
+    ],
+    "typeRoots": [
+      "./node_modules/@types/"
+    ],
     "noImplicitAny": false,
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     }
   },
   "include": [
@@ -33,5 +42,9 @@
     "components.d.ts",
     "vite.config.ts"
   ],
-  "exclude": ["node_modules", "dist", "**/*.js"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.js"
+  ]
 }

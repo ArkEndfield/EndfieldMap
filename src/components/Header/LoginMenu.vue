@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <UserIcon />
-    <template #title>登录</template>
+    <template #title>{{ $t('header.login') }}</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"

@@ -39,7 +39,7 @@
             >
               <slot name="cancel">
                 <div class="zmd-alert-close">
-                  <div class="text">{{ props.cancelText }}</div>
+                  <div class="text">{{ $t(props.cancelText) }}</div>
                   <div
                     class="icon"
                     v-if="props.showIcon"
@@ -52,7 +52,7 @@
             <button @click="handleConfirm">
               <slot name="confirm">
                 <div class="zmd-alert-confirm">
-                  <div class="text">{{ props.confirmText }}</div>
+                  <div class="text">{{ $t(props.confirmText) }}</div>
                   <div
                     class="icon"
                     v-if="props.showIcon"
@@ -89,14 +89,15 @@ export type ZmdAlertProps = {
   onClose?: () => boolean | void | Promise<boolean | void>;
   onConfirm?: () => boolean | void | Promise<boolean | void>;
 };
+
 const props = withDefaults(defineProps<ZmdAlertProps>(), {
   open: false,
   dismissible: true,
   hideCancel: false,
   width: '24em',
   loading: false,
-  cancelText: '取消',
-  confirmText: '确认',
+  cancelText: 'cancel',
+  confirmText: 'confirm',
   showIcon: true,
   onDismiss: () => {},
   onCancel: () => {},
@@ -284,7 +285,8 @@ $default-border-color: #a0a2a3;
       overflow-y: auto;
       color: $primary-color;
       > * {
-        margin: auto;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
 

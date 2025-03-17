@@ -2,7 +2,7 @@
   <div class="zmd-sidebar-open-arrow">
     <div class="zmd-sidebar-open-arrow-end-part">
       <div class="zmd-sidebar-open-arrow-bg-title">UNFOLD</div>
-      <div class="zmd-sidebar-open-arrow-title">展开</div>
+      <div class="zmd-sidebar-open-arrow-title">{{ $t('sidebar.unfold') }}</div>
     </div>
     <div class="zmd-sidebar-open-arrow-arrow-part"></div>
     <div class="zmd-sidebar-open-arrow-arrow-line"></div>
@@ -35,6 +35,8 @@ $arrow-height: 5em;
   }
   @media screen and (max-width: zmd.$phone-width) {
     width: 5em;
+    top: 50%;
+    transform: translateY(-50%);
   }
   .zmd-sidebar-open-arrow-end-part {
     flex: 1;

@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <ChatIcon />
-    <template #title>加入社群</template>
+    <template #title>{{ $t('header.join_community') }}</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"

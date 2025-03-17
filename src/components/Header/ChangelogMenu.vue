@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <NotificationIcon />
-    <template #title>更新日志</template>
+    <template #title>{{ $t('header.changelog') }}</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"

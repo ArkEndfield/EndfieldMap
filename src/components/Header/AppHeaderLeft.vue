@@ -1,6 +1,6 @@
 <template>
   <div
-    class="app-header-left w-18 fixed left-0 top-0 bg-gradient-to-r from-black/50 to-black/0 z-20 md:z-[53] h-full flex justify-start gap-8 items-center zmd:side-margin-y text-white px-2 md:px-6"
+    class="app-header-left w-18 fixed left-0 top-0 md:bg-gradient-to-r from-black/50 to-black/0 z-20 md:z-[53] h-full flex justify-start gap-8 items-center zmd:side-margin-y text-white px-2 md:px-6"
   >
     <MenuMenu v-on:click="open" />
     <div
@@ -19,6 +19,7 @@
       <FeedbackMenu />
       <LoginMenu />
       <ChangelogMenu />
+      <LanguageMenu />
     </div>
   </div>
 </template>

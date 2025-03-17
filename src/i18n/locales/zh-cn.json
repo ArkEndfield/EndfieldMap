@@ -1,0 +1,33 @@
+{
+  "delete": "删除",
+  "select": "选择",
+  "select_all": "全选",
+  "cancel": "取消",
+  "confirm": "确认",
+  "close": "关闭",
+  "save": "保存",
+  "create": "创建",
+  "edit": "编辑",
+  "update": "更新",
+  "header": {
+    "menu": "菜单",
+    "join_community": "加入社群",
+    "feedback": "反馈",
+    "login": "登录",
+    "changelog": "更新日志",
+    "language": "语言/Language",
+    "change_language": "切换语言"
+  },
+  "sidebar": {
+    "title": "终末地互动地图",
+    "display_marker_point_name": "显示标点名称",
+    "marker_point_filter": "标点显示",
+    "unfold": "展开",
+    "fold": "折叠",
+    "collection": {
+      "all": "全部",
+      "marked": "已标记收集",
+      "not_marked": "未标记收集"
+    }
+  }
+}
