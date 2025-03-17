@@ -73,7 +73,10 @@
                   $t('popover.unknow_name')
                 }}
               </div>
-              <div class="!my-2 !text-sm">id: {{ entity.entityDataIdKey }}</div>
+              <div class="!my-2 !text-sm">
+                <span>id: {{ entity.entityDataIdKey }}</span>
+                <span class="float-right opacity-75">#{{ entity.seq }}</span>
+              </div>
               <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div>
               <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
                 坐标 ({{ entity.position.x }}, {{ entity.position.y }},
@@ -194,7 +197,9 @@ const zoomLevel = ref(3);
 const showVideoInfo = ref(false);
 const sliderRef = ref<HTMLElement>();
 
+let index = 1;
 const marker = (entry: entityData) => {
+  entry.seq = index++
   const info = entityInfo[entry.entityDataIdKey];
   if (info?.pass) return;
   // const pos = [entry.position.x * 16 / 128 + 80, entry.position.z * 16 / 128 + 224]
@@ -244,6 +249,7 @@ for (const m in points) {
 console.log('醚质总数:', features.length, itemMap);
 const entity = ref<entityData>({
   sceneId: '',
+  seq: 1,
   entityDataIdKey: '',
   position: { x: 0, y: 0, z: 0 },
 });

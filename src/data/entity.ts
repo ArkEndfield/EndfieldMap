@@ -18,6 +18,7 @@ export const entityInfo = {
 
 export interface entityData {
     sceneId: string,
+    seq: number,
     position: {
         x: number,
         y: number,
