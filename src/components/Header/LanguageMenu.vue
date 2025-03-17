@@ -49,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import { loadTextPoints } from '@/data/locations';
 import { cn } from '@/utils/tailwind';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -74,6 +75,7 @@ const changeLanguage = (lang: string) => {
   locale.value = lang;
   openAlert.value = false;
   localStorage.setItem('userLanguage', lang);
+  loadTextPoints(true)
 };
 </script>
 
