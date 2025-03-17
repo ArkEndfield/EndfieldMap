@@ -133,7 +133,6 @@ function openSidebar() {
   color: #ececec;
   padding: 0.5em;
   border-radius: 0.5em;
-  cursor: pointer;
   font-size: 1.5em;
   box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
   &:hover {
@@ -161,9 +160,6 @@ function openSidebar() {
   }
   * {
     box-sizing: border-box;
-    @media screen and (max-width: zmd.$phone-width) {
-      cursor: default !important;
-    }
   }
   .zmd-sidebar-bg-start {
     background: zmd.$side-bg-color-start;
@@ -204,7 +200,6 @@ function openSidebar() {
       top: -0.5em;
       display: flex;
       align-items: center;
-      cursor: pointer;
       z-index: 2;
       height: 2em;
       width: 2em;

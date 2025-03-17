@@ -323,10 +323,6 @@ $default-border-color: #a0a2a3;
   align-items: center;
   justify-content: center;
 
-  @media screen and (max-width: zmd.$phone-width) {
-    cursor: default !important;
-  }
-
   .zmd-alert-container {
     min-height: 10em;
     max-height: calc(100vh - 4em);
@@ -404,7 +400,6 @@ $default-border-color: #a0a2a3;
         all: unset;
         flex: 1;
         max-width: 50%;
-        cursor: pointer;
         .zmd-alert-confirm,
         .zmd-alert-close {
           display: flex;

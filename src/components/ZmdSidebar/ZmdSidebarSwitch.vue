@@ -122,11 +122,10 @@ const circleStyle = computed(() => {
 .zmd-switch {
   display: block;
   position: relative;
-  cursor: pointer;
   user-select: none;
   &.is-disabled {
     opacity: 0.6;
-    cursor: not-allowed;
+    cursor: url('/cursor/delete.cur'), not-allowed;
   }
 
   &__core {
@@ -168,6 +167,5 @@ const circleStyle = computed(() => {
 .zmd-switch__label {
   line-height: normal;
   display: inline-block;
-  cursor: pointer;
 }
 </style>

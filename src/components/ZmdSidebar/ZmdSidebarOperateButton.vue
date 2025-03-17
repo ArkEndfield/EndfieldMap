@@ -51,7 +51,6 @@ $glow-color-active: rgba(124, 124, 124, 1);
   padding: 0.5em 1em;
   padding-bottom: 0.3em;
   text-align: center;
-  cursor: pointer;
   transition: all 0.3s;
   overflow: hidden;
   user-select: none;

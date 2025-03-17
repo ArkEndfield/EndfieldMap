@@ -60,7 +60,6 @@ const toggle = () => {
   display: inline-block;
   padding: 0.4em 1em;
   text-align: left;
-  cursor: pointer;
   background-color: #3a3a38;
   color: #ededed;
   transition: all 0.3s ease;

@@ -15,7 +15,7 @@
       <div
         v-for="locale in availableLocales"
         :key="locale.code"
-        class="flex items-center justify-between p-2 cursor-pointer relative overflow-hidden hover:-translate-y-0.5 transition-transform duration-200 ease-in-out"
+        class="flex items-center justify-between p-2 relative overflow-hidden hover:-translate-y-0.5 transition-transform duration-200 ease-in-out"
         :class="
           cn({
             'bg-[#1D1D1D] text-[white] shadow-[0_0_0_0.1em_inset_#1D1D1D,0_0_0_0.2em_inset_#81807F] hover:shadow-[0_0_0_0.1em_inset_#1D1D1D,0_0_0_0.2em_inset_#81807F,0_0.1em_0.2em_#1D1D1D77]':

@@ -105,7 +105,6 @@ $gap: 0.7em;
     padding-left: 0.5em;
     position: relative;
     padding-bottom: 0.2em;
-    cursor: pointer;
     clip-path: polygon(
       0% 0%,
       100% 0%,

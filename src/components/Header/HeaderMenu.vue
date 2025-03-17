@@ -1,7 +1,7 @@
 <template>
   <div>
     <Popover :class="cn('hidden md:block', props.class)">
-      <button class="text-3xl block cursor-default md:cursor-pointer">
+      <button class="text-3xl block">
         <slot></slot>
       </button>
       <template #popover>
@@ -9,7 +9,7 @@
       </template>
     </Popover>
     <div
-      class="flex items-center cursor-default gap-2 py-2 px-4 border border-gray-200/20 hover:bg-gray-200/20 active:bg-gray-200/20 rounded-full mb-2 md:hidden"
+      class="flex items-center gap-2 py-2 px-4 border border-gray-200/20 hover:bg-gray-200/20 active:bg-gray-200/20 rounded-full mb-2 md:hidden"
     >
       <div class="text-3xl">
         <slot></slot>

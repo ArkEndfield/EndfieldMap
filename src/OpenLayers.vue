@@ -13,7 +13,7 @@
     <div class="zoom flex items-center gap-2">
       <button
         id="zoomOut"
-        class="w-8 h-8 flex justify-center items-center bg-black/30 rounded-full hover:bg-black/40 transition-colors active:bg-black/50 md:cursor-pointer"
+        class="w-8 h-8 flex justify-center items-center bg-black/30 rounded-full hover:bg-black/40 transition-colors active:bg-black/50"
       >
         <MinusIcon class="pointer-events-none" />
       </button>
@@ -23,12 +23,12 @@
         max="5"
         step="0.1"
         v-model="zoomLevel"
-        class="w-24 h-2 bg-black/30 rounded-full appearance-none cursor-pointer"
+        class="w-24 h-2 bg-black/30 rounded-full appearance-none"
         ref="sliderRef"
       />
       <button
         id="zoomIn"
-        class="w-8 h-8 flex justify-center items-center bg-black/30 rounded-full hover:bg-black/40 transition-colors active:bg-black/50 md:cursor-pointer"
+        class="w-8 h-8 flex justify-center items-center bg-black/30 rounded-full hover:bg-black/40 transition-colors active:bg-black/50"
       >
         <PlusIcon class="pointer-events-none" />
       </button>
@@ -81,7 +81,7 @@
               </div>
               <div class="flex items-center justify-between gap-2 mt-4">
                 <button
-                  class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors md:cursor-pointer"
+                  class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
                   @click="toggleVideoInfo(true)"
                 >
                   {{ $t('popover.video_link') }}
@@ -110,7 +110,7 @@
               </button>
               <div class="flex items-center mb-3 gap-2">
                 <button
-                  class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors flex items-center md:cursor-pointer"
+                  class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors flex items-center"
                   @click="toggleVideoInfo(false)"
                 >
                   <span class="inline-block mr-1">
@@ -495,7 +495,6 @@ input[type='range'] {
     width: 14px;
     border-radius: 50%;
     background: #ece065;
-    cursor: pointer;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
   }
 
@@ -504,7 +503,6 @@ input[type='range'] {
     width: 14px;
     border-radius: 50%;
     background: #ece065;
-    cursor: pointer;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
     border: none;
   }

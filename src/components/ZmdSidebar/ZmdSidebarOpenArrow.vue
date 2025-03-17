@@ -27,7 +27,6 @@ $arrow-height: 5em;
   top: calc(zmd.$side-margin-y + 20%);
   width: 9em;
   z-index: 19;
-  cursor: pointer;
   transition: filter 0.3s, width 0.3s;
   &:hover {
     width: 10em;

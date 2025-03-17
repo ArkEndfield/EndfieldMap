@@ -71,7 +71,6 @@ const toggle = () => {
 .zmd-sidebar-object {
   display: flex;
   align-items: center;
-  cursor: pointer;
   filter: drop-shadow(0 0 0.2em rgba(0, 0, 0, 0.6));
   transition: all 0.3s ease;
 
