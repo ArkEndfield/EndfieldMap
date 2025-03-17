@@ -1,6 +1,11 @@
 <template>
-  <Popover class="block md:hidden">
-    <button class="text-4xl block cursor-default md:cursor-pointer">
+  <Popover
+    class="block md:hidden"
+    placement="top"
+  >
+    <button
+      class="text-3xl block drop-shadow-[0_0_0.3em_rgba(0,0,0,0.5)] cursor-default md:cursor-pointer"
+    >
       <MenuIcon />
     </button>
     <template #popover> {{ $t('header.menu') }} </template>

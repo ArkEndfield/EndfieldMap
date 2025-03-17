@@ -1,12 +1,15 @@
 <template>
-  <div class="zmd-sidebar-title-arrow">
+  <div
+    class="zmd-sidebar-title-arrow"
+    ref="arrowRef"
+  >
     <div class="zmd-sidebar-title-arrow-start-part"></div>
     <div class="zmd-sidebar-title-arrow-middle-part"></div>
     <div class="zmd-sidebar-title-arrow-end-part">
       <div class="zmd-sidebar-title-arrow-lines">
-        <span class="zmd-sidebar-title-arrow-line"></span>
-        <span class="zmd-sidebar-title-arrow-line"></span>
-        <span class="zmd-sidebar-title-arrow-line"></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
     <div class="zmd-sidebar-title-arrow-arrow-part"></div>
@@ -14,7 +17,40 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { animate, spring } from 'motion';
+import { ref } from 'vue';
+import { nextTick } from 'vue';
+import { onMounted } from 'vue';
+const isInitialRender = ref(true);
+const arrowRef = ref<HTMLElement>();
+// 添加组件挂载后的处理
+onMounted(async () => {
+  if (isInitialRender.value) {
+    await nextTick();
+
+    // 获取箭头和线条元素
+    const arrowEl = arrowRef.value;
+
+    if (arrowEl) {
+      arrowEl.style.transform = 'translateX(-130%)';
+
+      await animate(
+        arrowEl,
+        { x: '0%' },
+        {
+          duration: 0.5,
+          type: spring,
+          bounce: 0.25,
+          delay: 0.01,
+        }
+      );
+    }
+
+    isInitialRender.value = false;
+  }
+});
+</script>
 
 <style lang="scss" scoped>
 $color: #424241;

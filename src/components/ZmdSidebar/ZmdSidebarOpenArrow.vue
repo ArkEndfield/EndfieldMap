@@ -24,7 +24,7 @@ $arrow-height: 5em;
   align-items: center;
   position: fixed;
   left: 0;
-  top: calc(zmd.$side-margin-y + 10%);
+  top: calc(zmd.$side-margin-y + 20%);
   width: 9em;
   z-index: 19;
   cursor: pointer;
@@ -35,14 +35,13 @@ $arrow-height: 5em;
   }
   @media screen and (max-width: zmd.$phone-width) {
     width: 5em;
-    top: 50%;
+    top: 20%;
     transform: translateY(-50%);
   }
   .zmd-sidebar-open-arrow-end-part {
     flex: 1;
     height: $line-size;
     background-color: $color1;
-    margin-top: calc($arrow-height - $line-size);
     position: relative;
     display: flex;
     justify-content: flex-end;
@@ -69,7 +68,6 @@ $arrow-height: 5em;
     border-top: $arrow-size solid transparent;
     border-bottom: $arrow-size solid transparent;
     border-left: calc($arrow-size * 2) solid $color1;
-    margin-top: calc($arrow-height - $line-size);
     position: relative;
     &::before,
     &::after {
@@ -105,15 +103,18 @@ $arrow-height: 5em;
     height: $size;
     margin-left: calc(0px - $arrow-size - $line-width / 2);
     background-color: $color1;
-    margin-top: calc($arrow-height - $line-size);
     -webkit-clip-path: $clip-path;
     clip-path: $clip-path;
   }
 
   @media screen and (max-width: zmd.$phone-width) {
-    $arrow-size: 1.3em;
+    $arrow-size: 1.5em;
+    $line-size: 2em;
+    .zmd-sidebar-open-arrow-end-part {
+      height: $line-size;
+    }
     .zmd-sidebar-open-arrow-arrow-part {
-      margin-left: -0.8em;
+      margin-left: -1em;
       border-top: $arrow-size solid transparent;
       border-bottom: $arrow-size solid transparent;
       border-left: calc($arrow-size * 2) solid $color1;
@@ -133,7 +134,7 @@ $arrow-height: 5em;
     }
     .zmd-sidebar-open-arrow-arrow-line {
       $line-width: 0.5em;
-      $size: calc($arrow-size * 2 + $line-width / 2);
+      $size: calc($arrow-size + $line-width * 3);
       $clip-path: polygon(
         0% 0%,
         100% 50%,
@@ -146,11 +147,10 @@ $arrow-height: 5em;
       flex-shrink: 0;
       width: $size;
       height: $size;
-      margin-left: calc(0px - $arrow-size - $line-width / 2 - 0.4em);
       background-color: $color1;
-      margin-top: calc($arrow-height - $line-size);
       -webkit-clip-path: $clip-path;
       clip-path: $clip-path;
+      margin-left: calc(0px - $arrow-size - $line-width * 1.5);
     }
   }
 }

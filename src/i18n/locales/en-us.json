@@ -9,6 +9,7 @@
   "create": "Create",
   "edit": "Edit",
   "update": "Update",
+  "back": "Back",
   "header": {
     "menu": "Menu",
     "join_community": "Community",
@@ -29,5 +30,14 @@
       "marked": "Marked",
       "not_marked": "Unmarked"
     }
+  },
+  "popover": {
+    "unknow_name": "Unknown Name",
+    "video_link": "Video Link",
+    "obtained": "Obtained",
+    "unobtained": "Unobtained",
+    "video_info": "Video Info",
+    "bv": "BV",
+    "unknown_bv": "Unknown BV"
   }
 }

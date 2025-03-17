@@ -13,6 +13,16 @@
         v-show="props.open"
         :style="{ width: props.width, backgroundImage: `url(${alert_bg})` }"
       >
+        <div class="zmd-alert-bg-banner">
+          <span
+            :style="{
+              backgroundImage: `url(${alert_banner_bg_left})`,
+            }"
+          ></span>
+          <span>
+            <img :src="alert_banner_bg_right" />
+          </span>
+        </div>
         <Transition
           @enter="animateAlertEnterContent"
           @leave="animateAlertLeaveContent"
@@ -49,17 +59,26 @@
                 </div>
               </slot>
             </button>
-            <button @click="handleConfirm">
+            <button
+              @click="handleConfirm"
+              ref="confirmButtonRef"
+            >
               <slot name="confirm">
-                <div class="zmd-alert-confirm">
-                  <div class="text">{{ $t(props.confirmText) }}</div>
+                <Transition>
                   <div
-                    class="icon"
-                    v-if="props.showIcon"
+                    class="zmd-alert-confirm"
+                    @mouseenter="animateConfirmEnter"
+                    @mouseleave="animateConfirmLeave"
                   >
-                    <ZmdAlertTickIcon />
+                    <div class="text">{{ $t(props.confirmText) }}</div>
+                    <div
+                      class="icon"
+                      v-if="props.showIcon"
+                    >
+                      <ZmdAlertTickIcon />
+                    </div>
                   </div>
-                </div>
+                </Transition>
               </slot>
             </button>
           </div>
@@ -75,6 +94,8 @@ import { animate } from 'motion';
 import ZmdAlertTickIcon from './icons/ZmdAlertTickIcon.vue';
 import ZmdAlertCloseIcon from './icons/ZmdAlertCloseIcon.vue';
 import alert_bg from '../../assets/images/bg/alert_bg.png';
+import alert_banner_bg_left from '../../assets/images/bg/alert_banner_bg_left.png';
+import alert_banner_bg_right from '../../assets/images/bg/alert_banner_bg_right.png';
 export type ZmdAlertProps = {
   open: boolean;
   dismissible?: boolean;
@@ -94,7 +115,7 @@ const props = withDefaults(defineProps<ZmdAlertProps>(), {
   open: false,
   dismissible: true,
   hideCancel: false,
-  width: '24em',
+  width: '30em',
   loading: false,
   cancelText: 'cancel',
   confirmText: 'confirm',
@@ -170,6 +191,46 @@ const handleConfirm = () => {
   }
 };
 
+const confirmButtonRef = ref<HTMLElement | null>(null);
+
+async function animateConfirmEnter(payload: MouseEvent) {
+  const el = payload.currentTarget as HTMLElement;
+  if (el) {
+    await animate(
+      el,
+      {
+        backgroundColor: ['#2a272877', '#2a2728b5', '#2a272877', '#2a2728b5'],
+        boxShadow: [
+          '0 0 0 0.1em #2a272877, 0 0 0 0.1em #81807f inset',
+          '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
+          '0 0 0 0.1em #2a272877, 0 0 0 0.1em #81807f inset',
+          '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
+        ],
+      },
+      { duration: 0.2 }
+    );
+  }
+}
+
+async function animateConfirmLeave(payload: MouseEvent) {
+  const el = payload.currentTarget as HTMLElement;
+  if (el) {
+    await animate(
+      el,
+      {
+        backgroundColor: ['#2a2728b5', '#2a2728', '#2a2728b5', '#2a2728'],
+        boxShadow: [
+          '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
+          '0 0 0 0.1em #2a2728, 0 0 0 0.1em #81807f inset',
+          '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
+          '0 0 0 0.1em #2a2728, 0 0 0 0.1em #81807f inset',
+        ],
+      },
+      { duration: 0.2 }
+    );
+  }
+}
+
 async function animateAlertEnter(el: Element, done: () => void) {
   const container = el as HTMLElement;
   container.style.transformOrigin = 'top';
@@ -218,8 +279,11 @@ async function animateAlertEnterContent(el: Element, done: () => void) {
       duration: 0.1,
     }
   );
-  await animate(el, { opacity: 0 }, { duration: 0.01, delay: 0.07 });
-  await animate(el, { opacity: 1 }, { duration: 0.01, delay: 0.01 });
+  await animate(el, { opacity: 0 }, { duration: 0.005, delay: 0.07 });
+  await animate(el, { opacity: 1 }, { duration: 0.005, delay: 0.005 });
+  await animate(el, { opacity: 0 }, { duration: 0.005, delay: 0.005 });
+  await animate(el, { opacity: 1 }, { duration: 0.005, delay: 0.005 });
+
   done();
 }
 
@@ -275,15 +339,52 @@ $default-border-color: #a0a2a3;
     padding: 1em 1.5em;
     margin: 1em;
     transform-origin: top;
-    background-size: contain;
+    background-size: 90% auto;
     background-position: bottom right;
     background-repeat: no-repeat;
+    position: relative;
+    .zmd-alert-bg-banner {
+      $size: 4.5em;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      display: flex;
+      align-items: stretch;
+      height: $size;
+      span {
+        display: block;
+        height: 100%;
+        background-size: contain;
+        background-position: left top;
+        padding-right: 30%;
+        &:nth-child(1) {
+          flex: 1;
+          background-repeat: repeat-x;
+        }
+        &:nth-child(2) {
+          flex-shrink: 0;
+          flex-grow: 0;
+          background-repeat: no-repeat;
+          height: $size;
+          img {
+            height: 100%;
+            display: block;
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+          }
+        }
+      }
+    }
     .zmd-alert-content {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
       color: $primary-color;
+      z-index: 1;
       > * {
         margin-left: auto;
         margin-right: auto;
@@ -295,6 +396,7 @@ $default-border-color: #a0a2a3;
       justify-content: space-between;
       gap: 1em;
       padding-top: 1em;
+      z-index: 1;
       &.single {
         justify-content: center;
       }
@@ -305,7 +407,6 @@ $default-border-color: #a0a2a3;
         cursor: pointer;
         .zmd-alert-confirm,
         .zmd-alert-close {
-          transition: background-color 0.3s, box-shadow 0.3s;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -360,14 +461,6 @@ $default-border-color: #a0a2a3;
             transition: color 0.3s;
             svg {
               font-size: 1.3em;
-            }
-          }
-          &:hover {
-            background-color: $primary-hover-color;
-            box-shadow: 0 0 0 0.1em $primary-hover-color,
-              0 0 0 0.1em $primary-border-color inset;
-            .icon {
-              color: $primary-hover-color;
             }
           }
         }

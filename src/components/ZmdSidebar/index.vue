@@ -1,10 +1,4 @@
 <template>
-  <!-- <div
-    class="zmd-sidebar-map-icon"
-    @click="openSidebar"
-  >
-    124
-  </div> -->
   <ZmdSidebarOpenArrow @click="openSidebar" />
   <Transition
     @enter="onEnter"
@@ -13,6 +7,7 @@
     <div
       class="zmd-sidebar"
       v-show="isOpen"
+      ref="sidebarRef"
     >
       <div class="zmd-sidebar-bg-start zmd-sidebar-top"></div>
       <div class="zmd-sidebar-bg header-container">
@@ -51,17 +46,14 @@ import ZmdSidebarOpenArrow from './ZmdSidebarOpenArrow.vue';
 const isOpen = ref(true);
 const isInitialRender = ref(true);
 
+const sidebarRef = ref<HTMLElement>();
 // 添加组件挂载后的处理
 onMounted(async () => {
   if (isOpen.value && isInitialRender.value) {
     await nextTick();
     const animateList: AnimationPlaybackControls[] = [];
     // 获取侧边栏主容器元素
-    const sidebarEl = document.querySelector('.zmd-sidebar') as HTMLElement;
-    // 获取需要单独动画的过滤器元素
-    const filterEl = document.querySelector(
-      '.zmd-sidebar-filter'
-    ) as HTMLElement;
+    const sidebarEl = sidebarRef.value;
 
     if (sidebarEl) {
       // 设置初始状态
@@ -73,20 +65,6 @@ onMounted(async () => {
           sidebarEl,
           { x: '-4%' },
           { duration: 0.5, type: spring, bounce: 0.25 }
-        )
-      );
-    }
-
-    if (filterEl) {
-      // 设置过滤器初始状态
-      filterEl.style.transform = 'translateX(-130%)';
-
-      // 执行过滤器动画，无延迟
-      animateList.push(
-        animate(
-          filterEl,
-          { x: '0%' },
-          { duration: 0.5, type: spring, bounce: 0.2, delay: 0.05 }
         )
       );
     }

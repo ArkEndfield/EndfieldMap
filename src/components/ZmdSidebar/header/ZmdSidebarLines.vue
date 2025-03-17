@@ -1,5 +1,8 @@
 <template>
-  <div class="zmd-sidebar-lines">
+  <div
+    class="zmd-sidebar-lines"
+    ref="linesRef"
+  >
     <div class="zmd-sidebar-line">
       <span
         v-for="item of Array(7).map((_, i) => i)"
@@ -31,7 +34,34 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { animate, spring } from 'motion';
+import { ref } from 'vue';
+import { nextTick } from 'vue';
+import { onMounted } from 'vue';
+
+const isInitialRender = ref(true);
+const linesRef = ref<HTMLElement>();
+
+onMounted(async () => {
+  if (isInitialRender.value) {
+    await nextTick();
+
+    const linesEl = linesRef.value;
+    if (linesEl) {
+      linesEl.style.transform = 'translateX(-130%)';
+
+      await animate(
+        linesEl,
+        { x: '0%' },
+        { duration: 0.5, type: spring, bounce: 0.4 }
+      );
+    }
+
+    isInitialRender.value = false;
+  }
+});
+</script>
 
 <style lang="scss" scoped>
 @use '../../../styles/zmd.scss' as zmd;

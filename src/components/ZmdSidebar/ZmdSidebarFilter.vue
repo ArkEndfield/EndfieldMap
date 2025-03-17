@@ -1,5 +1,8 @@
 <template>
-  <div class="zmd-sidebar-filter">
+  <div
+    class="zmd-sidebar-filter"
+    ref="filterRef"
+  >
     <ZmdSidebarSwitch>
       <div class="zmd-sidebar-filter-display-name">
         <div class="zmd-sidebar-filter-required">*</div>
@@ -59,6 +62,9 @@ import ZmdSidebarDeleteIcon from './icons/ZmdSidebarDeleteIcon.vue';
 import ZmdSidebarCheckboxCheckedIcon from './icons/ZmdSidebarCheckboxCheckedIcon.vue';
 import ZmdSidebarFilterToggle from './ZmdSidebarFilterToggle.vue';
 import { ref } from 'vue';
+import { animate, spring } from 'motion';
+import { nextTick } from 'vue';
+import { onMounted } from 'vue';
 enum FilterCollected {
   All,
   Collected,
@@ -69,6 +75,29 @@ const filterCollected = ref<FilterCollected>(FilterCollected.All);
 const setFilterCollected = (collected: FilterCollected) => {
   filterCollected.value = collected;
 };
+
+const filterRef = ref<HTMLElement>();
+
+const isInitialRender = ref(true);
+
+onMounted(async () => {
+  if (isInitialRender.value) {
+    await nextTick();
+    const filterEl = filterRef.value;
+
+    if (filterEl) {
+      filterEl.style.transform = 'translateX(-130%)';
+
+      await animate(
+        filterEl,
+        { x: '0%' },
+        { duration: 0.5, type: spring, bounce: 0.2, delay: 0.05 }
+      );
+    }
+
+    isInitialRender.value = false;
+  }
+});
 </script>
 
 <style lang="scss" scoped>

@@ -25,8 +25,7 @@ import ZmdSidebarTitleArrow from './header/ZmdSidebarTitleArrow.vue';
 import ZmdSidebarLines from './header/ZmdSidebarLines.vue';
 import ZmdSidebarTitle from './header/ZmdSidebarTitle.vue';
 import ZmdSidebarLocation from './ZmdSidebarLocation.vue';
-import { animate, type AnimationPlaybackControls, spring } from 'motion';
-import { ref, onMounted, nextTick } from 'vue';
+import { animate, spring } from 'motion';
 
 const props = withDefaults(
   defineProps<{
@@ -37,83 +36,25 @@ const props = withDefaults(
   }
 );
 
-const isInitialRender = ref(true);
-
-// 添加组件挂载后的处理
-onMounted(async () => {
-  if (props.open && isInitialRender.value) {
-    await nextTick();
-
-    const animateList: AnimationPlaybackControls[] = [];
-
-    // 获取箭头和线条元素
-    const arrowEl = document.querySelector(
-      '.zmd-sidebar-title-arrow'
-    ) as HTMLElement;
-    const linesEl = document.querySelector('.zmd-sidebar-lines') as HTMLElement;
-
-    if (arrowEl) {
-      // 设置初始状态
-      arrowEl.style.transform = 'translateX(-130%)';
-
-      // 执行箭头动画，无延迟
-      animateList.push(
-        animate(
-          arrowEl,
-          { x: '0%' },
-          {
-            duration: 0.5,
-            type: spring,
-            bounce: 0.25,
-            delay: 0.01,
-          }
-        )
-      );
-    }
-
-    if (linesEl) {
-      linesEl.style.transform = 'translateX(-130%)';
-
-      animateList.push(
-        animate(
-          linesEl,
-          { x: '0%' },
-          { duration: 0.5, type: spring, bounce: 0.4 }
-        )
-      );
-    }
-
-    await Promise.all(animateList);
-
-    isInitialRender.value = false;
-  }
-});
-
 async function onEnter(el: Element, onComplete: () => void) {
-  // 只在非初始渲染时执行动画
-  if (!isInitialRender.value) {
-    await animate(
-      el,
-      {
-        x: '0%',
-      },
-      { duration: 0.5, type: spring, bounce: 0.25, delay: 0.01 }
-    );
-  }
+  await animate(
+    el,
+    {
+      x: '0%',
+    },
+    { duration: 0.5, type: spring, bounce: 0.25, delay: 0.01 }
+  );
   onComplete();
 }
 
 async function onLinesEnter(el: Element, onComplete: () => void) {
-  // 只在非初始渲染时执行动画
-  if (!isInitialRender.value) {
-    await animate(
-      el,
-      {
-        x: '0%',
-      },
-      { duration: 0.5, type: spring, bounce: 0.4, delay: 0.03 }
-    );
-  }
+  await animate(
+    el,
+    {
+      x: '0%',
+    },
+    { duration: 0.5, type: spring, bounce: 0.25, delay: 0.01 }
+  );
   onComplete();
 }
 

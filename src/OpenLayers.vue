@@ -24,6 +24,7 @@
         step="0.1"
         v-model="zoomLevel"
         class="w-24 h-2 bg-black/30 rounded-full appearance-none cursor-pointer"
+        ref="sliderRef"
       />
       <button
         id="zoomIn"
@@ -67,7 +68,10 @@
                 <PowerIcon />
               </button>
               <div>
-                {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
+                {{
+                  entityInfo[entity.entityDataIdKey]?.name ||
+                  $t('popover.unknow_name')
+                }}
               </div>
               <div class="!my-2 !text-sm">id: {{ entity.entityDataIdKey }}</div>
               <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div>
@@ -80,14 +84,15 @@
                   class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors md:cursor-pointer"
                   @click="toggleVideoInfo(true)"
                 >
-                  视频链接
+                  {{ $t('popover.video_link') }}
                 </button>
                 <div class="flex items-center justify-end gap-2">
                   <label
                     :for="`get-${entity.entityDataIdKey}`"
                     class="text-sm"
-                    >已获取</label
                   >
+                    {{ $t('popover.obtained') }}
+                  </label>
                   <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
                 </div>
               </div>
@@ -111,23 +116,31 @@
                   <span class="inline-block mr-1">
                     <ForwardLeftIcon />
                   </span>
-                  返回
+                  {{ $t('back') }}
                 </button>
-                <div>视频信息</div>
+                <div>{{ $t('popover.video_info') }}</div>
               </div>
               <div class="border-b border-[#404140] pb-2 mb-3">
                 <div class="font-bold">
-                  {{ entityInfo[entity.entityDataIdKey]?.name || '未知名称' }}
+                  {{
+                    entityInfo[entity.entityDataIdKey]?.name ||
+                    $t('popover.unknow_name')
+                  }}
                 </div>
               </div>
               <div class="mb-3">
-                <div class="text-sm text-gray-400">视频BV号</div>
+                <div class="text-sm text-gray-400">{{ $t('popover.bv') }}</div>
                 <div class="text-[#ece065] mt-1">
-                  {{ entityInfo[entity.entityDataIdKey]?.bvid || 'BV未知' }}
+                  {{
+                    entityInfo[entity.entityDataIdKey]?.bvid ||
+                    $t('popover.unknown_bv')
+                  }}
                 </div>
               </div>
               <div class="mb-3">
-                <div class="text-sm text-gray-400">视频地址</div>
+                <div class="text-sm text-gray-400">
+                  {{ $t('popover.video_link') }}
+                </div>
                 <a
                   :href="`https://www.bilibili.com/video/${
                     entityInfo[entity.entityDataIdKey]?.bvid || ''
@@ -136,7 +149,8 @@
                   class="text-[#ece065] mt-1 block break-all hover:underline"
                 >
                   https://www.bilibili.com/video/{{
-                    entityInfo[entity.entityDataIdKey]?.bvid || 'BV未知'
+                    entityInfo[entity.entityDataIdKey]?.bvid ||
+                    $t('popover.unknown_bv')
                   }}
                 </a>
               </div>
@@ -178,6 +192,7 @@ const isPopupVisible = ref(false);
 const controls = ref<HTMLElement>();
 const zoomLevel = ref(3);
 const showVideoInfo = ref(false);
+const sliderRef = ref<HTMLElement>();
 
 const marker = (entry: entityData) => {
   const info = entityInfo[entry.entityDataIdKey];
@@ -322,7 +337,7 @@ onMounted(async () => {
       });
 
       // 添加滑块事件监听器
-      const slider = this.element.querySelector('input[type="range"]');
+      const slider = sliderRef.value;
       if (slider) {
         slider.addEventListener('input', () => {
           const view = this.getMap()?.getView();

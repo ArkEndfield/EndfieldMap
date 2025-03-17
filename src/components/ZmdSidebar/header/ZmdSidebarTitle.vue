@@ -1,27 +1,39 @@
 <template>
   <div class="zmd-sidebar-title">
-    <div class="zmd-sidebar-title-title">
+    <div
+      class="zmd-sidebar-title-title"
+      ref="titleTitleRef"
+    >
       <ZmdSidebarTitleBigTitle />
     </div>
-    <div class="zmd-sidebar-title-subtitle">
-      <Transition
-        @enter="onColorLineEnter"
-        @leave="onLeave"
+    <Transition
+      @enter="onSubtitleEnter"
+      @leave="onSubtitleLeave"
+    >
+      <div
+        class="zmd-sidebar-title-subtitle"
+        ref="subTitleRef"
       >
-        <div
-          class="zmd-sidebar-title-subtitle-line"
-          v-show="props.open"
+        <Transition
+          @enter="onColorLineEnter"
+          @leave="onLeave"
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <div
+            class="zmd-sidebar-title-subtitle-line"
+            v-show="props.open"
+            ref="subTitleLineRef"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </Transition>
+        <div class="zmd-sidebar-title-subtitle-content">
+          {{ $t('sidebar.title') }}
+          <div class="triangle"></div>
         </div>
-      </Transition>
-      <div class="zmd-sidebar-title-subtitle-content">
-        {{ $t('sidebar.title') }}
-        <div class="triangle"></div>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -40,7 +52,9 @@ const props = withDefaults(
 );
 
 const isInitialRender = ref(true);
-
+const titleTitleRef = ref<HTMLElement>();
+const subTitleRef = ref<HTMLElement>();
+const subTitleLineRef = ref<HTMLElement>();
 // 添加组件挂载后的初始化动画
 onMounted(async () => {
   if (props.open && isInitialRender.value) {
@@ -48,15 +62,9 @@ onMounted(async () => {
     const animateList: AnimationPlaybackControls[] = [];
 
     // 获取需要动画的元素
-    const titleElement = document.querySelector(
-      '.zmd-sidebar-title-title'
-    ) as HTMLElement;
-    const subtitleElement = document.querySelector(
-      '.zmd-sidebar-title-subtitle'
-    ) as HTMLElement;
-    const lineElement = document.querySelector(
-      '.zmd-sidebar-title-subtitle-line'
-    ) as HTMLElement;
+    const titleElement = titleTitleRef.value;
+    const subtitleElement = subTitleRef.value;
+    const lineElement = subTitleLineRef.value;
 
     if (titleElement) {
       // 设置初始状态
@@ -129,6 +137,33 @@ async function onLeave(el: Element, onComplete: () => void) {
     el,
     {
       width: '0%',
+    },
+    { duration: 0.5, type: spring, bounce: 0.25 }
+  );
+  onComplete();
+}
+
+async function onSubtitleEnter(el: Element, onComplete: () => void) {
+  // 只在非初始渲染时执行动画
+  if (!isInitialRender.value) {
+    await animate(
+      el,
+      {
+        opacity: 1,
+        y: 0,
+      },
+      { duration: 0.5, type: spring, bounce: 0.25 }
+    );
+  }
+  onComplete();
+}
+
+async function onSubtitleLeave(el: Element, onComplete: () => void) {
+  await animate(
+    el,
+    {
+      opacity: 0,
+      y: -10,
     },
     { duration: 0.5, type: spring, bounce: 0.25 }
   );

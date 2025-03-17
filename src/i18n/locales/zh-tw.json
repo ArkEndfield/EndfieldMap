@@ -9,6 +9,7 @@
   "create": "創建",
   "edit": "編輯",
   "update": "更新",
+  "back": "返回",
   "header": {
     "menu": "菜單",
     "join_community": "加入社群",
@@ -29,5 +30,14 @@
       "marked": "已標記收集",
       "not_marked": "未標記收集"
     }
+  },
+  "popover": {
+    "unknow_name": "未知名稱",
+    "video_link": "視頻鏈接",
+    "obtained": "已獲取",
+    "unobtained": "未獲取",
+    "video_info": "視頻信息",
+    "bv": "BV號",
+    "unknown_bv": "未知BV號"
   }
 }

@@ -6,6 +6,7 @@
   <ZmdAlert
     v-model:open="openAlert"
     hide-cancel
+    width="800px"
   >
     <h1 class="text-lg font-bold">更新日志</h1>
     <p>更新日志</p>

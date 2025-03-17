@@ -14,7 +14,7 @@
       <div class="text-3xl">
         <slot></slot>
       </div>
-      <div class="text-xl">
+      <div class="text-lg">
         <slot name="title"></slot>
       </div>
     </div>
