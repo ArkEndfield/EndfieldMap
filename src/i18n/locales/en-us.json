@@ -19,7 +19,8 @@
     "changelog": "Changelog",
     "language": "Language/语言",
     "change_language": "Change Language",
-    "up": "Up"
+    "up": "Up",
+    "community_not_constructed": "Community Not Constructed"
   },
   "sidebar": {
     "title": "EndField Map",

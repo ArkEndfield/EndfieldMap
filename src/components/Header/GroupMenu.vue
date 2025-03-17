@@ -12,8 +12,7 @@
       <BilibiliCard />
     </div>
     <h1 class="text-lg font-bold">{{ $t('header.join_community') }}</h1>
-    <p class="text-sm py-4">{{ $t('header.scan_qr_code_to_join') }}</p>
-    <div class="mx-auto w-32 h-32 bg-black"></div>
+    <p class="text-sm py-4">{{ $t('header.community_not_constructed') }}</p>
   </ZmdAlert>
 </template>
 

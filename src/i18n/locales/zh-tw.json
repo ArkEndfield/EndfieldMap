@@ -19,7 +19,8 @@
     "changelog": "更新日誌",
     "language": "語言/Language",
     "change_language": "切換語言",
-    "up": "煮啵"
+    "up": "煮啵",
+    "community_not_constructed": "社群尚未建設"
   },
   "sidebar": {
     "title": "終末地互動地圖",
