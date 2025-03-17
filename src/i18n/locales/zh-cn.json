@@ -13,11 +13,13 @@
   "header": {
     "menu": "菜单",
     "join_community": "加入社群",
+    "scan_qr_code_to_join": "扫描二维码加入社群",
     "feedback": "反馈",
     "login": "登录",
     "changelog": "更新日志",
     "language": "语言/Language",
-    "change_language": "切换语言"
+    "change_language": "切换语言",
+    "up": "煮啵"
   },
   "sidebar": {
     "title": "终末地互动地图",
@@ -39,5 +41,62 @@
     "video_info": "视频信息",
     "bv": "BV号",
     "unknown_bv": "未知BV号"
+  },
+  "bilibili_card": {
+    "follow": "关注",
+    "fans": "粉丝",
+    "like": "获赞",
+    "play": "播放",
+    "number": {
+      "wan": "万",
+      "yi": "亿"
+    },
+    "certification": {
+      "game": "bilibili 知名游戏UP主"
+    }
+  },
+  "date": {
+    "year": "年",
+    "month": "月",
+    "day": "日",
+    "hour": "时",
+    "minute": "分",
+    "second": "秒",
+    "weekdays": {
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六",
+      "sunday": "星期日"
+    },
+    "months": {
+      "january": "一月",
+      "february": "二月",
+      "march": "三月",
+      "april": "四月",
+      "may": "五月",
+      "june": "六月",
+      "july": "七月",
+      "august": "八月",
+      "september": "九月",
+      "october": "十月",
+      "november": "十一月",
+      "december": "十二月"
+    },
+    "format": {
+      "date_only": "YYYY年MM月DD日",
+      "date_time": "YYYY年MM月DD日 HH:mm",
+      "ago": "{0}前",
+      "just_now": "刚刚",
+      "seconds_ago": "{0}秒前",
+      "minutes_ago": "{0}分钟前",
+      "hours_ago": "{0}小时前",
+      "days_ago": "{0}天前",
+      "weeks_ago": "{0}周前",
+      "months_ago": "{0}个月前",
+      "years_ago": "{0}年前"
+    }
   }
 }

@@ -7,7 +7,7 @@
     v-model:open="openAlert"
     hide-cancel
   >
-    <h1 class="text-lg font-bold">反馈</h1>
+    <h1 class="text-lg font-bold">{{ $t('header.feedback') }}</h1>
     <p>输入反馈内容</p>
   </ZmdAlert>
 </template>

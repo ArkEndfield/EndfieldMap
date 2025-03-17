@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppHeaderLeft: typeof import('./src/components/Header/AppHeaderLeft.vue')['default']
+    BilibiliCard: typeof import('./src/components/BilibiliCard.vue')['default']
+    ChangeLog: typeof import('./src/components/ChangeLog.vue')['default']
     ChangelogMenu: typeof import('./src/components/Header/ChangelogMenu.vue')['default']
     ChatIcon: typeof import('./src/components/icons/ChatIcon.vue')['default']
     CloseIcon: typeof import('./src/components/icons/CloseIcon.vue')['default']

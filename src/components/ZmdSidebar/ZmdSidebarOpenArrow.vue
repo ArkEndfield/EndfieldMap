@@ -36,6 +36,7 @@ $arrow-height: 5em;
     width: 5em;
     top: 20%;
     transform: translateY(-50%);
+    filter: drop-shadow(0 0 0.3em rgba(255, 255, 255, 0.3));
   }
   .zmd-sidebar-open-arrow-end-part {
     flex: 1;

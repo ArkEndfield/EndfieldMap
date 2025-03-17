@@ -333,6 +333,7 @@ $default-border-color: #a0a2a3;
     display: flex;
     flex-direction: column;
     padding: 1em 1.5em;
+    padding-top: 1.7em;
     margin: 1em;
     transform-origin: top;
     background-size: 90% auto;

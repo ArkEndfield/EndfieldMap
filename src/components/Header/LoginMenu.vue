@@ -3,11 +3,8 @@
     <UserIcon />
     <template #title>{{ $t('header.login') }}</template>
   </HeaderMenu>
-  <ZmdAlert
-    v-model:open="openAlert"
-    hide-cancel
-  >
-    <h1 class="text-lg font-bold">登录</h1>
+  <ZmdAlert v-model:open="openAlert">
+    <h1 class="text-lg font-bold">{{ $t('header.login') }}</h1>
     <p>输入账号密码</p>
   </ZmdAlert>
 </template>

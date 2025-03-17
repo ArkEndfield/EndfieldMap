@@ -13,11 +13,13 @@
   "header": {
     "menu": "Menu",
     "join_community": "Community",
+    "scan_qr_code_to_join": "Scan QR Code to Join",
     "feedback": "Feedback",
     "login": "Login",
     "changelog": "Changelog",
     "language": "Language/语言",
-    "change_language": "Change Language"
+    "change_language": "Change Language",
+    "up": "Up"
   },
   "sidebar": {
     "title": "EndField Map",
@@ -39,5 +41,62 @@
     "video_info": "Video Info",
     "bv": "BV",
     "unknown_bv": "Unknown BV"
+  },
+  "bilibili_card": {
+    "follow": "Follow",
+    "fans": "Followers",
+    "like": "Likes",
+    "play": "Views",
+    "number": {
+      "wan": "K",
+      "yi": "M"
+    },
+    "certification": {
+      "game": "Bilibili Certified Game UP"
+    }
+  },
+  "date": {
+    "year": "year",
+    "month": "month",
+    "day": "day",
+    "hour": "hour",
+    "minute": "minute",
+    "second": "second",
+    "weekdays": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "format": {
+      "date_only": "MM/DD/YYYY",
+      "date_time": "MM/DD/YYYY HH:mm",
+      "ago": "{0} ago",
+      "just_now": "just now",
+      "seconds_ago": "{0} seconds ago",
+      "minutes_ago": "{0} minutes ago",
+      "hours_ago": "{0} hours ago",
+      "days_ago": "{0} days ago",
+      "weeks_ago": "{0} weeks ago",
+      "months_ago": "{0} months ago",
+      "years_ago": "{0} years ago"
+    }
   }
 }

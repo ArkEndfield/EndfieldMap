@@ -7,8 +7,12 @@
     v-model:open="openAlert"
     hide-cancel
   >
-    <h1 class="text-lg font-bold">加入社群</h1>
-    <p class="text-sm py-4">扫码加入社群</p>
+    <h1 class="text-lg font-bold">{{ $t('header.up') }}</h1>
+    <div class="py-4">
+      <BilibiliCard />
+    </div>
+    <h1 class="text-lg font-bold">{{ $t('header.join_community') }}</h1>
+    <p class="text-sm py-4">{{ $t('header.scan_qr_code_to_join') }}</p>
     <div class="mx-auto w-32 h-32 bg-black"></div>
   </ZmdAlert>
 </template>

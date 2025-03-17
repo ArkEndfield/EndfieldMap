@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import 'tailwindcss';
 
+* {
+  cursor: url('/cursor/default.cur'), auto;
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -10,8 +14,4 @@ body,
 #map {
   height: 100%;
   width: 100vw;
-}
-
-* {
-  cursor: url('/cursor/default.cur'), auto;
 }
