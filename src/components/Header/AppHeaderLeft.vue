@@ -2,8 +2,8 @@
   <div
     :class="
       cn(
-        'app-header-left fixed bottom-4 right-4 z-20 flex justify-start gap-8 items-center text-white p-1.5 rounded-full',
-        'md:w-18 md:bottom-[unset] md:right-[unset] md:left-0 md:top-0 md:bg-gradient-to-r md:py-0 md:from-black/50 md:to-black/0 md:px-6 md:z-[53] md:rounded-none'
+        'app-header-left fixed bottom-4 right-4 flex justify-start gap-8 items-center text-white p-1.5 rounded-full z-[56]',
+        'md:w-18 md:bottom-[unset] md:right-[unset] md:left-0 md:top-0 md:bg-gradient-to-r md:py-0 md:from-black/50 md:to-black/0 md:px-6 md:rounded-none'
       )
     "
   >
