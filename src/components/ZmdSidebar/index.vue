@@ -1,5 +1,22 @@
 <template>
-  <ZmdSidebarOpenArrow @click="openSidebar" />
+  <div class="zmd-sidebar-collapse-arrows">
+    <Transition
+      @enter="onEnter"
+      @leave="onLeave"
+    >
+      <ZmdSidebarHeader
+        :open="isOpen"
+        v-show="isOpen"
+      />
+    </Transition>
+
+    <Transition
+      @enter="onEnter"
+      @leave="onLeave"
+    >
+      <ZmdSidebarTitleArrow v-model:open="isOpen" />
+    </Transition>
+  </div>
   <Transition
     @enter="onEnter"
     @leave="onLeave"
@@ -10,17 +27,16 @@
       ref="sidebarRef"
     >
       <div class="zmd-sidebar-bg-start zmd-sidebar-top"></div>
-      <div class="zmd-sidebar-bg header-container">
-        <ZmdSidebarHeader :open="isOpen" />
-        <div
+      <div class="zmd-sidebar-bg zmd-sidebar-main">
+        <div class="header-container">
+          <!-- <div
           class="zmd-sidebar-collapse-arrows"
           @click="closeSidebar"
         >
           <span></span>
           <span></span>
+        </div> -->
         </div>
-      </div>
-      <div class="zmd-sidebar-bg zmd-sidebar-main">
         <div class="zmd-sidebar-content">
           <Transition
             @enter="onStatusEnter"
@@ -39,9 +55,9 @@
 import ZmdSidebarHeader from './ZmdSidebarHeader.vue';
 import ZmdSidebarFilter from './ZmdSidebarFilter.vue';
 import ZmdSidebarItemList from './ZmdSidebarItemList.vue';
+import ZmdSidebarTitleArrow from './header/ZmdSidebarTitleArrow.vue';
 import { ref, onMounted, nextTick } from 'vue';
 import { animate, type AnimationPlaybackControls, spring } from 'motion';
-import ZmdSidebarOpenArrow from './ZmdSidebarOpenArrow.vue';
 
 const isOpen = ref(true);
 const isInitialRender = ref(true);
@@ -113,14 +129,6 @@ async function onLeave(el: Element, onComplete: () => void) {
   );
   onComplete();
 }
-
-function closeSidebar() {
-  isOpen.value = false;
-}
-
-function openSidebar() {
-  isOpen.value = true;
-}
 </script>
 <style lang="scss" scoped>
 @use '../../styles/zmd.scss' as zmd;
@@ -139,6 +147,29 @@ function openSidebar() {
     background: zmd.$side-bg-color-end;
   }
 }
+
+.zmd-sidebar-collapse-arrows {
+  width: calc(zmd.$side-width);
+  left: calc(0px - zmd.$side-width * 0.04);
+  top: 4em;
+  z-index: 53;
+  position: fixed;
+  @media screen and (max-width: zmd.$phone-width) {
+    top: 1em;
+  }
+  .zmd-sidebar-title-arrow {
+    position: absolute;
+    top: 2.5em;
+    z-index: 1;
+  }
+  .zmd-sidebar-header {
+    flex-shrink: 0;
+    flex-grow: 0;
+    z-index: 2;
+    position: relative;
+  }
+}
+
 .zmd-sidebar {
   position: fixed;
   left: 0;
@@ -146,7 +177,6 @@ function openSidebar() {
   width: zmd.$side-width;
   max-width: 100%;
   top: zmd.$side-margin-y;
-  // bottom: zmd.$side-margin-y;
   bottom: 0;
   color: #ececec;
   z-index: 52;
@@ -154,6 +184,7 @@ function openSidebar() {
   overflow: visible !important;
   flex-direction: column;
   height: auto !important;
+
   @media screen and (max-width: zmd.$phone-width) {
     top: 0;
     bottom: 0 !important;
@@ -190,62 +221,8 @@ function openSidebar() {
   .header-container {
     position: relative;
     padding-left: 0.7em;
-    .zmd-sidebar-header {
-      flex-shrink: 0;
-      flex-grow: 0;
-    }
-    .zmd-sidebar-collapse-arrows {
-      position: absolute;
-      right: 1em;
-      top: -0.5em;
-      display: flex;
-      align-items: center;
-      z-index: 2;
-      height: 2em;
-      width: 2em;
-      justify-content: center;
-      transition: transform 0.2s;
-      transform-origin: right center;
-      &:hover {
-        transform: scale(1.1);
-      }
-      &:active {
-        transform: scale(0.8);
-      }
-      span {
-        $border: 0.2em solid #ececec;
-        width: 0.8em;
-        height: 0.8em;
-        display: block;
-        border-top: $border;
-        border-left: $border;
-        transform: rotate(-45deg);
-
-        &:first-child {
-          margin-right: 0.3em;
-          animation: arrowPulse 1.5s infinite;
-        }
-
-        &:last-child {
-          animation: arrowPulse 1.5s infinite 0.3s;
-        }
-      }
-
-      @keyframes arrowPulse {
-        0% {
-          opacity: 0.4;
-          transform: rotate(-45deg) translateX(0);
-        }
-        50% {
-          opacity: 1;
-          transform: rotate(-45deg) translateX(-0.3em);
-        }
-        100% {
-          opacity: 0.4;
-          transform: rotate(-45deg) translateX(0);
-        }
-      }
-    }
+    z-index: 56;
+    height: zmd.$side-header-height;
   }
   .zmd-sidebar-main {
     flex: 1;

@@ -8,12 +8,6 @@
     >
       <ZmdSidebarLines v-show="props.open" />
     </Transition>
-    <Transition
-      @enter="onEnter"
-      @leave="onLeave"
-    >
-      <ZmdSidebarTitleArrow v-show="props.open" />
-    </Transition>
     <ZmdSidebarTitle :open="props.open" />
     <ZmdSidebarLocation />
   </div>
@@ -21,7 +15,7 @@
 
 <script setup lang="ts">
 import ZmdSideBarDotLine from './header/ZmdSidebarDotLine.vue';
-import ZmdSidebarTitleArrow from './header/ZmdSidebarTitleArrow.vue';
+
 import ZmdSidebarLines from './header/ZmdSidebarLines.vue';
 import ZmdSidebarTitle from './header/ZmdSidebarTitle.vue';
 import ZmdSidebarLocation from './ZmdSidebarLocation.vue';
@@ -35,17 +29,6 @@ const props = withDefaults(
     open: true,
   }
 );
-
-async function onEnter(el: Element, onComplete: () => void) {
-  await animate(
-    el,
-    {
-      x: '0%',
-    },
-    { duration: 0.5, type: spring, bounce: 0.25, delay: 0.01 }
-  );
-  onComplete();
-}
 
 async function onLinesEnter(el: Element, onComplete: () => void) {
   await animate(
@@ -90,12 +73,6 @@ async function onLeave(el: Element, onComplete: () => void) {
   }
   .zmd-sidebar-lines {
     margin-left: 4em;
-  }
-  .zmd-sidebar-title-arrow {
-    position: absolute;
-    left: 0;
-    top: 1.5em;
-    z-index: 1;
   }
   .zmd-sidebar-location {
     position: absolute;
