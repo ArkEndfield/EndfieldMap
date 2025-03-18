@@ -83,6 +83,10 @@ const toggle = () => {
       0 0 0 0.25em #605f5f inset;
     position: relative;
     z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
     transition: box-shadow 0.3s ease;
     img {
       width: 100%;

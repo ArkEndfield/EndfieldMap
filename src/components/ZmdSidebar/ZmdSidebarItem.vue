@@ -177,7 +177,7 @@ $gap: 0.7em;
   }
   .content {
     overflow: hidden;
-    padding: 0 2em;
+    padding: 0 1em;
     .placeholder {
       height: 1em;
     }

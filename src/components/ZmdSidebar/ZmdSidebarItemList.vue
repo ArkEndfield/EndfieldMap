@@ -10,11 +10,9 @@
       <template #title> 收集品 </template>
       <template #subtitle> COLLECTION </template>
       <div class="objecg-list">
-        <ZmdSidebarObject />
-        <ZmdSidebarObject />
-        <ZmdSidebarObject />
-        <ZmdSidebarObject />
-        <ZmdSidebarObject />
+        <ZmdSidebarObject v-for="k in entityInfo" :name="k.name" :value="k.count" v-model="k.show" @change="refresh">
+          <img :src="`/assets/${k.point}.png`">
+        </ZmdSidebarObject>
       </div>
     </ZmdSidebarItem>
     <ZmdSidebarItem :open="props.open">
@@ -41,6 +39,7 @@
 </template>
 
 <script setup lang="ts">
+import { entityInfo, refresh } from '@/data/entity';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
 

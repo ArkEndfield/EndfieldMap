@@ -168,25 +168,16 @@ import { onMounted, ref } from 'vue';
 import { Map, View } from 'ol';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import { cn } from '@/utils/tailwind';
-import { XYZ, Vector as VectorSource } from 'ol/source';
+import { XYZ } from 'ol/source';
 import { Projection } from 'ol/proj';
-import Point from 'ol/geom/Point';
-
-import { Feature } from 'ol';
-import { Icon, Style } from 'ol/style';
 import { Select } from 'ol/interaction';
 import { click } from 'ol/events/condition';
 import Control from 'ol/control/Control';
 import Overlay from 'ol/Overlay';
-
 import { animate, spring } from 'motion';
-
-// @ts-ignore
-import points from './assets/output.json';
-import { entityInfo, entityData } from './data/entity';
+import { entityInfo, entityData, source } from './data/entity';
 import { areaNameLayer } from './data/locations';
 import { defaults as interactionDefaults } from 'ol/interaction';
-import { xyz2crd } from './utils/common';
 
 const popupContainer = ref<HTMLElement>();
 const isPopupVisible = ref(false);
@@ -195,28 +186,6 @@ const zoomLevel = ref(3);
 const showVideoInfo = ref(false);
 const sliderRef = ref<HTMLElement>();
 
-let index = 1;
-const marker = (entry: entityData) => {
-  entry.seq = index++;
-  const info = entityInfo[entry.entityDataIdKey];
-  if (!info || info?.pass) return;
-  const feature = new Feature({
-    geometry: new Point(xyz2crd(entry.position)),
-    payload: entry,
-  });
-  feature.setStyle(
-    new Style({
-      image: new Icon({
-        src: `/assets/${
-          entityInfo[entry.entityDataIdKey]?.point || 'default'
-        }.png`,
-        scale: entityInfo[entry.entityDataIdKey]?.scale,
-      }),
-    })
-  );
-  return feature;
-};
-// const pointFeature = new Feature(new Point([0, 0]));
 const simpleProjection = new Projection({
   code: 'SIMPLE',
   units: 'pixels',
@@ -225,21 +194,6 @@ const simpleProjection = new Projection({
 
 const transparentBase64 =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
-
-const features: Feature<Point>[] = [];
-const itemMap: any = {};
-for (const m in points) {
-  if (!m.includes('map01')) continue;
-  for (const point of points[m]) {
-    // if (!point.entityDataIdKey.includes('collection_coin')) continue;
-    itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1;
-    // if (!point.entityDataIdKey.includes('int_trchest')) continue
-    // console.log(point)
-    const feature = marker(point);
-    if (feature) features.push(feature);
-  }
-}
-console.log('醚质总数:', features.length, itemMap);
 const entity = ref<entityData>({
   sceneId: '',
   seq: 1,
@@ -390,11 +344,6 @@ const tileLoad = (imageTile: any, src: string) => {
 };
 
 onMounted(async () => {
-  const feature = new Feature({
-    geometry: new Point([96, 128]),
-  });
-  if (feature) features.push(feature);
-
   overlay = new Overlay({
     element: popupContainer.value,
     autoPan: false, // 禁用内置的自动平移，完全由我们自定义控制
@@ -453,9 +402,7 @@ onMounted(async () => {
         }),
       }),
       new VectorLayer({
-        source: new VectorSource({
-          features: features,
-        }),
+        source: source
       }),
     ],
     view: new View({
