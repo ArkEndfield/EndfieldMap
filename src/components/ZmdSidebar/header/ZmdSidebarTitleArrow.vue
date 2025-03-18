@@ -128,6 +128,20 @@ $arrow-height: 5em;
     ) {
     cursor: pointer;
     filter: drop-shadow(0.1em 0.1em 0em rgba(255, 255, 255, 0.2));
+    .zmd-sidebar-title-arrow-arrow-line {
+      animation: arrowAnimation 1s infinite;
+    }
+    @keyframes arrowAnimation {
+      0% {
+        transform: translateX(0);
+      }
+      50% {
+        transform: translateX(-0.5em);
+      }
+      100% {
+        transform: translateX(0);
+      }
+    }
   }
   .zmd-sidebar-title-arrow-start-part {
     flex: 1;
