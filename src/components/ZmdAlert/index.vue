@@ -332,7 +332,7 @@ $default-border-color: #a0a2a3;
     box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
-    padding: 1em 1.5em;
+    padding: 1em 0;
     padding-top: 1.7em;
     margin: 1em;
     transform-origin: top;
@@ -340,6 +340,11 @@ $default-border-color: #a0a2a3;
     background-position: bottom right;
     background-repeat: no-repeat;
     position: relative;
+    @media screen and (max-width: zmd.$phone-width) {
+      max-width: calc(100vw - 0.2em);
+      padding-top: 1.7em;
+      margin: 0.5em;
+    }
     .zmd-alert-bg-banner {
       $size: 4.5em;
       position: absolute;
@@ -392,6 +397,7 @@ $default-border-color: #a0a2a3;
       display: flex;
       justify-content: space-between;
       gap: 1em;
+      padding: 0 1em;
       padding-top: 1em;
       z-index: 1;
       &.single {

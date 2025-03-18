@@ -1,9 +1,6 @@
 <template>
   <div
     id="map"
-    :style="{
-      backgroundImage: `url(${map_bg})`,
-    }"
     class="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center"
   ></div>
   <div
@@ -62,7 +59,7 @@
           <div class="popup-page">
             <div class="p-4 pt-2">
               <button
-                class="no-underline absolute top-3 right-5 text-3xl text-[#ece065]"
+                class="no-underline absolute top-0 right-5 text-3xl text-[#ece065]"
                 @click="closeToast"
               >
                 <PowerIcon />
@@ -188,7 +185,6 @@ import points from './assets/output.json';
 import { entityInfo, entityData } from './data/entity';
 import { areaNameLayer } from './data/locations';
 import { defaults as interactionDefaults } from 'ol/interaction';
-import map_bg from '@/assets/images/bg/map_bg.png';
 
 const popupContainer = ref<HTMLElement>();
 const isPopupVisible = ref(false);
@@ -199,7 +195,7 @@ const sliderRef = ref<HTMLElement>();
 
 let index = 1;
 const marker = (entry: entityData) => {
-  entry.seq = index++
+  entry.seq = index++;
   const info = entityInfo[entry.entityDataIdKey];
   if (info?.pass) return;
   // const pos = [entry.position.x * 16 / 128 + 80, entry.position.z * 16 / 128 + 224]
@@ -448,6 +444,9 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
+#map {
+  background-image: url('/assets/map_bg.png');
+}
 .ol-popup {
   &.v-enter-from,
   &.v-leave-to {
