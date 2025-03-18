@@ -11,7 +11,7 @@
     <h1 class="text-lg font-bold mb-4 text-[#282828]">
       {{ $t('header.change_language') }}
     </h1>
-    <div class="flex flex-col gap-2 w-full p-2">
+    <div class="flex flex-col gap-2 w-full py-2 px-6">
       <div
         v-for="locale in availableLocales"
         :key="locale.code"
@@ -75,7 +75,7 @@ const changeLanguage = (lang: string) => {
   locale.value = lang;
   openAlert.value = false;
   localStorage.setItem('userLanguage', lang);
-  loadTextPoints(true)
+  loadTextPoints(true);
 };
 </script>
 
