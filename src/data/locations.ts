@@ -53,7 +53,7 @@ export const loadTextPoints = (reset = false, scene = 'map01') => {
 
   for (const k in locations) {
     const loc = locations[k].subTitle;
-    console.log(locations[k])
+    // console.log(locations[k])
     if (!loc?.position || !locations[k].map?.includes(scene)) continue;
     const text = loc.langs[selectLang[localStorage.getItem('userLanguage') || 'zh-CN']];
 

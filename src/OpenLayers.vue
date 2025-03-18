@@ -189,6 +189,7 @@ import { entityInfo, entityData } from './data/entity';
 import { areaNameLayer } from './data/locations';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import map_bg from '@/assets/images/bg/map_bg.png';
+import { xyz2crd } from './utils/common';
 
 const popupContainer = ref<HTMLElement>();
 const isPopupVisible = ref(false);
@@ -201,14 +202,9 @@ let index = 1;
 const marker = (entry: entityData) => {
   entry.seq = index++
   const info = entityInfo[entry.entityDataIdKey];
-  if (info?.pass) return;
-  // const pos = [entry.position.x * 16 / 128 + 80, entry.position.z * 16 / 128 + 224]
-  const pos = [
-    (entry.position.x * 16) / 128 + 96 + 32,
-    (entry.position.z * 16) / 128 + 128 + 32,
-  ];
+  if (!info || info?.pass) return;
   const feature = new Feature({
-    geometry: new Point(pos),
+    geometry: new Point(xyz2crd(entry.position)),
     payload: entry,
   });
   feature.setStyle(
@@ -238,7 +234,7 @@ const itemMap: any = {};
 for (const m in points) {
   if (!m.includes('map01')) continue;
   for (const point of points[m]) {
-    if (!point.entityDataIdKey.includes('collection_coin')) continue;
+    // if (!point.entityDataIdKey.includes('collection_coin')) continue;
     itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1;
     // if (!point.entityDataIdKey.includes('int_trchest')) continue
     // console.log(point)
@@ -336,7 +332,7 @@ onMounted(async () => {
           zoomLevel.value = newZoom;
         } else if (target.id === 'zoomOut' && view) {
           view.cancelAnimations(); // 取消之前的动画
-          const newZoom = zoom - 1 >= 1.8 ? zoom - 1 : 1.8;
+          const newZoom = zoom - 1 >= 0 ? zoom - 1 : 0;
           view.animate({ zoom: newZoom, duration: 400 });
           zoomLevel.value = newZoom;
         }
@@ -374,12 +370,14 @@ onMounted(async () => {
     ],
     view: new View({
       projection: simpleProjection,
-      center: [44, 152],
-      extent: [-16, 0, 325, 344],
+      center: [100, 152],
       zoom: 3,
       maxZoom: 5,
-      minZoom: 1.8,
+      minZoom: 0,
       rotation: 0,
+      // extent: [-100, 0, 325, 344],
+      // constrainResolution: true,
+      enableRotation: false
     }),
     interactions: interactionDefaults({
       altShiftDragRotate: false,
@@ -390,7 +388,8 @@ onMounted(async () => {
   });
 
   map.getView().on('change:resolution', function () {
-    zoomLevel.value = map.getView().getZoom() || 1.8;
+    const zoom = map.getView().getZoom() || 0;
+    zoomLevel.value = zoom
   });
 
   const selectInteraction = new Select({
