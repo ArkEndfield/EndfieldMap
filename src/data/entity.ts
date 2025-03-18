@@ -14,7 +14,7 @@ export const entityInfo = reactive({
     int_trchest_common_normal: { name: '储藏箱II', point: 'int_trchest_common', show: true, count: 0 },
     int_trchest_common_high: { name: '储藏箱III', point: 'int_trchest_common', show: true, count: 0 },
     int_trchest_lock: { name: '储藏箱IV', point: 'int_trchest_common', show: true, count: 0 },
-    int_collection_common: { name: '采集', point: 'default', show: true, count: 0  },
+    // int_collection_common: { name: '采集', point: 'default', show: true, count: 0  },
     // int_module_chasingrabbit: { name: '追兔头', point: 'default', show: true },
     int_campfire_v2: { name: '传送点', point: 'int_campfire_v2', show: true, count: 0 },
     // int_narrative_common: { name: '纸条', point: 'item_read_note', show: true, scale: 0.15 },

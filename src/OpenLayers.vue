@@ -176,7 +176,7 @@ import Control from 'ol/control/Control';
 import Overlay from 'ol/Overlay';
 import { animate, spring } from 'motion';
 import { entityInfo, entityData, source } from './data/entity';
-import { areaNameLayer } from './data/locations';
+import { areaNameLayer, loadTextPoints } from './data/locations';
 import { defaults as interactionDefaults } from 'ol/interaction';
 
 const popupContainer = ref<HTMLElement>();
@@ -410,7 +410,7 @@ onMounted(async () => {
       center: [100, 152],
       zoom: 3,
       maxZoom: 5,
-      minZoom: 0,
+      minZoom: 1,
       rotation: 0,
       // extent: [-100, 0, 325, 344],
       // constrainResolution: true,
@@ -427,6 +427,7 @@ onMounted(async () => {
   map.getView().on('change:resolution', function () {
     const zoom = map.getView().getZoom() || 0;
     zoomLevel.value = zoom
+    loadTextPoints(true, zoom > 3)
   });
 
   const selectInteraction = new Select({
