@@ -1,5 +1,10 @@
 <template>
-  <div class="zmd-sidebar-collapse-arrows">
+  <div
+    class="zmd-sidebar-collapse-arrows"
+    :style="{
+      zIndex: isOpen ? 53 : 2,
+    }"
+  >
     <Transition
       @enter="onEnter"
       @leave="onLeave"
