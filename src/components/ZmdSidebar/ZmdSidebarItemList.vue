@@ -10,30 +10,16 @@
       <template #title> 收集品 </template>
       <template #subtitle> COLLECTION </template>
       <div class="objecg-list">
-        <ZmdSidebarObject v-for="k in entityInfo" :name="k.name" :value="k.count" v-model="k.show" @change="refresh">
-          <img :src="`/assets/${k.point}.png`">
+        <ZmdSidebarObject
+          v-for="k in entityInfo"
+          :name="k.name"
+          :value="k.count"
+          v-model="k.show"
+          @change="refresh"
+        >
+          <img :src="`/assets/${k.point}.png`" />
         </ZmdSidebarObject>
       </div>
-    </ZmdSidebarItem>
-    <ZmdSidebarItem :open="props.open">
-      <template #title> 矿物 </template>
-      <template #subtitle> MINERAL </template>
-    </ZmdSidebarItem>
-    <ZmdSidebarItem :open="props.open">
-      <template #title> 矿物 </template>
-      <template #subtitle> MINERAL </template>
-    </ZmdSidebarItem>
-    <ZmdSidebarItem :open="props.open">
-      <template #title> 矿物 </template>
-      <template #subtitle> MINERAL </template>
-    </ZmdSidebarItem>
-    <ZmdSidebarItem :open="props.open">
-      <template #title> 矿物 </template>
-      <template #subtitle> MINERAL </template>
-    </ZmdSidebarItem>
-    <ZmdSidebarItem :open="props.open">
-      <template #title> 矿物 </template>
-      <template #subtitle> MINERAL </template>
     </ZmdSidebarItem>
   </div>
 </template>

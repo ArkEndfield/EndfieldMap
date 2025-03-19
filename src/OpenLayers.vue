@@ -203,35 +203,163 @@ const entity = ref<entityData>({
 
 let overlay: Overlay;
 let currentPosition: number[] | undefined;
+let isPopupAnimating = false; // 添加标志位跟踪动画状态
 const closeToast = () => {
   isPopupVisible.value = false;
   showVideoInfo.value = false; // 重置显示状态
   currentPosition = undefined;
 };
 
+// 添加一个函数用于处理弹出层的关闭和重新打开
+const closeAndReopenPopup = async (data: entityData, newPosition: number[]) => {
+  // 关闭当前弹出层
+  isPopupVisible.value = false;
+
+  // 等待关闭动画完成 (大约300ms)
+  await new Promise(resolve => setTimeout(resolve, 350));
+
+  // 更新实体数据
+  entity.value = data;
+  showVideoInfo.value = false;
+
+  // 保存新位置
+  currentPosition = [...newPosition];
+
+  // 设置弹出层位置
+  overlay.setPosition(newPosition);
+
+  // 调整地图中心位置，然后显示弹出层
+  await adjustMapForPopup(map, newPosition, () => {
+    isPopupVisible.value = true;
+  });
+};
+
 let map: Map; // 全局存储地图实例，方便后续访问
+
+// 将 adjustMapForPopup 函数移到这里，使其在整个组件中可用
+async function adjustMapForPopup(
+  map: Map,
+  position: number[],
+  callback?: () => void
+) {
+  const view = map.getView();
+  const mapSize = map.getSize();
+  const popupWidth = 300; // 像素
+  if (!mapSize || !popupContainer.value) {
+    if (callback) callback();
+    return;
+  }
+
+  // 设置标志位，避免同时触发多次调整
+  isPopupAnimating = true;
+
+  // 获取地图容器的边界
+  const mapRect = map.getTargetElement().getBoundingClientRect();
+
+  // 增加弹窗的估计高度和宽度，确保有足够空间
+  const popupHeight = 320; // 像素
+  const safeMargin = 60; // 安全边距
+
+  // 将点位置转换为屏幕像素坐标
+  const pixel = map.getPixelFromCoordinate(position);
+  if (!pixel) {
+    if (callback) callback();
+    return;
+  }
+
+  // 估计弹窗在屏幕上的位置
+  const popupTop = pixel[1] - popupHeight - 15; // 顶部额外安全空间
+  const popupBottom = pixel[1] + 35; // 底部箭头高度估算
+  const popupLeft = pixel[0] - popupWidth / 2;
+  const popupRight = pixel[0] + popupWidth / 2;
+
+  const viewportWidth = mapRect.width;
+  const viewportHeight = mapRect.height;
+
+  let needToMove = false;
+  let panX = 0;
+  let panY = 0;
+
+  // 顶部检查 - 使用更大的安全距离
+  if (popupTop < safeMargin) {
+    needToMove = true;
+    panY = safeMargin - popupTop;
+  }
+
+  // 底部检查
+  if (popupBottom > viewportHeight - safeMargin) {
+    needToMove = true;
+    panY = viewportHeight - safeMargin - popupBottom;
+  }
+
+  // 左侧检查 - 使用更大的安全距离
+  if (popupLeft < safeMargin) {
+    needToMove = true;
+    panX = safeMargin - popupLeft;
+  }
+
+  // 右侧检查
+  if (popupRight > viewportWidth - safeMargin) {
+    needToMove = true;
+    panX = viewportWidth - safeMargin - popupRight;
+  }
+
+  if (needToMove) {
+    const resolution = view.getResolution() || 1;
+
+    // 添加额外偏移以确保弹窗完全可见
+    const extraOffsetY = panY !== 0 ? Math.sign(panY) * 30 : 0;
+    const extraOffsetX = panX !== 0 ? Math.sign(panX) * 30 : 0;
+    const currentCenter = view.getCenter();
+
+    // 添加检查确保currentCenter不为undefined
+    if (!currentCenter) {
+      isPopupAnimating = false; // 重置标志位
+      if (callback) callback();
+      return;
+    }
+
+    const newCenter = [
+      currentCenter[0] - (panX + extraOffsetX) * resolution,
+      currentCenter[1] + (panY + extraOffsetY) * resolution,
+    ];
+
+    // 使用动画，完成后调用回调
+    await new Promise<void>(resolve => {
+      view.animate(
+        {
+          center: newCenter,
+          duration: 300,
+        },
+        () => {
+          // 动画完成后使用requestAnimationFrame，确保地图渲染完成
+          requestAnimationFrame(() => {
+            isPopupAnimating = false; // 重置标志位
+            resolve();
+          });
+        }
+      );
+    });
+
+    if (callback) callback();
+  } else {
+    // 如果不需要移动地图，直接重置标志位并调用回调
+    isPopupAnimating = false;
+    if (callback) callback();
+  }
+}
 
 // 优化的toggleVideoInfo函数
 const toggleVideoInfo = (show: boolean) => {
   showVideoInfo.value = show;
 
-  // 切换内容后立即获取当前位置并标记需要调整
-  if (currentPosition) {
-    // 在下一个渲染周期执行，确保DOM已更新
-    requestAnimationFrame(() => {
-      // 再次延迟以确保过渡动画已开始
-      setTimeout(() => {
-        if (isPopupVisible.value) {
-          // 确保调用完成时弹窗可见
-          adjustPopupPosition(true); // 传入true表示强制调整
-        }
-      }, 10);
-    });
-  }
+  // 切换内容后不立即调整位置，让过渡动画完成后再调整
+  // 内容切换的位置调整将通过onTransitionEnd函数来处理
 };
 
 // 添加动画效果函数
 async function onEnterPopup(el: Element, onComplete: () => void) {
+  isPopupAnimating = true; // 标记动画开始
   el.setAttribute('style', 'transform: scaleY(0.5); opacity: 0;');
   await animate(
     el,
@@ -241,10 +369,18 @@ async function onEnterPopup(el: Element, onComplete: () => void) {
     },
     { duration: 0.4, type: spring, bounce: 0.25 }
   );
+  isPopupAnimating = false; // 标记动画结束
+
+  // 动画完成后才调整位置
+  if (isPopupVisible.value && currentPosition) {
+    adjustPopupPosition(true);
+  }
+
   onComplete();
 }
 
 async function onLeavePopup(el: Element, onComplete: () => void) {
+  isPopupAnimating = true; // 标记动画开始
   await animate(
     el,
     {
@@ -253,6 +389,7 @@ async function onLeavePopup(el: Element, onComplete: () => void) {
     },
     { duration: 0.3, type: spring, bounce: 0.25 }
   );
+  isPopupAnimating = false; // 标记动画结束
   onComplete();
 }
 
@@ -263,7 +400,8 @@ function onTransitionEnd(event: TransitionEvent) {
     event.propertyName === 'transform' &&
     event.target &&
     (event.target as HTMLElement).classList.contains('popup-slider') &&
-    isPopupVisible.value
+    isPopupVisible.value &&
+    !isPopupAnimating // 确保不在主动画过程中
   ) {
     // console.log('Transition ended, adjusting position');
     adjustPopupPosition(true); // 传入true表示强制调整
@@ -272,7 +410,8 @@ function onTransitionEnd(event: TransitionEvent) {
 
 // 改进的调整弹窗位置函数 - 用于在内容变化后重新检查位置
 function adjustPopupPosition(forceAdjust = false) {
-  if (!currentPosition || !popupContainer.value || !map) return;
+  if (!currentPosition || !popupContainer.value || !map || isPopupAnimating)
+    return;
 
   // 获取当前弹窗的实际尺寸
   const popupRect = popupContainer.value.getBoundingClientRect();
@@ -401,8 +540,10 @@ onMounted(async () => {
           tileLoadFunction: tileLoad,
         }),
       }),
+      areaNameLayer,
       new VectorLayer({
-        source: source
+        source: source,
+        zIndex: 10,
       }),
     ],
     view: new View({
@@ -414,7 +555,7 @@ onMounted(async () => {
       rotation: 0,
       // extent: [-100, 0, 325, 344],
       // constrainResolution: true,
-      enableRotation: false
+      enableRotation: false,
     }),
     interactions: interactionDefaults({
       altShiftDragRotate: false,
@@ -426,8 +567,8 @@ onMounted(async () => {
 
   map.getView().on('change:resolution', function () {
     const zoom = map.getView().getZoom() || 0;
-    zoomLevel.value = zoom
-    loadTextPoints(true, zoom > 3)
+    zoomLevel.value = zoom;
+    loadTextPoints(true, zoom > 3);
   });
 
   const selectInteraction = new Select({
@@ -435,7 +576,6 @@ onMounted(async () => {
     style: null,
   });
   map.addInteraction(selectInteraction);
-  map.addLayer(areaNameLayer);
   map.on('click', function (event) {
     console.log(event.coordinate);
   });
@@ -452,26 +592,9 @@ onMounted(async () => {
         newPosition[1] !== currentPosition[1];
 
       if (positionChanged) {
-        // 如果是新位置，先隐藏弹出层
         if (isPopupVisible.value) {
-          isPopupVisible.value = false;
-          // 使用setTimeout确保DOM更新和动画完成
-          setTimeout(() => {
-            entity.value = data;
-            showVideoInfo.value = false;
-
-            // 保存位置
-            currentPosition = [...newPosition];
-
-            // 先设置弹窗位置，但不显示
-            overlay.setPosition(newPosition);
-
-            // 预先调整地图中心
-            adjustMapForPopup(map, newPosition, () => {
-              // 动画完成后才显示弹窗
-              isPopupVisible.value = true;
-            });
-          }, 300);
+          // 使用新函数处理弹出层关闭和重新打开
+          await closeAndReopenPopup(data, newPosition);
         } else {
           // 首次显示
           entity.value = data;
@@ -522,111 +645,6 @@ onMounted(async () => {
       adjustPopupPosition();
     }
   });
-
-  // 重写调整地图位置的函数
-  async function adjustMapForPopup(
-    map: Map,
-    position: number[],
-    callback?: () => void
-  ) {
-    const view = map.getView();
-    const mapSize = map.getSize();
-    const popupWidth = 300; // 像素
-    if (!mapSize || !popupContainer.value) {
-      if (callback) callback();
-      return;
-    }
-
-    // 获取地图容器的边界
-    const mapRect = map.getTargetElement().getBoundingClientRect();
-
-    // 增加弹窗的估计高度和宽度，确保有足够空间
-    const popupHeight = 320; // 像素
-    const safeMargin = 60; // 安全边距
-
-    // 将点位置转换为屏幕像素坐标
-    const pixel = map.getPixelFromCoordinate(position);
-    if (!pixel) {
-      if (callback) callback();
-      return;
-    }
-
-    // 估计弹窗在屏幕上的位置
-    const popupTop = pixel[1] - popupHeight - 15; // 顶部额外安全空间
-    const popupBottom = pixel[1] + 35; // 底部箭头高度估算
-    const popupLeft = pixel[0] - popupWidth / 2;
-    const popupRight = pixel[0] + popupWidth / 2;
-
-    const viewportWidth = mapRect.width;
-    const viewportHeight = mapRect.height;
-
-    let needToMove = false;
-    let panX = 0;
-    let panY = 0;
-
-    // 顶部检查 - 使用更大的安全距离
-    if (popupTop < safeMargin) {
-      needToMove = true;
-      panY = safeMargin - popupTop;
-    }
-
-    // 底部检查
-    if (popupBottom > viewportHeight - safeMargin) {
-      needToMove = true;
-      panY = viewportHeight - safeMargin - popupBottom;
-    }
-
-    // 左侧检查 - 使用更大的安全距离
-    if (popupLeft < safeMargin) {
-      needToMove = true;
-      panX = safeMargin - popupLeft;
-    }
-
-    // 右侧检查
-    if (popupRight > viewportWidth - safeMargin) {
-      needToMove = true;
-      panX = viewportWidth - safeMargin - popupRight;
-    }
-
-    if (needToMove) {
-      const resolution = view.getResolution() || 1;
-
-      // 添加额外偏移以确保弹窗完全可见
-      const extraOffsetY = panY !== 0 ? Math.sign(panY) * 30 : 0;
-      const extraOffsetX = panX !== 0 ? Math.sign(panX) * 30 : 0;
-      const currentCenter = view.getCenter();
-
-      // 添加检查确保currentCenter不为undefined
-      if (!currentCenter) {
-        if (callback) callback();
-        return;
-      }
-
-      const newCenter = [
-        currentCenter[0] - (panX + extraOffsetX) * resolution,
-        currentCenter[1] + (panY + extraOffsetY) * resolution,
-      ];
-
-      // 使用动画，完成后调用回调
-      await new Promise<void>(resolve => {
-        view.animate(
-          {
-            center: newCenter,
-            duration: 300,
-          },
-          () => {
-            // 动画完成后稍微延迟，确保地图渲染完成
-            setTimeout(() => resolve(), 50);
-          }
-        );
-      });
-
-      if (callback) callback();
-    } else {
-      // 如果不需要移动地图，直接调用回调
-      if (callback) callback();
-    }
-  }
 });
 
 // 在script标签开始处添加类型定义
@@ -653,6 +671,7 @@ declare global {
     $clip: polygon(0% 0%, calc(100% - $height) 0%, 100% 100%, 0% 100%);
     -webkit-clip-path: $clip;
     clip-path: $clip;
+    margin-bottom: -0.01em;
   }
 
   .popup-content-container {

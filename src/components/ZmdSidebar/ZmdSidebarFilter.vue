@@ -13,14 +13,14 @@
     </ZmdSidebarSwitch>
 
     <div class="zmd-sidebar-operate-buttons">
-      <ZmdSidebarOperateButton>
+      <ZmdSidebarOperateButton @click="handleClear">
         <template #icon>
           <ZmdSidebarDeleteIcon />
         </template>
         {{ $t('delete') }}
         <template #subtitle>DELETE</template>
       </ZmdSidebarOperateButton>
-      <ZmdSidebarOperateButton>
+      <ZmdSidebarOperateButton @click="handleSelectAll">
         <template #icon>
           <ZmdSidebarCheckboxCheckedIcon />
         </template>
@@ -65,6 +65,8 @@ import { ref } from 'vue';
 import { animate, spring } from 'motion';
 import { nextTick } from 'vue';
 import { onMounted } from 'vue';
+import { selectAll, clear } from '@/data/entity';
+
 enum FilterCollected {
   All,
   Collected,
@@ -79,6 +81,16 @@ const setFilterCollected = (collected: FilterCollected) => {
 const filterRef = ref<HTMLElement>();
 
 const isInitialRender = ref(true);
+
+// 处理全选按钮点击
+const handleSelectAll = () => {
+  selectAll();
+};
+
+// 处理清除按钮点击
+const handleClear = () => {
+  clear();
+};
 
 onMounted(async () => {
   if (isInitialRender.value) {

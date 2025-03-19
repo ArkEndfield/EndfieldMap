@@ -50,6 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['toggle']);
 const isOpen = ref(props.defaultOpen);
+
 async function onEnter(el: Element, onComplete: () => void) {
   el.setAttribute('style', 'height: 0px; overflow: hidden;');
   const height = el.scrollHeight;
@@ -77,6 +78,7 @@ async function onLeave(el: Element, onComplete: () => void) {
   );
   onComplete();
 }
+
 const toggleContent = () => {
   isOpen.value = !isOpen.value;
   emit('toggle', isOpen.value);

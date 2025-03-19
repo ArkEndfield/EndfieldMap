@@ -46,6 +46,8 @@
             <button
               @click="handleCancel"
               v-if="!props.hideCancel"
+              :disabled="isProcessing"
+              :class="{ 'is-disabled': isProcessing }"
             >
               <slot name="cancel">
                 <div class="zmd-alert-close">
@@ -62,6 +64,8 @@
             <button
               @click="handleConfirm"
               ref="confirmButtonRef"
+              :disabled="isProcessing"
+              :class="{ 'is-disabled': isProcessing }"
             >
               <slot name="confirm">
                 <Transition>
@@ -75,7 +79,11 @@
                       class="icon"
                       v-if="props.showIcon"
                     >
-                      <ZmdAlertTickIcon />
+                      <div
+                        v-if="isProcessing"
+                        class="loading-spinner"
+                      ></div>
+                      <ZmdAlertTickIcon v-else />
                     </div>
                   </div>
                 </Transition>
@@ -129,6 +137,8 @@ const props = withDefaults(defineProps<ZmdAlertProps>(), {
 const emit = defineEmits(['update:open']);
 
 const backdropVisible = ref(false);
+const isProcessing = ref(false);
+
 watch(
   () => props.open,
   newVal => {
@@ -138,14 +148,20 @@ watch(
 );
 
 const handleDismiss = () => {
-  if (props.dismissible) {
+  if (props.dismissible && !isProcessing.value) {
     const result = props.onDismiss();
     if (result instanceof Promise) {
-      result.then(res => {
-        if (res !== false) {
-          handleClose();
-        }
-      });
+      isProcessing.value = true;
+      result
+        .then(res => {
+          isProcessing.value = false;
+          if (res !== false) {
+            handleClose();
+          }
+        })
+        .catch(() => {
+          isProcessing.value = false;
+        });
     } else if (result !== false) {
       handleClose();
     }
@@ -153,39 +169,63 @@ const handleDismiss = () => {
 };
 
 const handleClose = () => {
+  if (isProcessing.value) return;
+
   const result = props.onClose();
   if (result instanceof Promise) {
-    result.then(res => {
-      if (res !== false) {
-        emit('update:open', false);
-      }
-    });
+    isProcessing.value = true;
+    result
+      .then(res => {
+        isProcessing.value = false;
+        if (res !== false) {
+          emit('update:open', false);
+        }
+      })
+      .catch(() => {
+        isProcessing.value = false;
+      });
   } else if (result !== false) {
     emit('update:open', false);
   }
 };
 
 const handleCancel = () => {
+  if (isProcessing.value) return;
+
   const result = props?.onCancel?.();
   if (result instanceof Promise) {
-    result.then(res => {
-      if (res !== false) {
-        handleClose();
-      }
-    });
+    isProcessing.value = true;
+    result
+      .then(res => {
+        isProcessing.value = false;
+        if (res !== false) {
+          handleClose();
+        }
+      })
+      .catch(() => {
+        isProcessing.value = false;
+      });
   } else if (result !== false) {
     handleClose();
   }
 };
 
 const handleConfirm = () => {
+  if (isProcessing.value) return;
+
   const result = props?.onConfirm?.();
   if (result instanceof Promise) {
-    result.then(res => {
-      if (res !== false) {
-        handleClose();
-      }
-    });
+    isProcessing.value = true;
+    result
+      .then(res => {
+        isProcessing.value = false;
+        if (res !== false) {
+          handleClose();
+        }
+      })
+      .catch(() => {
+        isProcessing.value = false;
+      });
   } else if (result !== false) {
     handleClose();
   }
@@ -426,6 +466,22 @@ $default-border-color: #a0a2a3;
             display: flex;
             align-items: center;
             justify-content: center;
+            .loading-spinner {
+              width: 1em;
+              height: 1em;
+              border: 2px solid rgb(255, 187, 0);
+              border-top: 2px solid #fff;
+              border-radius: 50%;
+              animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(360deg);
+              }
+            }
           }
         }
         .zmd-alert-close {
@@ -465,6 +521,11 @@ $default-border-color: #a0a2a3;
               font-size: 1.3em;
             }
           }
+        }
+        &.is-disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          pointer-events: none;
         }
       }
     }

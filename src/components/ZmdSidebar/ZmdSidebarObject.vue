@@ -24,26 +24,26 @@ import { ref, computed } from 'vue';
 interface Props {
   name?: string;
   value?: string | number;
-  modelValue?: boolean;
   checked?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   name: '未命名',
   value: 0,
-  modelValue: undefined,
   checked: undefined,
 });
 
-const emit = defineEmits(['update:modelValue', 'change']);
+const modelValue = defineModel<boolean>({ default: false });
+
+const emit = defineEmits(['change']);
 
 const internalActive = ref(false);
 
 const isActive = computed(() => {
   if (props.checked !== undefined) {
     return props.checked;
-  } else if (props.modelValue !== undefined) {
-    return props.modelValue;
+  } else if (modelValue.value !== undefined) {
+    return modelValue.value;
   } else {
     return internalActive.value;
   }
@@ -57,8 +57,8 @@ const toggle = () => {
     return;
   }
 
-  if (props.modelValue !== undefined) {
-    emit('update:modelValue', newValue);
+  if (modelValue.value !== undefined) {
+    modelValue.value = newValue;
   } else {
     internalActive.value = newValue;
   }

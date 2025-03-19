@@ -1,31 +1,97 @@
-import { xyz2crd } from "@/utils/common";
-import { Feature } from "ol";
-import Point from "ol/geom/Point";
-import VectorSource from "ol/source/Vector";
-import { Icon, Style } from "ol/style";
-import { reactive } from "vue";
+import { xyz2crd } from '@/utils/common';
+import { Feature } from 'ol';
+import Point from 'ol/geom/Point';
+import VectorSource from 'ol/source/Vector';
+import { Icon, Style } from 'ol/style';
+import { computed, reactive } from 'vue';
 
 // @ts-ignore
 import points from '../assets/output.json';
 
 // 菜单信息
 export const entityInfo = reactive({
-    int_trchest_common: { name: '储藏箱I', point: 'int_trchest_common', show: true, count: 1 },
-    int_trchest_common_normal: { name: '储藏箱II', point: 'int_trchest_common', show: true, count: 1 },
-    int_trchest_common_high: { name: '储藏箱III', point: 'int_trchest_common', show: true, count: 1 },
-    int_trchest_lock: { name: '储藏箱IV', point: 'int_trchest_common', show: true, count: 1 },
-    int_collection_common: { name: '采集', point: 'default', show: true, count: 1  },
-    // int_module_chasingrabbit: { name: '追兔头', point: 'default', show: true },
-    int_campfire_v2: { name: '传送点', point: 'int_campfire_v2', show: true, count: 1 },
-    // int_narrative_common: { name: '纸条', point: 'item_read_note', show: true, scale: 0.15 },
-    // int_narrative_common_empty: { name: '字幕', show: true },
-    int_blackbox_entry: { name: '普通修理', point: 'icon_map_blackbox', show: true, scale: 0.7, count: 1 },
-    int_blackbox_entry_hard: { name: '突袭修理', point: 'icon_map_blackbox', show: true, scale: 0.7, count: 1 },
-    int_dungeon_entry_challenge: { name: '挑战副本', point: 'icon_map_dungeon', show: true, scale: 0.7, count: 1 },
-    int_dungeon_entry_resource: { name: '材料副本', point: 'icon_map_dungeon', show: true, scale: 0.7, count: 1 },
-    int_collection_coin: { name: '醚质', point: 'item_colllection_ether', show: true, scale: 0.2, count: 1 },
-    int_collection_coin_puzzle: { name: '突袭醚质', point: 'item_colllection_ether', show: true, scale: 0.2, count: 1 },
-})
+  int_trchest_common: {
+    name: '储藏箱I',
+    point: 'int_trchest_common',
+    show: true,
+    count: 1,
+  },
+  int_trchest_common_normal: {
+    name: '储藏箱II',
+    point: 'int_trchest_common',
+    show: true,
+    count: 1,
+  },
+  int_trchest_common_high: {
+    name: '储藏箱III',
+    point: 'int_trchest_common',
+    show: true,
+    count: 1,
+  },
+  int_trchest_lock: {
+    name: '储藏箱IV',
+    point: 'int_trchest_common',
+    show: true,
+    count: 1,
+  },
+  int_collection_common: {
+    name: '采集',
+    point: 'default',
+    show: true,
+    count: 1,
+  },
+  // int_module_chasingrabbit: { name: '追兔头', point: 'default', show: true },
+  int_campfire_v2: {
+    name: '传送点',
+    point: 'int_campfire_v2',
+    show: true,
+    count: 1,
+  },
+  // int_narrative_common: { name: '纸条', point: 'item_read_note', show: true, scale: 0.15 },
+  // int_narrative_common_empty: { name: '字幕', show: true },
+  int_blackbox_entry: {
+    name: '普通修理',
+    point: 'icon_map_blackbox',
+    show: true,
+    scale: 0.7,
+    count: 1,
+  },
+  int_blackbox_entry_hard: {
+    name: '突袭修理',
+    point: 'icon_map_blackbox',
+    show: true,
+    scale: 0.7,
+    count: 1,
+  },
+  int_dungeon_entry_challenge: {
+    name: '挑战副本',
+    point: 'icon_map_dungeon',
+    show: true,
+    scale: 0.7,
+    count: 1,
+  },
+  int_dungeon_entry_resource: {
+    name: '材料副本',
+    point: 'icon_map_dungeon',
+    show: true,
+    scale: 0.7,
+    count: 1,
+  },
+  int_collection_coin: {
+    name: '醚质',
+    point: 'item_colllection_ether',
+    show: true,
+    scale: 0.2,
+    count: 1,
+  },
+  int_collection_coin_puzzle: {
+    name: '突袭醚质',
+    point: 'item_colllection_ether',
+    show: true,
+    scale: 0.2,
+    count: 1,
+  },
+});
 // export const entityInfo = {
 //     int_trchest_common_high: { name: '玛恩纳储藏箱', point: 'int_trchest_common', pass: false },
 //     int_trchest_common: { name: '储藏箱', point: 'int_trchest_common', pass: false},
@@ -47,10 +113,13 @@ export const entityInfo = reactive({
 let index = 1;
 const features: Feature<Point>[] = [];
 const itemMap: any = {};
-const entityGroup: Record<string, {
-    name: string
-    points: Feature<Point>[]
-}> = {}
+const entityGroup: Record<
+  string,
+  {
+    name: string;
+    points: Feature<Point>[];
+  }
+> = {};
 
 export const marker = (entry: entityData) => {
   entry.seq = index++;
@@ -73,26 +142,26 @@ export const marker = (entry: entityData) => {
   );
   if (!entityGroup[entry.entityDataIdKey]?.points?.length) {
     entityGroup[entry.entityDataIdKey] = {
-        name: info.name,
-        points: [feature]
-    }
+      name: info.name,
+      points: [feature],
+    };
   } else {
-    entityGroup[entry.entityDataIdKey].points.push(feature)
-    entityInfo[entry.entityDataIdKey].count += 1
+    entityGroup[entry.entityDataIdKey].points.push(feature);
+    entityInfo[entry.entityDataIdKey].count += 1;
   }
   return feature;
 };
 
 export interface entityData {
-    sceneId: string,
-    seq: number,
-    position: {
-        x: number,
-        y: number,
-        z: number
-    },
-    entityDataIdKey: string,
-    properties?: any[]
+  sceneId: string;
+  seq: number;
+  position: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  entityDataIdKey: string;
+  properties?: any[];
 }
 
 for (const m in points) {
@@ -108,18 +177,41 @@ console.log('醚质总数:', features.length, itemMap);
 
 export const source = new VectorSource({
   features: features,
-})
+});
 
 export const refresh = () => {
-    source.clear(true)
-    // 检查 entityInfo 关闭情况
-    const list = Object.keys(entityInfo).filter(key => entityInfo[key].show);
-    const newPoints = list.reduce((acc: Feature<Point>[], key) => {
-        if (entityGroup[key]?.points) {
-            acc.push(...entityGroup[key].points);
-        }
-        return acc;
-    }, []);
-    console.log(newPoints)
-    source.addFeatures(newPoints)
-}
+  source.clear(true);
+  // 检查 entityInfo 关闭情况
+  const list = Object.keys(entityInfo).filter(key => entityInfo[key].show);
+  const newPoints = list.reduce((acc: Feature<Point>[], key) => {
+    if (entityGroup[key]?.points) {
+      acc.push(...entityGroup[key].points);
+    }
+    return acc;
+  }, []);
+  console.log(newPoints);
+  source.addFeatures(newPoints);
+};
+
+export const select = (key: string) => {
+  entityInfo[key].show = !entityInfo[key].show;
+  refresh();
+};
+
+export const selectAll = () => {
+  for (const key in entityInfo) {
+    entityInfo[key].show = true;
+  }
+  refresh();
+};
+
+export const clear = () => {
+  for (const key in entityInfo) {
+    entityInfo[key].show = false;
+  }
+  refresh();
+};
+
+export const isSelectAll = computed(() => {
+  return Object.keys(entityInfo).every(key => entityInfo[key].show);
+});
