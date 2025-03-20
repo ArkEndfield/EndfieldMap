@@ -2,6 +2,8 @@
   "delete": "刪除",
   "select": "選擇",
   "select_all": "全選",
+  "unselect_all": "取消全選",
+  "clear_select": "清空選擇",
   "cancel": "取消",
   "confirm": "確認",
   "close": "關閉",

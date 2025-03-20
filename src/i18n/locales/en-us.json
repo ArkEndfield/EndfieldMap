@@ -2,6 +2,8 @@
   "delete": "Delete",
   "select": "Select",
   "select_all": "Select All",
+  "unselect_all": "Unselect All",
+  "clear_select": "Clear Select",
   "cancel": "Cancel",
   "confirm": "Confirm",
   "close": "Close",

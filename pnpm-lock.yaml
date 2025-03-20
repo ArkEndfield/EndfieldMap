@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@tailwindcss/vite':
         specifier: ^4.0.5
-        version: 4.0.5(vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1))
+        version: 4.0.5(vite@6.1.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1))
       '@types/leaflet':
         specifier: ^1.9.16
         version: 1.9.16
@@ -45,9 +45,12 @@ importers:
         specifier: '10'
         version: 10.0.6(vue@3.5.13(typescript@5.7.3))
     devDependencies:
+      '@types/node':
+        specifier: ^22.13.10
+        version: 22.13.10
       '@vitejs/plugin-vue':
         specifier: ^5.2.1
-        version: 5.2.1(vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1))(vue@3.5.13(typescript@5.7.3))
+        version: 5.2.1(vite@6.1.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1))(vue@3.5.13(typescript@5.7.3))
       '@vue/tsconfig':
         specifier: ^0.7.0
         version: 0.7.0(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
@@ -59,7 +62,7 @@ importers:
         version: 5.7.3
       vite:
         specifier: ^6.1.0
-        version: 6.1.0(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1)
+        version: 6.1.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1)
       vue-tsc:
         specifier: ^2.2.0
         version: 2.2.0(typescript@5.7.3)
@@ -538,6 +541,9 @@ packages:
 
   '@types/leaflet@1.9.16':
     resolution: {integrity: sha512-wzZoyySUxkgMZ0ihJ7IaUIblG8Rdc8AbbZKLneyn+QjYsj5q1QU7TEKYqwTr10BGSzY5LI7tJk9Ifo+mEjdFRw==}
+
+  '@types/node@22.13.10':
+    resolution: {integrity: sha512-I6LPUvlRH+O6VRUqYOcMudhaIdUVWfsjnZavnsraHvpBwaEyMN29ry+0UVJhImYL16xsscu0aske3yA+uPOWfw==}
 
   '@types/rbush@4.0.0':
     resolution: {integrity: sha512-+N+2H39P8X+Hy1I5mC6awlTX54k3FhiUmvt7HWzGJZvF+syUAAxP/stwppS8JE84YHqFgRMv6fCy31202CMFxQ==}
@@ -1033,6 +1039,9 @@ packages:
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
 
+  undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
+
   unimport@3.14.6:
     resolution: {integrity: sha512-CYvbDaTT04Rh8bmD8jz3WPmHYZRG/NnvYVzwD6V1YAlvvKROlAeNDUBhkBGzNav2RKaeuXvlWYaa1V4Lfi/O0g==}
 
@@ -1443,13 +1452,13 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.0.5
       '@tailwindcss/oxide-win32-x64-msvc': 4.0.5
 
-  '@tailwindcss/vite@4.0.5(vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1))':
+  '@tailwindcss/vite@4.0.5(vite@6.1.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1))':
     dependencies:
       '@tailwindcss/node': 4.0.5
       '@tailwindcss/oxide': 4.0.5
       lightningcss: 1.29.1
       tailwindcss: 4.0.5
-      vite: 6.1.0(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1)
+      vite: 6.1.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1)
 
   '@types/estree@1.0.6': {}
 
@@ -1459,11 +1468,15 @@ snapshots:
     dependencies:
       '@types/geojson': 7946.0.16
 
+  '@types/node@22.13.10':
+    dependencies:
+      undici-types: 6.20.0
+
   '@types/rbush@4.0.0': {}
 
-  '@vitejs/plugin-vue@5.2.1(vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1))(vue@3.5.13(typescript@5.7.3))':
+  '@vitejs/plugin-vue@5.2.1(vite@6.1.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1))(vue@3.5.13(typescript@5.7.3))':
     dependencies:
-      vite: 6.1.0(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1)
+      vite: 6.1.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1)
       vue: 3.5.13(typescript@5.7.3)
 
   '@volar/language-core@2.4.11':
@@ -1956,6 +1969,8 @@ snapshots:
 
   ufo@1.5.4: {}
 
+  undici-types@6.20.0: {}
+
   unimport@3.14.6(rollup@4.34.6):
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.6)
@@ -2016,12 +2031,13 @@ snapshots:
       acorn: 8.14.0
       webpack-virtual-modules: 0.6.2
 
-  vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1):
+  vite@6.1.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(sass@1.85.1):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.5.1
       rollup: 4.34.6
     optionalDependencies:
+      '@types/node': 22.13.10
       fsevents: 2.3.3
       jiti: 2.4.2
       lightningcss: 1.29.1

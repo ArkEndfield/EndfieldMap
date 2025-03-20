@@ -4,10 +4,15 @@ import tailwindcss from '@tailwindcss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
+import resourceLoadingPlugin from './vite-plugin-resource-loading';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    resourceLoadingPlugin({
+      simulateLoadingInDev: true,
+      minLoadingTime: 500, // 增加最小加载时间，确保过渡效果更平滑
+    }),
     tailwindcss(),
     AutoImport({
       imports: ['vue'],

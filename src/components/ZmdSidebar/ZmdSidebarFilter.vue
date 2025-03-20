@@ -17,15 +17,17 @@
         <template #icon>
           <ZmdSidebarDeleteIcon />
         </template>
-        {{ $t('delete') }}
-        <template #subtitle>DELETE</template>
+        {{ $t('clear_select') }}
+        <template #subtitle>CLEAR SELECT</template>
       </ZmdSidebarOperateButton>
       <ZmdSidebarOperateButton @click="handleSelectAll">
         <template #icon>
           <ZmdSidebarCheckboxCheckedIcon />
         </template>
-        {{ $t('select_all') }}
-        <template #subtitle>SELECT ALL</template>
+        {{ isSelectAll ? $t('unselect_all') : $t('select_all') }}
+        <template #subtitle>{{
+          isSelectAll ? 'UNSELECT ALL' : 'SELECT ALL'
+        }}</template>
       </ZmdSidebarOperateButton>
     </div>
 
@@ -65,7 +67,7 @@ import { ref } from 'vue';
 import { animate, spring } from 'motion';
 import { nextTick } from 'vue';
 import { onMounted } from 'vue';
-import { selectAll, clear } from '@/data/entity';
+import { selectAll, clear, isSelectAll } from '@/data/entity';
 
 enum FilterCollected {
   All,
@@ -84,7 +86,11 @@ const isInitialRender = ref(true);
 
 // 处理全选按钮点击
 const handleSelectAll = () => {
-  selectAll();
+  if (isSelectAll.value) {
+    clear();
+  } else {
+    selectAll();
+  }
 };
 
 // 处理清除按钮点击
