@@ -348,7 +348,7 @@ function resourceLoadingPlugin(
                     // 触发一个自定义事件通知应用加载完成
                     const appReadyEvent = new CustomEvent('app-loading-complete');
                     window.dispatchEvent(appReadyEvent);
-                  }, 350);
+                  }, 0);
                 });
               }
             }, delay + extraDelay);

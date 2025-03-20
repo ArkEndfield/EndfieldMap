@@ -18,14 +18,22 @@ const checkAppReady = () => {
   if (appRoot && appRoot.children && appRoot.children.length > 0) {
     // 使用RAF确保在合适的渲染时机执行加载完成通知
     const preloadResources = () => {
-      // 优先检查关键元素是否存在并可见
-      const mainContent =
-        appRoot.querySelector('.main-content') ||
-        appRoot.querySelector('main') ||
-        appRoot.querySelector('.container');
+      // 检查Vue应用是否已挂载和渲染内容
+      const hasAppContent =
+        appRoot &&
+        appRoot.children.length > 0 &&
+        appRoot.innerHTML.length > 300; // 增加内容长度阈值，确保有足够的内容已渲染
 
-      if (mainContent) {
-        // 主要内容已渲染，进行图片预加载检查
+      // 检查是否有有效内容
+      if (hasAppContent) {
+        // 主要内容已渲染，发送准备就绪事件
+        console.log('主要内容已渲染完成');
+        window.dispatchEvent(new CustomEvent('app-content-rendered'));
+
+        // 通知vite插件应用已加载完成
+        window.dispatchEvent(new CustomEvent('plugin-loading-complete'));
+
+        // 进行图片预加载检查
         checkImagesLoaded();
       } else {
         // 如果主要内容还没渲染完成，等待下一帧
@@ -45,9 +53,9 @@ const checkAppReady = () => {
         return;
       }
 
-      // 添加安全超时机制，使用requestAnimationFrame而不是setTimeout
+      // 添加安全超时机制
       let frameCount = 0;
-      const maxFrames = 60; // 约1秒(60帧)
+      const maxFrames = 30;
 
       const checkFrame = () => {
         if (loadedImages >= totalImages || frameCount >= maxFrames) {
@@ -77,16 +85,27 @@ const checkAppReady = () => {
 
     const notifyAppLoaded = () => {
       // 确保只通知一次
-      if (window.APP_LOADED && !window.APP_LOADED_CALLED) {
+      if (!window.APP_LOADED_CALLED) {
         window.APP_LOADED_CALLED = true;
+
+        // 发布应用已加载的事件
+        window.dispatchEvent(new CustomEvent('app-fully-loaded'));
+
         // 使用requestAnimationFrame确保在下一帧渲染时发出通知
         requestAnimationFrame(() => {
-          window.APP_LOADED?.();
+          if (typeof window.APP_LOADED === 'function') {
+            window.APP_LOADED();
+          }
           // 触发自定义事件
           window.dispatchEvent(new CustomEvent('app-content-ready'));
         });
       }
     };
+
+    // 监听插件发送的加载完成事件
+    window.addEventListener('plugin-loading-complete', () => {
+      notifyAppLoaded();
+    });
 
     // 开始预加载检查
     requestAnimationFrame(preloadResources);
