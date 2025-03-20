@@ -166,7 +166,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { Map, View } from 'ol';
-import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
+import { Tile as TileLayer } from 'ol/layer';
 import { cn } from '@/utils/tailwind';
 import { XYZ } from 'ol/source';
 import { Projection } from 'ol/proj';
@@ -175,7 +175,15 @@ import { click } from 'ol/events/condition';
 import Control from 'ol/control/Control';
 import Overlay from 'ol/Overlay';
 import { animate, spring } from 'motion';
-import { entityInfo, entityData, source } from './data/entity';
+import {
+  entityInfo,
+  entityData,
+  entityClusterLayers,
+  updateClusterDistance,
+  forceDisperseAtMaxZoom,
+  updateCurrentZoom,
+  refresh,
+} from './data/entity';
 import { areaNameLayer, loadTextPoints } from './data/locations';
 import { defaults as interactionDefaults } from 'ol/interaction';
 
@@ -541,14 +549,12 @@ onMounted(async () => {
         }),
       }),
       areaNameLayer,
-      new VectorLayer({
-        source: source,
-        zIndex: 10,
-      }),
+      // 使用散开的图层代替单一聚合图层
+      ...entityClusterLayers,
     ],
     view: new View({
       projection: simpleProjection,
-      center: [100, 152],
+      center: [100, 152], // 修复了多余的0
       zoom: 3,
       maxZoom: 5,
       minZoom: 1,
@@ -563,28 +569,87 @@ onMounted(async () => {
     }),
     overlays: [overlay],
     controls: [zoomControl],
+    // 添加renderBuffer以增加渲染边界,防止移动时标点消失
+    pixelRatio: 2, // 提高像素比以提升移动中的渲染质量
+  });
+
+  // 监听地图移动状态
+  let mapMoving = false;
+  map.on('movestart', () => {
+    mapMoving = true;
+  });
+
+  map.on('moveend', () => {
+    mapMoving = false;
+    // 确保移动结束后刷新标点
+    setTimeout(() => {
+      refresh();
+    }, 50);
+  });
+
+  // 监听地图渲染完成事件，确保图层正确添加
+  map.once('rendercomplete', () => {
+    // 刷新一次实体图层，确保显示状态正确
+    refresh();
   });
 
   map.getView().on('change:resolution', function () {
     const zoom = map.getView().getZoom() || 0;
     zoomLevel.value = zoom;
     loadTextPoints(true, zoom > 3);
+
+    // 更新聚合距离
+    updateClusterDistance(zoom);
+
+    // 更新当前缩放级别，这会触发图标大小的更新
+    updateCurrentZoom(zoom);
+
+    // 在最大缩放级别时强制禁用聚合
+    if (zoom >= 5) {
+      forceDisperseAtMaxZoom(zoom);
+    }
   });
 
   const selectInteraction = new Select({
     condition: click,
     style: null,
+    layers: () => true,
   });
+
   map.addInteraction(selectInteraction);
+
   map.on('click', function (event) {
     console.log(event.coordinate);
   });
+
   selectInteraction.on('select', async function (event) {
     const target = event.selected[0];
     if (target) {
-      const data = target.get('payload');
-      if (!data) return;
+      // 检查是否是聚合点
+      const features = target.get('features');
+      if (features && features.length > 1) {
+        // 处理聚合点击 - 放大地图或显示聚合列表
+        const extent = target.getGeometry()?.getExtent();
+        if (extent) {
+          // 放大到聚合范围
+          map.getView().fit(extent, {
+            duration: 500,
+            padding: [50, 50, 50, 50],
+            maxZoom: 5,
+          });
+        }
+        return;
+      }
 
+      // 获取单个点的数据
+      let data = target.get('payload');
+      // 如果是聚合中的单个点，需要从features中获取
+      if (features && features.length === 1) {
+        data = features[0].get('payload');
+      }
+
+      if (!data) return;
+      // ...原来的点击处理逻辑...
       const newPosition = event.mapBrowserEvent.coordinate;
       const positionChanged =
         !currentPosition ||
@@ -659,35 +724,36 @@ declare global {
 #map {
   background-image: url('/assets/map_bg.png');
 }
+
 .ol-popup {
   &.v-enter-from,
   &.v-leave-to {
     opacity: 0;
     transform: scaleY(0.5);
   }
+}
 
-  .top-bar {
-    $height: 1rem;
-    $clip: polygon(0% 0%, calc(100% - $height) 0%, 100% 100%, 0% 100%);
-    -webkit-clip-path: $clip;
-    clip-path: $clip;
-    margin-bottom: -0.01em;
-  }
+.top-bar {
+  $height: 1rem;
+  $clip: polygon(0% 0%, calc(100% - $height) 0%, 100% 100%, 0% 100%);
+  -webkit-clip-path: $clip;
+  clip-path: $clip;
+  margin-bottom: -0.01em;
+}
 
-  .popup-content-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-  }
+.popup-content-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
 
   .popup-slider {
     display: flex;
     width: 200%;
     transition: transform 0.3s ease-in-out;
+  }
 
-    &.slide-to-video {
-      transform: translateX(-50%);
-    }
+  .slide-to-video {
+    transform: translateX(-50%);
   }
 
   .popup-page {
@@ -728,5 +794,47 @@ input[type='range'] {
   &:focus {
     outline: none;
   }
+}
+
+/* 添加聚合点样式 */
+.cluster-point {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.cluster-point:hover {
+  transform: scale(1.1);
+}
+
+/* 为所有地图标点添加悬停放大效果 */
+.hover-point {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.hover-point:hover {
+  transform: scale(1.1);
+}
+
+/* 为集群容器添加悬停效果 */
+.cluster-container .ol-style-icon,
+.cluster-container .ol-style-circle {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.cluster-container .ol-style-icon:hover,
+.cluster-container .ol-style-circle:hover {
+  transform: scale(1.1);
+}
+
+/* 添加对单点图标的支持 */
+.ol-style-icon {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.ol-style-icon:hover {
+  transform: scale(1.1);
 }
 </style>
