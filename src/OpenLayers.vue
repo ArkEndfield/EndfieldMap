@@ -573,20 +573,6 @@ onMounted(async () => {
     pixelRatio: 2, // 提高像素比以提升移动中的渲染质量
   });
 
-  // 监听地图移动状态
-  let mapMoving = false;
-  map.on('movestart', () => {
-    mapMoving = true;
-  });
-
-  map.on('moveend', () => {
-    mapMoving = false;
-    // 确保移动结束后刷新标点
-    setTimeout(() => {
-      refresh();
-    }, 50);
-  });
-
   // 监听地图渲染完成事件，确保图层正确添加
   map.once('rendercomplete', () => {
     // 刷新一次实体图层，确保显示状态正确

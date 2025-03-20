@@ -7,17 +7,14 @@
     <div class="zmd-sidebar-title-arrow-start-part"></div>
     <div class="zmd-sidebar-title-arrow-middle-part"></div>
     <div class="zmd-sidebar-title-arrow-end-part">
-      <div
-        class="zmd-sidebar-open-arrow-bg-title"
-        v-if="!open"
-      >
-        UNFOLD
+      <div class="zmd-sidebar-open-arrow-bg-title">
+        {{ open ? 'FOLD' : 'UNFOLD' }}
       </div>
       <div
         class="zmd-sidebar-open-arrow-title"
-        v-if="!open"
+        :class="{ 'zmd-sidebar-open-arrow-title-open': open }"
       >
-        {{ $t('sidebar.unfold') }}
+        {{ open ? $t('sidebar.fold') : $t('sidebar.unfold') }}
       </div>
       <div class="zmd-sidebar-title-arrow-lines">
         <span></span>
@@ -207,6 +204,10 @@ $arrow-height: 5em;
     }
     .zmd-sidebar-open-arrow-title {
       z-index: 1;
+      &.zmd-sidebar-open-arrow-title-open {
+        color: #fdfb72;
+        margin-right: -1em;
+      }
       @media screen and (max-width: zmd.$phone-width) {
         margin-right: -1em;
       }
