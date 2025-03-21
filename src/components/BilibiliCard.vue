@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center items-center">
     <div
-      class="w-[300px] bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
+      class="w-[300px] bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
       @click="navigateToUserPage"
     >
       <div class="relative bg-[#fb7299] h-[70px]">

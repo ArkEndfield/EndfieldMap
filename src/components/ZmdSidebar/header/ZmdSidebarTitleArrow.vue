@@ -112,6 +112,7 @@ $arrow-height: 5em;
   transition: filter 0.3s;
   position: relative;
   overflow: visible;
+  filter: drop-shadow(0.1em 0.1em 0em rgba(255, 255, 255, 0.2));
   --arrow-font-size: 1em;
   @media screen and (max-width: zmd.$phone-width) {
     --arrow-font-size: 0.8em;
@@ -123,8 +124,6 @@ $arrow-height: 5em;
       .zmd-sidebar-title-arrow-arrow-part:hover,
       .zmd-sidebar-title-arrow-arrow-line:hover
     ) {
-    cursor: pointer;
-    filter: drop-shadow(0.1em 0.1em 0em rgba(255, 255, 255, 0.2));
     .zmd-sidebar-title-arrow-arrow-line {
       animation: arrowAnimation 1s infinite;
     }

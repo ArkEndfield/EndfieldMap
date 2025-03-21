@@ -3,14 +3,14 @@
     class="zmd-sidebar-filter"
     ref="filterRef"
   >
-    <ZmdSidebarSwitch>
+    <!-- <ZmdSidebarSwitch>
       <div class="zmd-sidebar-filter-display-name">
         <div class="zmd-sidebar-filter-required">*</div>
         <div class="zmd-sidebar-filter-label">
           {{ $t('sidebar.display_marker_point_name') }}
         </div>
       </div>
-    </ZmdSidebarSwitch>
+    </ZmdSidebarSwitch> -->
 
     <div class="zmd-sidebar-operate-buttons">
       <ZmdSidebarOperateButton @click="handleClear">
@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import ZmdSidebarSwitch from './ZmdSidebarSwitch.vue';
+// import ZmdSidebarSwitch from './ZmdSidebarSwitch.vue';
 import ZmdSidebarOperateButton from './ZmdSidebarOperateButton.vue';
 import ZmdSidebarDeleteIcon from './icons/ZmdSidebarDeleteIcon.vue';
 import ZmdSidebarCheckboxCheckedIcon from './icons/ZmdSidebarCheckboxCheckedIcon.vue';
@@ -133,7 +133,7 @@ onMounted(async () => {
   .zmd-sidebar-operate-buttons {
     display: flex;
     justify-content: center;
-    margin-top: 0.5em;
+    // margin-top: 0.5em;
     font-size: 0.9em;
   }
 

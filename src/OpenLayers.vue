@@ -40,16 +40,14 @@
         cn(
           'ol-popup',
           'border-b-6 border-[#656465]',
-          'absolute drop-shadow-md bottom-4 -left-[50px] min-w-32 origin-bottom-center will-change-transform will-change-opacity opacity-100 text-white origin-bottom',
+          'absolute bottom-4 -left-[50px] min-w-32 origin-bottom-center will-change-transform will-change-opacity opacity-100 text-white origin-bottom drop-shadow-[4px_-4px_0_#F8F753]',
           'before:absolute before:top-full before:border-solid before:border-transparent before:border-t-[#272727] before:border-12 before:left-11.5 before:-ml-2 before:pointer-events-none'
         )
       "
       ref="popupContainer"
       v-show="isPopupVisible"
     >
-      <div
-        class="w-full h-4 flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"
-      ></div>
+      <div class="w-full flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"></div>
       <div class="bg-[#272727] popup-content-container overflow-hidden">
         <div
           class="popup-slider"
@@ -720,8 +718,9 @@ declare global {
 }
 
 .top-bar {
-  $height: 1rem;
+  $height: 0.7rem;
   $clip: polygon(0% 0%, calc(100% - $height) 0%, 100% 100%, 0% 100%);
+  height: $height;
   -webkit-clip-path: $clip;
   clip-path: $clip;
   margin-bottom: -0.01em;
@@ -784,7 +783,6 @@ input[type='range'] {
 
 /* 添加聚合点样式 */
 .cluster-point {
-  cursor: pointer;
   transition: transform 0.3s ease;
 }
 
@@ -794,7 +792,6 @@ input[type='range'] {
 
 /* 为所有地图标点添加悬停放大效果 */
 .hover-point {
-  cursor: pointer;
   transition: transform 0.3s ease;
 }
 
@@ -805,7 +802,6 @@ input[type='range'] {
 /* 为集群容器添加悬停效果 */
 .cluster-container .ol-style-icon,
 .cluster-container .ol-style-circle {
-  cursor: pointer;
   transition: transform 0.3s ease;
 }
 
@@ -816,7 +812,6 @@ input[type='range'] {
 
 /* 添加对单点图标的支持 */
 .ol-style-icon {
-  cursor: pointer;
   transition: transform 0.3s ease;
 }
 

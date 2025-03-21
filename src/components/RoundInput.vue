@@ -28,7 +28,7 @@
     >
       <div class="h-4 w-px mx-2 shrink-0 grow-0"></div>
       <div
-        class="flex items-center justify-center px-3 mr-2 h-full cursor-pointer hover:text-zinc-600"
+        class="flex items-center justify-center px-3 mr-2 h-full hover:text-zinc-600"
         @click="$emit('button-click')"
       >
         <slot name="button"></slot>
