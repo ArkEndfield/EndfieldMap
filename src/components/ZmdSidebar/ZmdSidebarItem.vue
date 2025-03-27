@@ -176,10 +176,28 @@ $gap: 0.7em;
     margin-top: calc(0px - $border-size);
     padding-bottom: calc($gap + 0.4em);
     padding-top: $border-size;
+    position: relative;
   }
   .content {
     overflow: hidden;
     padding: 0 1em;
+    &::before,
+    &::after {
+      content: '';
+      display: block;
+      background-color: #f9f853;
+      width: 1.5px;
+      position: absolute;
+      left: 0.4em;
+    }
+    &::before {
+      height: 1.5px;
+      top: 0.5em;
+    }
+    &::after {
+      top: 0.8em;
+      bottom: 0.4em;
+    }
     .placeholder {
       height: 1em;
     }

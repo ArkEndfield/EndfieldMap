@@ -6,7 +6,7 @@
     }"
   >
     <Transition
-      @enter="onEnter"
+      @enter="onContentEnter"
       @leave="onLeave"
     >
       <ZmdSidebarHeader
@@ -16,7 +16,7 @@
     </Transition>
 
     <Transition
-      @enter="onEnter"
+      @enter="onContentEnter"
       @leave="onLeave"
     >
       <ZmdSidebarTitleArrow v-model:open="isOpen" />
@@ -33,15 +33,7 @@
     >
       <div class="zmd-sidebar-bg-start zmd-sidebar-top"></div>
       <div class="zmd-sidebar-bg zmd-sidebar-main">
-        <div class="header-container">
-          <!-- <div
-          class="zmd-sidebar-collapse-arrows"
-          @click="closeSidebar"
-        >
-          <span></span>
-          <span></span>
-        </div> -->
-        </div>
+        <div class="header-container"></div>
         <div class="zmd-sidebar-content">
           <Transition
             @enter="onStatusEnter"
@@ -50,6 +42,13 @@
             <ZmdSidebarFilter v-show="isOpen" />
           </Transition>
           <ZmdSidebarItemList :open="isOpen" />
+        </div>
+        <div class="zmd-sidebar-copyright">
+          <a
+            href="https://beian.miit.gov.cn/"
+            target="_blank"
+            >黑ICP备2025036958号-1</a
+          >
         </div>
       </div>
       <div class="zmd-sidebar-right-bar"></div>
@@ -110,6 +109,20 @@ async function onEnter(el: Element, onComplete: () => void) {
   onComplete();
 }
 
+async function onContentEnter(el: Element, onComplete: () => void) {
+  // 只在非初始渲染时执行动画
+  if (!isInitialRender.value) {
+    await animate(
+      el,
+      {
+        x: '0%',
+      },
+      { duration: 0.5, type: spring, bounce: 0.25 }
+    );
+  }
+  onComplete();
+}
+
 async function onStatusEnter(el: Element, onComplete: () => void) {
   // 只在非初始渲染时执行动画
   if (!isInitialRender.value) {
@@ -156,7 +169,7 @@ async function onLeave(el: Element, onComplete: () => void) {
 .zmd-sidebar-collapse-arrows {
   width: calc(zmd.$side-width);
   left: calc(0px - zmd.$side-width * 0.04);
-  top: 4em;
+  top: 4.5em;
   z-index: 53;
   position: fixed;
   @media screen and (max-width: zmd.$phone-width) {
@@ -236,12 +249,10 @@ async function onLeave(el: Element, onComplete: () => void) {
     overflow: hidden;
     padding-left: 0.7em;
     .zmd-sidebar-content {
-      margin-top: 1em;
       flex: 1;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      padding-bottom: 1em;
       .zmd-sidebar-filter {
         flex-shrink: 0;
         flex-grow: 0;
@@ -249,6 +260,14 @@ async function onLeave(el: Element, onComplete: () => void) {
       .zmd-sidebar-scroll-list {
         flex: 1;
       }
+    }
+    .zmd-sidebar-copyright {
+      flex-shrink: 0;
+      flex-grow: 0;
+      padding: 0.5em;
+      font-size: 0.8em;
+      text-align: center;
+      color: #b9b9b9;
     }
   }
   .zmd-sidebar-right-bar {

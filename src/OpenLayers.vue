@@ -36,122 +36,208 @@
     @leave="onLeavePopup"
   >
     <div
-      :class="
-        cn(
-          'ol-popup',
-          'border-b-6 border-[#656465]',
-          'absolute bottom-4 -left-[50px] min-w-32 origin-bottom-center will-change-transform will-change-opacity opacity-100 text-white origin-bottom drop-shadow-[4px_-4px_0_#F8F753]',
-          'before:absolute before:top-full before:border-solid before:border-transparent before:border-t-[#272727] before:border-12 before:left-11.5 before:-ml-2 before:pointer-events-none'
-        )
-      "
+      class="ol-popup absolute bottom-4 -left-[50px] will-change-transform will-change-opacity opacity-100 text-white origin-bottom w-[300px]"
       ref="popupContainer"
       v-show="isPopupVisible"
     >
-      <div class="w-full flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"></div>
-      <div class="bg-[#272727] popup-content-container overflow-hidden">
-        <div
-          class="popup-slider"
-          :class="{ 'slide-to-video': showVideoInfo }"
-          @transitionend="onTransitionEnd"
+      <!-- 背面的弹出框 -->
+      <div
+        class="pop-drop absolute -top-3 w-full -right-4 -z-0 h-full flex flex-col"
+        :class="{ unfold: openSubPopup }"
+      >
+        <button
+          class="absolute -right-6 top-0 bottom-0 flex flex-col w-6"
+          @click="toggleSubPopup"
         >
-          <!-- 基本信息页面 -->
-          <div class="popup-page">
-            <div class="p-4 pt-2">
-              <button
-                class="no-underline absolute top-0 right-5 text-3xl text-[#ece065]"
-                @click="closeToast"
-              >
-                <PowerIcon />
-              </button>
-              <div>
-                {{
-                  entityInfo[entity.entityDataIdKey]?.name ||
-                  $t('popover.unknow_name')
-                }}
-              </div>
-              <div class="!my-2 !text-sm">
-                <span>id: {{ entity.entityDataIdKey }}</span>
-                <span class="float-right opacity-75">#{{ entity.seq }}</span>
-              </div>
-              <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div>
-              <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
-                坐标 ({{ entity.position.x }}, {{ entity.position.y }},
-                {{ entity.position.z }})
-              </div>
-              <div class="flex items-center justify-between gap-2 mt-4">
-                <button
-                  class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
-                  @click="toggleVideoInfo(true)"
-                >
-                  {{ $t('popover.video_link') }}
-                </button>
-                <div class="flex items-center justify-end gap-2">
-                  <label
-                    :for="`get-${entity.entityDataIdKey}`"
-                    class="text-sm"
-                  >
-                    {{ $t('popover.obtained') }}
-                  </label>
-                  <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
-                </div>
-              </div>
-            </div>
+          <div
+            class="w-full flex-shrink-0 flex-grow-0 bg-[#3E3E3E] top-bar"
+          ></div>
+          <div class="bg-[#3E3E3E] py-1.5">
+            <div class="h-1 bg-[#4C4C4C] mr-1"></div>
           </div>
+          <div
+            class="[writing-mode:vertical-lr] bg-[#3E3E3E] text-[#bfbfbf] font-black pb-6 flex-1 flex items-center justify-center text-2xl"
+          >
+            <!-- {{ openSubPopup ? $t('sidebar.fold') : $t('sidebar.unfold') }} -->
+            <DoubleChevronRight
+              class="drop-shadow-[0_0_0.2em_rgba(191,191,191,0.8)] transition-transform"
+              :class="{ 'rotate-180': openSubPopup }"
+            />
+          </div>
+        </button>
+        <div
+          class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
+        >
+          <div
+            class="grid grid-cols-2 gap-4 px-6 py-4 w-full h-full overflow-y-auto"
+          >
+            <PopContentItem>
+              <template #icon>
+                <img
+                  src="/assets/item_read_bag.png"
+                  alt=""
+                />
+              </template>
+              <template #count>123</template>
+              行动资历
+            </PopContentItem>
+            <PopContentItem>
+              <template #icon></template>
+              行动资历
+            </PopContentItem>
+            <PopContentItem>
+              <template #icon></template>
+              行动资历
+            </PopContentItem>
+            <PopContentItem>
+              <template #icon></template>
+              行动资历
+            </PopContentItem>
+            <PopContentItem>
+              <template #icon></template>
+              行动资历
+            </PopContentItem>
+          </div>
+        </div>
+      </div>
 
-          <!-- 视频信息页面 -->
-          <div class="popup-page">
-            <div class="p-4 pt-2">
-              <button
-                class="no-underline absolute top-3 right-5 text-3xl text-[#ece065]"
-                @click="closeToast"
-              >
-                <PowerIcon />
-              </button>
-              <div class="flex items-center mb-3 gap-2">
+      <!-- 前面的弹出框 -->
+      <div
+        :class="
+          cn(
+            'pop-content',
+            'border-b-6 border-[#656465] relative',
+            'before:absolute before:top-full before:border-solid before:border-transparent before:border-t-[#515151] before:border-12 before:left-11.5 before:-ml-2 before:pointer-events-none'
+          )
+        "
+      >
+        <div
+          class="w-full flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"
+        ></div>
+        <div
+          :class="
+            cn(
+              'bg-[#272727] popup-content-container overflow-hidden',
+              'after:absolute after:-z-0 after:left-0 after:h-32 after:bottom-0 after:w-54 after:bg-gradient-to-tr after:from-white/25 after:via-white/0 after:to-black/0'
+            )
+          "
+        >
+          <div
+            class="-z-0 absolute -top-12 w-full text-[8rem] font-[Outfit] font-bold text-center text-[rgba(70,70,70,0.4)] tracking-[-0.08em]"
+          >
+            ZMD
+          </div>
+          <div
+            class="-z-0 absolute top-1/2 -right-0.5 font-[Outfit] font-bold text-center text-[rgba(70,70,70,0.4)] [writing-mode:vertical-lr] transform translate-y-[-50%] text-xs tracking-[0.5em]"
+          >
+            ZMDMAPS
+          </div>
+          <div
+            class="popup-slider z-1 relative"
+            :class="{ 'slide-to-video': showVideoInfo }"
+            @transitionend="onTransitionEnd"
+          >
+            <!-- 基本信息页面 -->
+            <div class="popup-page">
+              <div class="p-4 pt-2">
                 <button
-                  class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors flex items-center"
-                  @click="toggleVideoInfo(false)"
+                  class="no-underline absolute top-0 right-5 text-3xl text-[#ece065]"
+                  @click="closeToast"
                 >
-                  <span class="inline-block mr-1">
-                    <ForwardLeftIcon />
-                  </span>
-                  {{ $t('back') }}
+                  <PowerIcon />
                 </button>
-                <div>{{ $t('popover.video_info') }}</div>
-              </div>
-              <div class="border-b border-[#404140] pb-2 mb-3">
-                <div class="font-bold">
+                <div>
                   {{
                     entityInfo[entity.entityDataIdKey]?.name ||
                     $t('popover.unknow_name')
                   }}
                 </div>
-              </div>
-              <div class="mb-3">
-                <div class="text-sm text-gray-400">{{ $t('popover.bv') }}</div>
-                <div class="text-[#ece065] mt-1">
-                  {{
-                    entityInfo[entity.entityDataIdKey]?.bvid ||
-                    $t('popover.unknown_bv')
-                  }}
+                <div class="!my-2 !text-sm">
+                  <span>id: {{ entity.entityDataIdKey }}</span>
+                  <span class="float-right opacity-75">#{{ entity.seq }}</span>
+                </div>
+                <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div>
+                <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
+                  坐标 ({{ entity.position.x }}, {{ entity.position.y }},
+                  {{ entity.position.z }})
+                </div>
+                <div class="flex items-center justify-between gap-2 mt-4">
+                  <button
+                    class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
+                    @click="toggleVideoInfo(true)"
+                  >
+                    {{ $t('popover.video_link') }}
+                  </button>
+                  <div class="flex items-center justify-end gap-2">
+                    <label
+                      :for="`get-${entity.entityDataIdKey}`"
+                      class="text-sm"
+                    >
+                      {{ $t('popover.obtained') }}
+                    </label>
+                    <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
+                  </div>
                 </div>
               </div>
-              <div class="mb-3">
-                <div class="text-sm text-gray-400">
-                  {{ $t('popover.video_link') }}
-                </div>
-                <a
-                  :href="`https://www.bilibili.com/video/${
-                    entityInfo[entity.entityDataIdKey]?.bvid || ''
-                  }`"
-                  target="_blank"
-                  class="text-[#ece065] mt-1 block break-all hover:underline"
+            </div>
+
+            <!-- 视频信息页面 -->
+            <div class="popup-page">
+              <div class="p-4 pt-2">
+                <button
+                  class="no-underline absolute top-3 right-5 text-3xl text-[#ece065]"
+                  @click="closeToast"
                 >
-                  https://www.bilibili.com/video/{{
-                    entityInfo[entity.entityDataIdKey]?.bvid ||
-                    $t('popover.unknown_bv')
-                  }}
-                </a>
+                  <PowerIcon />
+                </button>
+                <div class="flex items-center mb-3 gap-2">
+                  <button
+                    class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors flex items-center"
+                    @click="toggleVideoInfo(false)"
+                  >
+                    <span class="inline-block mr-1">
+                      <ForwardLeftIcon />
+                    </span>
+                    {{ $t('back') }}
+                  </button>
+                  <div>{{ $t('popover.video_info') }}</div>
+                </div>
+                <div class="border-b border-[#404140] pb-2 mb-3">
+                  <div class="font-bold">
+                    {{
+                      entityInfo[entity.entityDataIdKey]?.name ||
+                      $t('popover.unknow_name')
+                    }}
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div class="text-sm text-gray-400">
+                    {{ $t('popover.bv') }}
+                  </div>
+                  <div class="text-[#ece065] mt-1">
+                    {{
+                      entityInfo[entity.entityDataIdKey]?.bvid ||
+                      $t('popover.unknown_bv')
+                    }}
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div class="text-sm text-gray-400">
+                    {{ $t('popover.video_link') }}
+                  </div>
+                  <a
+                    :href="`https://www.bilibili.com/video/${
+                      entityInfo[entity.entityDataIdKey]?.bvid || ''
+                    }`"
+                    target="_blank"
+                    class="text-[#ece065] mt-1 block break-all hover:underline"
+                  >
+                    https://www.bilibili.com/video/{{
+                      entityInfo[entity.entityDataIdKey]?.bvid ||
+                      $t('popover.unknown_bv')
+                    }}
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -191,6 +277,7 @@ const controls = ref<HTMLElement>();
 const zoomLevel = ref(3);
 const showVideoInfo = ref(false);
 const sliderRef = ref<HTMLElement>();
+const openSubPopup = ref(false);
 
 const simpleProjection = new Projection({
   code: 'SIMPLE',
@@ -386,6 +473,7 @@ async function onEnterPopup(el: Element, onComplete: () => void) {
 }
 
 async function onLeavePopup(el: Element, onComplete: () => void) {
+  openSubPopup.value = false; // 关闭子弹窗
   isPopupAnimating = true; // 标记动画开始
   await animate(
     el,
@@ -412,6 +500,10 @@ function onTransitionEnd(event: TransitionEvent) {
     // console.log('Transition ended, adjusting position');
     adjustPopupPosition(true); // 传入true表示强制调整
   }
+}
+
+function toggleSubPopup() {
+  openSubPopup.value = !openSubPopup.value;
 }
 
 // 改进的调整弹窗位置函数 - 用于在内容变化后重新检查位置
@@ -710,10 +802,44 @@ declare global {
 }
 
 .ol-popup {
+  $border-color: rgba(206, 206, 206, 0.5);
+  $border-size: 0.2em;
+  // filter: drop-shadow(1.6em -0.5em 0 #f8f753)
+  //   drop-shadow(0 $border-size 0 $border-color)
+  //   drop-shadow(0 calc(0px - $border-size) 0 $border-color)
+  //   drop-shadow($border-size 0 0 $border-color)
+  //   drop-shadow(calc(0px - $border-size) 0 0 $border-color);
+  // transition: filter 0.5s ease;
+  .pop-drop {
+    transition: top 0.5s ease, right 0.5s ease, width 0.5s ease;
+    filter: drop-shadow(0 $border-size 0 $border-color)
+      drop-shadow(0 calc(0px - $border-size) 0 $border-color)
+      drop-shadow($border-size 0 0 $border-color)
+      drop-shadow(calc(0px - $border-size) 0 0 $border-color);
+    &.unfold {
+      width: 75%;
+      top: 0;
+      right: calc(-75% - 0.5em);
+    }
+  }
+
+  .pop-content {
+    transition: top 0.5s ease, right 0.5s ease;
+    filter: drop-shadow(0 $border-size 0 $border-color)
+      drop-shadow(0 calc(0px - $border-size) 0 $border-color)
+      drop-shadow($border-size 0 0 $border-color)
+      drop-shadow(calc(0px - $border-size) 0 0 $border-color)
+      drop-shadow(0 0 0.4em rgba(0, 0, 0, 0.5));
+  }
+
   &.v-enter-from,
   &.v-leave-to {
     opacity: 0;
     transform: scaleY(0.5);
+    .pop-drop {
+      right: 0;
+      top: 0;
+    }
   }
 }
 

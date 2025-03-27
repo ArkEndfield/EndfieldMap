@@ -75,8 +75,8 @@ const toggle = () => {
   transition: all 0.3s ease;
 
   .icon {
-    width: 3em;
-    height: 3em;
+    width: 2.5em;
+    height: 2.5em;
     background-color: #313131;
     border-radius: 50%;
     box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.3), 0 0 0 0.15em #313131 inset,
@@ -88,6 +88,7 @@ const toggle = () => {
     align-items: center;
     flex-shrink: 0;
     transition: box-shadow 0.3s ease;
+    padding: 0.4em;
     img {
       width: 100%;
       height: 100%;
@@ -100,7 +101,7 @@ const toggle = () => {
     box-shadow: 0 0 0 0.1em #242424 inset;
     position: relative;
     z-index: 1;
-    padding: 0.5em 0;
+    padding: 0.3em 0;
     margin-left: -1em;
     padding-left: 1.2em;
     padding-right: 1em;
