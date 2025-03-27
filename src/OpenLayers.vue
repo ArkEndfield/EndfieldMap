@@ -5,9 +5,12 @@
   ></div>
   <div
     ref="controls"
-    class="fixed right-4 top-1/2 -translate-y-1/2 z-10 select-none text-white flex flex-col justify-center gap-2"
+    class="fixed left-1/2 md:left-[unset] -translate-x-1/2 md:translate-x-0 md:right-4 bottom-5 md:bottom-[unset] md:top-1/2 md:-translate-y-1/2 z-10 select-none text-white flex flex-row-reverse md:flex-col justify-center gap-2"
   >
-    <ZoomButton id="zoomIn">
+    <ZoomButton
+      id="zoomIn"
+      class="w-4 h-4"
+    >
       <PlusIcon
         class="pointer-events-none text-4xl drop-shadow-[0_0_0.2em_rgba(253,251,84,0.4)]"
       />
@@ -17,12 +20,14 @@
       :min="1.8"
       :max="5"
       :step="0.1"
-      class="h-32"
-      direction="vertical"
+      class="w-18 md:w-auto md:h-18"
+      :direction="inputDirection"
       @change="onSlideChange"
     />
-
-    <ZoomButton id="zoomOut">
+    <ZoomButton
+      id="zoomOut"
+      class="w-4 h-4"
+    >
       <MinusIcon
         class="pointer-events-none text-4xl drop-shadow-[0_0_0.2em_rgba(253,251,84,0.4)]"
       />
@@ -245,7 +250,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onBeforeUnmount } from 'vue';
 import { Map, View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
 import { cn } from '@/utils/tailwind';
@@ -274,6 +279,235 @@ const controls = ref<HTMLElement>();
 const zoomLevel = ref(3);
 const showVideoInfo = ref(false);
 const openSubPopup = ref(false);
+const inputDirection = ref<'vertical' | 'horizontal'>('vertical');
+
+// 媒体查询匹配器
+let mediaQueryList: MediaQueryList | null = null;
+
+// 媒体查询回调函数
+const handleMediaQueryChange = (e: MediaQueryListEvent | MediaQueryList) => {
+  // 当媒体查询状态变化时，更新方向
+  inputDirection.value = e.matches ? 'vertical' : 'horizontal';
+};
+
+onMounted(async () => {
+  // 检测当前屏幕是否匹配md断点
+  mediaQueryList = window.matchMedia('(min-width: 768px)'); // 768px是md断点
+
+  // 初始化方向
+  inputDirection.value = mediaQueryList.matches ? 'vertical' : 'horizontal';
+
+  // 监听屏幕大小变化
+  mediaQueryList.addEventListener('change', handleMediaQueryChange);
+
+  overlay = new Overlay({
+    element: popupContainer.value,
+    autoPan: false,
+    offset: [0, 10],
+    positioning: 'bottom-center',
+  });
+
+  class ZoomControl extends Control {
+    element: HTMLElement;
+
+    constructor() {
+      super({
+        element: controls.value,
+      });
+      this.element = controls.value as HTMLElement;
+
+      this.element.addEventListener('click', e => {
+        const target = e.target as HTMLElement;
+        const view = this.getMap()?.getView();
+        const zoom = view?.getZoom() || 0;
+
+        // 使用closest方法找到最近的按钮元素
+        const zoomInButton = target.closest('#zoomIn');
+        const zoomOutButton = target.closest('#zoomOut');
+
+        if (zoomInButton && view) {
+          view.cancelAnimations(); // 取消之前的动画
+          const newZoom = zoom + 1 <= 5 ? zoom + 1 : 5;
+          view.animate({ zoom: newZoom, duration: 400 });
+          zoomLevel.value = newZoom;
+        } else if (zoomOutButton && view) {
+          view.cancelAnimations(); // 取消之前的动画
+          const newZoom = zoom - 1 >= 0 ? zoom - 1 : 0;
+          view.animate({ zoom: newZoom, duration: 400 });
+          zoomLevel.value = newZoom;
+        }
+      });
+    }
+  }
+
+  const zoomControl = new ZoomControl();
+
+  map = new Map({
+    target: 'map',
+    layers: [
+      new TileLayer({
+        source: new XYZ({
+          projection: simpleProjection,
+          url: '/map/map001/{z}/{y}/{x}.png',
+          tileLoadFunction: tileLoad,
+        }),
+      }),
+      areaNameLayer,
+      // 使用散开的图层代替单一聚合图层
+      ...entityClusterLayers,
+    ],
+    view: new View({
+      projection: simpleProjection,
+      center: [100, 152], // 修复了多余的0
+      zoom: 3,
+      maxZoom: 5,
+      minZoom: 1,
+      rotation: 0,
+      // extent: [-100, 0, 325, 344],
+      // constrainResolution: true,
+      enableRotation: false,
+    }),
+    interactions: interactionDefaults({
+      altShiftDragRotate: false,
+      pinchRotate: false,
+    }),
+    overlays: [overlay],
+    controls: [zoomControl],
+    // 添加renderBuffer以增加渲染边界,防止移动时标点消失
+    pixelRatio: 2, // 提高像素比以提升移动中的渲染质量
+  });
+
+  // 监听地图渲染完成事件，确保图层正确添加
+  map.once('rendercomplete', () => {
+    // 刷新一次实体图层，确保显示状态正确
+    refresh();
+  });
+
+  map.getView().on('change:resolution', function () {
+    const zoom = map.getView().getZoom() || 0;
+    zoomLevel.value = zoom;
+    loadTextPoints(true, zoom > 3);
+
+    // 更新聚合距离
+    updateClusterDistance(zoom);
+
+    // 更新当前缩放级别，这会触发图标大小的更新
+    updateCurrentZoom(zoom);
+
+    // 在最大缩放级别时强制禁用聚合
+    if (zoom >= 5) {
+      forceDisperseAtMaxZoom(zoom);
+    }
+  });
+
+  const selectInteraction = new Select({
+    condition: click,
+    style: null,
+    layers: () => true,
+  });
+
+  map.addInteraction(selectInteraction);
+
+  map.on('click', function (event) {
+    console.log(event.coordinate);
+  });
+
+  selectInteraction.on('select', async function (event) {
+    const target = event.selected[0];
+    if (target) {
+      // 检查是否是聚合点
+      const features = target.get('features');
+      if (features && features.length > 1) {
+        // 处理聚合点击 - 放大地图或显示聚合列表
+        const extent = target.getGeometry()?.getExtent();
+        if (extent) {
+          // 放大到聚合范围
+          map.getView().fit(extent, {
+            duration: 500,
+            padding: [50, 50, 50, 50],
+            maxZoom: 5,
+          });
+        }
+        return;
+      }
+
+      // 获取单个点的数据
+      let data = target.get('payload');
+      // 如果是聚合中的单个点，需要从features中获取
+      if (features && features.length === 1) {
+        data = features[0].get('payload');
+      }
+
+      if (!data) return;
+      // ...原来的点击处理逻辑...
+      const newPosition = event.mapBrowserEvent.coordinate;
+      const positionChanged =
+        !currentPosition ||
+        newPosition[0] !== currentPosition[0] ||
+        newPosition[1] !== currentPosition[1];
+
+      if (positionChanged) {
+        if (isPopupVisible.value) {
+          // 使用新函数处理弹出层关闭和重新打开
+          await closeAndReopenPopup(data, newPosition);
+        } else {
+          // 首次显示
+          entity.value = data;
+          showVideoInfo.value = false;
+          currentPosition = [...newPosition];
+
+          // 先设置弹窗位置，但不显示
+          overlay.setPosition(newPosition);
+
+          // 预先调整地图中心
+          await adjustMapForPopup(map, newPosition, () => {
+            // 动画完成后才显示弹窗
+            isPopupVisible.value = true;
+          });
+        }
+      } else {
+        // 如果是同一位置，只更新实体信息
+        entity.value = data;
+      }
+    } else {
+      isPopupVisible.value = false;
+      showVideoInfo.value = false;
+      currentPosition = undefined;
+    }
+  });
+
+  // 创建一个MutationObserver来监视弹窗内容的变化
+  if (popupContainer.value) {
+    const observer = new MutationObserver(() => {
+      if (isPopupVisible.value && currentPosition) {
+        // 当DOM变化时检测弹窗位置
+        adjustPopupPosition();
+      }
+    });
+
+    // 配置观察选项
+    observer.observe(popupContainer.value, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true,
+    });
+  }
+
+  // 当窗口大小改变时，也需要检查弹窗位置
+  window.addEventListener('resize', () => {
+    if (isPopupVisible.value && currentPosition) {
+      adjustPopupPosition();
+    }
+  });
+});
+
+// 组件卸载前移除事件监听器，防止内存泄漏
+onBeforeUnmount(() => {
+  if (mediaQueryList) {
+    mediaQueryList.removeEventListener('change', handleMediaQueryChange);
+  }
+});
 
 const simpleProjection = new Projection({
   code: 'SIMPLE',
@@ -576,209 +810,6 @@ const tileLoad = (imageTile: any, src: string) => {
   img.src = src;
 };
 
-onMounted(async () => {
-  overlay = new Overlay({
-    element: popupContainer.value,
-    autoPan: false,
-    offset: [0, 10],
-    positioning: 'bottom-center',
-  });
-
-  class ZoomControl extends Control {
-    element: HTMLElement;
-
-    constructor() {
-      super({
-        element: controls.value,
-      });
-      this.element = controls.value as HTMLElement;
-
-      this.element.addEventListener('click', e => {
-        const target = e.target as HTMLElement;
-        const view = this.getMap()?.getView();
-        const zoom = view?.getZoom() || 0;
-
-        // 使用closest方法找到最近的按钮元素
-        const zoomInButton = target.closest('#zoomIn');
-        const zoomOutButton = target.closest('#zoomOut');
-
-        if (zoomInButton && view) {
-          view.cancelAnimations(); // 取消之前的动画
-          const newZoom = zoom + 1 <= 5 ? zoom + 1 : 5;
-          view.animate({ zoom: newZoom, duration: 400 });
-          zoomLevel.value = newZoom;
-        } else if (zoomOutButton && view) {
-          view.cancelAnimations(); // 取消之前的动画
-          const newZoom = zoom - 1 >= 0 ? zoom - 1 : 0;
-          view.animate({ zoom: newZoom, duration: 400 });
-          zoomLevel.value = newZoom;
-        }
-      });
-    }
-  }
-
-  const zoomControl = new ZoomControl();
-
-  map = new Map({
-    target: 'map',
-    layers: [
-      new TileLayer({
-        source: new XYZ({
-          projection: simpleProjection,
-          url: '/map/map001/{z}/{y}/{x}.png',
-          tileLoadFunction: tileLoad,
-        }),
-      }),
-      areaNameLayer,
-      // 使用散开的图层代替单一聚合图层
-      ...entityClusterLayers,
-    ],
-    view: new View({
-      projection: simpleProjection,
-      center: [100, 152], // 修复了多余的0
-      zoom: 3,
-      maxZoom: 5,
-      minZoom: 1,
-      rotation: 0,
-      // extent: [-100, 0, 325, 344],
-      // constrainResolution: true,
-      enableRotation: false,
-    }),
-    interactions: interactionDefaults({
-      altShiftDragRotate: false,
-      pinchRotate: false,
-    }),
-    overlays: [overlay],
-    controls: [zoomControl],
-    // 添加renderBuffer以增加渲染边界,防止移动时标点消失
-    pixelRatio: 2, // 提高像素比以提升移动中的渲染质量
-  });
-
-  // 监听地图渲染完成事件，确保图层正确添加
-  map.once('rendercomplete', () => {
-    // 刷新一次实体图层，确保显示状态正确
-    refresh();
-  });
-
-  map.getView().on('change:resolution', function () {
-    const zoom = map.getView().getZoom() || 0;
-    zoomLevel.value = zoom;
-    loadTextPoints(true, zoom > 3);
-
-    // 更新聚合距离
-    updateClusterDistance(zoom);
-
-    // 更新当前缩放级别，这会触发图标大小的更新
-    updateCurrentZoom(zoom);
-
-    // 在最大缩放级别时强制禁用聚合
-    if (zoom >= 5) {
-      forceDisperseAtMaxZoom(zoom);
-    }
-  });
-
-  const selectInteraction = new Select({
-    condition: click,
-    style: null,
-    layers: () => true,
-  });
-
-  map.addInteraction(selectInteraction);
-
-  map.on('click', function (event) {
-    console.log(event.coordinate);
-  });
-
-  selectInteraction.on('select', async function (event) {
-    const target = event.selected[0];
-    if (target) {
-      // 检查是否是聚合点
-      const features = target.get('features');
-      if (features && features.length > 1) {
-        // 处理聚合点击 - 放大地图或显示聚合列表
-        const extent = target.getGeometry()?.getExtent();
-        if (extent) {
-          // 放大到聚合范围
-          map.getView().fit(extent, {
-            duration: 500,
-            padding: [50, 50, 50, 50],
-            maxZoom: 5,
-          });
-        }
-        return;
-      }
-
-      // 获取单个点的数据
-      let data = target.get('payload');
-      // 如果是聚合中的单个点，需要从features中获取
-      if (features && features.length === 1) {
-        data = features[0].get('payload');
-      }
-
-      if (!data) return;
-      // ...原来的点击处理逻辑...
-      const newPosition = event.mapBrowserEvent.coordinate;
-      const positionChanged =
-        !currentPosition ||
-        newPosition[0] !== currentPosition[0] ||
-        newPosition[1] !== currentPosition[1];
-
-      if (positionChanged) {
-        if (isPopupVisible.value) {
-          // 使用新函数处理弹出层关闭和重新打开
-          await closeAndReopenPopup(data, newPosition);
-        } else {
-          // 首次显示
-          entity.value = data;
-          showVideoInfo.value = false;
-          currentPosition = [...newPosition];
-
-          // 先设置弹窗位置，但不显示
-          overlay.setPosition(newPosition);
-
-          // 预先调整地图中心
-          await adjustMapForPopup(map, newPosition, () => {
-            // 动画完成后才显示弹窗
-            isPopupVisible.value = true;
-          });
-        }
-      } else {
-        // 如果是同一位置，只更新实体信息
-        entity.value = data;
-      }
-    } else {
-      isPopupVisible.value = false;
-      showVideoInfo.value = false;
-      currentPosition = undefined;
-    }
-  });
-
-  // 创建一个MutationObserver来监视弹窗内容的变化
-  if (popupContainer.value) {
-    const observer = new MutationObserver(() => {
-      if (isPopupVisible.value && currentPosition) {
-        // 当DOM变化时检测弹窗位置
-        adjustPopupPosition();
-      }
-    });
-
-    // 配置观察选项
-    observer.observe(popupContainer.value, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      characterData: true,
-    });
-  }
-
-  // 当窗口大小改变时，也需要检查弹窗位置
-  window.addEventListener('resize', () => {
-    if (isPopupVisible.value && currentPosition) {
-      adjustPopupPosition();
-    }
-  });
-});
-
 const onSlideChange = (newValue: number) => {
   const view = map.getView();
   view?.cancelAnimations(); // 取消之前的动画
@@ -868,45 +899,6 @@ declare global {
     width: 50%;
     flex-shrink: 0;
     position: relative;
-  }
-}
-
-/* 自定义滑块样式 */
-input[type='range'] {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 24px;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 5px;
-  background-image: linear-gradient(#ece065, #ece065);
-  background-repeat: no-repeat;
-  background-size: 100% 50%;
-  writing-mode: bt-lr; /* IE */
-  -webkit-appearance: slider-vertical; /* Webkit */
-
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 14px;
-    width: 14px;
-    transform: rotate(45deg); /* 旋转45度形成菱形 */
-    background: #ece065;
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-  }
-
-  &::-moz-range-thumb {
-    height: 14px;
-    width: 14px;
-    transform: rotate(45deg); /* 旋转45度形成菱形 */
-    background: #ece065;
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
-    border: none;
-    cursor: pointer;
-  }
-
-  &:focus {
-    outline: none;
   }
 }
 

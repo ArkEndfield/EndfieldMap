@@ -34,10 +34,10 @@ defineEmits(['click']);
 
 .diamond-button {
   position: relative;
-  width: 40px;
-  height: 40px;
   background-color: #222122;
   border: none;
+  width: 100%;
+  height: 100%;
   transform: rotate(45deg);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -45,7 +45,7 @@ defineEmits(['click']);
   outline: none;
 
   .button-border {
-    $border-width: 0.3em;
+    $border-width: 0.2em;
     $overflow: 0.1em;
     position: absolute;
     background-color: rgb(255, 255, 255);
@@ -66,7 +66,7 @@ defineEmits(['click']);
     &.bottom {
       bottom: -$overflow;
       right: -$overflow;
-      width: calc(100% - $border-width * 3 + $overflow * 2);
+      width: calc(100% - $border-width * 2 + $overflow * 2);
       height: $border-width;
     }
 

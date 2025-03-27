@@ -1,13 +1,12 @@
 <template>
   <div
-    class="range-input-container"
+    class="range-input-container items-center flex justify-stretch"
     :class="{
       'flex-col': direction === 'vertical',
-      'mx-2.5': direction === 'horizontal',
     }"
   >
     <div
-      class="flex items-center gap-3"
+      class="flex items-center gap-3 w-full"
       :class="{ 'flex-col h-full': direction === 'vertical' }"
     >
       <!-- 滑块容器 - 垂直模式时会旋转 -->
@@ -19,23 +18,27 @@
         :style="containerStyle"
         ref="containerRef"
       >
-        <div class="absolute top-0 flex items-center gap-0.5">
+        <div
+          class="absolute -left-4 md:left-[unset] md:top-0 rotate-90 md:rotate-0 flex items-center gap-0.5"
+        >
           <span
             class="h-0.5 w-1 bg-white shadow-[0_0_0.2em_rgba(255,255,255,0.8)]"
           ></span>
           <span
-            class="h-1 w-4 bg-white shadow-[0_0_0.2em_rgba(255,255,255,0.8)]"
+            class="h-1 w-2.5 bg-white shadow-[0_0_0.2em_rgba(255,255,255,0.8)]"
           ></span>
           <span
             class="h-0.5 w-1 bg-white shadow-[0_0_0.2em_rgba(255,255,255,0.8)]"
           ></span>
         </div>
-        <div class="absolute bottom-0 flex items-center gap-0.5">
+        <div
+          class="absolute -right-4 md:right-[unset] md:bottom-0 rotate-90 md:rotate-0 flex items-center gap-0.5"
+        >
           <span
             class="h-0.5 w-1 bg-white shadow-[0_0_0.2em_rgba(255,255,255,0.8)]"
           ></span>
           <span
-            class="h-1 w-4 bg-white shadow-[0_0_0.2em_rgba(255,255,255,0.8)]"
+            class="h-1 w-2.5 bg-white shadow-[0_0_0.2em_rgba(255,255,255,0.8)]"
           ></span>
           <span
             class="h-0.5 w-1 bg-white shadow-[0_0_0.2em_rgba(255,255,255,0.8)]"
@@ -59,7 +62,7 @@
 
           <!-- 滑块手柄 -->
           <div
-            class="absolute h-3 w-3 bg-[#FDFB54] shadow-[0_0_0.1em_rgba(253,251,84,0.8)] transform hover:scale-110 transition-transform -top-1 -translate-x-1/2 rotate-45 slider-handle"
+            class="absolute h-2 w-2 bg-[#FDFB54] shadow-[0_0_0.1em_rgba(253,251,84,0.8)] transform hover:scale-110 transition-transform -top-0.5 -translate-x-1/2 rotate-45 slider-handle"
             :style="{
               left:
                 props.direction === 'vertical'
@@ -117,7 +120,7 @@ const containerStyle = computed(() => {
   if (props.direction === 'vertical') {
     return {
       height: containerRef.value?.parentElement?.style.height || '100%',
-      minHeight: '150px',
+      minHeight: '100px',
       flexGrow: '1',
     };
   }
@@ -363,8 +366,8 @@ watch(
   &::after {
     content: '';
     position: absolute;
-    width: 1em;
-    height: 2em;
+    width: 0.5em;
+    height: 1em;
     background-color: #fdfb546a;
     rotate: 225deg;
     transform: translateY(-50%);
@@ -374,14 +377,14 @@ watch(
   /* 左侧箭头 */
   &::before {
     left: 0%;
-    top: -258%;
+    top: -190%;
     $clip-path: polygon(
       0 0,
       100% 50%,
       0 100%,
-      0 calc(100% - 0.5em),
-      calc(100% - 0.5em) 50%,
-      0 0.5em
+      0 calc(100% - 0.25em),
+      calc(100% - 0.25em) 50%,
+      0 0.25em
     );
     -webkit-clip-path: $clip-path;
     clip-path: $clip-path;
@@ -389,15 +392,15 @@ watch(
 
   /* 右侧箭头 */
   &::after {
-    right: -190%;
-    top: -98%;
+    right: -140%;
+    top: -50%;
     $clip-path: polygon(
       100% 0,
       0 50%,
       100% 100%,
-      100% calc(100% - 0.5em),
-      0.5em 50%,
-      100% 0.5em
+      100% calc(100% - 0.25em),
+      0.25em 50%,
+      100% 0.25em
     );
     -webkit-clip-path: $clip-path;
     clip-path: $clip-path;
