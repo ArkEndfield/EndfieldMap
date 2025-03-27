@@ -1,7 +1,7 @@
 <template>
   <div>
     <Popover :class="cn('hidden md:block', props.class)">
-      <button class="text-3xl block">
+      <button class="text-2xl block text-[#D6D6D6]">
         <slot></slot>
       </button>
       <template #popover>

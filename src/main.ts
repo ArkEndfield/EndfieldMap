@@ -16,7 +16,7 @@ app.mount('#app');
 disableZoom();
 
 // 禁止鼠标右键菜单
-disableContextMenu();
+if (process.env.NODE_ENV === 'production') disableContextMenu();
 
 // 启动检查，使用requestAnimationFrame
 requestAnimationFrame(checkAppReady);

@@ -1,6 +1,6 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
-    <NotificationIcon />
+    <ChangeLogIcon />
     <template #title>{{ $t('header.changelog') }}</template>
   </HeaderMenu>
   <ZmdAlert

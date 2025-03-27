@@ -5,31 +5,28 @@
   ></div>
   <div
     ref="controls"
-    class="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 bg-black/20 p-1 rounded-full backdrop-blur-md select-none text-white flex items-center gap-2"
+    class="fixed right-4 top-1/2 -translate-y-1/2 z-10 select-none text-white flex flex-col justify-center gap-2"
   >
-    <div class="zoom flex items-center gap-2">
-      <button
-        id="zoomOut"
-        class="w-8 h-8 flex justify-center items-center bg-black/30 rounded-full hover:bg-black/40 transition-colors active:bg-black/50"
-      >
-        <MinusIcon class="pointer-events-none" />
-      </button>
-      <input
-        type="range"
-        min="1.8"
-        max="5"
-        step="0.1"
-        v-model="zoomLevel"
-        class="w-24 h-2 bg-black/30 rounded-full appearance-none"
-        ref="sliderRef"
+    <ZoomButton id="zoomIn">
+      <PlusIcon
+        class="pointer-events-none text-4xl drop-shadow-[0_0_0.2em_rgba(253,251,84,0.4)]"
       />
-      <button
-        id="zoomIn"
-        class="w-8 h-8 flex justify-center items-center bg-black/30 rounded-full hover:bg-black/40 transition-colors active:bg-black/50"
-      >
-        <PlusIcon class="pointer-events-none" />
-      </button>
-    </div>
+    </ZoomButton>
+    <RangeInput
+      v-model="zoomLevel"
+      :min="1.8"
+      :max="5"
+      :step="0.1"
+      class="h-32"
+      direction="vertical"
+      @change="onSlideChange"
+    />
+
+    <ZoomButton id="zoomOut">
+      <MinusIcon
+        class="pointer-events-none text-4xl drop-shadow-[0_0_0.2em_rgba(253,251,84,0.4)]"
+      />
+    </ZoomButton>
   </div>
   <Transition
     @enter="onEnterPopup"
@@ -276,7 +273,6 @@ const isPopupVisible = ref(false);
 const controls = ref<HTMLElement>();
 const zoomLevel = ref(3);
 const showVideoInfo = ref(false);
-const sliderRef = ref<HTMLElement>();
 const openSubPopup = ref(false);
 
 const simpleProjection = new Projection({
@@ -583,7 +579,7 @@ const tileLoad = (imageTile: any, src: string) => {
 onMounted(async () => {
   overlay = new Overlay({
     element: popupContainer.value,
-    autoPan: false, // 禁用内置的自动平移，完全由我们自定义控制
+    autoPan: false,
     offset: [0, 10],
     positioning: 'bottom-center',
   });
@@ -601,28 +597,23 @@ onMounted(async () => {
         const target = e.target as HTMLElement;
         const view = this.getMap()?.getView();
         const zoom = view?.getZoom() || 0;
-        if (target.id === 'zoomIn' && view) {
+
+        // 使用closest方法找到最近的按钮元素
+        const zoomInButton = target.closest('#zoomIn');
+        const zoomOutButton = target.closest('#zoomOut');
+
+        if (zoomInButton && view) {
           view.cancelAnimations(); // 取消之前的动画
           const newZoom = zoom + 1 <= 5 ? zoom + 1 : 5;
           view.animate({ zoom: newZoom, duration: 400 });
           zoomLevel.value = newZoom;
-        } else if (target.id === 'zoomOut' && view) {
+        } else if (zoomOutButton && view) {
           view.cancelAnimations(); // 取消之前的动画
           const newZoom = zoom - 1 >= 0 ? zoom - 1 : 0;
           view.animate({ zoom: newZoom, duration: 400 });
           zoomLevel.value = newZoom;
         }
       });
-
-      // 添加滑块事件监听器
-      const slider = sliderRef.value;
-      if (slider) {
-        slider.addEventListener('input', () => {
-          const view = this.getMap()?.getView();
-          view?.cancelAnimations(); // 取消之前的动画
-          view?.setZoom(Number(zoomLevel.value));
-        });
-      }
     }
   }
 
@@ -788,6 +779,12 @@ onMounted(async () => {
   });
 });
 
+const onSlideChange = (newValue: number) => {
+  const view = map.getView();
+  view?.cancelAnimations(); // 取消之前的动画
+  view?.setZoom(newValue);
+};
+
 // 在script标签开始处添加类型定义
 declare global {
   interface HTMLElement {
@@ -878,28 +875,34 @@ declare global {
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
-  height: 2px;
+  height: 24px;
+  width: 2px;
   background: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   background-image: linear-gradient(#ece065, #ece065);
   background-repeat: no-repeat;
+  background-size: 100% 50%;
+  writing-mode: bt-lr; /* IE */
+  -webkit-appearance: slider-vertical; /* Webkit */
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 14px;
     width: 14px;
-    border-radius: 50%;
+    transform: rotate(45deg); /* 旋转45度形成菱形 */
     background: #ece065;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+    cursor: pointer;
   }
 
   &::-moz-range-thumb {
     height: 14px;
     width: 14px;
-    border-radius: 50%;
+    transform: rotate(45deg); /* 旋转45度形成菱形 */
     background: #ece065;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
     border: none;
+    cursor: pointer;
   }
 
   &:focus {

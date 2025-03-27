@@ -11,6 +11,7 @@ declare module 'vue' {
     AppHeaderRight: typeof import('./src/components/Header/AppHeaderRight.vue')['default']
     BilibiliCard: typeof import('./src/components/BilibiliCard.vue')['default']
     ChangeLog: typeof import('./src/components/ChangeLog.vue')['default']
+    ChangeLogIcon: typeof import('./src/components/icons/ChangeLogIcon.vue')['default']
     ChangelogMenu: typeof import('./src/components/Header/ChangelogMenu.vue')['default']
     ChatIcon: typeof import('./src/components/icons/ChatIcon.vue')['default']
     CloseIcon: typeof import('./src/components/icons/CloseIcon.vue')['default']
@@ -25,6 +26,7 @@ declare module 'vue' {
     HelpIcon: typeof import('./src/components/icons/HelpIcon.vue')['default']
     KeyIcon: typeof import('./src/components/icons/KeyIcon.vue')['default']
     LanguageMenu: typeof import('./src/components/Header/LanguageMenu.vue')['default']
+    LoginInIcon: typeof import('./src/components/icons/LoginInIcon.vue')['default']
     LoginMenu: typeof import('./src/components/Header/LoginMenu.vue')['default']
     MapButton: typeof import('./src/components/Header/MapButton.vue')['default']
     MenuIcon: typeof import('./src/components/icons/MenuIcon.vue')['default']
@@ -35,6 +37,7 @@ declare module 'vue' {
     PopContentItem: typeof import('./src/components/PopContentItem.vue')['default']
     Popover: typeof import('./src/components/Popover.vue')['default']
     PowerIcon: typeof import('./src/components/icons/PowerIcon.vue')['default']
+    RangeInput: typeof import('./src/components/RangeInput.vue')['default']
     RoundInput: typeof import('./src/components/RoundInput.vue')['default']
     SwitchIcon: typeof import('./src/components/icons/SwitchIcon.vue')['default']
     TranslateIcon: typeof import('./src/components/icons/TranslateIcon.vue')['default']
@@ -60,5 +63,6 @@ declare module 'vue' {
     ZmdSidebarTitleArrow: typeof import('./src/components/ZmdSidebar/header/ZmdSidebarTitleArrow.vue')['default']
     ZmdSidebarTitleBigTitle: typeof import('./src/components/ZmdSidebar/header/ZmdSidebarTitleBigTitle.vue')['default']
     ZmdSwitch: typeof import('./src/components/ZmdSwitch.vue')['default']
+    ZoomButton: typeof import('./src/components/ZoomButton.vue')['default']
   }
 }

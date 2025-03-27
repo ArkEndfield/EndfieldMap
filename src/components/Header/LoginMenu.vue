@@ -1,6 +1,6 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
-    <UserIcon />
+    <LoginInIcon />
     <template #title>{{ $t('header.login') }}</template>
   </HeaderMenu>
   <ZmdAlert
@@ -15,7 +15,7 @@
         :placeholder="$t('username')"
       >
         <template #icon>
-          <UserIcon />
+          <LoginInIcon />
         </template>
       </RoundInput>
       <RoundInput

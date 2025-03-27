@@ -6,13 +6,11 @@
     width="1em"
     height="1em"
   >
-    <g id="SVGRepo_iconCarrier">
+    <g>
       <path
         d="M4 12H20M12 4V20"
         stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        stroke-width="3"
       ></path>
     </g>
   </svg>
