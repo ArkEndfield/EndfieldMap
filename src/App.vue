@@ -1,7 +1,10 @@
 <template>
   <AppHeaderLeft v-show="appLoaded" />
   <AppHeaderRight v-show="appLoaded" />
-  <ZmdSidebar v-if="appLoaded" />
+  <ZmdSidebar
+    v-if="appLoaded"
+    v-show="appLoaded"
+  />
   <!-- <component :is="currentMapComponent" /> -->
   <OpenLayersComponent v-show="appLoaded" />
 </template>
