@@ -25,7 +25,7 @@
         cn(
           'fixed right-0 bottom-0 h-0 bg-black/50 w-full overflow-hidden transition-all duration-300 backdrop-blur-md',
           isShow && 'h-full p-2 pt-10',
-          'md:relative md:flex md:gap-8 md:items-center md:!h-auto md:w-auto md:bg-transparent md:z-0 md:backdrop-blur-none md:transition-none md:duration-0 md:!p-0 md:overflow-visible'
+          'md:relative md:flex md:gap-10 md:items-center md:!h-auto md:w-auto md:bg-transparent md:z-0 md:backdrop-blur-none md:transition-none md:duration-0 md:!p-0 md:!pb-1 md:!pl-4 md:overflow-visible'
         )
       "
     >

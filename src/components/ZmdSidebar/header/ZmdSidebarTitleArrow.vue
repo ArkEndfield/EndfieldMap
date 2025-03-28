@@ -125,7 +125,8 @@ $arrow-height: 5em;
       .zmd-sidebar-title-arrow-arrow-line:hover
     ) {
     .zmd-sidebar-title-arrow-arrow-line {
-      animation: arrowAnimation 1s infinite;
+      // animation: arrowAnimation 1s infinite;
+      transform: translateX(-0.5em);
     }
     @keyframes arrowAnimation {
       0% {
@@ -300,6 +301,7 @@ $arrow-height: 5em;
     margin-top: calc($arrow-height - $line-size);
     -webkit-clip-path: $clip-path;
     clip-path: $clip-path;
+    transition: transform 0.5s;
   }
 }
 </style>

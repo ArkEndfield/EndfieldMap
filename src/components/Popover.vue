@@ -1,6 +1,5 @@
 <template>
   <div
-    class="relative"
     @mouseenter="showPopover = true"
     @mouseleave="showPopover = false"
   >
@@ -14,10 +13,17 @@
         ref="popoverRef"
         v-show="showPopover"
         :class="[
-          'absolute mt-2 py-2 px-4 bg-[#1D1D1D]/60 rounded-lg shadow-lg w-max max-w-64 text-sm backdrop-blur-md',
+          'arknights-popover absolute mt-2 py-3 px-5 shadow-lg w-max max-w-64 text-sm',
         ]"
         :style="popoverStyle"
       >
+        <div class="scanline-container">
+          <div class="scanline"></div>
+        </div>
+        <div class="popover-corner popover-corner-tl"></div>
+        <div class="popover-corner popover-corner-tr"></div>
+        <div class="popover-corner popover-corner-bl"></div>
+        <div class="popover-corner popover-corner-br"></div>
         <slot name="popover"></slot>
       </div>
     </Transition>
@@ -147,4 +153,141 @@ async function onLeave(el: Element, done: () => void) {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.arknights-popover {
+  background: rgba(29, 32, 37, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(158, 158, 158, 0.3);
+  color: #e5e5e5;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(253, 253, 89, 0.6),
+      transparent
+    );
+    animation: pulse 2s infinite ease-in-out;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(180, 180, 180, 0.4),
+      transparent
+    );
+  }
+}
+
+// 扫描线容器
+.scanline-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 1px;
+}
+
+// 扫描线
+.scanline {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(220, 220, 220, 0.08),
+    transparent
+  );
+  animation: scanline 3s infinite ease-in-out;
+}
+
+.popover-corner {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: rgba(220, 220, 220, 0.7);
+  z-index: 2;
+
+  &-tl {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+  }
+
+  &-tr {
+    top: -1px;
+    right: -1px;
+    border-top: 2px solid;
+    border-right: 2px solid;
+  }
+
+  &-bl {
+    bottom: -1px;
+    left: -1px;
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+  }
+
+  &-br {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+  }
+}
+
+// 动画关键帧
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+// 修改动画配置，使动画更加流畅
+:deep(.v-enter-active),
+:deep(.v-leave-active) {
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity, transform;
+}
+
+:deep(.v-enter-from),
+:deep(.v-leave-to) {
+  opacity: 0;
+  transform: translateY(-5px) scale(0.98);
+}
+</style>
