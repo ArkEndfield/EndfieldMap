@@ -1,4 +1,6 @@
 <template>
+  <MapIconButton @click="open" />
+
   <div
     class="zmd-sidebar-collapse-arrows"
     :style="{
@@ -147,6 +149,10 @@ async function onLeave(el: Element, onComplete: () => void) {
   );
   onComplete();
 }
+
+const open = () => {
+  isOpen.value = true;
+};
 </script>
 <style lang="scss" scoped>
 @use '../../styles/zmd.scss' as zmd;

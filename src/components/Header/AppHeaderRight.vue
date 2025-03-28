@@ -2,7 +2,7 @@
   <div class="fixed right-0 top-0 z-[50] md:z-[56] text-white">
     <div
       ref="triggerRef"
-      class="flex flex-col items-end py-1 px-4"
+      class="flex flex-col items-end pb-1 pt-4 md:pt-1 px-4"
     >
       <button
         class="text-xs group"

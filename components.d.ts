@@ -29,6 +29,7 @@ declare module 'vue' {
     LoginInIcon: typeof import('./src/components/icons/LoginInIcon.vue')['default']
     LoginMenu: typeof import('./src/components/Header/LoginMenu.vue')['default']
     MapButton: typeof import('./src/components/Header/MapButton.vue')['default']
+    MapIconButton: typeof import('./src/components/MapIconButton.vue')['default']
     MenuIcon: typeof import('./src/components/icons/MenuIcon.vue')['default']
     MenuMenu: typeof import('./src/components/Header/MenuMenu.vue')['default']
     MinusIcon: typeof import('./src/components/icons/MinusIcon.vue')['default']

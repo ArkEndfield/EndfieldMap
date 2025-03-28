@@ -1,13 +1,17 @@
 <template>
   <div
     class="zmd-sidebar-title-arrow"
+    :class="{ 'zmd-sidebar-title-arrow-open': open }"
     ref="arrowRef"
     @click="toggleOpen"
   >
     <div class="zmd-sidebar-title-arrow-start-part"></div>
     <div class="zmd-sidebar-title-arrow-middle-part"></div>
     <div class="zmd-sidebar-title-arrow-end-part">
-      <div class="zmd-sidebar-open-arrow-bg-title">
+      <div
+        class="zmd-sidebar-open-arrow-bg-title"
+        :class="{ 'zmd-sidebar-open-arrow-bg-title-open': open }"
+      >
         {{ open ? 'FOLD' : 'UNFOLD' }}
       </div>
       <div
@@ -28,71 +32,14 @@
 </template>
 
 <script setup lang="ts">
-import { animate, spring } from 'motion';
-import { ref, watch } from 'vue';
-import { nextTick } from 'vue';
-import { onMounted } from 'vue';
+import { ref } from 'vue';
 
 const open = defineModel<boolean>('open', { default: false });
-const isInitialRender = ref(true);
 const arrowRef = ref<HTMLElement>();
-const collapsedX = 'calc(0px - 100% + 9em)';
 // 切换open状态
 const toggleOpen = () => {
   open.value = !open.value;
 };
-
-// 添加组件挂载后的处理
-onMounted(async () => {
-  if (isInitialRender.value) {
-    await nextTick();
-
-    // 获取箭头和线条元素
-    const arrowEl = arrowRef.value;
-
-    if (arrowEl) {
-      // 根据初始状态设置初始位置
-      const initialPosition = open.value ? '0%' : collapsedX;
-      const initialFontSize = open.value ? '1em' : 'var(--arrow-font-size)';
-      arrowEl.style.transform = `translateX(${initialPosition})`;
-      arrowEl.style.fontSize = initialFontSize;
-      await animate(
-        arrowEl,
-        { x: initialPosition, fontSize: initialFontSize },
-        {
-          duration: 0.5,
-          type: spring,
-          bounce: 0.25,
-          delay: 0.01,
-        }
-      );
-    }
-
-    isInitialRender.value = false;
-  }
-});
-
-// 监听open状态变化，添加动画效果
-watch(open, async newValue => {
-  if (isInitialRender.value) return;
-
-  const arrowEl = arrowRef.value;
-  if (!arrowEl) return;
-
-  const finalPosition = newValue ? '0%' : collapsedX;
-  await animate(
-    arrowEl,
-    {
-      x: finalPosition,
-      fontSize: newValue ? '1em' : 'var(--arrow-font-size)',
-    },
-    {
-      duration: 0.5,
-      type: spring,
-      bounce: 0.25,
-    }
-  );
-});
 </script>
 
 <style lang="scss" scoped>
@@ -105,18 +52,29 @@ $arrow-size: 1.8em;
 $line-size: 2.3em;
 $arrow-height: 5em;
 .zmd-sidebar-title-arrow {
+  --collapsed-x: -100% + 7em;
   display: flex;
   justify-content: start;
   align-items: center;
   width: calc(100% + $arrow-size * 2 + 2.4em);
-  transition: filter 0.3s;
+  transition: filter 0.3s, transform 0.3s ease;
   position: relative;
   overflow: visible;
+  transform: translateX(calc(var(--collapsed-x)));
   filter: drop-shadow(0.1em 0.1em 0em rgba(255, 255, 255, 0.2));
   --arrow-font-size: 1em;
-  @media screen and (max-width: zmd.$phone-width) {
-    --arrow-font-size: 0.8em;
+
+  &.zmd-sidebar-title-arrow-open {
+    --collapsed-x: 0;
   }
+
+  @media screen and (max-width: zmd.$phone-width) {
+    & {
+      --collapsed-x: -100%;
+      --arrow-font-size: 0.8em;
+    }
+  }
+
   &:has(
       .zmd-sidebar-title-arrow-start-part:hover,
       .zmd-sidebar-title-arrow-middle-part:hover,
@@ -201,15 +159,16 @@ $arrow-height: 5em;
       font-family: 'Outfit', sans-serif;
       letter-spacing: -0.1em;
       font-size: 1.2em;
+      margin-right: -2em;
+      &.zmd-sidebar-open-arrow-bg-title-open {
+        margin-right: -1em;
+      }
     }
     .zmd-sidebar-open-arrow-title {
       z-index: 1;
+      margin-right: -2em;
       &.zmd-sidebar-open-arrow-title-open {
         color: #fdfb72;
-        margin-right: -1em;
-      }
-      @media screen and (max-width: zmd.$phone-width) {
-        margin-right: -1em;
       }
     }
     .zmd-sidebar-title-arrow-lines {

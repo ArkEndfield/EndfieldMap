@@ -225,7 +225,7 @@ async function onLeave(el: Element, done: () => void) {
 .popover-corner {
   position: absolute;
   width: 8px;
-  height: 8px;
+  height: calc(50% + 1px);
   border-color: rgba(220, 220, 220, 0.7);
   z-index: 2;
 

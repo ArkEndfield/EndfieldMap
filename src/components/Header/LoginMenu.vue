@@ -9,13 +9,13 @@
     @confirm="onLogin"
   >
     <h1 class="text-lg font-bold">{{ $t('header.login') }}</h1>
-    <div class="flex flex-col gap-4 mt-4 w-full px-4">
+    <div class="flex flex-col gap-4 mt-4 w-full px-16">
       <RoundInput
         v-model="username"
         :placeholder="$t('username')"
       >
         <template #icon>
-          <LoginInIcon />
+          <UserIcon />
         </template>
       </RoundInput>
       <RoundInput
