@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onBeforeUnmount, provide, nextTick } from 'vue';
+import { onMounted, ref, onBeforeUnmount, provide, nextTick, watch } from 'vue';
 import { createMap } from './components/map/MapCore';
 import { Select } from 'ol/interaction';
 import { click } from 'ol/events/condition';
@@ -203,13 +203,18 @@ onMounted(async () => {
           // 先设置弹窗位置，但不显示
           overlay.setPosition(newPosition);
 
-          // 预先调整地图中心
+          // 预先调整地图中心，确保弹窗完全可见
           await popupManager.adjustMapForPopup(
             currentMap as Map,
             newPosition,
             () => {
               // 动画完成后才显示弹窗
               isPopupVisible.value = true;
+
+              // 弹窗显示后额外检查位置
+              setTimeout(() => {
+                popupManager.adjustPopupPosition(true);
+              }, 300); // 等待弹窗动画完成后再次检查位置
             }
           );
         }
@@ -224,10 +229,30 @@ onMounted(async () => {
     }
   });
 
+  // 监听openSubPopup的变化，确保视图正确调整
+  watch(openSubPopup, newValue => {
+    console.log('openSubPopup changed to', newValue);
+    if (isPopupVisible.value && popupManager) {
+      // 等待DOM更新后调整视图，只调整一次即可
+      setTimeout(() => {
+        popupManager.adjustForExpandedPopup(newValue);
+      }, 100);
+    }
+  });
+
   // 当窗口大小改变时，也需要检查弹窗位置
   window.addEventListener('resize', () => {
     if (isPopupVisible.value && popupManager.getCurrentPosition()) {
-      popupManager.adjustPopupPosition();
+      // 窗口大小变化时强制调整位置
+      setTimeout(() => {
+        if (openSubPopup.value) {
+          // 如果副弹窗已展开，优先调整到副弹窗中心
+          popupManager.adjustForExpandedPopup(true);
+        } else {
+          // 否则，常规位置调整
+          popupManager.adjustPopupPosition(true);
+        }
+      }, 100);
     }
   });
 });

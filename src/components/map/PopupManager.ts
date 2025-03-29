@@ -50,11 +50,20 @@ export class PopupManager {
     this.openSubPopup.value = !this.openSubPopup.value;
 
     // 在状态改变后等待过渡动画完成，然后调整位置
+    // 增加延迟时间以确保DOM更新完成
+    setTimeout(() => {
+      if (this.isPopupVisible.value && this.currentPosition) {
+        // 调整地图以适应展开的弹窗
+        this.adjustForExpandedPopup(this.openSubPopup.value);
+      }
+    }, 100); // 先快速响应
+
+    // 再次检查位置，确保完整展示
     setTimeout(() => {
       if (this.isPopupVisible.value && this.currentPosition) {
         this.adjustPopupPosition(true);
       }
-    }, 550);
+    }, 550); // 动画完成后再次调整
   }
 
   // 弹出层出现动画
@@ -168,7 +177,7 @@ export class PopupManager {
   async adjustMapForPopup(map: Map, position: number[], callback?: () => void) {
     const view = map.getView();
     const mapSize = map.getSize();
-    const popupWidth = 300; // 像素
+    const popupWidth = 300; // 基本弹窗宽度(像素)
     if (!mapSize || !this.popupContainer) {
       if (callback) callback();
       return;
@@ -181,8 +190,12 @@ export class PopupManager {
     const mapRect = map.getTargetElement().getBoundingClientRect();
 
     // 增加弹窗的估计高度和宽度，确保有足够空间
-    const popupHeight = 320; // 像素
-    const safeMargin = 60; // 安全边距
+    const popupHeight = 120; // 基本弹窗高度(像素)
+    const safeMargin = 20; // 基本安全边距
+    const headerOffset = 20; // 顶部Header偏移量
+
+    // 如果副弹窗可能展开，需要考虑额外的空间，但不要预留太多
+    const extraRightSpace = 120; // 减少副弹窗可能占用的额外空间估计
 
     // 将点位置转换为屏幕像素坐标
     const pixel = map.getPixelFromCoordinate(position);
@@ -204,10 +217,11 @@ export class PopupManager {
     let panX = 0;
     let panY = 0;
 
-    // 检查是否需要调整视图
-    if (popupTop < safeMargin) {
+    // 检查是否需要调整视图 - 考虑基本弹窗位置
+    if (popupTop < safeMargin + headerOffset) {
+      // 添加顶部Header偏移量
       needToMove = true;
-      panY = safeMargin - popupTop;
+      panY = safeMargin + headerOffset - popupTop;
     }
 
     if (popupBottom > viewportHeight - safeMargin) {
@@ -220,9 +234,11 @@ export class PopupManager {
       panX = safeMargin - popupLeft;
     }
 
-    if (popupRight > viewportWidth - safeMargin) {
+    // 考虑副弹窗可能展开的情况，预留右侧空间
+    if (popupRight + extraRightSpace > viewportWidth - safeMargin) {
       needToMove = true;
-      panX = viewportWidth - safeMargin - popupRight;
+      // 为副弹窗预留更多空间
+      panX = viewportWidth - safeMargin - (popupRight + extraRightSpace);
     }
 
     if (needToMove) {
@@ -286,9 +302,10 @@ export class PopupManager {
 
     // 安全边距
     const safeMargin = 30;
+    const headerOffset = 30; // 顶部Header偏移量
 
     // 如果子弹窗展开，增加右侧检查的边界
-    const extraRightMargin = this.openSubPopup.value ? 300 : 0;
+    const extraRightMargin = this.openSubPopup.value ? 320 : 0; // 调整副弹窗宽度估计
 
     // 检查是否超出边界
     if (popupRect.left < mapRect.left + safeMargin) {
@@ -302,9 +319,10 @@ export class PopupManager {
         mapRect.right - safeMargin - (popupRect.right + extraRightMargin);
     }
 
-    if (popupRect.top < mapRect.top + safeMargin) {
+    if (popupRect.top < mapRect.top + safeMargin + headerOffset) {
+      // 添加顶部Header偏移量
       needAdjust = true;
-      adjustY = mapRect.top + safeMargin - popupRect.top;
+      adjustY = mapRect.top + safeMargin + headerOffset - popupRect.top;
     }
 
     if (popupRect.bottom > mapRect.bottom - safeMargin) {
@@ -313,18 +331,19 @@ export class PopupManager {
     }
 
     if (needAdjust) {
+      console.log('需要调整弹窗位置', { adjustX, adjustY });
       const view = this.map.getView();
       const resolution = view.getResolution() || 1;
       const currentCenter = view.getCenter();
 
       if (!currentCenter) return;
 
-      // 额外偏移以提供更多空间
-      const extraOffset = 10;
+      // 额外偏移以提供更多空间，但不要太多
+      const extraOffset = 20; // 减少额外偏移
       const extraX =
         adjustX !== 0
           ? Math.sign(adjustX) *
-            (extraOffset + (this.openSubPopup.value && adjustX < 0 ? 30 : 0))
+            (extraOffset + (this.openSubPopup.value && adjustX < 0 ? 40 : 0))
           : 0;
       const extraY = adjustY !== 0 ? Math.sign(adjustY) * extraOffset : 0;
 
@@ -336,6 +355,146 @@ export class PopupManager {
         ],
         duration: 250,
       });
+    }
+  }
+
+  // 特别为展开副弹窗准备的调整方法
+  async adjustForExpandedPopup(isExpanded: boolean) {
+    if (!this.currentPosition || !this.map || this.isPopupAnimating) return;
+
+    // 设置动画中状态，避免重复调整
+    this.isPopupAnimating = true;
+
+    try {
+      const view = this.map.getView();
+      const popupRect = this.popupContainer.getBoundingClientRect();
+      const mapRect = this.map.getTargetElement().getBoundingClientRect();
+
+      // console.log('adjustForExpandedPopup called', {
+      //   isExpanded,
+      //   popupRect,
+      //   mapRect,
+      //   headerOffset,
+      // });
+
+      if (isExpanded) {
+        // 展开时，只需要确保副弹窗完全可见
+        const resolution = view.getResolution() || 1;
+        const currentCenter = view.getCenter();
+        if (!currentCenter) return;
+
+        // 1. 计算副弹窗的宽度和位置
+        const mainPopupWidth = popupRect.width;
+        const subPopupWidth = mainPopupWidth * 0.8; // 基于CSS中的80%宽度
+
+        // 2. 计算副弹窗的右边界位置
+        const subPopupRight = popupRect.right + subPopupWidth;
+
+        // 3. 检查副弹窗是否超出视口右侧边界
+        const viewportRightEdge = mapRect.right - 40; // 40px安全边距
+
+        // 4. 只有当副弹窗会超出右侧边界时才调整
+        if (subPopupRight > viewportRightEdge) {
+          // 计算需要的水平偏移量 - 确保副弹窗完全可见
+          const pixelOffsetX = subPopupRight - viewportRightEdge;
+
+          console.log('副弹窗超出边界，计算偏移量', {
+            subPopupRight,
+            viewportRightEdge,
+            pixelOffsetX,
+            resolution,
+          });
+
+          // 将像素偏移转换为地图坐标偏移，只移动必要的距离
+          const coordOffsetX = pixelOffsetX * resolution;
+
+          // 构建新的中心坐标，只调整水平方向
+          const newCenter = [currentCenter[0] + coordOffsetX, currentCenter[1]];
+
+          console.log('调整地图中心，确保副弹窗可见', {
+            currentCenter,
+            newCenter,
+            coordOffsetX,
+          });
+
+          // 使用平滑动画移动地图
+          await new Promise<void>(resolve => {
+            view.animate(
+              {
+                center: newCenter,
+                duration: 350,
+                easing: t => {
+                  // 使用简单的缓入缓出
+                  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+                },
+              },
+              () => resolve()
+            );
+          });
+        }
+      } else if (this.currentPosition) {
+        // 收起时，如果标点已经被移出了视口，则调整视图让其回到合理位置
+        const pixel = this.map.getPixelFromCoordinate(this.currentPosition);
+        if (!pixel) return;
+
+        const currentCenter = view.getCenter();
+        if (!currentCenter) return;
+
+        // 检查点位置是否太靠近视口右边缘
+        const viewportRightEdge = mapRect.right - 80; // 安全边距
+
+        // 只有当偏移过大才调整
+        if (pixel[0] > viewportRightEdge) {
+          const resolution = view.getResolution() || 1;
+          const pixelOffsetX = pixel[0] - viewportRightEdge + 40; // 确保有足够空间
+
+          const newCenter = [
+            currentCenter[0] + pixelOffsetX * resolution,
+            currentCenter[1],
+          ];
+
+          await new Promise<void>(resolve => {
+            view.animate(
+              {
+                center: newCenter,
+                duration: 250,
+              },
+              () => resolve()
+            );
+          });
+        }
+      }
+
+      // 在调整副弹窗位置时，同时检查并调整垂直位置
+      if (popupRect.top < mapRect.top + 30) {
+        // 添加顶部Header偏移量
+        const currentCenter = view.getCenter();
+        if (!currentCenter) return;
+
+        const resolution = view.getResolution() || 1;
+        const pixelOffsetY = mapRect.top + 30 - popupRect.top;
+        const coordOffsetY = pixelOffsetY * resolution;
+
+        // 垂直方向调整
+        const newCenter = [currentCenter[0], currentCenter[1] - coordOffsetY];
+
+        await new Promise<void>(resolve => {
+          view.animate(
+            {
+              center: newCenter,
+              duration: 250,
+            },
+            () => resolve()
+          );
+        });
+      }
+    } catch (error) {
+      console.error('副弹窗视图调整错误:', error);
+    } finally {
+      // 确保标志位被重置
+      setTimeout(() => {
+        this.isPopupAnimating = false;
+      }, 50);
     }
   }
 

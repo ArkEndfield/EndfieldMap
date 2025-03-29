@@ -258,7 +258,27 @@ const toggleVideoInfo = (show: boolean) => {
 };
 
 const toggleSubPopup = () => {
-  emit('update:openSubPopup', !props.openSubPopup);
+  const newState = !props.openSubPopup;
+  console.log('切换副弹窗状态', newState);
+  emit('update:openSubPopup', newState);
+
+  // 确保立即更新DOM状态，然后进行视图调整
+  requestAnimationFrame(() => {
+    if (
+      popupManager &&
+      typeof popupManager.adjustForExpandedPopup === 'function'
+    ) {
+      // 等待DOM更新后立即调整一次
+      setTimeout(() => {
+        popupManager.adjustForExpandedPopup(newState);
+      }, 50);
+
+      // 过渡动画完成后的最终调整，确保位置正确
+      setTimeout(() => {
+        popupManager.adjustForExpandedPopup(newState);
+      }, 550);
+    }
+  });
 };
 
 // 动画处理 - 简化为只用scaleY变换
@@ -334,5 +354,14 @@ defineExpose({
 .v-leave-to {
   opacity: 0;
   transform: scaleY(0);
+}
+</style>
+
+<style>
+/* 调整副弹窗样式，提供更合理的空间 */
+.pop-drop.unfold {
+  width: 80%; /* 减少副弹窗宽度，使其更合理 */
+  top: 0;
+  right: calc(-80% - 0.5em); /* 适应新宽度 */
 }
 </style>
