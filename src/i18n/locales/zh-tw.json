@@ -52,6 +52,19 @@
       "all": "全部",
       "marked": "已標記收集",
       "not_marked": "未標記收集"
+    },
+    "filter": {
+      "category": {
+        "ether": "醚質",
+        "chest": "寶箱",
+        "mineral": "礦物",
+        "enemy": "敵人",
+        "settlement": "定居點",
+        "spcstone": "稀有礦物",
+        "special": "特殊點位",
+        "plant": "植物類素材",
+        "dungeon": "副本點位"
+      }
     }
   },
   "popover": {

@@ -6,18 +6,19 @@
     <ZmdSidebarItem
       icon-color="#FFFFFF"
       :open="props.open"
+      v-for="(k, i) in categoryInfo"
     >
-      <template #title> 收集品 </template>
-      <template #subtitle> COLLECTION </template>
+      <template #title> {{ $t(`sidebar.filter.category.${i}`) }} </template>
+      <template #subtitle> {{ i }} </template>
       <div class="objecg-list">
         <ZmdSidebarObject
-          v-for="k in entityInfo"
-          :name="k.name"
-          :value="k.count"
-          v-model="k.show"
+          v-for="v in k"
+          :name="v.name"
+          :value="v.count"
+          v-model="v.show"
           @change="refresh"
         >
-          <img :src="`/assets/${k.point}.png`" />
+          <img :src="`/assets/${v.point}.png`" />
         </ZmdSidebarObject>
       </div>
     </ZmdSidebarItem>
@@ -25,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { entityInfo, refresh } from '@/data/entity';
+import { categoryInfo, refresh } from '@/data/entity';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
 

@@ -52,6 +52,19 @@
       "all": "All",
       "marked": "Marked",
       "not_marked": "Unmarked"
+    },
+    "filter": {
+      "category": {
+        "ether": "Ether",
+        "chest": "Chest",
+        "mineral": "Mineral",
+        "enemy": "Enemy",
+        "settlement": "Settlement",
+        "spcstone": "Rare Mineral",
+        "special": "Special Point",
+        "plant": "Plant Material",
+        "dungeon": "Dungeon Point"
+      }
     }
   },
   "popover": {

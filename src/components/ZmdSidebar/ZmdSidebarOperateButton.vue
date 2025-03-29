@@ -150,9 +150,20 @@ $glow-color-active: rgba(124, 124, 124, 1);
   &__subtitle {
     position: relative;
     z-index: 2;
-    zoom: 0.2;
+    transform: scale(0.2);
+    transform-origin: center top;
     color: $small-color;
     letter-spacing: 0.8em;
+    width: 500%;
+    margin: 0 -200%;
+    text-align: center;
+    height: 0.5em;
+    line-height: 1;
+    margin-top: 0em;
+    white-space: nowrap;
+    overflow: visible;
+    display: block;
+    font-size: 1rem;
   }
 }
 </style>

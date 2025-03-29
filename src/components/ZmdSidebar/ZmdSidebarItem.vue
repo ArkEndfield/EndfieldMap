@@ -161,10 +161,11 @@ $gap: 0.7em;
       z-index: 2;
     }
     .subtitle {
-      margin-bottom: 1em;
-      zoom: 0.4;
+      margin-bottom: 0.5em;
+      scale: 0.4;
       letter-spacing: 0.4em;
       z-index: 2;
+      transform-origin: left bottom;
     }
 
     &:hover {
