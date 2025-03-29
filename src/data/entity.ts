@@ -10,12 +10,15 @@ import {
   Style,
   Text,
 } from 'ol/style';
-import { computed, reactive } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import Cluster from 'ol/source/Cluster';
 import VectorLayer from 'ol/layer/Vector';
-
-// @ts-ignore
-import points from '../assets/output.json';
+import { PointData, points } from './points';
+import {
+  currentMarkFilter,
+  shouldShowByMarkStatus,
+  onMarkChange,
+} from './marks';
 
 interface EntityInfo {
   name: string;
@@ -499,7 +502,6 @@ export const categoryInfo = computed(() => {
   return categories;
 });
 
-let index = 1;
 const features: Feature<Point>[] = [];
 const itemMap: any = {};
 const entityGroup: Record<
@@ -513,30 +515,15 @@ const entityGroup: Record<
 // 添加一个全局变量来存储当前的缩放级别
 let currentZoomLevel = 3;
 
-// 添加一个函数来获取基于缩放级别的图标缩放因子
-export const getIconScaleForZoom = (baseScale: number = 1): number => {
-  // 根据缩放级别调整缩放因子
-  const zoomScaleFactor = {
-    1: 0.5,
-    2: 0.5,
-    3: 0.6,
-    4: 0.8,
-    5: 1.0,
-  };
-
-  const scaleFactor = zoomScaleFactor[Math.round(currentZoomLevel)] || 1.0;
-  return baseScale * scaleFactor;
-};
-
-// 添加一个函数来获取基于缩放级别的圆形半径
+// 简化的圆形半径获取函数，在较小缩放级别时使用更大的半径
 export const getCircleRadiusForZoom = (baseRadius: number = 20): number => {
-  // 根据缩放级别调整圆形半径
+  // 根据缩放级别调整圆形半径，较小缩放级别使用较大半径
   const zoomRadiusFactor = {
-    1: 0.6,
-    2: 0.7,
-    3: 0.8,
-    4: 0.9,
-    5: 1.0,
+    1: 1, // 最小缩放级别使用较大半径
+    2: 1.0,
+    3: 1.0,
+    4: 1.1,
+    5: 1.3, // 最大缩放级别使用较小半径
   };
 
   const radiusFactor = zoomRadiusFactor[Math.round(currentZoomLevel)] || 1.0;
@@ -546,23 +533,184 @@ export const getCircleRadiusForZoom = (baseRadius: number = 20): number => {
 // 更新当前缩放级别的函数
 export const updateCurrentZoom = (zoom: number) => {
   currentZoomLevel = zoom;
-  refreshIconStyles();
+  refreshStyles();
 };
 
-export interface entityData {
-  sceneId: string;
-  seq: number;
-  position: {
-    x: number;
-    y: number;
-    z: number;
+// 为实体类型获取颜色
+function getColorForEntity(entityType: string): string {
+  const colorMap: { [key: string]: string } = {
+    // 宝箱 - 橙色
+    int_trchest_common: 'rgba(255, 153, 0, 0.8)',
+    int_trchest_common_normal: 'rgba(255, 153, 0, 0.8)',
+    int_trchest_common_high: 'rgba(255, 153, 0, 0.8)',
+    int_trchest_lock: 'rgba(255, 153, 0, 0.8)',
+
+    // 醚质 - 黄色
+    int_collection_coin: 'rgba(255, 235, 59, 0.8)',
+    int_collection_coin_puzzle: 'rgba(255, 235, 59, 0.8)',
+
+    // 特殊点位 - 蓝色
+    int_campfire_v2: 'rgba(33, 150, 243, 0.8)',
+    int_blackbox_entry: 'rgba(156, 39, 176, 0.8)',
+    int_blackbox_entry_hard: 'rgba(156, 39, 176, 0.8)',
+    int_doodad_core_recycle: 'rgba(33, 150, 243, 0.8)',
+
+    // 副本 - 红色
+    int_dungeon_entry_bossrush: 'rgba(183, 28, 28, 0.8)',
+    int_dungeon_entry_challenge: 'rgba(183, 28, 28, 0.8)',
+    int_dungeon_entry_hard: 'rgba(183, 28, 28, 0.8)',
+    int_dungeon_entry_resource: 'rgba(183, 28, 28, 0.8)',
+
+    // 矿物 - 棕色
+    int_doodad_core_mine_copper: 'rgba(121, 85, 72, 0.8)',
+    int_doodad_core_mine_iron: 'rgba(121, 85, 72, 0.8)',
+    int_doodad_core_mine_originum: 'rgba(121, 85, 72, 0.8)',
+    int_doodad_core_mine_quartz: 'rgba(121, 85, 72, 0.8)',
+
+    // 植物 - 绿色
+    int_doodad_core_crylplant_1_1: 'rgba(76, 175, 80, 0.8)',
+    int_doodad_core_crylplant_1_2: 'rgba(76, 175, 80, 0.8)',
+    int_doodad_core_crylplant_1_3: 'rgba(76, 175, 80, 0.8)',
+    int_doodad_core_crylplant_2_1: 'rgba(76, 175, 80, 0.8)',
+    int_doodad_core_mushroom_1_1: 'rgba(76, 175, 80, 0.8)',
+    int_doodad_core_mushroom_1_2: 'rgba(76, 175, 80, 0.8)',
+    int_doodad_core_mushroom_1_3: 'rgba(76, 175, 80, 0.8)',
+    int_doodad_core_mushroom_2_1: 'rgba(76, 175, 80, 0.8)',
+
+    // 稀有矿物 - 紫色
+    int_doodad_core_spcstone_1_1: 'rgba(103, 58, 183, 0.8)',
+    int_doodad_core_spcstone_1_2: 'rgba(103, 58, 183, 0.8)',
+    int_doodad_core_spcstone_1_3: 'rgba(103, 58, 183, 0.8)',
+    int_doodad_core_spcstone_2_1: 'rgba(103, 58, 183, 0.8)',
+
+    // 定居点 - 深蓝色
+    stm_hongs_1: 'rgba(25, 118, 210, 0.8)',
+    stm_tundra_1: 'rgba(25, 118, 210, 0.8)',
+    stm_tundra_2: 'rgba(25, 118, 210, 0.8)',
+    stm_tundra_3: 'rgba(25, 118, 210, 0.8)',
+
+    // 敌人 - 红色
+    eny_0045_agtrinit: 'rgba(211, 47, 47, 0.8)',
   };
-  entityDataIdKey: string;
-  properties?: any[];
+
+  return colorMap[entityType] || 'rgba(128, 128, 128, 0.8)';
 }
 
-export const marker = (entry: entityData) => {
-  entry.seq = index++;
+// 添加一个用于缓存图片尺寸的对象
+const imageSizeCache: { [key: string]: { width: number; height: number } } = {};
+
+// 获取图片尺寸的函数
+function getImageSize(src: string): Promise<{ width: number; height: number }> {
+  return new Promise(resolve => {
+    if (imageSizeCache[src]) {
+      // 如果已经缓存了尺寸信息，直接返回
+      resolve(imageSizeCache[src]);
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      // 缓存尺寸信息并返回
+      const size = { width: img.width, height: img.height };
+      imageSizeCache[src] = size;
+      resolve(size);
+    };
+    img.onerror = () => {
+      // 加载失败时使用默认尺寸
+      console.warn(`Failed to load image: ${src}`);
+      resolve({ width: 32, height: 32 });
+    };
+    img.src = src;
+  });
+}
+
+// 根据图片尺寸计算最适合的缩放比例
+function calculateOptimalScale(
+  imageWidth: number,
+  imageHeight: number,
+  targetSize: number
+): number {
+  // 取图片的最大边长
+  const maxDimension = Math.max(imageWidth, imageHeight);
+  // 计算需要的缩放比例，使最大边长适应目标尺寸
+  return targetSize / maxDimension;
+}
+
+// 修改创建样式的函数，加入图片尺寸自适应
+async function createCircleIconStyle(entityType: string, size: number = 1) {
+  const color = getColorForEntity(entityType);
+  const baseRadius = 15;
+  const radius = getCircleRadiusForZoom(baseRadius);
+
+  // 计算图标的目标尺寸（圆形半径的比例）
+  const targetIconSize = radius * 1.4; // 图标最大可占用圆形直径的70%
+
+  // 获取图片路径
+  const imagePath = `/assets/${entityInfo[entityType]?.category || 'default'}/${
+    entityInfo[entityType]?.entityInfo.pic || 'default'
+  }.png`;
+
+  // 获取图片尺寸
+  const imageSize = await getImageSize(imagePath);
+
+  // 计算最佳缩放比例
+  const optimalScale = calculateOptimalScale(
+    imageSize.width,
+    imageSize.height,
+    targetIconSize
+  );
+
+  // 创建统一的样式
+  let styles = [
+    // 圆形背景
+    new Style({
+      image: new CircleStyle({
+        radius: radius,
+        fill: new Fill({
+          color: color,
+        }),
+        stroke: new Stroke({
+          color: '#fff',
+          width: 1,
+        }),
+      }),
+    }),
+    // 小图标居中，使用计算出的最佳缩放比例
+    new Style({
+      image: new Icon({
+        src: imagePath,
+        scale: optimalScale,
+        // 图标居中于圆形
+        anchor: [0.5, 0.5],
+      }),
+    }),
+  ];
+
+  // 如果是聚合点，添加数字标记
+  if (size > 1) {
+    styles.push(
+      new Style({
+        text: new Text({
+          text: size.toString(),
+          fill: new Fill({
+            color: '#fff',
+          }),
+          font: '11px Arial',
+          offsetY: radius + 4, // 数字显示在圆下方
+          stroke: new Stroke({
+            color: '#000',
+            width: 2,
+          }),
+        }),
+      })
+    );
+  }
+
+  return styles;
+}
+
+// 修改marker函数，支持异步加载图片尺寸
+export const marker = (entry: PointData) => {
   const info = entityInfo[entry.entityDataIdKey];
   if (!info || !info?.entityInfo.show) return;
 
@@ -570,18 +718,28 @@ export const marker = (entry: entityData) => {
     geometry: new Point(xyz2crd(entry.position)),
     payload: entry,
   });
+
+  // 先设置一个默认样式
   feature.setStyle(
     new Style({
-      image: new Icon({
-        src: `/assets/${
-          entityInfo[entry.entityDataIdKey]?.entityInfo.point || 'default'
-        }.png`,
-        scale: getIconScaleForZoom(
-          entityInfo[entry.entityDataIdKey]?.entityInfo.scale
-        ),
+      image: new CircleStyle({
+        radius: 15,
+        fill: new Fill({
+          color: getColorForEntity(entry.entityDataIdKey),
+        }),
+        stroke: new Stroke({
+          color: '#fff',
+          width: 1,
+        }),
       }),
     })
   );
+
+  // 异步加载并设置最终样式
+  createCircleIconStyle(entry.entityDataIdKey).then(style => {
+    feature.setStyle(style);
+  });
+
   if (!entityGroup[entry.entityDataIdKey]?.points?.length) {
     entityGroup[entry.entityDataIdKey] = {
       name: info.entityInfo.name,
@@ -595,13 +753,10 @@ export const marker = (entry: entityData) => {
 };
 
 // 加载数据
-for (const m in points) {
-  if (!m.includes('map01')) continue;
-  for (const point of points[m]) {
-    itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1;
-    const feature = marker(point);
-    if (feature) features.push(feature);
-  }
+for (const point of points) {
+  itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1;
+  const feature = marker(point);
+  if (feature) features.push(feature);
 }
 
 console.log('醚质总数:', features.length, itemMap);
@@ -616,28 +771,8 @@ export const styleCache: { [key: string]: Style | Style[] } = {};
 export const entityClusterLayers: VectorLayer<any>[] = [];
 export const entityClusterSources: { [key: string]: Cluster } = {};
 
-// 为不同实体类型分配颜色
-function getColorForEntity(entityType: string): string {
-  const colorMap: { [key: string]: string } = {
-    int_trchest_common: 'rgba(255, 153, 0, 0.8)',
-    int_trchest_common_normal: 'rgba(255, 153, 0, 0.8)',
-    int_trchest_common_high: 'rgba(255, 153, 0, 0.8)',
-    int_trchest_lock: 'rgba(255, 153, 0, 0.8)',
-    int_collection_common: 'rgba(76, 175, 80, 0.8)',
-    int_campfire_v2: 'rgba(33, 150, 243, 0.8)',
-    int_blackbox_entry: 'rgba(156, 39, 176, 0.8)',
-    int_blackbox_entry_hard: 'rgba(156, 39, 176, 0.8)',
-    int_dungeon_entry_challenge: 'rgba(183, 28, 28, 0.8)',
-    int_dungeon_entry_resource: 'rgba(183, 28, 28, 0.8)',
-    int_collection_coin: 'rgba(255, 235, 59, 0.8)',
-    int_collection_coin_puzzle: 'rgba(255, 235, 59, 0.8)',
-  };
-
-  return colorMap[entityType] || 'rgba(128, 128, 128, 0.8)';
-}
-
-// 刷新所有图标样式的函数
-export const refreshIconStyles = () => {
+// 刷新所有样式的函数
+export const refreshStyles = () => {
   // 清除样式缓存，这样下次渲染时会重新计算样式
   Object.keys(styleCache).forEach(key => delete styleCache[key]);
 
@@ -690,34 +825,19 @@ export const createEntityClusterLayers = () => {
       source: clusterSource,
       style: feature => {
         const size = feature.get('features')?.length;
-        // 如果只有一个点，使用原始样式
-        if (!size || size === 1) {
-          const baseScale = entityInfo[entityType]?.entityInfo.scale;
-          return new Style({
-            image: new Icon({
-              src: `/assets/${
-                entityInfo[entityType]?.entityInfo.point || 'default'
-              }.png`,
-              scale: getIconScaleForZoom(baseScale),
-            }),
-          });
-        }
 
-        // 否则使用同样的图标但添加数字标记
+        // 样式键
         const styleKey = `${entityType}-${size}-${currentZoomLevel}`;
-        if (!styleCache[styleKey]) {
-          const color = getColorForEntity(entityType);
-          const baseRadius = 20;
-          const radius = getCircleRadiusForZoom(baseRadius);
 
-          // 这里创建样式数组而不是一个组合样式
-          const styles = [
-            // 半透明圆形背景
+        // 如果缓存中没有样式，创建一个默认样式并异步更新
+        if (!styleCache[styleKey]) {
+          // 设置默认样式
+          const defaultStyle = [
             new Style({
               image: new CircleStyle({
-                radius: radius,
+                radius: getCircleRadiusForZoom(15),
                 fill: new Fill({
-                  color: color,
+                  color: getColorForEntity(entityType),
                 }),
                 stroke: new Stroke({
                   color: '#fff',
@@ -725,39 +845,20 @@ export const createEntityClusterLayers = () => {
                 }),
               }),
             }),
-            // 图标
-            new Style({
-              image: new Icon({
-                src: `/assets/${
-                  entityInfo[entityType]?.entityInfo.point || 'default'
-                }.png`,
-                scale: getIconScaleForZoom(
-                  entityInfo[entityType]?.entityInfo.scale
-                ),
-              }),
-            }),
-            // 数字标记
-            new Style({
-              text: new Text({
-                text: size.toString(),
-                fill: new Fill({
-                  color: '#fff',
-                }),
-                font: 'bold 12px Arial',
-                offsetX: 8, // 向右偏移
-                offsetY: 8, // 向下偏移
-                stroke: new Stroke({
-                  color: '#000',
-                  width: 2,
-                }),
-              }),
-            }),
           ];
 
-          styleCache[styleKey] = styles;
+          // 缓存默认样式
+          styleCache[styleKey] = defaultStyle;
+
+          // 异步创建并更新最终样式
+          createCircleIconStyle(entityType, size).then(finalStyle => {
+            styleCache[styleKey] = finalStyle;
+            // 通知图层刷新
+            layer.changed();
+          });
         }
 
-        // 从缓存返回样式数组
+        // 返回当前缓存的样式（可能是默认样式，也可能是最终样式）
         return styleCache[styleKey];
       },
       zIndex: 10,
@@ -814,7 +915,7 @@ export const refreshCluster = () => {
   }
 };
 
-// 修改refresh函数，更新图层的可见性
+// 修改refresh函数，加入更多调试信息
 export const refresh = () => {
   for (const key in entityInfo) {
     // 获取该类型的聚合源
@@ -825,10 +926,15 @@ export const refresh = () => {
 
     // 如果该类型的点位应该显示，但源可能是空的
     if (entityInfo[key].entityInfo.show) {
-      // 重新添加源中的所有特征
-      const featuresForType = features.filter(
-        f => f.get('payload')?.entityDataIdKey === key
-      );
+      // 重新添加源中的所有特征，并根据标记状态筛选
+      const featuresForType = features.filter(f => {
+        const payload = f.get('payload');
+        const shouldShow =
+          payload?.entityDataIdKey === key &&
+          shouldShowByMarkStatus(payload?.seq);
+        return shouldShow;
+      });
+
       // 清除并重新添加特征以确保可见性
       const vectorSource = source.getSource();
       if (vectorSource) {
@@ -845,7 +951,11 @@ export const refresh = () => {
   }
 
   // 强制更新所有源的聚合
-  Object.values(entityClusterSources).forEach(source => source.refresh());
+  Object.values(entityClusterSources).forEach(source => {
+    source.refresh();
+  });
+
+  console.log('地图刷新完成');
 };
 
 export const select = (key: string) => {
@@ -891,4 +1001,15 @@ export const clusterSource = new Cluster({
   source: new VectorSource(),
 });
 
+// 监听标记筛选状态变化，刷新地图
+watch(currentMarkFilter, () => {
+  refresh();
+});
+
 createEntityClusterLayers();
+
+onMarkChange(() => {
+  if (currentMarkFilter.value !== 'all') {
+    refresh();
+  }
+});

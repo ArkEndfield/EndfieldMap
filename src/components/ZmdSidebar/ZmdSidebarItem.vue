@@ -102,11 +102,12 @@ $gap: 0.7em;
   .header {
     display: flex;
     align-items: flex-end;
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 10;
     padding-left: 0.5em;
-    position: relative;
     padding-bottom: 0.2em;
+    backdrop-filter: blur(1em);
     clip-path: polygon(
       0% 0%,
       100% 0%,

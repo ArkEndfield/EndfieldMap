@@ -195,18 +195,6 @@
           // 先让app元素开始准备显示
           appElem.classList.add( 'app-ready' );
           appElem.classList.add( 'app-transition-active' );
-
-          // 在下一帧开始处理loading隐藏
-          requestAnimationFrame( function () {
-            // 确保两个动画交叉进行 - 当app开始显示后立即开始隐藏loading
-            loadingElem.classList.add( 'loading-hidden' );
-
-            // 监听过渡完成事件
-            loadingElem.addEventListener( 'transitionend', function handler () {
-              loadingElem.removeEventListener( 'transitionend', handler );
-              loadingElem.style.display = 'none';
-            } );
-          } );
         } );
       } );
     </script>

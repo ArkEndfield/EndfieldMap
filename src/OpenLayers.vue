@@ -60,7 +60,6 @@
           <div
             class="[writing-mode:vertical-lr] bg-[#3E3E3E] text-[#bfbfbf] font-black pb-6 flex-1 flex items-center justify-center text-2xl"
           >
-            <!-- {{ openSubPopup ? $t('sidebar.fold') : $t('sidebar.unfold') }} -->
             <DoubleChevronRight
               class="drop-shadow-[0_0_0.2em_rgba(191,191,191,0.8)] transition-transform"
               :class="{ 'rotate-180': openSubPopup }"
@@ -150,7 +149,7 @@
                 </button>
                 <div>
                   {{
-                    entityInfo[entity.entityDataIdKey]?.name ||
+                    entityInfo[entity.entityDataIdKey]?.entityInfo.name ||
                     $t('popover.unknow_name')
                   }}
                 </div>
@@ -158,7 +157,8 @@
                   <span>id: {{ entity.entityDataIdKey }}</span>
                   <span class="float-right opacity-75">#{{ entity.seq }}</span>
                 </div>
-                <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div>
+                <!-- <div class="w-full h-32 rounded-md bg-[#9C9B9C]"></div> -->
+                <GuideNode :nodes="guides[entity.seq].nodes" />
                 <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
                   坐标 ({{ entity.position.x }}, {{ entity.position.y }},
                   {{ entity.position.z }})
@@ -177,7 +177,10 @@
                     >
                       {{ $t('popover.obtained') }}
                     </label>
-                    <ZmdSwitch :id="`get-${entity.entityDataIdKey}`" />
+                    <ZmdSwitch
+                      :id="`get-${entity.entityDataIdKey}`"
+                      v-model:checked="marks[entity.seq].finish"
+                    />
                   </div>
                 </div>
               </div>
@@ -207,8 +210,7 @@
                 <div class="border-b border-[#404140] pb-2 mb-3">
                   <div class="font-bold">
                     {{
-                      entityInfo[entity.entityDataIdKey]?.name ||
-                      $t('popover.unknow_name')
+                      guides[entity.seq].video.bv || $t('popover.unknow_name')
                     }}
                   </div>
                 </div>
@@ -218,8 +220,7 @@
                   </div>
                   <div class="text-[#ece065] mt-1">
                     {{
-                      entityInfo[entity.entityDataIdKey]?.bvid ||
-                      $t('popover.unknown_bv')
+                      guides[entity.seq].video.bv || $t('popover.unknown_bv')
                     }}
                   </div>
                 </div>
@@ -229,14 +230,13 @@
                   </div>
                   <a
                     :href="`https://www.bilibili.com/video/${
-                      entityInfo[entity.entityDataIdKey]?.bvid || ''
+                      guides[entity.seq].video.bv || ''
                     }`"
                     target="_blank"
                     class="text-[#ece065] mt-1 block break-all hover:underline"
                   >
                     https://www.bilibili.com/video/{{
-                      entityInfo[entity.entityDataIdKey]?.bvid ||
-                      $t('popover.unknown_bv')
+                      guides[entity.seq].video.bv || $t('popover.unknown_bv')
                     }}
                   </a>
                 </div>
@@ -261,9 +261,9 @@ import { click } from 'ol/events/condition';
 import Control from 'ol/control/Control';
 import Overlay from 'ol/Overlay';
 import { animate, spring } from 'motion';
+import { marks } from './data/marks';
 import {
   entityInfo,
-  entityData,
   entityClusterLayers,
   updateClusterDistance,
   forceDisperseAtMaxZoom,
@@ -272,6 +272,8 @@ import {
 } from './data/entity';
 import { areaNameLayer, loadTextPoints } from './data/locations';
 import { defaults as interactionDefaults } from 'ol/interaction';
+import { guides } from './data/guides';
+import { type PointData } from './data/points';
 
 const popupContainer = ref<HTMLElement>();
 const isPopupVisible = ref(false);
@@ -517,7 +519,7 @@ const simpleProjection = new Projection({
 
 const transparentBase64 =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
-const entity = ref<entityData>({
+const entity = ref<PointData>({
   sceneId: '',
   seq: 1,
   entityDataIdKey: '',
@@ -534,7 +536,7 @@ const closeToast = () => {
 };
 
 // 添加一个函数用于处理弹出层的关闭和重新打开
-const closeAndReopenPopup = async (data: entityData, newPosition: number[]) => {
+const closeAndReopenPopup = async (data: PointData, newPosition: number[]) => {
   // 关闭当前弹出层
   isPopupVisible.value = false;
 
@@ -734,6 +736,13 @@ function onTransitionEnd(event: TransitionEvent) {
 
 function toggleSubPopup() {
   openSubPopup.value = !openSubPopup.value;
+
+  // 在状态改变后等待过渡动画完成，然后调整位置
+  setTimeout(() => {
+    if (isPopupVisible.value && currentPosition) {
+      adjustPopupPosition(true);
+    }
+  }, 550);
 }
 
 // 改进的调整弹窗位置函数 - 用于在内容变化后重新检查位置
@@ -753,15 +762,19 @@ function adjustPopupPosition(forceAdjust = false) {
   // 增大安全边距以确保弹窗完全可见
   const safeMargin = 30;
 
+  // 如果子弹窗展开，增加右侧检查的边界
+  const extraRightMargin = openSubPopup.value ? 300 : 0; // 子弹窗宽度估计
+
   // 检查是否超出边界
   if (popupRect.left < mapRect.left + safeMargin) {
     needAdjust = true;
     adjustX = mapRect.left + safeMargin - popupRect.left;
   }
 
-  if (popupRect.right > mapRect.right - safeMargin) {
+  // 右侧检查时考虑子弹窗宽度
+  if (popupRect.right + extraRightMargin > mapRect.right - safeMargin) {
     needAdjust = true;
-    adjustX = mapRect.right - safeMargin - popupRect.right;
+    adjustX = mapRect.right - safeMargin - (popupRect.right + extraRightMargin);
   }
 
   if (popupRect.top < mapRect.top + safeMargin) {
@@ -785,8 +798,13 @@ function adjustPopupPosition(forceAdjust = false) {
 
     // 额外偏移以提供更多空间
     const extraOffset = 10;
+    // 如果子弹窗展开，增加右侧的额外偏移
+    const extraX =
+      adjustX !== 0
+        ? Math.sign(adjustX) *
+          (extraOffset + (openSubPopup.value && adjustX < 0 ? 30 : 0))
+        : 0;
     const extraY = adjustY !== 0 ? Math.sign(adjustY) * extraOffset : 0;
-    const extraX = adjustX !== 0 ? Math.sign(adjustX) * extraOffset : 0;
 
     // 平滑动画
     view.animate({

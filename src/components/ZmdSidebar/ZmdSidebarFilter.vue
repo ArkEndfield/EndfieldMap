@@ -35,20 +35,20 @@
       <div class="title">{{ $t('sidebar.marker_point_filter') }}</div>
       <div class="list">
         <ZmdSidebarFilterToggle
-          :checked="filterCollected === FilterCollected.All"
-          @change="setFilterCollected(FilterCollected.All)"
+          :checked="currentMarkFilter === 'all'"
+          @change="setMarkFilter('all')"
         >
           {{ $t('sidebar.collection.all') }}
         </ZmdSidebarFilterToggle>
         <ZmdSidebarFilterToggle
-          :checked="filterCollected === FilterCollected.Collected"
-          @change="setFilterCollected(FilterCollected.Collected)"
+          :checked="currentMarkFilter === 'marked'"
+          @change="setMarkFilter('marked')"
         >
           {{ $t('sidebar.collection.marked') }}
         </ZmdSidebarFilterToggle>
         <ZmdSidebarFilterToggle
-          :checked="filterCollected === FilterCollected.NotCollected"
-          @change="setFilterCollected(FilterCollected.NotCollected)"
+          :checked="currentMarkFilter === 'unmarked'"
+          @change="setMarkFilter('unmarked')"
         >
           {{ $t('sidebar.collection.not_marked') }}
         </ZmdSidebarFilterToggle>
@@ -68,17 +68,7 @@ import { animate, spring } from 'motion';
 import { nextTick } from 'vue';
 import { onMounted } from 'vue';
 import { selectAll, clear, isSelectAll } from '@/data/entity';
-
-enum FilterCollected {
-  All,
-  Collected,
-  NotCollected,
-}
-const filterCollected = ref<FilterCollected>(FilterCollected.All);
-
-const setFilterCollected = (collected: FilterCollected) => {
-  filterCollected.value = collected;
-};
+import { currentMarkFilter, setMarkFilter } from '@/data/marks';
 
 const filterRef = ref<HTMLElement>();
 

@@ -9,7 +9,7 @@
     </span>
     <div
       class="zmd-switch"
-      :class="{ 'is-checked': modelValue, 'is-disabled': props.disabled }"
+      :class="{ 'is-checked': checked, 'is-disabled': props.disabled }"
       @click="toggleSwitch"
     >
       <span
@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
   height: 16,
 });
 
-const modelValue = defineModel<boolean>({ default: false });
+const checked = defineModel<boolean>('checked', { default: false });
 
 const emit = defineEmits<{
   (e: 'change', value: boolean): void;
@@ -57,14 +57,14 @@ const emit = defineEmits<{
 const toggleSwitch = () => {
   if (props.disabled) return;
 
-  const newValue = !modelValue.value;
-  modelValue.value = newValue;
+  const newValue = !checked.value;
+  checked.value = newValue;
   emit('change', newValue);
 };
 
 const switchStyle = computed(() => {
   return {
-    backgroundColor: modelValue.value ? props.activeColor : props.inactiveColor,
+    backgroundColor: checked.value ? props.activeColor : props.inactiveColor,
     width: `${props.width}px`,
     height: `${props.height}px`,
     borderRadius: `${props.height}px`,
@@ -106,7 +106,7 @@ const circleStyle = computed(() => {
     height: v-bind('props.height + "px"');
     border-radius: v-bind('props.height + "px"');
     background-color: v-bind(
-      'modelValue ? props.activeColor : props.inactiveColor'
+      'checked ? props.activeColor : props.inactiveColor'
     );
     transition: all 0.3s;
     margin: 0;

@@ -18,7 +18,7 @@
           v-model="v.show"
           @change="refresh"
         >
-          <img :src="`/assets/${v.point}.png`" />
+          <img :src="`/assets/${i}/${v.pic}.png`" />
         </ZmdSidebarObject>
       </div>
     </ZmdSidebarItem>

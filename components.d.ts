@@ -22,6 +22,7 @@ declare module 'vue' {
     FeedbackMenu: typeof import('./src/components/Header/FeedbackMenu.vue')['default']
     ForwardLeftIcon: typeof import('./src/components/icons/ForwardLeftIcon.vue')['default']
     GroupMenu: typeof import('./src/components/Header/GroupMenu.vue')['default']
+    GuideNode: typeof import('./src/components/GuideNode.vue')['default']
     HeaderMenu: typeof import('./src/components/Header/HeaderMenu.vue')['default']
     HelpIcon: typeof import('./src/components/icons/HelpIcon.vue')['default']
     KeyIcon: typeof import('./src/components/icons/KeyIcon.vue')['default']
