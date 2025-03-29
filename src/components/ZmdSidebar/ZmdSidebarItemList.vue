@@ -56,6 +56,7 @@ const props = withDefaults(
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8em;
+    padding-bottom: 0.4em;
   }
 }
 </style>
