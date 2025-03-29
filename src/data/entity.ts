@@ -30,6 +30,7 @@ type EntityCategory =
   | "chest" // 宝箱
   | "mineral" // 矿物
   | "enemy" // 敌人
+  | "settlement" // 定居点
   | "spcstone" // 稀有矿物
   | "special" // 特殊点位
   | "plant" // 植物类素材
@@ -478,6 +479,43 @@ export const entityCategories: EntityCategories = {
     entityInfo: {
       name: "呼叫竹筏",
       point: "int_curve_move_platform",
+      show: true,
+      count: 1,
+    },
+  },
+
+  stm_hongs_1: {
+    category: "settlement",
+    entityInfo: {
+      name: "武陵联合科考基地",
+      point: "stm_hongs_1",
+      show: true,
+      count: 1,
+    },
+  },
+  stm_tundra_1: {
+    category: "settlement",
+    entityInfo: {
+      name: "谷地难民定居地",
+      point: "stm_tundra_1",
+      show: true,
+      count: 1,
+    },
+  },
+  stm_tundra_2: {
+    category: "settlement",
+    entityInfo: {
+      name: "工团基础建设前站",
+      point: "stm_tundra_2",
+      show: true,
+      count: 1,
+    },
+  },
+  stm_tundra_3: {
+    category: "settlement",
+    entityInfo: {
+      name: "高地灾后恢复前哨",
+      point: "stm_tundra_3",
       show: true,
       count: 1,
     },
