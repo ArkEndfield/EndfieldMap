@@ -20,6 +20,7 @@ import points from '../assets/output.json';
 interface EntityInfo {
   name: string;
   point: string;
+  pic: string;
   show: boolean;
   count: number;
   scale?: number;
@@ -50,6 +51,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '醚质',
       point: 'item_colllection_ether',
+      pic: 'item_colllection_ether',
       show: true,
       scale: 0.2,
       count: 1,
@@ -59,7 +61,8 @@ export const entityInfo: EntityCategories = reactive({
     category: 'ether',
     entityInfo: {
       name: '突袭醚质',
-      point: 'item_colllection_ether',
+      point: 'int_collection_coin_puzzle',
+      pic: 'item_colllection_ether',
       show: true,
       scale: 0.2,
       count: 1,
@@ -70,6 +73,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '储藏箱I',
       point: 'int_trchest_common',
+      pic: 'int_trchest_common',
       show: true,
       count: 1,
     },
@@ -79,6 +83,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '储藏箱II',
       point: 'int_trchest_common_normal',
+      pic: 'int_trchest_common',
       show: true,
       count: 1,
     },
@@ -88,6 +93,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '储藏箱III',
       point: 'int_trchest_common_high',
+      pic: 'int_trchest_common',
       show: true,
       count: 1,
     },
@@ -97,6 +103,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '储藏箱IV',
       point: 'int_trchest_lock',
+      pic: 'int_trchest_common',
       show: true,
       count: 1,
     },
@@ -107,6 +114,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '传送点',
       point: 'int_campfire_v2',
+      pic: 'icon_map_campfire',
       show: true,
       count: 1,
     },
@@ -115,7 +123,8 @@ export const entityInfo: EntityCategories = reactive({
     category: 'special',
     entityInfo: {
       name: '普通修理',
-      point: 'icon_map_blackbox',
+      point: 'int_blackbox_entry',
+      pic: 'icon_map_blackbox',
       show: true,
       scale: 0.7,
       count: 1,
@@ -125,7 +134,8 @@ export const entityInfo: EntityCategories = reactive({
     category: 'special',
     entityInfo: {
       name: '突袭修理',
-      point: 'icon_map_blackbox',
+      point: 'int_blackbox_entry_hard',
+      pic: 'icon_map_blackbox',
       show: true,
       scale: 0.7,
       count: 1,
@@ -136,7 +146,8 @@ export const entityInfo: EntityCategories = reactive({
     category: 'dungeon',
     entityInfo: {
       name: '首领挑战',
-      point: 'icon_map_dungeon',
+      point: 'int_dungeon_entry_bossrush',
+      pic: 'icon_map_dungeon',
       show: true,
       scale: 0.7,
       count: 1,
@@ -146,7 +157,8 @@ export const entityInfo: EntityCategories = reactive({
     category: 'dungeon',
     entityInfo: {
       name: '挑战副本',
-      point: 'icon_map_dungeon',
+      point: 'int_dungeon_entry_challenge',
+      pic: 'icon_map_dungeon',
       show: true,
       scale: 0.7,
       count: 1,
@@ -156,7 +168,8 @@ export const entityInfo: EntityCategories = reactive({
     category: 'dungeon',
     entityInfo: {
       name: '突袭副本',
-      point: 'icon_map_dungeon',
+      point: 'int_dungeon_entry_hard',
+      pic: 'icon_map_dungeon',
       show: true,
       scale: 0.7,
       count: 1,
@@ -166,7 +179,8 @@ export const entityInfo: EntityCategories = reactive({
     category: 'dungeon',
     entityInfo: {
       name: '材料副本',
-      point: 'icon_map_dungeon',
+      point: 'int_dungeon_entry_resource',
+      pic: 'icon_map_dungeon',
       show: true,
       scale: 0.7,
       count: 1,
@@ -178,6 +192,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '赤铜矿脉',
       point: 'int_doodad_core_mine_copper',
+      pic: 'item_copper_ore',
       show: true,
       count: 1,
     },
@@ -187,6 +202,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '蓝铁矿脉',
       point: 'int_doodad_core_mine_iron',
+      pic: 'item_iron_ore',
       show: true,
       count: 1,
     },
@@ -196,6 +212,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '源矿矿脉',
       point: 'int_doodad_core_mine_originum',
+      pic: 'item_originum_ore',
       show: true,
       count: 1,
     },
@@ -205,6 +222,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '紫晶矿脉',
       point: 'int_doodad_core_mine_quartz',
+      pic: 'item_quartz_sand',
       show: true,
       count: 1,
     },
@@ -215,6 +233,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '晶化多齿叶',
       point: 'int_doodad_core_crylplant_1_1',
+      pic: 'item_plant_crylplant_1_1',
       show: true,
       count: 1,
     },
@@ -224,6 +243,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '纯晶多齿叶',
       point: 'int_doodad_core_crylplant_1_2',
+      pic: 'item_plant_crylplant_1_2',
       show: true,
       count: 1,
     },
@@ -233,6 +253,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '至晶多齿叶',
       point: 'int_doodad_core_crylplant_1_3',
+      pic: 'item_plant_crylplant_1_3',
       show: true,
       count: 1,
     },
@@ -242,6 +263,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '受蚀玉化叶',
       point: 'int_doodad_core_crylplant_2_1',
+      pic: 'item_plant_crylplant_2_1',
       show: true,
       count: 1,
     },
@@ -251,6 +273,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '轻红柱状菌',
       point: 'int_doodad_core_mushroom_1_1',
+      pic: 'item_plant_mushroom_1_1',
       show: true,
       count: 1,
     },
@@ -260,6 +283,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '中红柱状菌',
       point: 'int_doodad_core_mushroom_1_2',
+      pic: 'item_plant_mushroom_1_2',
       show: true,
       count: 1,
     },
@@ -269,6 +293,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '重红柱状菌',
       point: 'int_doodad_core_mushroom_1_3',
+      pic: 'item_plant_mushroom_1_3',
       show: true,
       count: 1,
     },
@@ -278,34 +303,36 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '血菌',
       point: 'int_doodad_core_mushroom_2_1',
+      pic: 'item_plant_mushroom_2_1',
       show: true,
       count: 1,
     },
   },
-  int_doodad_core_plant_rabbithole: {
-    category: 'plant',
-    entityInfo: {
-      name: '稀有采集物区',
-      point: 'int_doodad_core_plant_rabbithole',
-      show: true,
-      count: 1,
-    },
-  },
+  // int_doodad_core_plant_rabbithole: {
+  //   category: 'plant',
+  //   entityInfo: {
+  //     name: '稀有采集物区',
+  //     point: 'int_doodad_core_plant_rabbithole',
+  //     show: true,
+  //     count: 1,
+  //   },
+  // },
 
-  int_doodad_core_spcstone: {
-    category: 'spcstone',
-    entityInfo: {
-      name: '稀有矿物区',
-      point: 'int_doodad_core_spcstone',
-      show: true,
-      count: 1,
-    },
-  },
+  // int_doodad_core_spcstone: {
+  //   category: 'spcstone',
+  //   entityInfo: {
+  //     name: '稀有矿物区',
+  //     point: 'int_doodad_core_spcstone',
+  //     show: true,
+  //     count: 1,
+  //   },
+  // },
   int_doodad_core_spcstone_1_1: {
     category: 'spcstone',
     entityInfo: {
       name: '轻黯石',
       point: 'int_doodad_core_spcstone_1_1',
+      pic: 'item_plant_spcstone_1_1',
       show: true,
       count: 1,
     },
@@ -315,6 +342,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '中黯石',
       point: 'int_doodad_core_spcstone_1_2',
+      pic: 'item_plant_spcstone_1_2',
       show: true,
       count: 1,
     },
@@ -324,6 +352,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '重黯石',
       point: 'int_doodad_core_spcstone_1_3',
+      pic: 'item_plant_spcstone_1_3',
       show: true,
       count: 1,
     },
@@ -333,6 +362,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '燎石',
       point: 'int_doodad_core_spcstone_2_1',
+      pic: 'item_plant_spcstone_2_1',
       show: true,
       count: 1,
     },
@@ -343,70 +373,72 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '资源回收站',
       point: 'int_doodad_core_recycle',
+      pic: 'icon_map_recycle',
       show: true,
       count: 1,
     },
   },
-  int_bamboo_raft: {
-    category: 'special',
-    entityInfo: {
-      name: '竹筏',
-      point: 'int_bamboo_raft',
-      show: true,
-      count: 1,
-    },
-  },
-  int_challenge_start_point_once: {
-    category: 'special',
-    entityInfo: {
-      name: '处理险情',
-      point: 'int_challenge_start_point_once',
-      show: true,
-      count: 1,
-    },
-  },
-  int_challenge_start_point: {
-    category: 'special',
-    entityInfo: {
-      name: '处理险情',
-      point: 'int_challenge_start_point',
-      show: true,
-      count: 1,
-    },
-  },
-  int_collection_piece: {
-    category: 'special',
-    entityInfo: {
-      name: '维修灵感',
-      point: 'int_collection_piece',
-      show: true,
-      count: 1,
-    },
-  },
-  int_collection_piece_in_door: {
-    category: 'special',
-    entityInfo: {
-      name: '维修灵感',
-      point: 'int_collection_piece_in_door',
-      show: true,
-      count: 1,
-    },
-  },
-  int_curve_move_platform: {
-    category: 'special',
-    entityInfo: {
-      name: '呼叫竹筏',
-      point: 'int_curve_move_platform',
-      show: true,
-      count: 1,
-    },
-  },
+  // int_bamboo_raft: {
+  //   category: 'special',
+  //   entityInfo: {
+  //     name: '竹筏',
+  //     point: 'int_bamboo_raft',
+  //     show: true,
+  //     count: 1,
+  //   },
+  // },
+  // int_challenge_start_point_once: {
+  //   category: 'special',
+  //   entityInfo: {
+  //     name: '处理险情',
+  //     point: 'int_challenge_start_point_once',
+  //     show: true,
+  //     count: 1,
+  //   },
+  // },
+  // int_challenge_start_point: {
+  //   category: 'special',
+  //   entityInfo: {
+  //     name: '处理险情',
+  //     point: 'int_challenge_start_point',
+  //     show: true,
+  //     count: 1,
+  //   },
+  // },
+  // int_collection_piece: {
+  //   category: 'special',
+  //   entityInfo: {
+  //     name: '维修灵感',
+  //     point: 'int_collection_piece',
+  //     show: true,
+  //     count: 1,
+  //   },
+  // },
+  // int_collection_piece_in_door: {
+  //   category: 'special',
+  //   entityInfo: {
+  //     name: '维修灵感',
+  //     point: 'int_collection_piece_in_door',
+  //     show: true,
+  //     count: 1,
+  //   },
+  // },
+  // int_curve_move_platform: {
+  //   category: 'special',
+  //   entityInfo: {
+  //     name: '呼叫竹筏',
+  //     point: 'int_curve_move_platform',
+  //     show: true,
+  //     count: 1,
+  //   },
+  // },
 
   stm_hongs_1: {
     category: 'settlement',
     entityInfo: {
       name: '武陵联合科考基地',
       point: 'stm_hongs_1',
+      pic: 'icon_map_settlement',
       show: true,
       count: 1,
     },
@@ -416,6 +448,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '谷地难民定居地',
       point: 'stm_tundra_1',
+      pic: 'icon_map_settlement',
       show: true,
       count: 1,
     },
@@ -425,6 +458,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '工团基础建设前站',
       point: 'stm_tundra_2',
+      pic: 'icon_map_settlement',
       show: true,
       count: 1,
     },
@@ -434,6 +468,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '高地灾后恢复前哨',
       point: 'stm_tundra_3',
+      pic: 'icon_map_settlement',
       show: true,
       count: 1,
     },
@@ -444,6 +479,7 @@ export const entityInfo: EntityCategories = reactive({
     entityInfo: {
       name: '三位一体',
       point: 'eny_0045_agtrinit',
+      pic: 'eny_0045_agtrinit',
       show: true,
       count: 1,
     },
