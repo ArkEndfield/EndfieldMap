@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed right-0 top-0 z-[50] md:z-[56] text-white w-[9.5em]">
+  <div class="fixed right-0 top-0 z-[50] md:z-[56] text-white w-[12em]">
     <div
       ref="triggerRef"
       class="flex flex-col items-end pb-1 pt-4 md:pt-1 px-4"
