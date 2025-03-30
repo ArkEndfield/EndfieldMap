@@ -38,16 +38,16 @@ export function createZoomControl(controlsElement: HTMLElement) {
 }
 
 // 创建并返回地图实例
-export function createMap(target: string, controlsElement: HTMLElement, overlay: any) {
+export function createMap(mapIndex: string = 'map001', controlsElement: HTMLElement, overlay: any) {
   const zoomControl = createZoomControl(controlsElement);
   
   const map = new Map({
-    target,
+    target: 'map',
     layers: [
       new TileLayer({
         source: new XYZ({
           projection: simpleProjection,
-          url: '/map/map001/{z}/{y}/{x}.png',
+          url: `/map/${mapIndex}/{z}/{y}/{x}.png`,
           tileLoadFunction: tileLoad,
         }),
       }),

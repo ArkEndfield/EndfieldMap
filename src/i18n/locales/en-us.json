@@ -132,5 +132,9 @@
       "months_ago": "{0} months ago",
       "years_ago": "{0} years ago"
     }
+  },
+  "map": {
+    "map001": "Valley IV",
+    "map002": "Jinlong"
   }
 }

@@ -67,7 +67,7 @@ onMounted(async () => {
   });
 
   // 使用模块化的方式初始化地图
-  map.value = createMap('map', mapControlsRef.value.controls, overlay);
+  map.value = createMap('map001', mapControlsRef.value.controls, overlay);
 
   // 等待Vue更新DOM后获取弹出层容器
   // 使用微任务队列等待DOM更新

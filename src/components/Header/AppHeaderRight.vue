@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed right-0 top-0 z-[50] md:z-[56] text-white">
+  <div class="fixed right-0 top-0 z-[50] md:z-[56] text-white w-[9.5em]">
     <div
       ref="triggerRef"
       class="flex flex-col items-end pb-1 pt-4 md:pt-1 px-4"
@@ -21,9 +21,9 @@
         ></div>
       </button>
       <div
-        class="text-3xl font-extrabold [text-shadow:0_0_0.1em_rgba(0,0,0,0.2)]"
+        class="text-3xl font-extrabold [text-shadow:0_0_0.1em_rgba(0,0,0,0.2)]" @click="togglePopover"
       >
-        四号谷地
+      {{ $t(`map.${cacheMapId}`) }}
       </div>
     </div>
     <Transition
@@ -41,8 +41,8 @@
           <div class="line left-2"></div>
           <div class="line right-2"></div>
           <div class="flex flex-col gap-1 h-full justify-between">
-            <MapButton>四号谷地</MapButton>
-            <MapButton active>四号谷地</MapButton>
+            <MapButton :active="cacheMapId === 'map001'" @click="selectMap('map001')">{{ $t('map.map001') }}</MapButton>
+            <MapButton :active="cacheMapId === 'map002'" @click="selectMap('map002')">{{ $t('map.map002') }}</MapButton>
           </div>
         </div>
       </div>
@@ -141,6 +141,13 @@ async function onLeave(el: Element, done: () => void) {
     animateConfig
   );
   done();
+}
+
+// 选择地图
+const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001')
+const selectMap = (id: string) => {
+  cacheMapId.value = id
+  localStorage.setItem('map', id)
 }
 </script>
 
