@@ -14,7 +14,7 @@ export interface GuideImageNode {
 }
 export type NodeType = {
   type: 'node';
-  nodes: (GuideTextNode | GuideImageNode)[];
+  nodes: (GuideTextNode | GuideImageNode | NodeType)[];
 };
 
 export interface GuideInfoDetail {
