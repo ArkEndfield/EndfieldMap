@@ -29,7 +29,7 @@ let index = 1;
 for (const [key, value] of Object.entries(
   data as Record<string, OriginPointData[]>
 )) {
-  if (!key.includes('map01')) continue;
+  if (!key.includes(localStorage.getItem('map') === 'map002' ? 'map02' : 'map01')) continue;
   points.push(
     ...value.filter(Boolean).map(item => ({
       ...item,

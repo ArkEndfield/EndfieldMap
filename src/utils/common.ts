@@ -1,9 +1,3 @@
-// export const xyz2crd = (pos: {x: number, y: number, z: number}) => {
-//     return [pos.x * 16 / 128 + 80, pos.z * 16 / 128 + 224]
-// }
-
-
-// map001
-export const xyz2crd = (pos: {x: number, y: number, z: number}) => {
-    return [pos.x / 8 + 128, pos.z / 8 + 160]
+export const xyz2crd = (pos: {x: number, y: number, z: number}, map = 'map001') => {
+    return map === 'map001' ? [pos.x / 8 + 128, pos.z / 8 + 160] : [pos.x / 8 + 80, pos.z / 8 + 224]
 }

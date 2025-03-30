@@ -26,6 +26,7 @@ import { Style, Text, Fill, Stroke } from 'ol/style';
 
 // @ts-ignore
 import locations from '../assets/result.json';
+import { cacheMapId } from '@/components/map/MapCore';
 
 const vectorSource = new VectorSource();
 
@@ -47,7 +48,7 @@ const selectLang = {
 export const loadTextPoints = (
   reset = false,
   detail = false,
-  scene = 'map01'
+  scene = (localStorage.getItem('map') || 'map001') === 'map001' ? 'map01' : 'map02'
 ) => {
   const styleFn = text =>
     new Style({
@@ -84,7 +85,7 @@ export const loadTextPoints = (
     const text =
       loc.langs[selectLang[localStorage.getItem('userLanguage') || 'zh-CN']];
 
-    const feature = new Feature({ geometry: new Point(xyz2crd(loc.position)) });
+    const feature = new Feature({ geometry: new Point(xyz2crd(loc.position, scene)) });
     feature.setStyle(styleFn(text));
     // 设置Z索引，确保在移动时仍然优先渲染
     feature.set('zIndex', 1000);
