@@ -78,6 +78,12 @@
           )
         "
       >
+        <button
+          class="no-underline absolute top-3 right-5 text-3xl text-[#ece065] z-2"
+          @click="closeToast"
+        >
+          <PowerIcon />
+        </button>
         <div
           class="w-full flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"
         ></div>
@@ -99,112 +105,41 @@
           >
             ZMDMAPS
           </div>
-          <div
-            class="popup-slider z-1 relative"
-            :class="{ 'slide-to-video': showVideoInfo }"
-            @transitionend="onTransitionEnd"
-          >
-            <!-- 基本信息页面 -->
-            <div class="popup-page">
-              <div class="p-4 pt-2">
-                <button
-                  class="no-underline absolute top-0 right-5 text-3xl text-[#ece065]"
-                  @click="closeToast"
-                >
-                  <PowerIcon />
-                </button>
-                <div>
-                  {{
-                    entityInfo[entity.entityDataIdKey]?.entityInfo.name ||
-                    $t('popover.unknow_name')
-                  }}
-                </div>
-                <div class="!my-2 !text-sm">
-                  <span>id: {{ entity.entityDataIdKey }}</span>
-                  <span class="float-right opacity-75">#{{ entity.seq }}</span>
-                </div>
-                <GuideNode :nodes="guides[entity.seq].nodes" />
-                <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
-                  坐标 ({{ entity.position.x }}, {{ entity.position.y }},
-                  {{ entity.position.z }})
-                </div>
-                <div class="flex items-center justify-between gap-2 mt-4">
-                  <button
-                    class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
-                    @click="toggleVideoInfo(true)"
-                  >
-                    {{ $t('popover.video_link') }}
-                  </button>
-                  <div class="flex items-center justify-end gap-2">
-                    <label
-                      :for="`get-${entity.entityDataIdKey}`"
-                      class="text-sm"
-                    >
-                      {{ $t('popover.obtained') }}
-                    </label>
-                    <ZmdSwitch
-                      :id="`get-${entity.entityDataIdKey}`"
-                      v-model:checked="marks[entity.seq].finish"
-                    />
-                  </div>
-                </div>
-              </div>
+          <div class="p-4 pt-2 z-1 relative">
+            <div>
+              {{
+                entityInfo[entity.entityDataIdKey]?.entityInfo.name ||
+                $t('popover.unknow_name')
+              }}
             </div>
-
-            <!-- 视频信息页面 -->
-            <div class="popup-page">
-              <div class="p-4 pt-2">
-                <button
-                  class="no-underline absolute top-3 right-5 text-3xl text-[#ece065]"
-                  @click="closeToast"
+            <div class="!my-2 !text-sm">
+              <span>id: {{ entity.entityDataIdKey }}</span>
+              <span class="float-right opacity-75">#{{ entity.seq }}</span>
+            </div>
+            <GuideNode :nodes="guides[entity.seq].nodes" />
+            <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
+              坐标 ({{ entity.position.x }}, {{ entity.position.y }},
+              {{ entity.position.z }})
+            </div>
+            <div class="flex items-center justify-between gap-2 mt-4">
+              <a
+                :href="guides[entity.seq].video.link"
+                target="_blank"
+                class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
+              >
+                {{ $t('popover.video_link') }}
+              </a>
+              <div class="flex items-center justify-end gap-2">
+                <label
+                  :for="`get-${entity.entityDataIdKey}`"
+                  class="text-sm"
                 >
-                  <PowerIcon />
-                </button>
-                <div class="flex items-center mb-3 gap-2">
-                  <button
-                    class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors flex items-center"
-                    @click="toggleVideoInfo(false)"
-                  >
-                    <span class="inline-block mr-1">
-                      <ForwardLeftIcon />
-                    </span>
-                    {{ $t('back') }}
-                  </button>
-                  <div>{{ $t('popover.video_info') }}</div>
-                </div>
-                <div class="border-b border-[#404140] pb-2 mb-3">
-                  <div class="font-bold">
-                    {{
-                      guides[entity.seq].video.bv || $t('popover.unknow_name')
-                    }}
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <div class="text-sm text-gray-400">
-                    {{ $t('popover.bv') }}
-                  </div>
-                  <div class="text-[#ece065] mt-1">
-                    {{
-                      guides[entity.seq].video.bv || $t('popover.unknown_bv')
-                    }}
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <div class="text-sm text-gray-400">
-                    {{ $t('popover.video_link') }}
-                  </div>
-                  <a
-                    :href="`https://www.bilibili.com/video/${
-                      guides[entity.seq].video.bv || ''
-                    }`"
-                    target="_blank"
-                    class="text-[#ece065] mt-1 block break-all hover:underline"
-                  >
-                    https://www.bilibili.com/video/{{
-                      guides[entity.seq].video.bv || $t('popover.unknown_bv')
-                    }}
-                  </a>
-                </div>
+                  {{ $t('popover.obtained') }}
+                </label>
+                <ZmdSwitch
+                  :id="`get-${entity.entityDataIdKey}`"
+                  v-model:checked="marks[entity.seq].finish"
+                />
               </div>
             </div>
           </div>
@@ -226,13 +161,11 @@ import { type PointData } from '@/data/points';
 const props = defineProps<{
   isPopupVisible: boolean;
   entity: PointData;
-  showVideoInfo: boolean;
   openSubPopup: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'update:isPopupVisible', value: boolean): void;
-  (e: 'update:showVideoInfo', value: boolean): void;
   (e: 'update:openSubPopup', value: boolean): void;
 }>();
 
@@ -268,12 +201,11 @@ const executeBasicAnimation = (
 
 // 方法委托到PopupManager
 const closeToast = () => {
-  emit('update:isPopupVisible', false);
-  emit('update:showVideoInfo', false);
-};
-
-const toggleVideoInfo = (show: boolean) => {
-  emit('update:showVideoInfo', show);
+  if (popupManager?.closeToast) {
+    popupManager.closeToast();
+  } else {
+    emit('update:isPopupVisible', false);
+  }
 };
 
 const toggleSubPopup = () => {
@@ -329,12 +261,6 @@ const onLeavePopup = async (el: Element, done: () => void) => {
   }
 };
 
-const onTransitionEnd = (event: TransitionEvent) => {
-  if (popupManager?.onTransitionEnd) {
-    popupManager.onTransitionEnd(event);
-  }
-};
-
 // 明确暴露容器引用
 defineExpose({
   popupContainer,
@@ -353,10 +279,7 @@ defineExpose({
   opacity: 0;
   transform: scaleY(0);
 }
-</style>
 
-<style>
-/* 调整副弹窗样式，提供更合理的空间 */
 .pop-drop.unfold {
   width: 80%; /* 减少副弹窗宽度，使其更合理 */
   top: 0;

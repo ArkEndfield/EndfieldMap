@@ -34,8 +34,13 @@ export class PopupManager {
 
   // 关闭弹出层
   closeToast() {
+    // 先清除 Overlay 位置，这样 OpenLayers 会认为弹出框已经关闭
+    this.overlay.setPosition(undefined);
+
+    // 然后更新其他状态
     this.isPopupVisible.value = false;
-    this.showVideoInfo.value = false; // 重置显示状态
+    this.showVideoInfo.value = false;
+    this.openSubPopup.value = false; // 确保子弹窗也被关闭
     this.currentPosition = undefined;
   }
 

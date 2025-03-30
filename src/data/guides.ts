@@ -20,9 +20,7 @@ export type NodeType = {
 export interface GuideInfoDetail {
   nodes: NodeType[];
   video: {
-    bv: string;
-    title?: string;
-    cover?: string;
+    link: string;
   };
 }
 
@@ -58,7 +56,7 @@ const initData = points.reduce((acc, point) => {
         },
       ],
       video: {
-        bv: '121380',
+        link: 'https://www.bilibili.com/video/BV1JUovYjEJQ',
       },
     };
   }

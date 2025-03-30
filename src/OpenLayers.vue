@@ -73,6 +73,7 @@ const mapControlsRef = ref();
 
 // 全局变量
 let overlay: Overlay;
+let selectInteraction: Select;
 const popupManager = shallowRef<PopupManager | null>(null);
 
 // 提供弹出层管理器给子组件 - 在setup顶层调用provide
@@ -161,7 +162,7 @@ onMounted(async () => {
   });
 
   // 添加选择交互
-  const selectInteraction = new Select({
+  selectInteraction = new Select({
     condition: click,
     style: null,
     layers: () => true,
@@ -211,7 +212,10 @@ onMounted(async () => {
         newPosition[0] !== currentPosition[0] ||
         newPosition[1] !== currentPosition[1];
 
-      if (positionChanged && popupManager.value) {
+      if (!popupManager.value) return;
+
+      // 如果位置改变或弹出框当前不可见，则重新打开弹出框
+      if (positionChanged || !isPopupVisible.value) {
         if (isPopupVisible.value) {
           // 使用PopupManager处理弹出层关闭和重新打开
           await popupManager.value.closeAndReopenPopup(data, newPosition);
@@ -240,8 +244,8 @@ onMounted(async () => {
           );
         }
       } else {
-        // 如果是同一位置，只更新实体信息
-        entity.value = data;
+        // 如果是同一位置，重新打开弹出框
+        await popupManager.value.closeAndReopenPopup(data, newPosition);
       }
     } else {
       isPopupVisible.value = false;
@@ -278,6 +282,14 @@ onMounted(async () => {
           popupManager.value?.adjustPopupPosition(true);
         }
       }, 100);
+    }
+  });
+
+  // 修改 closeToast 方法的处理
+  watch(isPopupVisible, newValue => {
+    if (!newValue) {
+      // 当弹出框关闭时，清除选择状态
+      selectInteraction.getFeatures().clear();
     }
   });
 });
@@ -400,27 +412,11 @@ watch(
   margin-bottom: -0.01em;
 }
 
-.popup-content-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-
-  .popup-slider {
-    display: flex;
-    width: 200%;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .slide-to-video {
-    transform: translateX(-50%);
-  }
-
-  .popup-page {
-    width: 50%;
-    flex-shrink: 0;
-    position: relative;
-  }
-}
+// .popup-content-container {
+//   position: relative;
+//   width: 100%;
+//   overflow: hidden;
+// }
 
 /* 添加聚合点样式 */
 .cluster-point {
