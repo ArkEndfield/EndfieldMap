@@ -6,6 +6,7 @@ import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
 import { areaNameLayer } from '@/data/locations';
 import { entityClusterLayers } from '@/data/entity';
+import { ref } from 'vue';
 
 // 创建简单投影
 export const simpleProjection = new Projection({
@@ -38,10 +39,12 @@ export function createZoomControl(controlsElement: HTMLElement) {
 }
 
 // 创建并返回地图实例
-export function createMap(mapIndex: string = 'map001', controlsElement: HTMLElement, overlay: any) {
+export const map = ref<Map | null>(null);
+export const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001')
+export function createMap(mapIndex: string, controlsElement: HTMLElement, overlay: any) {
   const zoomControl = createZoomControl(controlsElement);
   
-  const map = new Map({
+  map.value = new Map({
     target: 'map',
     layers: [
       new TileLayer({
@@ -57,7 +60,7 @@ export function createMap(mapIndex: string = 'map001', controlsElement: HTMLElem
     ],
     view: new View({
       projection: simpleProjection,
-      center: [100, 152],
+      center: mapIndex === 'map001' ? [100, 152] : [50, 188],
       zoom: 3,
       maxZoom: 5,
       minZoom: 1,
@@ -72,6 +75,9 @@ export function createMap(mapIndex: string = 'map001', controlsElement: HTMLElem
     controls: [zoomControl],
     pixelRatio: 2, // 提高像素比以提升移动中的渲染质量
   });
-
-  return map;
+}
+// 选择地图
+export const selectMap = (id: string) => {
+  cacheMapId.value = id
+  localStorage.setItem('map', id)
 }

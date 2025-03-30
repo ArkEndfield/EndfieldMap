@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onBeforeUnmount, provide, nextTick, watch } from 'vue';
-import { createMap } from './components/map/MapCore';
+import { onMounted, ref, onBeforeUnmount, provide, nextTick, watch, computed } from 'vue';
+import { cacheMapId, createMap, map } from './components/map/MapCore';
 import { Select } from 'ol/interaction';
 import { click } from 'ol/events/condition';
 import { Map } from 'ol';
@@ -38,7 +38,7 @@ import { loadTextPoints } from './data/locations';
 import { type PointData } from './data/points';
 
 // 状态变量
-const map = ref<Map | null>(null);
+// const map = ref<Map | null>(null);
 const zoomLevel = ref(3);
 const isPopupVisible = ref(false);
 const showVideoInfo = ref(false);
@@ -67,7 +67,7 @@ onMounted(async () => {
   });
 
   // 使用模块化的方式初始化地图
-  map.value = createMap('map001', mapControlsRef.value.controls, overlay);
+  createMap(cacheMapId.value, mapControlsRef.value.controls, overlay);
 
   // 等待Vue更新DOM后获取弹出层容器
   // 使用微任务队列等待DOM更新
@@ -103,12 +103,12 @@ onMounted(async () => {
   }
 
   // 监听地图渲染完成事件，确保图层正确添加
-  map.value.once('rendercomplete', () => {
+  map.value?.once('rendercomplete', () => {
     refresh();
   });
 
   // 监听地图缩放事件
-  map.value.getView().on('change:resolution', function () {
+  map.value?.getView().on('change:resolution', function () {
     const currentMap = map.value;
     if (!currentMap) return;
 
@@ -130,7 +130,7 @@ onMounted(async () => {
   });
 
   // 监听鼠标滚轮和其他缩放事件，确保步进条同步
-  map.value.on('moveend', () => {
+  map.value?.on('moveend', () => {
     const currentMap = map.value;
     if (!currentMap) return;
 
@@ -146,9 +146,9 @@ onMounted(async () => {
     layers: () => true,
   });
 
-  map.value.addInteraction(selectInteraction);
+  map.value?.addInteraction(selectInteraction);
 
-  map.value.on('click', function (event) {
+  map.value?.on('click', function (event) {
     console.log(event.coordinate);
   });
 
@@ -267,6 +267,12 @@ onBeforeUnmount(() => {
     map.value.setTarget(undefined);
   }
 });
+
+// 监听地图更换
+watch(() => cacheMapId.value, newValue => {
+  if (map.value) map.value.setTarget(undefined);
+  createMap(newValue, mapControlsRef.value.controls, overlay)
+})
 </script>
 
 <style lang="scss">

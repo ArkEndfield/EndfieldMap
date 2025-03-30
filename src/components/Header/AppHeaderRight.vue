@@ -53,6 +53,7 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted, onUnmounted } from 'vue';
 import { animate, spring } from 'motion';
+import { cacheMapId, selectMap } from '../map/MapCore';
 
 const showPopover = ref(false);
 const popoverRef = ref<HTMLElement | null>(null);
@@ -141,13 +142,6 @@ async function onLeave(el: Element, done: () => void) {
     animateConfig
   );
   done();
-}
-
-// 选择地图
-const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001')
-const selectMap = (id: string) => {
-  cacheMapId.value = id
-  localStorage.setItem('map', id)
 }
 </script>
 
