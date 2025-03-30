@@ -31,7 +31,7 @@
   "unknown": "Unknown",
   "header": {
     "menu": "Menu",
-    "join_community": "Community",
+    "join_community": "About",
     "scan_qr_code_to_join": "Scan QR Code to Join",
     "feedback": "Feedback",
     "login": "Login",
@@ -40,7 +40,7 @@
     "change_language": "Change Language",
     "change_region": "Change Region",
     "up": "Up",
-    "community_not_constructed": "Community Not Constructed"
+    "community_not_constructed": "Click to enter a title"
   },
   "sidebar": {
     "title": "EndField Map",

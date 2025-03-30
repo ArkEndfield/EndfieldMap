@@ -31,7 +31,7 @@
   "unknown": "未知",
   "header": {
     "menu": "菜單",
-    "join_community": "加入社群",
+    "join_community": "关于",
     "scan_qr_code_to_join": "掃描二維碼加入社群",
     "feedback": "反饋",
     "login": "登錄",
@@ -40,7 +40,7 @@
     "change_language": "切換語言",
     "change_region": "切換地區",
     "up": "煮啵",
-    "community_not_constructed": "社群尚未建設"
+    "community_not_constructed": "點擊輸入標題"
   },
   "sidebar": {
     "title": "終末地互動地圖",

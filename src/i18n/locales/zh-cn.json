@@ -31,7 +31,7 @@
   "unknown": "未知",
   "header": {
     "menu": "菜单",
-    "join_community": "加入社群",
+    "join_community": "关于",
     "scan_qr_code_to_join": "扫描二维码加入社群",
     "feedback": "反馈",
     "login": "登录",
@@ -40,7 +40,7 @@
     "change_language": "切换语言",
     "change_region": "切换地区",
     "up": "煮啵",
-    "community_not_constructed": "社群尚未建设"
+    "community_not_constructed": "点击输入标题"
   },
   "sidebar": {
     "title": "终末地互动地图",
