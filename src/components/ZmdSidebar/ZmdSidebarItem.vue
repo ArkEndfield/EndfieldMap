@@ -159,6 +159,7 @@ $gap: 0.7em;
       font-size: 1.6em;
       font-weight: 900;
       margin-right: 0.2em;
+      white-space: nowrap;
       z-index: 2;
     }
     .subtitle {
