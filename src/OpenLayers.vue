@@ -80,7 +80,7 @@ onMounted(async () => {
   const mapPopupEl = document.querySelector('.ol-popup') as HTMLElement;
 
   if (mapPopupEl) {
-    console.log('找到弹出层元素:', mapPopupEl);
+    // console.log('找到弹出层元素:', mapPopupEl);
 
     // 更新Overlay的元素
     overlay.setElement(mapPopupEl);
@@ -231,7 +231,7 @@ onMounted(async () => {
 
   // 监听openSubPopup的变化，确保视图正确调整
   watch(openSubPopup, newValue => {
-    console.log('openSubPopup changed to', newValue);
+    // console.log('openSubPopup changed to', newValue);
     if (isPopupVisible.value && popupManager) {
       // 等待DOM更新后调整视图，只调整一次即可
       setTimeout(() => {

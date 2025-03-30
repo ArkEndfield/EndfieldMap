@@ -215,7 +215,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, onMounted, nextTick } from 'vue';
+import { ref, inject } from 'vue';
 import { cn } from '@/utils/tailwind';
 import { PopupManager } from './PopupManager';
 import { marks } from '@/data/marks';
@@ -240,12 +240,12 @@ const popupContainer = ref<HTMLElement>();
 const popupManager = inject('popupManager') as PopupManager | undefined;
 
 // 确保在组件挂载后立即暴露容器元素
-onMounted(async () => {
-  await nextTick();
-  if (popupContainer.value) {
-    console.log('Popup container mounted:', popupContainer.value);
-  }
-});
+// onMounted(async () => {
+//   await nextTick();
+//   if (popupContainer.value) {
+//     console.log('Popup container mounted:', popupContainer.value);
+//   }
+// });
 
 // 方法委托到PopupManager
 const closeToast = () => {
@@ -259,7 +259,7 @@ const toggleVideoInfo = (show: boolean) => {
 
 const toggleSubPopup = () => {
   const newState = !props.openSubPopup;
-  console.log('切换副弹窗状态', newState);
+  // console.log('切换副弹窗状态', newState);
   emit('update:openSubPopup', newState);
 
   // 确保立即更新DOM状态，然后进行视图调整
@@ -283,7 +283,7 @@ const toggleSubPopup = () => {
 
 // 动画处理 - 简化为只用scaleY变换
 const onEnterPopup = async (el: Element, done: () => void) => {
-  console.log('Enter animation started');
+  // console.log('Enter animation started');
 
   // 如果PopupManager未注入，使用基本动画
   if (!popupManager) {
@@ -308,7 +308,7 @@ const onEnterPopup = async (el: Element, done: () => void) => {
 };
 
 const onLeavePopup = async (el: Element, done: () => void) => {
-  console.log('Leave animation started');
+  // console.log('Leave animation started');
   emit('update:openSubPopup', false); // 关闭子弹窗
 
   // 如果PopupManager未注入，使用基本动画

@@ -68,7 +68,7 @@ export const loadTextPoints = (
     });
 
   const cacheKey = {};
-  console.log(detail);
+  // console.log(detail);
 
   if (reset) vectorSource.clear();
 

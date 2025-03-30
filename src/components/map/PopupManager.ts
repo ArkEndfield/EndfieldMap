@@ -68,7 +68,7 @@ export class PopupManager {
 
   // 弹出层出现动画
   async onEnterPopup(el: Element, onComplete: () => void) {
-    console.log('PopupManager: 开始进入动画');
+    // console.log('PopupManager: 开始进入动画');
     this.isPopupAnimating = true;
 
     try {
@@ -104,7 +104,7 @@ export class PopupManager {
 
   // 弹出层离开动画
   async onLeavePopup(el: Element, onComplete: () => void) {
-    console.log('PopupManager: 开始离开动画');
+    ('PopupManager: 开始离开动画');
     this.openSubPopup.value = false; // 关闭子弹窗
     this.isPopupAnimating = true;
 
@@ -331,7 +331,7 @@ export class PopupManager {
     }
 
     if (needAdjust) {
-      console.log('需要调整弹窗位置', { adjustX, adjustY });
+      // console.log('需要调整弹窗位置', { adjustX, adjustY });
       const view = this.map.getView();
       const resolution = view.getResolution() || 1;
       const currentCenter = view.getCenter();
@@ -398,12 +398,12 @@ export class PopupManager {
           // 计算需要的水平偏移量 - 确保副弹窗完全可见
           const pixelOffsetX = subPopupRight - viewportRightEdge;
 
-          console.log('副弹窗超出边界，计算偏移量', {
-            subPopupRight,
-            viewportRightEdge,
-            pixelOffsetX,
-            resolution,
-          });
+          // console.log('副弹窗超出边界，计算偏移量', {
+          //   subPopupRight,
+          //   viewportRightEdge,
+          //   pixelOffsetX,
+          //   resolution,
+          // });
 
           // 将像素偏移转换为地图坐标偏移，只移动必要的距离
           const coordOffsetX = pixelOffsetX * resolution;
@@ -411,11 +411,11 @@ export class PopupManager {
           // 构建新的中心坐标，只调整水平方向
           const newCenter = [currentCenter[0] + coordOffsetX, currentCenter[1]];
 
-          console.log('调整地图中心，确保副弹窗可见', {
-            currentCenter,
-            newCenter,
-            coordOffsetX,
-          });
+          // console.log('调整地图中心，确保副弹窗可见', {
+          //   currentCenter,
+          //   newCenter,
+          //   coordOffsetX,
+          // });
 
           // 使用平滑动画移动地图
           await new Promise<void>(resolve => {

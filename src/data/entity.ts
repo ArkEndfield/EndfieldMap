@@ -519,7 +519,7 @@ export const refresh = () => {
     source.refresh();
   });
 
-  console.log('地图刷新完成');
+  // console.log('地图刷新完成');
 };
 
 export const select = (key: string) => {

@@ -28,7 +28,7 @@ export const onMarkChange = (callback: MarkChangeCallback) => {
 // 添加触发回调的函数
 const notifyMarkChange = () => {
   // 确保是同步调用所有回调，避免任何延迟
-  console.log(`执行${markChangeCallbacks.length}个标记变更回调`);
+  // console.log(`执行${markChangeCallbacks.length}个标记变更回调`);
   markChangeCallbacks.forEach(callback => {
     try {
       callback();
@@ -56,15 +56,15 @@ export const markPoint = (seq: number) => {
     marks[seq].finish = !marks[seq].finish;
 
     // 添加调试输出
-    console.log(`标记点 ${seq} 状态改变为:`, marks[seq].finish);
-    console.log(`当前筛选模式:`, currentMarkFilter.value);
+    // console.log(`标记点 ${seq} 状态改变为:`, marks[seq].finish);
+    // console.log(`当前筛选模式:`, currentMarkFilter.value);
 
     // 确保存储更新
     saveMarksToStorage();
 
     // 使用计数器触发变更通知
     markStateChangeTrigger.value++;
-    console.log('触发标记状态变更计数器:', markStateChangeTrigger.value);
+    // console.log('触发标记状态变更计数器:', markStateChangeTrigger.value);
 
     return marks[seq].finish;
   }
@@ -109,7 +109,7 @@ watchEffect(() => {
 // 新增标记筛选函数
 export const setMarkFilter = (filterType: MarkFilterType) => {
   currentMarkFilter.value = filterType;
-  console.log(`标记筛选状态变更为: ${filterType}`);
+  // console.log(`标记筛选状态变更为: ${filterType}`);
   return currentMarkFilter.value;
 };
 
