@@ -36,7 +36,7 @@
     "entityInfo": {
       "name": "储藏箱II",
       "point": "int_trchest_common_normal",
-      "pic": "int_trchest_common",
+      "pic": "int_trchest_common_normal",
       "show": true,
       "count": 1
     }
@@ -46,7 +46,7 @@
     "entityInfo": {
       "name": "储藏箱III",
       "point": "int_trchest_common_high",
-      "pic": "int_trchest_common",
+      "pic": "int_trchest_common_high",
       "show": true,
       "count": 1
     }
@@ -56,7 +56,7 @@
     "entityInfo": {
       "name": "储藏箱IV",
       "point": "int_trchest_lock",
-      "pic": "int_trchest_common",
+      "pic": "int_trchest_lock",
       "show": true,
       "count": 1
     }
@@ -162,7 +162,7 @@
     "entityInfo": {
       "name": "源矿矿脉",
       "point": "int_doodad_core_mine_originum",
-      "pic": "item_originum_ore",
+      "pic": "item_originium_ore",
       "show": true,
       "count": 1
     }
