@@ -1,26 +1,42 @@
 <template>
-  <div
-    id="map"
-    class="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center"
-  ></div>
+  <div class="map-container">
+    <div
+      id="map"
+      class="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center"
+    ></div>
 
-  <MapControls
-    :map="map as Map"
-    v-model:zoomLevel="zoomLevel"
-    ref="mapControlsRef"
-  />
+    <MapControls
+      :map="map as Map"
+      v-model:zoomLevel="zoomLevel"
+      ref="mapControlsRef"
+    />
 
-  <MapPopup
-    v-model:is-popup-visible="isPopupVisible"
-    :entity="entity"
-    v-model:show-video-info="showVideoInfo"
-    v-model:open-sub-popup="openSubPopup"
-  />
+    <MapPopup
+      v-model:is-popup-visible="isPopupVisible"
+      :entity="entity"
+      v-model:show-video-info="showVideoInfo"
+      v-model:open-sub-popup="openSubPopup"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onBeforeUnmount, provide, nextTick, watch, computed } from 'vue';
-import { cacheMapId, createMap, map } from './components/map/MapCore';
+import {
+  onMounted,
+  ref,
+  onBeforeUnmount,
+  provide,
+  nextTick,
+  watch,
+  shallowRef,
+  computed,
+} from 'vue';
+import {
+  cacheMapId,
+  createMap,
+  map,
+  updateMap,
+} from './components/map/MapCore';
 import { Select } from 'ol/interaction';
 import { click } from 'ol/events/condition';
 import { Map } from 'ol';
@@ -33,9 +49,11 @@ import {
   forceDisperseAtMaxZoom,
   updateCurrentZoom,
   refresh,
+  reinitializeEntityLayers,
 } from './data/entity';
 import { loadTextPoints } from './data/locations';
 import { type PointData } from './data/points';
+import { updatePoints } from './data/points';
 
 // 状态变量
 // const map = ref<Map | null>(null);
@@ -55,7 +73,13 @@ const mapControlsRef = ref();
 
 // 全局变量
 let overlay: Overlay;
-let popupManager: PopupManager;
+const popupManager = shallowRef<PopupManager | null>(null);
+
+// 提供弹出层管理器给子组件 - 在setup顶层调用provide
+provide(
+  'popupManager',
+  computed(() => popupManager.value)
+);
 
 onMounted(async () => {
   // 创建弹出层
@@ -86,7 +110,7 @@ onMounted(async () => {
     overlay.setElement(mapPopupEl);
 
     // 创建弹出层管理器
-    popupManager = new PopupManager(
+    popupManager.value = new PopupManager(
       map.value as Map,
       overlay,
       mapPopupEl,
@@ -95,9 +119,6 @@ onMounted(async () => {
       showVideoInfo,
       openSubPopup
     );
-
-    // 提供弹出层管理器给子组件
-    provide('popupManager', popupManager);
   } else {
     console.error('弹出层容器未找到 - 请检查DOM和CSS');
   }
@@ -184,27 +205,27 @@ onMounted(async () => {
       if (!data) return;
 
       const newPosition = event.mapBrowserEvent.coordinate;
-      const currentPosition = popupManager.getCurrentPosition();
+      const currentPosition = popupManager.value?.getCurrentPosition();
       const positionChanged =
         !currentPosition ||
         newPosition[0] !== currentPosition[0] ||
         newPosition[1] !== currentPosition[1];
 
-      if (positionChanged) {
+      if (positionChanged && popupManager.value) {
         if (isPopupVisible.value) {
           // 使用PopupManager处理弹出层关闭和重新打开
-          await popupManager.closeAndReopenPopup(data, newPosition);
+          await popupManager.value.closeAndReopenPopup(data, newPosition);
         } else {
           // 首次显示
           entity.value = data;
           showVideoInfo.value = false;
-          popupManager.setCurrentPosition([...newPosition]);
+          popupManager.value.setCurrentPosition([...newPosition]);
 
           // 先设置弹窗位置，但不显示
           overlay.setPosition(newPosition);
 
           // 预先调整地图中心，确保弹窗完全可见
-          await popupManager.adjustMapForPopup(
+          await popupManager.value.adjustMapForPopup(
             currentMap as Map,
             newPosition,
             () => {
@@ -213,7 +234,7 @@ onMounted(async () => {
 
               // 弹窗显示后额外检查位置
               setTimeout(() => {
-                popupManager.adjustPopupPosition(true);
+                popupManager.value?.adjustPopupPosition(true);
               }, 300); // 等待弹窗动画完成后再次检查位置
             }
           );
@@ -225,32 +246,36 @@ onMounted(async () => {
     } else {
       isPopupVisible.value = false;
       showVideoInfo.value = false;
-      popupManager.setCurrentPosition(undefined);
+      popupManager.value?.setCurrentPosition(undefined);
     }
   });
 
   // 监听openSubPopup的变化，确保视图正确调整
   watch(openSubPopup, newValue => {
     // console.log('openSubPopup changed to', newValue);
-    if (isPopupVisible.value && popupManager) {
+    if (isPopupVisible.value && popupManager.value) {
       // 等待DOM更新后调整视图，只调整一次即可
       setTimeout(() => {
-        popupManager.adjustForExpandedPopup(newValue);
+        popupManager.value?.adjustForExpandedPopup(newValue);
       }, 100);
     }
   });
 
   // 当窗口大小改变时，也需要检查弹窗位置
   window.addEventListener('resize', () => {
-    if (isPopupVisible.value && popupManager.getCurrentPosition()) {
+    if (
+      isPopupVisible.value &&
+      popupManager.value &&
+      popupManager.value.getCurrentPosition()
+    ) {
       // 窗口大小变化时强制调整位置
       setTimeout(() => {
         if (openSubPopup.value) {
           // 如果副弹窗已展开，优先调整到副弹窗中心
-          popupManager.adjustForExpandedPopup(true);
+          popupManager.value?.adjustForExpandedPopup(true);
         } else {
           // 否则，常规位置调整
-          popupManager.adjustPopupPosition(true);
+          popupManager.value?.adjustPopupPosition(true);
         }
       }, 100);
     }
@@ -269,14 +294,53 @@ onBeforeUnmount(() => {
 });
 
 // 监听地图更换
-watch(() => cacheMapId.value, newValue => {
-  // if (map.value) map.value.setTarget(undefined);
-  // createMap(newValue, mapControlsRef.value.controls, overlay)
-  location.reload();
-})
+watch(
+  () => cacheMapId.value,
+  async newValue => {
+    // 关闭可能打开的弹窗
+    isPopupVisible.value = false;
+    showVideoInfo.value = false;
+    popupManager.value?.setCurrentPosition(undefined);
+
+    // 更新点位数据
+    updatePoints(newValue);
+
+    // 等待 Vue 更新完成
+    await nextTick();
+
+    // 重新初始化实体图层
+    reinitializeEntityLayers();
+
+    // 等待实体图层初始化完成
+    await nextTick();
+
+    // 更新地图图层
+    updateMap(newValue);
+
+    // 重新加载地名标注
+    loadTextPoints(true, false, newValue === 'map002' ? 'map02' : 'map01');
+
+    // 强制刷新一次地图显示
+    if (map.value) {
+      map.value.updateSize();
+      map.value.render();
+    }
+  },
+  { flush: 'post' } // 确保在 DOM 更新后执行
+);
 </script>
 
 <style lang="scss">
+.map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
 #map {
   background-image: url('/assets/map_bg.png');
 }

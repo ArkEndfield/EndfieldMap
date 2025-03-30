@@ -237,15 +237,34 @@ const emit = defineEmits<{
 }>();
 
 const popupContainer = ref<HTMLElement>();
-const popupManager = inject('popupManager') as PopupManager | undefined;
+const popupManager = inject<PopupManager | null>('popupManager');
 
-// 确保在组件挂载后立即暴露容器元素
-// onMounted(async () => {
-//   await nextTick();
-//   if (popupContainer.value) {
-//     console.log('Popup container mounted:', popupContainer.value);
-//   }
-// });
+// 辅助函数：执行基本动画
+const executeBasicAnimation = (
+  el: Element,
+  done: () => void,
+  isEnter: boolean
+) => {
+  if (isEnter) {
+    el.setAttribute('style', 'opacity: 0; transform: scaleY(0);');
+    setTimeout(() => {
+      el.setAttribute(
+        'style',
+        'opacity: 1; transform: scaleY(1); transition: all 0.2s ease;'
+      );
+      setTimeout(done, 200);
+    }, 10);
+  } else {
+    el.setAttribute('style', 'opacity: 1; transform: scaleY(1);');
+    setTimeout(() => {
+      el.setAttribute(
+        'style',
+        'opacity: 0; transform: scaleY(0); transition: all 0.2s ease;'
+      );
+      setTimeout(done, 200);
+    }, 10);
+  }
+};
 
 // 方法委托到PopupManager
 const closeToast = () => {
@@ -259,15 +278,11 @@ const toggleVideoInfo = (show: boolean) => {
 
 const toggleSubPopup = () => {
   const newState = !props.openSubPopup;
-  // console.log('切换副弹窗状态', newState);
   emit('update:openSubPopup', newState);
 
   // 确保立即更新DOM状态，然后进行视图调整
   requestAnimationFrame(() => {
-    if (
-      popupManager &&
-      typeof popupManager.adjustForExpandedPopup === 'function'
-    ) {
+    if (popupManager?.adjustForExpandedPopup) {
       // 等待DOM更新后立即调整一次
       setTimeout(() => {
         popupManager.adjustForExpandedPopup(newState);
@@ -283,58 +298,41 @@ const toggleSubPopup = () => {
 
 // 动画处理 - 简化为只用scaleY变换
 const onEnterPopup = async (el: Element, done: () => void) => {
-  // console.log('Enter animation started');
-
-  // 如果PopupManager未注入，使用基本动画
-  if (!popupManager) {
-    el.setAttribute('style', 'opacity: 0; transform: scaleY(0);');
-    setTimeout(() => {
-      el.setAttribute(
-        'style',
-        'opacity: 1; transform: scaleY(1); transition: all 0.2s ease;'
-      );
-      setTimeout(done, 200);
-    }, 10);
+  // 如果PopupManager未注入或不可用，使用基本动画
+  if (!popupManager?.onEnterPopup) {
+    executeBasicAnimation(el, done, true);
     return;
   }
 
-  // 使用PopupManager的动画
   try {
     await popupManager.onEnterPopup(el, done);
   } catch (error) {
     console.error('动画出错:', error);
-    done(); // 确保回调被调用
+    executeBasicAnimation(el, done, true);
   }
 };
 
 const onLeavePopup = async (el: Element, done: () => void) => {
-  // console.log('Leave animation started');
   emit('update:openSubPopup', false); // 关闭子弹窗
 
-  // 如果PopupManager未注入，使用基本动画
-  if (!popupManager) {
-    el.setAttribute('style', 'opacity: 1; transform: scaleY(1);');
-    setTimeout(() => {
-      el.setAttribute(
-        'style',
-        'opacity: 0; transform: scaleY(0); transition: all 0.2s ease;'
-      );
-      setTimeout(done, 200);
-    }, 10);
+  // 如果PopupManager未注入或不可用，使用基本动画
+  if (!popupManager?.onLeavePopup) {
+    executeBasicAnimation(el, done, false);
     return;
   }
 
-  // 使用PopupManager的动画
   try {
     await popupManager.onLeavePopup(el, done);
   } catch (error) {
     console.error('动画出错:', error);
-    done(); // 确保回调被调用
+    executeBasicAnimation(el, done, false);
   }
 };
 
 const onTransitionEnd = (event: TransitionEvent) => {
-  popupManager?.onTransitionEnd(event);
+  if (popupManager?.onTransitionEnd) {
+    popupManager.onTransitionEnd(event);
+  }
 };
 
 // 明确暴露容器引用

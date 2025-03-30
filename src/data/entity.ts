@@ -54,16 +54,48 @@ export const entityInfo: EntityCategories = reactive(
 );
 
 export const categoryInfo = computed(() => {
+  // 定义类别顺序
+  const categoryOrder: EntityCategory[] = [
+    'settlement', // 定居点
+    'dungeon', // 副本点位
+    'chest', // 宝箱
+    'mineral', // 矿物
+    'spcstone', // 稀有矿物
+    'plant', // 植物类素材
+    'ether', // 醚质
+    'enemy', // 敌人
+    'special', // 特殊点位
+  ];
+
+  // 创建一个有序的分类对象
   const categories: Record<string, EntityInfo[]> = {};
+
+  // 先按照顺序初始化所有分类
+  categoryOrder.forEach(category => {
+    categories[category] = [];
+  });
+
+  // 将实体信息填充到对应分类中，只包含 count > 0 的实体
   for (const key in entityInfo) {
     const entity = entityInfo[key];
-    const category = entity.category;
-    if (!categories[category]) {
-      categories[category] = [];
+    if (entity.entityInfo.count > 0) {
+      // 只处理 count > 0 的实体
+      const category = entity.category;
+      if (categories[category]) {
+        categories[category].push(entity.entityInfo);
+      }
     }
-    categories[category].push(entity.entityInfo);
   }
-  return categories;
+
+  // 过滤掉空的分类
+  const filteredCategories: Record<string, EntityInfo[]> = {};
+  categoryOrder.forEach(category => {
+    if (categories[category].length > 0) {
+      filteredCategories[category] = categories[category];
+    }
+  });
+
+  return filteredCategories;
 });
 
 const features: Feature<Point>[] = [];
@@ -312,7 +344,7 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
 // 修改marker函数，支持异步加载图片尺寸
 export const marker = (entry: PointData) => {
   const info = entityInfo[entry.entityDataIdKey];
-  if (!info || !info?.entityInfo.show) return;
+  if (!info) return;
 
   const feature = new Feature({
     geometry: new Point(xyz2crd(entry.position)),
@@ -347,13 +379,18 @@ export const marker = (entry: PointData) => {
     };
   } else {
     entityGroup[entry.entityDataIdKey].points.push(feature);
-    entityInfo[entry.entityDataIdKey].entityInfo.count += 1;
   }
   return feature;
 };
 
 // 加载数据
 for (const point of points) {
+  // 更新计数
+  if (entityInfo[point.entityDataIdKey]?.entityInfo) {
+    entityInfo[point.entityDataIdKey].entityInfo.count =
+      (entityInfo[point.entityDataIdKey].entityInfo.count || 0) + 1;
+  }
+
   itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1;
   const feature = marker(point);
   if (feature) features.push(feature);
@@ -395,17 +432,17 @@ export const createEntityClusterLayers = () => {
     const entityType = feature.get('payload')?.entityDataIdKey;
     if (!entityType) continue;
 
-    if (!featuresByType[entityType]) {
-      featuresByType[entityType] = [];
+    // 只处理当前地图中存在的实体类型
+    if (entityInfo[entityType]?.entityInfo.count > 0) {
+      if (!featuresByType[entityType]) {
+        featuresByType[entityType] = [];
+      }
+      featuresByType[entityType].push(feature);
     }
-    featuresByType[entityType].push(feature);
   }
 
   // 为每种类型创建单独的聚合源和图层
   for (const entityType in featuresByType) {
-    // 跳过不显示的实体类型
-    if (!entityInfo[entityType]?.entityInfo.show) continue;
-
     // 创建源
     const typeSource = new VectorSource({
       features: featuresByType[entityType],
@@ -515,37 +552,74 @@ export const refreshCluster = () => {
   }
 };
 
+// 重新初始化实体图层
+export const reinitializeEntityLayers = () => {
+  // 保存原有的显示状态
+  const showStates = Object.fromEntries(
+    Object.entries(entityInfo).map(([key, info]) => [key, info.entityInfo.show])
+  );
+
+  // 清空现有图层和源
+  entityClusterLayers.length = 0;
+  Object.keys(entityClusterSources).forEach(
+    key => delete entityClusterSources[key]
+  );
+
+  // 重新初始化实体信息
+  initializeEntityInfo();
+
+  // 恢复显示状态（只针对新地图中存在的实体）
+  for (const key in entityInfo) {
+    if (entityInfo[key].entityInfo && showStates[key] !== undefined) {
+      entityInfo[key].entityInfo.show = showStates[key];
+    }
+  }
+
+  // 重新创建聚合图层
+  createEntityClusterLayers();
+
+  // 刷新聚合
+  refreshCluster();
+
+  // 最后调用 refresh 来根据显示状态过滤特征
+  refresh();
+};
+
 // 修改refresh函数，加入更多调试信息
 export const refresh = () => {
-  for (const key in entityInfo) {
-    // 获取该类型的聚合源
-    const source = entityClusterSources[key];
+  // 确保所有源都被正确初始化
+  if (Object.keys(entityClusterSources).length === 0) {
+    createEntityClusterLayers();
+  }
 
-    // 如果当前实体类型没有聚合源，跳过处理
+  // 先清理所有源
+  Object.values(entityClusterSources).forEach(source => {
+    const vectorSource = source.getSource();
+    if (vectorSource) {
+      vectorSource.clear();
+    }
+  });
+
+  // 为每个实体类型分配特征
+  for (const key in entityInfo) {
+    const source = entityClusterSources[key];
     if (!source) continue;
 
-    // 如果该类型的点位应该显示，但源可能是空的
+    // 只处理需要显示的类型
     if (entityInfo[key].entityInfo.show) {
-      // 重新添加源中的所有特征，并根据标记状态筛选
+      // 找出属于这个类型的所有特征
       const featuresForType = features.filter(f => {
         const payload = f.get('payload');
-        const shouldShow =
+        return (
           payload?.entityDataIdKey === key &&
-          shouldShowByMarkStatus(payload?.seq);
-        return shouldShow;
+          shouldShowByMarkStatus(payload?.seq)
+        );
       });
 
-      // 清除并重新添加特征以确保可见性
+      // 如果有特征要显示，添加到对应的源
       const vectorSource = source.getSource();
-      if (vectorSource) {
-        vectorSource.clear();
+      if (vectorSource && featuresForType.length > 0) {
         vectorSource.addFeatures(featuresForType);
-      }
-    } else {
-      // 如果该类型不应该显示，清空源
-      const vectorSource = source.getSource();
-      if (vectorSource) {
-        vectorSource.clear();
       }
     }
   }
@@ -555,7 +629,13 @@ export const refresh = () => {
     source.refresh();
   });
 
-  // console.log('地图刷新完成');
+  // 更新聚合距离
+  updateClusterDistance(currentZoomLevel);
+
+  // 在最大缩放级别时强制禁用聚合
+  if (currentZoomLevel >= 5) {
+    forceDisperseAtMaxZoom(currentZoomLevel);
+  }
 };
 
 export const select = (key: string) => {
@@ -606,10 +686,71 @@ watch(currentMarkFilter, () => {
   refresh();
 });
 
-createEntityClusterLayers();
-
-onMarkChange(() => {
-  if (currentMarkFilter.value !== 'all') {
-    refresh();
+// 初始化实体信息
+export const initializeEntityInfo = () => {
+  // 先统计当前地图中存在的实体类型和数量
+  const entityCounts: { [key: string]: number } = {};
+  for (const point of points) {
+    entityCounts[point.entityDataIdKey] =
+      (entityCounts[point.entityDataIdKey] || 0) + 1;
   }
-});
+
+  // 保存原有的实体信息
+  const originalEntityInfo = { ...entityInfo };
+
+  // 清空当前的 entityInfo
+  Object.keys(entityInfo).forEach(key => {
+    delete entityInfo[key];
+  });
+
+  // 首先，恢复所有原有的实体类型，但计数设为0
+  for (const key in originalEntityInfo) {
+    entityInfo[key] = {
+      category: originalEntityInfo[key].category,
+      entityInfo: {
+        ...originalEntityInfo[key].entityInfo,
+        count: 0,
+      },
+    };
+  }
+
+  // 然后，添加新的实体类型（如果有的话）
+  for (const key in entityData) {
+    if (!entityInfo[key]) {
+      entityInfo[key] = {
+        category: entityData[key].category,
+        entityInfo: {
+          name: entityData[key].entityInfo.name,
+          point: entityData[key].entityInfo.point,
+          pic: entityData[key].entityInfo.pic,
+          show: true,
+          count: 0,
+        },
+      };
+    }
+  }
+
+  // 加载数据
+  features.length = 0;
+  Object.keys(itemMap).forEach(key => delete itemMap[key]);
+
+  // 处理当前地图中存在的点位，更新计数
+  for (const point of points) {
+    const entityKey = point.entityDataIdKey;
+    if (entityInfo[entityKey]) {
+      entityInfo[entityKey].entityInfo.count = entityCounts[entityKey];
+    }
+
+    itemMap[entityKey] = (itemMap[entityKey] || 0) + 1;
+    const feature = marker(point);
+    if (feature) features.push(feature);
+  }
+
+  // 更新源数据
+  source.clear();
+  source.addFeatures(features);
+};
+
+// 初始化调用
+initializeEntityInfo();
+createEntityClusterLayers();
