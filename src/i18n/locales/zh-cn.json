@@ -31,7 +31,7 @@
   "unknown": "未知",
   "header": {
     "menu": "菜单",
-    "join_community": "关于",
+    "about": "关于",
     "scan_qr_code_to_join": "扫描二维码加入社群",
     "feedback": "反馈",
     "login": "登录",

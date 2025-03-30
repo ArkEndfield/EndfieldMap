@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
-    <ChatIcon />
-    <template #title>{{ $t('header.join_community') }}</template>
+    <QuestionIcon />
+    <template #title>{{ $t('header.about') }}</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"
@@ -11,7 +11,7 @@
     <div class="py-4">
       <BilibiliCard />
     </div>
-    <h1 class="text-lg font-bold">{{ $t('header.join_community') }}</h1>
+    <h1 class="text-lg font-bold">{{ $t('header.about') }}</h1>
     <p class="text-sm py-4">{{ $t('header.community_not_constructed') }}</p>
   </ZmdAlert>
 </template>

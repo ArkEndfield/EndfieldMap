@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AboutMenu: typeof import('./src/components/Header/AboutMenu.vue')['default']
     AppHeaderLeft: typeof import('./src/components/Header/AppHeaderLeft.vue')['default']
     AppHeaderRight: typeof import('./src/components/Header/AppHeaderRight.vue')['default']
     BilibiliCard: typeof import('./src/components/BilibiliCard.vue')['default']
@@ -21,7 +22,6 @@ declare module 'vue' {
     FeedbackIcon: typeof import('./src/components/icons/FeedbackIcon.vue')['default']
     FeedbackMenu: typeof import('./src/components/Header/FeedbackMenu.vue')['default']
     ForwardLeftIcon: typeof import('./src/components/icons/ForwardLeftIcon.vue')['default']
-    GroupMenu: typeof import('./src/components/Header/GroupMenu.vue')['default']
     GuideNode: typeof import('./src/components/GuideNode.vue')['default']
     HeaderMenu: typeof import('./src/components/Header/HeaderMenu.vue')['default']
     HelpIcon: typeof import('./src/components/icons/HelpIcon.vue')['default']
@@ -41,6 +41,7 @@ declare module 'vue' {
     PopContentItem: typeof import('./src/components/PopContentItem.vue')['default']
     Popover: typeof import('./src/components/Popover.vue')['default']
     PowerIcon: typeof import('./src/components/icons/PowerIcon.vue')['default']
+    QuestionIcon: typeof import('./src/components/icons/QuestionIcon.vue')['default']
     RangeInput: typeof import('./src/components/RangeInput.vue')['default']
     RoundInput: typeof import('./src/components/RoundInput.vue')['default']
     SwitchIcon: typeof import('./src/components/icons/SwitchIcon.vue')['default']

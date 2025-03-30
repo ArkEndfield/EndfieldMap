@@ -31,7 +31,7 @@
   "unknown": "Unknown",
   "header": {
     "menu": "Menu",
-    "join_community": "About",
+    "about": "About",
     "scan_qr_code_to_join": "Scan QR Code to Join",
     "feedback": "Feedback",
     "login": "Login",

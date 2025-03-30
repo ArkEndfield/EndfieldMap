@@ -43,11 +43,11 @@
         )
       "
     >
-      <GroupMenu />
       <FeedbackMenu />
       <LoginMenu />
       <ChangelogMenu />
       <LanguageMenu />
+      <AboutMenu />
       <div
         :class="
           cn(
