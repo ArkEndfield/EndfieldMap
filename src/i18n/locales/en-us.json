@@ -50,8 +50,8 @@
     "fold": "Fold",
     "collection": {
       "all": "All",
-      "marked": "Marked",
-      "not_marked": "Unmarked"
+      "marked": "Obtained",
+      "not_marked": "Unobtained"
     },
     "filter": {
       "category": {

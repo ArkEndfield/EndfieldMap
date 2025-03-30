@@ -68,6 +68,7 @@ const toggle = () => {
     calc(100% - 10px) 100%,
     0% 100%
   );
+  white-space: nowrap;
 
   &.active {
     background-color: #fdfb55;

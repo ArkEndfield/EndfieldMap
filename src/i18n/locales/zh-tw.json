@@ -50,8 +50,8 @@
     "fold": "折疊",
     "collection": {
       "all": "全部",
-      "marked": "已標記收集",
-      "not_marked": "未標記收集"
+      "marked": "已標記獲取",
+      "not_marked": "未標記獲取"
     },
     "filter": {
       "category": {
