@@ -270,8 +270,9 @@ onBeforeUnmount(() => {
 
 // 监听地图更换
 watch(() => cacheMapId.value, newValue => {
-  if (map.value) map.value.setTarget(undefined);
-  createMap(newValue, mapControlsRef.value.controls, overlay)
+  // if (map.value) map.value.setTarget(undefined);
+  // createMap(newValue, mapControlsRef.value.controls, overlay)
+  location.reload();
 })
 </script>
 

@@ -315,7 +315,7 @@ export const marker = (entry: PointData) => {
   if (!info || !info?.entityInfo.show) return;
 
   const feature = new Feature({
-    geometry: new Point(xyz2crd(entry.position, localStorage.getItem('map') === 'map002' ? 'map02' : 'map01')),
+    geometry: new Point(xyz2crd(entry.position)),
     payload: entry,
   });
 
