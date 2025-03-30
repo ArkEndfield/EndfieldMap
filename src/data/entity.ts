@@ -162,30 +162,66 @@ function getColorForEntity(entityType: string): string {
 
 // 添加一个用于缓存图片尺寸的对象
 const imageSizeCache: { [key: string]: { width: number; height: number } } = {};
+// 添加图片加载状态的缓存，避免重复加载同一图片
+const imageLoadingPromises: {
+  [key: string]: Promise<{ width: number; height: number }>;
+} = {};
 
-// 获取图片尺寸的函数
+// 获取图片尺寸的函数 - 优化版本
 function getImageSize(src: string): Promise<{ width: number; height: number }> {
-  return new Promise(resolve => {
-    if (imageSizeCache[src]) {
-      // 如果已经缓存了尺寸信息，直接返回
-      resolve(imageSizeCache[src]);
-      return;
-    }
+  // 如果已经有这个图片的加载Promise，直接返回它，避免重复加载
+  if (src in imageLoadingPromises) {
+    return imageLoadingPromises[src];
+  }
 
-    const img = new Image();
-    img.onload = () => {
-      // 缓存尺寸信息并返回
-      const size = { width: img.width, height: img.height };
-      imageSizeCache[src] = size;
-      resolve(size);
-    };
-    img.onerror = () => {
-      // 加载失败时使用默认尺寸
-      console.warn(`Failed to load image: ${src}`);
-      resolve({ width: 32, height: 32 });
-    };
-    img.src = src;
-  });
+  // 如果已经缓存了尺寸信息，直接返回
+  if (imageSizeCache[src]) {
+    return Promise.resolve(imageSizeCache[src]);
+  }
+
+  // 创建新的加载Promise并缓存它
+  const loadPromise = new Promise<{ width: number; height: number }>(
+    resolve => {
+      const img = new Image();
+
+      img.onload = () => {
+        // 缓存尺寸信息并返回
+        const size = { width: img.width, height: img.height };
+        imageSizeCache[src] = size;
+        // 加载完成后删除promise缓存
+        delete imageLoadingPromises[src];
+        resolve(size);
+      };
+
+      img.onerror = () => {
+        // 加载失败时使用默认尺寸并记录警告
+        console.warn(`无法加载图片: ${src}`);
+        const defaultSize = { width: 32, height: 32 };
+        // 缓存默认尺寸以避免再次尝试加载失败的图片
+        imageSizeCache[src] = defaultSize;
+        // 删除promise缓存
+        delete imageLoadingPromises[src];
+        resolve(defaultSize);
+      };
+
+      // 设置5秒超时
+      setTimeout(() => {
+        if (!imageSizeCache[src]) {
+          console.warn(`图片加载超时: ${src}`);
+          const defaultSize = { width: 32, height: 32 };
+          imageSizeCache[src] = defaultSize;
+          delete imageLoadingPromises[src];
+          resolve(defaultSize);
+        }
+      }, 5000);
+
+      img.src = src;
+    }
+  );
+
+  // 缓存加载Promise
+  imageLoadingPromises[src] = loadPromise;
+  return loadPromise;
 }
 
 // 根据图片尺寸计算最适合的缩放比例
