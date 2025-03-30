@@ -40,10 +40,44 @@ export function createZoomControl(controlsElement: HTMLElement) {
 
 // 创建并返回地图实例
 export const map = ref<Map | null>(null);
-export const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001')
-export function createMap(mapIndex: string, controlsElement: HTMLElement, overlay: any) {
+export const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001');
+
+// 更新地图视图和图层
+export function updateMap(mapIndex: string) {
+  if (!map.value) return;
+
+  // 移除所有现有图层
+  map.value.getLayers().clear();
+
+  // 创建新的瓦片图层
+  const tileLayer = new TileLayer({
+    source: new XYZ({
+      projection: simpleProjection,
+      url: `/map/${mapIndex}/{z}/{y}/{x}.png`,
+      tileLoadFunction: tileLoad,
+    }),
+  });
+
+  // 重新添加所有图层
+  map.value.addLayer(tileLayer);
+  map.value.addLayer(areaNameLayer);
+  entityClusterLayers.forEach(layer => {
+    map.value?.addLayer(layer);
+  });
+
+  // 更新视图中心点
+  const view = map.value.getView();
+  view.setCenter(mapIndex === 'map001' ? [100, 152] : [50, 188]);
+  view.setZoom(3);
+}
+
+export function createMap(
+  mapIndex: string,
+  controlsElement: HTMLElement,
+  overlay: any
+) {
   const zoomControl = createZoomControl(controlsElement);
-  
+
   map.value = new Map({
     target: 'map',
     layers: [
@@ -76,8 +110,10 @@ export function createMap(mapIndex: string, controlsElement: HTMLElement, overla
     pixelRatio: 2, // 提高像素比以提升移动中的渲染质量
   });
 }
+
 // 选择地图
 export const selectMap = (id: string) => {
-  cacheMapId.value = id
-  localStorage.setItem('map', id)
-}
+  cacheMapId.value = id;
+  localStorage.setItem('map', id);
+  updateMap(id);
+};
