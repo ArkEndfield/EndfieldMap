@@ -14,11 +14,7 @@ import { computed, reactive, watch } from 'vue';
 import Cluster from 'ol/source/Cluster';
 import VectorLayer from 'ol/layer/Vector';
 import { PointData, points } from './points';
-import {
-  currentMarkFilter,
-  shouldShowByMarkStatus,
-  onMarkChange,
-} from './marks';
+import { currentMarkFilter, shouldShowByMarkStatus } from './marks';
 import entityData from '../assets/entity.json';
 
 interface EntityInfo {
