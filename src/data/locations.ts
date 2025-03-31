@@ -47,7 +47,7 @@ const selectLang = {
 export const loadTextPoints = (
   reset = false,
   detail = false,
-  scene = (localStorage.getItem('map')) === 'map002' ? 'map02' : 'map01'
+  scene = localStorage.getItem('map') === 'map002' ? 'map02' : 'map01'
 ) => {
   const styleFn = text =>
     new Style({
@@ -88,7 +88,8 @@ export const loadTextPoints = (
     feature.setStyle(styleFn(text));
     // 设置Z索引，确保在移动时仍然优先渲染
     feature.set('zIndex', 1000);
-    // feature.setId(k);
+    // 添加标识属性，便于识别此Feature是文本标签
+    feature.set('isTextLabel', true);
     vectorSource.addFeature(feature);
   }
 };

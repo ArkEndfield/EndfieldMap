@@ -206,6 +206,8 @@ const closeToast = () => {
   } else {
     emit('update:isPopupVisible', false);
   }
+
+  // 不要立即清除其他状态，让动画流程完成
 };
 
 const toggleSubPopup = () => {
@@ -215,6 +217,9 @@ const toggleSubPopup = () => {
   // 确保立即更新DOM状态，然后进行视图调整
   requestAnimationFrame(() => {
     if (popupManager?.adjustForExpandedPopup) {
+      // 重置动画状态，确保调整能正常进行
+      popupManager.resetAnimationState?.();
+
       // 等待DOM更新后立即调整一次
       setTimeout(() => {
         popupManager.adjustForExpandedPopup(newState);
@@ -223,6 +228,10 @@ const toggleSubPopup = () => {
       // 过渡动画完成后的最终调整，确保位置正确
       setTimeout(() => {
         popupManager.adjustForExpandedPopup(newState);
+        // 额外调整，确保在任何情况下都能正确定位
+        setTimeout(() => {
+          popupManager.adjustPopupPosition?.(true);
+        }, 150);
       }, 550);
     }
   });
@@ -272,6 +281,7 @@ defineExpose({
 .v-enter-active,
 .v-leave-active {
   transition: all 0.2s ease;
+  will-change: transform, opacity;
 }
 
 .v-enter-from,
@@ -284,5 +294,6 @@ defineExpose({
   width: 80%; /* 减少副弹窗宽度，使其更合理 */
   top: 0;
   right: calc(-80% - 0.5em); /* 适应新宽度 */
+  will-change: top, right, width;
 }
 </style>

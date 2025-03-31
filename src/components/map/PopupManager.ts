@@ -34,14 +34,11 @@ export class PopupManager {
 
   // 关闭弹出层
   closeToast() {
-    // 先清除 Overlay 位置，这样 OpenLayers 会认为弹出框已经关闭
-    this.overlay.setPosition(undefined);
-
-    // 然后更新其他状态
+    // 修改为仅设置isPopupVisible为false，让Vue的过渡系统处理关闭动画
     this.isPopupVisible.value = false;
-    this.showVideoInfo.value = false;
-    this.openSubPopup.value = false; // 确保子弹窗也被关闭
-    this.currentPosition = undefined;
+
+    // 其他清理工作会在弹窗动画完成后由上层组件处理
+    // 在弹窗完全消失前不要清除position，否则会影响动画
   }
 
   // 切换视频信息显示状态
@@ -156,24 +153,27 @@ export class PopupManager {
 
   // 处理弹出层的关闭和重新打开
   async closeAndReopenPopup(data: PointData, newPosition: number[]) {
-    // 关闭当前弹出层
+    // 先关闭弹窗（带动画效果）
     this.isPopupVisible.value = false;
 
+    // 保存新数据，以便在动画完成后使用
+    const newData = data;
+    const popupPosition = [...newPosition];
+
     // 等待关闭动画完成
-    await new Promise(resolve => setTimeout(resolve, 350));
+    await new Promise(resolve => setTimeout(resolve, 300));
 
     // 更新实体数据
-    this.entity.value = data;
+    this.entity.value = newData;
     this.showVideoInfo.value = false;
-
-    // 保存新位置
-    this.currentPosition = [...newPosition];
+    this.currentPosition = popupPosition;
 
     // 设置弹出层位置
-    this.overlay.setPosition(newPosition);
+    this.overlay.setPosition(popupPosition);
 
     // 调整地图中心位置，然后显示弹出层
-    await this.adjustMapForPopup(this.map, newPosition, () => {
+    await this.adjustMapForPopup(this.map, popupPosition, () => {
+      // 调整完成后再显示弹窗
       this.isPopupVisible.value = true;
     });
   }
@@ -365,7 +365,7 @@ export class PopupManager {
 
   // 特别为展开副弹窗准备的调整方法
   async adjustForExpandedPopup(isExpanded: boolean) {
-    if (!this.currentPosition || !this.map || this.isPopupAnimating) return;
+    if (!this.currentPosition || !this.map) return;
 
     // 设置动画中状态，避免重复调整
     this.isPopupAnimating = true;
@@ -386,7 +386,10 @@ export class PopupManager {
         // 展开时，只需要确保副弹窗完全可见
         const resolution = view.getResolution() || 1;
         const currentCenter = view.getCenter();
-        if (!currentCenter) return;
+        if (!currentCenter) {
+          this.isPopupAnimating = false;
+          return;
+        }
 
         // 1. 计算副弹窗的宽度和位置
         const mainPopupWidth = popupRect.width;
@@ -403,24 +406,11 @@ export class PopupManager {
           // 计算需要的水平偏移量 - 确保副弹窗完全可见
           const pixelOffsetX = subPopupRight - viewportRightEdge;
 
-          // console.log('副弹窗超出边界，计算偏移量', {
-          //   subPopupRight,
-          //   viewportRightEdge,
-          //   pixelOffsetX,
-          //   resolution,
-          // });
-
           // 将像素偏移转换为地图坐标偏移，只移动必要的距离
           const coordOffsetX = pixelOffsetX * resolution;
 
           // 构建新的中心坐标，只调整水平方向
           const newCenter = [currentCenter[0] + coordOffsetX, currentCenter[1]];
-
-          // console.log('调整地图中心，确保副弹窗可见', {
-          //   currentCenter,
-          //   newCenter,
-          //   coordOffsetX,
-          // });
 
           // 使用平滑动画移动地图
           await new Promise<void>(resolve => {
@@ -440,10 +430,16 @@ export class PopupManager {
       } else if (this.currentPosition) {
         // 收起时，如果标点已经被移出了视口，则调整视图让其回到合理位置
         const pixel = this.map.getPixelFromCoordinate(this.currentPosition);
-        if (!pixel) return;
+        if (!pixel) {
+          this.isPopupAnimating = false;
+          return;
+        }
 
         const currentCenter = view.getCenter();
-        if (!currentCenter) return;
+        if (!currentCenter) {
+          this.isPopupAnimating = false;
+          return;
+        }
 
         // 检查点位置是否太靠近视口右边缘
         const viewportRightEdge = mapRect.right - 80; // 安全边距
@@ -474,7 +470,10 @@ export class PopupManager {
       if (popupRect.top < mapRect.top + 30) {
         // 添加顶部Header偏移量
         const currentCenter = view.getCenter();
-        if (!currentCenter) return;
+        if (!currentCenter) {
+          this.isPopupAnimating = false;
+          return;
+        }
 
         const resolution = view.getResolution() || 1;
         const pixelOffsetY = mapRect.top + 30 - popupRect.top;
@@ -511,5 +510,11 @@ export class PopupManager {
   // 获取当前位置
   getCurrentPosition() {
     return this.currentPosition;
+  }
+
+  // 重置动画状态，用于确保缩放后弹窗功能正常
+  resetAnimationState() {
+    // 清除动画标志，确保弹窗响应能力恢复
+    this.isPopupAnimating = false;
   }
 }

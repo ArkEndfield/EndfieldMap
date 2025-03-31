@@ -149,6 +149,24 @@ onMounted(async () => {
     if (zoom >= 5) {
       forceDisperseAtMaxZoom(zoom);
     }
+
+    // 确保缩放后弹窗管理器仍然能够正常工作
+    if (isPopupVisible.value && popupManager.value) {
+      // 重置防抖标记，让弹窗能够正常响应
+      popupManager.value.resetAnimationState();
+
+      // 调整已打开的弹窗位置
+      setTimeout(() => {
+        if (isPopupVisible.value) {
+          // 如果副弹窗已展开，确保副弹窗效果正常
+          if (openSubPopup.value) {
+            popupManager.value?.adjustForExpandedPopup(true);
+          } else {
+            popupManager.value?.adjustPopupPosition(true);
+          }
+        }
+      }, 200);
+    }
   });
 
   // 监听鼠标滚轮和其他缩放事件，确保步进条同步
@@ -170,8 +188,20 @@ onMounted(async () => {
 
   map.value?.addInteraction(selectInteraction);
 
+  // 添加地图点击事件处理，处理点击空白区域关闭弹窗
   map.value?.on('click', function (event) {
-    console.log(event.coordinate);
+    // 首先检查是否有Feature被点击
+    const feature = map.value?.forEachFeatureAtPixel(
+      event.pixel,
+      feature => feature
+    );
+
+    // 如果没有Feature被点击，并且弹窗正在显示，则关闭弹窗
+    if (!feature && isPopupVisible.value && popupManager.value) {
+      // 不要直接调用closeToast，而是通过设置isPopupVisible为false来触发正常的关闭流程
+      isPopupVisible.value = false;
+      // 这样会触发弹窗的离开动画，因为Vue的v-show监听了这个值
+    }
   });
 
   selectInteraction.on('select', async function (event) {
@@ -214,13 +244,14 @@ onMounted(async () => {
 
       if (!popupManager.value) return;
 
-      // 如果位置改变或弹出框当前不可见，则重新打开弹出框
+      // 如果位置改变或弹出框当前不可见
       if (positionChanged || !isPopupVisible.value) {
         if (isPopupVisible.value) {
-          // 使用PopupManager处理弹出层关闭和重新打开
+          // 如果弹窗已经显示，使用PopupManager处理关闭和重新打开
+          // 这个方法会先完全关闭当前弹窗，然后再在新位置打开
           await popupManager.value.closeAndReopenPopup(data, newPosition);
         } else {
-          // 首次显示
+          // 首次显示弹窗
           entity.value = data;
           showVideoInfo.value = false;
           popupManager.value.setCurrentPosition([...newPosition]);
@@ -233,7 +264,7 @@ onMounted(async () => {
             currentMap as Map,
             newPosition,
             () => {
-              // 动画完成后才显示弹窗
+              // 调整完成后才显示弹窗
               isPopupVisible.value = true;
 
               // 弹窗显示后额外检查位置
@@ -244,13 +275,14 @@ onMounted(async () => {
           );
         }
       } else {
-        // 如果是同一位置，重新打开弹出框
-        await popupManager.value.closeAndReopenPopup(data, newPosition);
+        // 如果是同一位置的点击，只更新弹窗内容，不关闭再打开
+        entity.value = data;
       }
     } else {
-      isPopupVisible.value = false;
-      showVideoInfo.value = false;
-      popupManager.value?.setCurrentPosition(undefined);
+      // 只有当没有选中新Feature时才关闭弹窗
+      if (event.selected.length === 0 && event.deselected.length > 0) {
+        isPopupVisible.value = false;
+      }
     }
   });
 
@@ -290,6 +322,22 @@ onMounted(async () => {
     if (!newValue) {
       // 当弹出框关闭时，清除选择状态
       selectInteraction.getFeatures().clear();
+
+      // 确保弹窗信息被清理，但要在动画完成后
+      setTimeout(() => {
+        if (!isPopupVisible.value) {
+          // 再次检查，避免在动画中途重新打开的情况
+          showVideoInfo.value = false;
+          openSubPopup.value = false;
+          // 最后才清除位置，确保动画完成
+          setTimeout(() => {
+            if (!isPopupVisible.value) {
+              popupManager.value?.setCurrentPosition(undefined);
+              overlay.setPosition(undefined);
+            }
+          }, 250);
+        }
+      }, 250); // 等待动画完成
     }
   });
 });
