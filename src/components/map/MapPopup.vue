@@ -12,6 +12,7 @@
       <div
         class="pop-drop absolute -top-3 w-full -right-4 -z-0 h-full flex flex-col"
         :class="{ unfold: openSubPopup }"
+        v-if="showRewards"
       >
         <button
           class="absolute -right-6 top-0 bottom-0 flex flex-col w-6"
@@ -36,33 +37,24 @@
           class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
         >
           <div
-            class="grid grid-cols-2 gap-4 px-6 py-4 w-full h-full overflow-y-auto"
+            class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 py-4 w-full h-full overflow-y-auto"
           >
-            <PopContentItem>
+            <PopContentItem
+              v-for="rwd in rewards"
+              :key="rwd.id"
+            >
               <template #icon>
                 <img
                   src="/assets/item_read_bag.png"
                   alt=""
                 />
               </template>
-              <template #count>123</template>
-              行动资历
-            </PopContentItem>
-            <PopContentItem>
-              <template #icon></template>
-              行动资历
-            </PopContentItem>
-            <PopContentItem>
-              <template #icon></template>
-              行动资历
-            </PopContentItem>
-            <PopContentItem>
-              <template #icon></template>
-              行动资历
-            </PopContentItem>
-            <PopContentItem>
-              <template #icon></template>
-              行动资历
+              <template
+                #count
+                v-if="rwd.count"
+                >{{ rwd.count }}</template
+              >
+              {{ rwd.id }}
             </PopContentItem>
           </div>
         </div>
@@ -157,6 +149,8 @@ import { marks } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
 import { guides } from '@/data/guides';
 import { type PointData } from '@/data/points';
+import { computed } from 'vue';
+import { getRewards, shouldShowRewards } from '@/data/reward';
 
 const props = defineProps<{
   isPopupVisible: boolean;
@@ -171,6 +165,18 @@ const emit = defineEmits<{
 
 const popupContainer = ref<HTMLElement>();
 const popupManager = inject<PopupManager | null>('popupManager');
+
+const showRewards = computed(() => {
+  const entity = props.entity;
+  const show = shouldShowRewards(entity);
+  return show;
+});
+
+const rewards = computed(() => {
+  const entity = props.entity;
+  const rwds = getRewards(entity);
+  return rwds;
+});
 
 // 方法委托到PopupManager
 const closeToast = () => {
