@@ -55,7 +55,7 @@ const props = withDefaults(
   .objecg-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.8em;
+    gap: 0.3em;
     padding-bottom: 0.4em;
   }
 }

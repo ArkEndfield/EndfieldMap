@@ -12,7 +12,7 @@
       </div>
     </ZmdSidebarSwitch> -->
 
-    <div class="zmd-sidebar-operate-buttons">
+    <div class="zmd-sidebar-operate-buttons grid grid-cols-2">
       <ZmdSidebarOperateButton @click="handleClear">
         <template #icon>
           <ZmdSidebarDeleteIcon />
@@ -121,9 +121,6 @@ onMounted(async () => {
   }
 
   .zmd-sidebar-operate-buttons {
-    display: flex;
-    justify-content: center;
-    // margin-top: 0.5em;
     font-size: 0.9em;
   }
 
@@ -146,6 +143,7 @@ onMounted(async () => {
     }
     .title {
       margin-bottom: 0.2em;
+      font-size: 0.9em;
     }
     .list {
       display: flex;

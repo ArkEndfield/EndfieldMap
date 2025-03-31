@@ -5,15 +5,22 @@
     @click="toggle"
   >
     <div class="icon">
-      <slot />
+      <div class="icon-inner">
+        <slot />
+      </div>
+      <div class="icon-decoration"></div>
     </div>
     <div class="detail">
-      <div class="name">
-        {{ props.name }}
+      <div class="detail-inner">
+        <div class="name">
+          {{ props.name }}
+        </div>
+        <div class="count">
+          <div class="text">{{ props.value }}</div>
+        </div>
       </div>
-      <div class="count">
-        {{ props.value }}
-      </div>
+      <div class="corner-decoration top-right"></div>
+      <div class="corner-decoration bottom-left"></div>
     </div>
   </div>
 </template>
@@ -73,61 +80,250 @@ const toggle = () => {
   align-items: center;
   filter: drop-shadow(0 0 0.2em rgba(0, 0, 0, 0.6));
   transition: all 0.3s ease;
+  padding: 0.5em 0.3em;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0;
+    height: 2px;
+    background: #343434;
+    transform: translateY(-50%);
+    transition: width 0.3s ease;
+    z-index: 0;
+  }
 
   .icon {
-    width: 2.5em;
-    height: 2.5em;
-    background-color: #313131;
-    border-radius: 50%;
-    box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.3), 0 0 0 0.15em #313131 inset,
-      0 0 0 0.25em #605f5f inset;
+    width: 2.2em;
+    height: 2.2em;
     position: relative;
     z-index: 2;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    transition: box-shadow 0.3s ease;
-    padding: 0.4em;
-    img {
+    transition: all 0.3s ease;
+
+    .icon-inner {
       width: 100%;
       height: 100%;
+      background-color: #313131;
       border-radius: 50%;
-      object-fit: contain;
+      box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.3), 0 0 0 0.15em #313131 inset,
+        0 0 0 0.25em #605f5f inset;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.4em;
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0.1em rgba(253, 251, 85, 0);
+        transition: all 0.3s ease;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: contain;
+        transition: transform 0.4s ease;
+      }
+    }
+
+    .icon-decoration {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1;
     }
   }
+
   .detail {
     background-color: #1d1d1d;
     box-shadow: 0 0 0 0.1em #242424 inset;
     position: relative;
     z-index: 1;
-    padding: 0.3em 0;
     margin-left: -1em;
-    padding-left: 1.2em;
-    padding-right: 1em;
-    display: flex;
     border-radius: 0 9999px 9999px 0;
     flex-grow: 1;
+    transition: all 0.3s ease;
+    overflow: hidden;
+
+    .detail-inner {
+      padding: 0.3em 0;
+      padding-left: 1.2em;
+      padding-right: 0.4em;
+      display: flex;
+      width: 100%;
+      position: relative;
+      z-index: 3;
+      align-items: center;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
     .name {
       flex: 1;
       font-size: 0.8em;
+      transition: color 0.3s ease;
+      margin-right: 0.5em;
+      color: #cccccc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      padding-left: 0.2em;
     }
+
     .count {
       flex-grow: 0;
       flex-shrink: 0;
-      font-size: 0.8em;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      background-color: #2a2a2a;
+      color: #aaaaaa;
+      padding: 0.03em 0.05em;
+      border-radius: 9999px;
+      min-width: 1.2em;
+      text-align: center;
+      box-shadow: 0 0 0 1px #333333;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      margin-left: 0.1em;
+      .text {
+        transform: scale(0.6);
+      }
+    }
+
+    .corner-decoration {
+      position: absolute;
+      width: 0.5em;
+      height: 0.5em;
+      opacity: 0;
+      transition: all 0.3s ease;
+
+      &.top-right {
+        top: 0;
+        right: 0;
+        border-top: 1px solid transparent;
+        border-right: 1px solid transparent;
+      }
+
+      &.bottom-left {
+        bottom: 0;
+        left: 1em;
+        border-bottom: 1px solid transparent;
+        border-left: 1px solid transparent;
+      }
     }
   }
 
   &.active {
-    filter: drop-shadow(0 0 0.2em #fdfa5581);
+    filter: drop-shadow(0 0 0.3em rgba(253, 251, 85, 0.3));
+
+    &::before {
+      width: 0.6em;
+      background: #fdfb55;
+    }
+
     .icon {
-      box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.3), 0 0 0 0.15em #313131 inset,
-        0 0 0 0.25em #fdfb55 inset;
+      transform: scale(1.05);
+
+      .icon-inner {
+        box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.3), 0 0 0 0.15em #313131 inset,
+          0 0 0 0.25em #fdfb55 inset;
+
+        &::after {
+          box-shadow: inset 0 0 0.5em rgba(253, 251, 85, 0.5);
+        }
+
+        img {
+          transform: scale(1.1) rotate(5deg);
+        }
+      }
+
+      .icon-decoration {
+        opacity: 1;
+        border-color: rgba(253, 251, 85, 0.5);
+        animation: rotate 3s linear infinite;
+      }
     }
+
     .detail {
-      box-shadow: 0 0 0 0.1em #fdfa556b inset;
+      box-shadow: 0 0 0 0.1em rgba(253, 251, 85, 0.4) inset;
+      background-color: #252525;
+
+      .name,
+      .count {
+        color: #fdfb55;
+        text-shadow: 0 0 5px rgba(253, 251, 85, 0.5);
+      }
+
+      .count {
+        background-color: rgba(253, 251, 85, 0.15);
+        box-shadow: 0 0 0 1px rgba(253, 251, 85, 0.4);
+      }
+
+      .corner-decoration {
+        opacity: 1;
+        width: 0.6em;
+        height: 0.6em;
+
+        &.top-right {
+          border-color: rgba(253, 251, 85, 0.7);
+        }
+
+        &.bottom-left {
+          border-color: rgba(253, 251, 85, 0.7);
+        }
+      }
     }
+  }
+
+  &:hover:not(.active) {
+    .icon .icon-inner {
+      box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.3), 0 0 0 0.15em #313131 inset,
+        0 0 0 0.25em #777 inset;
+    }
+
+    .detail {
+      background-color: #222222;
+
+      .name {
+        color: #dddddd;
+      }
+
+      .count {
+        background-color: #333333;
+        color: #bbbbbb;
+      }
+    }
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

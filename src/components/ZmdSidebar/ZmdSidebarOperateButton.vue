@@ -40,20 +40,33 @@ const isHovered = ref(false);
 <style lang="scss" scoped>
 $border-width: 1.5px;
 $border-height: 40%;
-$border-color: #575757;
-$small-color: #8e8e8e;
-$glow-color: rgba(124, 124, 124, 0.441);
-$glow-color-active: rgba(124, 124, 124, 1);
+$border-color: #35383d;
+$small-color: #707275;
+$highlight-color: #c1c1c1;
+$highlight-color-dim: rgba(193, 193, 193, 0.4);
+$bg-color-hover: rgba(40, 40, 42, 0.7);
+$bg-color-active: rgba(50, 50, 54, 0.9);
+$border-glow: rgba(193, 193, 193, 0.15);
 
 .zmd-sidebar-operate-button {
   min-width: 6em;
+  width: auto;
   position: relative;
   padding: 0.5em 1em;
   padding-bottom: 0.3em;
   text-align: center;
-  transition: all 0.3s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   user-select: none;
+  border-radius: 2px;
+
+  &:hover {
+    background-color: $bg-color-hover;
+  }
+
+  &:active {
+    background-color: $bg-color-active;
+  }
 
   .animation-element-container {
     position: absolute;
@@ -72,35 +85,65 @@ $glow-color-active: rgba(124, 124, 124, 1);
     width: 0;
     height: 2px;
     transform: translate(-50%, -50%);
-    transition: width 0.2s ease-out 0.2s, height 0.3s ease-out 0s,
-      opacity 0.3s ease;
+    transition: width 0.2s ease-out 0.1s, height 0.25s ease-out 0s,
+      opacity 0.25s ease;
 
     &.active {
-      transition: width 0.2s ease-out 0s, height 0.3s ease-out 0.2s,
-        opacity 0.3s ease;
-      width: 100%;
-      height: 100%;
+      transition: width 0.2s ease-out 0s, height 0.25s ease-out 0.15s,
+        opacity 0.25s ease;
+      width: calc(100% - 2px);
+      height: calc(100% - 2px);
+      border: none;
+      background: linear-gradient(
+            to right,
+            $highlight-color 0%,
+            $highlight-color-dim 50%,
+            $highlight-color 100%
+          )
+          top,
+        linear-gradient(
+            to right,
+            $highlight-color 0%,
+            $highlight-color-dim 50%,
+            $highlight-color 100%
+          )
+          bottom,
+        linear-gradient(
+            to bottom,
+            $highlight-color 0%,
+            $highlight-color-dim 50%,
+            $highlight-color 100%
+          )
+          left,
+        linear-gradient(
+            to bottom,
+            $highlight-color 0%,
+            $highlight-color-dim 50%,
+            $highlight-color 100%
+          )
+          right;
+      background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
+      background-repeat: no-repeat;
+      box-shadow: inset 0 0 5px $border-glow;
     }
   }
 
   .default-gradient {
-    background-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      $glow-color 50%,
-      transparent 100%
-    );
+    background: transparent;
     opacity: 1;
+
+    &.active {
+      opacity: 0;
+    }
   }
 
   .active-gradient {
-    background-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      $glow-color-active 100%,
-      transparent 100%
-    );
+    background: transparent;
     opacity: 0;
+
+    &.active {
+      opacity: 1;
+    }
   }
 
   &:active {
@@ -109,8 +152,40 @@ $glow-color-active: rgba(124, 124, 124, 1);
     }
     .active-gradient {
       opacity: 1;
-      width: 100%;
-      height: 100%;
+      width: calc(100% - 2px);
+      height: calc(100% - 2px);
+      border: none;
+      background: linear-gradient(
+            to right,
+            $highlight-color 0%,
+            $highlight-color-dim 50%,
+            $highlight-color 100%
+          )
+          top,
+        linear-gradient(
+            to right,
+            $highlight-color 0%,
+            $highlight-color-dim 50%,
+            $highlight-color 100%
+          )
+          bottom,
+        linear-gradient(
+            to bottom,
+            $highlight-color 0%,
+            $highlight-color-dim 50%,
+            $highlight-color 100%
+          )
+          left,
+        linear-gradient(
+            to bottom,
+            $highlight-color 0%,
+            $highlight-color-dim 50%,
+            $highlight-color 100%
+          )
+          right;
+      background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
+      background-repeat: no-repeat;
+      box-shadow: inset 0 0 5px $border-glow;
     }
   }
 
@@ -123,6 +198,7 @@ $glow-color-active: rgba(124, 124, 124, 1);
     height: $border-height;
     display: inline-block;
     background-color: $border-color;
+    transition: all 0.25s;
   }
 
   &:nth-child(1) {
@@ -135,6 +211,7 @@ $glow-color-active: rgba(124, 124, 124, 1);
       height: $border-height;
       display: inline-block;
       background-color: $border-color;
+      transition: all 0.25s;
     }
   }
 
@@ -145,6 +222,12 @@ $glow-color-active: rgba(124, 124, 124, 1);
     align-items: center;
     justify-content: center;
     gap: 0.1em;
+    transition: color 0.25s;
+  }
+
+  &:hover &__title,
+  &:active &__title {
+    color: $highlight-color;
   }
 
   &__subtitle {
@@ -164,6 +247,12 @@ $glow-color-active: rgba(124, 124, 124, 1);
     overflow: visible;
     display: block;
     font-size: 1rem;
+    transition: color 0.25s;
+  }
+
+  &:hover &__subtitle,
+  &:active &__subtitle {
+    color: rgba(170, 170, 170, 0.8);
   }
 }
 </style>

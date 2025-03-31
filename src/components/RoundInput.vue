@@ -17,7 +17,7 @@
       :type="props.type"
       :value="modelValue"
       v-model="modelValue"
-      class="w-full py-2 focus:outline-none"
+      class="w-full py-3 focus:outline-none"
       :class="cn({ 'pr-4': !$slots.button })"
       v-bind="$attrs"
     />

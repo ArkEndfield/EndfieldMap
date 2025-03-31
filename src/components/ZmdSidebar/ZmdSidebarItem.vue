@@ -94,7 +94,6 @@ $border-size: 0.35em;
 $content-bg: #1d1d1d;
 $gap: 0.7em;
 .zmd-sidebar-item {
-  margin-right: 1em;
   margin-top: calc(0px - $gap);
   &:first-child {
     margin-top: 0;
