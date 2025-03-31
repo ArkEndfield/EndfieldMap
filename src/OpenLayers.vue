@@ -264,14 +264,24 @@ onMounted(async () => {
           await popupManager.value.adjustMapForPopup(
             currentMap as Map,
             newPosition,
-            () => {
-              // 调整完成后才显示弹窗
-              isPopupVisible.value = true;
+            async () => {
+              // 等待地图动画完成
+              await new Promise(resolve => setTimeout(resolve, 50));
 
-              // 弹窗显示后额外检查位置
-              setTimeout(() => {
-                popupManager.value?.adjustPopupPosition(true);
-              }, 300); // 等待弹窗动画完成后再次检查位置
+              // 调整完成后再显示弹窗
+              requestAnimationFrame(() => {
+                if (popupManager.value) {
+                  popupManager.value.resetAnimationState();
+                  isPopupVisible.value = true;
+
+                  // 弹窗显示后额外检查位置
+                  setTimeout(() => {
+                    if (popupManager.value && isPopupVisible.value) {
+                      popupManager.value.adjustPopupPosition(true);
+                    }
+                  }, 300);
+                }
+              });
             }
           );
         }
@@ -460,6 +470,27 @@ watch(
   // 使用更简单的动画过渡，只用scaleY
   transition: opacity 0.2s ease, transform 0.2s ease;
   transform-origin: bottom center;
+  will-change: transform, opacity;
+
+  &.v-enter-from,
+  &.v-leave-to {
+    opacity: 0 !important;
+    transform: scaleY(0) !important;
+    display: block !important;
+  }
+
+  &.v-enter-active,
+  &.v-leave-active {
+    display: block !important;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  &.v-enter-to,
+  &.v-leave-from {
+    opacity: 1;
+    transform: scaleY(1);
+    display: block !important;
+  }
 
   .pop-drop {
     transition: top 0.5s ease, right 0.5s ease, width 0.5s ease;
@@ -482,18 +513,6 @@ watch(
       drop-shadow(calc(0px - $border-size) 0 0 $border-color)
       drop-shadow(0 0 0.4em rgba(0, 0, 0, 0.5));
   }
-
-  // 简化进入离开过渡效果
-  &.v-enter-active,
-  &.v-leave-active {
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-
-  &.v-enter-from,
-  &.v-leave-to {
-    opacity: 0 !important; // 使用!important确保优先级
-    transform: scaleY(0);
-  }
 }
 
 .top-bar {
@@ -504,12 +523,6 @@ watch(
   clip-path: $clip;
   margin-bottom: -0.01em;
 }
-
-// .popup-content-container {
-//   position: relative;
-//   width: 100%;
-//   overflow: hidden;
-// }
 
 /* 添加聚合点样式 */
 .cluster-point {

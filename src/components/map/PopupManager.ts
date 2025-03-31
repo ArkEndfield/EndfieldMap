@@ -70,31 +70,33 @@ export class PopupManager {
 
   // 弹出层出现动画
   async onEnterPopup(el: Element, onComplete: () => void) {
-    // console.log('PopupManager: 开始进入动画');
     this.isPopupAnimating = true;
 
     try {
-      // 使用更简单的动画方法 - 只用scaleY变换
-      el.setAttribute('style', 'opacity: 0; transform: scaleY(0);');
+      // 移除可能存在的过渡样式
+      el.removeAttribute('style');
 
-      // 使用基本动画 - 加快速度
-      await new Promise<void>(resolve => {
+      // 设置初始状态
+      requestAnimationFrame(() => {
+        el.setAttribute(
+          'style',
+          'display: block; opacity: 0; transform: scaleY(0); transition: none;'
+        );
+
+        // 确保初始状态被应用
         requestAnimationFrame(() => {
+          // 添加过渡效果并设置最终状态
           el.setAttribute(
             'style',
-            'opacity: 1; transform: scaleY(1); transition: opacity 0.2s ease, transform 0.2s ease;'
+            'display: block; opacity: 1; transform: scaleY(1); transition: opacity 0.2s ease, transform 0.2s ease;'
           );
+
+          // 等待过渡完成
           setTimeout(() => {
+            el.removeAttribute('style');
             this.isPopupAnimating = false;
-
-            // 动画完成后调整位置
-            if (this.isPopupVisible.value && this.currentPosition) {
-              this.adjustPopupPosition(true);
-            }
-
-            resolve();
             onComplete();
-          }, 200); // 减少等待时间
+          }, 200);
         });
       });
     } catch (error) {
@@ -106,29 +108,34 @@ export class PopupManager {
 
   // 弹出层离开动画
   async onLeavePopup(el: Element, onComplete: () => void) {
-    ('PopupManager: 开始离开动画');
     this.openSubPopup.value = false; // 关闭子弹窗
     this.isPopupAnimating = true;
 
     try {
-      // 使用更简单的动画方法
-      el.setAttribute(
-        'style',
-        'opacity: 1; transform: scaleY(1); transition: opacity 0.2s ease, transform 0.2s ease;'
-      );
+      // 移除可能存在的过渡样式
+      el.removeAttribute('style');
 
-      // 使用基本动画 - 加快速度
-      await new Promise<void>(resolve => {
+      // 设置初始状态
+      requestAnimationFrame(() => {
+        el.setAttribute(
+          'style',
+          'display: block; opacity: 1; transform: scaleY(1); transition: none;'
+        );
+
+        // 确保初始状态被应用
         requestAnimationFrame(() => {
+          // 添加过渡效果并设置最终状态
           el.setAttribute(
             'style',
-            'opacity: 0; transform: scaleY(0); transition: opacity 0.2s ease, transform 0.2s ease;'
+            'display: block; opacity: 0; transform: scaleY(0); transition: opacity 0.2s ease, transform 0.2s ease;'
           );
+
+          // 等待过渡完成
           setTimeout(() => {
+            el.removeAttribute('style');
             this.isPopupAnimating = false;
-            resolve();
             onComplete();
-          }, 200); // 减少等待时间
+          }, 200);
         });
       });
     } catch (error) {
@@ -153,29 +160,54 @@ export class PopupManager {
 
   // 处理弹出层的关闭和重新打开
   async closeAndReopenPopup(data: PointData, newPosition: number[]) {
-    // 先关闭弹窗（带动画效果）
-    this.isPopupVisible.value = false;
+    if (this.isPopupAnimating) {
+      return; // 如果动画正在进行中，不执行新的切换
+    }
 
     // 保存新数据，以便在动画完成后使用
     const newData = data;
     const popupPosition = [...newPosition];
 
-    // 等待关闭动画完成
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // 标记动画状态
+    this.isPopupAnimating = true;
 
-    // 更新实体数据
-    this.entity.value = newData;
-    this.showVideoInfo.value = false;
-    this.currentPosition = popupPosition;
+    try {
+      // 同时开始视图调整
+      const viewAdjustPromise = this.adjustMapForPopup(this.map, popupPosition);
 
-    // 设置弹出层位置
-    this.overlay.setPosition(popupPosition);
+      // 等待一帧以确保状态同步
+      await new Promise(resolve => requestAnimationFrame(resolve));
 
-    // 调整地图中心位置，然后显示弹出层
-    await this.adjustMapForPopup(this.map, popupPosition, () => {
-      // 调整完成后再显示弹窗
-      this.isPopupVisible.value = true;
-    });
+      // 开始关闭动画
+      this.isPopupVisible.value = false;
+
+      // 等待关闭动画完成
+      await new Promise(resolve => setTimeout(resolve, 250));
+
+      // 更新实体数据
+      this.entity.value = newData;
+      this.showVideoInfo.value = false;
+      this.openSubPopup.value = false;
+      this.currentPosition = popupPosition;
+
+      // 设置弹出层位置
+      this.overlay.setPosition(popupPosition);
+
+      // 等待视图调整完成
+      await viewAdjustPromise;
+
+      // 确保动画状态重置
+      this.isPopupAnimating = false;
+
+      // 显示新弹窗
+      requestAnimationFrame(() => {
+        this.isPopupVisible.value = true;
+      });
+    } catch (error) {
+      console.error('Popup transition error:', error);
+      // 确保状态被重置
+      this.isPopupAnimating = false;
+    }
   }
 
   // 调整地图以适应弹出层
@@ -185,11 +217,8 @@ export class PopupManager {
     const popupWidth = 300; // 基本弹窗宽度(像素)
     if (!mapSize || !this.popupContainer) {
       if (callback) callback();
-      return;
+      return Promise.resolve();
     }
-
-    // 设置标志位，避免同时触发多次调整
-    this.isPopupAnimating = true;
 
     // 获取地图容器的边界
     const mapRect = map.getTargetElement().getBoundingClientRect();
@@ -198,20 +227,18 @@ export class PopupManager {
     const popupHeight = 120; // 基本弹窗高度(像素)
     const safeMargin = 20; // 基本安全边距
     const headerOffset = 20; // 顶部Header偏移量
-
-    // 如果副弹窗可能展开，需要考虑额外的空间，但不要预留太多
     const extraRightSpace = 120; // 减少副弹窗可能占用的额外空间估计
 
     // 将点位置转换为屏幕像素坐标
     const pixel = map.getPixelFromCoordinate(position);
     if (!pixel) {
       if (callback) callback();
-      return;
+      return Promise.resolve();
     }
 
     // 估计弹窗在屏幕上的位置
-    const popupTop = pixel[1] - popupHeight - 15; // 顶部额外安全空间
-    const popupBottom = pixel[1] + 35; // 底部箭头高度估算
+    const popupTop = pixel[1] - popupHeight - 15;
+    const popupBottom = pixel[1] + 35;
     const popupLeft = pixel[0] - popupWidth / 2;
     const popupRight = pixel[0] + popupWidth / 2;
 
@@ -222,9 +249,8 @@ export class PopupManager {
     let panX = 0;
     let panY = 0;
 
-    // 检查是否需要调整视图 - 考虑基本弹窗位置
+    // 检查是否需要调整视图
     if (popupTop < safeMargin + headerOffset) {
-      // 添加顶部Header偏移量
       needToMove = true;
       panY = safeMargin + headerOffset - popupTop;
     }
@@ -239,10 +265,8 @@ export class PopupManager {
       panX = safeMargin - popupLeft;
     }
 
-    // 考虑副弹窗可能展开的情况，预留右侧空间
     if (popupRight + extraRightSpace > viewportWidth - safeMargin) {
       needToMove = true;
-      // 为副弹窗预留更多空间
       panX = viewportWidth - safeMargin - (popupRight + extraRightSpace);
     }
 
@@ -253,9 +277,8 @@ export class PopupManager {
       const currentCenter = view.getCenter();
 
       if (!currentCenter) {
-        this.isPopupAnimating = false;
         if (callback) callback();
-        return;
+        return Promise.resolve();
       }
 
       const newCenter = [
@@ -263,26 +286,22 @@ export class PopupManager {
         currentCenter[1] + (panY + extraOffsetY) * resolution,
       ];
 
-      // 使用动画，完成后调用回调
-      await new Promise<void>(resolve => {
+      // 返回动画完成的 Promise
+      return new Promise<void>(resolve => {
         view.animate(
           {
             center: newCenter,
             duration: 300,
           },
           () => {
-            requestAnimationFrame(() => {
-              this.isPopupAnimating = false;
-              resolve();
-            });
+            if (callback) callback();
+            resolve();
           }
         );
       });
-
-      if (callback) callback();
     } else {
-      this.isPopupAnimating = false;
       if (callback) callback();
+      return Promise.resolve();
     }
   }
 

@@ -49,7 +49,7 @@ export const loadTextPoints = (
   detail = false,
   scene = localStorage.getItem('map') === 'map002' ? 'map02' : 'map01'
 ) => {
-  const styleFn = text =>
+  const styleFn = (text: string) =>
     new Style({
       text: new Text({
         text,
@@ -57,11 +57,11 @@ export const loadTextPoints = (
         fill: new Fill({ color: '#fff' }),
         stroke: new Stroke({ color: '#000', width: 2 }),
         padding: [5, 10, 5, 10], // 文字内边距
-        backgroundFill: new Fill({ color: 'rgba(255, 255, 255, 0.5)' }), // 半透明背景
-        backgroundStroke: new Stroke({
-          color: 'rgba(255, 255, 255, 0.1)',
-          width: 1.5,
-        }), // 轻微边框
+        // backgroundFill: new Fill({ color: 'rgba(255, 255, 255, 0.5)' }), // 半透明背景
+        // backgroundStroke: new Stroke({
+        //   color: 'rgba(255, 255, 255, 0.1)',
+        //   width: 1.5,
+        // }), // 轻微边框
         // 添加偏移，确保文字不会被其他元素遮挡
         offsetY: -15,
       }),

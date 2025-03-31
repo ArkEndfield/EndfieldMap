@@ -172,33 +172,6 @@ const emit = defineEmits<{
 const popupContainer = ref<HTMLElement>();
 const popupManager = inject<PopupManager | null>('popupManager');
 
-// 辅助函数：执行基本动画
-const executeBasicAnimation = (
-  el: Element,
-  done: () => void,
-  isEnter: boolean
-) => {
-  if (isEnter) {
-    el.setAttribute('style', 'opacity: 0; transform: scaleY(0);');
-    setTimeout(() => {
-      el.setAttribute(
-        'style',
-        'opacity: 1; transform: scaleY(1); transition: all 0.2s ease;'
-      );
-      setTimeout(done, 200);
-    }, 10);
-  } else {
-    el.setAttribute('style', 'opacity: 1; transform: scaleY(1);');
-    setTimeout(() => {
-      el.setAttribute(
-        'style',
-        'opacity: 0; transform: scaleY(0); transition: all 0.2s ease;'
-      );
-      setTimeout(done, 200);
-    }, 10);
-  }
-};
-
 // 方法委托到PopupManager
 const closeToast = () => {
   if (popupManager?.closeToast) {
@@ -237,37 +210,54 @@ const toggleSubPopup = () => {
   });
 };
 
-// 动画处理 - 简化为只用scaleY变换
-const onEnterPopup = async (el: Element, done: () => void) => {
-  // 如果PopupManager未注入或不可用，使用基本动画
-  if (!popupManager?.onEnterPopup) {
-    executeBasicAnimation(el, done, true);
+const onEnterPopup = (el: Element, done: () => void) => {
+  if (!popupManager) {
+    done();
     return;
   }
 
-  try {
-    await popupManager.onEnterPopup(el, done);
-  } catch (error) {
-    console.error('动画出错:', error);
-    executeBasicAnimation(el, done, true);
-  }
+  // 确保元素在动画开始前可见
+  el.setAttribute(
+    'style',
+    'display: block !important; opacity: 0; transform: scaleY(0);'
+  );
+
+  requestAnimationFrame(() => {
+    el.setAttribute(
+      'style',
+      'display: block !important; opacity: 1; transform: scaleY(1); transition: opacity 0.2s ease, transform 0.2s ease;'
+    );
+
+    setTimeout(() => {
+      el.removeAttribute('style');
+      done();
+    }, 200);
+  });
 };
 
-const onLeavePopup = async (el: Element, done: () => void) => {
-  emit('update:openSubPopup', false); // 关闭子弹窗
-
-  // 如果PopupManager未注入或不可用，使用基本动画
-  if (!popupManager?.onLeavePopup) {
-    executeBasicAnimation(el, done, false);
+const onLeavePopup = (el: Element, done: () => void) => {
+  if (!popupManager) {
+    done();
     return;
   }
 
-  try {
-    await popupManager.onLeavePopup(el, done);
-  } catch (error) {
-    console.error('动画出错:', error);
-    executeBasicAnimation(el, done, false);
-  }
+  // 确保元素在动画开始前可见
+  el.setAttribute(
+    'style',
+    'display: block !important; opacity: 1; transform: scaleY(1);'
+  );
+
+  requestAnimationFrame(() => {
+    el.setAttribute(
+      'style',
+      'display: block !important; opacity: 0; transform: scaleY(0); transition: opacity 0.2s ease, transform 0.2s ease;'
+    );
+
+    setTimeout(() => {
+      el.removeAttribute('style');
+      done();
+    }, 200);
+  });
 };
 
 // 明确暴露容器引用
@@ -276,24 +266,66 @@ defineExpose({
 });
 </script>
 
-<style scoped>
-/* 简化动画效果，仅使用scaleY */
-.v-enter-active,
-.v-leave-active {
-  transition: all 0.2s ease;
+<style lang="scss">
+.ol-popup {
+  $border-color: rgba(206, 206, 206, 0.5);
+  $border-size: 0.2em;
+
+  // 基本样式
+  position: absolute;
+  bottom: 1rem;
+  left: -50px;
+  transform-origin: bottom center;
   will-change: transform, opacity;
-}
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  pointer-events: auto;
 
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-  transform: scaleY(0);
-}
+  // 过渡效果
+  &.v-enter-active,
+  &.v-leave-active {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    display: block !important;
+  }
 
-.pop-drop.unfold {
-  width: 80%; /* 减少副弹窗宽度，使其更合理 */
-  top: 0;
-  right: calc(-80% - 0.5em); /* 适应新宽度 */
-  will-change: top, right, width;
+  &.v-enter-from,
+  &.v-leave-to {
+    opacity: 0;
+    transform: scaleY(0);
+    display: block !important;
+  }
+
+  &.v-enter-to,
+  &.v-leave-from {
+    opacity: 1;
+    transform: scaleY(1);
+    display: block !important;
+  }
+
+  // 子弹窗过渡效果
+  .pop-drop {
+    transition: top 0.3s ease, right 0.3s ease, width 0.3s ease;
+    will-change: top, right, width;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+
+    &.unfold {
+      width: 80%;
+      top: 0;
+      right: calc(-80% - 0.5em);
+    }
+  }
+
+  .pop-content {
+    transition: transform 0.2s ease;
+    will-change: transform;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    filter: drop-shadow(0 $border-size 0 $border-color)
+      drop-shadow(0 calc(0px - $border-size) 0 $border-color)
+      drop-shadow($border-size 0 0 $border-color)
+      drop-shadow(calc(0px - $border-size) 0 0 $border-color)
+      drop-shadow(0 0 0.4em rgba(0, 0, 0, 0.5));
+  }
 }
 </style>
