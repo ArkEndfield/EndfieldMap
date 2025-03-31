@@ -637,6 +637,9 @@ export const refresh = () => {
     createEntityClusterLayers();
   }
 
+  // 清理样式缓存以避免内存泄漏
+  Object.keys(styleCache).forEach(key => delete styleCache[key]);
+
   // 先清理所有源
   Object.values(entityClusterSources).forEach(source => {
     const vectorSource = source.getSource();
@@ -681,18 +684,46 @@ export const refresh = () => {
   if (currentZoomLevel >= 5) {
     forceDisperseAtMaxZoom(currentZoomLevel);
   }
+
+  // 请求垃圾回收（虽然不是强制的，但可能有助于提示浏览器）
+  if (window.gc) {
+    try {
+      window.gc();
+    } catch (e) {
+      // 大多数浏览器不支持手动触发GC，忽略错误
+    }
+  }
+};
+
+// 优化的selectAll函数
+export const selectAll = () => {
+  // 清理样式缓存以避免内存泄漏
+  Object.keys(styleCache).forEach(key => delete styleCache[key]);
+
+  for (const key in entityInfo) {
+    entityInfo[key].entityInfo.show = true;
+  }
+
+  // 刷新显示
+  refresh();
+};
+
+// 优化的clear函数
+export const clear = () => {
+  // 清理样式缓存以避免内存泄漏
+  Object.keys(styleCache).forEach(key => delete styleCache[key]);
+
+  for (const key in entityInfo) {
+    entityInfo[key].entityInfo.show = false;
+  }
+
+  // 刷新显示
+  refresh();
 };
 
 export const select = (key: string) => {
   entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
   // 调用修改后的refresh函数更新地图显示
-  refresh();
-};
-
-export const selectAll = () => {
-  for (const key in entityInfo) {
-    entityInfo[key].entityInfo.show = true;
-  }
   refresh();
 };
 
@@ -706,13 +737,6 @@ export const toggleSelectByName = (name: string) => {
     if (entityInfo[key].entityInfo.name === name) {
       entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
     }
-  }
-  refresh();
-};
-
-export const clear = () => {
-  for (const key in entityInfo) {
-    entityInfo[key].entityInfo.show = false;
   }
   refresh();
 };

@@ -9,6 +9,13 @@ import { checkAppReady } from './utils/check';
 import { disableContextMenu, disableZoom } from './utils/device';
 import i18n from './i18n';
 
+if (process.env.NODE_ENV === 'development') {
+  try {
+    // 添加性能监控模块
+    const { monitorMemory } = await import('./utils/performance');
+    monitorMemory();
+  } catch (error) {}
+}
 const app = createApp(App);
 
 // 再注册VueViewer
