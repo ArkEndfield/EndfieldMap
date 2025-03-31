@@ -205,6 +205,7 @@ onMounted(async () => {
     }
   });
 
+  // 修改选择交互部分的代码，先关闭弹窗，再放大聚合点
   selectInteraction.on('select', async function (event) {
     const currentMap = map.value;
     if (!currentMap) return;
@@ -214,7 +215,14 @@ onMounted(async () => {
       // 检查是否是聚合点
       const features = target.get('features');
       if (features && features.length > 1) {
-        // 处理聚合点击 - 放大地图或显示聚合列表
+        // 聚合点点击处理
+        // 如果有弹窗正在显示，先关闭它
+        if (isPopupVisible.value) {
+          isPopupVisible.value = false;
+          // 等待弹窗关闭动画完成
+          await new Promise(resolve => setTimeout(resolve, 250));
+        }
+
         const extent = target.getGeometry()?.getExtent();
         if (extent && currentMap) {
           // 放大到聚合范围

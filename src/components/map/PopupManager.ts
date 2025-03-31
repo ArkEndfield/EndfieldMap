@@ -13,6 +13,7 @@ export class PopupManager {
   private entity: Ref<PointData>;
   private showVideoInfo: Ref<boolean>;
   private openSubPopup: Ref<boolean>;
+  private isMapZooming = false; // 添加地图缩放状态标记
 
   constructor(
     map: Map,
@@ -220,7 +221,17 @@ export class PopupManager {
     }
   }
 
-  // 调整地图以适应弹出层
+  // 设置地图缩放状态
+  setMapZooming(isZooming: boolean) {
+    this.isMapZooming = isZooming;
+  }
+
+  // 获取地图缩放状态
+  isZoomingMap() {
+    return this.isMapZooming;
+  }
+
+  // 调整地图以适应弹出层 - 添加防止缩放冲突的逻辑
   async adjustMapForPopup(
     map: Map,
     position: number[],
@@ -228,7 +239,7 @@ export class PopupManager {
     callback?: () => void
   ) {
     // 如果地图正在进行动画（比如聚合点放大），则不调整视图
-    if (map.getView().getAnimating()) {
+    if (map.getView().getAnimating() || this.isMapZooming) {
       if (callback) callback();
       return Promise.resolve();
     }
@@ -323,13 +334,14 @@ export class PopupManager {
     return Promise.resolve();
   }
 
-  // 调整弹窗位置函数 - 用于在内容变化后重新检查位置
+  // 调整弹窗位置函数 - 添加防止缩放冲突的逻辑
   adjustPopupPosition(forceAdjust = false) {
     if (
       !this.currentPosition ||
       !this.popupContainer ||
       !this.map ||
-      this.isPopupAnimating
+      this.isPopupAnimating ||
+      this.isMapZooming // 如果地图正在缩放中，不调整弹窗位置
     )
       return;
 
@@ -400,9 +412,9 @@ export class PopupManager {
     }
   }
 
-  // 特别为展开副弹窗准备的调整方法
+  // 特别为展开副弹窗准备的调整方法 - 添加防止缩放冲突的逻辑
   async adjustForExpandedPopup(isExpanded: boolean) {
-    if (!this.currentPosition || !this.map) return;
+    if (!this.currentPosition || !this.map || this.isMapZooming) return;
 
     // 设置动画中状态，避免重复调整
     this.isPopupAnimating = true;
