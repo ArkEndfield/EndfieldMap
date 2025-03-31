@@ -39,7 +39,6 @@ defineEmits(['click']);
   width: 100%;
   height: 100%;
   transform: rotate(45deg);
-  cursor: pointer;
   transition: all 0.3s ease;
   padding: 0;
   outline: none;

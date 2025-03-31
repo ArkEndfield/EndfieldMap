@@ -16,7 +16,7 @@
           {{ props.name }}
         </div>
         <div class="count">
-          <div class="text">{{ props.value }}</div>
+          <div class="text">{{ formattedValue }}</div>
         </div>
       </div>
       <div class="corner-decoration top-right"></div>
@@ -31,12 +31,14 @@ import { ref, computed } from 'vue';
 interface Props {
   name?: string;
   value?: string | number;
+  markCount?: number;
   checked?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   name: '未命名',
   value: 0,
+  markCount: 0,
   checked: undefined,
 });
 
@@ -54,6 +56,14 @@ const isActive = computed(() => {
   } else {
     return internalActive.value;
   }
+});
+
+// 格式化显示的值
+const formattedValue = computed(() => {
+  if (typeof props.value === 'number' && props.markCount !== undefined) {
+    return `${props.markCount}/${props.value}`;
+  }
+  return props.value;
 });
 
 const toggle = () => {
@@ -82,7 +92,6 @@ const toggle = () => {
   transition: all 0.3s ease;
   padding: 0.5em 0.3em;
   position: relative;
-  cursor: pointer;
   overflow: hidden;
   &::before {
     content: '';

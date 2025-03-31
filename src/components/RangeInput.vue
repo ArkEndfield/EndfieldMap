@@ -47,7 +47,7 @@
         <!-- 滑块轨道和手柄 - 始终使用水平布局，但在垂直模式时会被旋转 -->
         <div
           ref="trackRef"
-          class="slider-track-container bg-[#ffff9b6a] shadow-[0_0_0.1em_rgba(253,251,84,0.8)] h-1 relative cursor-pointer"
+          class="slider-track-container bg-[#ffff9b6a] shadow-[0_0_0.1em_rgba(253,251,84,0.8)] h-1 relative"
           @click="handleTrackClick"
         >
           <!-- 已选择部分的填充 -->

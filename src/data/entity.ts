@@ -682,6 +682,11 @@ watch(currentMarkFilter, () => {
   refresh();
 });
 
+// 获取实体类型对应的点位集合
+export const getPointsByEntityType = (entityType: string): PointData[] => {
+  return points.filter(point => point.entityDataIdKey === entityType);
+};
+
 // 初始化实体信息
 export const initializeEntityInfo = () => {
   // 先统计当前地图中存在的实体类型和数量
