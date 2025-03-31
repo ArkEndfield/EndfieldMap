@@ -167,51 +167,72 @@ export class PopupManager {
     // 保存新数据，以便在动画完成后使用
     const newData = data;
     const popupPosition = [...newPosition];
+    const wasExpanded = this.openSubPopup.value; // 记录当前弹窗是否展开
 
     // 标记动画状态
     this.isPopupAnimating = true;
 
     try {
-      // 同时开始视图调整
-      const viewAdjustPromise = this.adjustMapForPopup(this.map, popupPosition);
+      // 1. 先关闭副弹窗
+      this.openSubPopup.value = false;
 
-      // 等待一帧以确保状态同步
-      await new Promise(resolve => requestAnimationFrame(resolve));
-
-      // 开始关闭动画
+      // 2. 开始关闭当前弹窗
       this.isPopupVisible.value = false;
 
-      // 等待关闭动画完成
+      // 3. 等待关闭动画完成
       await new Promise(resolve => setTimeout(resolve, 250));
 
-      // 更新实体数据
+      // 4. 更新数据和位置
       this.entity.value = newData;
       this.showVideoInfo.value = false;
-      this.openSubPopup.value = false;
       this.currentPosition = popupPosition;
-
-      // 设置弹出层位置
       this.overlay.setPosition(popupPosition);
 
-      // 等待视图调整完成
-      await viewAdjustPromise;
+      // 5. 展开新弹窗
+      this.isPopupVisible.value = true;
 
-      // 确保动画状态重置
+      // 6. 等待弹窗完全展开
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      // 7. 调整视图位置
+      await this.adjustMapForPopup(this.map, popupPosition, true);
+
+      // 8. 如果之前是展开状态，等待视图调整完成后再展开副弹窗
+      if (wasExpanded) {
+        setTimeout(() => {
+          this.openSubPopup.value = true;
+          // 展开后再次检查位置
+          setTimeout(() => {
+            if (this.isPopupVisible.value) {
+              this.adjustForExpandedPopup(true);
+            }
+          }, 100);
+        }, 300);
+      }
+
+      // 9. 重置动画状态
       this.isPopupAnimating = false;
-
-      // 显示新弹窗
-      requestAnimationFrame(() => {
-        this.isPopupVisible.value = true;
-      });
     } catch (error) {
       console.error('Popup transition error:', error);
       // 确保状态被重置
       this.isPopupAnimating = false;
+      this.openSubPopup.value = false;
     }
   }
 
   // 调整地图以适应弹出层
-  async adjustMapForPopup(map: Map, position: number[], callback?: () => void) {
+  async adjustMapForPopup(
+    map: Map,
+    position: number[],
+    forceCheck = false,
+    callback?: () => void
+  ) {
+    // 如果地图正在进行动画（比如聚合点放大），则不调整视图
+    if (map.getView().getAnimating()) {
+      if (callback) callback();
+      return Promise.resolve();
+    }
+
     const view = map.getView();
     const mapSize = map.getSize();
     const popupWidth = 300; // 基本弹窗宽度(像素)
@@ -220,14 +241,9 @@ export class PopupManager {
       return Promise.resolve();
     }
 
-    // 获取地图容器的边界
+    // 获取弹窗的实际尺寸
+    const popupRect = this.popupContainer.getBoundingClientRect();
     const mapRect = map.getTargetElement().getBoundingClientRect();
-
-    // 增加弹窗的估计高度和宽度，确保有足够空间
-    const popupHeight = 120; // 基本弹窗高度(像素)
-    const safeMargin = 20; // 基本安全边距
-    const headerOffset = 20; // 顶部Header偏移量
-    const extraRightSpace = 120; // 减少副弹窗可能占用的额外空间估计
 
     // 将点位置转换为屏幕像素坐标
     const pixel = map.getPixelFromCoordinate(position);
@@ -235,6 +251,12 @@ export class PopupManager {
       if (callback) callback();
       return Promise.resolve();
     }
+
+    // 使用实际的弹窗高度而不是固定值
+    const popupHeight = popupRect.height;
+    const safeMargin = 20; // 基本安全边距
+    const headerOffset = 40; // 增加顶部Header偏移量
+    const extraRightSpace = this.openSubPopup.value ? 400 : 120; // 根据副弹窗状态调整右侧空间
 
     // 估计弹窗在屏幕上的位置
     const popupTop = pixel[1] - popupHeight - 15;
@@ -245,34 +267,31 @@ export class PopupManager {
     const viewportWidth = mapRect.width;
     const viewportHeight = mapRect.height;
 
-    let needToMove = false;
+    let needToMove = forceCheck;
     let panX = 0;
     let panY = 0;
 
-    // 检查是否需要调整视图
-    if (popupTop < safeMargin + headerOffset) {
+    // 检查垂直方向，增加额外的上边界空间
+    if (popupTop < headerOffset) {
       needToMove = true;
-      panY = safeMargin + headerOffset - popupTop;
-    }
-
-    if (popupBottom > viewportHeight - safeMargin) {
+      panY = headerOffset - popupTop + safeMargin + 20; // 增加额外的上边界空间
+    } else if (popupBottom > viewportHeight - safeMargin) {
       needToMove = true;
       panY = viewportHeight - safeMargin - popupBottom;
     }
 
+    // 检查水平方向
     if (popupLeft < safeMargin) {
       needToMove = true;
       panX = safeMargin - popupLeft;
-    }
-
-    if (popupRight + extraRightSpace > viewportWidth - safeMargin) {
+    } else if (popupRight + extraRightSpace > viewportWidth - safeMargin) {
       needToMove = true;
       panX = viewportWidth - safeMargin - (popupRight + extraRightSpace);
     }
 
     if (needToMove) {
       const resolution = view.getResolution() || 1;
-      const extraOffsetY = panY !== 0 ? Math.sign(panY) * 30 : 0;
+      const extraOffsetY = panY !== 0 ? Math.sign(panY) * 40 : 0; // 增加垂直方向的额外偏移
       const extraOffsetX = panX !== 0 ? Math.sign(panX) * 30 : 0;
       const currentCenter = view.getCenter();
 
@@ -281,17 +300,16 @@ export class PopupManager {
         return Promise.resolve();
       }
 
-      const newCenter = [
-        currentCenter[0] - (panX + extraOffsetX) * resolution,
-        currentCenter[1] + (panY + extraOffsetY) * resolution,
-      ];
-
-      // 返回动画完成的 Promise
+      // 直接执行单个动画，同时处理水平和垂直方向
       return new Promise<void>(resolve => {
         view.animate(
           {
-            center: newCenter,
+            center: [
+              currentCenter[0] - (panX + extraOffsetX) * resolution,
+              currentCenter[1] + (panY + extraOffsetY) * resolution,
+            ],
             duration: 300,
+            easing: t => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
           },
           () => {
             if (callback) callback();
@@ -299,10 +317,10 @@ export class PopupManager {
           }
         );
       });
-    } else {
-      if (callback) callback();
-      return Promise.resolve();
     }
+
+    if (callback) callback();
+    return Promise.resolve();
   }
 
   // 调整弹窗位置函数 - 用于在内容变化后重新检查位置

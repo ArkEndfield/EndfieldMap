@@ -264,6 +264,7 @@ onMounted(async () => {
           await popupManager.value.adjustMapForPopup(
             currentMap as Map,
             newPosition,
+            false,
             async () => {
               // 等待地图动画完成
               await new Promise(resolve => setTimeout(resolve, 50));
