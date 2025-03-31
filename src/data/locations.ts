@@ -70,7 +70,24 @@ export const loadTextPoints = (
   const cacheKey = {};
   // console.log(detail);
 
-  if (reset) vectorSource.clear();
+  if (reset) {
+    // 增强清理过程
+    const features = vectorSource.getFeatures();
+
+    // 确保从源中移除所有特征，同时清理引用
+    if (features.length > 0) {
+      // 手动移除每个特征，确保完全清理
+      features.forEach(feature => {
+        // 从源中移除
+        vectorSource.removeFeature(feature);
+      });
+
+      console.log(`已清理 ${features.length} 个地名标签`);
+    }
+
+    // 最后确保源是空的
+    vectorSource.clear();
+  }
 
   for (const k of Object.keys(locations).filter(
     key => locations[key].priority == (detail ? 'Override' : 'Base')
@@ -92,6 +109,13 @@ export const loadTextPoints = (
     feature.set('isTextLabel', true);
     vectorSource.addFeature(feature);
   }
+
+  // 添加调试信息
+  console.log(
+    `已加载 ${Object.keys(cacheKey).length} 个地名标签 (${
+      detail ? '详细' : '基本'
+    })`
+  );
 };
 
 loadTextPoints();

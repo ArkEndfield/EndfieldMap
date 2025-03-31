@@ -7,6 +7,9 @@ import Control from 'ol/control/Control';
 import { areaNameLayer } from '@/data/locations';
 import { entityClusterLayers } from '@/data/entity';
 import { ref } from 'vue';
+import { Layer } from 'ol/layer';
+import VectorSource from 'ol/source/Vector';
+import Cluster from 'ol/source/Cluster';
 
 // 创建简单投影
 export const simpleProjection = new Projection({
@@ -42,9 +45,40 @@ export function createZoomControl(controlsElement: HTMLElement) {
 export const map = ref<Map | null>(null);
 export const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001');
 
+// 类型保护函数
+function isVectorSource(source: any): source is VectorSource {
+  return source && 'clear' in source;
+}
+
+function isClusterSource(source: any): source is Cluster {
+  return source && 'getSource' in source;
+}
+
 // 更新地图视图和图层
 export function updateMap(mapIndex: string) {
   if (!map.value) return;
+
+  // 移除所有现有图层前，先清理它们
+  const layers = map.value.getLayers().getArray();
+  layers.forEach(layer => {
+    // 检查图层是否有 getSource 方法
+    if ('getSource' in layer) {
+      const source = (layer as Layer).getSource();
+      if (source) {
+        // 如果是矢量源，清理特征
+        if (isVectorSource(source)) {
+          source.clear();
+        }
+        // 如果是聚合源，清理内部源
+        if (isClusterSource(source)) {
+          const innerSource = source.getSource();
+          if (isVectorSource(innerSource)) {
+            innerSource.clear();
+          }
+        }
+      }
+    }
+  });
 
   // 移除所有现有图层
   map.value.getLayers().clear();
@@ -69,6 +103,65 @@ export function updateMap(mapIndex: string) {
   const view = map.value.getView();
   view.setCenter(mapIndex === 'map001' ? [100, 152] : [50, 188]);
   view.setZoom(3);
+
+  // 强制更新地图尺寸和重新渲染
+  map.value.updateSize();
+  map.value.render();
+
+  console.log(`已更新地图到 ${mapIndex}`);
+}
+
+// 清理地图资源的函数
+export function cleanupMap() {
+  if (!map.value) return;
+
+  // 清理地图交互
+  const interactions = map.value.getInteractions().getArray();
+  interactions.forEach(interaction => {
+    map.value?.removeInteraction(interaction);
+  });
+
+  // 清理地图控件
+  const controls = map.value.getControls().getArray();
+  controls.forEach(control => {
+    map.value?.removeControl(control);
+  });
+
+  // 清理地图叠加层
+  const overlays = map.value.getOverlays().getArray();
+  overlays.forEach(overlay => {
+    map.value?.removeOverlay(overlay);
+  });
+
+  // 清理地图图层
+  const layers = map.value.getLayers().getArray();
+  layers.forEach(layer => {
+    // 检查图层是否有 getSource 方法
+    if ('getSource' in layer) {
+      const source = (layer as Layer).getSource();
+      if (source) {
+        // 如果是矢量源，清理特征
+        if (isVectorSource(source)) {
+          source.clear();
+        }
+        // 如果是聚合源，清理内部源
+        if (isClusterSource(source)) {
+          const innerSource = source.getSource();
+          if (isVectorSource(innerSource)) {
+            innerSource.clear();
+          }
+        }
+        // 移除源的引用
+        (layer as Layer).setSource(null);
+      }
+    }
+    map.value?.removeLayer(layer);
+  });
+
+  // 分离目标元素
+  map.value.setTarget(undefined);
+
+  console.log('已清理地图资源');
 }
 
 export function createMap(

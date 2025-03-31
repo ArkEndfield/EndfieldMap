@@ -555,11 +555,60 @@ export const reinitializeEntityLayers = () => {
     Object.entries(entityInfo).map(([key, info]) => [key, info.entityInfo.show])
   );
 
-  // 清空现有图层和源
+  // 清空现有图层和源 - 增强清理过程以防止内存泄漏
+  entityClusterLayers.forEach(layer => {
+    if (layer.getSource()) {
+      const source = layer.getSource();
+      // 清理聚合源
+      if (source && 'getSource' in source) {
+        const vectorSource = source.getSource();
+        if (vectorSource) {
+          vectorSource.clear();
+        }
+        // 移除聚合关联
+        source.setSource(null);
+      }
+    }
+    // 确保图层从所有可能的集合中移除
+    layer.setSource(null);
+  });
+
+  // 清空数组
   entityClusterLayers.length = 0;
-  Object.keys(entityClusterSources).forEach(
-    key => delete entityClusterSources[key]
-  );
+
+  // 明确清理聚合源对象
+  Object.keys(entityClusterSources).forEach(key => {
+    const source = entityClusterSources[key];
+    if (source) {
+      // 清理内部向量源
+      const innerSource = source.getSource();
+      if (innerSource) {
+        innerSource.clear();
+      }
+      source.setSource(null);
+    }
+    delete entityClusterSources[key];
+  });
+
+  // 清理特征数组
+  features.length = 0;
+
+  // 清理样式缓存
+  Object.keys(styleCache).forEach(key => delete styleCache[key]);
+
+  // 清理实体分组数据
+  Object.keys(entityGroup).forEach(key => {
+    if (entityGroup[key] && entityGroup[key].points) {
+      entityGroup[key].points.length = 0;
+    }
+    delete entityGroup[key];
+  });
+
+  // 清理项目映射
+  Object.keys(itemMap).forEach(key => delete itemMap[key]);
+
+  // 输出清理记录
+  console.log('已清理实体图层资源');
 
   // 重新初始化实体信息
   initializeEntityInfo();
@@ -731,8 +780,10 @@ export const initializeEntityInfo = () => {
     }
   }
 
-  // 加载数据
+  // 确保features数组为空
   features.length = 0;
+
+  // 加载数据前清理itemMap
   Object.keys(itemMap).forEach(key => delete itemMap[key]);
 
   // 处理当前地图中存在的点位，更新计数
@@ -750,6 +801,8 @@ export const initializeEntityInfo = () => {
   // 更新源数据
   source.clear();
   source.addFeatures(features);
+
+  console.log(`已重新初始化 ${features.length} 个实体特征`);
 };
 
 // 初始化调用

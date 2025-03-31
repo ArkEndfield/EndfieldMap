@@ -36,6 +36,7 @@ import {
   createMap,
   map,
   updateMap,
+  cleanupMap,
 } from './components/map/MapCore';
 import { Select } from 'ol/interaction';
 import { click } from 'ol/events/condition';
@@ -344,12 +345,38 @@ onMounted(async () => {
 
 // 组件卸载前执行清理工作
 onBeforeUnmount(() => {
+  console.log('组件卸载，清理资源');
+
   // 移除全局事件监听器
   window.removeEventListener('resize', () => {});
 
-  // 销毁地图实例
+  // 释放弹窗管理器
+  popupManager.value = null;
+
+  // 清除选择交互状态
+  if (selectInteraction) {
+    selectInteraction.getFeatures().clear();
+    if (map.value) {
+      map.value.removeInteraction(selectInteraction);
+    }
+    selectInteraction = null as any;
+  }
+
+  // 清理overlay
+  if (overlay) {
+    if (map.value) {
+      map.value.removeOverlay(overlay);
+    }
+    overlay = null as any;
+  }
+
+  // 使用增强的地图清理函数
+  cleanupMap();
+
+  // 销毁地图实例 (额外保障)
   if (map.value) {
     map.value.setTarget(undefined);
+    map.value = null;
   }
 });
 
@@ -357,10 +384,23 @@ onBeforeUnmount(() => {
 watch(
   () => cacheMapId.value,
   async newValue => {
+    console.log(`开始切换地图到: ${newValue}`);
+
     // 关闭可能打开的弹窗
     isPopupVisible.value = false;
     showVideoInfo.value = false;
+    openSubPopup.value = false;
     popupManager.value?.setCurrentPosition(undefined);
+
+    // 如果overlay还存在，清除位置
+    if (overlay) {
+      overlay.setPosition(undefined);
+    }
+
+    // 清除选择状态
+    if (selectInteraction) {
+      selectInteraction.getFeatures().clear();
+    }
 
     // 更新点位数据
     updatePoints(newValue);
@@ -368,7 +408,7 @@ watch(
     // 等待 Vue 更新完成
     await nextTick();
 
-    // 重新初始化实体图层
+    // 重新初始化实体图层 - 确保旧资源被清理
     reinitializeEntityLayers();
 
     // 等待实体图层初始化完成
@@ -385,6 +425,12 @@ watch(
       map.value.updateSize();
       map.value.render();
     }
+
+    // 主动请求垃圾回收
+    setTimeout(() => {
+      // 这不会真正触发垃圾回收，但有助于调试
+      console.log('地图切换完成，建议检查内存使用情况');
+    }, 1000);
   },
   { flush: 'post' } // 确保在 DOM 更新后执行
 );
