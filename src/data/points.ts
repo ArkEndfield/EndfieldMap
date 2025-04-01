@@ -25,22 +25,7 @@ export interface PointData {
   sceneId: string;
   position: { x: number; y: number; z: number };
   entityDataIdKey: string;
-  properties?: Array<
-    | {
-        key: string;
-        value: {
-          type: number;
-          valueArray: Array<{
-            valueBit64?: number;
-            valueString?: string;
-          }>;
-        };
-      }
-    | {
-        key: 'reward_id';
-        value: string[];
-      }
-  >;
+  reward_id?: string;
 }
 
 export type PointType = {
