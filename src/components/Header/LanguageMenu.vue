@@ -53,6 +53,7 @@ import { loadTextPoints } from '@/data/locations';
 import { cn } from '@/utils/tailwind';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { type Language, loadLanguage } from '@/i18n';
 
 const openAlert = ref(false);
 const { locale } = useI18n();
@@ -71,11 +72,21 @@ const onOpen = () => {
 };
 
 // 切换语言
-const changeLanguage = (lang: string) => {
-  locale.value = lang;
-  openAlert.value = false;
-  localStorage.setItem('userLanguage', lang);
-  loadTextPoints(true);
+const changeLanguage = async (lang: string) => {
+  // 先尝试加载语言文件
+  const success = await loadLanguage(lang as Language);
+  if (success) {
+    locale.value = lang;
+    openAlert.value = false;
+    localStorage.setItem('userLanguage', lang);
+    loadTextPoints(true);
+  } else {
+    console.error('加载语言文件失败，将使用中文作为后备语言');
+    // 如果加载失败，使用中文作为后备语言
+    locale.value = 'zh-CN';
+    localStorage.setItem('userLanguage', 'zh-CN');
+    loadTextPoints(true);
+  }
 };
 </script>
 

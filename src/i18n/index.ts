@@ -1,4 +1,5 @@
 import { createI18n } from 'vue-i18n';
+import { loadJSON } from '@/utils/jsonLoader';
 import zhCN from './locales/zh-cn.json';
 import zhTW from './locales/zh-tw.json';
 import enUS from './locales/en-us.json';
@@ -12,8 +13,6 @@ const i18n = createI18n({
   fallbackLocale: 'zh-CN',
   messages: {
     'zh-CN': zhCN,
-    'zh-TW': zhTW,
-    'en-US': enUS,
   },
   numberFormats: {
     'en-US': {
@@ -88,5 +87,28 @@ const i18n = createI18n({
     },
   },
 });
+
+export async function loadLanguage(lang: Language) {
+  try {
+    if (lang === 'zh-CN') {
+      return true;
+    }
+
+    const messages = await loadJSON<MessageSchema>(
+      `/locales/${lang.toLowerCase()}.json`
+    );
+    i18n.global.setLocaleMessage(lang, messages);
+    return true;
+  } catch (error) {
+    console.error(`加载语言文件失败 ${lang}:`, error);
+    return false;
+  }
+}
+
+const currentLocale =
+  (storagedLocale as Language) || (window.navigator.language as Language);
+if (currentLocale !== 'zh-CN') {
+  loadLanguage(currentLocale).catch(console.error);
+}
 
 export default i18n;
