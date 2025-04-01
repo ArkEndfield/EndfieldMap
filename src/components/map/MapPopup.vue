@@ -156,7 +156,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject } from 'vue';
+import { ref, inject, watch } from 'vue';
 import { cn } from '@/utils/tailwind';
 import { PopupManager } from './PopupManager';
 import { marks } from '@/data/marks';
@@ -218,31 +218,78 @@ const closeToast = () => {
 };
 
 const toggleSubPopup = () => {
+  if (!showRewards.value) {
+    return;
+  }
+
   const newState = !props.openSubPopup;
   emit('update:openSubPopup', newState);
 
-  // 确保立即更新DOM状态，然后进行视图调整
-  requestAnimationFrame(() => {
-    if (popupManager?.adjustForExpandedPopup) {
-      // 重置动画状态，确保调整能正常进行
+  // 只有在手动切换背面弹窗时才调整视图
+  if (popupManager?.adjustForExpandedPopup) {
+    requestAnimationFrame(() => {
       popupManager.resetAnimationState?.();
-
-      // 等待DOM更新后立即调整一次
       setTimeout(() => {
         popupManager.adjustForExpandedPopup(newState);
       }, 50);
 
-      // 过渡动画完成后的最终调整，确保位置正确
       setTimeout(() => {
         popupManager.adjustForExpandedPopup(newState);
-        // 额外调整，确保在任何情况下都能正确定位
         setTimeout(() => {
           popupManager.adjustPopupPosition?.(true);
         }, 150);
       }, 550);
-    }
-  });
+    });
+  }
 };
+
+// 监听 entity 的变化，当切换到新的标点时，如果没有奖励，则关闭背面弹窗
+watch(
+  () => props.entity,
+  newEntity => {
+    const hasRewards = shouldShowRewards(newEntity);
+    if (!hasRewards && props.openSubPopup) {
+      // 如果新标点没有奖励，关闭背面弹窗，但不触发视图调整
+      emit('update:openSubPopup', false);
+      // 重置动画状态
+      if (popupManager?.resetAnimationState) {
+        popupManager.resetAnimationState();
+      }
+    }
+  },
+  { immediate: true }
+);
+
+// 监听 isPopupVisible 的变化，当弹窗关闭时，同时关闭背面弹窗
+watch(
+  () => props.isPopupVisible,
+  newValue => {
+    if (!newValue && props.openSubPopup) {
+      emit('update:openSubPopup', false);
+      // 重置动画状态
+      if (popupManager?.resetAnimationState) {
+        popupManager.resetAnimationState();
+      }
+    }
+  },
+  { immediate: true }
+);
+
+// 添加一个新的 watch 来处理 openSubPopup 的变化
+watch(
+  () => props.openSubPopup,
+  newValue => {
+    // 只有当有奖励且是手动触发的展开/收起时才调整视图
+    if (showRewards.value && popupManager?.adjustForExpandedPopup) {
+      requestAnimationFrame(() => {
+        popupManager.resetAnimationState?.();
+        setTimeout(() => {
+          popupManager.adjustForExpandedPopup(newValue);
+        }, 50);
+      });
+    }
+  }
+);
 
 const onEnterPopup = (el: Element, done: () => void) => {
   if (!popupManager) {

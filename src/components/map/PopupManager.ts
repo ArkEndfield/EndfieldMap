@@ -198,17 +198,23 @@ export class PopupManager {
       // 7. 调整视图位置
       await this.adjustMapForPopup(this.map, popupPosition, true);
 
-      // 8. 如果之前是展开状态，等待视图调整完成后再展开副弹窗
+      // 8. 如果之前是展开状态，检查新标点是否有奖励，只有有奖励时才展开副弹窗
       if (wasExpanded) {
-        setTimeout(() => {
-          this.openSubPopup.value = true;
-          // 展开后再次检查位置
+        // 导入 shouldShowRewards 函数
+        const { shouldShowRewards } = await import('@/data/reward');
+        const hasRewards = shouldShowRewards(newData);
+
+        if (hasRewards) {
           setTimeout(() => {
-            if (this.isPopupVisible.value) {
-              this.adjustForExpandedPopup(true);
-            }
-          }, 100);
-        }, 300);
+            this.openSubPopup.value = true;
+            // 展开后再次检查位置
+            setTimeout(() => {
+              if (this.isPopupVisible.value) {
+                this.adjustForExpandedPopup(true);
+              }
+            }, 100);
+          }, 300);
+        }
       }
 
       // 9. 重置动画状态
