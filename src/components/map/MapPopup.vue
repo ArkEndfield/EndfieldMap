@@ -109,26 +109,29 @@
           <div class="p-4 pt-2 z-1 relative">
             <div>
               {{
-                entityInfo[entity.entityDataIdKey]?.entityInfo.name ||
+                (entity &&
+                  entityInfo[entity.entityDataIdKey]?.entityInfo.name) ||
                 $t('popover.unknow_name')
               }}
             </div>
             <div class="!my-2 !text-sm">
-              <span>id: {{ entity.entityDataIdKey }}</span>
-              <span class="float-right opacity-75">#{{ entity.seq }}</span>
+              <span>id: {{ entity?.entityDataIdKey }}</span>
+              <span class="float-right opacity-75"
+                >#{{ entity?.levelLogicId }}</span
+              >
             </div>
             <GuideNode
-              v-if="guides[entity.seq]?.nodes"
-              :nodes="guides[entity.seq].nodes"
+              v-if="entity && guides[entity.levelLogicId].nodes"
+              :nodes="guides[entity?.levelLogicId].nodes"
             />
             <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
-              坐标 ({{ entity.position.x }}, {{ entity.position.y }},
-              {{ entity.position.z }})
+              坐标 ({{ entity?.position.x }}, {{ entity?.position.y }},
+              {{ entity?.position.z }})
             </div>
             <div class="flex items-center justify-between gap-2 mt-4">
               <a
-                v-if="guides[entity.seq]?.video?.link"
-                :href="guides[entity.seq].video.link"
+                v-if="entity"
+                :href="guides[entity.levelLogicId].video.link"
                 target="_blank"
                 class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
               >
@@ -136,14 +139,16 @@
               </a>
               <div class="flex items-center justify-end gap-2">
                 <label
+                  v-if="entity"
                   :for="`get-${entity.entityDataIdKey}`"
                   class="text-sm"
                 >
                   {{ $t('popover.obtained') }}
                 </label>
                 <ZmdSwitch
-                  :id="`get-${entity.entityDataIdKey}`"
-                  v-model:checked="marks[entity.seq].finish"
+                  v-if="entity"
+                  :id="`get-${entity?.entityDataIdKey}`"
+                  v-model:checked="marks[entity.levelLogicId].finish"
                 />
               </div>
             </div>
@@ -167,7 +172,7 @@ import { getRewards, shouldShowRewards } from '@/data/reward';
 
 const props = defineProps<{
   isPopupVisible: boolean;
-  entity: PointData;
+  entity: PointData | null;
   openSubPopup: boolean;
 }>();
 
@@ -188,7 +193,6 @@ const showRewards = computed(() => {
 const rewards = computed(() => {
   const entity = props.entity;
   const rwds = getRewards(entity);
-  // console.log('获取到的奖励列表:', rwds);
   return rwds;
 });
 
@@ -229,6 +233,9 @@ const toggleSubPopup = () => {
 watch(
   () => props.entity,
   newEntity => {
+    if (!newEntity) {
+      return;
+    }
     const hasRewards = shouldShowRewards(newEntity);
     if (!hasRewards && props.openSubPopup) {
       // 如果新标点没有奖励，关闭背面弹窗，但不触发视图调整

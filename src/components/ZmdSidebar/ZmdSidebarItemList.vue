@@ -55,7 +55,7 @@ const calculateEntityMarkCounts = () => {
     const entityKey = point.entityDataIdKey;
 
     // 如果点位被标记为完成
-    if (marks[point.seq]?.finish) {
+    if (marks[point.levelLogicId]?.finish) {
       counts[entityKey] = (counts[entityKey] || 0) + 1;
     }
   }

@@ -62,12 +62,7 @@ const zoomLevel = ref(3);
 const isPopupVisible = ref(false);
 const showVideoInfo = ref(false);
 const openSubPopup = ref(false);
-const entity = ref<PointData>({
-  sceneId: '',
-  seq: 1,
-  entityDataIdKey: '',
-  position: { x: 0, y: 0, z: 0 },
-});
+const entity = ref<PointData | null>(null);
 
 // 引用DOM元素
 const mapControlsRef = ref();

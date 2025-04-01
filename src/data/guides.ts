@@ -37,9 +37,9 @@ export function initializeGuides() {
 
   // 根据点位数据初始化指南
   allPoints.forEach(point => {
-    const { seq } = point;
-    if (!guides[seq]) {
-      guides[seq] = {
+    const { levelLogicId } = point;
+    if (!guides[levelLogicId]) {
+      guides[levelLogicId] = {
         nodes: [
           {
             type: 'node',

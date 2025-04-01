@@ -10,7 +10,7 @@ export class PopupManager {
   private isPopupVisible: Ref<boolean>;
   private currentPosition: number[] | undefined;
   private isPopupAnimating = false;
-  private entity: Ref<PointData>;
+  private entity: Ref<PointData | null>;
   private showVideoInfo: Ref<boolean>;
   private openSubPopup: Ref<boolean>;
   private isMapZooming = false; // 添加地图缩放状态标记
@@ -20,7 +20,7 @@ export class PopupManager {
     overlay: Overlay,
     popupContainer: HTMLElement,
     isPopupVisible: Ref<boolean>,
-    entity: Ref<PointData>,
+    entity: Ref<PointData | null>,
     showVideoInfo: Ref<boolean>,
     openSubPopup: Ref<boolean>
   ) {

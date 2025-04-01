@@ -88,18 +88,9 @@ export function isRewardWithCount(name?: keyof RewardType): boolean {
   return rewards[name] && 'itemBundles' in rewards[name];
 }
 
-export function shouldShowRewards(point: PointData): boolean {
-  return (
-    !!point.properties &&
-    point.properties.some(property => property.key === 'reward_id')
-  );
-}
-
-export function getRewardIds(point: PointData): string[] | undefined {
-  const rewardProperty = point.properties?.find(
-    property => property.key === 'reward_id'
-  );
-  return rewardProperty?.value as string[] | undefined;
+export function shouldShowRewards(point: PointData | null): boolean {
+  if (!point) return false;
+  return !!point.reward_id;
 }
 
 export function getRewardIcon(rewardId: string): string | undefined {
@@ -108,38 +99,32 @@ export function getRewardIcon(rewardId: string): string | undefined {
   return `/item/${name}.png`;
 }
 
-export function getRewards(point: PointData): ReturnRewardItem[] {
-  const largeRewards = point.properties?.filter(
-    property => property.key === 'reward_id'
-  );
-  const largeIds = largeRewards?.map(reward => reward.value as string[]);
-  const rewardIds = largeIds?.flat();
+export function getRewards(point: PointData | null): ReturnRewardItem[] {
+  if (!point) return [];
+  const rewardId = point.reward_id;
+  if (!rewardId) return [];
   const rwds: ReturnRewardItem[] = [];
-
-  for (const rewardId of rewardIds || []) {
-    const rewardItem = rewards[rewardId];
-    if (!rewardItem) continue;
-    if (isRewardWithCountType(rewardItem)) {
-      for (const itemBundle of rewardItem.itemBundles) {
-        rwds.push({
-          type: 'withCount',
-          id: itemBundle.id,
-          icon: getRewardIcon(itemBundle.id) || '',
-          count: itemBundle.count,
-        });
-      }
-    } else {
-      rwds.push(
-        ...rewardItem.itemIds.map(
-          id =>
-            ({
-              type: 'withoutCount',
-              id,
-              icon: getRewardIcon(id) || '',
-            } satisfies ReturnRewardItem)
-        )
-      );
+  const rewardItem = rewards[rewardId];
+  if (isRewardWithCountType(rewardItem)) {
+    for (const itemBundle of rewardItem.itemBundles) {
+      rwds.push({
+        type: 'withCount',
+        id: itemBundle.id,
+        icon: getRewardIcon(itemBundle.id) || '',
+        count: itemBundle.count,
+      });
     }
+  } else {
+    rwds.push(
+      ...rewardItem.itemIds.map(
+        id =>
+          ({
+            type: 'withoutCount',
+            id,
+            icon: getRewardIcon(id) || '',
+          } satisfies ReturnRewardItem)
+      )
+    );
   }
   return rwds;
 }

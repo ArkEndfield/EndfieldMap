@@ -1,6 +1,27 @@
 import { loadJSON } from '@/utils/jsonLoader';
 
-export interface OriginPointData {
+const folders = import.meta.glob('/public/data/map*/*.json');
+// 获取 map(id)_lv(id) 文件夹列表，去重
+const mapFoldersSet = Object.keys(folders).reduce((acc, path) => {
+  const match = path.match(/\/data\/(map\d+_lv\d+)\//);
+  if (match) {
+    acc.add(match[1]);
+  }
+  return acc;
+}, new Set<string>());
+const mapFolders = Array.from(mapFoldersSet);
+// 由于每个文件夹下的文件名都一样，所以我们只取第一个文件夹下的所有文件名
+const fileNames = Object.keys(folders).reduce((acc, path) => {
+  const match = path.match(/\/data\/map\d+_lv\d+\/(.*)\.json/);
+  if (match) {
+    acc.push(match[1]);
+  }
+  return acc;
+}, [] as string[]);
+// 去重
+const mapFileNames = Array.from(new Set(fileNames));
+export interface PointData {
+  levelLogicId: number;
   sceneId: string;
   position: { x: number; y: number; z: number };
   entityDataIdKey: string;
@@ -20,10 +41,6 @@ export interface OriginPointData {
         value: string[];
       }
   >;
-}
-
-export interface PointData extends OriginPointData {
-  seq: number;
 }
 
 export type PointType = {
@@ -60,25 +77,32 @@ function filterAndUpdatePoints(): PointData[] {
 // 加载点位数据
 export async function loadPoints() {
   try {
-    const data = await loadJSON<Record<string, OriginPointData[]>>(
-      '/data/output.json'
-    );
-    points.length = 0; // 清空数组
-    let index = 1;
+    const dataPromises: Promise<PointData[]>[] = [];
+    // 遍历所有文件夹，加载每个文件夹下的所有文件
+    for (const folder of mapFolders) {
+      for (const fileName of mapFileNames) {
+        const path = `/data/${folder}/${fileName}.json`;
+        dataPromises.push(
+          loadJSON<PointData[]>(path).then(data => {
+            // console.log(`加载了 ${path} 数据`);
+            return data.map(point => {
+              // 处理点位数据
+              return {
+                ...point,
+                sceneId: folder,
+              };
+            });
+          })
+        );
+      }
+    }
+    // 等待所有数据加载完成
+    const dataArray = await Promise.all(dataPromises);
+    const data = dataArray.flat();
+    // console.log(data);
+    points.length = 0;
 
-    // 遍历所有场景的点位数据
-    // 将所有点位数据存储到 allPoints 中
-    Object.values(data).forEach(scenePoints => {
-      scenePoints.forEach(point => {
-        if (point) {
-          // 确保点位数据存在
-          allPoints.push({
-            ...point,
-            seq: index++,
-          });
-        }
-      });
-    });
+    allPoints.push(...data);
 
     console.log(`加载了 ${allPoints.length} 个点位数据`);
 

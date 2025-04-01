@@ -682,7 +682,7 @@ export const refresh = () => {
         const payload = f.get('payload');
         return (
           payload?.entityDataIdKey === key &&
-          shouldShowByMarkStatus(payload?.seq)
+          shouldShowByMarkStatus(payload?.levelLogicId)
         );
       });
 
@@ -846,7 +846,7 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
       const feature = marker(point);
       if (feature) {
         features.push(feature);
-        itemMap[point.seq] = feature;
+        itemMap[point.levelLogicId] = feature;
       }
     }
 

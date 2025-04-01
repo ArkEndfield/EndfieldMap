@@ -47,8 +47,8 @@ export const initMarksData = () => {
   });
   // 初始化标记数据
   allPoints.forEach(point => {
-    if (!marks[point.seq]) {
-      marks[point.seq] = {
+    if (!marks[point.levelLogicId]) {
+      marks[point.levelLogicId] = {
         finish: false,
       };
     }
@@ -91,8 +91,8 @@ export const saveMarksToStorage = () => {
 // 构造默认数据
 export const initMarks = () => {
   allPoints.forEach(point => {
-    if (!marks[point.seq]) {
-      marks[point.seq] = {
+    if (!marks[point.levelLogicId]) {
+      marks[point.levelLogicId] = {
         finish: false,
       };
     }
