@@ -74,7 +74,7 @@
   "int_blackbox_entry": {
     "category": "special",
     "entityInfo": {
-      "name": "普通修理",
+      "name": "数据黑盒",
       "point": "int_blackbox_entry",
       "pic": "icon_map_blackbox",
       "show": true,
@@ -85,7 +85,7 @@
   "int_blackbox_entry_hard": {
     "category": "special",
     "entityInfo": {
-      "name": "突袭修理",
+      "name": "数据黑盒(困难)",
       "point": "int_blackbox_entry_hard",
       "pic": "icon_map_blackbox",
       "show": true,
