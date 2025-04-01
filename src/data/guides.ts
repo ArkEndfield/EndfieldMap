@@ -26,41 +26,49 @@ export interface GuideInfoDetail {
 
 export type GuideInfo = Record<string | number, GuideInfoDetail>;
 
-const initData = points.reduce((acc, point) => {
-  const { seq } = point;
-  if (!acc[seq]) {
-    acc[seq] = {
-      nodes: [
-        {
-          type: 'node',
-          nodes: [
-            {
-              type: 'text',
-              text: point.entityDataIdKey,
-              color: '#ff0',
-            },
-            {
-              type: 'text',
-              text: '标点',
-            },
-          ],
-        },
-        {
-          type: 'node',
-          nodes: [
-            {
-              type: 'image',
-              src: '/images/loading_bg.jpg',
-            },
-          ],
-        },
-      ],
-      video: {
-        link: 'https://www.bilibili.com/video/BV1JUovYjEJQ',
-      },
-    };
-  }
-  return acc;
-}, {} as GuideInfo);
+export const guides: GuideInfo = {};
 
-export const guides: GuideInfo = initData;
+// 初始化指南数据
+export function initializeGuides() {
+  // 清空现有数据
+  Object.keys(guides).forEach(key => {
+    delete guides[key];
+  });
+
+  // 根据点位数据初始化指南
+  points.forEach(point => {
+    const { seq } = point;
+    if (!guides[seq]) {
+      guides[seq] = {
+        nodes: [
+          {
+            type: 'node',
+            nodes: [
+              {
+                type: 'text',
+                text: point.entityDataIdKey,
+                color: '#ff0',
+              },
+              {
+                type: 'text',
+                text: '标点',
+              },
+            ],
+          },
+          {
+            type: 'node',
+            nodes: [
+              {
+                type: 'image',
+                src: '/images/loading_bg.jpg',
+              },
+            ],
+          },
+        ],
+        video: {
+          link: 'https://www.bilibili.com/video/BV1JUovYjEJQ',
+        },
+      };
+    }
+  });
+}

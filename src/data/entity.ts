@@ -1,5 +1,5 @@
 import { xyz2crd } from '@/utils/common';
-import { Feature } from 'ol';
+import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 import {
@@ -15,7 +15,7 @@ import Cluster from 'ol/source/Cluster';
 import VectorLayer from 'ol/layer/Vector';
 import { PointData, points } from './points';
 import { currentMarkFilter, shouldShowByMarkStatus } from './marks';
-import entityData from '../assets/entity.json';
+import { loadJSON } from '@/utils/jsonLoader';
 
 interface EntityInfo {
   name: string;
@@ -26,16 +26,17 @@ interface EntityInfo {
   scale?: number;
 }
 
+// 副本点位
 type EntityCategory =
-  | 'ether' // 醚质
-  | 'chest' // 宝箱
-  | 'mineral' // 矿物
-  | 'enemy' // 敌人
-  | 'settlement' // 定居点
-  | 'spcstone' // 稀有矿物
-  | 'special' // 特殊点位
-  | 'plant' // 植物类素材
-  | 'dungeon'; // 副本点位
+  | 'ether'
+  | 'chest'
+  | 'special'
+  | 'dungeon'
+  | 'mineral'
+  | 'plant'
+  | 'spcstone'
+  | 'settlement'
+  | 'enemy';
 
 type EntityCategories = Record<
   string,
@@ -45,9 +46,27 @@ type EntityCategories = Record<
   }
 >;
 
-export const entityInfo: EntityCategories = reactive(
-  entityData as EntityCategories
-);
+// 实体信息
+export const entityInfo: EntityCategories = reactive({});
+
+// 加载实体数据
+export async function loadEntityData() {
+  try {
+    const data = await loadJSON<EntityCategories>('/data/entity.json');
+    // 清空当前数据
+    Object.keys(entityInfo).forEach(key => {
+      delete entityInfo[key];
+    });
+    // 添加新数据
+    Object.entries(data).forEach(([key, value]) => {
+      entityInfo[key] = value;
+    });
+    return entityInfo;
+  } catch (error) {
+    console.error('加载实体数据失败:', error);
+    throw error;
+  }
+}
 
 export const categoryInfo = computed(() => {
   // 定义类别顺序
@@ -103,6 +122,16 @@ const entityGroup: Record<
     points: Feature<Point>[];
   }
 > = {};
+
+// 源数据管理
+export const source = new VectorSource<Feature<Point>>({
+  features: [],
+});
+
+// 样式缓存和图层容器
+export const styleCache: { [key: string]: Style | Style[] } = {};
+export const entityClusterLayers: VectorLayer<any>[] = [];
+export const entityClusterSources: { [key: string]: Cluster } = {};
 
 // 添加一个全局变量来存储当前的缩放级别
 let currentZoomLevel = 3;
@@ -394,16 +423,6 @@ for (const point of points) {
 
 console.log('醚质总数:', features.length, itemMap);
 
-// 源数据管理
-export const source = new VectorSource({
-  features: features,
-});
-
-// 样式缓存和图层容器
-export const styleCache: { [key: string]: Style | Style[] } = {};
-export const entityClusterLayers: VectorLayer<any>[] = [];
-export const entityClusterSources: { [key: string]: Cluster } = {};
-
 // 刷新所有样式的函数
 export const refreshStyles = () => {
   // 清除样式缓存，这样下次渲染时会重新计算样式
@@ -549,7 +568,7 @@ export const refreshCluster = () => {
 };
 
 // 重新初始化实体图层
-export const reinitializeEntityLayers = () => {
+export const reinitializeEntityLayers = async () => {
   // 保存原有的显示状态
   const showStates = Object.fromEntries(
     Object.entries(entityInfo).map(([key, info]) => [key, info.entityInfo.show])
@@ -610,24 +629,29 @@ export const reinitializeEntityLayers = () => {
   // 输出清理记录
   console.log('已清理实体图层资源');
 
-  // 重新初始化实体信息
-  initializeEntityInfo();
+  try {
+    // 重新初始化实体信息
+    await initializeEntityInfo(points);
 
-  // 恢复显示状态（只针对新地图中存在的实体）
-  for (const key in entityInfo) {
-    if (entityInfo[key].entityInfo && showStates[key] !== undefined) {
-      entityInfo[key].entityInfo.show = showStates[key];
+    // 恢复显示状态（只针对新地图中存在的实体）
+    for (const key in entityInfo) {
+      if (entityInfo[key].entityInfo && showStates[key] !== undefined) {
+        entityInfo[key].entityInfo.show = showStates[key];
+      }
     }
+
+    // 重新创建聚合图层
+    createEntityClusterLayers();
+
+    // 刷新聚合
+    refreshCluster();
+
+    // 最后调用 refresh 来根据显示状态过滤特征
+    refresh();
+  } catch (error) {
+    console.error('重新初始化实体图层失败:', error);
+    throw error;
   }
-
-  // 重新创建聚合图层
-  createEntityClusterLayers();
-
-  // 刷新聚合
-  refreshCluster();
-
-  // 最后调用 refresh 来根据显示状态过滤特征
-  refresh();
 };
 
 // 修改refresh函数，加入更多调试信息
@@ -760,75 +784,102 @@ export const getPointsByEntityType = (entityType: string): PointData[] => {
   return points.filter(point => point.entityDataIdKey === entityType);
 };
 
+// 修改初始化调用为异步方式
+export async function initializeMap() {
+  try {
+    await loadEntityData(); // 先加载实体数据
+    await initializeEntityInfo(points); // 使用导入的points数组
+    createEntityClusterLayers(); // 最后创建图层
+  } catch (error) {
+    console.error('初始化地图失败:', error);
+    throw error;
+  }
+}
+
 // 初始化实体信息
-export const initializeEntityInfo = () => {
-  // 先统计当前地图中存在的实体类型和数量
-  const entityCounts: { [key: string]: number } = {};
-  for (const point of points) {
-    entityCounts[point.entityDataIdKey] =
-      (entityCounts[point.entityDataIdKey] || 0) + 1;
+export async function initializeEntityInfo(pointsData: PointData[]) {
+  // 参数检查
+  if (!pointsData || !Array.isArray(pointsData)) {
+    console.error('初始化实体信息失败: points 参数无效', pointsData);
+    return;
   }
 
-  // 保存原有的实体信息
-  const originalEntityInfo = { ...entityInfo };
-
-  // 清空当前的 entityInfo
-  Object.keys(entityInfo).forEach(key => {
-    delete entityInfo[key];
-  });
-
-  // 首先，恢复所有原有的实体类型，但计数设为0
-  for (const key in originalEntityInfo) {
-    entityInfo[key] = {
-      category: originalEntityInfo[key].category,
-      entityInfo: {
-        ...originalEntityInfo[key].entityInfo,
-        count: 0,
-      },
-    };
-  }
-
-  // 然后，添加新的实体类型（如果有的话）
-  for (const key in entityData) {
-    if (!entityInfo[key]) {
-      entityInfo[key] = {
-        category: entityData[key].category,
-        entityInfo: {
-          name: entityData[key].entityInfo.name,
-          point: entityData[key].entityInfo.point,
-          pic: entityData[key].entityInfo.pic,
-          show: true,
-          count: 0,
-        },
-      };
+  // 确保entityInfo已经加载
+  if (Object.keys(entityInfo).length === 0) {
+    try {
+      await loadEntityData();
+    } catch (error) {
+      console.error('加载实体数据失败:', error);
+      return;
     }
   }
 
-  // 确保features数组为空
-  features.length = 0;
+  try {
+    console.log('开始初始化实体信息，点位数量:', pointsData.length);
 
-  // 加载数据前清理itemMap
-  Object.keys(itemMap).forEach(key => delete itemMap[key]);
+    // 清空现有数据
+    features.length = 0;
+    Object.keys(itemMap).forEach(key => delete itemMap[key]);
+    Object.keys(entityGroup).forEach(key => {
+      if (entityGroup[key] && entityGroup[key].points) {
+        entityGroup[key].points.length = 0;
+      }
+      delete entityGroup[key];
+    });
 
-  // 处理当前地图中存在的点位，更新计数
-  for (const point of points) {
-    const entityKey = point.entityDataIdKey;
-    if (entityInfo[entityKey]) {
-      entityInfo[entityKey].entityInfo.count = entityCounts[entityKey];
+    // 重置所有实体的计数
+    Object.keys(entityInfo).forEach(key => {
+      if (entityInfo[key]) {
+        entityInfo[key].entityInfo.count = 0;
+      }
+    });
+
+    // 清空source中的features
+    source.clear();
+
+    // 处理每个点位
+    for (const point of pointsData) {
+      // 更新entityInfo计数
+      if (entityInfo[point.entityDataIdKey]?.entityInfo) {
+        entityInfo[point.entityDataIdKey].entityInfo.count++;
+      }
+
+      // 创建并添加feature
+      const feature = marker(point);
+      if (feature) {
+        features.push(feature);
+        itemMap[point.seq] = feature;
+      }
     }
 
-    itemMap[entityKey] = (itemMap[entityKey] || 0) + 1;
-    const feature = marker(point);
-    if (feature) features.push(feature);
+    // 将features添加到source中
+    source.addFeatures(features);
+
+    // 重新创建entity cluster layers
+    createEntityClusterLayers();
+
+    // 刷新cluster
+    refreshCluster();
+
+    // 使用setTimeout确保地图显示正确
+    setTimeout(() => {
+      refreshStyles();
+      source.changed();
+    }, 100);
+
+    console.log(`成功初始化 ${features.length} 个实体特征`);
+
+    // 默认显示所有实体
+    Object.keys(entityInfo).forEach(key => {
+      if (entityInfo[key]) {
+        entityInfo[key].entityInfo.show = true;
+      }
+    });
+
+    // 最后调用refresh来显示所有点位
+    refresh();
+  } catch (error) {
+    console.error('初始化实体信息时发生错误:', error);
+    throw error;
   }
-
-  // 更新源数据
-  source.clear();
-  source.addFeatures(features);
-
-  console.log(`已重新初始化 ${features.length} 个实体特征`);
-};
-
-// 初始化调用
-initializeEntityInfo();
-createEntityClusterLayers();
+}

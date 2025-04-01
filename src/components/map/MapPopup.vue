@@ -39,23 +39,32 @@
           <div
             class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 py-4 w-full h-full overflow-y-auto"
           >
-            <PopContentItem
-              v-for="rwd in rewards"
-              :key="rwd.id"
-            >
-              <template #icon>
-                <img
-                  src="/assets/item_read_bag.png"
-                  alt=""
-                />
-              </template>
-              <template
-                #count
-                v-if="rwd.count"
-                >{{ rwd.count }}</template
+            <template v-if="rewards && rewards.length > 0">
+              <PopContentItem
+                v-for="rwd in rewards"
+                :key="rwd.id"
               >
-              {{ rwd.id }}
-            </PopContentItem>
+                <template #icon>
+                  <img
+                    :src="getRewardIcon(rwd.id)"
+                    :alt="getRewardName(rwd.id)"
+                    class="w-full h-full object-contain"
+                  />
+                </template>
+                <template
+                  #count
+                  v-if="rwd.count"
+                  >{{ rwd.count }}</template
+                >
+                {{ getRewardName(rwd.id) }}
+              </PopContentItem>
+            </template>
+            <div
+              v-else
+              class="col-span-2 text-center text-gray-400 py-4"
+            >
+              暂无奖励信息
+            </div>
           </div>
         </div>
       </div>
@@ -108,13 +117,17 @@
               <span>id: {{ entity.entityDataIdKey }}</span>
               <span class="float-right opacity-75">#{{ entity.seq }}</span>
             </div>
-            <GuideNode :nodes="guides[entity.seq].nodes" />
+            <GuideNode
+              v-if="guides[entity.seq]?.nodes"
+              :nodes="guides[entity.seq].nodes"
+            />
             <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
               坐标 ({{ entity.position.x }}, {{ entity.position.y }},
               {{ entity.position.z }})
             </div>
             <div class="flex items-center justify-between gap-2 mt-4">
               <a
+                v-if="guides[entity.seq]?.video?.link"
                 :href="guides[entity.seq].video.link"
                 target="_blank"
                 class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
@@ -129,6 +142,7 @@
                   {{ $t('popover.obtained') }}
                 </label>
                 <ZmdSwitch
+                  v-if="marks[entity.seq]"
                   :id="`get-${entity.entityDataIdKey}`"
                   v-model:checked="marks[entity.seq].finish"
                 />
@@ -150,7 +164,7 @@ import { entityInfo } from '@/data/entity';
 import { guides } from '@/data/guides';
 import { type PointData } from '@/data/points';
 import { computed } from 'vue';
-import { getRewards, shouldShowRewards } from '@/data/reward';
+import { getRewards, shouldShowRewards, rewardData } from '@/data/reward';
 
 const props = defineProps<{
   isPopupVisible: boolean;
@@ -166,15 +180,29 @@ const emit = defineEmits<{
 const popupContainer = ref<HTMLElement>();
 const popupManager = inject<PopupManager | null>('popupManager');
 
+const getRewardIcon = (id: string) => {
+  const reward = rewardData[id];
+  return reward?.icon
+    ? `/assets/rewards/${reward.icon}.png`
+    : `/assets/items/${id}.png`;
+};
+
+const getRewardName = (id: string) => {
+  const reward = rewardData[id];
+  return reward?.name || id;
+};
+
 const showRewards = computed(() => {
   const entity = props.entity;
   const show = shouldShowRewards(entity);
+  console.log('是否显示奖励:', show, entity);
   return show;
 });
 
 const rewards = computed(() => {
   const entity = props.entity;
   const rwds = getRewards(entity);
+  console.log('获取到的奖励列表:', rwds);
   return rwds;
 });
 

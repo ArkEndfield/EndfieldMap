@@ -1,4 +1,4 @@
-import data from '../assets/output.json';
+import { loadJSON } from '@/utils/jsonLoader';
 
 export interface OriginPointData {
   sceneId: string;
@@ -31,32 +31,85 @@ export type PointType = {
 };
 
 export const points: PointData[] = [];
-let index = 1;
 
-export function updatePoints(mapId: string) {
-  points.length = 0; // 清空数组
-  index = 1; // 重置索引
-
-  // 添加垃圾回收辅助提示
-  if (points.length > 0) {
-    console.log(`清理 ${points.length} 个点位数据`);
-  }
-
-  for (const [key, value] of Object.entries(
-    data as Record<string, OriginPointData[]>
-  )) {
-    if (!key.includes(mapId === 'map002' ? 'map02' : 'map01')) continue;
-    points.push(
-      ...value.filter(Boolean).map(item => ({
-        ...item,
-        seq: index++,
-      }))
+// 加载点位数据
+export async function loadPoints() {
+  try {
+    const data = await loadJSON<Record<string, OriginPointData[]>>(
+      '/data/output.json'
     );
-  }
+    points.length = 0; // 清空数组
+    let index = 1;
 
-  // 输出调试信息，帮助追踪数据更新
-  console.log(`地图 ${mapId} 加载了 ${points.length} 个点位`);
+    // 遍历所有场景的点位数据
+    Object.values(data).forEach(scenePoints => {
+      scenePoints.forEach(point => {
+        if (point) {
+          // 确保点位数据存在
+          points.push({
+            ...point,
+            seq: index++,
+          });
+        }
+      });
+    });
+
+    // 根据当前地图ID筛选点位
+    const currentMapId = localStorage.getItem('map') || 'map001';
+    const filteredPoints = points.filter(point => {
+      const isMap2 = currentMapId === 'map002';
+      return isMap2
+        ? point.sceneId.includes('map02')
+        : point.sceneId.includes('map01');
+    });
+
+    // 更新点位数组
+    points.length = 0;
+    filteredPoints.forEach((point, index) => {
+      points.push({
+        ...point,
+        seq: index + 1,
+      });
+    });
+
+    console.log(`加载了 ${points.length} 个点位数据`);
+    return points;
+  } catch (error) {
+    console.error('加载点位数据失败:', error);
+    throw error;
+  }
 }
 
-// 初始化点位
-updatePoints(localStorage.getItem('map') || 'map001');
+// 更新点位数据
+export async function updatePoints(mapId: string) {
+  try {
+    points.length = 0; // 清空数组
+    const data = await loadPoints(); // 重新加载点位数据
+
+    // 根据地图ID筛选点位
+    const filteredPoints = data.filter(point => {
+      const isMap2 = mapId === 'map002';
+      return isMap2
+        ? point.sceneId.includes('map02')
+        : point.sceneId.includes('map01');
+    });
+
+    // 更新点位数组
+    points.length = 0;
+    filteredPoints.forEach((point, index) => {
+      points.push({
+        ...point,
+        seq: index + 1,
+      });
+    });
+
+    console.log(`地图 ${mapId} 加载了 ${points.length} 个点位`);
+    return points;
+  } catch (error) {
+    console.error('更新点位数据失败:', error);
+    throw error;
+  }
+}
+
+// 移除直接的初始化调用，改为在App.vue中控制初始化
+// updatePoints(localStorage.getItem('map') || 'map001');

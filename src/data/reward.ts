@@ -1,4 +1,4 @@
-import data from '../assets/reward.json';
+import { loadJSON } from '@/utils/jsonLoader';
 import { type PointData } from './points';
 
 export interface RewardItemWithCountItem {
@@ -6,35 +6,71 @@ export interface RewardItemWithCountItem {
   count: number;
 }
 
-export interface RewardItemWithCount {
-  itemBundles: RewardItemWithCountItem[];
-}
-
-export interface RewardItemWitoutCount {
-  itemIds: string[];
-}
-
-export interface ReturnRewardItem {
-  type: 'withCount' | 'withoutCount';
+export interface ItemBundle {
   id: string;
-  count?: number;
+  count: number;
 }
 
-export type RewardItem = RewardItemWithCount | RewardItemWitoutCount;
-
-export type RewardType = Record<string, RewardItem>;
-
-export const rewards: RewardType = data as unknown as RewardType;
-
-export function isRewardWithCountType(
-  item: RewardItem
-): item is RewardItemWithCount {
-  return (item as RewardItemWithCount)?.itemBundles !== undefined;
+export interface RewardData {
+  [key: string]: {
+    itemBundles: ItemBundle[];
+    name?: string;
+    rarity?: number;
+    type?: string;
+    icon?: string;
+  };
 }
 
-export function isRewardWithCount(name?: keyof RewardType): boolean {
-  if (!name) return false;
-  return rewards[name] && 'itemBundles' in rewards[name];
+// 奖励数据
+export const rewardData: RewardData = {};
+
+// 加载奖励数据
+export async function loadRewardData() {
+  try {
+    const data = await loadJSON<RewardData>('/data/reward.json');
+    // 清空当前数据
+    Object.keys(rewardData).forEach(key => {
+      delete rewardData[key];
+    });
+    // 添加新数据
+    Object.entries(data).forEach(([key, value]) => {
+      rewardData[key] = value;
+    });
+
+    console.log('奖励数据加载完成，总数:', Object.keys(rewardData).length);
+    console.log('示例奖励数据:', Object.entries(rewardData).slice(0, 2));
+    return rewardData;
+  } catch (error) {
+    console.error('加载奖励数据失败:', error);
+    throw error;
+  }
+}
+
+// 获取奖励信息
+export function getRewardInfo(rewardId: string) {
+  return rewardData[rewardId];
+}
+
+// 获取点位的奖励信息
+export function getPointRewards(point: PointData): RewardItemWithCountItem[] {
+  const rewards: RewardItemWithCountItem[] = [];
+  point.properties?.forEach(property => {
+    if (property.key === 'reward_id' && Array.isArray(property.value)) {
+      property.value.forEach(id => {
+        const rewardInfo = getRewardInfo(id);
+        if (rewardInfo) {
+          // 添加所有物品包中的物品
+          rewardInfo.itemBundles.forEach(bundle => {
+            rewards.push({
+              id: bundle.id,
+              count: bundle.count,
+            });
+          });
+        }
+      });
+    }
+  });
+  return rewards;
 }
 
 export function shouldShowRewards(point: PointData): boolean {
@@ -51,42 +87,64 @@ export function getRewardIds(point: PointData): string[] | undefined {
   return rewardProperty?.value as string[] | undefined;
 }
 
-export function getRewards(point: PointData): ReturnRewardItem[] {
-  const largeRewards = point.properties?.filter(
+export function getRewards(point: PointData): RewardItemWithCountItem[] {
+  const rwds: RewardItemWithCountItem[] = [];
+
+  // 检查point是否有效
+  if (!point || !point.properties) {
+    console.warn('无效的点位数据:', point);
+    return rwds;
+  }
+
+  // 获取所有reward_id属性
+  const rewardProperties = point.properties.filter(
     property => property.key === 'reward_id'
   );
-  const largeIds = largeRewards?.map(reward => reward.value as string[]);
-  const rewardIds = largeIds?.flat();
-  const rwds: ReturnRewardItem[] = [];
 
-  for (const rewardId of rewardIds || []) {
-    const rewardItem = rewards[rewardId];
-    if (!rewardItem) continue;
-    if (isRewardWithCountType(rewardItem)) {
-      for (const itemBundle of rewardItem.itemBundles) {
-        rwds.push({
-          type: 'withCount',
-          id: itemBundle.id,
-          count: itemBundle.count,
-        });
-      }
-    } else {
-      rwds.push(
-        ...rewardItem.itemIds.map(
-          id =>
-            ({
-              type: 'withoutCount',
-              id,
-            } satisfies ReturnRewardItem)
-        )
-      );
-    }
+  if (rewardProperties.length === 0) {
+    console.warn('点位没有奖励属性:', point);
+    return rwds;
   }
+
+  // 收集所有奖励ID
+  const rewardIds = rewardProperties
+    .map(property => property.value)
+    .flat()
+    .filter((id): id is string => typeof id === 'string');
+
+  if (rewardIds.length === 0) {
+    console.warn('点位没有有效的奖励ID:', point);
+    return rwds;
+  }
+
+  console.log('处理点位的奖励ID:', rewardIds);
+
+  for (const rewardId of rewardIds) {
+    // 获取奖励信息
+    const rewardInfo = rewardData[rewardId];
+    if (!rewardInfo) {
+      console.warn(
+        '找不到奖励信息:',
+        rewardId,
+        '可用的奖励:',
+        Object.keys(rewardData).slice(0, 5)
+      );
+      continue;
+    }
+
+    // 添加所有物品包中的物品
+    rewardInfo.itemBundles.forEach(bundle => {
+      rwds.push({
+        id: bundle.id,
+        count: bundle.count,
+      });
+    });
+  }
+
+  console.log('最终获取到的奖励:', rwds);
   return rwds;
 }
 
-export function isRewardItemWithCount(
-  item: ReturnRewardItem
-): item is ReturnRewardItem & { count: number } {
-  return item.type === 'withCount' && typeof item.count === 'number';
+export function isRewardItemWithCount(item: RewardItemWithCountItem): boolean {
+  return typeof item.count === 'number';
 }
