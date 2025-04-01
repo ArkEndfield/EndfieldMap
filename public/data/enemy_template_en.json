@@ -1,0 +1,516 @@
+{
+    "eny_0007_mimicw": {
+        "enemyId": "eny_0007_mimicw",
+        "name": "Poison Ivy",
+        "description": "<i>Dendreiosson</i> (archive ID: ARS141) can synthesize toxins in its body and project them at its victims via inertial launching. No one has seen it move after it has taken shape.",
+        "nickname": "Poison Ivy",
+        "templateId": "eny_0007_mimicw",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0007_mimicw_ability_1",
+                "description": "This enemy can spew poisonous fluids that deal Æther DMG in a small area. Interrupt it with your skills."
+            }
+        ]
+    },
+    "eny_0018_lbtough": {
+        "enemyId": "eny_0018_lbtough",
+        "name": "Bonekrusher Executioner",
+        "description": "A Landbreaker armed with a heavy axe. These massive brutes are way more powerful than their common counterparts and can easily damage defensive works or flip over armored vehicles.",
+        "nickname": "Bonekrusher Executioner",
+        "templateId": "eny_0018_lbtough",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0018_lbtough_ability_1",
+                "description": "This enemy can grab your operators and throw them to the ground to deal massive DMG. If an operator is grabbed, use another operator's skill to interrupt the throw and free the grabbed operator."
+            },
+            {
+                "abilityId": "eny_0018_lbtough_ability_2",
+                "description": "Dodging the charged double axeswings will not be easy. Interrupting the skill is an easier way."
+            }
+        ]
+    },
+    "eny_0021_agmelee": {
+        "enemyId": "eny_0021_agmelee",
+        "name": "Ram",
+        "description": "<i>Kriosson</i> (archive ID: ACL071) is amongst the earliest recorded form of the Aggeloi and the most commonly encountered. It attacks by ramming its victims with its horns.",
+        "nickname": "Ram",
+        "templateId": "eny_0021_agmelee",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0023_aghornb": {
+        "enemyId": "eny_0023_aghornb",
+        "name": "Heavy Ram",
+        "description": "<i>Thrylissoron</i> (archive ID: ACL072) is a non-substandard variant of ACL071. It can manipulate its environment and make tactical decisions.",
+        "nickname": "Heavy Ram",
+        "templateId": "eny_0023_aghornb",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0025_agrange": {
+        "enemyId": "eny_0025_agrange",
+        "name": "Sting",
+        "description": "<i>Kentron</i> (archive ID: ARL121) would charge pieces of itself with energy and propel them with inertial launching. The energy efficiency of this mechanism is extremely low.",
+        "nickname": "Sting",
+        "templateId": "eny_0025_agrange",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0027_agscorp": {
+        "enemyId": "eny_0027_agscorp",
+        "name": "Heavy Sting",
+        "description": "<i>Varykentron</i> (archive ID: ARL141) is a non-standard variant of ARL121. It would occasionally perform whip attacks with its tail instead of using its ranged energy attack.",
+        "nickname": "Heavy Sting",
+        "templateId": "eny_0027_agscorp",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0027_agscorp_ability_1",
+                "description": "This enemy attacks by causing Originium pillars to erupt under your operators."
+            },
+            {
+                "abilityId": "eny_0027_agscorp_ability_2",
+                "description": "When approached, this enemy will summon stone pillars around itself for protection."
+            }
+        ]
+    },
+    "eny_0029_lbmob": {
+        "enemyId": "eny_0029_lbmob",
+        "name": "Bonekrusher Raider",
+        "description": "A Landbreaker armed with basic melee weapons. These \"common rabble\" of LB clanns tend to be poorly equipped and usually appear in groups.",
+        "nickname": "Bonekrusher Raider",
+        "templateId": "eny_0029_lbmob",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0033_lbhunt": {
+        "enemyId": "eny_0033_lbhunt",
+        "name": "Bonekrusher Ambusher",
+        "description": "A Landbreaker armed with basic ranged weaponry. Ambushers only received the most rudimentary training and their shots are inaccurate. Nevertheless, their bolts have claimed more than a few lives.",
+        "nickname": "Bonekrusher Ambusher",
+        "templateId": "eny_0033_lbhunt",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0039_agcanno": {
+        "enemyId": "eny_0039_agcanno",
+        "name": "Sentinel",
+        "description": "Some suspect that the <i>Phrourossaron</i> (ARS316) is an Aggeloid attempt at mimicking the shape and attack patterns of humanity's sentry guns. Despite its massive range, the Sentinel is a sessile organism.",
+        "nickname": "Sentinel",
+        "templateId": "eny_0039_agcanno",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0039_agcanno_ability_1",
+                "description": "This enemy has a powerful attack with extremely long range. Dodge its bombardment to progress."
+            }
+        ]
+    },
+    "eny_0045_agtrinit": {
+        "enemyId": "eny_0045_agtrinit",
+        "name": "Triaggelos",
+        "description": "NO PREVIOUS RECORDS. This has been classified as an Aggelos due to the nature of its formation. Changes to its halo may reflect its ability to make tactical decisions. Be warned. Ankhor-like properties have been detected in this entity as well.",
+        "nickname": "Triaggelos",
+        "templateId": "eny_0045_agtrinit",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0045_agtrinit_ability_1",
+                "description": "An enemy with 3 different forms."
+            },
+            {
+                "abilityId": "eny_0045_agtrinit_ability_2",
+                "description": "ASSAULT FORM: Continuously unleashes melee attacks. Interrupt the charging of its ability to inflict high Stagger to it."
+            },
+            {
+                "abilityId": "eny_0045_agtrinit_ability_3",
+                "description": "SEARCH MODE: Summons lots of Aggeloi to the fight and unleashes Ankhor shockwaves."
+            },
+            {
+                "abilityId": "eny_0045_agtrinit_ability_4",
+                "description": "TRICKERY FORM: Enters stealth to unleash barrages of projectiles from afar or ambush your operators. Break its stealth mode to inflict high Stagger to it."
+            }
+        ]
+    },
+    "eny_0046_lbshamman": {
+        "enemyId": "eny_0046_lbshamman",
+        "name": "Bonekrusher Pyromancer",
+        "description": "A Landbreaker who can wield the Originium Arts of Evocation. Pyromancers are extremely dangerous as they can easily ignite the battlefield with their fiery arts.",
+        "nickname": "Bonekrusher Pyromancer",
+        "templateId": "eny_0046_lbshamman",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0046_lbshamman_ability_1",
+                "description": "This enemy has powerful ranged attacks that deal Æther DMG but it has poor mobility."
+            },
+            {
+                "abilityId": "eny_0046_lbshamman_ability_2",
+                "description": "This enemy causes hazefyre to erupt from the ground to deal Æther DMG. Observe the enemy's channeling abilities and dodge accordingly."
+            }
+        ]
+    },
+    "eny_0047_firebat": {
+        "enemyId": "eny_0047_firebat",
+        "name": "Bonekrusher Arsonist",
+        "description": "A Landbreaker armed with a flamethrower. Although these weapons look shoddily made, they serve their intended purpose well enough. Arsonists can easily clear out strong points and send the defenders, however stubborn, running for their lives.",
+        "nickname": "Bonekrusher Arsonist",
+        "templateId": "eny_0047_firebat",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0047_firebat_ability_1",
+                "description": "This enemy can continuously spew fire at your operators. Try to move behind this enemy to avoid the flames."
+            },
+            {
+                "abilityId": "eny_0047_firebat_ability_2",
+                "description": "At low HP, this enemy spews fire at all directions and ignites himself to acquire a massive All Resist buff. Use Cryo Infliction to extinguish the fire or wait for the flames to die down before attacking again."
+            }
+        ]
+    },
+    "eny_0048_hvybow": {
+        "enemyId": "eny_0048_hvybow",
+        "name": "Bonekrusher Ballista",
+        "description": "A Landbreaker armed with a heavy ranged weapon. Ballistas are elites selected from Ambushers who proved their worth. Their heavy bolts are capable of punching right through heavy body armor.",
+        "nickname": "Bonekrusher Ballista",
+        "templateId": "eny_0048_hvybow",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0048_hvybow_ability_1",
+                "description": "This enemy can fire a barrage of arrows. Upon hitting the ground, the arrows will explode after a delay of several seconds."
+            },
+            {
+                "abilityId": "eny_0048_hvybow_ability_2",
+                "description": "Despite being armed with a giant ballista, this enemy is also a skilled melee combatant."
+            }
+        ]
+    },
+    "eny_0049_rogue": {
+        "enemyId": "eny_0049_rogue",
+        "name": "Bonekrusher Infiltrator",
+        "description": "A Landbreaker armed with melee weapons. Infiltrators are extremely agile and capable combatants who fight with two weapons at once. They are not to be trifled with.",
+        "nickname": "Bonekrusher Infiltrator",
+        "templateId": "eny_0049_rogue",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0049_rogue_ability_1",
+                "description": "This enemy is very agile and is capable of dodging your operators' basic attacks. However, she can't dodge incoming attacks when she's attacking."
+            },
+            {
+                "abilityId": "eny_0049_rogue_ability_2",
+                "description": "Can throw darts and perform pursuit attacks on operators hit by the darts. Dodging the arts might offer a good chance to counterattack."
+            }
+        ]
+    },
+    "eny_0050_hound": {
+        "enemyId": "eny_0050_hound",
+        "name": "Bonekrusher Ripptusk",
+        "description": "A small warbeast controlled by the Landbreakers. Ripptusks are far more bloodthirsty and ferocious than their untamed wilderness kin.",
+        "nickname": "Bonekrusher Ripptusk",
+        "templateId": "eny_0050_hound",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0050_hound_ability_1",
+                "description": "This enemy is agile but can be overwhelmed when taking multiple hits."
+            }
+        ]
+    },
+    "eny_0051_rodin": {
+        "enemyId": "eny_0051_rodin",
+        "name": "Rhodagn the Bonekrushing Fist",
+        "description": "The right fist of Nefarith and the most feared Bonekrusher soldier of the clann. Many Landbreakers had challenged Nefarith's leadership, only to be utterly crushed by Rhodagn's fists.",
+        "nickname": "Rhodagn",
+        "templateId": "eny_0051_rodin",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0051_rodin_ability_1",
+                "description": "A super heavy enemy. Uses ventilation pipes to pull in your operators to attack them."
+            },
+            {
+                "abilityId": "eny_0051_rodin_ability_2",
+                "description": "Buffs himself with the power of denstacks. Watch and evade his jets of fire."
+            }
+        ]
+    },
+    "eny_0052_palesent": {
+        "enemyId": "eny_0052_palesent",
+        "name": "Marble Aggelomoirai",
+        "description": "NO PREVIOUS RECORDS. This has been categorized as an Aggelos due to the nature of its formation. Its outward appearance mimics that of Nefarith. Despite its high core energy readings, the entity seems to be rather unstable.",
+        "nickname": "Marble Aggelomoirai",
+        "templateId": "eny_0052_palesent",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0052_palesent_ability_1",
+                "description": "The awakened Marble Aggelomoirai can summon countless Ankhors from the universe to bombard the land. Dodge these attacks to find a way to retaliate."
+            }
+        ]
+    },
+    "eny_0053_hsmob": {
+        "enemyId": "eny_0053_hsmob",
+        "name": "Road Plunderer",
+        "description": "An armed criminal active in Hongshan territories. Road Plunderers would usually set up illegal road barricades or engage in the smuggling of illegal goods. Eliminating these brigands is a top priority for Hongshan policing forces.",
+        "nickname": "Road Plunderer",
+        "templateId": "eny_0053_hsmob",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0054_hsmino": {
+        "enemyId": "eny_0054_hsmino",
+        "name": "Hill Smasher",
+        "description": "An armed criminal armed with a heavy weapon. Their names may sound like an exaggerated joke, but their quadruple rocket launchers deliver serious firepower. Do not underestimate them.",
+        "nickname": "Hill Smasher",
+        "templateId": "eny_0054_hsmino",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0054_hsmino_ability_1",
+                "description": "Uses the heavy rocket launcher as a melee weapon. Also fires fireworks for its ranged attacks. Getting rammed and lifted by its horns might set off some super fireworks!"
+            },
+            {
+                "abilityId": "eny_0054_hsmino_ability_2",
+                "description": "Don't try to backstab it. It has a powerful hind kick!"
+            }
+        ]
+    },
+    "eny_0055_hscrane": {
+        "enemyId": "eny_0055_hscrane",
+        "name": "Cloud Stalker",
+        "description": "An armed criminal armed with a strange weapon that appears like a harmless lantern. Do not be fooled. These \"lanterns\" are in fact flying decapitators with a terrifying reach.",
+        "nickname": "Cloud Stalker",
+        "templateId": "eny_0055_hscrane",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0055_hscrane_ability_1",
+                "description": "Spews disrupting smoke. Operators caught in the smoke suffer shorter line of sight, slower movement speed, and cannot dodge."
+            },
+            {
+                "abilityId": "eny_0055_hscrane_ability_2",
+                "description": "The enemy is a relatively poor combatant. Try to take it out first."
+            },
+            {
+                "abilityId": "eny_0055_hscrane_ability_3",
+                "description": "Spews green smoke that heals other enemies."
+            }
+        ]
+    },
+    "eny_0057_dog": {
+        "enemyId": "eny_0057_dog",
+        "name": "Wild Tuskbeast",
+        "description": "Wild tuskbeasts are predators of the Talosian wilderness. Given the hostile environments of Talos-II, getting to the top of the food chain is no small feat.",
+        "nickname": "Wild Tuskbeast",
+        "templateId": "eny_0057_dog",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0057_dog_ability_1",
+                "description": "A docile and timid creature. It will not attack operators on sight."
+            }
+        ]
+    },
+    "eny_0058_agdisk": {
+        "enemyId": "eny_0058_agdisk",
+        "name": "Effigy",
+        "description": "<i>Homoiossaron</i> (archive ID: AGL371) is capable of mimicking human forms or parts thereof. Some of these rare and dangerous entities are capable of channeling the Æther itself.",
+        "nickname": "Effigy",
+        "templateId": "eny_0058_agdisk",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0058_agdisk_ability_1",
+                "description": "This enemy has powerful slam attacks but rotates slowly during casting. This is the best time to go behind it and attack."
+            },
+            {
+                "abilityId": "eny_0058_agdisk_ability_2",
+                "description": "The enemy can reassemble its body in various forms and move quickly across the battlefield."
+            },
+            {
+                "abilityId": "eny_0058_agdisk_ability_3",
+                "description": "The enemy will attempt to trap your operators! Interrupt it quickly to counter its moves."
+            }
+        ]
+    },
+    "eny_0059_erhound": {
+        "enemyId": "eny_0059_erhound",
+        "name": "Blighted Tuskbeast",
+        "description": "A tuskbeast corrupted by the Blight. These small Blighted aberrations usually move in packs that pose a serious threat, even to fully armed field teams.",
+        "nickname": "Blighted Tuskbeast",
+        "templateId": "eny_0059_erhound",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0059_erhound_ability_1",
+                "description": "Though less intelligent, this creatures makes up for it with added ferocity. Dodge its pounce attack to make it fall to the ground."
+            }
+        ]
+    },
+    "eny_0060_lbmad": {
+        "enemyId": "eny_0060_lbmad",
+        "name": "Blighted Klaw",
+        "description": "A Landbreaker corrupted by the Blight. Not getting killed by intense Blight is not a blessing but a curse. Survivors usually become horribly twisted versions of their former selves.",
+        "nickname": "Blighted Klaw",
+        "templateId": "eny_0060_lbmad",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0060_lbmad_ability_1",
+                "description": "Dodge its gnashing attack to make it fall to the ground."
+            }
+        ]
+    },
+    "eny_0061_palecore": {
+        "enemyId": "eny_0061_palecore",
+        "name": "Marble Aggelomoirai",
+        "description": "NO PREVIOUS RECORDS. This has been classified as an Aggelos due to the nature of its formation. Though its morphic modules were re-assembled, the entity continues to mimic Nefarith's appearance. No satisfactory explanations have been proposed for this phenomenon.",
+        "nickname": "Marble Aggelomoirai",
+        "templateId": "eny_0061_palecore",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0061_palecore_ability_1",
+                "description": "Defeat all Marble Appendages to force the dormant Marble Aggelomoirai to temporarily expose its vulnerable core that you can then attack."
+            }
+        ]
+    },
+    "eny_0062_paletent": {
+        "enemyId": "eny_0062_paletent",
+        "name": "Marble Appendage",
+        "description": "NO PREVIOUS RECORDS. This has been classified as an Aggelos due to the nature of its formation. Its physical manifestation would appear like extensions reaching out from its main body. However, these appendages actually reach into the main body and have been postulated to serve as a form of distraction.",
+        "nickname": "Marble Appendage",
+        "templateId": "eny_0062_paletent",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0062_paletent_ability_1",
+                "description": "Some Marble Appendages are skilled at attacking melee opponents with powerful slams."
+            },
+            {
+                "abilityId": "eny_0062_paletent_ability_2",
+                "description": "Some Marble Appendages are skilled at attacking ranged opponents by converting their tips into Blight material that can be thrown."
+            }
+        ]
+    },
+    "eny_0063_agmelee2": {
+        "enemyId": "eny_0063_agmelee2",
+        "name": "Ram α",
+        "description": "<i>Kriosson Anavon</i> (archive ID: ACL071α) is an energized variant of ACL071. The entity's excessive energy content gives it a characteristic bright red appearance and makes it stronger and faster than the standard variant.",
+        "nickname": "Ram α",
+        "templateId": "eny_0063_agmelee2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0064_agrange2": {
+        "enemyId": "eny_0064_agrange2",
+        "name": "Sting α",
+        "description": "<i>Kentron Anavon</i> (archive ID: ARL121α) is an energized variant of ARL121. The entity's higher energy density gives it greater firepower. The energy efficiency of its firing mechanism remains low.",
+        "nickname": "Sting α",
+        "templateId": "eny_0064_agrange2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0065_lbmob2": {
+        "enemyId": "eny_0065_lbmob2",
+        "name": "Elite Raider",
+        "description": "An elite Landbreaker melee combatant enhanced by fumes known as hazefyre. This particular LB have better gear, strength, and battle skills.",
+        "nickname": "Elite Raider",
+        "templateId": "eny_0065_lbmob2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0066_lbhunt2": {
+        "enemyId": "eny_0066_lbhunt2",
+        "name": "Elite Ambusher",
+        "description": "An elite Landbreaker ranged combatant enhanced by fumes known as hazefyre. This particular LB is better trained and accuracy, and is armed with better crossbow and bolts.",
+        "nickname": "Elite Ambusher",
+        "templateId": "eny_0066_lbhunt2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0067_hound2": {
+        "enemyId": "eny_0067_hound2",
+        "name": "Elite Ripptusk",
+        "description": "An elite Landbreaker warbeast enhanced by fumes known as hazefyre. This particular ripptusk is more ferocious and cunning, and attacks with less predictable moves.",
+        "nickname": "Elite Ripptusk",
+        "templateId": "eny_0067_hound2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0067_hound2_ability_1",
+                "description": "This enemy is agile but can be overwhelmed when taking multiple hits."
+            }
+        ]
+    },
+    "eny_0068_lbtough2": {
+        "enemyId": "eny_0068_lbtough2",
+        "name": "Elite Executioner",
+        "description": "An elite Landbreaker brute enhanced by fumes known as hazefyre. This particular LB is a towering giant armed with a great axe. Such elites are usually seen leading Bonekrusher raiding mobs.",
+        "nickname": "Elite Executioner",
+        "templateId": "eny_0068_lbtough2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0068_lbtough2_ability_1",
+                "description": "This enemy can grab your operators and throw them to the ground to deal massive DMG. If an operator is grabbed, use another operator's skill to interrupt the throw and free the grabbed operator."
+            },
+            {
+                "abilityId": "eny_0068_lbtough2_ability_2",
+                "description": "Dodging the charged double axeswings will not be easy. Interrupting the skill is an easier way."
+            }
+        ]
+    },
+    "eny_0069_aghornb2": {
+        "enemyId": "eny_0069_aghornb2",
+        "name": "Heavy Ram α",
+        "description": "<i>Thrylissoron Anavon</i> (archive ID: ACL072α) is an energized variant of ACL072. Its high energy contents did not affect its decision-making abilities. This entity is extremely dangerous.",
+        "nickname": "Heavy Ram α",
+        "templateId": "eny_0069_aghornb2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "This enemy has no special abilities."
+            }
+        ]
+    },
+    "eny_0070_agscorp2": {
+        "enemyId": "eny_0070_agscorp2",
+        "name": "Heavy Sting α",
+        "description": "<i>Varykentron Anavon</i> (archive ID: ARL141α) is an energized variant of ARL141 that has retained a plethora of attack patterns. It is a tougher and more dangerous entity.",
+        "nickname": "Heavy Sting α",
+        "templateId": "eny_0070_agscorp2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0070_agscorp2_ability_1",
+                "description": "This enemy attacks by causing Originium pillars to erupt under your operators."
+            },
+            {
+                "abilityId": "eny_0070_agscorp2_ability_2",
+                "description": "When approached, this enemy will summon stone pillars around itself for protection."
+            }
+        ]
+    }
+}

@@ -1,0 +1,1697 @@
+{
+    "dung01_group_bossrush01": {
+        "name": "危境再現·羅丹",
+        "desc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。",
+        "id": "dung01_group_bossrush01",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_bossrush01_01",
+                "dungeonName": "危境遺影·羅丹",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「他的霧火尚未消散。」",
+                "levelId": "map01_lv002",
+                "enemyIds": [
+                    "eny_0051_rodin"
+                ],
+                "enemyLevels": [
+                    25
+                ],
+                "recommendLv": 25
+            },
+            {
+                "dungeonId": "dung01_bossrush01_02",
+                "dungeonName": "危境延影·羅丹",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「他的怒火永不熄滅。」",
+                "levelId": "map01_lv002",
+                "enemyIds": [
+                    "eny_0051_rodin"
+                ],
+                "enemyLevels": [
+                    40
+                ],
+                "recommendLv": 40
+            },
+            {
+                "dungeonId": "dung01_bossrush01_03",
+                "dungeonName": "危境禍影·羅丹",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「他的仇恨終會凝結。」",
+                "levelId": "map01_lv002",
+                "enemyIds": [
+                    "eny_0051_rodin"
+                ],
+                "enemyLevels": [
+                    60
+                ],
+                "recommendLv": 60
+            }
+        ]
+    },
+    "dung01_group_bossrush02": {
+        "name": "危境再現·三位一體",
+        "desc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。",
+        "id": "dung01_group_bossrush02",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_bossrush02_01",
+                "dungeonName": "危境遺影·三位一體",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「你將重逢毫無情感的毀滅。」",
+                "levelId": "map01_lv006",
+                "enemyIds": [
+                    "eny_0045_agtrinit"
+                ],
+                "enemyLevels": [
+                    50
+                ],
+                "recommendLv": 50
+            },
+            {
+                "dungeonId": "dung01_bossrush02_02",
+                "dungeonName": "危境延影·三位一體",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「你將窺見冰冷過去的一角。」",
+                "levelId": "map01_lv006",
+                "enemyIds": [
+                    "eny_0045_agtrinit"
+                ],
+                "enemyLevels": [
+                    60
+                ],
+                "recommendLv": 60
+            },
+            {
+                "dungeonId": "dung01_bossrush02_03",
+                "dungeonName": "危境禍影·三位一體",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「你將遭遇絕無希望的未來。」",
+                "levelId": "map01_lv006",
+                "enemyIds": [
+                    "eny_0045_agtrinit"
+                ],
+                "enemyLevels": [
+                    70
+                ],
+                "recommendLv": 70
+            }
+        ]
+    },
+    "dung01_group_bossrush03": {
+        "name": "危境再現·白堊界衛",
+        "desc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。",
+        "id": "dung01_group_bossrush03",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_bossrush03_01",
+                "dungeonName": "危境遺影·白堊界衛",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「她的話語必將迴盪於此。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0052_palesent"
+                ],
+                "enemyLevels": [
+                    55
+                ],
+                "recommendLv": 55
+            },
+            {
+                "dungeonId": "dung01_bossrush03_02",
+                "dungeonName": "危境延影·白堊界衛",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「她的野心必將漫向他處。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0052_palesent"
+                ],
+                "enemyLevels": [
+                    65
+                ],
+                "recommendLv": 65
+            },
+            {
+                "dungeonId": "dung01_bossrush03_03",
+                "dungeonName": "危境禍影·白堊界衛",
+                "dungeonDesc": "極度危險的裂隙，想要進入其中的話，就做好全方位的準備吧。\n「她的惡意必將蓬勃生長。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0052_palesent"
+                ],
+                "enemyLevels": [
+                    75
+                ],
+                "recommendLv": 75
+            }
+        ]
+    },
+    "dung01_group_charbreak01": {
+        "name": "裂隙·幹員進階",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於幹員精英化的道具。",
+        "id": "dung01_group_charbreak01",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_charbreak01",
+                "dungeonName": "心照涓流",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於幹員精英化的道具。\n「你應直面你的內心，感受它的強壯與虛弱，歡欣與苦痛。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [
+                    "eny_0050_hound_dungeon",
+                    "eny_0033_lbhunt_dungeon"
+                ],
+                "enemyLevels": [
+                    10,
+                    10
+                ],
+                "recommendLv": 20
+            },
+            {
+                "dungeonId": "dung01_charbreak02",
+                "dungeonName": "心照溝瀆",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於幹員精英化的道具。\n「知曉自我是戰勝自我的第一步。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [
+                    "eny_0050_hound_dungeon",
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0046_lbshamman_dungeon"
+                ],
+                "enemyLevels": [
+                    35,
+                    35,
+                    35
+                ],
+                "recommendLv": 40
+            }
+        ]
+    },
+    "dung01_group_charbreak02": {
+        "name": "裂隙·幹員進階",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於幹員精英化的道具。",
+        "id": "dung01_group_charbreak02",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_charbreak03",
+                "dungeonName": "心照靜湖",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於幹員精英化的道具。\n「自我是易於躲藏之物，它會化作芬芳隱於風中，化作水波匿於大湖。」",
+                "levelId": "map01_lv006",
+                "enemyIds": [
+                    "eny_0050_hound_dungeon",
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0066_lbhunt2",
+                    "eny_0046_lbshamman_dungeon"
+                ],
+                "enemyLevels": [
+                    60,
+                    60,
+                    60,
+                    60
+                ],
+                "recommendLv": 60
+            },
+            {
+                "dungeonId": "dung01_charbreak04",
+                "dungeonName": "心照暗海",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於幹員精英化的道具。\n「願你以心為光，照破暗海。」",
+                "levelId": "map01_lv006",
+                "enemyIds": [
+                    "eny_0050_hound_dungeon",
+                    "eny_0067_hound2",
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0047_firebat_dungeon"
+                ],
+                "enemyLevels": [
+                    75,
+                    75,
+                    75,
+                    75
+                ],
+                "recommendLv": 70
+            }
+        ]
+    },
+    "dung01_group_exp01": {
+        "name": "裂隙·戰鬥經驗",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員經驗的道具。",
+        "id": "dung01_group_exp01",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_exp01",
+                "dungeonName": "記憶衍化之地",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員經驗的道具。\n「我看著他消失在光裡——黑色的光芒——可這世上是不該有黑色光芒的。」",
+                "levelId": "map01_lv002",
+                "enemyIds": [
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0025_agrange_dungeon"
+                ],
+                "enemyLevels": [
+                    10,
+                    10
+                ],
+                "recommendLv": 20
+            },
+            {
+                "dungeonId": "dung01_exp02",
+                "dungeonName": "試煉衍化之地",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員經驗的道具。\n「而後，他在光中看到的是無邊無際的軍隊。」",
+                "levelId": "map01_lv002",
+                "enemyIds": [
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0025_agrange_dungeon",
+                    "eny_0023_aghornb_dungeon"
+                ],
+                "enemyLevels": [
+                    35,
+                    35,
+                    35
+                ],
+                "recommendLv": 40
+            }
+        ]
+    },
+    "dung01_group_exp02": {
+        "name": "裂隙·戰鬥經驗",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員經驗的道具。",
+        "id": "dung01_group_exp02",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_exp03",
+                "dungeonName": "苦難衍化之地",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員經驗的道具。\n「那些本該消逝的勇士們，自黃沙與枯骨下復歸人世，就這樣安靜地看著他。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0025_agrange_dungeon",
+                    "eny_0063_agmelee2",
+                    "eny_0023_aghornb_dungeon"
+                ],
+                "enemyLevels": [
+                    60,
+                    60,
+                    60,
+                    60
+                ],
+                "recommendLv": 60
+            },
+            {
+                "dungeonId": "dung01_exp04",
+                "dungeonName": "毀滅衍化之地",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員經驗的道具。\n「於是，沒有任何言語與訊號，他卻知曉了離開此地的方法，方法就在刀鋒之上。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0063_agmelee2",
+                    "eny_0023_aghornb_dungeon",
+                    "eny_0027_agscorp_dungeon"
+                ],
+                "enemyLevels": [
+                    75,
+                    75,
+                    75,
+                    75
+                ],
+                "recommendLv": 70
+            }
+        ]
+    },
+    "dung01_group_gold01": {
+        "name": "裂隙·錢幣收集",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現折金票。",
+        "id": "dung01_group_gold01",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_gold01",
+                "dungeonName": "石幣之祝",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現折金票。\n「在荒地上流傳著這樣的故事：曾有窮苦之人走進裂隙，重回人世之時，他們的內臟已被替換成了黃金。」",
+                "levelId": "map01_lv002",
+                "enemyIds": [
+                    "eny_0025_agrange_dungeon"
+                ],
+                "enemyLevels": [
+                    10
+                ],
+                "recommendLv": 20
+            },
+            {
+                "dungeonId": "dung01_gold02",
+                "dungeonName": "銅幣之祝",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現折金票。\n「當然，當然……絕望的人無法觸摸到未來，因此才會用虛無縹緲的童話封住眼睛，掩住耳朵。」",
+                "levelId": "map01_lv002",
+                "enemyIds": [
+                    "eny_0025_agrange_dungeon",
+                    "eny_0027_agscorp_dungeon"
+                ],
+                "enemyLevels": [
+                    35,
+                    35
+                ],
+                "recommendLv": 40
+            }
+        ]
+    },
+    "dung01_group_gold02": {
+        "name": "裂隙·錢幣收集",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現折金票。",
+        "id": "dung01_group_gold02",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_gold03",
+                "dungeonName": "銀幣之祝",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現折金票。\n「是那些童話——它們究竟是因人類期許未來而成的投影，還是因無數廝殺掠奪而鑿刻成的岩畫呢？」",
+                "levelId": "map01_lv005",
+                "enemyIds": [
+                    "eny_0025_agrange_dungeon",
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0027_agscorp_dungeon"
+                ],
+                "enemyLevels": [
+                    60,
+                    60,
+                    60
+                ],
+                "recommendLv": 60
+            },
+            {
+                "dungeonId": "dung01_gold04",
+                "dungeonName": "金幣之祝",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現折金票。\n「冒險於荒地的人啊，故事便由你來驗證吧。」",
+                "levelId": "map01_lv005",
+                "enemyIds": [
+                    "eny_0025_agrange_dungeon",
+                    "eny_0063_agmelee2",
+                    "eny_0007_mimicw_dungeon"
+                ],
+                "enemyLevels": [
+                    75,
+                    75,
+                    75
+                ],
+                "recommendLv": 70
+            }
+        ]
+    },
+    "dung01_group_puzzle01": {
+        "name": "壓力感應",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle01",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle01",
+                "dungeonName": "壓力感應",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「……如果必須要給一個分析，我想這裡一定是哪位裝卸工人因加班產生的怨念幻境。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_puzzle02": {
+        "name": "吊裝輔助",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle02",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle02",
+                "dungeonName": "吊裝輔助",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「小心點，這些吊裝設備滿是安全隱患，在這裡受傷可不會算成工傷。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_puzzle03": {
+        "name": "遊於光焰\n",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle03",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle10",
+                "dungeonName": "遊於光焰\n",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「別被執念遮住眼睛。」",
+                "levelId": "map01_lv002",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_puzzle04": {
+        "name": "乘風",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle04",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle03",
+                "dungeonName": "乘風",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「此時此刻，我比風更輕盈。」",
+                "levelId": "map01_lv003",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_puzzle05": {
+        "name": "高熱攔截\n",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle05",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle05",
+                "dungeonName": "高熱攔截\n",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「這些鐳射會把你切成碎塊，毫不留情。」",
+                "levelId": "map01_lv005",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_puzzle06": {
+        "name": "轟鳴喜樂",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle06",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle08",
+                "dungeonName": "轟鳴喜樂",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「鋪天蓋地的炮火？比起過往戰爭中惡夢般的景觀，這只是再正常不過的炮擊陣列而已。」",
+                "levelId": "map01_lv006",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_puzzle07": {
+        "name": "外部起爆",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle07",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle06",
+                "dungeonName": "外部起爆",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「在裂隙中也就算了，回到正常環境後請萬萬不要隨意投擲爆炸物。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_puzzle08": {
+        "name": "工業化迷宮",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle08",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle04",
+                "dungeonName": "工業化迷宮",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「我認為這處幻境就像是哪位終末地員工對未來的暢想，或許是秦主管，她看起來應該想要如此龐大的樞紐區基地。」",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_puzzle09": {
+        "name": "長耳獸的邀請",
+        "desc": "內部不穩定的裂隙，其中出現什麼都不令人意外。",
+        "id": "dung01_group_puzzle09",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle07",
+                "dungeonName": "長耳獸的邀請",
+                "dungeonDesc": "內部不穩定的裂隙，其中出現什麼都不令人意外。\n「真是些小可愛，想帶我們去你們的小小王國嗎？」",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung01_group_skill01": {
+        "name": "裂隙·技能提升",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員技能的道具。",
+        "id": "dung01_group_skill01",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_skill01",
+                "dungeonName": "高塔暗影\n",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員技能的道具。\n「你應觸摸手中源石，感受它的熾熱與冰冷，充盈與虛無。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0033_lbhunt_dungeon"
+                ],
+                "enemyLevels": [
+                    10,
+                    10
+                ],
+                "recommendLv": 20
+            },
+            {
+                "dungeonId": "dung01_skill02",
+                "dungeonName": "高塔殘塵",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員技能的道具。\n「在歸鄉之路斷絕後，也有人試圖築起高塔，希冀與故鄉取得聯繫，然而，這只是脆弱的幻想。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [
+                    "eny_0050_hound_dungeon",
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0033_lbhunt_dungeon",
+                    "eny_0046_lbshamman_dungeon"
+                ],
+                "enemyLevels": [
+                    35,
+                    35,
+                    35,
+                    35
+                ],
+                "recommendLv": 40
+            }
+        ]
+    },
+    "dung01_group_skill02": {
+        "name": "裂隙·技能提升",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員技能的道具。",
+        "id": "dung01_group_skill02",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_skill03",
+                "dungeonName": "高塔餘念",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員技能的道具。\n「最後，只剩下源石——人類與故土最後也是最緊密的連繫。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0049_rogue_dungeon",
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0065_lbmob2",
+                    "eny_0046_lbshamman_dungeon"
+                ],
+                "enemyLevels": [
+                    60,
+                    60,
+                    60,
+                    60
+                ],
+                "recommendLv": 60
+            },
+            {
+                "dungeonId": "dung01_skill04",
+                "dungeonName": "高塔遺聲",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升幹員技能的道具。\n「正因如此，我們仍能再起高樓。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0050_hound_dungeon",
+                    "eny_0067_hound2",
+                    "eny_0049_rogue_dungeon",
+                    "eny_0046_lbshamman_dungeon"
+                ],
+                "enemyLevels": [
+                    75,
+                    75,
+                    75,
+                    75
+                ],
+                "recommendLv": 70
+            }
+        ]
+    },
+    "dung01_group_wpbreak01": {
+        "name": "裂隙-武器進階",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於武器突破的道具。",
+        "id": "dung01_group_wpbreak01",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_wpbreak01",
+                "dungeonName": "錘鍛檢定Lv.1",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於武器突破的道具。\n「錘鍛測試Lv.1，檢測中——檢測到您的武器有多種模組需升級。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0033_lbhunt_dungeon"
+                ],
+                "enemyLevels": [
+                    10,
+                    10
+                ],
+                "recommendLv": 20
+            },
+            {
+                "dungeonId": "dung01_wpbreak02",
+                "dungeonName": "錘鍛檢定Lv.2",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於武器突破的道具。\n「錘鍛測試Lv.2，檢測中——向您推薦梅什科工業自研全自動武器修復升級套裝，該系列目前促銷中，物美價廉。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0033_lbhunt_dungeon",
+                    "eny_0066_lbhunt2",
+                    "eny_0047_firebat_dungeon"
+                ],
+                "enemyLevels": [
+                    35,
+                    35,
+                    35,
+                    35
+                ],
+                "recommendLv": 40
+            }
+        ]
+    },
+    "dung01_group_wpbreak02": {
+        "name": "裂隙-武器進階",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於武器突破的道具。",
+        "id": "dung01_group_wpbreak02",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_wpbreak03",
+                "dungeonName": "錘鍛檢定Lv.3",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於武器突破的道具。\n「錘鍛測試Lv.3，檢測中——您可自行選擇武器升級方案，但請相信，梅什科必將是您的最終之選。」",
+                "levelId": "map01_lv006",
+                "enemyIds": [
+                    "eny_0029_lbmob_dungeon",
+                    "eny_0066_lbhunt2",
+                    "eny_0047_firebat_dungeon"
+                ],
+                "enemyLevels": [
+                    60,
+                    60,
+                    60
+                ],
+                "recommendLv": 60
+            },
+            {
+                "dungeonId": "dung01_wpbreak04",
+                "dungeonName": "錘鍛檢定Lv.4",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於武器突破的道具。\n「錘鍛測試Lv.4，檢測中——恭喜您，您已被選為本年度最幸運顧客，立刻購買產品，您就有機會前往梅什科工業總部參觀，請儘快下單吧！」",
+                "levelId": "map01_lv006",
+                "enemyIds": [
+                    "eny_0050_hound_dungeon",
+                    "eny_0066_lbhunt2",
+                    "eny_0047_firebat_dungeon"
+                ],
+                "enemyLevels": [
+                    75,
+                    75,
+                    75
+                ],
+                "recommendLv": 70
+            }
+        ]
+    },
+    "dung01_group_wpexp01": {
+        "name": "裂隙·武器強化",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升武器經驗的道具。",
+        "id": "dung01_group_wpexp01",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_wpexp01",
+                "dungeonName": "銃匠們的挖掘場",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升武器經驗的道具。\n「在這片荒蕪的土地上，刀劍銃械可不能少。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0025_agrange_dungeon"
+                ],
+                "enemyLevels": [
+                    10,
+                    10
+                ],
+                "recommendLv": 20
+            },
+            {
+                "dungeonId": "dung01_wpexp02",
+                "dungeonName": "銃匠們的狩獵地",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升武器經驗的道具。\n「砰砰，砰砰，這裡拿把銃械，那裡拿桿槍。」",
+                "levelId": "map01_lv001",
+                "enemyIds": [
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0025_agrange_dungeon",
+                    "eny_0023_aghornb_dungeon"
+                ],
+                "enemyLevels": [
+                    35,
+                    35,
+                    35
+                ],
+                "recommendLv": 40
+            }
+        ]
+    },
+    "dung01_group_wpexp02": {
+        "name": "裂隙·武器強化",
+        "desc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升武器經驗的道具。",
+        "id": "dung01_group_wpexp02",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_wpexp03",
+                "dungeonName": "銃匠們的理想國",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升武器經驗的道具。\n「看看這些銃匠，他們走在荒野上。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0063_agmelee2",
+                    "eny_0023_aghornb_dungeon"
+                ],
+                "enemyLevels": [
+                    60,
+                    60,
+                    60
+                ],
+                "recommendLv": 60
+            },
+            {
+                "dungeonId": "dung01_wpexp04",
+                "dungeonName": "銃匠們的埋骨處",
+                "dungeonDesc": "這是一處內部空間未知的裂隙，認真探索其中的話，或許能夠發現用於提升武器經驗的道具。\n「看看這些銃匠，他們探索遺跡多開朗。」",
+                "levelId": "map01_lv007",
+                "enemyIds": [
+                    "eny_0021_agmelee_dungeon",
+                    "eny_0064_agrange2",
+                    "eny_0069_aghornb2",
+                    "eny_0027_agscorp_dungeon"
+                ],
+                "enemyLevels": [
+                    75,
+                    75,
+                    75,
+                    75
+                ],
+                "recommendLv": 70
+            }
+        ]
+    },
+    "dung01_test_factory": {
+        "name": "四號谷地",
+        "desc": "",
+        "id": "dung01_test_factory",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_test_factory",
+                "dungeonName": "",
+                "dungeonDesc": "",
+                "levelId": "",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung_group_rdg001": {
+        "name": "幹員記事",
+        "desc": "",
+        "id": "dung_group_rdg001",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_rdg001",
+                "dungeonName": "哈倫藏身處",
+                "dungeonDesc": "解決哈倫。",
+                "levelId": "map01_lv002",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung_group_rdg002": {
+        "name": "幹員記事",
+        "desc": "",
+        "id": "dung_group_rdg002",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_rdg002",
+                "dungeonName": "受侵蝕區域",
+                "dungeonDesc": "找到原型機。",
+                "levelId": "",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "dung_group_train01": {
+        "name": "普通訓練",
+        "desc": "",
+        "id": "dung_group_train01",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_train01",
+                "dungeonName": "攻勢截斷",
+                "dungeonDesc": "打斷，打斷至關重要，在敵人的攻勢親在你們臉上之前，試試截停它，好嗎？",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0018_lbtough_train",
+                    "eny_0023_aghornb_train"
+                ],
+                "enemyLevels": [
+                    20,
+                    20
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train02",
+                "dungeonName": "嘗試「震退」",
+                "dungeonDesc": "人類的防具，天使的外殼，這些都能擋住劈柴一樣的魯莽攻擊。\n靈活一點，讓他們嘗嘗「震退」。",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0018_lbtough",
+                    "eny_0050_hound",
+                    "eny_0029_lbmob"
+                ],
+                "enemyLevels": [
+                    15,
+                    15,
+                    20
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train03",
+                "dungeonName": "嘗試「擊飛」",
+                "dungeonDesc": "你們的攻擊要像群島的颶風一樣迅速、狂暴！\n別給敵人調整的機會，「破防」之後接上「擊飛」，把他們控制住！",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0033_lbhunt",
+                    "eny_0050_hound"
+                ],
+                "enemyLevels": [
+                    25,
+                    25
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train04",
+                "dungeonName": "予以「倒地」",
+                "dungeonDesc": "你們的攻擊要像侵蝕區的落石一樣沉重、兇猛！\n別給敵人調整的機會，「破防」之後接上「倒地」，把他們壓制住！",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0029_lbmob",
+                    "eny_0050_hound"
+                ],
+                "enemyLevels": [
+                    25,
+                    25
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train05",
+                "dungeonName": "附著與爆發",
+                "dungeonDesc": "刀、劍、銃械、施術單元、防禦裝甲，源石技藝的痕跡無處不在。\n活用它，試試「法術附著」和「法術爆發」。",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0023_aghornb",
+                    "eny_0021_agmelee",
+                    "eny_0023_aghornb"
+                ],
+                "enemyLevels": [
+                    20,
+                    20,
+                    25
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train06",
+                "dungeonName": "予以「燃燒」",
+                "dungeonDesc": "火焰這種攻擊方式，廉價、高效。來，讓你們的敵人身陷「燃燒」。",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0023_aghornb",
+                    "eny_0021_agmelee",
+                    "eny_0023_aghornb"
+                ],
+                "enemyLevels": [
+                    20,
+                    20,
+                    25
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train07",
+                "dungeonName": "予以「凍結」",
+                "dungeonDesc": "僵化他們的思維，困縛他們的軀體。來，讓你們的敵人身陷「凍結」。",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0023_aghornb",
+                    "eny_0025_agrange",
+                    "eny_0021_agmelee"
+                ],
+                "enemyLevels": [
+                    20,
+                    30,
+                    30
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train08",
+                "dungeonName": "予以「導電」",
+                "dungeonDesc": "讓機械的血液也在人類體內流淌一下吧。來，讓你們的敵人身陷「導電」。",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0023_aghornb",
+                    "eny_0021_agmelee",
+                    "eny_0023_aghornb"
+                ],
+                "enemyLevels": [
+                    20,
+                    20,
+                    25
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train09",
+                "dungeonName": "予以「腐蝕」",
+                "dungeonDesc": "想一想辦法，讓他們的防禦裝備像玉米片一樣脆弱怎麼樣？來，讓你的敵人身陷「腐蝕」。",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0023_aghornb",
+                    "eny_0021_agmelee",
+                    "eny_0023_aghornb"
+                ],
+                "enemyLevels": [
+                    20,
+                    20,
+                    25
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train10",
+                "dungeonName": "多向截斷",
+                "dungeonDesc": "還不錯，人多起來就能有一點「戰場」氣氛了。打斷！打斷！截斷敵人的攻勢！一個也別落下！",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0021_agmelee",
+                    "eny_0023_aghornb_train"
+                ],
+                "enemyLevels": [
+                    20,
+                    30
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train11",
+                "dungeonName": "完美壓制",
+                "dungeonDesc": "好了，現在進行最終測試的第一部分。\n很簡單，別受傷就算你們通過。",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0049_rogue"
+                ],
+                "enemyLevels": [
+                    24
+                ],
+                "recommendLv": 0
+            },
+            {
+                "dungeonId": "dung_train12",
+                "dungeonName": "全方位壓制",
+                "dungeonDesc": "最終測試的最後一步！來吧！一場混戰！\n別受傷，管理員！讓我看看你的實力恢復了多少！",
+                "levelId": "base01_lv001",
+                "enemyIds": [
+                    "eny_0033_lbhunt",
+                    "eny_0029_lbmob"
+                ],
+                "enemyLevels": [
+                    20,
+                    25
+                ],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_assebling_1": {
+        "name": "四號谷地",
+        "desc": "封裝機",
+        "id": "entrance_dung_blackbox_assebling_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_assebling_1",
+                "dungeonName": "封裝機",
+                "dungeonDesc": "請使用封裝機搭建低容量電池的自動化生產線，並為作戰設備充能。",
+                "levelId": "map01_lv002",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_assebling_2": {
+        "name": "四號谷地",
+        "desc": "中容量電池",
+        "id": "entrance_dung_blackbox_assebling_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_assebling_2",
+                "dungeonName": "中容量電池",
+                "dungeonDesc": "請使用封裝機搭建中容量電池的自動化生產線。",
+                "levelId": "map01_lv005",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_asseblingbomb_1": {
+        "name": "四號谷地",
+        "desc": "工業爆炸物",
+        "id": "entrance_dung_blackbox_asseblingbomb_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_asseblingbomb_1",
+                "dungeonName": "工業爆炸物",
+                "dungeonDesc": "請製造並使用工業爆炸物，清理落石解救受困人員。",
+                "levelId": "map01_lv002",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_basic_1": {
+        "name": "四號谷地",
+        "desc": "材料生產",
+        "id": "entrance_dung_blackbox_basic_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_basic_1",
+                "dungeonName": "材料生產",
+                "dungeonDesc": "中繼器故障中，請使用相關設備生產所需材料，對中繼器進行修復。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_belt_1": {
+        "name": "四號谷地",
+        "desc": "物流連線",
+        "id": "entrance_dung_blackbox_belt_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_belt_1",
+                "dungeonName": "物流連線",
+                "dungeonDesc": "現需將一批原料輸送到設備中進行加工，再將產物運回倉庫。請使用傳送帶在現有布局下進行物流連線。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_belt_2": {
+        "name": "四號谷地",
+        "desc": "傳送帶綜合",
+        "id": "entrance_dung_blackbox_belt_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_belt_2",
+                "dungeonName": "傳送帶綜合",
+                "dungeonDesc": "請靈活使用傳送帶、總線與物流器，完成複雜生產線的搭建。",
+                "levelId": "map01_lv006",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_bus_1": {
+        "name": "四號谷地",
+        "desc": "總線",
+        "id": "entrance_dung_blackbox_bus_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_bus_1",
+                "dungeonName": "總線",
+                "dungeonDesc": "集成工業系統現已引入總線，可進行更為靈活和高效的物流運輸。",
+                "levelId": "map01_lv003",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_bus_2": {
+        "name": "四號谷地",
+        "desc": "總線綜合",
+        "id": "entrance_dung_blackbox_bus_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_bus_2",
+                "dungeonName": "總線綜合",
+                "dungeonDesc": "請靈活使用總線與傳送帶，完成複雜生產線的搭建。",
+                "levelId": "map01_lv003",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_cmpt_1": {
+        "name": "四號谷地",
+        "desc": "配件機",
+        "id": "entrance_dung_blackbox_cmpt_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_cmpt_1",
+                "dungeonName": "配件機",
+                "dungeonDesc": "長距滑索架出現故障，請使用配件機生產修復材料——紫晶零件。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_connector_1": {
+        "name": "四號谷地",
+        "desc": "物流橋",
+        "id": "entrance_dung_blackbox_connector_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_connector_1",
+                "dungeonName": "物流橋",
+                "dungeonDesc": "集成工業系統現已引入物流橋，可透過傳送帶的跨接進行更為靈活的物流運輸。",
+                "levelId": "map01_lv003",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_converger_1": {
+        "name": "四號谷地",
+        "desc": "匯流器",
+        "id": "entrance_dung_blackbox_converger_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_converger_1",
+                "dungeonName": "匯流器",
+                "dungeonDesc": "集成工業系統現已引入匯流器，可將多條傳送帶進行合併到一起，以簡化物流運輸。",
+                "levelId": "map01_lv005",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_1": {
+        "name": "四號谷地",
+        "desc": "灌裝機",
+        "id": "entrance_dung_blackbox_filling_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_1",
+                "dungeonName": "灌裝機",
+                "dungeonDesc": "請使用灌裝機搭建藥品和食品的自動化生產線。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_2": {
+        "name": "四號谷地",
+        "desc": "優質罐頭",
+        "id": "entrance_dung_blackbox_filling_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_2",
+                "dungeonName": "優質罐頭",
+                "dungeonDesc": "請使用集成工業系統對藍鐵礦進行進一步加工，並使用藍鐵瓶生產更優質的柑實罐頭。",
+                "levelId": "map01_lv005",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_3": {
+        "name": "四號谷地",
+        "desc": "精選蕎癒膠囊",
+        "id": "entrance_dung_blackbox_filling_3",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_3",
+                "dungeonName": "精選蕎癒膠囊",
+                "dungeonDesc": "請使用研磨機更新藥劑產線，生產恢復效果更佳的精選蕎癒膠囊。",
+                "levelId": "map01_lv006",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_4": {
+        "name": "錦隴",
+        "desc": "灌裝機液體模式",
+        "id": "entrance_dung_blackbox_filling_4",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_4",
+                "dungeonName": "灌裝機液體模式",
+                "dungeonDesc": "運用管道和灌裝機的液體模式，將液體輸入到設備中以進行錦隴地區的食品和藥品生產。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_5": {
+        "name": "錦隴",
+        "desc": "錦隴綜合應用（未使用）",
+        "id": "entrance_dung_blackbox_filling_5",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_5",
+                "dungeonName": "錦隴綜合應用",
+                "dungeonDesc": "錦隴綜合應用",
+                "levelId": "",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_grinder_1": {
+        "name": "四號谷地",
+        "desc": "粉碎機",
+        "id": "entrance_dung_blackbox_grinder_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_grinder_1",
+                "dungeonName": "粉碎機",
+                "dungeonDesc": "現需將一批原料加工為粉末，再運回倉庫。請使用傳送帶在現有布局下進行物流連線。",
+                "levelId": "map01_lv002",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_hub_1": {
+        "name": "四號谷地",
+        "desc": "藥品產線",
+        "id": "entrance_dung_blackbox_hub_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_hub_1",
+                "dungeonName": "藥品產線",
+                "dungeonDesc": "請使用集成工業系統搭建蕎花粉末的自動化生產線。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_liquidcleaner_1": {
+        "name": "錦隴",
+        "desc": "污水處理機",
+        "id": "entrance_dung_blackbox_liquidcleaner_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_liquidcleaner_1",
+                "dungeonName": "污水處理機",
+                "dungeonDesc": "在液體模式下，設備的生產過程中會額外產出污水，造成污染。請使用污水處理機解決污染問題。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_miner_1": {
+        "name": "四號谷地",
+        "desc": "電驅礦機",
+        "id": "entrance_dung_blackbox_miner_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_miner_1",
+                "dungeonName": "電驅礦機",
+                "dungeonDesc": "請使用電驅礦機開採紫晶礦，並更換原本的便攜式源石礦機，實現源礦的自動開採和無線傳輸。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_miner_2": {
+        "name": "四號谷地",
+        "desc": "電驅礦機II",
+        "id": "entrance_dung_blackbox_miner_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_miner_2",
+                "dungeonName": "電驅礦機II",
+                "dungeonDesc": "請合理利用電驅礦機II，對礦物區所有礦點進行開採。",
+                "levelId": "map01_lv005",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_miner_3": {
+        "name": "錦隴",
+        "desc": "水驅礦機",
+        "id": "entrance_dung_blackbox_miner_3",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_miner_3",
+                "dungeonName": "水驅礦機",
+                "dungeonDesc": "水驅礦機不需要接入電網只需要供水即可進行礦物的開採。請使用水驅礦機開採赤銅礦。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_mix_1": {
+        "name": "錦隴",
+        "desc": "反應池",
+        "id": "entrance_dung_blackbox_mix_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_mix_1",
+                "dungeonName": "反應池",
+                "dungeonDesc": "反應池可進行固體和液體的混合生產。請將植物粉末和清水輸送到入反應池中以生產植物溶液。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_mix_2": {
+        "name": "錦隴",
+        "desc": "反應池擴展",
+        "id": "entrance_dung_blackbox_mix_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_mix_2",
+                "dungeonName": "反應池擴展",
+                "dungeonDesc": "反應池在擴增更多暫存區後可同時進行多個配方的生產。請改進目前生產線，減少反應池的使用數量。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_pipe_1": {
+        "name": "錦隴",
+        "desc": "水泵和管道",
+        "id": "entrance_dung_blackbox_pipe_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_pipe_1",
+                "dungeonName": "管道和液體",
+                "dungeonDesc": "請使用管道、水泵和液體供給器進行液體的轉移運輸。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_pipe_2": {
+        "name": "錦隴",
+        "desc": "管道物流設備",
+        "id": "entrance_dung_blackbox_pipe_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_pipe_2",
+                "dungeonName": "管道物流設備",
+                "dungeonDesc": "請使用管道物流設備合理規劃液體運輸管線，完成複雜生產線的布局。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_planter_1": {
+        "name": "四號谷地",
+        "desc": "種植機與採種機",
+        "id": "entrance_dung_blackbox_planter_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_planter_1",
+                "dungeonName": "種植機與採種機",
+                "dungeonDesc": "請使用種植機和採種機實現植物的循環生產和利用。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_planter_2": {
+        "name": "錦隴",
+        "desc": "種植機和管道分流器",
+        "id": "entrance_dung_blackbox_planter_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_planter_2",
+                "dungeonName": "種植機和管道分流器",
+                "dungeonDesc": "種植機的液體模式可進行錦隴地區植物的種植。請使用管道分流器在水泵數量有限的情況下同時為多個設備供水。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_power_1": {
+        "name": "四號谷地",
+        "desc": "電力供給（未使用）",
+        "id": "entrance_dung_blackbox_power_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_power_1",
+                "dungeonName": "電力供給",
+                "dungeonDesc": "請使用中繼器和供電樁完成電網建設。",
+                "levelId": "",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_powerstation_1": {
+        "name": "四號谷地",
+        "desc": "熱能池",
+        "id": "entrance_dung_blackbox_powerstation_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_powerstation_1",
+                "dungeonName": "熱能池",
+                "dungeonDesc": "請使用熱能池提升電網總發電功率，恢復集成工業系統中各設備的運轉。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_shaper_1": {
+        "name": "四號谷地",
+        "desc": "塑形機",
+        "id": "entrance_dung_blackbox_shaper_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_shaper_1",
+                "dungeonName": "塑形機",
+                "dungeonDesc": "請使用集成工業系統搭建紫晶質瓶的自動化生產線，以提供製作蕎癒膠囊所需的材料。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_shaper_2": {
+        "name": "錦隴",
+        "desc": "塑形機液體模式",
+        "id": "entrance_dung_blackbox_shaper_2",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_shaper_2",
+                "dungeonName": "塑形機液體模式",
+                "dungeonDesc": "請使用塑形機的液體模式生產更高品質的容器，以供應優質食物和藥品的生產。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_splitter_1": {
+        "name": "四號谷地",
+        "desc": "分流器",
+        "id": "entrance_dung_blackbox_splitter_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_splitter_1",
+                "dungeonName": "分流器",
+                "dungeonDesc": "有限的取貨口限制了生產線數量。集成工業系統現已引入分流器，可將單一傳送帶分流出最多三條傳送帶。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_squirter_1": {
+        "name": "錦隴",
+        "desc": "灑水機",
+        "id": "entrance_dung_blackbox_squirter_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_squirter_1",
+                "dungeonName": "灑水機",
+                "dungeonDesc": "請使用管道、水泵和灑水機對田塊進行自動澆灌。",
+                "levelId": "map02_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_storager_1": {
+        "name": "四號谷地",
+        "desc": "無線傳輸",
+        "id": "entrance_dung_blackbox_storager_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_storager_1",
+                "dungeonName": "無線傳輸",
+                "dungeonDesc": "現需將一批源礦運回倉庫。請完善電網建設，並使用協議儲存箱的無線傳輸功能將源礦遠端運回倉庫。",
+                "levelId": "map01_lv002",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_thickener_1": {
+        "name": "四號谷地",
+        "desc": "研磨機",
+        "id": "entrance_dung_blackbox_thickener_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_thickener_1",
+                "dungeonName": "研磨機",
+                "dungeonDesc": "集成工業系統現已引入研磨機，可配合砂葉粉末進一步壓縮原料，來生產製造更高級的藥品和裝備。",
+                "levelId": "map01_lv006",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_blackbox_winder_1": {
+        "name": "四號谷地",
+        "desc": "裝備原件機",
+        "id": "entrance_dung_blackbox_winder_1",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_winder_1",
+                "dungeonName": "裝備原件機",
+                "dungeonDesc": "請使用裝備原件機生產紫晶裝備原件。",
+                "levelId": "map01_lv001",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    },
+    "entrance_dung_demo_blackbox02": {
+        "name": "錦隴",
+        "desc": "錦隴測試",
+        "id": "entrance_dung_demo_blackbox02",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_demo_blackbox02",
+                "dungeonName": "錦隴測試",
+                "dungeonDesc": "錦隴測試",
+                "levelId": "",
+                "enemyIds": [],
+                "enemyLevels": [],
+                "recommendLv": 0
+            }
+        ]
+    }
+}

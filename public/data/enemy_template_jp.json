@@ -1,0 +1,516 @@
+{
+    "eny_0007_mimicw": {
+        "enemyId": "eny_0007_mimicw",
+        "name": "猛毒アンゲロス",
+        "description": "「Dendreiosson」（整理番号：ARS141）、体内で毒を合成し、慣性を利用して投擲する。形成後に移動した例は観測されていない。",
+        "nickname": "猛毒アンゲロス",
+        "templateId": "eny_0007_mimicw",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0007_mimicw_ability_1",
+                "description": "一定範囲に持続的な超域ダメージを与える毒液を噴出します。スキルを使用して攻撃を中断させましょう。"
+            }
+        ]
+    },
+    "eny_0018_lbtough": {
+        "enemyId": "eny_0018_lbtough",
+        "name": "ボーンクラッシャーの処刑人",
+        "description": "重い斬撃用の斧を装備した体格の大きい武装ランドブレーカー。身体能力は他の多くのランドブレーカーを上回る。戦車をひっくり返し、防御工事を容易に破壊することさえ可能である。",
+        "nickname": "ボーンクラッシャーの処刑人",
+        "templateId": "eny_0018_lbtough",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0018_lbtough_ability_1",
+                "description": "オペレーターを掴んで地面に投げつけ、大ダメージを与えます。オペレーターが捕まった場合、他のオペレーターのスキルを使用して救出してください。"
+            },
+            {
+                "abilityId": "eny_0018_lbtough_ability_2",
+                "description": "チャージ後の2連続で斧を振る攻撃は回避することが困難なため、攻撃を中断させて対処しましょう。"
+            }
+        ]
+    },
+    "eny_0021_agmelee": {
+        "enemyId": "eny_0021_agmelee",
+        "name": "巨角アンゲロス",
+        "description": "「Kriosson」（整理番号：ACL071）、角を使って敵に突進する。最も早期に記録されたアンゲロスの形成パターンの1つであり、各地でよく見られる種である。",
+        "nickname": "巨角アンゲロス",
+        "templateId": "eny_0021_agmelee",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0023_aghornb": {
+        "enemyId": "eny_0023_aghornb",
+        "name": "剛角アンゲロス",
+        "description": "「Thrylissoron」（整理番号：ACL072）、ACL071の非定型種。周囲の環境を巧みに利用し、一定の戦略的思考能力を持っていると考えられる。",
+        "nickname": "剛角アンゲロス",
+        "templateId": "eny_0023_aghornb",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0025_agrange": {
+        "enemyId": "eny_0025_agrange",
+        "name": "針棘アンゲロス",
+        "description": "「Kentron」（整理番号：ARL121）、自身の構成物質にエネルギーを付与し、慣性を利用してエネルギーを投擲する。しかし、エネルギーの利用効率は低い。",
+        "nickname": "針棘アンゲロス",
+        "templateId": "eny_0025_agrange",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0027_agscorp": {
+        "enemyId": "eny_0027_agscorp",
+        "name": "槍棘アンゲロス",
+        "description": "「Varykentron」（整理番号：ARL141）、ARL121の非定型種。エネルギー攻撃を放棄し、尻尾を使った近接攻撃に切り替えることもある。",
+        "nickname": "槍棘アンゲロス",
+        "templateId": "eny_0027_agscorp",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0027_agscorp_ability_1",
+                "description": "オペレーターの足元から源石柱を突き出して攻撃します。"
+            },
+            {
+                "abilityId": "eny_0027_agscorp_ability_2",
+                "description": "接近されると、自身の周囲に石柱を召喚して防御します。"
+            }
+        ]
+    },
+    "eny_0029_lbmob": {
+        "enemyId": "eny_0029_lbmob",
+        "name": "ボーンクラッシャーの略奪者",
+        "description": "一般的な近接武器を装備した武装ランドブレーカー。ランドブレーカー集団の「大多数」を占めており、装備は簡素だが、群れを成して行動することが多い。",
+        "nickname": "ボーンクラッシャーの略奪者",
+        "templateId": "eny_0029_lbmob",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0033_lbhunt": {
+        "enemyId": "eny_0033_lbhunt",
+        "name": "ボーンクラッシャーの潜伏狙撃手",
+        "description": "一般的な遠距離武器を装備した武装ランドブレーカー。基本的な狙撃訓練しか受けておらず、命中率は低いことが多い。しかし、それでも彼らの矢によって命を落とす者は少なくない。",
+        "nickname": "ボーンクラッシャーの潜伏狙撃手",
+        "templateId": "eny_0033_lbhunt",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0039_agcanno": {
+        "enemyId": "eny_0039_agcanno",
+        "name": "哨戒アンゲロス",
+        "description": "「Phrourossaron」（整理番号：ARS316）、形成パターンは人類の哨戒砲を模倣していると考えられる。射程は長いが、形成後には移動しない。",
+        "nickname": "哨戒アンゲロス",
+        "templateId": "eny_0039_agcanno",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0039_agcanno_ability_1",
+                "description": "強力な遠距離攻撃を繰り出します。しっかり砲火を回避しなけがら前進しましょう。"
+            }
+        ]
+    },
+    "eny_0045_agtrinit": {
+        "enemyId": "eny_0045_agtrinit",
+        "name": "トリアンゲロス",
+        "description": "未収録。形成特性からアンゲロスであると推定される。光輪の形態の変化は、戦略的な思考能力を示している可能性がある。警告、アンカー属性が観測されている。",
+        "nickname": "トリアンゲロス",
+        "templateId": "eny_0045_agtrinit",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0045_agtrinit_ability_1",
+                "description": "3つの形態を持っています。"
+            },
+            {
+                "abilityId": "eny_0045_agtrinit_ability_2",
+                "description": "強攻形態：連続で近距離攻撃を発動します。タイミングよくチャージを中断させると、高い失衡値を与えることができます。"
+            },
+            {
+                "abilityId": "eny_0045_agtrinit_ability_3",
+                "description": "捜索形態：アンゲロスを大量に召喚して戦い、アンカーの衝撃波を発動します。"
+            },
+            {
+                "abilityId": "eny_0045_agtrinit_ability_4",
+                "description": "トリック形態：姿を隠すステルス状態になり、遠距離からの攻撃や待ち伏せ攻撃をします。ステルス状態を破ると高い失衡値を与えることができます。"
+            }
+        ]
+    },
+    "eny_0046_lbshamman": {
+        "enemyId": "eny_0046_lbshamman",
+        "name": "ボーンクラッシャーの炎術師",
+        "description": "アーツを使える武装ランドブレーカー。転化変換系のアーツを操り、戦場で炎をまき散らす。間違いなく高い危険性を持つターゲットである。",
+        "nickname": "ボーンクラッシャーの炎術師",
+        "templateId": "eny_0046_lbshamman",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0046_lbshamman_ability_1",
+                "description": "強力な遠距離攻撃を繰り出し、超域ダメージを与えてきます。移動スピードはそこまで速くありません。"
+            },
+            {
+                "abilityId": "eny_0046_lbshamman_ability_2",
+                "description": "地面から霧火を噴出し、超域ダメージを与えます。攻撃範囲のよく観察して、回避しましょう。"
+            }
+        ]
+    },
+    "eny_0047_firebat": {
+        "enemyId": "eny_0047_firebat",
+        "name": "ボーンクラッシャーの始末屋",
+        "description": "火炎放射器を装備した武装ランドブレーカー。粗末な外見に反した精巧な作りをしている焼却装備を使い、頑丈な掩体や固執する抵抗者を始末する。",
+        "nickname": "ボーンクラッシャーの始末屋",
+        "templateId": "eny_0047_firebat",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0047_firebat_ability_1",
+                "description": "オペレーターに向かって炎を継続的に吹きかけます。できるだけ後ろに回り込んで、巻き込まれないようにしましょう。"
+            },
+            {
+                "abilityId": "eny_0047_firebat_ability_2",
+                "description": "HPが低下すると、火炎放射器で周囲に炎を放ち自らを燃やすことで全耐性を大幅にアップします。寒冷付着を使用して消火するか、少し待ってから攻撃しましょう。"
+            }
+        ]
+    },
+    "eny_0048_hvybow": {
+        "enemyId": "eny_0048_hvybow",
+        "name": "ボーンクラッシャーの狙撃手",
+        "description": "重い遠距離武器を装備した武装ランドブレーカー。潜伏狙撃手の中で選び抜かれた精鋭であり、重い矢は重装甲を着用したターゲットさえ貫通することができる。",
+        "nickname": "ボーンクラッシャーの狙撃手",
+        "templateId": "eny_0048_hvybow",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0048_hvybow_ability_1",
+                "description": "矢の雨を発射し、地面に着弾後、数秒後に爆発を起こします。"
+            },
+            {
+                "abilityId": "eny_0048_hvybow_ability_2",
+                "description": "巨大な弩を構えていますが、近距離戦闘能力も非常に高い。"
+            }
+        ]
+    },
+    "eny_0049_rogue": {
+        "enemyId": "eny_0049_rogue",
+        "name": "ボーンクラッシャーの潜入者",
+        "description": "2本の近接武器を装備した武装ランドブレーカー。両手に武器を熟練に操り、機敏に動き回り、近距離の戦闘に優れているため、慎重に対処する必要がある。",
+        "nickname": "ボーンクラッシャーの潜入者",
+        "templateId": "eny_0049_rogue",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0049_rogue_ability_1",
+                "description": "非常に素早く、オペレーターからの通常攻撃を回避することができます。ただし、攻撃中は回避ができなくなります。"
+            },
+            {
+                "abilityId": "eny_0049_rogue_ability_2",
+                "description": "ダーツを投げ、命中されたオペレーターを追撃します。ダーツを避ければ反撃のチャンスとなるかもしれません。"
+            }
+        ]
+    },
+    "eny_0050_hound": {
+        "enemyId": "eny_0050_hound",
+        "name": "骨砕牙獣",
+        "description": "武装ランドブレーカーによって操縦される小型戦闘用獣。自然環境に生息する牙獣よりも遥かに凶暴で残忍である。飼育者であるランドブレーカーに対して絶対的な忠誠を誓っている。",
+        "nickname": "骨砕牙獣",
+        "templateId": "eny_0050_hound",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0050_hound_ability_1",
+                "description": "スピードは速いが、連続攻撃を受けるとほとんど反撃できなくなります。"
+            }
+        ]
+    },
+    "eny_0051_rodin": {
+        "enemyId": "eny_0051_rodin",
+        "name": "「ボーンクラッシャーの拳」ロダン",
+        "description": "ネファリスの「右手」であり、ボーンクラッシャーのトップクラスの戦闘リーダー。かつて、多くのランドブレーカーがネファリスの権威に挑戦しようとしたが、その野心はロダンの拳によってすべて粉砕されてしまった。",
+        "nickname": "ロダン",
+        "templateId": "eny_0051_rodin",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0051_rodin_ability_1",
+                "description": "重装の敵で、通気管を利用して敵を自身の周囲に引き寄せて攻撃を行います。"
+            },
+            {
+                "abilityId": "eny_0051_rodin_ability_2",
+                "description": "巣彫からエネルギーを吸収し、自身の能力を強化することができます。噴射する炎には注意しましょう。"
+            }
+        ]
+    },
+    "eny_0052_palesent": {
+        "enemyId": "eny_0052_palesent",
+        "name": "白亜・アンゲロミラ",
+        "description": "未収録。形成特性からアンゲロスであると推定される。形成パターン上、ネファリスの外見を模倣しており、コアのエネルギー値は高いものの、不安定な特性が見られる。",
+        "nickname": "白亜・アンゲロミラ",
+        "templateId": "eny_0052_palesent",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0052_palesent_ability_1",
+                "description": "目覚めた白亜・アンゲロミラは宇宙から無数のアンカーを召喚し、地面に降らせて攻撃を行います。攻撃を回避しなければ、反撃のチャンスを見つけることは難しいでしょう。"
+            }
+        ]
+    },
+    "eny_0053_hsmob": {
+        "enemyId": "eny_0053_hsmob",
+        "name": "不残財",
+        "description": "宏山の管轄地で活動している不法武装者。関所の私設や禁制品の密輸を通じて利益を得ており、宏山の治安維持にとって重点的に取り締まるべき対象である。",
+        "nickname": "不残財",
+        "templateId": "eny_0053_hsmob",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0054_hsmino": {
+        "enemyId": "eny_0054_hsmino",
+        "name": "砕山将",
+        "description": "重武器を装備した不法武装者。山を揺るがすのは容易ではないが、砕山将が持つ四連発射装置は正真正銘の重火力であり、決して油断はできない。",
+        "nickname": "砕山将",
+        "templateId": "eny_0054_hsmino",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0054_hsmino_ability_1",
+                "description": "重砲を振り回して近距離攻撃を行い、花火を発射して遠距離攻撃を繰り出します。もし角で突き上げられたら、大きな花火を見れるかもしれません。"
+            },
+            {
+                "abilityId": "eny_0054_hsmino_ability_2",
+                "description": "背後から攻撃すると、蹄で蹴り上げられるかもしれません。"
+            }
+        ]
+    },
+    "eny_0055_hscrane": {
+        "enemyId": "eny_0055_hscrane",
+        "name": "盗雲客",
+        "description": "奇妙な兵器を装備した不法武装者。盗雲客が持つ兵器は灯籠のような形をしており、一見無害に見えるが、10歩の距離からでも人の首を取ることができるため、決して油断してはいけない。",
+        "nickname": "盗雲客",
+        "templateId": "eny_0055_hscrane",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0055_hscrane_ability_1",
+                "description": "視界を妨害する煙を噴射します。煙の中では、オペレーターの視界が悪くなり、移動速度が低下し、回避も不可能になります。"
+            },
+            {
+                "abilityId": "eny_0055_hscrane_ability_2",
+                "description": "戦闘能力は高くないため、優先で狙うのも効果的かもしれません。"
+            },
+            {
+                "abilityId": "eny_0055_hscrane_ability_3",
+                "description": "緑色の煙は他の敵を回復する効果があります。"
+            }
+        ]
+    },
+    "eny_0057_dog": {
+        "enemyId": "eny_0057_dog",
+        "name": "野生牙獣",
+        "description": "自然環境に生息する野生の牙獣。食物連鎖における地位は変わらないが、タロⅡで捕食者でいることは決して容易ではない。",
+        "nickname": "野生牙獣",
+        "templateId": "eny_0057_dog",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0057_dog_ability_1",
+                "description": "おとなしい生物で臆病な性格。オペレーターを積極的に攻撃することはありません。"
+            }
+        ]
+    },
+    "eny_0058_agdisk": {
+        "enemyId": "eny_0058_agdisk",
+        "name": "擬態アンゲロス",
+        "description": "「Homoiossaron」（整理番号：AGL371）、人類の身体またはその部位を模倣するこの形成パターンは稀であり、非常に危険である。一部の個体は超域エネルギーを使うことができる。",
+        "nickname": "擬態アンゲロス",
+        "templateId": "eny_0058_agdisk",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0058_agdisk_ability_1",
+                "description": "強力な叩きつける攻撃を繰り出します。攻撃中は方向転換が遅くなるため、背後に回り込みましょう。"
+            },
+            {
+                "abilityId": "eny_0058_agdisk_ability_2",
+                "description": "体の構造物を組み合わせてさまざまな形態に変化し、戦場を自在に移動します。"
+            },
+            {
+                "abilityId": "eny_0058_agdisk_ability_3",
+                "description": "オペレーターを拘束する攻撃を仕掛けてきます。素早く攻撃を中断させて対処しましょう。"
+            }
+        ]
+    },
+    "eny_0059_erhound": {
+        "enemyId": "eny_0059_erhound",
+        "name": "侵蝕牙獣",
+        "description": "侵蝕に汚染された牙獣。この奇異な小型侵蝕生物が群れを成して行動すると、フル武装の外勤班に大きな被害を与えることができる。",
+        "nickname": "侵蝕牙獣",
+        "templateId": "eny_0059_erhound",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0059_erhound_ability_1",
+                "description": "さらに凶暴ですが、理性が低下しています。全力で突進を回避されると、自ら転倒します。"
+            }
+        ]
+    },
+    "eny_0060_lbmad": {
+        "enemyId": "eny_0060_lbmad",
+        "name": "侵蝕ランドブレーカー",
+        "description": "侵蝕に汚染された武装ランドブレーカー。深刻な侵蝕汚染から生き残ることは必ずしも幸運ではなく、このランドブレーカーたちはひどく歪んだ状態にある。",
+        "nickname": "侵蝕ランドブレーカー",
+        "templateId": "eny_0060_lbmad",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0060_lbmad_ability_1",
+                "description": "連続で繰り出される噛みつきを回避すると自ら転倒します。"
+            }
+        ]
+    },
+    "eny_0061_palecore": {
+        "enemyId": "eny_0061_palecore",
+        "name": "白亜・アンゲロミラ",
+        "description": "未収録。形成特性からアンゲロスであると推定される。形成パターン上、再構成されたものだが、ネファリスの外見を模倣している。詳細についてのあらゆる推定結果は確実なものではないと判断される。",
+        "nickname": "白亜・アンゲロミラ",
+        "templateId": "eny_0061_palecore",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0061_palecore_ability_1",
+                "description": "すべての白亜・従肢を倒すことで、昏睡状態の白亜・アンゲロミラが一時的に攻撃可能なコアを露出します。"
+            }
+        ]
+    },
+    "eny_0062_paletent": {
+        "enemyId": "eny_0062_paletent",
+        "name": "白亜・従肢",
+        "description": "未収録。形成特性からアンゲロスであると推定される。外見では本体から生えているように見えるが、実際には形成位置から本体に向かって延びている。敵の認知を乱すための戦略であると推定される。",
+        "nickname": "白亜・従肢",
+        "templateId": "eny_0062_paletent",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0062_paletent_ability_1",
+                "description": "一部の白亜・従肢は近距離攻撃が得意で、地面を激しく叩きつけて攻撃を行います。"
+            },
+            {
+                "abilityId": "eny_0062_paletent_ability_2",
+                "description": "一部の白亜・従肢は遠距離攻撃が得意で、末端を砕いて侵蝕にし、投げつけて攻撃を行います。"
+            }
+        ]
+    },
+    "eny_0063_agmelee2": {
+        "enemyId": "eny_0063_agmelee2",
+        "name": "巨角アンゲロスα",
+        "description": "「Kriosson Anavon」（整理番号：ACL071α）、ACL071の激発種。溢れ出すエネルギーによって赤く光る外見が特徴的である。定型種よりは固く、動きが俊敏である。",
+        "nickname": "巨角アンゲロスα",
+        "templateId": "eny_0063_agmelee2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0064_agrange2": {
+        "enemyId": "eny_0064_agrange2",
+        "name": "針棘アンゲロスα",
+        "description": "｢Kentron Anavon」（整理番号：ARL121α）、ARL121の激発種。さらに高いエネルギー密度で火力を向上させただけで、エネルギーの利用効率は依然として低いままである。",
+        "nickname": "針棘アンゲロスα",
+        "templateId": "eny_0064_agrange2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0065_lbmob2": {
+        "enemyId": "eny_0065_lbmob2",
+        "name": "略奪者精鋭",
+        "description": "霧火に強化され、近接武器を装備した武装ランドブレーカー精鋭。彼らの装備、体力と白兵戦の技術は全面的に強化されている。",
+        "nickname": "略奪者精鋭",
+        "templateId": "eny_0065_lbmob2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0066_lbhunt2": {
+        "enemyId": "eny_0066_lbhunt2",
+        "name": "潜伏狙撃手精鋭",
+        "description": "霧火に強化され、遠距離武器を装備した武装ランドブレーカー精鋭。彼らは訓練を積み、射撃の精度が高く、使用する矢は全面的に強化されている。",
+        "nickname": "潜伏狙撃手精鋭",
+        "templateId": "eny_0066_lbhunt2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0067_hound2": {
+        "enemyId": "eny_0067_hound2",
+        "name": "凶猛牙獣精鋭",
+        "description": "霧火に強化され、武装ランドブレーカーによって操縦される戦闘用獣精鋭。通常の牙獣よりも凶暴かつ狡猾で、奇妙な動きが予測されにくくなっている。",
+        "nickname": "凶猛牙獣精鋭",
+        "templateId": "eny_0067_hound2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0067_hound2_ability_1",
+                "description": "スピードは速いが、連続攻撃を受けるとほとんど反撃できなくなります。"
+            }
+        ]
+    },
+    "eny_0068_lbtough2": {
+        "enemyId": "eny_0068_lbtough2",
+        "name": "処刑者精鋭",
+        "description": "霧火に強化され、重い斬撃用の斧を装備した体格の大きい武装ランドブレーカー精鋭。ボーンクラッシャーの襲撃チームでリーダーを務めることが多い。",
+        "nickname": "処刑者精鋭",
+        "templateId": "eny_0068_lbtough2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0068_lbtough2_ability_1",
+                "description": "オペレーターを掴んで地面に投げつけ、大ダメージを与えます。オペレーターが捕まった場合、他のオペレーターのスキルを使用して救出してください。"
+            },
+            {
+                "abilityId": "eny_0068_lbtough2_ability_2",
+                "description": "チャージ後の2連続で斧を振る攻撃は回避することが困難なため、攻撃を中断させて対処しましょう。"
+            }
+        ]
+    },
+    "eny_0069_aghornb2": {
+        "enemyId": "eny_0069_aghornb2",
+        "name": "剛角アンゲロスα",
+        "description": "｢Thrylissoron Anavon」（整理番号：ACL072α）、ACL072の激発種。上昇したエネルギー量はその思考能力に影響を与えていない。比較的に危険な存在であると判断される。",
+        "nickname": "剛角アンゲロスα",
+        "templateId": "eny_0069_aghornb2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "common_ability",
+                "description": "特殊な能力はありません。"
+            }
+        ]
+    },
+    "eny_0070_agscorp2": {
+        "enemyId": "eny_0070_agscorp2",
+        "name": "槍棘アンゲロスα",
+        "description": "｢Varykentron Anavon」（整理番号：ARL141α）、ARL141の激発種。本来の変化に富んだ攻撃方法を保留し、形成パターンの固さが向上した。危険な存在であると判断される。",
+        "nickname": "槍棘アンゲロスα",
+        "templateId": "eny_0070_agscorp2",
+        "enemyAbilityDesc": [
+            {
+                "abilityId": "eny_0070_agscorp2_ability_1",
+                "description": "オペレーターの足元から源石柱を突き出して攻撃します。"
+            },
+            {
+                "abilityId": "eny_0070_agscorp2_ability_2",
+                "description": "接近されると、自身の周囲に石柱を召喚して防御します。"
+            }
+        ]
+    }
+}
