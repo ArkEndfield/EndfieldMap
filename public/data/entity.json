@@ -3,7 +3,7 @@
     "category": "ether",
     "entityInfo": {
       "name": "醚质",
-      "point": "item_colllection_ether",
+      "point": "int_collection_coin",
       "pic": "item_colllection_ether",
       "show": true,
       "scale": 0.2,
@@ -399,12 +399,342 @@
       "count": 1
     }
   },
+  "eny_0007_mimicw": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "毒藤天使",
+      "point": "eny_0007_mimicw",
+      "pic": "eny_0007_mimicw",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0018_lbtough": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "碾骨行刑人",
+      "point": "eny_0018_lbtough",
+      "pic": "eny_0018_lbtough",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0021_agmelee": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "大角天使",
+      "point": "eny_0021_agmelee",
+      "pic": "eny_0021_agmelee",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0023_aghornb": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "刚角天使",
+      "point": "eny_0023_aghornb",
+      "pic": "eny_0023_aghornb",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0025_agrange": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "钉刺天使",
+      "point": "eny_0025_agrange",
+      "pic": "eny_0025_agrange",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0027_agscorp": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "重刺天使",
+      "point": "eny_0027_agscorp",
+      "pic": "eny_0027_agscorp",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0029_lbmob": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "碾骨劫掠者",
+      "point": "eny_0029_lbmob",
+      "pic": "eny_0029_lbmob",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0033_lbhunt": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "碾骨伏击射手",
+      "point": "eny_0033_lbhunt",
+      "pic": "eny_0033_lbhunt",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0039_agcanno": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "岗哨天使",
+      "point": "eny_0039_agcanno",
+      "pic": "eny_0039_agcanno",
+      "show": true,
+      "count": 1
+    }
+  },
   "eny_0045_agtrinit": {
     "category": "enemy",
     "entityInfo": {
       "name": "三位一体",
       "point": "eny_0045_agtrinit",
       "pic": "eny_0045_agtrinit",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0046_lbshamman": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "碾骨焰术师",
+      "point": "eny_0046_lbshamman",
+      "pic": "eny_0046_lbshamman",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0047_firebat": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "碾骨清道夫",
+      "point": "eny_0047_firebat",
+      "pic": "eny_0047_firebat",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0048_hvybow": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "碾骨射手",
+      "point": "eny_0048_hvybow",
+      "pic": "eny_0048_hvybow",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0049_rogue": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "碾骨渗透者",
+      "point": "eny_0049_rogue",
+      "pic": "eny_0049_rogue",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0050_hound": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "碾骨撕裂牙兽",
+      "point": "eny_0050_hound",
+      "pic": "eny_0050_hound",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0051_rodin": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "“碾骨之拳”罗丹",
+      "point": "eny_0051_rodin",
+      "pic": "eny_0051_rodin",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0052_palesent": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "白垩界卫",
+      "point": "eny_0052_palesent",
+      "pic": "eny_0052_palesent",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0053_hsmob": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "莫留财",
+      "point": "eny_0053_hsmob",
+      "pic": "eny_0053_hsmob",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0054_hsmino": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "摧山将",
+      "point": "eny_0054_hsmino",
+      "pic": "eny_0054_hsmino",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0055_hscrane": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "劫云客",
+      "point": "eny_0055_hscrane",
+      "pic": "eny_0055_hscrane",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0057_dog": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "野生牙兽",
+      "point": "eny_0057_dog",
+      "pic": "eny_0050_hound",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0058_agdisk": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "肖像天使",
+      "point": "eny_0058_agdisk",
+      "pic": "eny_0058_agdisk",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0059_erhound": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "侵蚀牙兽",
+      "point": "eny_0059_erhound",
+      "pic": "eny_0059_erhound",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0060_lbmad": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "侵蚀爪牙",
+      "point": "eny_0060_lbmad",
+      "pic": "eny_0060_lbmad",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0061_palecore": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "白垩界卫",
+      "point": "eny_0061_palecore",
+      "pic": "eny_0061_palecore",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0062_paletent": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "白垩附肢",
+      "point": "eny_0062_paletent",
+      "pic": "eny_0062_paletent",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0063_agmelee2": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "大角天使α",
+      "point": "eny_0063_agmelee2",
+      "pic": "eny_0063_agmelee2",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0064_agrange2": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "钉刺天使α",
+      "point": "eny_0064_agrange2",
+      "pic": "eny_0064_agrange2",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0065_lbmob2": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "精锐劫掠者",
+      "point": "eny_0065_lbmob2",
+      "pic": "eny_0065_lbmob2",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0066_lbhunt2": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "精锐伏击射手",
+      "point": "eny_0066_lbhunt2",
+      "pic": "eny_0066_lbhunt2",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0067_hound2": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "精锐撕裂牙兽",
+      "point": "eny_0067_hound2",
+      "pic": "eny_0067_hound2",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0068_lbtough2": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "精锐行刑人",
+      "point": "eny_0068_lbtough2",
+      "pic": "eny_0068_lbtough2",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0069_aghornb2": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "刚角天使α",
+      "point": "eny_0069_aghornb2",
+      "pic": "eny_0069_aghornb2",
+      "show": true,
+      "count": 1
+    }
+  },
+  "eny_0070_agscorp2": {
+    "category": "enemy",
+    "entityInfo": {
+      "name": "重刺天使α",
+      "point": "eny_0070_agscorp2",
+      "pic": "eny_0070_agscorp2",
       "show": true,
       "count": 1
     }
