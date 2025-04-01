@@ -98,7 +98,7 @@
     "entityInfo": {
       "name": "首领挑战",
       "point": "int_dungeon_entry_bossrush",
-      "pic": "icon_map_dungeon",
+      "pic": "icon_map_boss",
       "show": true,
       "scale": 0.7,
       "count": 1
@@ -303,6 +303,58 @@
       "name": "资源回收站",
       "point": "int_doodad_core_recycle",
       "pic": "icon_map_recycle",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_collection_piece": {
+    "category": "special",
+    "entityInfo": {
+      "name": "七巧板收集",
+      "point": "int_collection_piece",
+      "pic": "icon_map_pazzle",
+      "show": true,
+      "scale": 0.2,
+      "count": 1
+    }
+  },
+  "int_collection_piece_in_door": {
+    "category": "special",
+    "entityInfo": {
+      "name": "七巧板搜集",
+      "point": "int_collection_piece_in_door",
+      "pic": "icon_map_pazzle",
+      "show": true,
+      "scale": 0.2,
+      "count": 1
+    }
+  },
+  "int_fixable_robot": {
+    "category": "special",
+    "entityInfo": {
+      "name": "修理机器人",
+      "point": "int_fixable_robot",
+      "pic": "icon_map_fixablerobot",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_challenge_start_point": {
+    "category": "special",
+    "entityInfo": {
+      "name": "能量淤积点",
+      "point": "int_challenge_start_point",
+      "pic": "icon_map_enemyspawner",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_challenge_start_point_once": {
+    "category": "special",
+    "entityInfo": {
+      "name": "次级能量淤积点",
+      "point": "int_challenge_start_point_once",
+      "pic": "icon_map_enemyspawner",
       "show": true,
       "count": 1
     }
