@@ -1,0 +1,140 @@
+{
+  "delete": "Delete",
+  "select": "Select",
+  "select_all": "Select All",
+  "unselect_all": "Unselect All",
+  "clear_select": "Clear Select",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "close": "Close",
+  "save": "Save",
+  "create": "Create",
+  "edit": "Edit",
+  "update": "Update",
+  "back": "Back",
+  "username": "Username",
+  "password": "Password",
+  "email": "Email",
+  "phone": "Phone",
+  "nickname": "Nickname",
+  "avatar": "Avatar",
+  "search": "Search",
+  "reset": "Reset",
+  "refresh": "Refresh",
+  "loading": "Loading...",
+  "no_data": "No Data",
+  "no_more_data": "No More Data",
+  "no_search_result": "No Search Result",
+  "all": "All",
+  "no_more": "No More",
+  "none": "None",
+  "unknown": "Unknown",
+  "header": {
+    "menu": "Menu",
+    "about": "About",
+    "scan_qr_code_to_join": "Scan QR Code to Join",
+    "feedback": "Feedback",
+    "login": "Login",
+    "changelog": "Changelog",
+    "language": "Language/语言",
+    "change_language": "Change Language",
+    "change_region": "Change Region",
+    "up": "Up",
+    "community_not_constructed": "Click to enter a title"
+  },
+  "sidebar": {
+    "title": "EndField Map",
+    "display_marker_point_name": "Display marker point name",
+    "marker_point_filter": "Marker Point Filter",
+    "unfold": "Unfold",
+    "fold": "Fold",
+    "collection": {
+      "all": "All",
+      "marked": "Obtained",
+      "not_marked": "Unobtained"
+    },
+    "filter": {
+      "category": {
+        "ether": "Ether",
+        "chest": "Chest",
+        "mineral": "Mineral",
+        "enemy": "Enemy",
+        "settlement": "Settlement",
+        "spcstone": "Rare Mineral",
+        "special": "Special Point",
+        "plant": "Plant Material",
+        "dungeon": "Dungeon Point"
+      }
+    }
+  },
+  "popover": {
+    "unknow_name": "Unknown Name",
+    "video_link": "Video Link",
+    "obtained": "Obtained",
+    "unobtained": "Unobtained",
+    "video_info": "Video Info",
+    "bv": "BV",
+    "unknown_bv": "Unknown BV"
+  },
+  "bilibili_card": {
+    "follow": "Follow",
+    "fans": "Followers",
+    "like": "Likes",
+    "play": "Views",
+    "number": {
+      "wan": "K",
+      "yi": "M"
+    },
+    "certification": {
+      "game": "Bilibili Certified Game UP"
+    }
+  },
+  "date": {
+    "year": "year",
+    "month": "month",
+    "day": "day",
+    "hour": "hour",
+    "minute": "minute",
+    "second": "second",
+    "weekdays": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "format": {
+      "date_only": "MM/DD/YYYY",
+      "date_time": "MM/DD/YYYY HH:mm",
+      "ago": "{0} ago",
+      "just_now": "just now",
+      "seconds_ago": "{0} seconds ago",
+      "minutes_ago": "{0} minutes ago",
+      "hours_ago": "{0} hours ago",
+      "days_ago": "{0} days ago",
+      "weeks_ago": "{0} weeks ago",
+      "months_ago": "{0} months ago",
+      "years_ago": "{0} years ago"
+    }
+  },
+  "map": {
+    "map001": "Valley IV",
+    "map002": "Jinlong"
+  }
+}

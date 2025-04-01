@@ -43,6 +43,7 @@ import AppHeaderLeft from './components/Header/AppHeaderLeft.vue';
 import AppHeaderRight from './components/Header/AppHeaderRight.vue';
 import ZmdSidebar from './components/ZmdSidebar/index.vue';
 import { initializeGuides } from './data/guides';
+import { initMarksData } from './data/marks';
 
 // const getQueryParam = (param: string): string | null => {
 //   const urlParams = new URLSearchParams(window.location.search);
@@ -88,6 +89,10 @@ async function loadAllData() {
     await initializeMap();
     console.log('地图初始化完成');
 
+    console.log('开始初始化已完成数据...');
+    initMarksData();
+    console.log('已完成数据初始化完成');
+
     console.log('开始初始化指南数据...');
     // 初始化指南数据
     initializeGuides();
@@ -95,7 +100,7 @@ async function loadAllData() {
 
     console.log('开始加载地名标注...');
     // 加载地名标注
-    await loadTextPoints(true, false);
+    loadTextPoints(true, false);
     console.log('地名标注加载完成');
 
     console.log('所有数据加载完成');

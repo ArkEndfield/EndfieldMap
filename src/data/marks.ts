@@ -38,17 +38,26 @@ const notifyMarkChange = () => {
   });
 };
 
-const initData = points.reduce((acc, point) => {
-  const { seq } = point;
-  if (!acc[seq]) {
-    acc[seq] = {
-      finish: false,
-    };
-  }
-  return acc;
-}, {} as MarkInfo);
+export const marks: MarkInfo = reactive({});
 
-export const marks: MarkInfo = reactive(initData);
+export const initMarksData = () => {
+  // 清空现有数据
+  Object.keys(marks).forEach(key => {
+    delete marks[key];
+  });
+  // 初始化标记数据
+  points.forEach(point => {
+    if (!marks[point.seq]) {
+      marks[point.seq] = {
+        finish: false,
+      };
+    }
+  });
+  // console.log('标记数据初始化完成');
+  // console.log('标记数据:', marks);
+  // 初始加载
+  loadMarksFromStorage();
+};
 
 export const markPoint = (seq: number) => {
   if (marks[seq]) {
@@ -79,6 +88,17 @@ export const saveMarksToStorage = () => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(marks));
 };
 
+// 构造默认数据
+export const initMarks = () => {
+  points.forEach(point => {
+    if (!marks[point.seq]) {
+      marks[point.seq] = {
+        finish: false,
+      };
+    }
+  });
+};
+
 // 从本地存储加载
 export const loadMarksFromStorage = () => {
   try {
@@ -95,9 +115,6 @@ export const loadMarksFromStorage = () => {
     console.error('Failed to load marks from storage', e);
   }
 };
-
-// 初始加载
-loadMarksFromStorage();
 
 // 监听变化并保存
 watchEffect(() => {

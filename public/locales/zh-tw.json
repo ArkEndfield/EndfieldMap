@@ -1,0 +1,140 @@
+{
+  "delete": "刪除",
+  "select": "選擇",
+  "select_all": "全選",
+  "unselect_all": "取消全選",
+  "clear_select": "清空選擇",
+  "cancel": "取消",
+  "confirm": "確認",
+  "close": "關閉",
+  "save": "保存",
+  "create": "創建",
+  "edit": "編輯",
+  "update": "更新",
+  "back": "返回",
+  "username": "用戶名",
+  "password": "密碼",
+  "email": "郵箱",
+  "phone": "手機號",
+  "nickname": "昵稱",
+  "avatar": "頭像",
+  "search": "搜索",
+  "reset": "重置",
+  "refresh": "刷新",
+  "loading": "加載中...",
+  "no_data": "暫無數據",
+  "no_more_data": "沒有更多數據了",
+  "no_search_result": "沒有搜索結果",
+  "all": "全部",
+  "no_more": "沒有更多了",
+  "none": "無",
+  "unknown": "未知",
+  "header": {
+    "menu": "菜單",
+    "about": "关于",
+    "scan_qr_code_to_join": "掃描二維碼加入社群",
+    "feedback": "反饋",
+    "login": "登錄",
+    "changelog": "更新日誌",
+    "language": "語言/Language",
+    "change_language": "切換語言",
+    "change_region": "切換地區",
+    "up": "煮啵",
+    "community_not_constructed": "點擊輸入標題"
+  },
+  "sidebar": {
+    "title": "終末地互動地圖",
+    "display_marker_point_name": "顯示標點名稱",
+    "marker_point_filter": "標點顯示",
+    "unfold": "展開",
+    "fold": "折疊",
+    "collection": {
+      "all": "全部",
+      "marked": "已標記獲取",
+      "not_marked": "未標記獲取"
+    },
+    "filter": {
+      "category": {
+        "ether": "醚質",
+        "chest": "寶箱",
+        "mineral": "礦物",
+        "enemy": "敵人",
+        "settlement": "定居點",
+        "spcstone": "稀有礦物",
+        "special": "特殊點位",
+        "plant": "植物類素材",
+        "dungeon": "副本點位"
+      }
+    }
+  },
+  "popover": {
+    "unknow_name": "未知名稱",
+    "video_link": "視頻鏈接",
+    "obtained": "已獲取",
+    "unobtained": "未獲取",
+    "video_info": "視頻信息",
+    "bv": "BV號",
+    "unknown_bv": "未知BV號"
+  },
+  "bilibili_card": {
+    "follow": "關注",
+    "fans": "粉絲",
+    "like": "獲讚",
+    "play": "播放",
+    "number": {
+      "wan": "萬",
+      "yi": "億"
+    },
+    "certification": {
+      "game": "bilibili 知名遊戲UP主"
+    }
+  },
+  "date": {
+    "year": "年",
+    "month": "月",
+    "day": "日",
+    "hour": "時",
+    "minute": "分",
+    "second": "秒",
+    "weekdays": {
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六",
+      "sunday": "星期日"
+    },
+    "months": {
+      "january": "一月",
+      "february": "二月",
+      "march": "三月",
+      "april": "四月",
+      "may": "五月",
+      "june": "六月",
+      "july": "七月",
+      "august": "八月",
+      "september": "九月",
+      "october": "十月",
+      "november": "十一月",
+      "december": "十二月"
+    },
+    "format": {
+      "date_only": "YYYY年MM月DD日",
+      "date_time": "YYYY年MM月DD日 HH:mm",
+      "ago": "{0}前",
+      "just_now": "剛剛",
+      "seconds_ago": "{0}秒前",
+      "minutes_ago": "{0}分鐘前",
+      "hours_ago": "{0}小時前",
+      "days_ago": "{0}天前",
+      "weeks_ago": "{0}週前",
+      "months_ago": "{0}個月前",
+      "years_ago": "{0}年前"
+    }
+  },
+  "map": {
+    "map001": "四號谷地",
+    "map002": "錦隴"
+  }
+}

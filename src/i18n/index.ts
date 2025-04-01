@@ -1,10 +1,14 @@
 import { createI18n } from 'vue-i18n';
 import { loadJSON } from '@/utils/jsonLoader';
 import zhCN from './locales/zh-cn.json';
-import zhTW from './locales/zh-tw.json';
-import enUS from './locales/en-us.json';
+import rewardZhCN from './locales/item_name_translations_cn.json';
 
-export type MessageSchema = typeof zhCN;
+const zhCNLang = {
+  ...zhCN,
+  reward: rewardZhCN,
+};
+
+export type MessageSchema = typeof zhCNLang;
 export type Language = 'zh-CN' | 'zh-TW' | 'en-US';
 const storagedLocale = localStorage.getItem('userLanguage');
 
@@ -12,7 +16,7 @@ const i18n = createI18n({
   locale: (storagedLocale as Language) || window.navigator.language,
   fallbackLocale: 'zh-CN',
   messages: {
-    'zh-CN': zhCN,
+    'zh-CN': zhCNLang,
   },
   numberFormats: {
     'en-US': {
@@ -94,10 +98,36 @@ export async function loadLanguage(lang: Language) {
       return true;
     }
 
-    const messages = await loadJSON<MessageSchema>(
+    let rewardLang = 'cn';
+
+    if (lang === 'zh-TW') {
+      rewardLang = 'tc';
+    } else if (lang === 'en-US') {
+      rewardLang = 'en';
+    } else if (lang === 'ko-KR') {
+      rewardLang = 'kr';
+    }
+
+    const loadLangBase = loadJSON<MessageSchema>(
       `/locales/${lang.toLowerCase()}.json`
     );
-    i18n.global.setLocaleMessage(lang, messages);
+    const loadLangReward = loadJSON<MessageSchema>(
+      `/locales/reward/item_name_translations_${rewardLang}.json`
+    );
+
+    const messages = await Promise.all([loadLangBase, loadLangReward]).then(
+      ([base, reward]) => {
+        return {
+          ...base,
+          reward,
+        } as unknown as MessageSchema;
+      }
+    );
+    if (i18n.global.availableLocales.includes(lang)) {
+      i18n.global.mergeLocaleMessage(lang, messages);
+    } else {
+      i18n.global.setLocaleMessage(lang, messages);
+    }
     return true;
   } catch (error) {
     console.error(`加载语言文件失败 ${lang}:`, error);

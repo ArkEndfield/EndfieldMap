@@ -46,8 +46,8 @@
               >
                 <template #icon>
                   <img
-                    :src="getRewardIcon(rwd.id)"
-                    :alt="getRewardName(rwd.id)"
+                    :src="rwd.icon"
+                    :alt="$t(`reward.${rwd.id}`)"
                     class="w-full h-full object-contain"
                   />
                 </template>
@@ -56,7 +56,7 @@
                   v-if="rwd.count"
                   >{{ rwd.count }}</template
                 >
-                {{ getRewardName(rwd.id) }}
+                {{ $t(`reward.${rwd.id}`) }}
               </PopContentItem>
             </template>
             <div
@@ -142,7 +142,6 @@
                   {{ $t('popover.obtained') }}
                 </label>
                 <ZmdSwitch
-                  v-if="marks[entity.seq]"
                   :id="`get-${entity.entityDataIdKey}`"
                   v-model:checked="marks[entity.seq].finish"
                 />
@@ -164,7 +163,7 @@ import { entityInfo } from '@/data/entity';
 import { guides } from '@/data/guides';
 import { type PointData } from '@/data/points';
 import { computed } from 'vue';
-import { getRewards, shouldShowRewards, rewardData } from '@/data/reward';
+import { getRewards, shouldShowRewards } from '@/data/reward';
 
 const props = defineProps<{
   isPopupVisible: boolean;
@@ -180,22 +179,9 @@ const emit = defineEmits<{
 const popupContainer = ref<HTMLElement>();
 const popupManager = inject<PopupManager | null>('popupManager');
 
-const getRewardIcon = (id: string) => {
-  const reward = rewardData[id];
-  return reward?.icon
-    ? `/assets/rewards/${reward.icon}.png`
-    : `/assets/items/${id}.png`;
-};
-
-const getRewardName = (id: string) => {
-  const reward = rewardData[id];
-  return reward?.name || id;
-};
-
 const showRewards = computed(() => {
   const entity = props.entity;
   const show = shouldShowRewards(entity);
-  console.log('是否显示奖励:', show, entity);
   return show;
 });
 
@@ -218,10 +204,6 @@ const closeToast = () => {
 };
 
 const toggleSubPopup = () => {
-  if (!showRewards.value) {
-    return;
-  }
-
   const newState = !props.openSubPopup;
   emit('update:openSubPopup', newState);
 
