@@ -82,7 +82,7 @@ export const loadTextPoints = (
         vectorSource.removeFeature(feature);
       });
 
-      console.log(`已清理 ${features.length} 个地名标签`);
+      // console.log(`已清理 ${features.length} 个地名标签`);
     }
 
     // 最后确保源是空的
@@ -111,11 +111,11 @@ export const loadTextPoints = (
   }
 
   // 添加调试信息
-  console.log(
-    `已加载 ${Object.keys(cacheKey).length} 个地名标签 (${
-      detail ? '详细' : '基本'
-    })`
-  );
+  // console.log(
+  //   `已加载 ${Object.keys(cacheKey).length} 个地名标签 (${
+  //     detail ? '详细' : '基本'
+  //   })`
+  // );
 };
 
 loadTextPoints();

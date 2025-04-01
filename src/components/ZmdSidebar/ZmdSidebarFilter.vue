@@ -91,10 +91,9 @@ const handleSelectAll = () => {
 const handleClear = () => {
   clear();
   // 主动请求垃圾回收
-  setTimeout(() => {
-    // 不会真正触发垃圾回收，但可以作为性能优化建议
-    console.log('已清除所有选择，建议进行垃圾回收');
-  }, 100);
+  // setTimeout(() => {
+  //   console.log('已清除所有选择，建议进行垃圾回收');
+  // }, 100);
 };
 
 onMounted(async () => {

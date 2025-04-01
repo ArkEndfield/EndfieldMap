@@ -77,7 +77,7 @@ async function loadAllData() {
     console.log('实体数据加载完成');
 
     // 加载点位数据
-    await updatePoints(localStorage.getItem('map') || 'map001');
+    await updatePoints();
     console.log('点位数据加载完成');
 
     // 加载奖励数据
@@ -158,7 +158,7 @@ watch(
 
     try {
       // 重新加载数据
-      await updatePoints(newValue);
+      await updatePoints();
 
       // 等待 Vue 更新完成
       await nextTick();

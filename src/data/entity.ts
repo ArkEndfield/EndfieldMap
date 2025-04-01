@@ -13,7 +13,7 @@ import {
 import { computed, reactive, watch } from 'vue';
 import Cluster from 'ol/source/Cluster';
 import VectorLayer from 'ol/layer/Vector';
-import { PointData, points } from './points';
+import { type PointData, points } from './points';
 import { currentMarkFilter, shouldShowByMarkStatus } from './marks';
 import { loadJSON } from '@/utils/jsonLoader';
 
@@ -421,8 +421,6 @@ for (const point of points) {
   if (feature) features.push(feature);
 }
 
-console.log('醚质总数:', features.length, itemMap);
-
 // 刷新所有样式的函数
 export const refreshStyles = () => {
   // 清除样式缓存，这样下次渲染时会重新计算样式
@@ -627,7 +625,7 @@ export const reinitializeEntityLayers = async () => {
   Object.keys(itemMap).forEach(key => delete itemMap[key]);
 
   // 输出清理记录
-  console.log('已清理实体图层资源');
+  // console.log('已清理实体图层资源');
 
   try {
     // 重新初始化实体信息

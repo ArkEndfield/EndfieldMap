@@ -161,7 +161,7 @@ export function cleanupMap() {
   // 分离目标元素
   map.value.setTarget(undefined);
 
-  console.log('已清理地图资源');
+  // console.log('已清理地图资源');
 }
 
 export function createMap(

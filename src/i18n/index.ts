@@ -1,11 +1,11 @@
 import { createI18n } from 'vue-i18n';
 import { loadJSON } from '@/utils/jsonLoader';
 import zhCN from './locales/zh-cn.json';
-import rewardZhCN from './locales/item_name_translations_cn.json';
+import rewardZhCN from './locales/item_i18n_cn.json';
 
 const zhCNLang = {
   ...zhCN,
-  reward: rewardZhCN,
+  item: rewardZhCN,
 };
 
 export type MessageSchema = typeof zhCNLang;
@@ -112,7 +112,7 @@ export async function loadLanguage(lang: Language) {
       `/locales/${lang.toLowerCase()}.json`
     );
     const loadLangReward = loadJSON<MessageSchema>(
-      `/locales/reward/item_name_translations_${rewardLang}.json`
+      `/locales/item_i18n_${rewardLang}.json`
     );
 
     const messages = await Promise.all([loadLangBase, loadLangReward]).then(

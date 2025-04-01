@@ -47,7 +47,7 @@
                 <template #icon>
                   <img
                     :src="rwd.icon"
-                    :alt="$t(`reward.${rwd.id}`)"
+                    :alt="$t(`item.${rwd.id}.name`)"
                     class="w-full h-full object-contain"
                   />
                 </template>
@@ -56,7 +56,7 @@
                   v-if="rwd.count"
                   >{{ rwd.count }}</template
                 >
-                {{ $t(`reward.${rwd.id}`) }}
+                {{ $t(`item.${rwd.id}.name`) }}
               </PopContentItem>
             </template>
             <div
@@ -188,7 +188,7 @@ const showRewards = computed(() => {
 const rewards = computed(() => {
   const entity = props.entity;
   const rwds = getRewards(entity);
-  console.log('获取到的奖励列表:', rwds);
+  // console.log('获取到的奖励列表:', rwds);
   return rwds;
 });
 

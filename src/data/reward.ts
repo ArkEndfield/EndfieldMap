@@ -25,41 +25,52 @@ export type RewardItem = RewardItemWithCount | RewardItemWitoutCount;
 
 export type RewardType = Record<string, RewardItem>;
 
-// 奖励数据
-export const rewardData: RewardType = {};
+export interface RewardItemData {
+  id: string;
+  iconId: string;
+  rarity: number;
+  valuableTabType: string;
+  obtainWays: {
+    id: string;
+    iconId: string;
+  }[];
+}
 
-export const rewardImages: Record<string, string> = {};
+// 奖励数据
+export const rewards: RewardType = {};
+
+export const rewardData: Record<string, RewardItemData> = {};
 
 // 加载奖励数据
 export async function loadRewardData() {
   try {
     const rewardRawData = loadJSON<RewardType>('/data/reward.json');
-    const imageData = loadJSON<Record<string, string>>(
-      '/data/item_icon_dict.json'
+    const rewardDataRaw = loadJSON<Record<string, RewardItemData>>(
+      '/data/item_data.json'
     );
-    const [data, images] = await Promise.all([rewardRawData, imageData]);
+    const [data, rewardsDataData] = await Promise.all([
+      rewardRawData,
+      rewardDataRaw,
+    ]);
     // 清空当前数据
     Object.keys(data).forEach(key => {
-      delete rewardData[key];
+      delete rewards[key];
     });
     // 清空当前图片数据
-    Object.keys(rewardImages).forEach(key => {
-      delete rewardImages[key];
+    Object.keys(rewardData).forEach(key => {
+      delete rewardData[key];
     });
     // 添加新数据
     Object.entries(data).forEach(([key, value]) => {
-      rewardData[key] = value;
+      rewards[key] = value;
     });
     // 添加图片数据
-    Object.entries(images).forEach(([key, value]) => {
-      rewardImages[key] = value;
+    Object.entries(rewardsDataData).forEach(([key, value]) => {
+      rewardData[key] = value;
     });
 
-    console.log('奖励数据加载完成，总数:', Object.keys(data).length);
-    console.log(
-      '奖励图片数据加载完成，总数:',
-      Object.keys(rewardImages).length
-    );
+    console.log('奖励列表加载完成，总数:', Object.keys(data).length);
+    console.log('奖励数据数据加载完成，总数:', Object.keys(rewardData).length);
   } catch (error) {
     console.error('加载奖励数据失败:', error);
     throw error;
@@ -74,7 +85,7 @@ export function isRewardWithCountType(
 
 export function isRewardWithCount(name?: keyof RewardType): boolean {
   if (!name) return false;
-  return rewardData[name] && 'itemBundles' in rewardData[name];
+  return rewards[name] && 'itemBundles' in rewards[name];
 }
 
 export function shouldShowRewards(point: PointData): boolean {
@@ -92,7 +103,7 @@ export function getRewardIds(point: PointData): string[] | undefined {
 }
 
 export function getRewardIcon(rewardId: string): string | undefined {
-  const name = rewardImages[rewardId];
+  const name = rewardData[rewardId].iconId;
   if (!name) return undefined;
   return `/item/${name}.png`;
 }
@@ -106,7 +117,7 @@ export function getRewards(point: PointData): ReturnRewardItem[] {
   const rwds: ReturnRewardItem[] = [];
 
   for (const rewardId of rewardIds || []) {
-    const rewardItem = rewardData[rewardId];
+    const rewardItem = rewards[rewardId];
     if (!rewardItem) continue;
     if (isRewardWithCountType(rewardItem)) {
       for (const itemBundle of rewardItem.itemBundles) {

@@ -1,5 +1,5 @@
 import { reactive, watchEffect, ref } from 'vue';
-import { points } from './points';
+import { allPoints } from './points';
 
 export interface MarkInfoDetail {
   finish: boolean;
@@ -46,7 +46,7 @@ export const initMarksData = () => {
     delete marks[key];
   });
   // 初始化标记数据
-  points.forEach(point => {
+  allPoints.forEach(point => {
     if (!marks[point.seq]) {
       marks[point.seq] = {
         finish: false,
@@ -90,7 +90,7 @@ export const saveMarksToStorage = () => {
 
 // 构造默认数据
 export const initMarks = () => {
-  points.forEach(point => {
+  allPoints.forEach(point => {
     if (!marks[point.seq]) {
       marks[point.seq] = {
         finish: false,

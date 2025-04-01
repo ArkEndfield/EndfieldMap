@@ -421,34 +421,36 @@ watch(
       selectInteraction.getFeatures().clear();
     }
 
-    // 更新点位数据
-    updatePoints(newValue);
+    try {
+      // 更新点位数据 - 使用await确保异步操作完成
+      await updatePoints();
 
-    // 等待 Vue 更新完成
-    await nextTick();
+      // 等待 Vue 更新完成
+      await nextTick();
 
-    // 重新初始化实体图层 - 确保旧资源被清理
-    reinitializeEntityLayers();
+      // 重新初始化实体图层 - 确保旧资源被清理
+      reinitializeEntityLayers();
 
-    // 等待实体图层初始化完成
-    await nextTick();
+      // 等待实体图层初始化完成
+      await nextTick();
 
-    // 更新地图图层
-    updateMap(newValue);
+      // 更新地图图层
+      updateMap(newValue);
 
-    // 重新加载地名标注
-    loadTextPoints(true, false, newValue === 'map002' ? 'map02' : 'map01');
+      // 重新加载地名标注
+      loadTextPoints(true, false, newValue === 'map002' ? 'map02' : 'map01');
 
-    // 强制刷新一次地图显示
-    if (map.value) {
-      map.value.updateSize();
-      map.value.render();
+      // 强制刷新一次地图显示
+      if (map.value) {
+        map.value.updateSize();
+        map.value.render();
+      }
+
+      // 刷新所有实体点位显示
+      refresh();
+    } catch (error) {
+      console.error('切换地图时出错:', error);
     }
-
-    // 主动请求垃圾回收
-    // setTimeout(() => {
-    //   console.log('地图切换完成，建议检查内存使用情况');
-    // }, 1000);
   },
   { flush: 'post' } // 确保在 DOM 更新后执行
 );

@@ -30,7 +30,32 @@ export type PointType = {
   [key: string]: PointData[];
 };
 
+export const allPoints: PointData[] = [];
+
 export const points: PointData[] = [];
+
+// 筛选并更新点位数据的通用函数
+function filterAndUpdatePoints(): PointData[] {
+  // 使用通用函数筛选并更新点位
+  const mapId = localStorage.getItem('map') || 'map001';
+  // 根据地图ID筛选点位
+  const filteredPoints = allPoints.filter(point => {
+    const isMap2 = mapId === 'map002';
+    return isMap2
+      ? point.sceneId.includes('map02')
+      : point.sceneId.includes('map01');
+  });
+
+  // 更新点位数组
+  points.length = 0;
+  filteredPoints.forEach(point => {
+    points.push(point);
+  });
+
+  console.log(`地图 ${mapId} 的点位数据已更新，当前点位数量: ${points.length}`);
+
+  return points;
+}
 
 // 加载点位数据
 export async function loadPoints() {
@@ -42,11 +67,12 @@ export async function loadPoints() {
     let index = 1;
 
     // 遍历所有场景的点位数据
+    // 将所有点位数据存储到 allPoints 中
     Object.values(data).forEach(scenePoints => {
       scenePoints.forEach(point => {
         if (point) {
           // 确保点位数据存在
-          points.push({
+          allPoints.push({
             ...point,
             seq: index++,
           });
@@ -54,25 +80,9 @@ export async function loadPoints() {
       });
     });
 
-    // 根据当前地图ID筛选点位
-    const currentMapId = localStorage.getItem('map') || 'map001';
-    const filteredPoints = points.filter(point => {
-      const isMap2 = currentMapId === 'map002';
-      return isMap2
-        ? point.sceneId.includes('map02')
-        : point.sceneId.includes('map01');
-    });
+    console.log(`加载了 ${allPoints.length} 个点位数据`);
 
-    // 更新点位数组
-    points.length = 0;
-    filteredPoints.forEach((point, index) => {
-      points.push({
-        ...point,
-        seq: index + 1,
-      });
-    });
-
-    console.log(`加载了 ${points.length} 个点位数据`);
+    // console.log(JSON.stringify(allPoints, null, 2));
     return points;
   } catch (error) {
     console.error('加载点位数据失败:', error);
@@ -81,29 +91,12 @@ export async function loadPoints() {
 }
 
 // 更新点位数据
-export async function updatePoints(mapId: string) {
+export async function updatePoints() {
   try {
-    points.length = 0; // 清空数组
-    const data = await loadPoints(); // 重新加载点位数据
-
-    // 根据地图ID筛选点位
-    const filteredPoints = data.filter(point => {
-      const isMap2 = mapId === 'map002';
-      return isMap2
-        ? point.sceneId.includes('map02')
-        : point.sceneId.includes('map01');
-    });
-
-    // 更新点位数组
-    points.length = 0;
-    filteredPoints.forEach((point, index) => {
-      points.push({
-        ...point,
-        seq: index + 1,
-      });
-    });
-
-    console.log(`地图 ${mapId} 加载了 ${points.length} 个点位`);
+    if (allPoints.length <= 0) {
+      await loadPoints();
+    }
+    filterAndUpdatePoints();
     return points;
   } catch (error) {
     console.error('更新点位数据失败:', error);

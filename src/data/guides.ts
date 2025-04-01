@@ -1,4 +1,4 @@
-import { points } from './points';
+import { allPoints } from './points';
 
 export interface GuideTextNode {
   type: 'text';
@@ -36,7 +36,7 @@ export function initializeGuides() {
   });
 
   // 根据点位数据初始化指南
-  points.forEach(point => {
+  allPoints.forEach(point => {
     const { seq } = point;
     if (!guides[seq]) {
       guides[seq] = {
