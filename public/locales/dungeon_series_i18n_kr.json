@@ -1,0 +1,939 @@
+{
+    "dung01_group_bossrush01": {
+        "name": "다시 찾아온 위기 - 로댄",
+        "desc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_bossrush01_01",
+                "dungeonName": "위험한 잔상 - 로댄",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"그의 안갯불은 아직 꺼지지 않았다.\""
+            },
+            {
+                "dungeonId": "dung01_bossrush01_02",
+                "dungeonName": "위험한 그림자 - 로댄",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"그의 분노는 결코 사그라지지 않는다.\""
+            },
+            {
+                "dungeonId": "dung01_bossrush01_03",
+                "dungeonName": "위험한 재앙 - 로댄",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"그의 증오는 마침내 응축될 것이다.\""
+            }
+        ]
+    },
+    "dung01_group_bossrush02": {
+        "name": "다시 찾아온 위기 - 트리아겔로스",
+        "desc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_bossrush02_01",
+                "dungeonName": "위험한 잔상 - 트리아겔로스",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"당신은 무자비한 파괴와 다시 마주하게 될 것이다.\""
+            },
+            {
+                "dungeonId": "dung01_bossrush02_02",
+                "dungeonName": "위험한 그림자 - 트리아겔로스",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"당신은 냉혹한 과거의 일부분을 엿보게 될 것이다.\""
+            },
+            {
+                "dungeonId": "dung01_bossrush02_03",
+                "dungeonName": "위험한 재앙 - 트리아겔로스",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"당신은 절망적인 미래를 마주하게 될 것이다.\""
+            }
+        ]
+    },
+    "dung01_group_bossrush03": {
+        "name": "다시 찾아온 위기 - 마블 아겔로미레",
+        "desc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_bossrush03_01",
+                "dungeonName": "위험한 잔상 - 마블 아겔로미레",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"그녀의 외침이 이곳에 울려 퍼질 것이다.\""
+            },
+            {
+                "dungeonId": "dung01_bossrush03_02",
+                "dungeonName": "위험한 그림자 - 마블 아겔로미레",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"그녀의 야망이 다른 곳까지 번져 갈 것이다.\""
+            },
+            {
+                "dungeonId": "dung01_bossrush03_03",
+                "dungeonName": "위험한 재앙 - 마블 아겔로미레",
+                "dungeonDesc": "매우 위험한 균열, 안으로 들어가려면 충분한 준비를 해야 합니다.\n\"그녀의 악념이 무성하게 자라날 것이다.\""
+            }
+        ]
+    },
+    "dung01_group_charbreak01": {
+        "name": "균열 - 오퍼레이터 돌파",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 오퍼레이터 정예화에 사용되는 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_charbreak01",
+                "dungeonName": "심조천류",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터 정예화에 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"자신의 내면을 직시하고, 그것의 강함과 약함, 기쁨과 고통을 느껴야 한다.\""
+            },
+            {
+                "dungeonId": "dung01_charbreak02",
+                "dungeonName": "심조구독",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터 정예화에 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"자신을 아는 것이 곧 자신을 극복하는 첫걸음이다.\""
+            }
+        ]
+    },
+    "dung01_group_charbreak02": {
+        "name": "균열 - 오퍼레이터 돌파",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 오퍼레이터 정예화에 사용되는 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_charbreak03",
+                "dungeonName": "심조정호",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터 정예화에 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"자아는 감추기 쉬운 존재로, 향기로 변해 바람 속에 숨고, 물결로 변해 넓은 호수에 감춘다.\""
+            },
+            {
+                "dungeonId": "dung01_charbreak04",
+                "dungeonName": "심조암해",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터 정예화에 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"마음의 빛으로 어둠의 바다를 비추기를.\""
+            }
+        ]
+    },
+    "dung01_group_exp01": {
+        "name": "균열 - 전투 경험",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 오퍼레이터의 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_exp01",
+                "dungeonName": "기억 변화의 대지",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터의 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"나는 그가 빛 속에서 사라지는 것을 보았다. 어두운 빛 속으로, 하지만 세상에 어두운 빛은 존재해선 안 되는 것이다.\""
+            },
+            {
+                "dungeonId": "dung01_exp02",
+                "dungeonName": "시련 변화의 대지",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터의 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"이후, 그가 빛 속에서 본 것은 끝없이 이어지는 군대였다.\""
+            }
+        ]
+    },
+    "dung01_group_exp02": {
+        "name": "균열 - 전투 경험",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 오퍼레이터의 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_exp03",
+                "dungeonName": "고통 변화의 대지",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터의 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"사라졌던 용사들이 저 황사와 백골 속에서 다시 이 세상으로 돌아와 그를 조용히 바라보고 있었다.\""
+            },
+            {
+                "dungeonId": "dung01_exp04",
+                "dungeonName": "파멸 변화의 대지",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터의 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"어떠한 말도 신호도 없이 그는 이곳을 떠나는 방법을 깨달았다. 그 방법은 칼날 끝에 있었다.\""
+            }
+        ]
+    },
+    "dung01_group_gold01": {
+        "name": "균열 - 코인 수집",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 탈로시안 화폐를 발견할 수 있을지도 모릅니다.",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_gold01",
+                "dungeonName": "석화의 축복",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 탈로시안 화폐를 발견할 수 있을지도 모릅니다.\n\"황무지에는 이런 이야기가 전해지고 있다. 가난한 사람이 균열에 들어갔다가 다시 돌아왔을 때, 그의 내장이 모두 황금으로 변했다고 한다.\""
+            },
+            {
+                "dungeonId": "dung01_gold02",
+                "dungeonName": "동전의 축복",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 탈로시안 화폐를 발견할지도 모릅니다.\n\"그래, 그래... 절망에 빠진 자는 미래를 볼 수 없으니, 허무맹랑한 동화로 눈과 귀를 가리는 법이지.\""
+            }
+        ]
+    },
+    "dung01_group_gold02": {
+        "name": "균열 - 코인 수집",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 탈로시안 화폐를 발견할 수 있을지도 모릅니다.",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_gold03",
+                "dungeonName": "은전의 축복",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 탈로시안 화폐를 발견할지도 모릅니다.\n\"그러나 그 동화... 인류가 바라본 미래의 투영인지, 아니면 수많은 싸움과 약탈로 새겨진 암각화일 뿐인가?\""
+            },
+            {
+                "dungeonId": "dung01_gold04",
+                "dungeonName": "금전의 축복",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 탈로시안 화폐를 발견할 수 있을지도 모릅니다.\n\"황무지에서 모험을 펼치는 자여, 그 이야기를 그대 스스로 증명하라.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle01": {
+        "name": "압력 센서",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle01",
+                "dungeonName": "압력 센서",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"정말 꼭 분석이 필요하다면, 이곳은 추가 작업으로 인한 어느 하역부의 원한 때문에 생긴 환영일 것 같다.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle02": {
+        "name": "리프팅 보조",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle02",
+                "dungeonName": "리프팅 보조",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"조심해, 이 리프팅 설비들은 안전 위험 요소가 가득해. 여기서 다쳐도 산업 재해로 인정되지 않아.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle03": {
+        "name": "불꽃 사이로\n",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle10",
+                "dungeonName": "불꽃 사이로\n",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"집착에 눈을 가리면 안 돼.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle04": {
+        "name": "바람을 타고",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle03",
+                "dungeonName": "바람을 타고",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"지금 이 순간, 나는 깃털보다 가벼워진 것 같아.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle05": {
+        "name": "열 피하기\n",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle05",
+                "dungeonName": "열 피하기\n",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"이 레이저는 자비 없이, 너를 한 조각도 남기지 않고 썰어버릴 거야.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle06": {
+        "name": "폭음의 축제",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle08",
+                "dungeonName": "폭음의 축제",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"천지를 뒤덮을 것 같은 포격? 악몽 같은 과거의 전쟁에 비하면 그저 평범한 포격이지.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle07": {
+        "name": "외부 기폭",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle06",
+                "dungeonName": "외부 기폭",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"균열 안에서는 괜찮지만, 현실에서는 절대 폭발물을 던지지 마세요.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle08": {
+        "name": "공업 미로",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle04",
+                "dungeonName": "공업 미로",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"이 환상은 어느 엔드필드 직원이 상상한 미래일지도 모른다. 아마도 진 주임님이 이처럼 거대한 거점 지역 기지를 원했을 거다.\""
+            }
+        ]
+    },
+    "dung01_group_puzzle09": {
+        "name": "큰 귀 토끼의 초대",
+        "desc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_puzzle07",
+                "dungeonName": "큰 귀 토끼의 초대",
+                "dungeonDesc": "내부가 불안정한 균열에서는 무엇이 나타나도 놀랍지 않습니다.\n\"귀엽네. 우리를 너희들의 그 자그마한 왕국으로 데려가고 싶니?\""
+            }
+        ]
+    },
+    "dung01_group_skill01": {
+        "name": "균열 - 스킬 강화",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 오퍼레이터 스킬 레벨을 올릴 수 있는 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_skill01",
+                "dungeonName": "탑의 그림자\n",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터 스킬 레벨을 올릴 수 있는 아이템을 발견할 수 있을지도 모릅니다.\n\"오리지늄을 만져봐. 그리고 타오르는 열기와 차가운 냉기, 충만함과 공허함을 느껴보아라.\""
+            },
+            {
+                "dungeonId": "dung01_skill02",
+                "dungeonName": "탑의 잔재",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터 스킬 레벨을 올릴 수 있는 아이템을 발견할 수 있을지도 모릅니다.\n\"고향으로 돌아가는 길이 끊어지고 누군가는 탑을 쌓아 고향과 연결을 희망했지만, 그건 단지 허무한 환상이었다.\""
+            }
+        ]
+    },
+    "dung01_group_skill02": {
+        "name": "균열 - 스킬 강화",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 오퍼레이터 스킬 레벨을 올릴 수 있는 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_skill03",
+                "dungeonName": "탑의 흔적",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터 스킬 레벨을 올릴 수 있는 아이템을 발견할 수 있을지도 모릅니다.\n\"결국 남은 것은 오리지늄 — 인간과 고향 사이의 마지막이자 가장 깊은 연결이다.\""
+            },
+            {
+                "dungeonId": "dung01_skill04",
+                "dungeonName": "탑의 메아리",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 오퍼레이터 스킬 레벨을 올릴 수 있는 아이템을 발견할 수 있을지도 모릅니다.\n\"그렇기에 우리는 다시 탑을 세울 수 있었다.\""
+            }
+        ]
+    },
+    "dung01_group_wpbreak01": {
+        "name": "균열 - 무기 돌파",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 무기를 돌파하는 데 필요한 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_wpbreak01",
+                "dungeonName": "단조 검증 Lv.1",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 무기 돌파에 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"단조 테스트 Lv.1, 검사 중 — 당신의 무기는 많은 모듈 업그레이드가 필요합니다.\""
+            },
+            {
+                "dungeonId": "dung01_wpbreak02",
+                "dungeonName": "단조 검증 Lv.2",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 무기 돌파에 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"단조 테스트 Lv.2, 검사 중. 미에슈코 공업이 개발한 무기 자동 수리 업그레이드 세트를 추천해 드립니다. 현재 특별 할인 중이며, 가성비가 뛰어납니다."
+            }
+        ]
+    },
+    "dung01_group_wpbreak02": {
+        "name": "균열 - 무기 돌파",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 무기를 돌파하는 데 필요한 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_wpbreak03",
+                "dungeonName": "단조 검증 Lv.3",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 무기 돌파에 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"단조 테스트 Lv.3, 검사 중 — 무기 업그레이드 방안을 자유롭게 선택하실 수 있습니다. 하지만 제 말 믿으세요. 미에슈코는 결국 당신의 최종 선택이 될 것입니다.\""
+            },
+            {
+                "dungeonId": "dung01_wpbreak04",
+                "dungeonName": "단조 검증 Lv.4",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 무기 돌파에 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"단조 테스트 Lv.4, 검사 중 — 축하합니다! 올해 가장 행운의 고객으로 선정되셨습니다. 지금 제품을 구매하시면, 미에슈코 공업 본사 방문 기회를 드립니다. 빠른 주문 부탁드립니다!\""
+            }
+        ]
+    },
+    "dung01_group_wpexp01": {
+        "name": "균열 - 무기 강화",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 무기 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "20~40",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_wpexp01",
+                "dungeonName": "총기 장인들의 발굴지",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 무기 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"황무지에서 칼과 총만큼 중요한 것은 없다.\""
+            },
+            {
+                "dungeonId": "dung01_wpexp02",
+                "dungeonName": "총기 장인들의 사냥터",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 무기 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"쾅쾅, 쾅쾅... 여기는 총, 저기는 장창.\""
+            }
+        ]
+    },
+    "dung01_group_wpexp02": {
+        "name": "균열 - 무기 강화",
+        "desc": "이곳은 내부 공간이 미지로 가득 찬 균열입니다. 깊이 탐험한다면 무기 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.",
+        "staminaText": "50",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_wpexp03",
+                "dungeonName": "총기 장인들의 유토피아",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 무기 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"황무지를 가로지르는 이 총기 장인들을 보아라.\""
+            },
+            {
+                "dungeonId": "dung01_wpexp04",
+                "dungeonName": "총기 장인들의 매장지",
+                "dungeonDesc": "이곳은 내부 공간이 미지로 가득한 균열입니다. 신중히 탐험한다면 무기 경험치를 올리는 데 사용되는 아이템을 발견할 수 있을지도 모릅니다.\n\"이 유적을 탐험하는 총기 장인들의 해맑은 모습을 보아라.\""
+            }
+        ]
+    },
+    "dung01_test_factory": {
+        "name": "4번 협곡",
+        "desc": "",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_test_factory",
+                "dungeonName": "",
+                "dungeonDesc": ""
+            }
+        ]
+    },
+    "dung_group_rdg001": {
+        "name": "오퍼레이터 일지",
+        "desc": "",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_rdg001",
+                "dungeonName": "하론의 은신처",
+                "dungeonDesc": "하론을 처치하세요."
+            }
+        ]
+    },
+    "dung_group_rdg002": {
+        "name": "오퍼레이터 일지",
+        "desc": "",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung01_rdg002",
+                "dungeonName": "침식된 구역",
+                "dungeonDesc": "프로토타입을 찾으세요."
+            }
+        ]
+    },
+    "dung_group_train01": {
+        "name": "일반 훈련",
+        "desc": "",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_train01",
+                "dungeonName": "공격 끊기",
+                "dungeonDesc": "미리 끊어내는 것이 중요합니다. 적의 '공격'이 다가오기 전에 저지해 보세요."
+            },
+            {
+                "dungeonId": "dung_train02",
+                "dungeonName": "'넉백' 시도하기",
+                "dungeonDesc": "인간의 방어구와 아겔로스의 껍질은 강력한 공격을 막을 수 있어요.\n좀 더 민첩하게 움직여서 '넉백'을 시도해 보세요."
+            },
+            {
+                "dungeonId": "dung_train03",
+                "dungeonName": "'띄우기' 시도하기",
+                "dungeonDesc": "공격은 태풍처럼 빠르고 거칠어야 해요!\n적에게 재정비할 시간을 주면 안 돼요. '방어 불능' 상태로 만들고 '띄우기'를 사용해서 제압해 보세요."
+            },
+            {
+                "dungeonId": "dung_train04",
+                "dungeonName": "'넉다운' 시도하기",
+                "dungeonDesc": "공격은 침식 구역의 낙석처럼 무겁고 강렬해야 해요!\n적에게 재정비할 시간을 주면 안 돼요. '방어 불능' 상태로 만들고 '넉다운'을 사용해서 제압해 보세요."
+            },
+            {
+                "dungeonId": "dung_train05",
+                "dungeonName": "부착과 폭발",
+                "dungeonDesc": "검, 칼, 총, 아츠 유닛, 방어 장비, 오리지늄 아츠의 흔적들은 어디서나 볼 수 있죠.\n그것들을 잘 활용해서 아츠 부착과 아츠 폭발을 시도해 보세요."
+            },
+            {
+                "dungeonId": "dung_train06",
+                "dungeonName": "'연소' 시도하기",
+                "dungeonDesc": "불꽃 공격 방식은 저렴하고, 효과적이죠. 이제 적을 '연소'시켜 보세요."
+            },
+            {
+                "dungeonId": "dung_train07",
+                "dungeonName": "'동결' 시도하기",
+                "dungeonDesc": "그들의 사고를 경직시키고, 몸을 구속하세요. 이제 적을 '동결'시켜 보세요."
+            },
+            {
+                "dungeonId": "dung_train08",
+                "dungeonName": "'감전' 시도하기",
+                "dungeonDesc": "기계의 혈액을 인간의 체내에서도 흐르도록 만들어 보세요. 이제 적을 '감전'시켜 보세요."
+            },
+            {
+                "dungeonId": "dung_train09",
+                "dungeonName": "'부식' 시도하기",
+                "dungeonDesc": "방어 장비를 어떻게 하면 과자처럼 쉽게 부서지도록 만들 수 있을까요? 이제 적을 '부식'시켜 보세요."
+            },
+            {
+                "dungeonId": "dung_train10",
+                "dungeonName": "다방향 차단",
+                "dungeonDesc": "좋아요, 인원이 많아지니 이제 좀 '전투 분위기'가 나는 것 같네요. 끊고! 차단! 적의 공격을 하나도 놓치지 말고 저지해 보세요!"
+            },
+            {
+                "dungeonId": "dung_train11",
+                "dungeonName": "완벽한 제압",
+                "dungeonDesc": "좋아요, 이제 최종 테스트의 첫 번째 부분을 진행합니다.\n아주 간단해요. 다치지 않으면 통과입니다."
+            },
+            {
+                "dungeonId": "dung_train12",
+                "dungeonName": "전방위 제압",
+                "dungeonDesc": "최종 테스트의 마지막 부분! 난투가 벌어집니다!\n다치지 않도록 조심하세요. 관리자님! 실력이 얼마나 되돌아왔는지 보여주세요!"
+            }
+        ]
+    },
+    "entrance_dung_blackbox_assebling_1": {
+        "name": "4번 협곡",
+        "desc": "포장기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_assebling_1",
+                "dungeonName": "포장기",
+                "dungeonDesc": "포장기로 저용량 배터리의 자동화 생산 라인을 구축하고, 작전 설비를 충전해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_assebling_2": {
+        "name": "4번 협곡",
+        "desc": "중용량 배터리",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_assebling_2",
+                "dungeonName": "중용량 배터리",
+                "dungeonDesc": "포장기로 중용량 배터리의 자동화 생산 라인을 구축해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_asseblingbomb_1": {
+        "name": "4번 협곡",
+        "desc": "공업 폭발물",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_asseblingbomb_1",
+                "dungeonName": "공업 폭발물",
+                "dungeonDesc": "공업 폭발물을 제작 및 사용하여 낙석을 제거하고 갇힌 작업자들을 구출해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_basic_1": {
+        "name": "4번 협곡",
+        "desc": "재료 생산",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_basic_1",
+                "dungeonName": "재료 생산",
+                "dungeonDesc": "중계기가 고장 났습니다. 관련 설비로 수리에 필요한 재료를 생산하고, 중계기를 수리해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_belt_1": {
+        "name": "4번 협곡",
+        "desc": "물류 라인",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_belt_1",
+                "dungeonName": "물류 라인",
+                "dungeonDesc": "현재 원료를 설비로 운송하여 가공한 후, 생산품을 창고로 옮겨야 합니다. 컨베이어 벨트로 현재의 배치 상황에서 물류 라인을 구축해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_belt_2": {
+        "name": "4번 협곡",
+        "desc": "컨베이어 벨트 종합",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_belt_2",
+                "dungeonName": "컨베이어 벨트 종합",
+                "dungeonDesc": "컨베이어 벨트, 버스 및 물류기를 효율적으로 활용하여 복잡한 생산 라인을 구축해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_bus_1": {
+        "name": "4번 협곡",
+        "desc": "버스",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_bus_1",
+                "dungeonName": "버스",
+                "dungeonDesc": "통합 공업 시스템에 이제 버스가 도입되어, 더 유연하고 효율적인 물류 운송을 지원할 수 있습니다."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_bus_2": {
+        "name": "4번 협곡",
+        "desc": "버스 통합",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_bus_2",
+                "dungeonName": "버스 통합",
+                "dungeonDesc": "버스와 컨베이어 벨트를 효율적으로 활용하여 복잡한 생산 라인을 구축해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_cmpt_1": {
+        "name": "4번 협곡",
+        "desc": "부품 가공기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_cmpt_1",
+                "dungeonName": "부품 가공기",
+                "dungeonDesc": "장거리 집라인 후크가 고장 났습니다. 부품 가공기를 사용하여 수리 재료인 자수정 부품을 생산해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_connector_1": {
+        "name": "4번 협곡",
+        "desc": "물류 브릿지",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_connector_1",
+                "dungeonName": "물류 브릿지",
+                "dungeonDesc": "통합 공업 시스템에 이제 물류 브릿지가 도입되어, 컨베이어 벨트의 브리징을 통해 더 유연하게 물류 운송을 지원할 수 있습니다."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_converger_1": {
+        "name": "4번 협곡",
+        "desc": "합류기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_converger_1",
+                "dungeonName": "합류기",
+                "dungeonDesc": "통합 공업 시스템에 이제 합류기가 도입되어, 여러 개의 컨베이어 벨트를 하나로 결합하여 물류 운송을 간소화할 수 있습니다."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_1": {
+        "name": "4번 협곡",
+        "desc": "충진기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_1",
+                "dungeonName": "충진기",
+                "dungeonDesc": "충진기로 약품과 식품의 자동화 생산 라인을 구축해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_2": {
+        "name": "4번 협곡",
+        "desc": "고급 통조림",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_2",
+                "dungeonName": "고급 통조림",
+                "dungeonDesc": "통합 공업 시스템으로 페리움 광석을 추가 가공하고, 페리움 병으로 더 뛰어난 품질의 시트롬 통조림을 생산해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_3": {
+        "name": "4번 협곡",
+        "desc": "최고급 앵초 치유 캡슐",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_3",
+                "dungeonName": "최고급 앵초 치유 캡슐",
+                "dungeonDesc": "연마기로 약품 생산 라인을 업데이트하여, 회복 효과가 더욱 뛰어난 최고급 앵초 치유 캡슐을 생산해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_4": {
+        "name": "진롱",
+        "desc": "충진기 액체 모드",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_4",
+                "dungeonName": "충진기 액체 모드",
+                "dungeonDesc": "파이프와 충진기의 액체 모드를 활용하여 액체를 설비에 넣고, 이를 통해 진롱 지역의 식품과 약품을 생산해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_filling_5": {
+        "name": "진롱",
+        "desc": "진롱 통합 응용 (미적용)",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_filling_5",
+                "dungeonName": "진롱 통합 응용",
+                "dungeonDesc": "진롱 통합 응용"
+            }
+        ]
+    },
+    "entrance_dung_blackbox_grinder_1": {
+        "name": "4번 협곡",
+        "desc": "분쇄기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_grinder_1",
+                "dungeonName": "분쇄기",
+                "dungeonDesc": "현재 원료를 가루로 가공한 후, 창고로 옮겨야 합니다. 컨베이어 벨트로 현재의 배치 상황에서 물류 라인을 구축해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_hub_1": {
+        "name": "4번 협곡",
+        "desc": "약품 생산 라인",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_hub_1",
+                "dungeonName": "약품 생산 라인",
+                "dungeonDesc": "통합 공업 시스템으로 앵초 가루의 자동화 생산 라인을 구축해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_liquidcleaner_1": {
+        "name": "진롱",
+        "desc": "오염수 처리기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_liquidcleaner_1",
+                "dungeonName": "오염수 처리기",
+                "dungeonDesc": "액체 모드 중, 설비의 생산 과정에서 추가로 오염수가 생성되어 오염을 일으킵니다. 오염수 처리기로 오염 문제를 해결해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_miner_1": {
+        "name": "4번 협곡",
+        "desc": "전동 채굴기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_miner_1",
+                "dungeonName": "전동 채굴기",
+                "dungeonDesc": "전동 채굴기로 자수정 광석을 채굴하고 기존의 휴대용 오리지늄 채굴기를 교체해, 오리지늄 광물의 자동 채굴과 무선 운송을 실현해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_miner_2": {
+        "name": "4번 협곡",
+        "desc": "전동 채굴기 II",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_miner_2",
+                "dungeonName": "전동 채굴기 II",
+                "dungeonDesc": "전동 채굴기 II를 활용하여 광물 구역의 모든 광산 지점에서 광석을 채굴해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_miner_3": {
+        "name": "진롱",
+        "desc": "수력 채굴기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_miner_3",
+                "dungeonName": "수력 채굴기",
+                "dungeonDesc": "수력 채굴기는 전력망을 연결할 필요 없이, 급수만 해도 광물을 채굴할 수 있습니다. 수력 채굴기를 사용하여 적동 광석을 채굴해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_mix_1": {
+        "name": "진롱",
+        "desc": "반응기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_mix_1",
+                "dungeonName": "반응기",
+                "dungeonDesc": "반응기로 고체와 액체의 혼합 생산을 진행할 수 있습니다. 식물 가루와 청정수를 반응기에 넣어 식물 용액을 생산해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_mix_2": {
+        "name": "진롱",
+        "desc": "반응기 확장",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_mix_2",
+                "dungeonName": "반응기 확장",
+                "dungeonDesc": "반응기의 캐시 구역을 확장하면 여러 개의 조합 공식을 동시에 생산할 수 있습니다. 현재 생산 라인을 개선하여 반응기의 개수를 줄이세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_pipe_1": {
+        "name": "진롱",
+        "desc": "양수기와 파이프",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_pipe_1",
+                "dungeonName": "파이프 및 액체",
+                "dungeonDesc": "파이프, 양수기와 액체 배출 장치를 사용하여 액체를 전이 운송해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_pipe_2": {
+        "name": "진롱",
+        "desc": "파이프 물류 장치",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_pipe_2",
+                "dungeonName": "파이프 물류 장치",
+                "dungeonDesc": "파이프 물류 장치를 사용하여 액체 운송 파이프 라인을 합리적으로 계획하고 복잡한 생산 라인의 배치를 완료해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_planter_1": {
+        "name": "4번 협곡",
+        "desc": "재배기 및 씨앗 추출기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_planter_1",
+                "dungeonName": "재배기 및 씨앗 추출기",
+                "dungeonDesc": "식물의 반복 생산과 활용을 위해 재배기와 씨앗 추출기를 사용해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_planter_2": {
+        "name": "진롱",
+        "desc": "재배기 및 파이프 분류기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_planter_2",
+                "dungeonName": "재배기 및 파이프 분류기",
+                "dungeonDesc": "재배기의 액체 모드는 진롱 지역 식물의 재배에 사용할 수 있습니다. 양수기의 수가 제한된 상황에서 파이프 분류기를 사용하여 여러 장비에 물을 동시 공급해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_power_1": {
+        "name": "4번 협곡",
+        "desc": "전력 공급 (미적용)",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_power_1",
+                "dungeonName": "전력 공곱",
+                "dungeonDesc": "중계기와 전력 공급기를 사용하여 전력망을 구축해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_powerstation_1": {
+        "name": "4번 협곡",
+        "desc": "열에너지 뱅크",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_powerstation_1",
+                "dungeonName": "열에너지 뱅크",
+                "dungeonDesc": "열에너지 뱅크로 전력망 총 발전량을 높여 통합 공업 시스템의 설비들을 재가동시키세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_shaper_1": {
+        "name": "4번 협곡",
+        "desc": "성형기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_shaper_1",
+                "dungeonName": "성형기",
+                "dungeonDesc": "통합 공업 시스템으로 자수정 병의 자동화 생산 라인을 구축하여, 앵초 치유 캡슐 제작에 필요한 재료를 제공하세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_shaper_2": {
+        "name": "진롱",
+        "desc": "성형기 액체 모드",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_shaper_2",
+                "dungeonName": "성형기 액체 모드",
+                "dungeonDesc": "성형기의 액체 모드를 사용하여 더욱 뛰어난 품질의 용기를 생산하여 고급 식품과 약품 생산에 공급해 보세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_splitter_1": {
+        "name": "4번 협곡",
+        "desc": "분류기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_splitter_1",
+                "dungeonName": "분류기",
+                "dungeonDesc": "제한된 출력 포트로 인해 생산 라인 수가 제한되고 있습니다. 통합 공업 시스템에 도입된 분류기를 사용하여 한 개의 컨베이어 벨트에서 최대 세 개의 컨베이어 벨트로 분류할 수 있습니다."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_squirter_1": {
+        "name": "진롱",
+        "desc": "스프링클러",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_squirter_1",
+                "dungeonName": "스프링클러",
+                "dungeonDesc": "파이프, 양수기와 스프링클러를 사용하여 논배미에 자동으로 물을 뿌리세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_storager_1": {
+        "name": "4번 협곡",
+        "desc": "무선 운송",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_storager_1",
+                "dungeonName": "무선 운송",
+                "dungeonDesc": "오리지늄 광물을 창고로 운송해야 합니다. 전력망을 보완하고 프로토콜 저장함의 무선 운송 기능을 사용해 오리지늄 광물을 원격으로 창고로 보내세요."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_thickener_1": {
+        "name": "4번 협곡",
+        "desc": "연마기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_thickener_1",
+                "dungeonName": "연마기",
+                "dungeonDesc": "통합 공업 시스템에 연마기가 도입되었습니다. 샌드리프 가루와 함께 사용하여 원료를 한층 더 압축하면 더 좋은 약품과 장비를 생산할 수 있습니다."
+            }
+        ]
+    },
+    "entrance_dung_blackbox_winder_1": {
+        "name": "4번 협곡",
+        "desc": "장비 부품 합성기",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_blackbox_winder_1",
+                "dungeonName": "장비 부품 합성기",
+                "dungeonDesc": "장비 부품 합성기를 사용하여 자수정 장비 부품을 생산하세요."
+            }
+        ]
+    },
+    "entrance_dung_demo_blackbox02": {
+        "name": "진롱",
+        "desc": "",
+        "staminaText": "",
+        "includeDungeon": [
+            {
+                "dungeonId": "dung_demo_blackbox02",
+                "dungeonName": "",
+                "dungeonDesc": ""
+            }
+        ]
+    }
+}

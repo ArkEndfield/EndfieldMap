@@ -1,10 +1,8 @@
 {
     "eny_0007_mimicw": {
-        "enemyId": "eny_0007_mimicw",
         "name": "독넝쿨 아겔로스",
         "description": "'덴드레이오손'(보관 번호: ARS141), 체내에서 독극물을 합성하여 발사한다. 형성된 후 위치를 이동하는 사례는 관찰되지 않았다.",
         "nickname": "독넝쿨 아겔로스",
-        "templateId": "eny_0007_mimicw",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0007_mimicw_ability_1",
@@ -13,11 +11,9 @@
         ]
     },
     "eny_0018_lbtough": {
-        "enemyId": "eny_0018_lbtough",
         "name": "본 크러셔 처형자",
         "description": "무거운 도끼를 장착한 랜드브레이커로 덩치가 크다. 일반 랜드브레이커보다 뛰어난 체력을 지니고 있어, 전차를 뒤집거나 손쉽게 건물을 파괴할 수 있다.",
         "nickname": "본 크러셔 처형자",
-        "templateId": "eny_0018_lbtough",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0018_lbtough_ability_1",
@@ -30,11 +26,9 @@
         ]
     },
     "eny_0021_agmelee": {
-        "enemyId": "eny_0021_agmelee",
         "name": "큰 뿔 아겔로스",
         "description": "'크리오손'(보관 번호: ACL071), 뿔로 적을 들이받을 수 있다. 최초로 기록된 아겔로스의 형성 모델 중 하나이다. 각 지역에서 비교적 흔하게 볼 수 있다.",
         "nickname": "큰 뿔 아겔로스",
-        "templateId": "eny_0021_agmelee",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -43,11 +37,9 @@
         ]
     },
     "eny_0023_aghornb": {
-        "enemyId": "eny_0023_aghornb",
         "name": "강철 뿔 아겔로스",
         "description": "'트릴리소론'(보관 번호: ACL072), ACL071의 비모델 생물류. 주변 환경을 이용하여 어느 정도 판단 능력을 발휘한다.",
         "nickname": "강철 뿔 아겔로스",
-        "templateId": "eny_0023_aghornb",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -56,11 +48,9 @@
         ]
     },
     "eny_0025_agrange": {
-        "enemyId": "eny_0025_agrange",
         "name": "가시 아겔로스",
         "description": "'켄트론'(보관 번호: ARL121), 자신을 구성한 물질에 에너지를 부여해 에너지를 발사한다. 에너지 이용 효율이 매우 낮다.",
         "nickname": "가시 아겔로스",
-        "templateId": "eny_0025_agrange",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -69,11 +59,9 @@
         ]
     },
     "eny_0027_agscorp": {
-        "enemyId": "eny_0027_agscorp",
         "name": "중형 가시 아겔로스",
         "description": "'바리켄트론'(보관 번호: ARL141), ARL121의 비모델 생물류. 때로는 에너지 공격을 포기하고 꼬리로 근접전을 시도한다.",
         "nickname": "중형 가시 아겔로스",
-        "templateId": "eny_0027_agscorp",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0027_agscorp_ability_1",
@@ -86,11 +74,9 @@
         ]
     },
     "eny_0029_lbmob": {
-        "enemyId": "eny_0029_lbmob",
         "name": "본 크러셔 약탈자",
         "description": "일반 근거리 무기를 장착한 무장 랜드브레이커. 단체를 구성하는 '대다수'의 랜드브레이커로, 장비는 허술하지만 종종 떼를 지어 나타난다.",
         "nickname": "본 크러셔 약탈자",
-        "templateId": "eny_0029_lbmob",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -99,11 +85,9 @@
         ]
     },
     "eny_0033_lbhunt": {
-        "enemyId": "eny_0033_lbhunt",
         "name": "본 크러셔 매복 활잡이",
         "description": "일반 원거리 무기를 장착한 무장 랜드브레이커. 기초적인 사격 훈련만 받아 명중률이 낮지만, 여전히 많은 사람들이 그들의 화살에 목숨을 잃는다.",
         "nickname": "본 크러셔 매복 활잡이",
-        "templateId": "eny_0033_lbhunt",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -112,11 +96,9 @@
         ]
     },
     "eny_0039_agcanno": {
-        "enemyId": "eny_0039_agcanno",
         "name": "보초 아겔로스",
         "description": "'프루로스사론'(보관 번호: ARS316) 형성 모델은 인간의 경비 포탑을 모방하여 만들어진 것으로 보인다. 사거리가 길지만 형성된 후에는 움직이지 않는다.",
         "nickname": "보초 아겔로스",
-        "templateId": "eny_0039_agcanno",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0039_agcanno_ability_1",
@@ -125,11 +107,9 @@
         ]
     },
     "eny_0045_agtrinit": {
-        "enemyId": "eny_0045_agtrinit",
         "name": "트리아겔로스",
         "description": "미분류. 형성된 특징으로 보아 아겔로스로 추정된다. 헤일로 형태의 변화는 판단 능력의 표현일 가능성이 있다. 경고, 앵커 속성이 있는 것으로 관찰된다.",
         "nickname": "트리아겔로스",
-        "templateId": "eny_0045_agtrinit",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0045_agtrinit_ability_1",
@@ -150,11 +130,9 @@
         ]
     },
     "eny_0046_lbshamman": {
-        "enemyId": "eny_0046_lbshamman",
         "name": "본 크러셔 플레임 캐스터",
         "description": "오리지늄 아츠를 익힌 무장 랜드브레이커. 에너지 전환계 오리지늄 아츠를 조종하여 전장에서 맹렬한 불길을 퍼뜨리는 존재로 위협 수준이 매우 높다.",
         "nickname": "본 크러셔 플레임 캐스터",
-        "templateId": "eny_0046_lbshamman",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0046_lbshamman_ability_1",
@@ -167,11 +145,9 @@
         ]
     },
     "eny_0047_firebat": {
-        "enemyId": "eny_0047_firebat",
         "name": "본 크러셔 스캐빈저",
         "description": "화염방사기를 장착한 무장 랜드브레이커. 외형은 투박하지만 정교하게 만들어진 소각 장비를 사용하여 단단한 엄폐물과 완강한 저항 세력을 소탕한다.",
         "nickname": "본 크러셔 스캐빈저",
-        "templateId": "eny_0047_firebat",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0047_firebat_ability_1",
@@ -184,11 +160,9 @@
         ]
     },
     "eny_0048_hvybow": {
-        "enemyId": "eny_0048_hvybow",
         "name": "본 크러셔 활잡이",
         "description": "중형 원거리 무기를 장착한 무장 랜드브레이커. 매복 활잡이 중에서도 재능이 뛰어난 정예들로, 무거운 화살은 목표의 중장갑마저도 뚫는다.",
         "nickname": "본 크러셔 활잡이",
-        "templateId": "eny_0048_hvybow",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0048_hvybow_ability_1",
@@ -201,11 +175,9 @@
         ]
     },
     "eny_0049_rogue": {
-        "enemyId": "eny_0049_rogue",
         "name": "본 크러셔 침투자",
         "description": "쌍수 근거리 무기를 장착한 무장 랜드브레이커. 양손에 무기를 들고 능숙하게 전투를 진행하며, 행동이 민첩하고 근거리 전투에 능하니 신중하게 대처해야 한다.",
         "nickname": "본 크러셔 침투자",
-        "templateId": "eny_0049_rogue",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0049_rogue_ability_1",
@@ -218,11 +190,9 @@
         ]
     },
     "eny_0050_hound": {
-        "enemyId": "eny_0050_hound",
         "name": "본 크러셔 립터스크",
         "description": "무장 랜드브레이커가 조종하는 소형 워비스트. 자연환경에서 살아가는 터스크비스트보다 훨씬 더 사납고 포악하며, 자신을 길들인 랜드브레이커에게 절대적으로 충성한다.",
         "nickname": "본 크러셔 립터스크",
-        "templateId": "eny_0050_hound",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0050_hound_ability_1",
@@ -231,11 +201,9 @@
         ]
     },
     "eny_0051_rodin": {
-        "enemyId": "eny_0051_rodin",
         "name": "'본 크러셔의 주먹' 로댄",
         "description": "네파리스의 '오른팔', 본 크러셔 집단의 최강 전사. 과거 수많은 랜드브레이커들이 네파리스의 권위에 도전했지만, 그들의 야망은 로댄의 주먹에 하나씩 산산조각이 났다.",
         "nickname": "로댄",
-        "templateId": "eny_0051_rodin",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0051_rodin_ability_1",
@@ -248,11 +216,9 @@
         ]
     },
     "eny_0052_palesent": {
-        "enemyId": "eny_0052_palesent",
         "name": "마블 아겔로미레",
         "description": "미분류. 형성된 모델의 특징으로 보아 아겔로스로 추정된다. 형성 모델은 네파리스의 모습을 모방하며, 코어 에너지 지표가 높지만 불안정하다.",
         "nickname": "마블 아겔로미레",
-        "templateId": "eny_0052_palesent",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0052_palesent_ability_1",
@@ -261,11 +227,9 @@
         ]
     },
     "eny_0053_hsmob": {
-        "enemyId": "eny_0053_hsmob",
         "name": "막류재",
         "description": "홍산 관할 지역에서 활동하는 불법 무장 세력. 불법 검문소를 설치하고 밀수품을 통해 이익을 취하며, 홍산 치안 부대의 주요 단속 대상이다.",
         "nickname": "막류재",
-        "templateId": "eny_0053_hsmob",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -274,11 +238,9 @@
         ]
     },
     "eny_0054_hsmino": {
-        "enemyId": "eny_0054_hsmino",
         "name": "최산장",
         "description": "중장비 무기를 장착한 불법 무장 세력. 최산장의 4연장 발사기는 산을 뒤흔들 정도의 진정한 중화기이므로 절대로 방심해서는 안 된다.",
         "nickname": "최산장",
-        "templateId": "eny_0054_hsmino",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0054_hsmino_ability_1",
@@ -291,11 +253,9 @@
         ]
     },
     "eny_0055_hscrane": {
-        "enemyId": "eny_0055_hscrane",
         "name": "겁운객",
         "description": "기이한 무기를 장착한 불법 무장 세력. 겁운객의 무기는 등롱처럼 생겼지만, 겉보기와는 달리 열 발짝 떨어진 거리에서도 상대를 죽일 수 있으니 절대로 방심해서는 안 된다.",
         "nickname": "겁운객",
-        "templateId": "eny_0055_hscrane",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0055_hscrane_ability_1",
@@ -312,11 +272,9 @@
         ]
     },
     "eny_0057_dog": {
-        "enemyId": "eny_0057_dog",
         "name": "와일드 터스크비스트",
         "description": "자연 야생 환경에서 사는 와일드 터스크비스트. 포식자는 맞지만, 탈로스 II에서 그 지위를 유지하는 건 쉽지 않아 보인다.",
         "nickname": "와일드 터스크비스트",
-        "templateId": "eny_0057_dog",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0057_dog_ability_1",
@@ -325,11 +283,9 @@
         ]
     },
     "eny_0058_agdisk": {
-        "enemyId": "eny_0058_agdisk",
         "name": "형상 아겔로스",
         "description": "'호모이오사론'(보관 번호: AGL371), 인간의 신체 또는 부위를 모방하는 형성 모델 생물로 매우 드물면서도 위험하다. 일부 개체는 초자연 에너지를 조종할 수 있다.",
         "nickname": "형상 아겔로스",
-        "templateId": "eny_0058_agdisk",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0058_agdisk_ability_1",
@@ -346,11 +302,9 @@
         ]
     },
     "eny_0059_erhound": {
-        "enemyId": "eny_0059_erhound",
         "name": "침식된 터스크비스트",
         "description": "침식에 감염된 터스크비스트. 이런 기괴한 소형 침식 생물이 무리를 지어 움직이면, 완전 무장한 외근 팀에 큰 위협이 될 수 있다.",
         "nickname": "침식된 터스크비스트",
-        "templateId": "eny_0059_erhound",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0059_erhound_ability_1",
@@ -359,11 +313,9 @@
         ]
     },
     "eny_0060_lbmad": {
-        "enemyId": "eny_0060_lbmad",
         "name": "침식된 클로",
         "description": "침식에 감염된 무장 랜드브레이커. 깊은 침식 감염에서 살아남았다는 게 반드시 행운은 아니다. 이 랜드브레이커들이 심각한 왜곡을 겪었다.",
         "nickname": "침식된 클로",
-        "templateId": "eny_0060_lbmad",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0060_lbmad_ability_1",
@@ -372,11 +324,9 @@
         ]
     },
     "eny_0061_palecore": {
-        "enemyId": "eny_0061_palecore",
         "name": "마블 아겔로미레",
         "description": "미분류. 형성된 특징으로 보아 아겔로스로 추정된다. 형성 모델은 재구성을 거쳤지만 여전히 네파리스의 외형을 모방하고 있다. 기타 추가 추정 결론은 신뢰할 수 없는 것으로 판단된다.",
         "nickname": "마블 아겔로미레",
-        "templateId": "eny_0061_palecore",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0061_palecore_ability_1",
@@ -385,11 +335,9 @@
         ]
     },
     "eny_0062_paletent": {
-        "enemyId": "eny_0062_paletent",
         "name": "마블 부속체",
         "description": "미분류. 형성된 특징으로 보아 아겔로스로 추정된다. 외관상 본체에서 확장된 것처럼 보이지만, 실제로는 형성 위치에서 본체로 확장된 것이다. 이는 적을 교란하기 위한 전략으로 추정된다.",
         "nickname": "마블 부속체",
-        "templateId": "eny_0062_paletent",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0062_paletent_ability_1",
@@ -402,11 +350,9 @@
         ]
     },
     "eny_0063_agmelee2": {
-        "enemyId": "eny_0063_agmelee2",
         "name": "큰 뿔 아겔로스 α",
         "description": "'크리오손 아나본'(보관 번호: ACL071α), ACL071의 활성 모델 생물류, 넘치는 에너지로 인해 상징적인 밝은 빨간색 외관을 가지고 있으며, 모델 생물류보다 더욱 단단하고 민첩하다.",
         "nickname": "큰 뿔 아겔로스 α",
-        "templateId": "eny_0063_agmelee2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -415,11 +361,9 @@
         ]
     },
     "eny_0064_agrange2": {
-        "enemyId": "eny_0064_agrange2",
         "name": "가시 아겔로스 α",
         "description": "'켄트론 아나본'(보관 번호: ARL121α), ARL121의 활성 모델 생물류, 단순히 더 높은 에너지 밀도로 화력을 높이지만, 에너지 이용 효율은 여전히 낮다.",
         "nickname": "가시 아겔로스 α",
-        "templateId": "eny_0064_agrange2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -428,11 +372,9 @@
         ]
     },
     "eny_0065_lbmob2": {
-        "enemyId": "eny_0065_lbmob2",
         "name": "정예 약탈자",
         "description": "안갯불의 강화를 받은, 근거리 무기를 장착한 정예 무장 랜드브레이커. 장비, 체력, 그리고 근접 전투에 전반적으로 강화되었다.",
         "nickname": "정예 약탈자",
-        "templateId": "eny_0065_lbmob2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -441,11 +383,9 @@
         ]
     },
     "eny_0066_lbhunt2": {
-        "enemyId": "eny_0066_lbhunt2",
         "name": "정예 매복 활잡이",
         "description": "안갯불의 강화를 받은, 원거리 무기를 장착한 정예 무장 랜드브레이커. 훈련이 잘 되어 있고, 높은 명중률과 사용하는 화살이 전반적으로 강화되었다.",
         "nickname": "정예 매복 활잡이",
-        "templateId": "eny_0066_lbhunt2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -454,11 +394,9 @@
         ]
     },
     "eny_0067_hound2": {
-        "enemyId": "eny_0067_hound2",
         "name": "정예 립터스크",
         "description": "안갯불의 강화를 받은, 무장 랜드브레이커가 조종하는 정예 워비스트. 일반적인 터스크비스트보다 더 잔인하고 교활하며, 기묘한 행동을 예측할 수 없다.",
         "nickname": "정예 립터스크",
-        "templateId": "eny_0067_hound2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0067_hound2_ability_1",
@@ -467,11 +405,9 @@
         ]
     },
     "eny_0068_lbtough2": {
-        "enemyId": "eny_0068_lbtough2",
         "name": "정예 처형자",
         "description": "안갯불의 강화를 받은, 무거운 도끼를 장착한 정예 랜드브레이커로 덩치가 크다. 보통 본 크러셔 집단 약탈팀의 우두머리다.",
         "nickname": "정예 처형자",
-        "templateId": "eny_0068_lbtough2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0068_lbtough2_ability_1",
@@ -484,11 +420,9 @@
         ]
     },
     "eny_0069_aghornb2": {
-        "enemyId": "eny_0069_aghornb2",
         "name": "강철 뿔 아겔로스 α",
         "description": "'트릴리소론 아나본'(보관 번호: ACL072α), ACL072의 활성 모델 생물류, 그것이 가진 높은 에너지가 판단 능력에 영향을 주지 않아 비교적 위험하다.",
         "nickname": "강철 뿔 아겔로스 α",
-        "templateId": "eny_0069_aghornb2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -497,11 +431,9 @@
         ]
     },
     "eny_0070_agscorp2": {
-        "enemyId": "eny_0070_agscorp2",
         "name": "중형 가시 아겔로스 α",
         "description": "'바리켄트론 아나본'(보관 번호: ARL141α), ARL141의 활성 모델 생물류, 기존의 다양한 공격 방식을 유지하면서 형성 모델의 견고도를 높여 위험하다.",
         "nickname": "중형 가시 아겔로스 α",
-        "templateId": "eny_0070_agscorp2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0070_agscorp2_ability_1",

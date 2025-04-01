@@ -1,10 +1,8 @@
 {
     "eny_0007_mimicw": {
-        "enemyId": "eny_0007_mimicw",
         "name": "毒藤天使",
         "description": "「丹德雷俄松」（歸檔編號：ARS141），能在體內合成毒物並以慣性方法將毒物擲出。未觀測到有形成後移動位置的案例。",
         "nickname": "毒藤天使",
-        "templateId": "eny_0007_mimicw",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0007_mimicw_ability_1",
@@ -13,11 +11,9 @@
         ]
     },
     "eny_0018_lbtough": {
-        "enemyId": "eny_0018_lbtough",
         "name": "碾骨行刑人",
         "description": "裝備重型斬擊斧的裂地者武裝人員，體型高大。他們的體能強於多數裂地者，能掀翻戰車，甚至輕鬆破壞工事。",
         "nickname": "碾骨行刑人",
-        "templateId": "eny_0018_lbtough",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0018_lbtough_ability_1",
@@ -30,11 +26,9 @@
         ]
     },
     "eny_0021_agmelee": {
-        "enemyId": "eny_0021_agmelee",
         "name": "大角天使",
         "description": "「克利俄松」（歸檔編號：ACL071），能用角衝撞敵人。它們是最早被記錄的天使形成模式之一，於各處都較常見。",
         "nickname": "大角天使",
-        "templateId": "eny_0021_agmelee",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -43,11 +37,9 @@
         ]
     },
     "eny_0023_aghornb": {
-        "enemyId": "eny_0023_aghornb",
         "name": "剛角天使",
         "description": "「提利索隆」（歸檔編號：ACL072），ACL071的非模式種。它們能夠利用周圍環境，表現出一定的決策能力。",
         "nickname": "剛角天使",
-        "templateId": "eny_0023_aghornb",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -56,11 +48,9 @@
         ]
     },
     "eny_0025_agrange": {
-        "enemyId": "eny_0025_agrange",
         "name": "釘刺天使",
         "description": "「肯托隆」（歸檔編號：ARL121），能夠從自身構成物質賦予能量並以慣性方法將能量投出。能量的利用效率很低。",
         "nickname": "釘刺天使",
-        "templateId": "eny_0025_agrange",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -69,11 +59,9 @@
         ]
     },
     "eny_0027_agscorp": {
-        "enemyId": "eny_0027_agscorp",
         "name": "重刺天使",
         "description": "「華麗肯托隆」（歸檔編號：ARL141），ARL121的非模式種。有時會放棄能量攻擊，直接用尾巴近戰。",
         "nickname": "重刺天使",
-        "templateId": "eny_0027_agscorp",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0027_agscorp_ability_1",
@@ -86,11 +74,9 @@
         ]
     },
     "eny_0029_lbmob": {
-        "enemyId": "eny_0029_lbmob",
         "name": "碾骨劫掠者",
         "description": "裝備基礎近戰武器的裂地者武裝人員。他們是組成裂地者團體的「大多數」，裝備簡陋，但常常成群出現。",
         "nickname": "碾骨劫掠者",
-        "templateId": "eny_0029_lbmob",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -99,11 +85,9 @@
         ]
     },
     "eny_0033_lbhunt": {
-        "enemyId": "eny_0033_lbhunt",
         "name": "碾骨伏擊射手",
         "description": "裝備基礎遠程武器的裂地者武裝人員。他們僅受過基礎的射擊訓練，準度不佳，但仍有許多人命喪於他們的弩箭。",
         "nickname": "碾骨伏擊射手",
-        "templateId": "eny_0033_lbhunt",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -112,11 +96,9 @@
         ]
     },
     "eny_0039_agcanno": {
-        "enemyId": "eny_0039_agcanno",
         "name": "崗哨天使",
         "description": "「弗洛薩隆」（歸檔編號：ARS316），形成模式被認為在模仿人類的哨戒炮。射程遠，但形成後從不移動。",
         "nickname": "崗哨天使",
-        "templateId": "eny_0039_agcanno",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0039_agcanno_ability_1",
@@ -125,11 +107,9 @@
         ]
     },
     "eny_0045_agtrinit": {
-        "enemyId": "eny_0045_agtrinit",
         "name": "三位一體",
         "description": "未歸檔。因形成特徵，推定為天使。光環形態的變化可能是決策能力的表現。警告，觀測到其具有錨點屬性。",
         "nickname": "三位一體",
-        "templateId": "eny_0045_agtrinit",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0045_agtrinit_ability_1",
@@ -150,11 +130,9 @@
         ]
     },
     "eny_0046_lbshamman": {
-        "enemyId": "eny_0046_lbshamman",
         "name": "碾骨焰術師",
         "description": "掌握源石技藝的裂地者武裝人員。他們操縱塑能轉換系源石技藝，在戰場上播撒烈焰，是不折不扣的高威脅目標。",
         "nickname": "碾骨焰術師",
-        "templateId": "eny_0046_lbshamman",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0046_lbshamman_ability_1",
@@ -167,11 +145,9 @@
         ]
     },
     "eny_0047_firebat": {
-        "enemyId": "eny_0047_firebat",
         "name": "碾骨清道夫",
         "description": "裝備火焰噴射器的裂地者武裝人員。他們使用造型粗劣但工藝精良的焚化裝備，清掃堅固的掩體與頑固的抵抗者。",
         "nickname": "碾骨清道夫",
-        "templateId": "eny_0047_firebat",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0047_firebat_ability_1",
@@ -184,11 +160,9 @@
         ]
     },
     "eny_0048_hvybow": {
-        "enemyId": "eny_0048_hvybow",
         "name": "碾骨射手",
         "description": "裝備重型遠程武器的裂地者武裝人員。他們是伏擊射手中脫穎而出的精英，沉重的箭矢足以貫穿身著重甲的目標。",
         "nickname": "碾骨射手",
-        "templateId": "eny_0048_hvybow",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0048_hvybow_ability_1",
@@ -201,11 +175,9 @@
         ]
     },
     "eny_0049_rogue": {
-        "enemyId": "eny_0049_rogue",
         "name": "碾骨滲透者",
         "description": "裝備成對近戰武器的裂地者武裝人員。他們熟練地運用雙持武器作戰，行動敏捷，擅長近身纏鬥，必須謹慎應對。",
         "nickname": "碾骨滲透者",
-        "templateId": "eny_0049_rogue",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0049_rogue_ability_1",
@@ -218,11 +190,9 @@
         ]
     },
     "eny_0050_hound": {
-        "enemyId": "eny_0050_hound",
         "name": "碾骨撕裂牙獸",
         "description": "由裂地者武裝人員操縱的小型戰獸。遠比自然環境中的牙獸更加兇猛殘暴，絕對忠誠於馴養牠們的裂地者。",
         "nickname": "碾骨撕裂牙獸",
-        "templateId": "eny_0050_hound",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0050_hound_ability_1",
@@ -231,11 +201,9 @@
         ]
     },
     "eny_0051_rodin": {
-        "enemyId": "eny_0051_rodin",
         "name": "「碾骨之拳」羅丹",
         "description": "聶菲斯的「右手」，碾骨氏族頭號戰將。曾有許多裂地者試圖挑戰聶菲斯的權威，他們的野心被羅丹以重拳逐一粉碎。",
         "nickname": "羅丹",
-        "templateId": "eny_0051_rodin",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0051_rodin_ability_1",
@@ -248,11 +216,9 @@
         ]
     },
     "eny_0052_palesent": {
-        "enemyId": "eny_0052_palesent",
         "name": "白堊界衛",
         "description": "未歸檔，因形成特徵，推定為天使。形成模式模仿聶菲斯的外形，核心能量指數高，但表現出不穩定性。",
         "nickname": "白堊界衛",
-        "templateId": "eny_0052_palesent",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0052_palesent_ability_1",
@@ -261,11 +227,9 @@
         ]
     },
     "eny_0053_hsmob": {
-        "enemyId": "eny_0053_hsmob",
         "name": "莫留財",
         "description": "活動在宏山轄地上的非法武裝人員。他們透過私設關卡，走私違禁品牟取利益，是宏山治安力量的重點打擊對象。",
         "nickname": "莫留財",
-        "templateId": "eny_0053_hsmob",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -274,11 +238,9 @@
         ]
     },
     "eny_0054_hsmino": {
-        "enemyId": "eny_0054_hsmino",
         "name": "摧山將",
         "description": "裝備了重型武器的非法武裝人員。撼山不易，但摧山將的四聯裝發射器是貨真價實的重火力，萬不可掉以輕心。",
         "nickname": "摧山將",
-        "templateId": "eny_0054_hsmino",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0054_hsmino_ability_1",
@@ -291,11 +253,9 @@
         ]
     },
     "eny_0055_hscrane": {
-        "enemyId": "eny_0055_hscrane",
         "name": "劫雲客",
         "description": "裝備了奇異兵器的非法武裝人員。劫雲客的兵器形似燈籠，看似無害，但十步之外便足以取人首級，大意不得。",
         "nickname": "劫雲客",
-        "templateId": "eny_0055_hscrane",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0055_hscrane_ability_1",
@@ -312,11 +272,9 @@
         ]
     },
     "eny_0057_dog": {
-        "enemyId": "eny_0057_dog",
         "name": "野生牙獸",
         "description": "自然環境中的野生牙獸。牠們仍是掠食者，但在塔衛二，要保持這個地位並不容易。",
         "nickname": "野生牙獸",
-        "templateId": "eny_0057_dog",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0057_dog_ability_1",
@@ -325,11 +283,9 @@
         ]
     },
     "eny_0058_agdisk": {
-        "enemyId": "eny_0058_agdisk",
         "name": "肖像天使",
         "description": "「歐墨薩隆」（歸檔編號：AGL371） ，具有模仿人類軀體或某個部位的形成模式，罕見而危險。部分個體能引導超域能量。",
         "nickname": "肖像天使",
-        "templateId": "eny_0058_agdisk",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0058_agdisk_ability_1",
@@ -346,11 +302,9 @@
         ]
     },
     "eny_0059_erhound": {
-        "enemyId": "eny_0059_erhound",
         "name": "侵蝕牙獸",
         "description": "遭到侵蝕污染的牙獸。當這種詭異的小型侵蝕生物成群行動時，能對全副武裝的外勤小隊造成巨大的威脅。",
         "nickname": "侵蝕牙獸",
-        "templateId": "eny_0059_erhound",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0059_erhound_ability_1",
@@ -359,11 +313,9 @@
         ]
     },
     "eny_0060_lbmad": {
-        "enemyId": "eny_0060_lbmad",
         "name": "侵蝕爪牙",
         "description": "受侵蝕污染的裂地者武裝人員。從深度侵蝕污染中倖存並不一定是件幸運的事，這些裂地者遭到了嚴重的扭曲。",
         "nickname": "侵蝕爪牙",
-        "templateId": "eny_0060_lbmad",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0060_lbmad_ability_1",
@@ -372,11 +324,9 @@
         ]
     },
     "eny_0061_palecore": {
-        "enemyId": "eny_0061_palecore",
         "name": "白堊界衛",
         "description": "未歸檔。因形成特徵，推定為天使。它的形成模式經過了重組，卻仍在模仿聶菲斯的外形。所有進一步推定結論均判斷為不可靠。",
         "nickname": "白堊界衛",
-        "templateId": "eny_0061_palecore",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0061_palecore_ability_1",
@@ -385,11 +335,9 @@
         ]
     },
     "eny_0062_paletent": {
-        "enemyId": "eny_0062_paletent",
         "name": "白堊附肢",
         "description": "未歸檔。因形成特徵，推定為天使。外觀上自本體延伸而出，實則由形成位置延伸至本體，推定此為擾敵策略。",
         "nickname": "白堊附肢",
-        "templateId": "eny_0062_paletent",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0062_paletent_ability_1",
@@ -402,11 +350,9 @@
         ]
     },
     "eny_0063_agmelee2": {
-        "enemyId": "eny_0063_agmelee2",
         "name": "大角天使α",
         "description": "「克利俄松·阿納翁」（歸檔編號：ACL071α），ACL071的激發種。溢出的能量給了它們標誌性的亮紅外觀，比模式種更為堅固、靈活。",
         "nickname": "大角天使α",
-        "templateId": "eny_0063_agmelee2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -415,11 +361,9 @@
         ]
     },
     "eny_0064_agrange2": {
-        "enemyId": "eny_0064_agrange2",
         "name": "釘刺天使α",
         "description": "「肯托隆·阿納翁」（歸檔編號：ARL121α），ARL121的激發種。單純靠更高的能量密度來提高火力，能量利用效率仍然很低。",
         "nickname": "釘刺天使α",
-        "templateId": "eny_0064_agrange2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -428,11 +372,9 @@
         ]
     },
     "eny_0065_lbmob2": {
-        "enemyId": "eny_0065_lbmob2",
         "name": "精銳劫掠者",
         "description": "受霧火強化，裝備近戰武器的裂地者精銳武裝人員。他們的裝備、體能與白刃戰技術得到了全面強化。",
         "nickname": "精銳劫掠者",
-        "templateId": "eny_0065_lbmob2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -441,11 +383,9 @@
         ]
     },
     "eny_0066_lbhunt2": {
-        "enemyId": "eny_0066_lbhunt2",
         "name": "精銳伏擊射手",
         "description": "受霧火強化，裝備遠程武器的裂地者精銳武裝人員。他們訓練有素，射擊精準，使用的弩箭得到了全面強化。",
         "nickname": "精銳伏擊射手",
-        "templateId": "eny_0066_lbhunt2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -454,11 +394,9 @@
         ]
     },
     "eny_0067_hound2": {
-        "enemyId": "eny_0067_hound2",
         "name": "精銳撕裂牙獸",
         "description": "受霧火強化，由裂地者武裝人員操縱的精銳戰獸。比普通的牙獸更加殘暴狡詐，行為詭異、難以預料。",
         "nickname": "精銳撕裂牙獸",
-        "templateId": "eny_0067_hound2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0067_hound2_ability_1",
@@ -467,11 +405,9 @@
         ]
     },
     "eny_0068_lbtough2": {
-        "enemyId": "eny_0068_lbtough2",
         "name": "精銳行刑人",
         "description": "受霧火強化，裝備重型斬擊斧的裂地者精銳武裝人員，體型高大。他們通常是碾骨氏族襲掠隊伍的首領。",
         "nickname": "精銳行刑人",
-        "templateId": "eny_0068_lbtough2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0068_lbtough2_ability_1",
@@ -484,11 +420,9 @@
         ]
     },
     "eny_0069_aghornb2": {
-        "enemyId": "eny_0069_aghornb2",
         "name": "剛角天使α",
         "description": "「提利索隆·阿納翁」（歸檔編號：ACL072α），ACL072的激發種。其具有的高能量並沒有影響到決策能力，較為危險。",
         "nickname": "剛角天使α",
-        "templateId": "eny_0069_aghornb2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "common_ability",
@@ -497,11 +431,9 @@
         ]
     },
     "eny_0070_agscorp2": {
-        "enemyId": "eny_0070_agscorp2",
         "name": "重刺天使α",
         "description": "「華麗肯托隆·阿納翁」（歸檔編號：ARL141α），ARL141的激發種。保留了原本多變的攻擊方式，提高了形成模式的堅固度，危險。",
         "nickname": "重刺天使α",
-        "templateId": "eny_0070_agscorp2",
         "enemyAbilityDesc": [
             {
                 "abilityId": "eny_0070_agscorp2_ability_1",
