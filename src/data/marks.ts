@@ -1,5 +1,5 @@
 import { reactive, watchEffect, ref } from 'vue';
-import { allPoints } from './points';
+import { getAllPoints } from './points';
 import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
 
 export interface MarkInfoDetail {
@@ -41,6 +41,7 @@ const notifyMarkChange = () => {
 
 export const marks: MarkInfo = reactive({});
 
+// 修改为异步初始化函数
 export const initMarksData = async () => {
   // 清空现有数据
   Object.keys(marks).forEach(key => {
@@ -49,6 +50,7 @@ export const initMarksData = async () => {
   // 初始加载
   await loadMarksFromStorage();
   // 初始化标记数据
+  const allPoints = await getAllPoints();
   allPoints.forEach(point => {
     if (!marks[point.levelLogicId]) {
       marks[point.levelLogicId] = {
@@ -56,14 +58,19 @@ export const initMarksData = async () => {
       };
     }
   });
-  // console.log('标记数据初始化完成');
-  // console.log('标记数据:', marks);
+  console.log(
+    '标记数据初始化完成，共处理标记',
+    Object.keys(marks).length,
+    '个'
+  );
   // 监听变化并保存
   watchEffect(() => {
     // 同时仍然调用现有的回调机制
     notifyMarkChange();
     saveMarksToStorage();
   });
+
+  return marks;
 };
 
 export const markPoint = (seq: number) => {
@@ -90,7 +97,7 @@ export const markPoint = (seq: number) => {
 // IndexedDB存储的键名
 const STORAGE_KEY = 'endfield-map-marks';
 
-// 保存到IndexedDB永久存储
+// 修改为明确的异步函数
 export const saveMarksToStorage = async () => {
   try {
     // 复制一个普通的对象，去除Vue的响应式包装
@@ -124,7 +131,8 @@ export const saveMarksToStorage = async () => {
 };
 
 // 构造默认数据
-export const initMarks = () => {
+export const initMarks = async () => {
+  const allPoints = await getAllPoints();
   allPoints.forEach(point => {
     if (!marks[point.levelLogicId]) {
       marks[point.levelLogicId] = {

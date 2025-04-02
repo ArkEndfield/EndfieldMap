@@ -13,7 +13,7 @@ import {
 import { computed, reactive, watch } from 'vue';
 import Cluster from 'ol/source/Cluster';
 import VectorLayer from 'ol/layer/Vector';
-import { type PointData, points } from './points';
+import { type PointData, getCurrentPoints } from './points';
 import { currentMarkFilter, shouldShowByMarkStatus } from './marks';
 import { loadJSON } from '@/utils/jsonLoader';
 
@@ -366,7 +366,7 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
   return styles;
 }
 
-// 修改marker函数，支持异步加载图片尺寸
+// 初始化点位标记
 export const marker = (entry: PointData) => {
   const info = entityInfo[entry.entityDataIdKey];
   if (!info) return;
@@ -407,19 +407,6 @@ export const marker = (entry: PointData) => {
   }
   return feature;
 };
-
-// 加载数据
-for (const point of points) {
-  // 更新计数
-  if (entityInfo[point.entityDataIdKey]?.entityInfo) {
-    entityInfo[point.entityDataIdKey].entityInfo.count =
-      (entityInfo[point.entityDataIdKey].entityInfo.count || 0) + 1;
-  }
-
-  itemMap[point.entityDataIdKey] = (itemMap[point.entityDataIdKey] || 0) + 1;
-  const feature = marker(point);
-  if (feature) features.push(feature);
-}
 
 // 刷新所有样式的函数
 export const refreshStyles = () => {
@@ -629,7 +616,8 @@ export const reinitializeEntityLayers = async () => {
 
   try {
     // 重新初始化实体信息
-    await initializeEntityInfo(points);
+    const currentPoints = await getCurrentPoints();
+    await initializeEntityInfo(currentPoints);
 
     // 恢复显示状态（只针对新地图中存在的实体）
     for (const key in entityInfo) {
@@ -778,15 +766,19 @@ watch(currentMarkFilter, () => {
 });
 
 // 获取实体类型对应的点位集合
-export const getPointsByEntityType = (entityType: string): PointData[] => {
-  return points.filter(point => point.entityDataIdKey === entityType);
+export const getPointsByEntityType = async (
+  entityType: string
+): Promise<PointData[]> => {
+  const currentPoints = await getCurrentPoints();
+  return currentPoints.filter(point => point.entityDataIdKey === entityType);
 };
 
 // 修改初始化调用为异步方式
 export async function initializeMap() {
   try {
     await loadEntityData(); // 先加载实体数据
-    await initializeEntityInfo(points); // 使用导入的points数组
+    const currentPoints = await getCurrentPoints(); // 使用导入的获取当前点位的函数
+    await initializeEntityInfo(currentPoints); // 使用当前点位数组
     createEntityClusterLayers(); // 最后创建图层
   } catch (error) {
     console.error('初始化地图失败:', error);

@@ -1,4 +1,5 @@
 import { loadJSON } from '@/utils/jsonLoader';
+import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
 
 const folders = import.meta.glob('/public/data/map*/*.json');
 // 获取 map(id)_lv(id) 文件夹列表，去重
@@ -32,14 +33,36 @@ export type PointType = {
   [key: string]: PointData[];
 };
 
-export const allPoints: PointData[] = [];
+// IndexedDB 存储键名
+const DB_ALL_POINTS_KEY = 'allPoints';
+const DB_CURRENT_POINTS_KEY = 'currentPoints';
 
-export const points: PointData[] = [];
+// 从 IndexedDB 获取所有点位
+export async function getAllPoints(): Promise<PointData[]> {
+  const points = await getItem<PointData[]>(
+    DB_ALL_POINTS_KEY,
+    StorageType.PERMANENT
+  );
+  return points || [];
+}
+
+// 从 IndexedDB 获取当前过滤后的点位
+export async function getCurrentPoints(): Promise<PointData[]> {
+  const points = await getItem<PointData[]>(
+    DB_CURRENT_POINTS_KEY,
+    StorageType.TEMPORARY
+  );
+  return points || [];
+}
 
 // 筛选并更新点位数据的通用函数
-function filterAndUpdatePoints(): PointData[] {
+async function filterAndUpdatePoints(): Promise<PointData[]> {
   // 使用通用函数筛选并更新点位
   const mapId = localStorage.getItem('map') || 'map001';
+
+  // 获取所有点位数据
+  const allPoints = await getAllPoints();
+
   // 根据地图ID筛选点位
   const filteredPoints = allPoints.filter(point => {
     const isMap2 = mapId === 'map002';
@@ -48,15 +71,14 @@ function filterAndUpdatePoints(): PointData[] {
       : point.sceneId.includes('map01');
   });
 
-  // 更新点位数组
-  points.length = 0;
-  filteredPoints.forEach(point => {
-    points.push(point);
-  });
+  // 更新过滤后的点位到 IndexedDB
+  await setItem(DB_CURRENT_POINTS_KEY, filteredPoints, StorageType.TEMPORARY);
 
-  console.log(`地图 ${mapId} 的点位数据已更新，当前点位数量: ${points.length}`);
+  console.log(
+    `地图 ${mapId} 的点位数据已更新，当前点位数量: ${filteredPoints.length}`
+  );
 
-  return points;
+  return filteredPoints;
 }
 
 // 加载点位数据
@@ -84,15 +106,14 @@ export async function loadPoints() {
     // 等待所有数据加载完成
     const dataArray = await Promise.all(dataPromises);
     const data = dataArray.flat();
-    // console.log(data);
-    points.length = 0;
 
-    allPoints.push(...data);
+    // 将所有点位存储到 IndexedDB
+    await setItem(DB_ALL_POINTS_KEY, data, StorageType.PERMANENT);
 
-    console.log(`加载了 ${allPoints.length} 个点位数据`);
+    console.log(`加载了 ${data.length} 个点位数据`);
 
     // console.log(JSON.stringify(allPoints, null, 2));
-    return points;
+    return await getCurrentPoints();
   } catch (error) {
     console.error('加载点位数据失败:', error);
     throw error;
@@ -102,11 +123,11 @@ export async function loadPoints() {
 // 更新点位数据
 export async function updatePoints() {
   try {
+    const allPoints = await getAllPoints();
     if (allPoints.length <= 0) {
       await loadPoints();
     }
-    filterAndUpdatePoints();
-    return points;
+    return await filterAndUpdatePoints();
   } catch (error) {
     console.error('更新点位数据失败:', error);
     throw error;

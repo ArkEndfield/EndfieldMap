@@ -5,7 +5,7 @@ import { Projection } from 'ol/proj';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
 import { areaNameLayer } from '@/data/locations';
-import { entityClusterLayers } from '@/data/entity';
+import { entityClusterLayers, refresh } from '@/data/entity';
 import { ref } from 'vue';
 import { Layer } from 'ol/layer';
 import VectorSource from 'ol/source/Vector';
@@ -21,6 +21,13 @@ export const simpleProjection = new Projection({
 // 透明图像，用于无法加载的瓦片
 export const transparentBase64 =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
+
+// 跟踪实体图层加载状态
+const entityLayersLoaded = ref(false);
+// 用于取消延迟加载的计时器ID
+let entityLayerTimerId: number | null = null;
+// 最大重试次数
+const MAX_RETRIES = 5;
 
 // 瓦片加载函数
 export const tileLoad = (imageTile: any, src: string) => {
@@ -54,9 +61,63 @@ function isClusterSource(source: any): source is Cluster {
   return source && 'getSource' in source;
 }
 
+/**
+ * 添加实体图层到地图，支持重试逻辑
+ * @param currentRetry 当前重试次数
+ */
+function addEntityLayersToMap(currentRetry = 0) {
+  // 清除之前的计时器
+  if (entityLayerTimerId !== null) {
+    clearTimeout(entityLayerTimerId);
+    entityLayerTimerId = null;
+  }
+
+  if (!map.value) {
+    console.warn('地图实例不存在，无法添加实体图层');
+    return;
+  }
+
+  if (entityClusterLayers.length > 0) {
+    console.log(`添加 ${entityClusterLayers.length} 个实体图层到地图`);
+
+    // 遍历添加所有实体图层
+    entityClusterLayers.forEach(layer => {
+      map.value?.addLayer(layer);
+    });
+
+    // 记录加载成功
+    entityLayersLoaded.value = true;
+    console.log('实体图层加载成功');
+
+    // 强制刷新一次，确保所有点位可见
+    refresh();
+
+    return;
+  }
+
+  // 如果还没有实体图层数据，但未超过最大重试次数，则继续尝试
+  if (currentRetry < MAX_RETRIES) {
+    console.log(
+      `实体图层数据尚未准备好，${currentRetry + 1}/${MAX_RETRIES} 次重试中...`
+    );
+
+    // 递增重试间隔（指数退避）
+    const delay = Math.min(500 * Math.pow(1.5, currentRetry), 5000);
+
+    entityLayerTimerId = window.setTimeout(() => {
+      addEntityLayersToMap(currentRetry + 1);
+    }, delay);
+  } else {
+    console.warn('达到最大重试次数，实体图层加载失败');
+  }
+}
+
 // 更新地图视图和图层
 export function updateMap(mapIndex: string) {
   if (!map.value) return;
+
+  // 重置实体图层加载状态
+  entityLayersLoaded.value = false;
 
   // 移除所有现有图层前，先清理它们
   const layers = map.value.getLayers().getArray();
@@ -92,12 +153,12 @@ export function updateMap(mapIndex: string) {
     }),
   });
 
-  // 重新添加所有图层
+  // 重新添加基础图层
   map.value.addLayer(tileLayer);
   map.value.addLayer(areaNameLayer);
-  entityClusterLayers.forEach(layer => {
-    map.value?.addLayer(layer);
-  });
+
+  // 使用改进的方法添加实体图层
+  addEntityLayersToMap();
 
   // 更新视图中心点
   const view = map.value.getView();
@@ -114,6 +175,12 @@ export function updateMap(mapIndex: string) {
 // 清理地图资源的函数
 export function cleanupMap() {
   if (!map.value) return;
+
+  // 清除实体图层的加载计时器
+  if (entityLayerTimerId !== null) {
+    clearTimeout(entityLayerTimerId);
+    entityLayerTimerId = null;
+  }
 
   // 清理地图交互
   const interactions = map.value.getInteractions().getArray();
@@ -161,7 +228,8 @@ export function cleanupMap() {
   // 分离目标元素
   map.value.setTarget(undefined);
 
-  // console.log('已清理地图资源');
+  // 重置状态
+  entityLayersLoaded.value = false;
 }
 
 export function createMap(
@@ -171,20 +239,21 @@ export function createMap(
 ) {
   const zoomControl = createZoomControl(controlsElement);
 
+  // 基础图层 - 只包含底图和地名标注
+  const baseLayers = [
+    new TileLayer({
+      source: new XYZ({
+        projection: simpleProjection,
+        url: `/map/${mapIndex}/{z}/{y}/{x}.png`,
+        tileLoadFunction: tileLoad,
+      }),
+    }),
+    areaNameLayer,
+  ];
+
   map.value = new Map({
     target: 'map',
-    layers: [
-      new TileLayer({
-        source: new XYZ({
-          projection: simpleProjection,
-          url: `/map/${mapIndex}/{z}/{y}/{x}.png`,
-          tileLoadFunction: tileLoad,
-        }),
-      }),
-      areaNameLayer,
-      // 使用散开的图层代替单一聚合图层
-      ...entityClusterLayers,
-    ],
+    layers: baseLayers, // 仅使用基础图层，实体图层将在加载完成后单独添加
     view: new View({
       projection: simpleProjection,
       center: mapIndex === 'map001' ? [100, 152] : [50, 188],
@@ -201,6 +270,17 @@ export function createMap(
     overlays: [overlay],
     controls: [zoomControl],
     pixelRatio: 2, // 提高像素比以提升移动中的渲染质量
+  });
+
+  // 使用改进的方法添加实体图层
+  addEntityLayersToMap();
+
+  // 监听地图渲染完成事件，如果实体图层还没加载成功，再次尝试
+  map.value.once('rendercomplete', () => {
+    if (!entityLayersLoaded.value) {
+      console.log('地图渲染完成但实体图层未加载，重新尝试添加');
+      addEntityLayersToMap();
+    }
   });
 }
 

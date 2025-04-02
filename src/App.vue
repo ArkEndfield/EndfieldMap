@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
-import { updatePoints } from './data/points';
+import { updatePoints, getCurrentPoints } from './data/points';
 import {
   loadEntityData,
   reinitializeEntityLayers,
@@ -76,9 +76,17 @@ async function loadAllData() {
     await loadEntityData();
     console.log('实体数据加载完成');
 
-    // 加载点位数据
-    await updatePoints();
-    console.log('点位数据加载完成');
+    // 加载点位数据 - 使用getCurrentPoints获取预加载的点位
+    const points = await getCurrentPoints();
+
+    // 如果没有点位数据，可能是预加载失败，尝试重新加载
+    if (!points || points.length === 0) {
+      console.log('未找到预加载的点位数据，尝试重新加载...');
+      const freshPoints = await updatePoints();
+      console.log('点位数据重新加载完成，加载了', freshPoints.length, '个点位');
+    } else {
+      console.log('使用预加载的点位数据，共', points.length, '个点位');
+    }
 
     // 加载奖励数据
     await loadRewardData();
@@ -90,12 +98,13 @@ async function loadAllData() {
     console.log('地图初始化完成');
 
     console.log('开始初始化已完成数据...');
-    initMarksData();
+    // 确保使用await等待marks数据初始化完成
+    await initMarksData();
     console.log('已完成数据初始化完成');
 
     console.log('开始初始化指南数据...');
-    // 初始化指南数据
-    initializeGuides();
+    // 确保使用await等待指南数据初始化完成
+    await initializeGuides();
     console.log('指南数据初始化完成');
 
     console.log('开始加载地名标注...');
@@ -158,16 +167,17 @@ watch(
 
     try {
       // 重新加载数据
-      await updatePoints();
+      const points = await updatePoints();
+      console.log(`地图切换，加载了 ${points.length} 个点位`);
 
       // 等待 Vue 更新完成
       await nextTick();
 
       // 重新初始化实体图层
-      reinitializeEntityLayers();
+      await reinitializeEntityLayers();
 
-      // 初始化指南数据
-      initializeGuides();
+      // 初始化指南数据 - 异步等待完成
+      await initializeGuides();
 
       // 等待实体图层初始化完成
       await nextTick();

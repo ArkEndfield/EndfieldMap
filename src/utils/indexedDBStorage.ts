@@ -37,13 +37,16 @@ let dbInstance: IDBDatabase | null = null;
 let isInitializing = false;
 let initPromise: Promise<IDBDatabase> | null = null;
 
+// 添加一个显式的初始化完成标志
+let isDBInitialized = false;
+
 /**
  * 初始化IndexedDB数据库
  * @returns Promise<IDBDatabase>
  */
 export function initDB(): Promise<IDBDatabase> {
   // 如果已经有实例，直接返回
-  if (dbInstance) {
+  if (dbInstance && isDBInitialized) {
     return Promise.resolve(dbInstance);
   }
 
@@ -53,6 +56,7 @@ export function initDB(): Promise<IDBDatabase> {
   }
 
   isInitializing = true;
+  console.log('开始初始化 IndexedDB 数据库...');
 
   // 直接打开数据库，不再删除现有数据库
   initPromise = new Promise((resolve, reject) => {
@@ -67,7 +71,31 @@ export function initDB(): Promise<IDBDatabase> {
     request.onsuccess = event => {
       dbInstance = (event.target as IDBOpenDBRequest).result;
       isInitializing = false;
+      isDBInitialized = true;
       console.log('IndexedDB数据库初始化成功');
+
+      // 添加数据库关闭事件监听
+      dbInstance.onclose = () => {
+        console.log('IndexedDB连接已关闭，重置状态');
+        dbInstance = null;
+        isDBInitialized = false;
+      };
+
+      // 添加错误处理
+      dbInstance.onerror = event => {
+        console.error('IndexedDB出错:', event);
+      };
+
+      // 添加版本变更处理
+      dbInstance.onversionchange = () => {
+        if (dbInstance) {
+          dbInstance.close();
+          dbInstance = null;
+          isDBInitialized = false;
+          console.log('IndexedDB版本已变更，连接已关闭');
+        }
+      };
+
       resolve(dbInstance);
     };
 
@@ -92,6 +120,35 @@ export function initDB(): Promise<IDBDatabase> {
   return initPromise;
 }
 
+// 立即自动初始化数据库，确保在应用启动时就完成初始化
+initDB().catch(error => {
+  console.error('自动初始化IndexedDB失败:', error);
+});
+
+/**
+ * 强制重新初始化数据库连接
+ * 在出现连接问题时可以调用此函数
+ */
+export async function reinitializeDB(): Promise<IDBDatabase> {
+  // 如果有现有实例，先关闭它
+  if (dbInstance) {
+    try {
+      dbInstance.close();
+    } catch (e) {
+      console.error('关闭现有数据库连接失败:', e);
+    }
+  }
+
+  // 重置所有状态
+  dbInstance = null;
+  isInitializing = false;
+  isDBInitialized = false;
+  initPromise = null;
+
+  // 重新初始化
+  return initDB();
+}
+
 /**
  * 安全获取事务
  * 确保数据库已初始化并且所需的对象存储存在
@@ -103,21 +160,44 @@ async function getTransaction(
   storeNames: string | string[],
   mode: IDBTransactionMode
 ): Promise<IDBTransaction> {
-  // 强制重新初始化数据库以确保对象存储存在
-  await initDB();
+  // 如果数据库实例不存在或未完全初始化，则强制重新初始化
+  if (!dbInstance || !isDBInitialized) {
+    console.log('数据库未初始化，正在初始化...');
+    await initDB();
+  }
 
   const db = dbInstance!;
   const storeNamesArray =
     typeof storeNames === 'string' ? [storeNames] : storeNames;
 
-  // 再次检查所有请求的存储是否存在
+  // 检查所有请求的存储是否存在
   for (const storeName of storeNamesArray) {
     if (!db.objectStoreNames.contains(storeName)) {
-      throw new Error(`对象存储 "${storeName}" 不存在，即使在初始化之后`);
+      console.error(`对象存储 "${storeName}" 不存在，尝试重新初始化数据库`);
+      // 如果存储不存在，尝试重新初始化数据库
+      await reinitializeDB();
+
+      // 再次检查存储是否存在
+      if (!dbInstance!.objectStoreNames.contains(storeName)) {
+        throw new Error(`对象存储 "${storeName}" 不存在，无法创建事务`);
+      }
     }
   }
 
-  return db.transaction(storeNames, mode);
+  try {
+    const transaction = db.transaction(storeNames, mode);
+
+    // 添加错误处理
+    transaction.onerror = event => {
+      console.error(`事务出错:`, event);
+    };
+
+    return transaction;
+  } catch (error) {
+    console.error('创建事务失败，尝试重新初始化数据库:', error);
+    await reinitializeDB();
+    return dbInstance!.transaction(storeNames, mode);
+  }
 }
 
 /**
@@ -134,13 +214,9 @@ export async function setItem<T>(
   type: StorageType = StorageType.TEMPORARY,
   expiryDuration: number | null = DEFAULT_CACHE_DURATION
 ): Promise<void> {
-  // 开发模式下不缓存带过期时间的临时数据
-  if (
-    isDevelopment &&
-    type === StorageType.TEMPORARY &&
-    expiryDuration !== null
-  ) {
-    return;
+  // 开发模式下打印提示，但仍然允许存储
+  if (isDevelopment) {
+    console.log(`[IndexedDB] 存储数据: ${key} (${type})`);
   }
 
   try {
@@ -161,6 +237,9 @@ export async function setItem<T>(
         const request = store.put(item, key);
 
         request.onsuccess = () => {
+          if (isDevelopment) {
+            console.log(`[IndexedDB] 存储成功: ${key}`);
+          }
           resolve();
         };
 
@@ -169,6 +248,7 @@ export async function setItem<T>(
           reject(new Error('存储数据失败'));
         };
       } catch (error) {
+        console.error('获取事务失败:', error);
         reject(error);
       }
     });
@@ -188,62 +268,93 @@ export async function getItem<T>(
   key: string,
   type: StorageType = StorageType.TEMPORARY
 ): Promise<T | null> {
-  try {
-    // 确保数据库初始化
-    await initDB();
-
-    return new Promise(async (resolve, reject) => {
-      try {
-        const transaction = await getTransaction(STORES[type], 'readonly');
-        const store = transaction.objectStore(STORES[type]);
-        const request = store.get(key);
-
-        request.onsuccess = () => {
-          const item = request.result as StorageItem<T> | undefined;
-
-          // 检查数据是否存在
-          if (!item) {
-            resolve(null);
-            return;
-          }
-
-          // 检查数据是否过期（仅针对临时存储）
-          if (
-            type === StorageType.TEMPORARY &&
-            item.expiry !== null &&
-            item.expiry < Date.now()
-          ) {
-            // 数据已过期，删除并返回null
-            store.delete(key);
-            resolve(null);
-            return;
-          }
-
-          // 开发模式下跳过带过期时间的临时数据
-          if (
-            isDevelopment &&
-            type === StorageType.TEMPORARY &&
-            item.expiry !== null
-          ) {
-            resolve(null);
-            return;
-          }
-
-          resolve(item.value);
-        };
-
-        request.onerror = event => {
-          console.error('获取数据失败:', event);
-          reject(new Error('获取数据失败'));
-        };
-      } catch (error) {
-        reject(error);
-      }
-    });
-  } catch (error) {
-    console.error('获取数据时出错:', error);
-    return null;
+  if (isDevelopment) {
+    console.log(`[IndexedDB] 获取数据: ${key} (${type})`);
   }
+
+  // 最大重试次数
+  const MAX_RETRIES = 3;
+  let retryCount = 0;
+
+  while (retryCount < MAX_RETRIES) {
+    try {
+      // 确保数据库初始化
+      await initDB();
+
+      return await new Promise(async (resolve, reject) => {
+        try {
+          const transaction = await getTransaction(STORES[type], 'readonly');
+          const store = transaction.objectStore(STORES[type]);
+          const request = store.get(key);
+
+          request.onsuccess = () => {
+            const item = request.result as StorageItem<T> | undefined;
+
+            // 检查数据是否存在
+            if (!item) {
+              if (isDevelopment) {
+                console.log(`[IndexedDB] 数据不存在: ${key}`);
+              }
+              resolve(null);
+              return;
+            }
+
+            // 检查数据是否过期（仅针对临时存储）
+            if (
+              type === StorageType.TEMPORARY &&
+              item.expiry !== null &&
+              item.expiry < Date.now()
+            ) {
+              // 数据已过期，删除并返回null
+              store.delete(key);
+              if (isDevelopment) {
+                console.log(`[IndexedDB] 数据已过期: ${key}`);
+              }
+              resolve(null);
+              return;
+            }
+
+            if (isDevelopment) {
+              console.log(`[IndexedDB] 获取成功: ${key}`);
+            }
+            resolve(item.value);
+          };
+
+          request.onerror = event => {
+            console.error('获取数据失败:', event);
+            reject(new Error('获取数据失败'));
+          };
+        } catch (error) {
+          console.error('获取事务失败:', error);
+          reject(error);
+        }
+      });
+    } catch (error) {
+      console.error(
+        `获取数据时出错 (尝试 ${retryCount + 1}/${MAX_RETRIES}):`,
+        error
+      );
+      retryCount++;
+
+      // 最后一次尝试失败，返回null
+      if (retryCount >= MAX_RETRIES) {
+        console.error(`达到最大重试次数，获取数据失败: ${key}`);
+        return null;
+      }
+
+      // 等待一段时间再重试
+      await new Promise(resolve => setTimeout(resolve, 300 * retryCount));
+
+      // 重新初始化数据库
+      try {
+        await reinitializeDB();
+      } catch (dbError) {
+        console.error('重新初始化数据库失败:', dbError);
+      }
+    }
+  }
+
+  return null;
 }
 
 /**

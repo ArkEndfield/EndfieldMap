@@ -27,9 +27,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { categoryInfo, refresh, entityInfo } from '@/data/entity';
-import { points } from '@/data/points';
+import { getCurrentPoints } from '@/data/points';
 import { marks, markStateChangeTrigger, onMarkChange } from '@/data/marks';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
@@ -47,8 +47,11 @@ const props = withDefaults(
 const entityMarkCounts = ref<Record<string, number>>({});
 
 // 计算每个实体类型的标记数量
-const calculateEntityMarkCounts = () => {
+const calculateEntityMarkCounts = async () => {
   const counts: Record<string, number> = {};
+
+  // 获取当前点位
+  const points = await getCurrentPoints();
 
   // 遍历所有点位
   for (const point of points) {
@@ -77,11 +80,11 @@ const getMarkCountForEntity = (category: string, name: string) => {
   return entityMarkCounts.value[entityKey] || 0;
 };
 
-// 初始计算标记数量
-calculateEntityMarkCounts();
+// 使用onMounted确保组件挂载后注册回调和计算标记数量
+onMounted(async () => {
+  // 初始计算标记数量
+  await calculateEntityMarkCounts();
 
-// 使用onMounted确保组件挂载后注册回调
-onMounted(() => {
   // 使用onMarkChange注册标记变更回调
   onMarkChange(() => {
     calculateEntityMarkCounts();
@@ -97,14 +100,23 @@ watch(
   { immediate: true }
 );
 
-// 监听points变化，当地图切换时重新计算
+// 监听地图切换 (使用localStorage中的map值)
 watch(
-  () => points.length,
+  () => localStorage.getItem('map'),
   () => {
     calculateEntityMarkCounts();
-  },
-  { immediate: true }
+  }
 );
+
+// 删除定时器，减少不必要的数据库查询
+// const updateInterval = setInterval(async () => {
+//   await calculateEntityMarkCounts();
+// }, 3000);
+
+// 组件卸载时清除定时器 - 不再需要
+onBeforeUnmount(() => {
+  // clearInterval(updateInterval);
+});
 </script>
 
 <style lang="scss" scoped>

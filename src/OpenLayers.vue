@@ -55,6 +55,7 @@ import {
 import { loadTextPoints } from './data/locations';
 import { type PointData } from './data/points';
 import { updatePoints } from './data/points';
+import { debounce, throttle } from './utils/common';
 
 // 状态变量
 // const map = ref<Map | null>(null);
@@ -125,34 +126,48 @@ onMounted(async () => {
     refresh();
   });
 
-  // 监听地图缩放事件
-  map.value?.getView().on('change:resolution', function () {
-    const currentMap = map.value;
-    if (!currentMap) return;
+  // 为地图缩放创建更稳定的缩放控制机制
+  // 使用节流函数处理缩放事件，确保UI更新更加平滑
+  const handleZoomChange = throttle(
+    function () {
+      const currentMap = map.value;
+      if (!currentMap) return;
 
-    const zoom = currentMap.getView().getZoom() || 0;
-    // 更新本地状态和步进条
-    zoomLevel.value = zoom;
-    loadTextPoints(true, zoom > 3);
+      const zoom = currentMap.getView().getZoom() || 0;
+      // 四舍五入到最接近的0.5，使缩放值更稳定
+      const stableZoom = Math.round(zoom * 2) / 2;
 
-    // 更新聚合距离
-    updateClusterDistance(zoom);
+      // 只在真正需要更新时才更新UI值
+      if (Math.abs(zoomLevel.value - stableZoom) >= 0.1) {
+        zoomLevel.value = stableZoom;
+      }
 
-    // 更新当前缩放级别，这会触发图标大小的更新
-    updateCurrentZoom(zoom);
+      // 以下操作放入防抖函数中执行，减少性能消耗
+      updateResourceIntensiveOperations(zoom);
+    },
+    100,
+    { leading: true, trailing: true }
+  );
 
-    // 在最大缩放级别时强制禁用聚合
-    if (zoom >= 5) {
-      forceDisperseAtMaxZoom(zoom);
-    }
+  // 使用防抖处理占用资源的操作（文本点加载、聚类距离更新等）
+  const updateResourceIntensiveOperations = debounce(
+    function (zoom: number) {
+      // 只在地图完全静止后执行这些重型操作
+      loadTextPoints(true, zoom > 3);
+      updateClusterDistance(zoom);
+      updateCurrentZoom(zoom);
 
-    // 确保缩放后弹窗管理器仍然能够正常工作
-    if (isPopupVisible.value && popupManager.value) {
-      // 重置防抖标记，让弹窗能够正常响应
-      popupManager.value.resetAnimationState();
+      // 在最大缩放级别时强制禁用聚合
+      if (zoom >= 5) {
+        forceDisperseAtMaxZoom(zoom);
+      }
 
-      // 调整已打开的弹窗位置
-      setTimeout(() => {
+      // 确保缩放后弹窗管理器仍然能够正常工作
+      if (isPopupVisible.value && popupManager.value) {
+        // 重置防抖标记，让弹窗能够正常响应
+        popupManager.value.resetAnimationState();
+
+        // 调整已打开的弹窗位置
         if (isPopupVisible.value) {
           // 如果副弹窗已展开，确保副弹窗效果正常
           if (openSubPopup.value) {
@@ -161,19 +176,36 @@ onMounted(async () => {
             popupManager.value?.adjustPopupPosition(true);
           }
         }
-      }, 200);
-    }
-  });
+      }
+    },
+    300,
+    { leading: false, trailing: true }
+  );
 
-  // 监听鼠标滚轮和其他缩放事件，确保步进条同步
-  map.value?.on('moveend', () => {
-    const currentMap = map.value;
-    if (!currentMap) return;
+  // 监听地图缩放事件，使用节流函数处理UI更新
+  map.value?.getView().on('change:resolution', handleZoomChange);
 
-    // 获取当前缩放级别并更新步进条
-    const zoom = currentMap.getView().getZoom() || 0;
-    zoomLevel.value = zoom;
-  });
+  // 监听地图移动结束事件，确保最终值是准确的
+  map.value?.on(
+    'moveend',
+    debounce(
+      () => {
+        const currentMap = map.value;
+        if (!currentMap) return;
+
+        const zoom = currentMap.getView().getZoom() || 0;
+        // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
+        const stableZoom = Math.round(zoom * 2) / 2;
+
+        // 确保最终值是准确的
+        if (Math.abs(zoomLevel.value - stableZoom) >= 0.01) {
+          zoomLevel.value = stableZoom;
+        }
+      },
+      250,
+      { leading: false, trailing: true }
+    )
+  );
 
   // 添加选择交互
   selectInteraction = new Select({
@@ -394,7 +426,7 @@ onBeforeUnmount(() => {
   }
 });
 
-// 监听地图更换
+// 监听地图切换
 watch(
   () => cacheMapId.value,
   async newValue => {
@@ -418,13 +450,15 @@ watch(
 
     try {
       // 更新点位数据 - 使用await确保异步操作完成
-      await updatePoints();
+      const points = await updatePoints();
+      console.log(`地图切换，加载了 ${points.length} 个点位`);
 
       // 等待 Vue 更新完成
       await nextTick();
 
-      // 重新初始化实体图层 - 确保旧资源被清理
-      reinitializeEntityLayers();
+      // 重新初始化实体图层 - 确保使用await等待异步操作完成
+      await reinitializeEntityLayers();
+      console.log('实体图层重新初始化完成');
 
       // 等待实体图层初始化完成
       await nextTick();
