@@ -9,6 +9,7 @@ import {
   Stroke,
   Style,
   Text,
+  RegularShape,
 } from 'ol/style';
 import { computed, reactive, watch } from 'vue';
 import Cluster from 'ol/source/Cluster';
@@ -293,7 +294,7 @@ function calculateOptimalScale(
   return targetSize / maxDimension;
 }
 
-// 修改创建样式的函数，加入图片尺寸自适应
+// 修改创建样式的函数，加入图片尺寸自适应和内部尖头装饰
 async function createCircleIconStyle(entityType: string, size: number = 1) {
   const color = getColorForEntity(entityType);
   const baseRadius = 15;
@@ -319,17 +320,56 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
 
   // 创建统一的样式
   let styles = [
+    // 圆形外部描边 - 与背景色相同
+    new Style({
+      image: new CircleStyle({
+        radius: radius + 2, // 外圈描边略大
+        fill: new Fill({
+          color: 'transparent', // 透明填充
+        }),
+        stroke: new Stroke({
+          color: color, // 与背景同色
+          width: 2, // 与内部描边相同的宽度
+        }),
+      }),
+    }),
     // 圆形背景
     new Style({
       image: new CircleStyle({
         radius: radius,
         fill: new Fill({
-          color: color,
+          color: '#525152',
         }),
         stroke: new Stroke({
-          color: '#fff',
-          width: 1,
+          color: '#2E2F2E',
+          width: 2.5, // 增加描边宽度
         }),
+      }),
+    }),
+    // 左侧尖头装饰
+    new Style({
+      image: new RegularShape({
+        points: 3, // 三角形
+        radius: radius * 0.35, // 减小三角形整体大小
+        angle: 0.5 * Math.PI, // 起始角度
+        fill: new Fill({
+          color: '#2E2F2E', // 与描边同色
+        }),
+        displacement: [-radius + radius * 0.2, 0], // 位置左侧，稍微偏内一点
+        rotation: 0, // 不旋转
+      }),
+    }),
+    // 右侧尖头装饰
+    new Style({
+      image: new RegularShape({
+        points: 3, // 三角形
+        radius: radius * 0.35, // 减小三角形整体大小
+        angle: -0.5 * Math.PI, // 旋转180度，使三角形朝左
+        fill: new Fill({
+          color: '#2E2F2E', // 与描边同色
+        }),
+        displacement: [radius - radius * 0.2, 0], // 位置右侧，稍微偏内一点
+        rotation: 0, // 不旋转
       }),
     }),
     // 小图标居中，使用计算出的最佳缩放比例
@@ -347,13 +387,22 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
   if (size > 1) {
     styles.push(
       new Style({
+        // 给文字添加圆形背景
+        image: new CircleStyle({
+          radius: radius * 0.4, // 圆形背景的半径
+          fill: new Fill({
+            color: '#2E2F2E', // 背景色
+          }),
+          // 位置
+          displacement: [0, -radius + 5], // 位置在圆形下方
+        }),
         text: new Text({
           text: size.toString(),
           fill: new Fill({
             color: '#fff',
           }),
-          font: '11px Arial',
-          offsetY: radius + 4, // 数字显示在圆下方
+          font: '8px Arial',
+          offsetY: radius - 5, // 数字显示在圆下方
           stroke: new Stroke({
             color: '#000',
             width: 2,
