@@ -8,6 +8,15 @@ import './types/global.d';
 import { checkAppReady } from './utils/check';
 import { disableContextMenu, disableZoom } from './utils/device';
 import i18n from './i18n';
+import {
+  initStorageSystem,
+  setupCacheCleanupScheduler,
+} from './utils/storageInit';
+
+// 初始化存储系统
+initStorageSystem().catch(error => {
+  console.error('初始化存储系统失败:', error);
+});
 
 if (process.env.NODE_ENV === 'development') {
   try {
@@ -35,6 +44,9 @@ app.use(i18n);
 
 // 挂载应用
 app.mount('#app');
+
+// 设置定期清理缓存（每小时清理一次）
+setupCacheCleanupScheduler();
 
 // 初始化禁止缩放
 disableZoom();

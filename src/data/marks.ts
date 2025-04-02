@@ -1,5 +1,6 @@
 import { reactive, watchEffect, ref } from 'vue';
 import { allPoints } from './points';
+import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
 
 export interface MarkInfoDetail {
   finish: boolean;
@@ -40,11 +41,13 @@ const notifyMarkChange = () => {
 
 export const marks: MarkInfo = reactive({});
 
-export const initMarksData = () => {
+export const initMarksData = async () => {
   // 清空现有数据
   Object.keys(marks).forEach(key => {
     delete marks[key];
   });
+  // 初始加载
+  await loadMarksFromStorage();
   // 初始化标记数据
   allPoints.forEach(point => {
     if (!marks[point.levelLogicId]) {
@@ -55,8 +58,12 @@ export const initMarksData = () => {
   });
   // console.log('标记数据初始化完成');
   // console.log('标记数据:', marks);
-  // 初始加载
-  loadMarksFromStorage();
+  // 监听变化并保存
+  watchEffect(() => {
+    // 同时仍然调用现有的回调机制
+    notifyMarkChange();
+    saveMarksToStorage();
+  });
 };
 
 export const markPoint = (seq: number) => {
@@ -80,12 +87,40 @@ export const markPoint = (seq: number) => {
   return false;
 };
 
-// 本地存储功能
+// IndexedDB存储的键名
 const STORAGE_KEY = 'endfield-map-marks';
 
-// 保存到本地存储
-export const saveMarksToStorage = () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(marks));
+// 保存到IndexedDB永久存储
+export const saveMarksToStorage = async () => {
+  try {
+    // 复制一个普通的对象，去除Vue的响应式包装
+    const plainMarks = Object.keys(marks).reduce((obj, key) => {
+      obj[key] = {
+        finish: marks[key].finish,
+      };
+      return obj;
+    }, {} as MarkInfo);
+
+    await setItem(STORAGE_KEY, plainMarks, StorageType.PERMANENT, null);
+    // console.log('标记数据已保存到IndexedDB永久存储');
+  } catch (error) {
+    console.error('保存标记数据到IndexedDB失败:', error);
+    // 当IndexedDB存储失败时，尝试使用localStorage作为备份
+    try {
+      // 同样使用普通对象进行序列化
+      const plainMarks = Object.keys(marks).reduce((obj, key) => {
+        obj[key] = {
+          finish: marks[key].finish,
+        };
+        return obj;
+      }, {} as MarkInfo);
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(plainMarks));
+      console.log('标记数据已备份到localStorage');
+    } catch (e) {
+      console.error('备份标记数据到localStorage也失败了:', e);
+    }
+  }
 };
 
 // 构造默认数据
@@ -99,29 +134,40 @@ export const initMarks = () => {
   });
 };
 
-// 从本地存储加载
-export const loadMarksFromStorage = () => {
+// 从IndexedDB永久存储加载
+export const loadMarksFromStorage = async () => {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      Object.keys(parsed).forEach(key => {
-        if (marks[key]) {
-          marks[key].finish = parsed[key].finish;
-        }
+    // 尝试从IndexedDB加载
+    const savedData = await getItem<MarkInfo>(
+      STORAGE_KEY,
+      StorageType.PERMANENT
+    );
+
+    if (savedData) {
+      // console.log('从IndexedDB加载标记数据成功');
+      Object.keys(savedData).forEach(key => {
+        marks[key] = savedData[key];
       });
+      return;
     }
   } catch (e) {
-    console.error('Failed to load marks from storage', e);
+    console.error('加载标记数据失败:', e);
+
+    // 尝试从localStorage读取作为备份
+    try {
+      const localData = localStorage.getItem(STORAGE_KEY);
+      if (localData) {
+        console.log('从localStorage加载标记数据(备份)');
+        const parsed = JSON.parse(localData);
+        Object.keys(parsed).forEach(key => {
+          marks[key] = parsed[key];
+        });
+      }
+    } catch (backupError) {
+      console.error('从localStorage加载标记数据备份也失败了:', backupError);
+    }
   }
 };
-
-// 监听变化并保存
-watchEffect(() => {
-  // 同时仍然调用现有的回调机制
-  notifyMarkChange();
-  saveMarksToStorage();
-});
 
 // 新增标记筛选函数
 export const setMarkFilter = (filterType: MarkFilterType) => {

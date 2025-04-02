@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { getItem, setItem, StorageType } from './indexedDBStorage';
 
 // 定义加载状态类型
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
@@ -9,9 +10,6 @@ export interface LoadResult<T> {
   error: Error | null;
   state: LoadingState;
 }
-
-// 创建一个Map来存储已加载的数据
-const dataCache = new Map<string, any>();
 
 /**
  * 通用JSON加载函数
@@ -27,9 +25,10 @@ export async function loadJSON<T>(
 ): Promise<T> {
   let retries = 0;
 
-  // 检查缓存
-  if (dataCache.has(url)) {
-    return dataCache.get(url);
+  // 检查IndexedDB缓存
+  const cachedData = await getItem<T>(url, StorageType.TEMPORARY);
+  if (cachedData !== null) {
+    return cachedData;
   }
 
   while (retries < maxRetries) {
@@ -40,8 +39,8 @@ export async function loadJSON<T>(
       }
       const data = await response.json();
 
-      // 存入缓存
-      dataCache.set(url, data);
+      // 存入IndexedDB缓存
+      await setItem(url, data, StorageType.TEMPORARY);
 
       return data;
     } catch (error) {
@@ -113,7 +112,18 @@ export async function loadMultipleJSON(
   return results;
 }
 
-// 清除缓存的方法
-export function clearJSONCache() {
-  dataCache.clear();
+/**
+ * 从IndexedDB缓存中清除特定URL的JSON数据
+ * @param url 要清除缓存的URL
+ */
+export async function clearJSONCache(url?: string) {
+  if (url) {
+    // 清除特定URL的缓存
+    await setItem(url, null, StorageType.TEMPORARY);
+  } else {
+    // 清除所有临时缓存
+    await import('./indexedDBStorage').then(({ clearStore, StorageType }) => {
+      clearStore(StorageType.TEMPORARY);
+    });
+  }
 }
