@@ -11,7 +11,13 @@
                 "enemyLevels": [
                     25
                 ],
-                "recommendLv": 25
+                "recommendLv": 25,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush01_01",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung01_bossrush01_02",
@@ -22,7 +28,13 @@
                 "enemyLevels": [
                     40
                 ],
-                "recommendLv": 40
+                "recommendLv": 40,
+                "costStamina": 0,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush01_02",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung01_bossrush01_03",
@@ -33,7 +45,13 @@
                 "enemyLevels": [
                     60
                 ],
-                "recommendLv": 60
+                "recommendLv": 60,
+                "costStamina": 0,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush01_03",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -49,7 +67,13 @@
                 "enemyLevels": [
                     50
                 ],
-                "recommendLv": 50
+                "recommendLv": 50,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush02_01",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung01_bossrush02_02",
@@ -60,7 +84,13 @@
                 "enemyLevels": [
                     60
                 ],
-                "recommendLv": 60
+                "recommendLv": 60,
+                "costStamina": 0,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush02_02",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung01_bossrush02_03",
@@ -71,7 +101,13 @@
                 "enemyLevels": [
                     70
                 ],
-                "recommendLv": 70
+                "recommendLv": 70,
+                "costStamina": 0,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush02_03",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -87,7 +123,13 @@
                 "enemyLevels": [
                     55
                 ],
-                "recommendLv": 55
+                "recommendLv": 55,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush03_01",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung01_bossrush03_02",
@@ -98,7 +140,13 @@
                 "enemyLevels": [
                     65
                 ],
-                "recommendLv": 65
+                "recommendLv": 65,
+                "costStamina": 0,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush03_02",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung01_bossrush03_03",
@@ -109,7 +157,13 @@
                 "enemyLevels": [
                     75
                 ],
-                "recommendLv": 75
+                "recommendLv": 75,
+                "costStamina": 0,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_bossrush03_03",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -127,7 +181,13 @@
                     10,
                     10
                 ],
-                "recommendLv": 20
+                "recommendLv": 20,
+                "costStamina": 40,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_charbreak01"
             },
             {
                 "dungeonId": "dung01_charbreak02",
@@ -142,7 +202,13 @@
                     35,
                     35
                 ],
-                "recommendLv": 40
+                "recommendLv": 40,
+                "costStamina": 50,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_charbreak02"
             }
         ]
     },
@@ -164,7 +230,13 @@
                     60,
                     60
                 ],
-                "recommendLv": 60
+                "recommendLv": 60,
+                "costStamina": 60,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_charbreak03"
             },
             {
                 "dungeonId": "dung01_charbreak04",
@@ -181,7 +253,13 @@
                     75,
                     75
                 ],
-                "recommendLv": 70
+                "recommendLv": 70,
+                "costStamina": 80,
+                "difficulty": 4,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_charbreak04"
             }
         ]
     },
@@ -199,7 +277,13 @@
                     10,
                     10
                 ],
-                "recommendLv": 20
+                "recommendLv": 20,
+                "costStamina": 40,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_exp01"
             },
             {
                 "dungeonId": "dung01_exp02",
@@ -214,7 +298,13 @@
                     35,
                     35
                 ],
-                "recommendLv": 40
+                "recommendLv": 40,
+                "costStamina": 50,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_exp02"
             }
         ]
     },
@@ -236,7 +326,13 @@
                     60,
                     60
                 ],
-                "recommendLv": 60
+                "recommendLv": 60,
+                "costStamina": 60,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_exp03"
             },
             {
                 "dungeonId": "dung01_exp04",
@@ -253,7 +349,13 @@
                     75,
                     75
                 ],
-                "recommendLv": 70
+                "recommendLv": 70,
+                "costStamina": 80,
+                "difficulty": 4,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_exp04"
             }
         ]
     },
@@ -269,7 +371,13 @@
                 "enemyLevels": [
                     10
                 ],
-                "recommendLv": 20
+                "recommendLv": 20,
+                "costStamina": 40,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_gold01"
             },
             {
                 "dungeonId": "dung01_gold02",
@@ -282,7 +390,13 @@
                     35,
                     35
                 ],
-                "recommendLv": 40
+                "recommendLv": 40,
+                "costStamina": 50,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_gold02"
             }
         ]
     },
@@ -302,7 +416,13 @@
                     60,
                     60
                 ],
-                "recommendLv": 60
+                "recommendLv": 60,
+                "costStamina": 60,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_gold03"
             },
             {
                 "dungeonId": "dung01_gold04",
@@ -317,7 +437,13 @@
                     75,
                     75
                 ],
-                "recommendLv": 70
+                "recommendLv": 70,
+                "costStamina": 80,
+                "difficulty": 4,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_gold04"
             }
         ]
     },
@@ -329,7 +455,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle01_extra",
+                "firstPassRewardId": "reward_dung01_puzzle01",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -341,7 +473,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle02_extra",
+                "firstPassRewardId": "reward_dung01_puzzle02",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -353,7 +491,13 @@
                 "levelId": "map01_lv002",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle10_extra",
+                "firstPassRewardId": "reward_dung01_puzzle10",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -365,7 +509,13 @@
                 "levelId": "map01_lv003",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle03_extra",
+                "firstPassRewardId": "reward_dung01_puzzle03",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -377,7 +527,13 @@
                 "levelId": "map01_lv005",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle05_extra",
+                "firstPassRewardId": "reward_dung01_puzzle05",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -389,7 +545,13 @@
                 "levelId": "map01_lv006",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle08_extra",
+                "firstPassRewardId": "reward_dung01_puzzle08",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -401,7 +563,13 @@
                 "levelId": "map01_lv007",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle06_extra",
+                "firstPassRewardId": "reward_dung01_puzzle06",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -413,7 +581,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle04_extra",
+                "firstPassRewardId": "reward_dung01_puzzle04",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -425,7 +599,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward_dung01_puzzle07_extra",
+                "firstPassRewardId": "reward_dung01_puzzle07",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -443,7 +623,13 @@
                     10,
                     10
                 ],
-                "recommendLv": 20
+                "recommendLv": 20,
+                "costStamina": 40,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_skill01"
             },
             {
                 "dungeonId": "dung01_skill02",
@@ -460,7 +646,13 @@
                     35,
                     35
                 ],
-                "recommendLv": 40
+                "recommendLv": 40,
+                "costStamina": 50,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_skill02"
             }
         ]
     },
@@ -482,7 +674,13 @@
                     60,
                     60
                 ],
-                "recommendLv": 60
+                "recommendLv": 60,
+                "costStamina": 60,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_skill03"
             },
             {
                 "dungeonId": "dung01_skill04",
@@ -499,7 +697,13 @@
                     75,
                     75
                 ],
-                "recommendLv": 70
+                "recommendLv": 70,
+                "costStamina": 80,
+                "difficulty": 4,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_skill04"
             }
         ]
     },
@@ -517,7 +721,13 @@
                     10,
                     10
                 ],
-                "recommendLv": 20
+                "recommendLv": 20,
+                "costStamina": 40,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_wpbreak01"
             },
             {
                 "dungeonId": "dung01_wpbreak02",
@@ -534,7 +744,13 @@
                     35,
                     35
                 ],
-                "recommendLv": 40
+                "recommendLv": 40,
+                "costStamina": 50,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_wpbreak02"
             }
         ]
     },
@@ -554,7 +770,13 @@
                     60,
                     60
                 ],
-                "recommendLv": 60
+                "recommendLv": 60,
+                "costStamina": 60,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_wpbreak03"
             },
             {
                 "dungeonId": "dung01_wpbreak04",
@@ -569,7 +791,13 @@
                     75,
                     75
                 ],
-                "recommendLv": 70
+                "recommendLv": 70,
+                "costStamina": 80,
+                "difficulty": 4,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_wpbreak04"
             }
         ]
     },
@@ -587,7 +815,13 @@
                     10,
                     10
                 ],
-                "recommendLv": 20
+                "recommendLv": 20,
+                "costStamina": 40,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_wpexp01"
             },
             {
                 "dungeonId": "dung01_wpexp02",
@@ -602,7 +836,13 @@
                     35,
                     35
                 ],
-                "recommendLv": 40
+                "recommendLv": 40,
+                "costStamina": 50,
+                "difficulty": 2,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_wpexp02"
             }
         ]
     },
@@ -622,7 +862,13 @@
                     60,
                     60
                 ],
-                "recommendLv": 60
+                "recommendLv": 60,
+                "costStamina": 60,
+                "difficulty": 3,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_wpexp03"
             },
             {
                 "dungeonId": "dung01_wpexp04",
@@ -639,7 +885,13 @@
                     75,
                     75
                 ],
-                "recommendLv": 70
+                "recommendLv": 70,
+                "costStamina": 80,
+                "difficulty": 4,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung01_wpexp04"
             }
         ]
     },
@@ -651,7 +903,13 @@
                 "levelId": "",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "",
+                "gameCoolDown": 0,
+                "rewardId": "reward_dung_gold_20"
             }
         ]
     },
@@ -663,7 +921,13 @@
                 "levelId": "map01_lv002",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_rdg001",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -675,7 +939,13 @@
                 "levelId": "",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung01_rdg002",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -693,7 +963,13 @@
                     20,
                     20
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train01",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train02",
@@ -708,7 +984,13 @@
                     15,
                     20
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train02",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train03",
@@ -721,7 +1003,13 @@
                     25,
                     25
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train03",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train04",
@@ -734,7 +1022,13 @@
                     25,
                     25
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train04",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train05",
@@ -749,7 +1043,13 @@
                     20,
                     25
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train05",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train06",
@@ -764,7 +1064,13 @@
                     20,
                     25
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train06",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train07",
@@ -779,7 +1085,13 @@
                     30,
                     30
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train07",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train08",
@@ -794,7 +1106,13 @@
                     20,
                     25
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train08",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train09",
@@ -809,7 +1127,13 @@
                     20,
                     25
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train09",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train10",
@@ -822,7 +1146,13 @@
                     20,
                     30
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train10",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train11",
@@ -833,7 +1163,13 @@
                 "enemyLevels": [
                     24
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train11",
+                "gameCoolDown": 0,
+                "rewardId": ""
             },
             {
                 "dungeonId": "dung_train12",
@@ -846,7 +1182,13 @@
                     20,
                     25
                 ],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward_dung_train12",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -858,7 +1200,13 @@
                 "levelId": "map01_lv002",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -870,7 +1218,13 @@
                 "levelId": "map01_lv005",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -882,7 +1236,13 @@
                 "levelId": "map01_lv002",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -894,7 +1254,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -906,7 +1272,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -918,7 +1290,13 @@
                 "levelId": "map01_lv006",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -930,7 +1308,13 @@
                 "levelId": "map01_lv003",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -942,7 +1326,13 @@
                 "levelId": "map01_lv003",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -954,7 +1344,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -966,7 +1362,13 @@
                 "levelId": "map01_lv003",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -978,7 +1380,13 @@
                 "levelId": "map01_lv005",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -990,7 +1398,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1002,7 +1416,13 @@
                 "levelId": "map01_lv005",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1014,7 +1434,13 @@
                 "levelId": "map01_lv006",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1026,7 +1452,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1038,7 +1470,13 @@
                 "levelId": "",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1050,7 +1488,13 @@
                 "levelId": "map01_lv002",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1062,7 +1506,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1074,7 +1524,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1086,7 +1542,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1098,7 +1560,13 @@
                 "levelId": "map01_lv005",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1110,7 +1578,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1122,7 +1596,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1134,7 +1614,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1146,7 +1632,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1158,7 +1650,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1170,7 +1668,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1182,7 +1686,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1194,7 +1704,13 @@
                 "levelId": "",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1206,7 +1722,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1218,7 +1740,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1230,7 +1758,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1242,7 +1776,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1254,7 +1794,13 @@
                 "levelId": "map02_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_jinlong",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1266,7 +1812,13 @@
                 "levelId": "map01_lv002",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1278,7 +1830,13 @@
                 "levelId": "map01_lv006",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1290,7 +1848,13 @@
                 "levelId": "map01_lv001",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     },
@@ -1302,7 +1866,13 @@
                 "levelId": "",
                 "enemyIds": [],
                 "enemyLevels": [],
-                "recommendLv": 0
+                "recommendLv": 0,
+                "costStamina": 0,
+                "difficulty": 1,
+                "extraRewardId": "reward__blackbox_extra_diamond",
+                "firstPassRewardId": "reward__blackbox_factechpoint_tundra",
+                "gameCoolDown": 0,
+                "rewardId": ""
             }
         ]
     }
