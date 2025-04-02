@@ -37,15 +37,11 @@ export class PopupManager {
   closeToast() {
     // 修改为仅设置isPopupVisible为false，让Vue的过渡系统处理关闭动画
     this.isPopupVisible.value = false;
-
-    // 其他清理工作会在弹窗动画完成后由上层组件处理
-    // 在弹窗完全消失前不要清除position，否则会影响动画
   }
 
   // 切换视频信息显示状态
   toggleVideoInfo(show: boolean) {
     this.showVideoInfo.value = show;
-    // 切换内容后不立即调整位置，让过渡动画完成后再调整
   }
 
   // 切换子弹窗显示状态

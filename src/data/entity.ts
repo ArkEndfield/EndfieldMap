@@ -273,7 +273,7 @@ const imageLoadingPromises: {
   [key: string]: Promise<{ width: number; height: number }>;
 } = {};
 
-// 获取图片尺寸的函数 - 优化版本
+// 获取图片尺寸的函数 - 等待加载完成版本
 function getImageSize(src: string): Promise<{ width: number; height: number }> {
   // 如果已经有这个图片的加载Promise，直接返回它，避免重复加载
   if (src in imageLoadingPromises) {
@@ -302,6 +302,7 @@ function getImageSize(src: string): Promise<{ width: number; height: number }> {
       img.onerror = () => {
         // 加载失败时使用默认尺寸并记录警告
         console.warn(`无法加载图片: ${src}`);
+        // 使用默认尺寸
         const defaultSize = { width: 32, height: 32 };
         // 缓存默认尺寸以避免再次尝试加载失败的图片
         imageSizeCache[src] = defaultSize;
@@ -310,17 +311,7 @@ function getImageSize(src: string): Promise<{ width: number; height: number }> {
         resolve(defaultSize);
       };
 
-      // 设置5秒超时
-      setTimeout(() => {
-        if (!imageSizeCache[src]) {
-          console.warn(`图片加载超时: ${src}`);
-          const defaultSize = { width: 32, height: 32 };
-          imageSizeCache[src] = defaultSize;
-          delete imageLoadingPromises[src];
-          resolve(defaultSize);
-        }
-      }, 5000);
-
+      // 设置图片源，开始加载
       img.src = src;
     }
   );
