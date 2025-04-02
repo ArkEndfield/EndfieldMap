@@ -287,7 +287,7 @@ export async function getItem<T>(
           const store = transaction.objectStore(STORES[type]);
           const request = store.get(key);
 
-          request.onsuccess = () => {
+          request.onsuccess = async () => {
             const item = request.result as StorageItem<T> | undefined;
 
             // 检查数据是否存在
@@ -305,11 +305,18 @@ export async function getItem<T>(
               item.expiry !== null &&
               item.expiry < Date.now()
             ) {
-              // 数据已过期，删除并返回null
-              store.delete(key);
+              // 数据已过期，在新的写入事务中删除，而不是在当前只读事务中
               if (isDevelopment) {
-                console.log(`[IndexedDB] 数据已过期: ${key}`);
+                console.log(`[IndexedDB] 数据已过期: ${key}，将删除过期数据`);
               }
+
+              // 创建单独的删除操作，不阻塞当前的读取流程
+              setTimeout(() => {
+                removeItem(key, type).catch(err => {
+                  console.error(`删除过期数据失败: ${key}`, err);
+                });
+              }, 0);
+
               resolve(null);
               return;
             }

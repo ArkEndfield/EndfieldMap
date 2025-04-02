@@ -495,8 +495,28 @@ export const marker = (entry: PointData) => {
     payload: entry,
   });
 
+  // 应用样式
+  applyFeatureStyle(feature, entry.entityDataIdKey);
+
+  // 注册到实体组中
+  if (!entityGroup[entry.entityDataIdKey]?.points?.length) {
+    entityGroup[entry.entityDataIdKey] = {
+      name: info.entityInfo.name,
+      points: [feature],
+    };
+  } else {
+    entityGroup[entry.entityDataIdKey].points.push(feature);
+  }
+  return feature;
+};
+
+// 提取的应用样式函数，可以单独调用以更新样式
+export const applyFeatureStyle = (
+  feature: Feature<Point>,
+  entityTypeKey: string
+) => {
   // 样式缓存键
-  const styleKey = `${entry.entityDataIdKey}-1-${
+  const styleKey = `${entityTypeKey}-1-${
     Math.round(currentZoomLevel * 10) / 10
   }`;
 
@@ -506,19 +526,17 @@ export const marker = (entry: PointData) => {
   // 加载和应用最终样式
   if (!iconStyleCache[styleKey]) {
     // 创建样式并直接应用，避免中间状态
-    const stylePromise = createCircleIconStyle(entry.entityDataIdKey).then(
-      style => {
-        // 仅当样式缓存还不存在时才设置
-        if (!iconStyleCache[styleKey]) {
-          iconStyleCache[styleKey] = Promise.resolve(style);
-        }
-        // 检查特征是否仍然有效（未被移除）
-        if (features.includes(feature)) {
-          feature.setStyle(style);
-        }
-        return style;
+    const stylePromise = createCircleIconStyle(entityTypeKey).then(style => {
+      // 仅当样式缓存还不存在时才设置
+      if (!iconStyleCache[styleKey]) {
+        iconStyleCache[styleKey] = Promise.resolve(style);
       }
-    );
+      // 检查特征是否仍然有效（未被移除）
+      if (features.includes(feature)) {
+        feature.setStyle(style);
+      }
+      return style;
+    });
 
     // 缓存样式创建请求
     iconStyleCache[styleKey] = stylePromise;
@@ -531,17 +549,42 @@ export const marker = (entry: PointData) => {
       }
     });
   }
+};
 
-  // 注册到实体组中
-  if (!entityGroup[entry.entityDataIdKey]?.points?.length) {
-    entityGroup[entry.entityDataIdKey] = {
-      name: info.entityInfo.name,
-      points: [feature],
-    };
-  } else {
-    entityGroup[entry.entityDataIdKey].points.push(feature);
+// 单独更新聚合标点样式的函数
+export const updateClusterMarkerStyles = (zoom?: number) => {
+  if (zoom !== undefined) {
+    currentZoomLevel = zoom;
   }
-  return feature;
+
+  // 为每个特征更新样式
+  features.forEach(feature => {
+    const payload = feature.get('payload');
+    if (payload && payload.entityDataIdKey) {
+      applyFeatureStyle(feature, payload.entityDataIdKey);
+    }
+  });
+
+  // 更新聚合相关设置
+  updateClusterDistance(currentZoomLevel);
+
+  // 在最大缩放级别时强制禁用聚合
+  if (currentZoomLevel >= 5) {
+    forceDisperseAtMaxZoom(currentZoomLevel);
+  }
+
+  // 通知图层刷新
+  entityClusterLayers.forEach(layer => {
+    layer.changed();
+  });
+
+  // 清理不再需要的样式缓存
+  const currentZoomRounded = Math.round(currentZoomLevel * 10) / 10;
+  Object.keys(styleCache).forEach(key => {
+    if (!key.includes(`-${currentZoomRounded}`)) {
+      delete styleCache[key];
+    }
+  });
 };
 
 // 刷新所有样式的函数
@@ -689,17 +732,36 @@ export const createEntityClusterLayers = () => {
 // 更新聚合距离的函数 - 添加防抖处理
 const debouncedUpdateClusterDistance = debounce(
   (zoom: number) => {
-    // 在最大缩放级别(5)时完全禁用聚合
-    const distance =
-      zoom >= 4.5 ? 0 : zoom <= 2 ? 30 : zoom <= 3 ? 15 : zoom <= 4 ? 5 : 0;
+    // 获取当前聚合状态 - 简化为只有两种状态：聚合(30)或不聚合(0)
+    const shouldCluster = zoom < 4;
+    const newDistance = shouldCluster ? 30 : 0;
 
-    // 更新每个聚合源的距离
-    Object.values(entityClusterSources).forEach(source => {
-      source.setDistance(distance);
-    });
+    // 检查是否需要更新聚合状态 - 比较当前第一个聚合源的距离
+    const currentSources = Object.values(entityClusterSources);
+    if (currentSources.length > 0) {
+      const currentDistance = currentSources[0].getDistance();
 
-    // 清除缓存的样式
-    Object.keys(styleCache).forEach(key => delete styleCache[key]);
+      // 只有当聚合状态发生变化时才更新
+      if (
+        (shouldCluster && currentDistance === 0) ||
+        (!shouldCluster && currentDistance > 0)
+      ) {
+        console.log(
+          `聚合状态变化：${currentDistance} -> ${newDistance}，开始更新聚合图层`
+        );
+
+        // 更新每个聚合源的距离
+        Object.values(entityClusterSources).forEach(source => {
+          source.setDistance(newDistance);
+        });
+
+        // 清除缓存的样式
+        Object.keys(styleCache).forEach(key => delete styleCache[key]);
+      }
+    } else {
+      // 如果尚未创建聚合源，直接返回
+      console.log('聚合源尚未初始化，跳过更新');
+    }
   },
   250,
   { leading: false, trailing: true }
@@ -742,7 +804,7 @@ export const refreshCluster = () => {
   // 重置当前缩放级别的聚合距离
   updateClusterDistance(currentZoomLevel);
   // 在最大缩放级别时强制禁用聚合
-  if (currentZoomLevel >= 5) {
+  if (currentZoomLevel >= 4) {
     forceDisperseAtMaxZoom(currentZoomLevel);
   }
 };

@@ -46,6 +46,7 @@ import MapControls from './components/map/MapControls.vue';
 import MapPopup from './components/map/MapPopup.vue';
 import { type PointData } from './data/points';
 import { debounce, throttle } from './utils/common';
+import { updateClusterDistance } from './data/entity';
 
 // 状态变量
 // const map = ref<Map | null>(null);
@@ -130,6 +131,8 @@ onMounted(async () => {
       if (Math.abs(zoomLevel.value - stableZoom) >= 0.1) {
         zoomLevel.value = stableZoom;
       }
+
+      updateClusterDistance(zoomLevel.value);
     },
     150, // 增加到150ms，避免过于频繁的更新
     { leading: true, trailing: true }
