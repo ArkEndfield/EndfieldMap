@@ -5,7 +5,7 @@ import { Projection } from 'ol/proj';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
 import { areaNameLayer } from '@/data/locations';
-import { entityClusterLayers, refresh } from '@/data/entity';
+import { entityClusterLayers } from '@/data/entity';
 import { ref } from 'vue';
 import { Layer } from 'ol/layer';
 import VectorSource from 'ol/source/Vector';
@@ -80,17 +80,29 @@ function addEntityLayersToMap(currentRetry = 0) {
   if (entityClusterLayers.length > 0) {
     console.log(`添加 ${entityClusterLayers.length} 个实体图层到地图`);
 
-    // 遍历添加所有实体图层
-    entityClusterLayers.forEach(layer => {
-      map.value?.addLayer(layer);
+    // 重要：确保图层添加过程不会导致闪烁
+    requestAnimationFrame(() => {
+      // 首先预先设置所有图层为不可见
+      entityClusterLayers.forEach(layer => {
+        layer.setVisible(false);
+      });
+
+      // 添加所有图层（不可见状态）
+      entityClusterLayers.forEach(layer => {
+        map.value?.addLayer(layer);
+      });
+
+      // 记录加载成功
+      entityLayersLoaded.value = true;
+      console.log('实体图层加载成功');
+
+      // 延迟显示图层，确保它们已经渲染完成
+      requestAnimationFrame(() => {
+        entityClusterLayers.forEach(layer => {
+          layer.setVisible(true);
+        });
+      });
     });
-
-    // 记录加载成功
-    entityLayersLoaded.value = true;
-    console.log('实体图层加载成功');
-
-    // 强制刷新一次，确保所有点位可见
-    refresh();
 
     return;
   }

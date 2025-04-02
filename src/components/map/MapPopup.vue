@@ -226,21 +226,25 @@ const toggleSubPopup = () => {
   const newState = !props.openSubPopup;
   emit('update:openSubPopup', newState);
 
-  // 只有在手动切换背面弹窗时才调整视图
-  if (popupManager?.adjustForExpandedPopup) {
-    requestAnimationFrame(() => {
-      popupManager.resetAnimationState?.();
-      setTimeout(() => {
-        popupManager.adjustForExpandedPopup(newState);
-      }, 50);
+  // 清除可能的动画状态，确保每次都能调整位置
+  if (popupManager?.resetAnimationState) {
+    popupManager.resetAnimationState();
+  }
 
+  // 使用单一的调整序列，确保每次都能正确调整
+  if (popupManager) {
+    // 短暂延迟确保状态已更新
+    setTimeout(() => {
+      // 先调整展开/收起状态
+      popupManager.adjustForExpandedPopup?.(newState);
+
+      // 再调整整体位置
       setTimeout(() => {
-        popupManager.adjustForExpandedPopup(newState);
-        setTimeout(() => {
-          popupManager.adjustPopupPosition?.(true);
-        }, 150);
-      }, 550);
-    });
+        // 强制重置动画状态，确保调整一定会执行
+        popupManager.resetAnimationState?.();
+        popupManager.adjustPopupPosition?.(true);
+      }, 350);
+    }, 50);
   }
 };
 
@@ -282,16 +286,9 @@ watch(
 // 添加一个新的 watch 来处理 openSubPopup 的变化
 watch(
   () => props.openSubPopup,
-  newValue => {
-    // 只有当有奖励且是手动触发的展开/收起时才调整视图
-    if (showRewards.value && popupManager?.adjustForExpandedPopup) {
-      requestAnimationFrame(() => {
-        popupManager.resetAnimationState?.();
-        setTimeout(() => {
-          popupManager.adjustForExpandedPopup(newValue);
-        }, 50);
-      });
-    }
+  () => {
+    // 监听器保留为空，所有位置调整逻辑已移至 OpenLayers.vue 中
+    // 这样可以避免两个组件中的位置调整逻辑相互干扰
   }
 );
 

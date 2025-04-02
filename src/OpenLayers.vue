@@ -35,7 +35,6 @@ import {
   cacheMapId,
   createMap,
   map,
-  updateMap,
   cleanupMap,
 } from './components/map/MapCore';
 import { Select } from 'ol/interaction';
@@ -45,16 +44,7 @@ import Overlay from 'ol/Overlay';
 import { PopupManager } from './components/map/PopupManager';
 import MapControls from './components/map/MapControls.vue';
 import MapPopup from './components/map/MapPopup.vue';
-import {
-  updateClusterDistance,
-  forceDisperseAtMaxZoom,
-  updateCurrentZoom,
-  refresh,
-  reinitializeEntityLayers,
-} from './data/entity';
-import { loadTextPoints } from './data/locations';
 import { type PointData } from './data/points';
-import { updatePoints } from './data/points';
 import { debounce, throttle } from './utils/common';
 
 // 状态变量
@@ -121,17 +111,16 @@ onMounted(async () => {
     console.error('弹出层容器未找到 - 请检查DOM和CSS');
   }
 
-  // 监听地图渲染完成事件，确保图层正确添加
-  map.value?.once('rendercomplete', () => {
-    refresh();
-  });
-
-  // 为地图缩放创建更稳定的缩放控制机制
   // 使用节流函数处理缩放事件，确保UI更新更加平滑
   const handleZoomChange = throttle(
     function () {
       const currentMap = map.value;
       if (!currentMap) return;
+
+      // 标记地图正在缩放中
+      if (popupManager.value) {
+        popupManager.value.setMapZooming(true);
+      }
 
       const zoom = currentMap.getView().getZoom() || 0;
       // 四舍五入到最接近的0.5，使缩放值更稳定
@@ -141,45 +130,9 @@ onMounted(async () => {
       if (Math.abs(zoomLevel.value - stableZoom) >= 0.1) {
         zoomLevel.value = stableZoom;
       }
-
-      // 以下操作放入防抖函数中执行，减少性能消耗
-      updateResourceIntensiveOperations(zoom);
     },
-    100,
+    150, // 增加到150ms，避免过于频繁的更新
     { leading: true, trailing: true }
-  );
-
-  // 使用防抖处理占用资源的操作（文本点加载、聚类距离更新等）
-  const updateResourceIntensiveOperations = debounce(
-    function (zoom: number) {
-      // 只在地图完全静止后执行这些重型操作
-      loadTextPoints(true, zoom > 3);
-      updateClusterDistance(zoom);
-      updateCurrentZoom(zoom);
-
-      // 在最大缩放级别时强制禁用聚合
-      if (zoom >= 5) {
-        forceDisperseAtMaxZoom(zoom);
-      }
-
-      // 确保缩放后弹窗管理器仍然能够正常工作
-      if (isPopupVisible.value && popupManager.value) {
-        // 重置防抖标记，让弹窗能够正常响应
-        popupManager.value.resetAnimationState();
-
-        // 调整已打开的弹窗位置
-        if (isPopupVisible.value) {
-          // 如果副弹窗已展开，确保副弹窗效果正常
-          if (openSubPopup.value) {
-            popupManager.value?.adjustForExpandedPopup(true);
-          } else {
-            popupManager.value?.adjustPopupPosition(true);
-          }
-        }
-      }
-    },
-    300,
-    { leading: false, trailing: true }
   );
 
   // 监听地图缩放事件，使用节流函数处理UI更新
@@ -200,6 +153,26 @@ onMounted(async () => {
         // 确保最终值是准确的
         if (Math.abs(zoomLevel.value - stableZoom) >= 0.01) {
           zoomLevel.value = stableZoom;
+        }
+
+        // 重要：在移动或缩放结束后，重置缩放状态标志
+        if (popupManager.value) {
+          popupManager.value.setMapZooming(false);
+
+          // 如果弹窗当前可见，在缩放结束后延迟检查并调整位置
+          setTimeout(() => {
+            if (
+              isPopupVisible.value &&
+              popupManager.value?.getCurrentPosition()
+            ) {
+              popupManager.value.resetAnimationState();
+              if (openSubPopup.value) {
+                popupManager.value.adjustForExpandedPopup(true);
+              } else {
+                popupManager.value.adjustPopupPosition(true);
+              }
+            }
+          }, 100);
         }
       },
       250,
@@ -337,10 +310,25 @@ onMounted(async () => {
   watch(openSubPopup, newValue => {
     // console.log('openSubPopup changed to', newValue);
     if (isPopupVisible.value && popupManager.value) {
-      // 等待DOM更新后调整视图，只调整一次即可
+      // 先重置动画状态，确保弹窗可以调整位置
+      popupManager.value.resetAnimationState();
+
+      // 调整视图 - 改为单次调整，减少多次位移
       setTimeout(() => {
+        // 仅调整展开/收起状态
         popupManager.value?.adjustForExpandedPopup(newValue);
-      }, 100);
+
+        // 不再需要额外的位置调整，因为adjustForExpandedPopup已经考虑了所有必要的位置调整
+        // 如果必要，可以加入一个轻微的最终调整，但右侧距离较小
+        if (newValue) {
+          // 仅在展开时做轻微调整
+          setTimeout(() => {
+            popupManager.value?.resetAnimationState();
+            // 使用较小的forceAdjust参数，减少调整幅度
+            popupManager.value?.adjustPopupPosition(false);
+          }, 350);
+        }
+      }, 50);
     }
   });
 
@@ -437,49 +425,6 @@ watch(
     showVideoInfo.value = false;
     openSubPopup.value = false;
     popupManager.value?.setCurrentPosition(undefined);
-
-    // 如果overlay还存在，清除位置
-    if (overlay) {
-      overlay.setPosition(undefined);
-    }
-
-    // 清除选择状态
-    if (selectInteraction) {
-      selectInteraction.getFeatures().clear();
-    }
-
-    try {
-      // 更新点位数据 - 使用await确保异步操作完成
-      const points = await updatePoints();
-      console.log(`地图切换，加载了 ${points.length} 个点位`);
-
-      // 等待 Vue 更新完成
-      await nextTick();
-
-      // 重新初始化实体图层 - 确保使用await等待异步操作完成
-      await reinitializeEntityLayers();
-      console.log('实体图层重新初始化完成');
-
-      // 等待实体图层初始化完成
-      await nextTick();
-
-      // 更新地图图层
-      updateMap(newValue);
-
-      // 重新加载地名标注
-      loadTextPoints(true, false, newValue === 'map002' ? 'map02' : 'map01');
-
-      // 强制刷新一次地图显示
-      if (map.value) {
-        map.value.updateSize();
-        map.value.render();
-      }
-
-      // 刷新所有实体点位显示
-      refresh();
-    } catch (error) {
-      console.error('切换地图时出错:', error);
-    }
   },
   { flush: 'post' } // 确保在 DOM 更新后执行
 );
@@ -494,20 +439,48 @@ watch(
   bottom: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden; /* 防止内容溢出 */
 }
 
 #map {
   background-image: url('/assets/map_bg.png');
+  transform: translate3d(0, 0, 0); /* 使用硬件加速 */
+  backface-visibility: hidden; /* 提高渲染性能 */
+  will-change: transform; /* 告知浏览器此元素将发生变换，提前准备 */
 }
 
+/* 增强地图图层渲染性能 */
+.ol-layer {
+  /* 禁用透明度过渡，因为会导致闪烁 */
+  transition: none !important;
+  transform: translate3d(0, 0, 0); /* 使用硬件加速 */
+  will-change: contents; /* 告知浏览器内容会变化 */
+  backface-visibility: hidden; /* 提高渲染性能 */
+}
+
+/* OpenLayers Canvas 元素处理 */
+.ol-layer canvas {
+  /* 重要：禁用canvas的透明度渐变效果，它是闪烁的主要原因 */
+  transition: none !important;
+  transform: translate3d(0, 0, 0);
+  image-rendering: high-quality; /* 高质量图像渲染 */
+}
+
+/* 适用于点位图标的样式 */
+.ol-style-icon,
+.ol-style-circle,
+.ol-style-regularshape {
+  /* 这些元素不应该有动画过渡，因为会导致闪烁 */
+  transition: none !important;
+  will-change: auto; /* 让浏览器自己决定是否优化 */
+}
+
+/* 弹出层容器的样式 */
 .ol-popup {
   $border-color: rgba(206, 206, 206, 0.5);
   $border-size: 0.2em;
 
-  // 移除以下这行，可能会干扰v-show的功能
-  // display: block;
-
-  // 使用更简单的动画过渡，只用scaleY
+  /* 仅为弹窗本身应用过渡效果，不影响地图元素 */
   transition: opacity 0.2s ease, transform 0.2s ease;
   transform-origin: bottom center;
   will-change: transform, opacity;
@@ -553,52 +526,5 @@ watch(
       drop-shadow(calc(0px - $border-size) 0 0 $border-color)
       drop-shadow(0 0 0.4em rgba(0, 0, 0, 0.5));
   }
-}
-
-.top-bar {
-  $height: 0.7rem;
-  $clip: polygon(0% 0%, calc(100% - $height) 0%, 100% 100%, 0% 100%);
-  height: $height;
-  -webkit-clip-path: $clip;
-  clip-path: $clip;
-  margin-bottom: -0.01em;
-}
-
-/* 添加聚合点样式 */
-.cluster-point {
-  transition: transform 0.3s ease;
-}
-
-.cluster-point:hover {
-  transform: scale(1.1);
-}
-
-/* 为所有地图标点添加悬停放大效果 */
-.hover-point {
-  transition: transform 0.3s ease;
-}
-
-.hover-point:hover {
-  transform: scale(1.1);
-}
-
-/* 为集群容器添加悬停效果 */
-.cluster-container .ol-style-icon,
-.cluster-container .ol-style-circle {
-  transition: transform 0.3s ease;
-}
-
-.cluster-container .ol-style-icon:hover,
-.cluster-container .ol-style-circle:hover {
-  transform: scale(1.1);
-}
-
-/* 添加对单点图标的支持 */
-.ol-style-icon {
-  transition: transform 0.3s ease;
-}
-
-.ol-style-icon:hover {
-  transform: scale(1.1);
 }
 </style>

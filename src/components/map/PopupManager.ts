@@ -50,6 +50,9 @@ export class PopupManager {
 
   // 切换子弹窗显示状态
   toggleSubPopup() {
+    // 先确保重置动画状态，防止上一次的动画状态阻止本次调整
+    this.isPopupAnimating = false;
+
     this.openSubPopup.value = !this.openSubPopup.value;
 
     // 在状态改变后等待过渡动画完成，然后调整位置
@@ -63,6 +66,9 @@ export class PopupManager {
 
     // 再次检查位置，确保完整展示
     setTimeout(() => {
+      // 确保重置动画状态，使得此次调整可以生效
+      this.isPopupAnimating = false;
+
       if (this.isPopupVisible.value && this.currentPosition) {
         this.adjustPopupPosition(true);
       }
@@ -211,6 +217,8 @@ export class PopupManager {
             setTimeout(() => {
               if (this.isPopupVisible.value) {
                 this.adjustForExpandedPopup(true);
+              } else {
+                this.adjustPopupPosition(true);
               }
             }, 100);
           }, 300);
@@ -244,7 +252,7 @@ export class PopupManager {
     forceCheck = false,
     callback?: () => void
   ) {
-    // 如果地图正在进行动画（比如聚合点放大），则不调整视图
+    // 如果地图正在进行动画（比如聚合点放大）或者正在缩放中，则不调整视图
     if (map.getView().getAnimating() || this.isMapZooming) {
       if (callback) callback();
       return Promise.resolve();
@@ -259,45 +267,38 @@ export class PopupManager {
     }
 
     // 获取弹窗的实际尺寸
-    const popupRect = this.popupContainer.getBoundingClientRect();
-    const mapRect = map.getTargetElement().getBoundingClientRect();
+    const popupSize = {
+      width: this.popupContainer.offsetWidth || popupWidth,
+      height: this.popupContainer.offsetHeight || 200,
+    };
 
-    // 将点位置转换为屏幕像素坐标
+    // 安全边距，确保弹窗不会太靠近地图边缘
+    const safeMargin = 20;
+    const extraRightSpace = this.openSubPopup.value ? popupSize.width * 0.8 : 0;
+
+    // 计算弹窗在屏幕上的位置
     const pixel = map.getPixelFromCoordinate(position);
     if (!pixel) {
       if (callback) callback();
       return Promise.resolve();
     }
 
-    // 使用实际的弹窗高度而不是固定值
-    const popupHeight = popupRect.height;
-    const safeMargin = 20; // 基本安全边距
-    const headerOffset = 40; // 增加顶部Header偏移量
-    const extraRightSpace = this.openSubPopup.value ? 400 : 120; // 根据副弹窗状态调整右侧空间
+    // 获取视口宽度
+    const viewportWidth = mapSize[0];
+    const viewportHeight = mapSize[1];
 
-    // 估计弹窗在屏幕上的位置
-    const popupTop = pixel[1] - popupHeight - 15;
-    const popupBottom = pixel[1] + 35;
-    const popupLeft = pixel[0] - popupWidth / 2;
-    const popupRight = pixel[0] + popupWidth / 2;
+    // 计算弹窗位置
+    const popupLeft = pixel[0] - popupSize.width / 2;
+    const popupRight = pixel[0] + popupSize.width / 2;
+    const popupTop = pixel[1] - popupSize.height - 20; // 弹窗上方的锚点偏移
+    const popupBottom = pixel[1];
 
-    const viewportWidth = mapRect.width;
-    const viewportHeight = mapRect.height;
-
-    let needToMove = forceCheck;
+    // 检查是否需要调整视图
+    let needToMove = false;
     let panX = 0;
     let panY = 0;
 
-    // 检查垂直方向，增加额外的上边界空间
-    if (popupTop < headerOffset) {
-      needToMove = true;
-      panY = headerOffset - popupTop + safeMargin + 20; // 增加额外的上边界空间
-    } else if (popupBottom > viewportHeight - safeMargin) {
-      needToMove = true;
-      panY = viewportHeight - safeMargin - popupBottom;
-    }
-
-    // 检查水平方向
+    // 检查并计算水平方向需要的调整
     if (popupLeft < safeMargin) {
       needToMove = true;
       panX = safeMargin - popupLeft;
@@ -306,9 +307,19 @@ export class PopupManager {
       panX = viewportWidth - safeMargin - (popupRight + extraRightSpace);
     }
 
-    if (needToMove) {
+    // 检查并计算垂直方向需要的调整
+    if (popupTop < safeMargin) {
+      needToMove = true;
+      panY = safeMargin - popupTop;
+    } else if (popupBottom > viewportHeight - safeMargin) {
+      needToMove = true;
+      panY = viewportHeight - safeMargin - popupBottom;
+    }
+
+    // 如果需要移动，计算新的中心点
+    if (needToMove || forceCheck) {
       const resolution = view.getResolution() || 1;
-      const extraOffsetY = panY !== 0 ? Math.sign(panY) * 40 : 0; // 增加垂直方向的额外偏移
+      const extraOffsetY = panY !== 0 ? Math.sign(panY) * 40 : 0;
       const extraOffsetX = panX !== 0 ? Math.sign(panX) * 30 : 0;
       const currentCenter = view.getCenter();
 
@@ -317,27 +328,42 @@ export class PopupManager {
         return Promise.resolve();
       }
 
-      // 直接执行单个动画，同时处理水平和垂直方向
-      return new Promise<void>(resolve => {
-        view.animate(
-          {
-            center: [
-              currentCenter[0] - (panX + extraOffsetX) * resolution,
-              currentCenter[1] + (panY + extraOffsetY) * resolution,
-            ],
-            duration: 300,
-            easing: t => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
-          },
-          () => {
-            if (callback) callback();
-            resolve();
-          }
-        );
-      });
-    }
+      // 标记弹窗正在动画中，防止其他操作干扰
+      this.isPopupAnimating = true;
 
-    if (callback) callback();
-    return Promise.resolve();
+      // 使用 requestAnimationFrame 来确保UI重绘适当进行
+      return new Promise<void>(resolve => {
+        requestAnimationFrame(() => {
+          // 直接执行单个动画，同时处理水平和垂直方向
+          view.animate(
+            {
+              center: [
+                currentCenter[0] - (panX + extraOffsetX) * resolution,
+                currentCenter[1] + (panY + extraOffsetY) * resolution,
+              ],
+              duration: 300,
+              easing: t => {
+                // 使用缓入缓出曲线使动画更自然
+                return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+              },
+            },
+            () => {
+              // 动画完成时重置动画标记
+              this.isPopupAnimating = false;
+
+              // 增加短暂延迟确保DOM完全更新
+              setTimeout(() => {
+                if (callback) callback();
+                resolve();
+              }, 50);
+            }
+          );
+        });
+      });
+    } else {
+      if (callback) callback();
+      return Promise.resolve();
+    }
   }
 
   // 调整弹窗位置函数 - 添加防止缩放冲突的逻辑
@@ -384,14 +410,12 @@ export class PopupManager {
       needAdjust = true;
       adjustY = mapRect.top + safeMargin + headerOffset - popupRect.top;
     }
-
     if (popupRect.bottom > mapRect.bottom - safeMargin) {
       needAdjust = true;
       adjustY = mapRect.bottom - safeMargin - popupRect.bottom;
     }
 
     if (needAdjust) {
-      // console.log('需要调整弹窗位置', { adjustX, adjustY });
       const view = this.map.getView();
       const resolution = view.getResolution() || 1;
       const currentCenter = view.getCenter();
@@ -430,13 +454,6 @@ export class PopupManager {
       const popupRect = this.popupContainer.getBoundingClientRect();
       const mapRect = this.map.getTargetElement().getBoundingClientRect();
 
-      // console.log('adjustForExpandedPopup called', {
-      //   isExpanded,
-      //   popupRect,
-      //   mapRect,
-      //   headerOffset,
-      // });
-
       if (isExpanded) {
         // 展开时，只需要确保副弹窗完全可见
         const resolution = view.getResolution() || 1;
@@ -448,18 +465,18 @@ export class PopupManager {
 
         // 1. 计算副弹窗的宽度和位置
         const mainPopupWidth = popupRect.width;
-        const subPopupWidth = mainPopupWidth * 0.8; // 基于CSS中的80%宽度
+        const subPopupWidth = mainPopupWidth * 0.75; // 减小副弹窗宽度与CSS保持一致(75%)
 
         // 2. 计算副弹窗的右边界位置
         const subPopupRight = popupRect.right + subPopupWidth;
 
         // 3. 检查副弹窗是否超出视口右侧边界
-        const viewportRightEdge = mapRect.right - 40; // 40px安全边距
+        const viewportRightEdge = mapRect.right - 5; // 进一步减小安全边距到5px
 
         // 4. 只有当副弹窗会超出右侧边界时才调整
         if (subPopupRight > viewportRightEdge) {
-          // 计算需要的水平偏移量 - 确保副弹窗完全可见
-          const pixelOffsetX = subPopupRight - viewportRightEdge;
+          // 计算需要的水平偏移量 - 确保副弹窗完全可见，不再添加额外空间
+          const pixelOffsetX = (subPopupRight - viewportRightEdge) * 0.9; // 只调整90%的距离，避免过度移动
 
           // 将像素偏移转换为地图坐标偏移，只移动必要的距离
           const coordOffsetX = pixelOffsetX * resolution;
@@ -496,13 +513,13 @@ export class PopupManager {
           return;
         }
 
-        // 检查点位置是否太靠近视口右边缘
-        const viewportRightEdge = mapRect.right - 80; // 安全边距
+        // 检查点位置是否太靠近视口右边缘 - 保持30px的安全边距
+        const viewportRightEdge = mapRect.right - 30; // 适当调整安全边距
 
         // 只有当偏移过大才调整
         if (pixel[0] > viewportRightEdge) {
           const resolution = view.getResolution() || 1;
-          const pixelOffsetX = pixel[0] - viewportRightEdge + 40; // 确保有足够空间
+          const pixelOffsetX = pixel[0] - viewportRightEdge + 20; // 减小额外空间
 
           const newCenter = [
             currentCenter[0] + pixelOffsetX * resolution,
