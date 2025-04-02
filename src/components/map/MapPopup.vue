@@ -160,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, watch } from 'vue';
+import { ref, inject, watch, onMounted } from 'vue';
 import { cn } from '@/utils/tailwind';
 import { PopupManager } from './PopupManager';
 import { marks } from '@/data/marks';
@@ -190,11 +190,26 @@ const showRewards = computed(() => {
   return show;
 });
 
-const rewards = computed(() => {
-  const entity = props.entity;
-  const rwds = getRewards(entity);
-  return rwds;
+const rewards = ref<any[]>([]);
+
+// 当 entity 变化时异步加载奖励数据
+onMounted(async () => {
+  if (props.entity && shouldShowRewards(props.entity)) {
+    rewards.value = await getRewards(props.entity);
+  }
 });
+
+// 监听 entity 变化以异步加载奖励数据
+watch(
+  () => props.entity,
+  async newEntity => {
+    if (newEntity && shouldShowRewards(newEntity)) {
+      rewards.value = await getRewards(newEntity);
+    } else {
+      rewards.value = [];
+    }
+  }
+);
 
 // 方法委托到PopupManager
 const closeToast = () => {
