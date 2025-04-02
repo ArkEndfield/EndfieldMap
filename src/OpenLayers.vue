@@ -163,19 +163,19 @@ onMounted(async () => {
           popupManager.value.setMapZooming(false);
 
           // 如果弹窗当前可见，在缩放结束后延迟检查并调整位置
-          setTimeout(() => {
-            if (
-              isPopupVisible.value &&
-              popupManager.value?.getCurrentPosition()
-            ) {
-              popupManager.value.resetAnimationState();
-              if (openSubPopup.value) {
-                popupManager.value.adjustForExpandedPopup(true);
-              } else {
-                popupManager.value.adjustPopupPosition(true);
-              }
-            }
-          }, 100);
+          // setTimeout(() => {
+          //   if (
+          //     isPopupVisible.value &&
+          //     popupManager.value?.getCurrentPosition()
+          //   ) {
+          //     popupManager.value.resetAnimationState();
+          //     if (openSubPopup.value) {
+          //       popupManager.value.adjustForExpandedPopup(true);
+          //     } else {
+          //       popupManager.value.adjustPopupPosition(true);
+          //     }
+          //   }
+          // }, 100);
         }
       },
       250,
@@ -320,17 +320,6 @@ onMounted(async () => {
       setTimeout(() => {
         // 仅调整展开/收起状态
         popupManager.value?.adjustForExpandedPopup(newValue);
-
-        // 不再需要额外的位置调整，因为adjustForExpandedPopup已经考虑了所有必要的位置调整
-        // 如果必要，可以加入一个轻微的最终调整，但右侧距离较小
-        if (newValue) {
-          // 仅在展开时做轻微调整
-          setTimeout(() => {
-            popupManager.value?.resetAnimationState();
-            // 使用较小的forceAdjust参数，减少调整幅度
-            popupManager.value?.adjustPopupPosition(false);
-          }, 350);
-        }
       }, 50);
     }
   });
@@ -476,6 +465,15 @@ watch(
   /* 这些元素不应该有动画过渡，因为会导致闪烁 */
   transition: none !important;
   will-change: auto; /* 让浏览器自己决定是否优化 */
+}
+
+.top-bar {
+  $height: 0.7rem;
+  $clip: polygon(0% 0%, calc(100% - $height) 0%, 100% 100%, 0% 100%);
+  height: $height;
+  -webkit-clip-path: $clip;
+  clip-path: $clip;
+  margin-bottom: -0.01em;
 }
 
 /* 弹出层容器的样式 */

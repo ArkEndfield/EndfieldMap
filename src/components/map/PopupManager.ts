@@ -441,7 +441,6 @@ export class PopupManager {
   // 特别为展开副弹窗准备的调整方法 - 添加防止缩放冲突的逻辑
   async adjustForExpandedPopup(isExpanded: boolean) {
     if (!this.currentPosition || !this.map || this.isMapZooming) return;
-
     // 设置动画中状态，避免重复调整
     this.isPopupAnimating = true;
 
@@ -467,7 +466,7 @@ export class PopupManager {
         const subPopupRight = popupRect.right + subPopupWidth;
 
         // 3. 检查副弹窗是否超出视口右侧边界
-        const viewportRightEdge = mapRect.right - 5; // 进一步减小安全边距到5px
+        const viewportRightEdge = mapRect.right - 100; // 进一步减小安全边距到5px
 
         // 4. 只有当副弹窗会超出右侧边界时才调整
         if (subPopupRight > viewportRightEdge) {
@@ -510,7 +509,7 @@ export class PopupManager {
         }
 
         // 检查点位置是否太靠近视口右边缘 - 保持30px的安全边距
-        const viewportRightEdge = mapRect.right - 30; // 适当调整安全边距
+        const viewportRightEdge = mapRect.right + 30; // 适当调整安全边距
 
         // 只有当偏移过大才调整
         if (pixel[0] > viewportRightEdge) {
