@@ -6,7 +6,7 @@
     <div
       class="ol-popup absolute bottom-4 -left-[50px] will-change-transform will-change-opacity text-white origin-bottom w-[300px]"
       ref="popupContainer"
-      v-show="isPopupVisible"
+      v-show="popupManager?.isPopupVisible.value"
     >
       <!-- 背面的弹出框 -->
       <div
@@ -171,13 +171,11 @@ import { computed } from 'vue';
 import { getRewards, shouldShowRewards } from '@/data/reward';
 
 const props = defineProps<{
-  isPopupVisible: boolean;
   entity: PointData | null;
   openSubPopup: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:isPopupVisible', value: boolean): void;
   (e: 'update:openSubPopup', value: boolean): void;
 }>();
 
@@ -197,6 +195,9 @@ onMounted(async () => {
   if (props.entity && shouldShowRewards(props.entity)) {
     rewards.value = await getRewards(props.entity);
   }
+  // popupManager?.addVisibilityChangeListener(() => {
+  //   console.log('Popup visibility changed');
+  // });
 });
 
 // 监听 entity 变化以异步加载奖励数据
@@ -215,8 +216,6 @@ watch(
 const closeToast = () => {
   if (popupManager?.closeToast) {
     popupManager.closeToast();
-  } else {
-    emit('update:isPopupVisible', false);
   }
 
   // 不要立即清除其他状态，让动画流程完成
@@ -258,21 +257,6 @@ watch(
     const hasRewards = shouldShowRewards(newEntity);
     if (!hasRewards && props.openSubPopup) {
       // 如果新标点没有奖励，关闭背面弹窗，但不触发视图调整
-      emit('update:openSubPopup', false);
-      // 重置动画状态
-      if (popupManager?.resetAnimationState) {
-        popupManager.resetAnimationState();
-      }
-    }
-  },
-  { immediate: true }
-);
-
-// 监听 isPopupVisible 的变化，当弹窗关闭时，同时关闭背面弹窗
-watch(
-  () => props.isPopupVisible,
-  newValue => {
-    if (!newValue && props.openSubPopup) {
       emit('update:openSubPopup', false);
       // 重置动画状态
       if (popupManager?.resetAnimationState) {

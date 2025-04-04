@@ -21,11 +21,6 @@ export declare class PopupManager {
   onLeavePopup(el: Element, onComplete: () => void): Promise<void>;
   onTransitionEnd(event: TransitionEvent): void;
   closeAndReopenPopup(data: PointData, newPosition: number[]): Promise<void>;
-  adjustMapForPopup(
-    map: Map,
-    position: number[],
-    callback?: () => void
-  ): Promise<void>;
   adjustPopupPosition(forceAdjust?: boolean): void;
   adjustForExpandedPopup(isExpanded: boolean): Promise<void>;
   setCurrentPosition(position: number[] | undefined): void;

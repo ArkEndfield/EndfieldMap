@@ -12,7 +12,6 @@
     />
 
     <MapPopup
-      v-model:is-popup-visible="isPopupVisible"
       :entity="entity"
       v-model:show-video-info="showVideoInfo"
       v-model:open-sub-popup="openSubPopup"
@@ -45,13 +44,12 @@ import { PopupManager } from './components/map/PopupManager';
 import MapControls from './components/map/MapControls.vue';
 import MapPopup from './components/map/MapPopup.vue';
 import { type PointData } from './data/points';
-import { debounce, throttle } from './utils/common';
+import { debounce, throttle, xyz2crd } from './utils/common';
 import { updateClusterDistance } from './data/entity';
 
 // 状态变量
 // const map = ref<Map | null>(null);
 const zoomLevel = ref(3);
-const isPopupVisible = ref(false);
 const showVideoInfo = ref(false);
 const openSubPopup = ref(false);
 const entity = ref<PointData | null>(null);
@@ -103,7 +101,6 @@ onMounted(async () => {
       map.value as Map,
       overlay,
       mapPopupEl,
-      isPopupVisible,
       entity,
       showVideoInfo,
       openSubPopup
@@ -133,6 +130,11 @@ onMounted(async () => {
       }
 
       updateClusterDistance(zoomLevel.value);
+
+      // 如果弹窗是打开的，则在缩放时重新定位弹窗
+      if (popupManager.value && popupManager.value.isPopupVisible.value) {
+        popupManager.value.repositionPopup();
+      }
     },
     150, // 增加到150ms，避免过于频繁的更新
     { leading: true, trailing: true }
@@ -161,21 +163,6 @@ onMounted(async () => {
         // 重要：在移动或缩放结束后，重置缩放状态标志
         if (popupManager.value) {
           popupManager.value.setMapZooming(false);
-
-          // 如果弹窗当前可见，在缩放结束后延迟检查并调整位置
-          // setTimeout(() => {
-          //   if (
-          //     isPopupVisible.value &&
-          //     popupManager.value?.getCurrentPosition()
-          //   ) {
-          //     popupManager.value.resetAnimationState();
-          //     if (openSubPopup.value) {
-          //       popupManager.value.adjustForExpandedPopup(true);
-          //     } else {
-          //       popupManager.value.adjustPopupPosition(true);
-          //     }
-          //   }
-          // }, 100);
         }
       },
       250,
@@ -201,10 +188,8 @@ onMounted(async () => {
     );
 
     // 如果没有Feature被点击，并且弹窗正在显示，则关闭弹窗
-    if (!feature && isPopupVisible.value && popupManager.value) {
-      // 不要直接调用closeToast，而是通过设置isPopupVisible为false来触发正常的关闭流程
-      isPopupVisible.value = false;
-      // 这样会触发弹窗的离开动画，因为Vue的v-show监听了这个值
+    if (!feature && popupManager.value) {
+      popupManager.value.closeToast();
     }
   });
 
@@ -220,8 +205,8 @@ onMounted(async () => {
       if (features && features.length > 1) {
         // 聚合点点击处理
         // 如果有弹窗正在显示，先关闭它
-        if (isPopupVisible.value) {
-          isPopupVisible.value = false;
+        if (popupManager.value?.isPopupVisible.value) {
+          popupManager.value.closeToast();
           // 等待弹窗关闭动画完成
           await new Promise(resolve => setTimeout(resolve, 250));
         }
@@ -239,7 +224,7 @@ onMounted(async () => {
       }
 
       // 获取单个点的数据
-      let data = target.get('payload');
+      let data = target.get('payload') as PointData | undefined;
       // 如果是聚合中的单个点，需要从features中获取
       if (features && features.length === 1) {
         data = features[0].get('payload');
@@ -247,7 +232,18 @@ onMounted(async () => {
 
       if (!data) return;
 
-      const newPosition = event.mapBrowserEvent.coordinate;
+      const targetFeaturePosition = xyz2crd(data.position);
+
+      // 获取当前地图分辨率
+      const resolution = currentMap.getView().getResolution() || 1;
+      // 计算固定像素偏移量对应的地图单位，确保在任何缩放级别下都是相同的视觉距离
+      // 20像素的固定偏移量，转换为地图单位
+      const yOffset = 20 * resolution;
+
+      const newPosition = [
+        targetFeaturePosition[0],
+        targetFeaturePosition[1] + yOffset,
+      ];
       const currentPosition = popupManager.value?.getCurrentPosition();
       const positionChanged =
         !currentPosition ||
@@ -257,10 +253,9 @@ onMounted(async () => {
       if (!popupManager.value) return;
 
       // 如果位置改变或弹出框当前不可见
-      if (positionChanged || !isPopupVisible.value) {
-        if (isPopupVisible.value) {
+      if (positionChanged || !popupManager.value?.isPopupVisible.value) {
+        if (popupManager.value.isPopupVisible.value) {
           // 如果弹窗已经显示，使用PopupManager处理关闭和重新打开
-          // 这个方法会先完全关闭当前弹窗，然后再在新位置打开
           await popupManager.value.closeAndReopenPopup(data, newPosition);
         } else {
           // 首次显示弹窗
@@ -270,32 +265,7 @@ onMounted(async () => {
 
           // 先设置弹窗位置，但不显示
           overlay.setPosition(newPosition);
-
-          // 预先调整地图中心，确保弹窗完全可见
-          await popupManager.value.adjustMapForPopup(
-            currentMap as Map,
-            newPosition,
-            false,
-            async () => {
-              // 等待地图动画完成
-              await new Promise(resolve => setTimeout(resolve, 50));
-
-              // 调整完成后再显示弹窗
-              requestAnimationFrame(() => {
-                if (popupManager.value) {
-                  popupManager.value.resetAnimationState();
-                  isPopupVisible.value = true;
-
-                  // 弹窗显示后额外检查位置
-                  setTimeout(() => {
-                    if (popupManager.value && isPopupVisible.value) {
-                      popupManager.value.adjustPopupPosition(true);
-                    }
-                  }, 300);
-                }
-              });
-            }
-          );
+          popupManager.value.openToast();
         }
       } else {
         // 如果是同一位置的点击，只更新弹窗内容，不关闭再打开
@@ -303,16 +273,14 @@ onMounted(async () => {
       }
     } else {
       // 只有当没有选中新Feature时才关闭弹窗
-      if (event.selected.length === 0 && event.deselected.length > 0) {
-        isPopupVisible.value = false;
-      }
+      popupManager.value?.closeToast();
     }
   });
 
   // 监听openSubPopup的变化，确保视图正确调整
   watch(openSubPopup, newValue => {
     // console.log('openSubPopup changed to', newValue);
-    if (isPopupVisible.value && popupManager.value) {
+    if (popupManager.value) {
       // 先重置动画状态，确保弹窗可以调整位置
       popupManager.value.resetAnimationState();
       // 调整视图 - 改为单次调整，减少多次位移
@@ -325,11 +293,7 @@ onMounted(async () => {
 
   // 当窗口大小改变时，也需要检查弹窗位置
   window.addEventListener('resize', () => {
-    if (
-      isPopupVisible.value &&
-      popupManager.value &&
-      popupManager.value.getCurrentPosition()
-    ) {
+    if (popupManager.value && popupManager.value.getCurrentPosition()) {
       // 窗口大小变化时强制调整位置
       setTimeout(() => {
         if (openSubPopup.value) {
@@ -344,26 +308,10 @@ onMounted(async () => {
   });
 
   // 修改 closeToast 方法的处理
-  watch(isPopupVisible, newValue => {
+  popupManager.value?.addVisibilityChangeListener(newValue => {
     if (!newValue) {
       // 当弹出框关闭时，清除选择状态
       selectInteraction.getFeatures().clear();
-
-      // 确保弹窗信息被清理，但要在动画完成后
-      setTimeout(() => {
-        if (!isPopupVisible.value) {
-          // 再次检查，避免在动画中途重新打开的情况
-          showVideoInfo.value = false;
-          openSubPopup.value = false;
-          // 最后才清除位置，确保动画完成
-          setTimeout(() => {
-            if (!isPopupVisible.value) {
-              popupManager.value?.setCurrentPosition(undefined);
-              overlay.setPosition(undefined);
-            }
-          }, 250);
-        }
-      }, 250); // 等待动画完成
     }
   });
 });
@@ -412,7 +360,7 @@ watch(
     console.log(`开始切换地图到: ${newValue}`);
 
     // 关闭可能打开的弹窗
-    isPopupVisible.value = false;
+    popupManager.value?.closeToast();
     showVideoInfo.value = false;
     openSubPopup.value = false;
     popupManager.value?.setCurrentPosition(undefined);
