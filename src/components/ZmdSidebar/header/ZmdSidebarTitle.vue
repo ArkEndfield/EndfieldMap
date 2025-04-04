@@ -236,10 +236,10 @@ async function onSubtitleLeave(el: Element, onComplete: () => void) {
       &::after {
         content: '';
         position: absolute;
-        width: 0.17em;
+        width: 0.2em;
         height: 1.1em;
         display: block;
-        border: 0.15em solid #7a7a7a;
+        border: 0.1em solid #7a7a7a;
         bottom: 0.2em;
       }
       &::before {

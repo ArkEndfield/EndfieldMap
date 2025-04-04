@@ -9,7 +9,7 @@
       <ZmdSidebarLines v-show="props.open" />
     </Transition>
     <ZmdSidebarTitle :open="props.open" />
-    <ZmdSidebarLocation />
+    <ZmdSidebarLocation rotation-enabled />
   </div>
 </template>
 

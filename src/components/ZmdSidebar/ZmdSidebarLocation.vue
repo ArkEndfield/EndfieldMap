@@ -5,8 +5,13 @@
         class="zmd-sidebar-location-marker"
         :style="markerStyle"
       >
-        <div class="zmd-sidebar-location-ring"></div>
-        <div class="zmd-sidebar-location-triangle"></div>
+        <div
+          class="zmd-sidebar-location-content"
+          :class="{ 'rotate-animation': props.rotationEnabled }"
+        >
+          <div class="zmd-sidebar-location-ring"></div>
+          <div class="zmd-sidebar-location-triangle"></div>
+        </div>
         <div class="zmd-sidebar-location-shadow"></div>
       </div>
     </div>
@@ -19,11 +24,13 @@ import { computed } from 'vue';
 interface Props {
   iconColor?: string;
   shadowColor?: string;
+  rotationEnabled?: boolean; // 添加控制旋转动画的属性
 }
 
 const props = withDefaults(defineProps<Props>(), {
   iconColor: '#FDFB55',
   shadowColor: 'rgba(255, 255, 255, 0.1)',
+  rotationEnabled: false, // 默认不启用旋转
 });
 
 const markerStyle = computed(() => ({
@@ -53,6 +60,20 @@ const markerStyle = computed(() => ({
     --shadow-color: rgba(0, 0, 0, 0.3);
   }
 
+  &-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-style: preserve-3d;
+    position: relative;
+
+    &.rotate-animation {
+      animation: rotate3d 4s linear infinite;
+    }
+  }
+
   &-ring {
     width: 1.5em;
     height: 1.5em;
@@ -62,6 +83,7 @@ const markerStyle = computed(() => ({
     background-color: transparent;
     position: relative;
     z-index: 3;
+    backface-visibility: visible;
   }
 
   &-triangle {
@@ -72,6 +94,7 @@ const markerStyle = computed(() => ({
     top: -10%;
     z-index: 2;
     clip-path: polygon(50% 100%, 0 0, 100% 0);
+    backface-visibility: visible;
   }
 
   &-shadow {
@@ -82,6 +105,18 @@ const markerStyle = computed(() => ({
     position: absolute;
     bottom: 0.6em;
     z-index: 1 !important;
+  }
+}
+
+@keyframes rotate3d {
+  0% {
+    transform: perspective(800px) rotateY(0deg);
+  }
+  50% {
+    transform: perspective(800px) rotateY(180deg);
+  }
+  100% {
+    transform: perspective(800px) rotateY(360deg);
   }
 }
 </style>

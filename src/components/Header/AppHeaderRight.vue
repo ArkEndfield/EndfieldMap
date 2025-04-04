@@ -21,9 +21,10 @@
         ></div>
       </button>
       <div
-        class="text-3xl font-extrabold [text-shadow:0_0_0.1em_rgba(0,0,0,0.2)]" @click="togglePopover"
+        class="text-3xl font-extrabold [text-shadow:0_0_0.1em_rgba(0,0,0,0.2)]"
+        @click="togglePopover"
       >
-      {{ $t(`map.${cacheMapId}`) }}
+        {{ $t(`map.${cacheMapId}`) }}
       </div>
     </div>
     <Transition
@@ -41,8 +42,16 @@
           <div class="line left-2"></div>
           <div class="line right-2"></div>
           <div class="flex flex-col gap-1 h-full justify-between">
-            <MapButton :active="cacheMapId === 'map001'" @click="selectMap('map001')">{{ $t('map.map001') }}</MapButton>
-            <MapButton :active="cacheMapId === 'map002'" @click="selectMap('map002')">{{ $t('map.map002') }}</MapButton>
+            <MapButton
+              :active="cacheMapId === 'map001'"
+              @click="selectMap('map001')"
+              >{{ $t('map.map001') }}</MapButton
+            >
+            <MapButton
+              :active="cacheMapId === 'map002'"
+              @click="selectMap('map002')"
+              >{{ $t('map.map002') }}</MapButton
+            >
           </div>
         </div>
       </div>
@@ -75,7 +84,7 @@ function clickOutside(event: MouseEvent) {
   const target = event.target as Node;
   if (
     popoverRef.value &&
-    !popoverRef.value.contains(target) &&
+    // !popoverRef.value.contains(target) &&
     triggerRef.value &&
     !triggerRef.value.contains(target)
   ) {
