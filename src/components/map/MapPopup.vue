@@ -81,7 +81,7 @@
       >
         <button
           class="no-underline absolute top-3 right-5 text-3xl text-[#ece065] z-2"
-          @click="closeToast"
+          @click="popupManager?.closeToast"
         >
           <PowerIcon />
         </button>
@@ -211,15 +211,6 @@ watch(
     }
   }
 );
-
-// 方法委托到PopupManager
-const closeToast = () => {
-  if (popupManager?.closeToast) {
-    popupManager.closeToast();
-  }
-
-  // 不要立即清除其他状态，让动画流程完成
-};
 
 const toggleSubPopup = () => {
   const newState = !props.openSubPopup;
