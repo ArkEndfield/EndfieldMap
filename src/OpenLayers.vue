@@ -234,10 +234,6 @@ onMounted(async () => {
 
       const targetFeaturePosition = xyz2crd(data.position);
 
-      // 获取当前地图分辨率
-      const resolution = currentMap.getView().getResolution() || 1;
-      const yOffset = 20 * resolution;
-
       const newPosition = targetFeaturePosition;
       const currentPosition = popupManager.value?.getCurrentPosition();
       const positionChanged =
@@ -257,9 +253,6 @@ onMounted(async () => {
           entity.value = data;
           showVideoInfo.value = false;
           popupManager.value.setCurrentPosition([...newPosition]);
-
-          // 先设置弹窗位置，但不显示
-          overlay.setPosition(newPosition);
           popupManager.value.openToast();
         }
       } else {

@@ -37,9 +37,14 @@ export class PopupManager {
     this.isPopupVisible.value = false;
   }
 
-  openToast() {
+  async openToast() {
     this.isPopupVisible.value = true;
     this.repositionPopup();
+    // setTimeout(() => {
+    //   this.adjustPopupPosition();
+    // }, 200);
+    await new Promise(resolve => setTimeout(resolve, 200));
+
     this.adjustPopupPosition();
   }
 
@@ -203,9 +208,6 @@ export class PopupManager {
 
       // 6. 等待弹窗完全展开
       await new Promise(resolve => setTimeout(resolve, 200));
-
-      // 7. 调整视图位置
-      this.adjustPopupPosition(true);
 
       // 8. 如果之前是展开状态，检查新标点是否有奖励，只有有奖励时才展开副弹窗
       if (wasExpanded) {
