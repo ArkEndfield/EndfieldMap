@@ -155,10 +155,31 @@ const toggle = () => {
       position: absolute;
       inset: -3px;
       border-radius: 50%;
-      border: 1px solid transparent;
       opacity: 0;
       transition: all 0.3s ease;
       z-index: 1;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+      }
+
+      &::before {
+        border: 1px dashed rgba(253, 251, 85, 0.3);
+        border-left: 2px solid rgba(253, 251, 85, 0.6);
+        border-right: 2px solid rgba(253, 251, 85, 0.6);
+      }
+
+      &::after {
+        border: 1px dashed rgba(253, 251, 85, 0.3);
+        border-top: 2px solid rgba(253, 251, 85, 0.6);
+        border-bottom: 2px solid rgba(253, 251, 85, 0.6);
+        transform: rotate(45deg);
+      }
     }
   }
 
@@ -226,7 +247,7 @@ const toggle = () => {
       width: 0.5em;
       height: 0.5em;
       opacity: 0;
-      transition: all 0.3s ease;
+      transition: opacity 0.3s ease;
 
       &.top-right {
         top: 0;
@@ -292,15 +313,18 @@ const toggle = () => {
 
       .corner-decoration {
         opacity: 1;
-        width: 0.6em;
-        height: 0.6em;
 
         &.top-right {
+          height: 100%;
           border-color: rgba(253, 251, 85, 0.7);
+          animation: cornerExpandTopRight 1.5s ease-in-out infinite alternate;
+          border-top-right-radius: 9999px;
+          border-bottom-right-radius: 9999px;
         }
 
         &.bottom-left {
           border-color: rgba(253, 251, 85, 0.7);
+          animation: cornerExpandBottomLeft 1.5s ease-in-out infinite alternate;
         }
       }
     }
@@ -333,6 +357,24 @@ const toggle = () => {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes cornerExpandTopRight {
+  0% {
+    width: 1em;
+  }
+  100% {
+    width: 3em;
+  }
+}
+
+@keyframes cornerExpandBottomLeft {
+  0% {
+    width: 0.6em;
+  }
+  100% {
+    width: 1em;
   }
 }
 </style>
