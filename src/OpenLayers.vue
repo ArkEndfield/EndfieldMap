@@ -236,14 +236,9 @@ onMounted(async () => {
 
       // 获取当前地图分辨率
       const resolution = currentMap.getView().getResolution() || 1;
-      // 计算固定像素偏移量对应的地图单位，确保在任何缩放级别下都是相同的视觉距离
-      // 20像素的固定偏移量，转换为地图单位
       const yOffset = 20 * resolution;
 
-      const newPosition = [
-        targetFeaturePosition[0],
-        targetFeaturePosition[1] + yOffset,
-      ];
+      const newPosition = targetFeaturePosition;
       const currentPosition = popupManager.value?.getCurrentPosition();
       const positionChanged =
         !currentPosition ||

@@ -39,6 +39,7 @@ export class PopupManager {
 
   openToast() {
     this.isPopupVisible.value = true;
+    this.repositionPopup();
     this.adjustPopupPosition();
   }
 
@@ -197,9 +198,8 @@ export class PopupManager {
       this.showVideoInfo.value = false;
       this.currentPosition = popupPosition;
       this.overlay.setPosition(popupPosition);
-
       // 5. 展开新弹窗
-      this.isPopupVisible.value = true;
+      this.openToast();
 
       // 6. 等待弹窗完全展开
       await new Promise(resolve => setTimeout(resolve, 200));
