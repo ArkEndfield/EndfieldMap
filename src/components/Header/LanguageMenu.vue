@@ -79,14 +79,13 @@ const changeLanguage = async (lang: string) => {
     locale.value = lang;
     openAlert.value = false;
     localStorage.setItem('userLanguage', lang);
-    loadTextPoints(true);
   } else {
     console.error('加载语言文件失败，将使用中文作为后备语言');
     // 如果加载失败，使用中文作为后备语言
     locale.value = 'zh-CN';
     localStorage.setItem('userLanguage', 'zh-CN');
-    loadTextPoints(true);
   }
+  loadTextPoints(true);
 };
 </script>
 

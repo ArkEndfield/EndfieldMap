@@ -269,7 +269,7 @@ export function createMap(
     view: new View({
       projection: simpleProjection,
       center: mapIndex === 'map001' ? [100, 152] : [50, 188],
-      zoom: 3,
+      zoom: Number(localStorage.getItem('zoom')) || 3,
       maxZoom: 5,
       minZoom: 1,
       rotation: 0,
@@ -298,6 +298,7 @@ export function createMap(
 
 // 选择地图
 export const selectMap = (id: string) => {
+  if (cacheMapId.value === id) return 
   cacheMapId.value = id;
   localStorage.setItem('map', id);
   updateMap(id);

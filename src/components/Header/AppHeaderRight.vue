@@ -21,7 +21,7 @@
         ></div>
       </button>
       <div
-        class="text-3xl font-extrabold [text-shadow:0_0_0.1em_rgba(0,0,0,0.2)]"
+        class="text-3xl font-extrabold [text-shadow:0_0_0.1em_rgba(0,0,0,0.2)] hover:text-[#fdfb55]"
         @click="togglePopover"
       >
         {{ $t(`map.${cacheMapId}`) }}

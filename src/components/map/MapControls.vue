@@ -45,9 +45,9 @@ const emit = defineEmits<{
 }>();
 
 const controls = ref<HTMLElement>();
-const zoomLevel = ref(props.zoomLevel || 3);
+const zoomLevel = ref(props.zoomLevel);
 // 新增UI专用缩放等级变量，用于平滑显示
-const uiZoomLevel = ref(props.zoomLevel || 3);
+const uiZoomLevel = ref(props.zoomLevel);
 const inputDirection = ref<'vertical' | 'horizontal'>('vertical');
 
 // 添加动画帧ID变量用于管理动画

@@ -46,10 +46,11 @@ import MapPopup from './components/map/MapPopup.vue';
 import { type PointData } from './data/points';
 import { debounce, throttle, xyz2crd } from './utils/common';
 import { updateClusterDistance } from './data/entity';
+import { loadTextPoints } from './data/locations';
 
 // 状态变量
 // const map = ref<Map | null>(null);
-const zoomLevel = ref(3);
+const zoomLevel = ref(Number(localStorage.getItem('zoom')));
 const showVideoInfo = ref(false);
 const openSubPopup = ref(false);
 const entity = ref<PointData | null>(null);
@@ -126,6 +127,8 @@ onMounted(async () => {
 
       // 只在真正需要更新时才更新UI值
       if (Math.abs(zoomLevel.value - stableZoom) >= 0.1) {
+        localStorage.setItem('zoom', stableZoom.toString())
+        loadTextPoints(true)
         zoomLevel.value = stableZoom;
       }
 
@@ -157,6 +160,8 @@ onMounted(async () => {
 
         // 确保最终值是准确的
         if (Math.abs(zoomLevel.value - stableZoom) >= 0.01) {
+          localStorage.setItem('zoom', stableZoom.toString())
+          loadTextPoints(true)
           zoomLevel.value = stableZoom;
         }
 

@@ -109,7 +109,7 @@ async function loadAllData() {
 
     console.log('开始加载地名标注...');
     // 加载地名标注
-    loadTextPoints(true, false);
+    loadTextPoints(true);
     console.log('地名标注加载完成');
 
     console.log('所有数据加载完成');
@@ -186,7 +186,7 @@ watch(
       updateMap(newValue);
 
       // 重新加载地名标注
-      loadTextPoints(true, false, newValue === 'map002' ? 'map02' : 'map01');
+      loadTextPoints(true, newValue === 'map002' ? 'map02' : 'map01');
 
       // 强制刷新一次地图显示
       if (map.value) {
