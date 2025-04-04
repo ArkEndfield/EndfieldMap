@@ -248,6 +248,7 @@ export class PopupManager {
     forceCheck = false,
     callback?: () => void
   ) {
+    console.log('Adjusting map for popup at position:', position);
     // 如果地图正在进行动画（比如聚合点放大）或者正在缩放中，则不调整视图
     if (map.getView().getAnimating() || this.isMapZooming) {
       if (callback) callback();
@@ -256,7 +257,7 @@ export class PopupManager {
 
     const view = map.getView();
     const mapSize = map.getSize();
-    const popupWidth = 300; // 基本弹窗宽度(像素)
+    const popupWidth = 400; // 基本弹窗宽度(像素)
     if (!mapSize || !this.popupContainer) {
       if (callback) callback();
       return Promise.resolve();
@@ -270,7 +271,7 @@ export class PopupManager {
 
     // 安全边距，确保弹窗不会太靠近地图边缘
     const safeMargin = 20;
-    const extraRightSpace = this.openSubPopup.value ? popupSize.width * 0.8 : 0;
+    const extraRightSpace = this.openSubPopup.value ? popupSize.width * 1.5 : 0;
 
     // 计算弹窗在屏幕上的位置
     const pixel = map.getPixelFromCoordinate(position);
@@ -316,7 +317,7 @@ export class PopupManager {
     if (needToMove || forceCheck) {
       const resolution = view.getResolution() || 1;
       const extraOffsetY = panY !== 0 ? Math.sign(panY) * 40 : 0;
-      const extraOffsetX = panX !== 0 ? Math.sign(panX) * 30 : 0;
+      const extraOffsetX = panX !== 0 ? Math.sign(panX) * 150 : 0;
       const currentCenter = view.getCenter();
 
       if (!currentCenter) {
@@ -388,7 +389,7 @@ export class PopupManager {
 
     // 如果子弹窗展开，增加右侧检查的边界
     const extraRightMargin = this.openSubPopup.value ? 320 : 0; // 调整副弹窗宽度估计
-
+    console.log('适配弹窗位置');
     // 检查是否超出边界
     if (popupRect.left < mapRect.left + safeMargin) {
       needAdjust = true;

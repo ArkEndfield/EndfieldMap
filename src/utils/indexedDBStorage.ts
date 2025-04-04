@@ -268,9 +268,9 @@ export async function getItem<T>(
   key: string,
   type: StorageType = StorageType.TEMPORARY
 ): Promise<T | null> {
-  if (isDevelopment) {
-    console.log(`[IndexedDB] 获取数据: ${key} (${type})`);
-  }
+  // if (isDevelopment) {
+  //   console.log(`[IndexedDB] 获取数据: ${key} (${type})`);
+  // }
 
   // 最大重试次数
   const MAX_RETRIES = 3;

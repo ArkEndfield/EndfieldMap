@@ -1,7 +1,7 @@
 <template>
   <div
     ref="controls"
-    class="fixed left-1/2 md:left-[unset] -translate-x-1/2 md:translate-x-0 md:right-4 bottom-5 md:bottom-[unset] md:top-1/2 md:-translate-y-1/2 z-10 select-none text-white flex flex-row-reverse md:flex-col justify-center gap-2"
+    class="fixed left-1/2 md:left-[unset] -translate-x-1/2 md:translate-x-0 md:right-4 bottom-6 md:bottom-[unset] md:top-1/2 md:-translate-y-1/2 z-10 select-none text-white flex flex-row-reverse md:flex-col justify-center gap-2"
   >
     <ZoomButton
       id="zoomIn"

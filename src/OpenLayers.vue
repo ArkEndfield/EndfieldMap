@@ -315,7 +315,6 @@ onMounted(async () => {
     if (isPopupVisible.value && popupManager.value) {
       // 先重置动画状态，确保弹窗可以调整位置
       popupManager.value.resetAnimationState();
-
       // 调整视图 - 改为单次调整，减少多次位移
       setTimeout(() => {
         // 仅调整展开/收起状态
@@ -424,7 +423,7 @@ watch(
 
 <style lang="scss">
 .map-container {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
