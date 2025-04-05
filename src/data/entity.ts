@@ -898,26 +898,36 @@ export const refresh = () => {
     createEntityClusterLayers();
   }
 
-  // 清理样式缓存以避免内存泄漏
-  Object.keys(styleCache).forEach(key => delete styleCache[key]);
+  // 不再清理样式缓存，减少不必要的重新渲染
+  // Object.keys(styleCache).forEach(key => delete styleCache[key]);
 
-  // 先清理所有源
-  Object.values(entityClusterSources).forEach(source => {
-    const vectorSource = source.getSource();
-    if (vectorSource) {
-      vectorSource.clear();
-    }
-  });
-
-  // 为每个实体类型分配特征
+  // 不再清理所有源，而是控制图层可见性
   for (const key in entityInfo) {
     const source = entityClusterSources[key];
     if (!source) continue;
 
-    // 只处理需要显示的类型
-    if (entityInfo[key].entityInfo.show) {
-      // 找出属于这个类型的所有特征
-      const featuresForType = features.filter(f => {
+    // 查找对应的图层
+    const layer = entityClusterLayers.find(l => l.getSource() === source);
+
+    if (!layer) continue;
+
+    // 检查是否需要显示该类型的实体
+    const shouldShowEntityType = entityInfo[key].entityInfo.show;
+
+    // 通过设置图层可见性来控制标点显示/隐藏，而不是重新添加/删除特征
+    layer.setVisible(shouldShowEntityType);
+
+    // 如果需要显示并且需要重新过滤（基于标记状态筛选），则更新特征集合
+    if (shouldShowEntityType && currentMarkFilter.value !== 'all') {
+      // 获取原始的矢量源
+      const vectorSource = source.getSource();
+      if (!vectorSource) continue;
+
+      // 在执行过滤前清空源
+      vectorSource.clear();
+
+      // 找出属于这个类型的所有特征，并根据标记状态过滤
+      const filteredFeatures = features.filter(f => {
         const payload = f.get('payload');
         return (
           payload?.entityDataIdKey === key &&
@@ -926,9 +936,8 @@ export const refresh = () => {
       });
 
       // 如果有特征要显示，添加到对应的源
-      const vectorSource = source.getSource();
-      if (vectorSource && featuresForType.length > 0) {
-        vectorSource.addFeatures(featuresForType);
+      if (filteredFeatures.length > 0) {
+        vectorSource.addFeatures(filteredFeatures);
       }
     }
   }
@@ -939,15 +948,6 @@ export const refresh = () => {
   // 在最大缩放级别时强制禁用聚合
   if (currentZoomLevel >= 5) {
     forceDisperseAtMaxZoom(currentZoomLevel);
-  }
-
-  // 请求垃圾回收（虽然不是强制的，但可能有助于提示浏览器）
-  if (window.gc) {
-    try {
-      window.gc();
-    } catch (e) {
-      // 大多数浏览器不支持手动触发GC，忽略错误
-    }
   }
 };
 
