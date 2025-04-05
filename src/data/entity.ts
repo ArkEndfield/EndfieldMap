@@ -917,8 +917,8 @@ export const refresh = () => {
     // 通过设置图层可见性来控制标点显示/隐藏，而不是重新添加/删除特征
     layer.setVisible(shouldShowEntityType);
 
-    // 如果需要显示并且需要重新过滤（基于标记状态筛选），则更新特征集合
-    if (shouldShowEntityType && currentMarkFilter.value !== 'all') {
+    // 如果需要显示，则根据标记状态更新特征集合
+    if (shouldShowEntityType) {
       // 获取原始的矢量源
       const vectorSource = source.getSource();
       if (!vectorSource) continue;
@@ -926,18 +926,23 @@ export const refresh = () => {
       // 在执行过滤前清空源
       vectorSource.clear();
 
-      // 找出属于这个类型的所有特征，并根据标记状态过滤
-      const filteredFeatures = features.filter(f => {
+      // 找出属于这个类型的所有特征
+      let typeFeatures = features.filter(f => {
         const payload = f.get('payload');
-        return (
-          payload?.entityDataIdKey === key &&
-          shouldShowByMarkStatus(payload?.levelLogicId)
-        );
+        return payload?.entityDataIdKey === key;
       });
 
+      // 如果不是"全部"筛选状态，则根据标记状态进行过滤
+      if (currentMarkFilter.value !== 'all') {
+        typeFeatures = typeFeatures.filter(f => {
+          const payload = f.get('payload');
+          return shouldShowByMarkStatus(payload?.levelLogicId);
+        });
+      }
+
       // 如果有特征要显示，添加到对应的源
-      if (filteredFeatures.length > 0) {
-        vectorSource.addFeatures(filteredFeatures);
+      if (typeFeatures.length > 0) {
+        vectorSource.addFeatures(typeFeatures);
       }
     }
   }
