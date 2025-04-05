@@ -179,8 +179,22 @@ export const loadMarksFromStorage = async () => {
 
 // 新增标记筛选函数
 export const setMarkFilter = (filterType: MarkFilterType) => {
+  // 如果筛选类型没有变化，则不执行任何操作
+  if (currentMarkFilter.value === filterType) {
+    return currentMarkFilter.value;
+  }
+
+  // 更新筛选状态
   currentMarkFilter.value = filterType;
-  // console.log(`标记筛选状态变更为: ${filterType}`);
+
+  // 触发变更通知以更新UI计数等
+  markStateChangeTrigger.value++;
+
+  // 使用entity.ts中的immediateRefresh来应用筛选，避免完全重新加载
+  import('./entity').then(({ immediateRefresh }) => {
+    immediateRefresh();
+  });
+
   return currentMarkFilter.value;
 };
 
