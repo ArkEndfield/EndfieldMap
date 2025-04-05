@@ -131,6 +131,9 @@ onBeforeUnmount(() => {
     height: 0;
     display: none;
   }
+  @media (min-width: 1920px) {
+    font-size: large;
+  }
   .objecg-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

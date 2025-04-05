@@ -213,6 +213,9 @@ const open = () => {
     top: 0;
     bottom: 0 !important;
   }
+  @media (min-width: 1920px) {
+    width: 420px 
+  }
   * {
     box-sizing: border-box;
   }
