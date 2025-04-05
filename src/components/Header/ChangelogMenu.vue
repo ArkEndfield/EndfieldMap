@@ -8,7 +8,11 @@
     hide-cancel
     width="800px"
   >
-    <h1 class="text-lg font-bold mt-10">{{ $t('header.changelog') }}</h1>
+    <h1
+      class="text-lg font-bold mt-10 text-center sticky top-0 bg-white/40 backdrop-blur-2xl z-10"
+    >
+      {{ $t('header.changelog') }}
+    </h1>
     <ChangeLog />
   </ZmdAlert>
 </template>

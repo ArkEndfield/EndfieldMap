@@ -7,12 +7,14 @@
     v-model:open="openAlert"
     hide-cancel
   >
-    <h1 class="text-lg font-bold">{{ $t('header.up') }}</h1>
+    <h1 class="text-lg font-bold text-center">{{ $t('header.up') }}</h1>
     <div class="py-4">
       <BilibiliCard />
     </div>
-    <h1 class="text-lg font-bold">{{ $t('header.about') }}</h1>
-    <p class="text-sm py-4">{{ $t('header.community_not_constructed') }}</p>
+    <h1 class="text-lg font-bold text-center">{{ $t('header.about') }}</h1>
+    <p class="text-sm py-4 text-center">
+      {{ $t('header.community_not_constructed') }}
+    </p>
   </ZmdAlert>
 </template>
 

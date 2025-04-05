@@ -36,8 +36,8 @@
         <div
           class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
         >
-          <div
-            class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 py-4 w-full h-full overflow-y-auto"
+          <ScrollArea
+            content-class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 py-4 w-full h-full"
           >
             <template v-if="rewards && rewards.length > 0">
               <PopContentItem
@@ -65,7 +65,7 @@
             >
               暂无奖励信息
             </div>
-          </div>
+          </ScrollArea>
         </div>
       </div>
 

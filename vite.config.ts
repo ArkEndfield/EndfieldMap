@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
+import MotionResolver from 'motion-v/resolver';
 import Components from 'unplugin-vue-components/vite';
 import resourceLoadingPlugin from './vite-plugin-resource-loading';
 // https://vite.dev/config/
@@ -18,7 +19,7 @@ export default defineConfig({
       imports: ['vue'],
     }),
     Components({
-      resolvers: [NaiveUiResolver()],
+      resolvers: [NaiveUiResolver(), MotionResolver()],
     }),
   ],
   build: {

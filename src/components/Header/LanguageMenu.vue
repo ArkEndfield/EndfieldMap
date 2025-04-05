@@ -8,7 +8,7 @@
     hide-cancel
     confirm-text="close"
   >
-    <h1 class="text-lg font-bold mb-4 text-[#282828]">
+    <h1 class="text-lg font-bold mb-4 text-[#282828] text-center">
       {{ $t('header.change_language') }}
     </h1>
     <div class="flex flex-col gap-2 w-full py-2 px-6">

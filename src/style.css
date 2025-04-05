@@ -6,12 +6,20 @@
 }
 
 html,
-body,
-#app,
-#map {
+body {
   padding: 0;
   margin: 0;
   height: 100%;
-  width: 100vw;
-  overflow: hidden;
+  width: 100%;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  overflow: auto; /* 允许滚动 */
+}
+
+#map {
+  height: 100%;
+  width: 100%;
 }

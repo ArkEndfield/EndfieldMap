@@ -47,6 +47,7 @@ declare module 'vue' {
     QuestionIcon: typeof import('./src/components/icons/QuestionIcon.vue')['default']
     RangeInput: typeof import('./src/components/RangeInput.vue')['default']
     RoundInput: typeof import('./src/components/RoundInput.vue')['default']
+    ScrollArea: typeof import('./src/components/ScrollArea.vue')['default']
     SwitchIcon: typeof import('./src/components/icons/SwitchIcon.vue')['default']
     TranslateIcon: typeof import('./src/components/icons/TranslateIcon.vue')['default']
     UserIcon: typeof import('./src/components/icons/UserIcon.vue')['default']

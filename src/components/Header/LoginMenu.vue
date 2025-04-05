@@ -8,7 +8,7 @@
     confirm-text="header.login"
     @confirm="onLogin"
   >
-    <h1 class="text-lg font-bold">{{ $t('header.login') }}</h1>
+    <h1 class="text-lg font-bold text-center">{{ $t('header.login') }}</h1>
     <div class="flex flex-col gap-4 mt-4 w-full px-16">
       <RoundInput
         v-model="username"
@@ -28,7 +28,7 @@
         </template>
       </RoundInput>
     </div>
-    <div class="text-sm text-[#9B9B9B] my-4">提示信息</div>
+    <div class="text-sm text-[#9B9B9B] my-4 text-center">提示信息</div>
   </ZmdAlert>
 </template>
 

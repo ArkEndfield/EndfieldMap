@@ -28,10 +28,17 @@
           @leave="animateAlertLeaveContent"
         >
           <div
-            class="zmd-alert-content"
+            class="zmd-alert-content-wrapper"
             v-show="props.open"
           >
-            <slot></slot>
+            <ScrollArea
+              height="100%"
+              :flexContainer="true"
+            >
+              <div class="zmd-alert-content">
+                <slot></slot>
+              </div>
+            </ScrollArea>
           </div>
         </Transition>
         <Transition
@@ -420,17 +427,19 @@ $default-border-color: #a0a2a3;
         }
       }
     }
-    .zmd-alert-content {
+    .zmd-alert-content-wrapper {
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
-      color: $primary-color;
+      min-height: 0;
+      max-height: calc(70vh - 6em);
+      margin: 0 1em;
       z-index: 1;
-      > * {
-        margin-left: auto;
-        margin-right: auto;
-      }
+    }
+
+    .zmd-alert-content {
+      padding: 1em 0;
+      color: $primary-color;
     }
 
     .zmd-alert-actions {
