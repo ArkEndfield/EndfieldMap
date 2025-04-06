@@ -29,12 +29,13 @@ export const loadTextPoints = (
   reset = false,
   scene = localStorage.getItem('map') === 'map002' ? 'map02' : 'map01'
 ) => {
-  const detail = Number(localStorage.getItem('zoom')) >= 3.5 || scene === 'map02'
+  const detail =
+    Number(localStorage.getItem('zoom')) >= 3.5 || scene === 'map02';
   const styleFn = (text: string) =>
     new Style({
       text: new Text({
         text,
-        font: '1.5rem sans-serif',
+        font: '1.5rem "Noto Sans SC"',
         fill: new Fill({ color: '#fff' }),
         stroke: new Stroke({ color: '#000', width: 2 }),
         padding: [5, 10, 5, 10], // 文字内边距
@@ -98,4 +99,3 @@ export const loadTextPoints = (
   //   })`
   // );
 };
-

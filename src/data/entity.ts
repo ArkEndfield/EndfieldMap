@@ -456,7 +456,7 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
             fill: new Fill({
               color: '#fff',
             }),
-            font: '8px Arial',
+            font: '8px "Noto Sans SC"',
             offsetY: radius - 5, // 数字显示在圆下方
             stroke: new Stroke({
               color: '#000',
