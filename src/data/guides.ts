@@ -1,4 +1,5 @@
-import { getAllPoints } from './points';
+import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
+import { loadJSON } from '@/utils/jsonLoader';
 
 export interface GuideTextNode {
   type: 'text';
@@ -20,69 +21,45 @@ export type NodeType = {
 export interface GuideInfoDetail {
   nodes: NodeType[];
   video: {
-    link: string;
+    link?: string | null;
   };
 }
 
 export type GuideInfo = Record<string | number, GuideInfoDetail>;
 
-export const guides: GuideInfo = {};
+const DBGuidesKey = 'guides';
 
-// 初始化指南数据 - 确保返回Promise
-export async function initializeGuides() {
+export async function getAllGuidesData(): Promise<GuideInfo> {
+  const guidesData = await getItem<GuideInfo>(
+    DBGuidesKey,
+    StorageType.PERMANENT
+  );
+  return guidesData || {};
+}
+
+export async function loadGuidesData() {
   try {
-    // 清空现有数据
-    Object.keys(guides).forEach(key => {
-      delete guides[key];
-    });
+    const guidesData = await loadJSON<GuideInfo>('/data/guide.json');
 
-    // 获取所有点位数据
-    const allPoints = await getAllPoints();
-    console.log(`初始化指南数据，处理 ${allPoints.length} 个点位`);
+    // 存储到 IndexedDB
+    await setItem(DBGuidesKey, guidesData, StorageType.PERMANENT);
 
-    // 根据点位数据初始化指南
-    allPoints.forEach(point => {
-      const { levelLogicId } = point;
-      if (!guides[levelLogicId]) {
-        guides[levelLogicId] = {
-          nodes: [
-            {
-              type: 'node',
-              nodes: [
-                {
-                  type: 'text',
-                  text: point.entityDataIdKey,
-                  color: '#ff0',
-                },
-                {
-                  type: 'text',
-                  text: '标点',
-                },
-              ],
-            },
-            {
-              type: 'node',
-              nodes: [
-                {
-                  type: 'image',
-                  src: '/images/loading_bg.jpg',
-                },
-              ],
-            },
-          ],
-          video: {
-            link: 'https://www.bilibili.com/video/BV1JUovYjEJQ',
-          },
-        };
-      }
-    });
+    console.log('攻略列表加载完成，总数:', Object.keys(DBGuidesKey).length);
 
-    console.log(
-      `指南数据初始化完成，共创建 ${Object.keys(guides).length} 条指南`
-    );
-    return guides;
+    return guidesData;
   } catch (error) {
-    console.error('初始化指南数据失败:', error);
-    throw error; // 确保错误能传播到调用者
+    console.error('加载攻略数据失败:', error);
+    throw error;
   }
 }
+
+export const getGuide = async (id: string | number) => {
+  const guides = await getAllGuidesData();
+  console.log('guides', guides);
+  if (guides[id]) {
+    return guides[id];
+  } else {
+    console.warn(`没有找到ID为 ${id} 的攻略`);
+    return null;
+  }
+};

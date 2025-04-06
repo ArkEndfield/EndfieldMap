@@ -114,15 +114,15 @@
                 $t('popover.unknow_name')
               }}
             </div>
-            <div class="!my-2 !text-sm">
-              <span>id: {{ entity?.entityDataIdKey }}</span>
-              <span class="float-right opacity-75"
-                >#{{ entity?.levelLogicId }}</span
+            <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
+              <span class="ml-auto text-zinc-400"
+                >id: #{{ entity?.levelLogicId }}</span
               >
+              <!-- <span class="ml-auto">#{{ entity?.levelLogicId }}</span> -->
             </div>
             <GuideNode
-              v-if="entity && guides[entity.levelLogicId].nodes"
-              :nodes="guides[entity?.levelLogicId].nodes"
+              v-if="entity && guide?.nodes"
+              :nodes="guide.nodes"
             />
             <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
               坐标 ({{ entity?.position.x }}, {{ entity?.position.y }},
@@ -130,8 +130,8 @@
             </div>
             <div class="flex items-center justify-between gap-2 mt-4">
               <a
-                v-if="entity"
-                :href="guides[entity.levelLogicId].video.link"
+                v-if="guide?.video?.link"
+                :href="guide.video.link"
                 target="_blank"
                 class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
               >
@@ -165,10 +165,14 @@ import { cn } from '@/utils/tailwind';
 import { PopupManager } from './PopupManager';
 import { marks } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
-import { guides } from '@/data/guides';
+import { getGuide, type GuideInfoDetail } from '@/data/guides';
 import { type PointData } from '@/data/points';
 import { computed } from 'vue';
-import { getRewards, shouldShowRewards } from '@/data/reward';
+import {
+  getRewards,
+  type ReturnRewardItem,
+  shouldShowRewards,
+} from '@/data/reward';
 
 const props = defineProps<{
   entity: PointData | null;
@@ -188,16 +192,21 @@ const showRewards = computed(() => {
   return show;
 });
 
-const rewards = ref<any[]>([]);
+const rewards = ref<ReturnRewardItem[]>([]);
 
+const guide = ref<GuideInfoDetail | null>(null);
 // 当 entity 变化时异步加载奖励数据
 onMounted(async () => {
   if (props.entity && shouldShowRewards(props.entity)) {
-    rewards.value = await getRewards(props.entity);
+    const rewardsPromise = getRewards(props.entity);
+    const guidePromise = getGuide(props.entity.levelLogicId);
+    const [rewardsData, guideData] = await Promise.all([
+      rewardsPromise,
+      guidePromise,
+    ]);
+    rewards.value = rewardsData;
+    guide.value = guideData;
   }
-  // popupManager?.addVisibilityChangeListener(() => {
-  //   console.log('Popup visibility changed');
-  // });
 });
 
 // 监听 entity 变化以异步加载奖励数据
@@ -208,6 +217,17 @@ watch(
       rewards.value = await getRewards(newEntity);
     } else {
       rewards.value = [];
+    }
+  }
+);
+
+watch(
+  () => props.entity,
+  async newEntity => {
+    if (newEntity) {
+      guide.value = await getGuide(newEntity.levelLogicId);
+    } else {
+      guide.value = null;
     }
   }
 );

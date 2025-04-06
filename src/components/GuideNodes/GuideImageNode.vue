@@ -1,6 +1,6 @@
 <template>
   <img
-    :src="props.node.src"
+    :src="`/guides${props.node.src}`"
     :alt="props.node.type"
     class="max-w-full h-auto max-h-32 rounded-lg place-self-center"
   />

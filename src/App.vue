@@ -42,7 +42,7 @@ import { PopupManager } from './components/map/PopupManager';
 import AppHeaderLeft from './components/Header/AppHeaderLeft.vue';
 import AppHeaderRight from './components/Header/AppHeaderRight.vue';
 import ZmdSidebar from './components/ZmdSidebar/index.vue';
-import { initializeGuides } from './data/guides';
+import { loadGuidesData } from './data/guides';
 import { initMarksData } from './data/marks';
 
 // const getQueryParam = (param: string): string | null => {
@@ -88,9 +88,15 @@ async function loadAllData() {
       console.log('使用预加载的点位数据，共', points.length, '个点位');
     }
 
+    console.log('开始加载奖励数据...');
     // 加载奖励数据
     await loadRewardData();
     console.log('奖励数据加载完成');
+
+    console.log('开始加载攻略数据...');
+    // 加载攻略数据
+    await loadGuidesData();
+    console.log('攻略数据加载完成');
 
     console.log('开始初始化地图...');
     // 初始化实体信息和地图
@@ -101,11 +107,6 @@ async function loadAllData() {
     // 确保使用await等待marks数据初始化完成
     await initMarksData();
     console.log('已完成数据初始化完成');
-
-    console.log('开始初始化指南数据...');
-    // 确保使用await等待指南数据初始化完成
-    await initializeGuides();
-    console.log('指南数据初始化完成');
 
     console.log('开始加载地名标注...');
     // 加载地名标注
@@ -175,9 +176,6 @@ watch(
 
       // 重新初始化实体图层
       await reinitializeEntityLayers();
-
-      // 初始化指南数据 - 异步等待完成
-      await initializeGuides();
 
       // 等待实体图层初始化完成
       await nextTick();
