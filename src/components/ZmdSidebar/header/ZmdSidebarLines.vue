@@ -1,7 +1,17 @@
 <template>
-  <div
+  <motion.div
     class="zmd-sidebar-lines"
-    ref="linesRef"
+    :animate="{
+      x: props.open ? '0%' : '-130%',
+    }"
+    :initial="{
+      x: '-130%',
+    }"
+    :transition="{
+      duration: 0.5,
+      type: 'spring',
+      bounce: 0.25,
+    }"
   >
     <div class="zmd-sidebar-line">
       <span
@@ -31,36 +41,20 @@
       >
       </span>
     </div>
-  </div>
+  </motion.div>
 </template>
 
 <script setup lang="ts">
-import { animate, spring } from 'motion';
-import { ref } from 'vue';
-import { nextTick } from 'vue';
-import { onMounted } from 'vue';
+import { motion } from 'motion-v';
 
-const isInitialRender = ref(true);
-const linesRef = ref<HTMLElement>();
-
-onMounted(async () => {
-  if (isInitialRender.value) {
-    await nextTick();
-
-    const linesEl = linesRef.value;
-    if (linesEl) {
-      linesEl.style.transform = 'translateX(-130%)';
-
-      await animate(
-        linesEl,
-        { x: '0%' },
-        { duration: 0.5, type: spring, bounce: 0.4 }
-      );
-    }
-
-    isInitialRender.value = false;
+const props = withDefaults(
+  defineProps<{
+    open?: boolean;
+  }>(),
+  {
+    open: true,
   }
-});
+);
 </script>
 
 <style lang="scss" scoped>

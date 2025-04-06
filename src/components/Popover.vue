@@ -4,35 +4,28 @@
     @mouseleave="showPopover = false"
   >
     <div ref="triggerRef"><slot></slot></div>
-    <Transition
-      @before-enter="recalcPosition"
-      @enter="onEnter"
-      @leave="onLeave"
+    <div
+      ref="popoverRef"
+      v-show="showPopover"
+      :class="[
+        'arknights-popover absolute py-3 px-5 shadow-lg w-max max-w-64 text-sm',
+      ]"
+      :style="popoverStyle"
     >
-      <div
-        ref="popoverRef"
-        v-show="showPopover"
-        :class="[
-          'arknights-popover absolute mt-2 py-3 px-5 shadow-lg w-max max-w-64 text-sm',
-        ]"
-        :style="popoverStyle"
-      >
-        <div class="scanline-container">
-          <div class="scanline"></div>
-        </div>
-        <div class="popover-corner popover-corner-tl"></div>
-        <div class="popover-corner popover-corner-tr"></div>
-        <div class="popover-corner popover-corner-bl"></div>
-        <div class="popover-corner popover-corner-br"></div>
-        <slot name="popover"></slot>
+      <div class="scanline-container">
+        <div class="scanline"></div>
       </div>
-    </Transition>
+      <div class="popover-corner popover-corner-tl"></div>
+      <div class="popover-corner popover-corner-tr"></div>
+      <div class="popover-corner popover-corner-bl"></div>
+      <div class="popover-corner popover-corner-br"></div>
+      <slot name="popover"></slot>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
-import { animate, spring } from 'motion';
+import { ref, nextTick, onUnmounted, watch } from 'vue';
 
 const props = withDefaults(
   defineProps<{ placement?: 'top' | 'bottom' | 'left' | 'right' }>(),
@@ -44,113 +37,131 @@ const props = withDefaults(
 const showPopover = ref(false);
 const popoverRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
-const popoverStyle = ref<Record<string, string>>({});
-const animateConfig = { duration: 0.3, type: spring, bounce: 0.3 };
-const animation = {
-  opacity: [0, 1],
-  y: ['-10px', '0px'],
-};
+const popoverStyle = ref<Record<string, string>>({
+  opacity: '0',
+  transform: 'translateY(-10px)',
+  transition: 'opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+});
 
-function recalcPosition(el: Element) {
-  nextTick(() => {
-    if (!triggerRef.value) {
-      popoverStyle.value = { left: '0px', top: '0px' };
-      return;
-    }
-    const triggerRect = triggerRef.value.getBoundingClientRect();
-    const container = triggerRef.value.offsetParent as HTMLElement;
-    const containerRect = container.getBoundingClientRect();
-    const popRect = el.getBoundingClientRect();
-    const popWidth = popRect.width || 200;
-    const popHeight = popRect.height || 50;
-    const offset = 8; // 间隙
+function recalcPosition() {
+  if (!triggerRef.value || !popoverRef.value) {
+    return;
+  }
 
-    let left = 0,
-      top = 0;
-    switch (props.placement) {
-      case 'bottom': {
-        // popover 水平居中
-        let desiredGlobalLeft =
-          triggerRect.left + triggerRect.width / 2 - popWidth / 2;
-        desiredGlobalLeft = Math.max(
-          0,
-          Math.min(desiredGlobalLeft, window.innerWidth - popWidth)
-        );
-        left = desiredGlobalLeft - containerRect.left;
-        top = triggerRect.bottom - containerRect.top + offset;
-        break;
-      }
-      case 'top': {
-        let desiredGlobalLeft =
-          triggerRect.left + triggerRect.width / 2 - popWidth / 2;
-        desiredGlobalLeft = Math.max(
-          0,
-          Math.min(desiredGlobalLeft, window.innerWidth - popWidth)
-        );
-        left = desiredGlobalLeft - containerRect.left;
-        top = triggerRect.top - containerRect.top - popHeight - offset;
-        break;
-      }
-      case 'left': {
-        left = triggerRect.left - containerRect.left - popWidth - offset;
-        top =
-          triggerRect.top -
-          containerRect.top +
-          triggerRect.height / 2 -
-          popHeight / 2;
-        // 可加边界处理，如垂直方向限制
-        top =
-          Math.max(0, Math.min(top, window.innerHeight - popHeight)) -
-          containerRect.top;
-        break;
-      }
-      case 'right': {
-        left = triggerRect.right - containerRect.left + offset;
-        top =
-          triggerRect.top -
-          containerRect.top +
-          triggerRect.height / 2 -
-          popHeight / 2;
-        // 可加边界处理，如垂直方向限制
-        top =
-          Math.max(0, Math.min(top, window.innerHeight - popHeight)) -
-          containerRect.top;
-        break;
-      }
-      default: {
-        // 默认 bottom
-        let desiredGlobalLeft =
-          triggerRect.left + triggerRect.width / 2 - popWidth / 2;
-        desiredGlobalLeft = Math.max(
-          0,
-          Math.min(desiredGlobalLeft, window.innerWidth - popWidth)
-        );
-        left = desiredGlobalLeft - containerRect.left;
-        top = triggerRect.bottom - containerRect.top + offset;
-        break;
-      }
+  // 初始隐藏弹窗，但不影响尺寸测量
+  popoverRef.value.style.opacity = '0';
+  popoverRef.value.style.pointerEvents = 'none';
+
+  // 获取元素尺寸
+  const triggerRect = triggerRef.value.getBoundingClientRect();
+  const popoverRect = popoverRef.value.getBoundingClientRect();
+
+  // 计算弹窗尺寸
+  const popWidth = popoverRect.width;
+  const popHeight = popoverRect.height;
+  const offset = 8; // 间隙
+
+  // 计算相对于视口的位置
+  let left = 0,
+    top = 0;
+
+  switch (props.placement) {
+    case 'bottom': {
+      left = triggerRect.left + triggerRect.width / 2 - popWidth / 2;
+      top = triggerRect.bottom + offset;
+      break;
     }
-    popoverStyle.value = { left: left + 'px', top: top + 'px' };
+    case 'top': {
+      left = triggerRect.left + triggerRect.width / 2 - popWidth / 2;
+      top = triggerRect.top - popHeight - offset;
+      break;
+    }
+    case 'left': {
+      left = triggerRect.left - popWidth - offset;
+      top = triggerRect.top + triggerRect.height / 2 - popHeight / 2;
+      break;
+    }
+    case 'right': {
+      left = triggerRect.right + offset;
+      top = triggerRect.top + triggerRect.height / 2 - popHeight / 2;
+      break;
+    }
+    default: {
+      left = triggerRect.left + triggerRect.width / 2 - popWidth / 2;
+      top = triggerRect.bottom + offset;
+      break;
+    }
+  }
+
+  // 防止弹窗超出视口边界
+  left = Math.max(
+    offset,
+    Math.min(left, window.innerWidth - popWidth - offset)
+  );
+  top = Math.max(
+    offset,
+    Math.min(top, window.innerHeight - popHeight - offset)
+  );
+
+  // 转换为相对于父容器的位置
+  const parentRect = popoverRef.value.offsetParent?.getBoundingClientRect() || {
+    left: 0,
+    top: 0,
+  };
+  const relativeLeft = left - parentRect.left;
+  const relativeTop = top - parentRect.top;
+
+  // 应用位置样式 (不包含动画相关样式)
+  popoverStyle.value = {
+    left: `${relativeLeft}px`,
+    top: `${relativeTop}px`,
+    opacity: '0',
+    transform: 'translateY(-10px)',
+    transition:
+      'opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+    pointerEvents: 'none',
+  };
+
+  // 使用RAF确保在下一帧应用动画样式
+  requestAnimationFrame(() => {
+    if (popoverRef.value && showPopover.value) {
+      popoverStyle.value = {
+        ...popoverStyle.value,
+        opacity: '1',
+        transform: 'translateY(0)',
+        pointerEvents: 'auto',
+      };
+    }
   });
 }
 
-async function onEnter(el: Element, done: () => void) {
-  await animate(
-    el,
-    { opacity: animation.opacity, y: animation.y },
-    animateConfig
-  );
-  done();
-}
+// 监听弹窗显示状态变化
+watch(
+  () => showPopover.value,
+  newVal => {
+    if (newVal) {
+      nextTick(() => {
+        recalcPosition();
+        window.addEventListener('resize', recalcPosition);
+      });
+    } else {
+      if (popoverRef.value) {
+        popoverStyle.value = {
+          ...popoverStyle.value,
+          opacity: '0',
+          transform: 'translateY(-10px)',
+          pointerEvents: 'none',
+        };
+      }
+      window.removeEventListener('resize', recalcPosition);
+    }
+  }
+);
 
-async function onLeave(el: Element, done: () => void) {
-  await animate(
-    el,
-    { opacity: animation.opacity.toReversed(), y: animation.y.toReversed() },
-    animateConfig
-  );
-  done();
-}
+// 组件卸载时清理事件监听
+onUnmounted(() => {
+  window.removeEventListener('resize', recalcPosition);
+});
 </script>
 
 <style lang="scss" scoped>

@@ -1,25 +1,33 @@
 <template>
-  <div class="zmd-sidebar-header">
+  <motion.div
+    :initial="{
+      x: '-130%',
+    }"
+    :animate="{
+      x: props.open ? '0%' : '-130%',
+    }"
+    :transition="{
+      duration: 0.5,
+      type: 'spring',
+      bounce: 0.25,
+    }"
+    class="zmd-sidebar-header"
+  >
     <ZmdSideBarDotLine class="zmd-sidebar-dot-line-left" />
     <ZmdSideBarDotLine class="zmd-sidebar-dot-line-right" />
-    <Transition
-      @enter="onLinesEnter"
-      @leave="onLeave"
-    >
-      <ZmdSidebarLines v-show="props.open" />
-    </Transition>
+    <ZmdSidebarLines :open="props.open" />
     <ZmdSidebarTitle :open="props.open" />
     <ZmdSidebarLocation rotation-enabled />
-  </div>
+  </motion.div>
 </template>
 
 <script setup lang="ts">
+import { motion } from 'motion-v';
 import ZmdSideBarDotLine from './header/ZmdSidebarDotLine.vue';
 
 import ZmdSidebarLines from './header/ZmdSidebarLines.vue';
 import ZmdSidebarTitle from './header/ZmdSidebarTitle.vue';
 import ZmdSidebarLocation from './ZmdSidebarLocation.vue';
-import { animate, spring } from 'motion';
 
 const props = withDefaults(
   defineProps<{
@@ -29,28 +37,6 @@ const props = withDefaults(
     open: true,
   }
 );
-
-async function onLinesEnter(el: Element, onComplete: () => void) {
-  await animate(
-    el,
-    {
-      x: '0%',
-    },
-    { duration: 0.5, type: spring, bounce: 0.25, delay: 0.01 }
-  );
-  onComplete();
-}
-
-async function onLeave(el: Element, onComplete: () => void) {
-  await animate(
-    el,
-    {
-      x: '-130%',
-    },
-    { duration: 0.5, type: spring, bounce: 0.25 }
-  );
-  onComplete();
-}
 </script>
 
 <style lang="scss" scoped>

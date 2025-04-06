@@ -298,7 +298,8 @@ export function createMap(
 
 // 选择地图
 export const selectMap = (id: string) => {
-  if (cacheMapId.value === id) return 
+  console.log('选择地图', id);
+  if (cacheMapId.value === id) return;
   cacheMapId.value = id;
   localStorage.setItem('map', id);
   updateMap(id);

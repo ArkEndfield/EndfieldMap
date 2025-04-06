@@ -1,46 +1,86 @@
 <template>
   <div class="zmd-sidebar-title">
-    <div
+    <motion.div
       class="zmd-sidebar-title-title"
-      ref="titleTitleRef"
+      :animate="{
+        opacity: props.open ? 1 : 0,
+        y: props.open ? 0 : -20,
+      }"
+      :initial="{
+        opacity: 0,
+        y: -20,
+      }"
+      :transition="{
+        duration: 0.5,
+        type: 'spring',
+        bounce: 0.25,
+        delay: 0.2,
+      }"
     >
       <ZmdSidebarTitleBigTitle />
-    </div>
-    <Transition
-      @enter="onSubtitleEnter"
-      @leave="onSubtitleLeave"
+    </motion.div>
+    <motion.div
+      class="zmd-sidebar-title-subtitle"
+      :animate="{
+        opacity: props.open ? 1 : 0,
+        y: props.open ? 0 : -10,
+      }"
+      :initial="{
+        opacity: 0,
+        y: -10,
+      }"
+      :transition="{
+        duration: 0.5,
+        type: 'spring',
+        bounce: 0.25,
+      }"
     >
-      <div
-        class="zmd-sidebar-title-subtitle"
-        ref="subTitleRef"
+      <motion.div
+        class="zmd-sidebar-title-subtitle-line"
+        :animate="{
+          width: props.open ? '100%' : '0%',
+        }"
+        :initial="{
+          width: '0%',
+        }"
+        :transition="{
+          duration: 0.5,
+          type: 'spring',
+          bounce: 0.25,
+          delay: 0.2,
+        }"
       >
-        <Transition
-          @enter="onColorLineEnter"
-          @leave="onLeave"
-        >
-          <div
-            class="zmd-sidebar-title-subtitle-line"
-            v-show="props.open"
-            ref="subTitleLineRef"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </Transition>
-        <div class="zmd-sidebar-title-subtitle-content">
-          {{ $t('sidebar.title') }}
-          <div class="triangle"></div>
-        </div>
-      </div>
-    </Transition>
+        <span></span>
+        <span></span>
+        <span></span>
+      </motion.div>
+      <motion.div
+        class="zmd-sidebar-title-subtitle-content"
+        :initial="{
+          opacity: 0,
+          y: -10,
+        }"
+        :transition="{
+          duration: 0.5,
+          type: 'spring',
+          bounce: 0.25,
+          delay: 0.2,
+        }"
+        :animate="{
+          opacity: props.open ? 1 : 0,
+          y: props.open ? 0 : -10,
+        }"
+      >
+        {{ $t('sidebar.title') }}
+        <div class="triangle"></div>
+      </motion.div>
+    </motion.div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { animate, type AnimationPlaybackControls, spring } from 'motion';
 import ZmdSidebarTitleBigTitle from './ZmdSidebarTitleBigTitle.vue';
-import { ref, onMounted, nextTick } from 'vue';
+import { motion } from 'motion-v';
 
 const props = withDefaults(
   defineProps<{
@@ -50,125 +90,6 @@ const props = withDefaults(
     open: true,
   }
 );
-
-const isInitialRender = ref(true);
-const titleTitleRef = ref<HTMLElement>();
-const subTitleRef = ref<HTMLElement>();
-const subTitleLineRef = ref<HTMLElement>();
-// 添加组件挂载后的初始化动画
-onMounted(async () => {
-  if (props.open && isInitialRender.value) {
-    await nextTick();
-    const animateList: AnimationPlaybackControls[] = [];
-
-    // 获取需要动画的元素
-    const titleElement = titleTitleRef.value;
-    const subtitleElement = subTitleRef.value;
-    const lineElement = subTitleLineRef.value;
-
-    if (titleElement) {
-      // 设置初始状态
-      titleElement.style.opacity = '0';
-      titleElement.style.transform = 'translateY(-20px)';
-
-      // 执行标题动画
-      animateList.push(
-        animate(
-          titleElement,
-          { opacity: 1, y: 0 },
-          { duration: 0.6, type: spring, bounce: 0.3 }
-        )
-      );
-    }
-
-    if (subtitleElement) {
-      // 设置初始状态
-      subtitleElement.style.opacity = '0';
-      subtitleElement.style.transform = 'translateY(-10px)';
-
-      // 执行副标题动画
-      animateList.push(
-        animate(
-          subtitleElement,
-          { opacity: 1, y: 0 },
-          { duration: 0.5, type: spring, bounce: 0.25, delay: 0.2 }
-        )
-      );
-    }
-
-    if (lineElement) {
-      // 设置初始状态
-      lineElement.style.width = '0%';
-
-      // 执行副标题下划线动画
-      animateList.push(
-        animate(
-          lineElement,
-          { width: '100%' },
-          { duration: 0.54, type: spring, bounce: 0.3, delay: 0.4 }
-        )
-      );
-    }
-
-    await Promise.all(animateList);
-    isInitialRender.value = false;
-  }
-});
-
-async function onColorLineEnter(el: Element, onComplete: () => void) {
-  // 延迟初始渲染的动画以配合其他元素
-  const delay = isInitialRender.value ? 0.4 : 0.1;
-
-  await animate(
-    el,
-    {
-      width: '100%',
-    },
-    { duration: 0.54, type: spring, bounce: 0.3, delay: delay }
-  );
-  onComplete();
-
-  // 完成后更新初始渲染状态
-  isInitialRender.value = false;
-}
-
-async function onLeave(el: Element, onComplete: () => void) {
-  await animate(
-    el,
-    {
-      width: '0%',
-    },
-    { duration: 0.5, type: spring, bounce: 0.25 }
-  );
-  onComplete();
-}
-
-async function onSubtitleEnter(el: Element, onComplete: () => void) {
-  // 只在非初始渲染时执行动画
-  if (!isInitialRender.value) {
-    await animate(
-      el,
-      {
-        opacity: 1,
-        y: 0,
-      },
-      { duration: 0.5, type: spring, bounce: 0.25 }
-    );
-  }
-  onComplete();
-}
-
-async function onSubtitleLeave(el: Element, onComplete: () => void) {
-  await animate(
-    el,
-    {
-      opacity: 0,
-      y: -10,
-    },
-    { duration: 0.5, type: spring, bounce: 0.25 }
-  );
-  onComplete();
-}
 </script>
 
 <style lang="scss" scoped>

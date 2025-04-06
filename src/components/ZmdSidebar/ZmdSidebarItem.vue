@@ -21,7 +21,7 @@
       >
         <div
           class="content"
-          v-if="isOpen"
+          ref="contentRef"
         >
           <div class="placeholder"></div>
           <slot>
@@ -35,8 +35,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { animate } from 'motion';
 import ZmdSidebarLocation from './ZmdSidebarLocation.vue';
+import { useAnimate } from 'motion-v';
+import { watch } from 'vue';
 
 interface Props {
   iconColor?: string;
@@ -50,39 +51,40 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['toggle']);
 const isOpen = ref(props.defaultOpen);
+const [contentRef, contentAnimate] = useAnimate();
 
-async function onEnter(el: Element, onComplete: () => void) {
-  el.setAttribute('style', 'height: 0px; overflow: hidden;');
-  const height = el.scrollHeight;
-  await animate(
-    el,
+async function onEnter() {
+  await contentAnimate(
+    contentRef.value,
     {
-      height: `${height}px`,
+      height: `auto`,
     },
     { duration: 0.3 }
   );
-  el.setAttribute('style', 'height: auto; overflow: visible;');
-  onComplete();
 }
 
-async function onLeave(el: Element, onComplete: () => void) {
-  const height = (el as HTMLElement).offsetHeight;
-  el.setAttribute('style', `height: ${height}px; overflow: hidden;`);
-  await new Promise(resolve => setTimeout(resolve, 10));
-  await animate(
-    el,
+async function onLeave() {
+  await contentAnimate(
+    contentRef.value,
     {
       height: 0,
     },
     { duration: 0.3 }
   );
-  onComplete();
 }
 
 const toggleContent = () => {
   isOpen.value = !isOpen.value;
   emit('toggle', isOpen.value);
 };
+
+watch(isOpen, newVal => {
+  if (newVal) {
+    onEnter();
+  } else {
+    onLeave();
+  }
+});
 </script>
 
 <style lang="scss" scoped>

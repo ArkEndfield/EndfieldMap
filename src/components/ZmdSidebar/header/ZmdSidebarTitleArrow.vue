@@ -1,8 +1,13 @@
 <template>
-  <div
+  <motion.div
     class="zmd-sidebar-title-arrow"
-    :class="{ 'zmd-sidebar-title-arrow-open': open }"
-    ref="arrowRef"
+    :animate="{
+      x: open ? 0 : 'var(--collapsed-x)',
+    }"
+    :transition="{
+      type: 'spring',
+      duration: 0.5,
+    }"
     @click="toggleOpen"
   >
     <div class="zmd-sidebar-title-arrow-start-part"></div>
@@ -28,14 +33,13 @@
     </div>
     <div class="zmd-sidebar-title-arrow-arrow-part"></div>
     <div class="zmd-sidebar-title-arrow-arrow-line"></div>
-  </div>
+  </motion.div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { motion } from 'motion-v';
 
 const open = defineModel<boolean>('open', { default: false });
-const arrowRef = ref<HTMLElement>();
 // 切换open状态
 const toggleOpen = () => {
   open.value = !open.value;
@@ -52,21 +56,16 @@ $arrow-size: 1.8em;
 $line-size: 2.3em;
 $arrow-height: 5em;
 .zmd-sidebar-title-arrow {
-  --collapsed-x: -100% + 7em;
+  --collapsed-x: calc(-100% + 7em);
   display: flex;
   justify-content: start;
   align-items: center;
   width: calc(100% + $arrow-size * 2 + 2.4em);
-  transition: filter 0.3s, transform 0.3s ease;
+  transition: filter 0.3s;
   position: relative;
   overflow: visible;
-  transform: translateX(calc(var(--collapsed-x)));
   filter: drop-shadow(0.1em 0.1em 0em rgba(255, 255, 255, 0.2));
   --arrow-font-size: 1em;
-
-  &.zmd-sidebar-title-arrow-open {
-    --collapsed-x: 0;
-  }
 
   @media screen and (max-width: zmd.$phone-width) {
     & {

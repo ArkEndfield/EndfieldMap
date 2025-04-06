@@ -1,17 +1,18 @@
 <template>
-  <div
+  <motion.div
     class="zmd-sidebar-filter"
-    ref="filterRef"
+    :animate="{
+      x: props.open ? '0%' : '-130%',
+    }"
+    :initial="{
+      x: '-130%',
+    }"
+    :transition="{
+      duration: 0.5,
+      type: 'spring',
+      bounce: 0.25,
+    }"
   >
-    <!-- <ZmdSidebarSwitch>
-      <div class="zmd-sidebar-filter-display-name">
-        <div class="zmd-sidebar-filter-required">*</div>
-        <div class="zmd-sidebar-filter-label">
-          {{ $t('sidebar.display_marker_point_name') }}
-        </div>
-      </div>
-    </ZmdSidebarSwitch> -->
-
     <div class="zmd-sidebar-operate-buttons grid grid-cols-2">
       <ZmdSidebarOperateButton @click="handleClear">
         <template #icon>
@@ -54,34 +55,30 @@
         </ZmdSidebarFilterToggle>
       </div>
     </div>
-  </div>
+  </motion.div>
 </template>
 
 <script setup lang="ts">
-// import ZmdSidebarSwitch from './ZmdSidebarSwitch.vue';
 import ZmdSidebarOperateButton from './ZmdSidebarOperateButton.vue';
 import ZmdSidebarDeleteIcon from './icons/ZmdSidebarDeleteIcon.vue';
 import ZmdSidebarCheckboxCheckedIcon from './icons/ZmdSidebarCheckboxCheckedIcon.vue';
 import ZmdSidebarFilterToggle from './ZmdSidebarFilterToggle.vue';
-import { ref } from 'vue';
-import { animate, spring } from 'motion';
-import { nextTick } from 'vue';
-import { onMounted } from 'vue';
 import { selectAll, clear, isSelectAll } from '@/data/entity';
 import { currentMarkFilter, setMarkFilter } from '@/data/marks';
-
-const filterRef = ref<HTMLElement>();
-
-const isInitialRender = ref(true);
+import { motion } from 'motion-v';
+const props = withDefaults(
+  defineProps<{
+    open?: boolean;
+  }>(),
+  {
+    open: true,
+  }
+);
 
 // 处理全选按钮点击
 const handleSelectAll = () => {
   if (isSelectAll.value) {
     clear();
-    // 主动请求垃圾回收
-    // setTimeout(() => {
-    //   console.log('已清除所有选择，建议进行垃圾回收');
-    // }, 100);
   } else {
     selectAll();
   }
@@ -90,30 +87,7 @@ const handleSelectAll = () => {
 // 处理清除按钮点击
 const handleClear = () => {
   clear();
-  // 主动请求垃圾回收
-  // setTimeout(() => {
-  //   console.log('已清除所有选择，建议进行垃圾回收');
-  // }, 100);
 };
-
-onMounted(async () => {
-  if (isInitialRender.value) {
-    await nextTick();
-    const filterEl = filterRef.value;
-
-    if (filterEl) {
-      filterEl.style.transform = 'translateX(-130%)';
-
-      await animate(
-        filterEl,
-        { x: '0%' },
-        { duration: 0.5, type: spring, bounce: 0.2, delay: 0.05 }
-      );
-    }
-
-    isInitialRender.value = false;
-  }
-});
 </script>
 
 <style lang="scss" scoped>

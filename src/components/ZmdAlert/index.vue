@@ -4,113 +4,103 @@
     class="zmd-alert"
     @click.self="handleDismiss"
   >
-    <Transition
-      @enter="animateAlertEnter"
-      @leave="animateAlertLeave"
+    <motion.div
+      class="zmd-alert-container"
+      :style="{
+        width: props.width,
+        backgroundImage: `url(${alert_bg})`,
+        transformOrigin: props.open ? 'top' : 'bottom',
+      }"
+      ref="alertRef"
     >
-      <div
-        class="zmd-alert-container"
-        v-show="props.open"
-        :style="{ width: props.width, backgroundImage: `url(${alert_bg})` }"
-      >
-        <div class="zmd-alert-bg-banner">
-          <span
-            :style="{
-              backgroundImage: `url(${alert_banner_bg_left})`,
-            }"
-          ></span>
-          <span>
-            <img :src="alert_banner_bg_right" />
-          </span>
-        </div>
-        <Transition
-          @enter="animateAlertEnterContent"
-          @leave="animateAlertLeaveContent"
-        >
-          <div
-            class="zmd-alert-content-wrapper"
-            v-show="props.open"
-          >
-            <ScrollArea
-              height="100%"
-              :flexContainer="true"
-            >
-              <div class="zmd-alert-content">
-                <slot></slot>
-              </div>
-            </ScrollArea>
-          </div>
-        </Transition>
-        <Transition
-          @enter="animateAlertEnterContent"
-          @leave="animateAlertLeaveContent"
-        >
-          <div
-            class="zmd-alert-actions"
-            :class="{ single: props.hideCancel }"
-            v-show="props.open"
-          >
-            <button
-              @click="handleCancel"
-              v-if="!props.hideCancel"
-              :disabled="isProcessing"
-              :class="{ 'is-disabled': isProcessing }"
-            >
-              <slot name="cancel">
-                <div class="zmd-alert-close">
-                  <div class="text">{{ $t(props.cancelText) }}</div>
-                  <div
-                    class="icon"
-                    v-if="props.showIcon"
-                  >
-                    <ZmdAlertCloseIcon />
-                  </div>
-                </div>
-              </slot>
-            </button>
-            <button
-              @click="handleConfirm"
-              ref="confirmButtonRef"
-              :disabled="isProcessing"
-              :class="{ 'is-disabled': isProcessing }"
-            >
-              <slot name="confirm">
-                <Transition>
-                  <div
-                    class="zmd-alert-confirm"
-                    @mouseenter="animateConfirmEnter"
-                    @mouseleave="animateConfirmLeave"
-                  >
-                    <div class="text">{{ $t(props.confirmText) }}</div>
-                    <div
-                      class="icon"
-                      v-if="props.showIcon"
-                    >
-                      <div
-                        v-if="isProcessing"
-                        class="loading-spinner"
-                      ></div>
-                      <ZmdAlertTickIcon v-else />
-                    </div>
-                  </div>
-                </Transition>
-              </slot>
-            </button>
-          </div>
-        </Transition>
+      <div class="zmd-alert-bg-banner">
+        <span
+          :style="{
+            backgroundImage: `url(${alert_banner_bg_left})`,
+          }"
+        ></span>
+        <span>
+          <img :src="alert_banner_bg_right" />
+        </span>
       </div>
-    </Transition>
+      <div
+        class="zmd-alert-content-wrapper"
+        v-show="props.open"
+        ref="contentRef"
+      >
+        <ScrollArea
+          height="100%"
+          :flexContainer="true"
+        >
+          <div class="zmd-alert-content">
+            <slot></slot>
+          </div>
+        </ScrollArea>
+      </div>
+      <div
+        class="zmd-alert-actions"
+        :class="{ single: props.hideCancel }"
+        v-show="props.open"
+        ref="buttonsRef"
+      >
+        <button
+          @click="handleCancel"
+          v-if="!props.hideCancel"
+          :disabled="isProcessing"
+          :class="{ 'is-disabled': isProcessing }"
+        >
+          <slot name="cancel">
+            <div class="zmd-alert-close">
+              <div class="text">{{ $t(props.cancelText) }}</div>
+              <div
+                class="icon"
+                v-if="props.showIcon"
+              >
+                <ZmdAlertCloseIcon />
+              </div>
+            </div>
+          </slot>
+        </button>
+        <button
+          @click="handleConfirm"
+          :disabled="isProcessing"
+          :class="{ 'is-disabled': isProcessing }"
+        >
+          <slot name="confirm">
+            <div
+              class="zmd-alert-confirm"
+              ref="confirmRef"
+              @mouseenter="animateConfirmEnter"
+              @mouseleave="animateConfirmLeave"
+            >
+              <div class="text">{{ $t(props.confirmText) }}</div>
+              <div
+                class="icon"
+                v-if="props.showIcon"
+              >
+                <div
+                  v-if="isProcessing"
+                  class="loading-spinner"
+                ></div>
+                <ZmdAlertTickIcon v-else />
+              </div>
+            </div>
+          </slot>
+        </button>
+      </div>
+    </motion.div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { animate } from 'motion';
 import ZmdAlertTickIcon from './icons/ZmdAlertTickIcon.vue';
 import ZmdAlertCloseIcon from './icons/ZmdAlertCloseIcon.vue';
 import alert_bg from '../../assets/images/bg/alert_bg.png';
 import alert_banner_bg_left from '../../assets/images/bg/alert_banner_bg_left.png';
 import alert_banner_bg_right from '../../assets/images/bg/alert_banner_bg_right.png';
+import { motion, useAnimate } from 'motion-v';
+
 export type ZmdAlertProps = {
   open: boolean;
   dismissible?: boolean;
@@ -146,13 +136,10 @@ const emit = defineEmits(['update:open']);
 const backdropVisible = ref(false);
 const isProcessing = ref(false);
 
-watch(
-  () => props.open,
-  newVal => {
-    if (newVal) backdropVisible.value = true;
-  },
-  { immediate: true }
-);
+const [alertRef, alertAnimate] = useAnimate();
+const [contentRef, contentAnimate] = useAnimate();
+const [buttonsRef] = useAnimate();
+const [confirmRef, confirmAnimate] = useAnimate();
 
 const handleDismiss = () => {
   if (props.dismissible && !isProcessing.value) {
@@ -238,114 +225,122 @@ const handleConfirm = () => {
   }
 };
 
-const confirmButtonRef = ref<HTMLElement | null>(null);
-
-async function animateConfirmEnter(payload: MouseEvent) {
-  const el = payload.currentTarget as HTMLElement;
-  if (el) {
-    await animate(
-      el,
-      {
-        backgroundColor: ['#2a272877', '#2a2728b5', '#2a272877', '#2a2728b5'],
-        boxShadow: [
-          '0 0 0 0.1em #2a272877, 0 0 0 0.1em #81807f inset',
-          '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
-          '0 0 0 0.1em #2a272877, 0 0 0 0.1em #81807f inset',
-          '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
-        ],
-      },
-      { duration: 0.2 }
-    );
-  }
-}
-
-async function animateConfirmLeave(payload: MouseEvent) {
-  const el = payload.currentTarget as HTMLElement;
-  if (el) {
-    await animate(
-      el,
-      {
-        backgroundColor: ['#2a2728b5', '#2a2728', '#2a2728b5', '#2a2728'],
-        boxShadow: [
-          '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
-          '0 0 0 0.1em #2a2728, 0 0 0 0.1em #81807f inset',
-          '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
-          '0 0 0 0.1em #2a2728, 0 0 0 0.1em #81807f inset',
-        ],
-      },
-      { duration: 0.2 }
-    );
-  }
-}
-
-async function animateAlertEnter(el: Element, done: () => void) {
-  const container = el as HTMLElement;
-  container.style.transformOrigin = 'top';
-  await animate(
-    container,
+async function animateConfirmEnter() {
+  await confirmAnimate(
+    confirmRef.value,
     {
-      transform: ['scaleY(0)', 'scaleY(1)'],
-      opacity: 1,
+      backgroundColor: ['#2a272877', '#2a2728b5', '#2a272877', '#2a2728b5'],
+      boxShadow: [
+        '0 0 0 0.1em #2a272877, 0 0 0 0.1em #81807f inset',
+        '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
+        '0 0 0 0.1em #2a272877, 0 0 0 0.1em #81807f inset',
+        '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
+      ],
     },
-    {
-      duration: 0.15,
-    }
+    { duration: 0.2 }
   );
-  done();
 }
 
-async function animateAlertLeave(el: Element, done: () => void) {
-  const container = el as HTMLElement;
-  container.style.transformOrigin = 'bottom';
-  await Promise.all([
-    animate(
-      container,
-      { transform: ['scaleY(1)', 'scaleY(0)'] },
-      { duration: 0.15 }
-    ),
-    animate(
-      container,
-      { opacity: 0 },
+async function animateConfirmLeave() {
+  await confirmAnimate(
+    confirmRef.value,
+    {
+      backgroundColor: ['#2a2728b5', '#2a2728', '#2a2728b5', '#2a2728'],
+      boxShadow: [
+        '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
+        '0 0 0 0.1em #2a2728, 0 0 0 0.1em #81807f inset',
+        '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
+        '0 0 0 0.1em #2a2728, 0 0 0 0.1em #81807f inset',
+      ],
+    },
+    { duration: 0.2 }
+  );
+}
+
+const shineAnimate = async (scope: typeof contentRef, show: boolean) => {
+  if (show) {
+    await contentAnimate(
+      scope.value,
       {
-        duration: 0.03,
-        delay: 0.07,
+        opacity: 1,
+      },
+      {
+        duration: 0.1,
       }
-    ),
-  ]);
-  backdropVisible.value = false;
-  done();
-}
+    );
+    await contentAnimate(
+      scope.value,
+      { opacity: 0 },
+      { duration: 0.005, delay: 0.07 }
+    );
+    await contentAnimate(
+      scope.value,
+      { opacity: 1 },
+      { duration: 0.005, delay: 0.005 }
+    );
+    await contentAnimate(
+      scope.value,
+      { opacity: 0 },
+      { duration: 0.005, delay: 0.005 }
+    );
+    await contentAnimate(
+      scope.value,
+      { opacity: 1 },
+      { duration: 0.005, delay: 0.005 }
+    );
+  } else {
+    await contentAnimate(
+      scope.value,
+      {
+        opacity: 0,
+      },
+      {
+        duration: 0.15,
+      }
+    );
+  }
+};
 
-async function animateAlertEnterContent(el: Element, done: () => void) {
-  await animate(
-    el,
-    {
-      opacity: 1,
-    },
-    {
-      duration: 0.1,
+watch(
+  () => props.open,
+  async newVal => {
+    if (newVal) {
+      backdropVisible.value = true;
+      await alertAnimate(
+        alertRef.value,
+        {
+          transform: ['scaleY(0)', 'scaleY(1)'],
+          opacity: [0, 1],
+        },
+        {
+          duration: 0.15,
+        }
+      );
+
+      shineAnimate(contentRef, newVal);
+      shineAnimate(buttonsRef, newVal);
+    } else {
+      shineAnimate(contentRef, newVal);
+      shineAnimate(buttonsRef, newVal);
+      await Promise.all([
+        alertAnimate(
+          alertRef.value,
+          { transform: ['scaleY(1)', 'scaleY(0)'] },
+          { duration: 0.15 }
+        ),
+        alertAnimate(
+          alertRef.value,
+          { opacity: [1, 0] },
+          {
+            duration: 0.03,
+            delay: 0.07,
+          }
+        ),
+      ]);
+      backdropVisible.value = false;
     }
-  );
-  await animate(el, { opacity: 0 }, { duration: 0.005, delay: 0.07 });
-  await animate(el, { opacity: 1 }, { duration: 0.005, delay: 0.005 });
-  await animate(el, { opacity: 0 }, { duration: 0.005, delay: 0.005 });
-  await animate(el, { opacity: 1 }, { duration: 0.005, delay: 0.005 });
-
-  done();
-}
-
-async function animateAlertLeaveContent(el: Element, done: () => void) {
-  await animate(
-    el,
-    {
-      opacity: 0,
-    },
-    {
-      duration: 0.15,
-    }
-  );
-  done();
-}
+  }
+);
 </script>
 
 <style lang="scss" scoped>

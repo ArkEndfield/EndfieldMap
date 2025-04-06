@@ -7,148 +7,51 @@
       zIndex: isOpen ? 53 : 2,
     }"
   >
-    <Transition
-      @enter="onContentEnter"
-      @leave="onLeave"
-    >
-      <ZmdSidebarHeader
-        :open="isOpen"
-        v-show="isOpen"
-      />
-    </Transition>
+    <ZmdSidebarHeader :open="isOpen" />
 
-    <Transition
-      @enter="onContentEnter"
-      @leave="onLeave"
-    >
-      <ZmdSidebarTitleArrow v-model:open="isOpen" />
-    </Transition>
+    <ZmdSidebarTitleArrow v-model:open="isOpen" />
   </div>
-  <Transition
-    @enter="onEnter"
-    @leave="onLeave"
+  <motion.div
+    class="zmd-sidebar"
+    :initial="{
+      x: '-130%',
+    }"
+    :animate="{
+      x: isOpen ? '-4%' : '-130%',
+    }"
+    :transition="{
+      duration: 0.5,
+      type: 'spring',
+      bounce: 0.25,
+    }"
   >
-    <div
-      class="zmd-sidebar"
-      v-show="isOpen"
-      ref="sidebarRef"
-    >
-      <div class="zmd-sidebar-bg-start zmd-sidebar-top"></div>
-      <div class="zmd-sidebar-bg zmd-sidebar-main">
-        <div class="header-container"></div>
-        <div class="zmd-sidebar-content">
-          <Transition
-            @enter="onStatusEnter"
-            @leave="onLeave"
-          >
-            <ZmdSidebarFilter v-show="isOpen" />
-          </Transition>
-          <ZmdSidebarItemList :open="isOpen" />
-        </div>
-        <div class="zmd-sidebar-copyright">
-          <a
-            href="https://beian.miit.gov.cn/"
-            target="_blank"
-            >黑ICP备2025036958号-1</a
-          >
-        </div>
+    <div class="zmd-sidebar-bg-start zmd-sidebar-top"></div>
+    <div class="zmd-sidebar-bg zmd-sidebar-main">
+      <div class="header-container"></div>
+      <div class="zmd-sidebar-content">
+        <ZmdSidebarFilter :open="isOpen" />
+        <ZmdSidebarItemList :open="isOpen" />
       </div>
-      <div class="zmd-sidebar-right-bar"></div>
+      <div class="zmd-sidebar-copyright">
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          >黑ICP备2025036958号-1</a
+        >
+      </div>
     </div>
-  </Transition>
+    <div class="zmd-sidebar-right-bar"></div>
+  </motion.div>
 </template>
 <script setup lang="ts">
 import ZmdSidebarHeader from './ZmdSidebarHeader.vue';
 import ZmdSidebarFilter from './ZmdSidebarFilter.vue';
 import ZmdSidebarItemList from './ZmdSidebarItemList.vue';
 import ZmdSidebarTitleArrow from './header/ZmdSidebarTitleArrow.vue';
-import { ref, onMounted, nextTick } from 'vue';
-import { animate, type AnimationPlaybackControls, spring } from 'motion';
+import { ref } from 'vue';
+import { motion } from 'motion-v';
 
 const isOpen = ref(true);
-const isInitialRender = ref(true);
-
-const sidebarRef = ref<HTMLElement>();
-// 添加组件挂载后的处理
-onMounted(async () => {
-  if (isOpen.value && isInitialRender.value) {
-    await nextTick();
-    const animateList: AnimationPlaybackControls[] = [];
-    // 获取侧边栏主容器元素
-    const sidebarEl = sidebarRef.value;
-
-    if (sidebarEl) {
-      // 设置初始状态
-      sidebarEl.style.transform = 'translateX(-130%)';
-
-      // 执行侧边栏主体动画
-      animateList.push(
-        animate(
-          sidebarEl,
-          { x: '-4%' },
-          { duration: 0.5, type: spring, bounce: 0.25 }
-        )
-      );
-    }
-
-    await Promise.all(animateList);
-
-    isInitialRender.value = false;
-  }
-});
-
-async function onEnter(el: Element, onComplete: () => void) {
-  // 只在非初始渲染时执行动画
-  if (!isInitialRender.value) {
-    await animate(
-      el,
-      {
-        x: '-4%',
-      },
-      { duration: 0.5, type: spring, bounce: 0.25 }
-    );
-  }
-  onComplete();
-}
-
-async function onContentEnter(el: Element, onComplete: () => void) {
-  // 只在非初始渲染时执行动画
-  if (!isInitialRender.value) {
-    await animate(
-      el,
-      {
-        x: '0%',
-      },
-      { duration: 0.5, type: spring, bounce: 0.25 }
-    );
-  }
-  onComplete();
-}
-
-async function onStatusEnter(el: Element, onComplete: () => void) {
-  // 只在非初始渲染时执行动画
-  if (!isInitialRender.value) {
-    await animate(
-      el,
-      {
-        x: '0%',
-      },
-      { duration: 0.5, type: spring, bounce: 0.2, delay: 0.05 }
-    );
-  }
-  onComplete();
-}
-
-async function onLeave(el: Element, onComplete: () => void) {
-  await animate(
-    el,
-    {
-      x: '-130%',
-    },
-    { duration: 0.5, type: spring, bounce: 0.25 }
-  );
-  onComplete();
-}
 
 const open = () => {
   isOpen.value = true;
@@ -214,7 +117,7 @@ const open = () => {
     bottom: 0 !important;
   }
   @media (min-width: 1920px) {
-    width: 420px 
+    width: 420px;
   }
   * {
     box-sizing: border-box;
