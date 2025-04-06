@@ -8,11 +8,19 @@
       type: 'spring',
       duration: 0.5,
     }"
-    @click="toggleOpen"
   >
-    <div class="zmd-sidebar-title-arrow-start-part"></div>
-    <div class="zmd-sidebar-title-arrow-middle-part"></div>
-    <div class="zmd-sidebar-title-arrow-end-part">
+    <div
+      class="zmd-sidebar-title-arrow-start-part"
+      @click="toggleOpen"
+    ></div>
+    <div
+      class="zmd-sidebar-title-arrow-middle-part"
+      @click="toggleOpen"
+    ></div>
+    <div
+      class="zmd-sidebar-title-arrow-end-part"
+      @click="toggleOpen"
+    >
       <div
         class="zmd-sidebar-open-arrow-bg-title"
         :class="{ 'zmd-sidebar-open-arrow-bg-title-open': open }"
@@ -31,8 +39,14 @@
         <span></span>
       </div>
     </div>
-    <div class="zmd-sidebar-title-arrow-arrow-part"></div>
-    <div class="zmd-sidebar-title-arrow-arrow-line"></div>
+    <div
+      class="zmd-sidebar-title-arrow-arrow-part"
+      @click="toggleOpen"
+    ></div>
+    <div
+      class="zmd-sidebar-title-arrow-arrow-line"
+      @click="toggleOpen"
+    ></div>
   </motion.div>
 </template>
 

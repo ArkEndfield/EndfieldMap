@@ -19,7 +19,7 @@ import { currentMarkFilter, shouldShowByMarkStatus } from './marks';
 import { loadJSON } from '@/utils/jsonLoader';
 import { debounce } from '@/utils/common';
 
-interface EntityInfo {
+export interface EntityInfo {
   name: string;
   point: string;
   pic: string;

@@ -3,10 +3,27 @@
     class="zmd-sidebar-scroll-list"
     ref="scrollListRef"
   >
+    <!-- 添加搜索输入框 -->
+    <div class="search-container">
+      <input
+        type="text"
+        v-model="searchQuery"
+        :placeholder="$t('search')"
+        class="search-input"
+      />
+      <div
+        class="search-clear"
+        v-if="searchQuery"
+        @click="clearSearch"
+      >
+        <CloseIcon />
+      </div>
+    </div>
+
     <ZmdSidebarItem
       icon-color="#FFFFFF"
       :open="props.open"
-      v-for="(k, i) in categoryInfo"
+      v-for="(k, i) in filteredCategoryInfo"
     >
       <template #title> {{ $t(`sidebar.filter.category.${i}`) }} </template>
       <template #subtitle> {{ i }} </template>
@@ -27,8 +44,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import { categoryInfo, refresh, entityInfo } from '@/data/entity';
+import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue';
+import {
+  categoryInfo,
+  refresh,
+  entityInfo,
+  type EntityInfo,
+} from '@/data/entity';
 import { getCurrentPoints } from '@/data/points';
 import { marks, markStateChangeTrigger, onMarkChange } from '@/data/marks';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
@@ -42,6 +64,37 @@ const props = withDefaults(
     open: true,
   }
 );
+
+// 搜索功能
+const searchQuery = ref('');
+const scrollListRef = ref<HTMLElement | null>(null);
+
+// 过滤后的类别信息
+const filteredCategoryInfo = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return categoryInfo.value;
+  }
+
+  const query = searchQuery.value.toLowerCase().trim();
+  const result: Record<string, EntityInfo[]> = {};
+
+  for (const [category, items] of Object.entries(categoryInfo.value)) {
+    const filteredItems = items.filter(item =>
+      item.name.toLowerCase().includes(query)
+    );
+
+    if (filteredItems.length > 0) {
+      result[category] = filteredItems;
+    }
+  }
+
+  return result;
+});
+
+// 清除搜索
+const clearSearch = () => {
+  searchQuery.value = '';
+};
 
 // 创建一个映射来存储每种实体的标记数量
 const entityMarkCounts = ref<Record<string, number>>({});
@@ -139,6 +192,135 @@ onBeforeUnmount(() => {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.3em;
     padding-bottom: 0.4em;
+  }
+
+  .search-container {
+    position: relative;
+    margin-bottom: 1.4em;
+    padding: 0 0.5em;
+    margin-right: 0.25em;
+
+    .search-input {
+      width: 100%;
+      padding: 0.5em 1.2em;
+      padding-left: 2.5em;
+      background-color: rgba(40, 40, 40, 0.95);
+      color: #e0e0e0;
+      border-radius: 6px;
+      font-size: 0.8em;
+      outline: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.5px;
+
+      /* 游戏风格边框 */
+      border: 1px solid #3a3a3a;
+      border-top: 1px solid #333333;
+      border-left: 1px solid #333333;
+
+      /* 游戏风格阴影效果 */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 8px rgba(0, 0, 0, 0.2);
+
+      &::placeholder {
+        color: #888888;
+        font-style: italic;
+        transition: all 0.3s ease;
+      }
+
+      &:focus {
+        background-color: rgba(45, 45, 45, 0.98);
+        border: 1px solid #444444;
+        border-top: 1px solid #3a3a3a;
+        border-left: 1px solid #3a3a3a;
+        box-shadow: 0 0 15px rgba(50, 50, 50, 0.3),
+          inset 0 0 10px rgba(60, 60, 60, 0.2);
+
+        &::placeholder {
+          color: #999999;
+          transform: translateX(5px);
+        }
+      }
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 1.2em;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.6em;
+      height: 1.6em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 3px;
+      background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+      color: #a0a0a0;
+      font-size: 0.9em;
+      transition: all 0.2s ease;
+      border: 1px solid #3a3a3a;
+
+      &:hover {
+        background: linear-gradient(145deg, #2a2a2a, #3a3a3a);
+        color: #e0e0e0;
+        box-shadow: 0 0 10px rgba(60, 60, 60, 0.5);
+      }
+
+      &:active {
+        background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+        transform: translateY(-50%) scale(0.92);
+        box-shadow: 0 0 5px rgba(40, 40, 40, 0.3);
+      }
+    }
+
+    /* 添加搜索图标 */
+    &::before {
+      content: '';
+      position: absolute;
+      left: 1.2em;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1em;
+      height: 1em;
+      border: 2.5px solid #5a5a5a;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      z-index: 1;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 2.4em;
+      top: 50%;
+      transform: translateY(-40%) rotate(45deg);
+      width: 0.6em;
+      height: 2.5px;
+      background-color: #5a5a5a;
+      transition: all 0.3s ease;
+      z-index: 1;
+    }
+
+    /* 聚焦时搜索图标颜色变化 */
+    .search-input:focus ~ &::before {
+      border-color: #a0a0a0;
+    }
+
+    .search-input:focus ~ &::after {
+      background-color: #a0a0a0;
+    }
+
+    /* 添加高科技边缘发光效果 */
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0.5em;
+      right: 0.3em;
+      bottom: 0;
+      border-radius: 6px;
+      box-shadow: 0 0 2px rgba(120, 120, 120, 0.15);
+      pointer-events: none;
+      z-index: -1;
+    }
   }
 }
 </style>
