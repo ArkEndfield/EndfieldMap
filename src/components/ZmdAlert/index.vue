@@ -25,7 +25,6 @@
       </div>
       <div
         class="zmd-alert-content-wrapper"
-        v-show="props.open"
         ref="contentRef"
       >
         <ScrollArea
