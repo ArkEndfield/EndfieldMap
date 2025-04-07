@@ -40,7 +40,8 @@
     "change_language": "切换语言",
     "change_region": "切换地区",
     "up": "煮啵",
-    "community_not_constructed": "点击输入标题"
+    "community_not_constructed": "点击输入标题",
+    "map_change": "地图切换"
   },
   "sidebar": {
     "title": "终末地互动地图",

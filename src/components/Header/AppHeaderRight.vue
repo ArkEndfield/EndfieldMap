@@ -122,7 +122,7 @@
         y: '1.5em',
       }"
     >
-      地图切换
+      {{ $t('header.map_change') }}
     </motion.div>
     <motion.div
       class="bg-gradient-to-r from-[rgba(252,250,84,0)] via-[rgba(252,250,84,0.5)] to-[rgba(252,250,84,0)] h-1"

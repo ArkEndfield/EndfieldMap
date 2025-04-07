@@ -40,7 +40,8 @@
     "change_language": "Change Language",
     "change_region": "Change Region",
     "up": "Up",
-    "community_not_constructed": "Click to enter a title"
+    "community_not_constructed": "Click to enter a title",
+    "map_change": "Map Change"
   },
   "sidebar": {
     "title": "EndField Map",
