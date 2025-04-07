@@ -55,7 +55,6 @@ export async function loadGuidesData() {
 
 export const getGuide = async (id: string | number) => {
   const guides = await getAllGuidesData();
-  console.log('guides', guides);
   if (guides[id]) {
     return guides[id];
   } else {

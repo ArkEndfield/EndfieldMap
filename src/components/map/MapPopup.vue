@@ -1,162 +1,161 @@
 <template>
-  <Transition
-    @enter="onEnterPopup"
-    @leave="onLeavePopup"
+  <motion.div
+    class="ol-popup absolute bottom-4 -left-[50px] will-change-transform will-change-opacity text-white origin-bottom w-[300px]"
+    ref="popupContainer"
+    :animate="{
+      opacity: popupManager?.isPopupVisible.value ? 1 : 0,
+      transform: popupManager?.isPopupVisible.value ? 'scaleY(1)' : 'scaleY(0)',
+    }"
+    :transition="{
+      duration: 0.3,
+      type: 'spring',
+    }"
   >
+    <!-- 背面的弹出框 -->
     <div
-      class="ol-popup absolute bottom-4 -left-[50px] will-change-transform will-change-opacity text-white origin-bottom w-[300px]"
-      ref="popupContainer"
-      v-show="popupManager?.isPopupVisible.value"
+      class="pop-drop absolute -top-3 w-full -right-4 -z-0 h-full flex flex-col"
+      :class="{ unfold: openSubPopup }"
+      v-if="showRewards"
     >
-      <!-- 背面的弹出框 -->
-      <div
-        class="pop-drop absolute -top-3 w-full -right-4 -z-0 h-full flex flex-col"
-        :class="{ unfold: openSubPopup }"
-        v-if="showRewards"
+      <button
+        class="absolute -right-6 top-0 bottom-0 flex flex-col w-6"
+        @click="toggleSubPopup"
       >
-        <button
-          class="absolute -right-6 top-0 bottom-0 flex flex-col w-6"
-          @click="toggleSubPopup"
-        >
-          <div
-            class="w-full flex-shrink-0 flex-grow-0 bg-[#3E3E3E] top-bar"
-          ></div>
-          <div class="bg-[#3E3E3E] py-1.5">
-            <div class="h-1 bg-[#4C4C4C] mr-1"></div>
-          </div>
-          <div
-            class="[writing-mode:vertical-lr] bg-[#3E3E3E] text-[#bfbfbf] font-black pb-6 flex-1 flex items-center justify-center text-2xl"
-          >
-            <DoubleChevronRight
-              class="drop-shadow-[0_0_0.2em_rgba(191,191,191,0.8)] transition-transform"
-              :class="{ 'rotate-180': openSubPopup }"
-            />
-          </div>
-        </button>
         <div
-          class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
-        >
-          <ScrollArea
-            content-class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 py-4 w-full h-full"
-          >
-            <template v-if="rewards && rewards.length > 0">
-              <PopContentItem
-                v-for="rwd in rewards"
-                :key="rwd.id"
-              >
-                <template #icon>
-                  <img
-                    :src="rwd.icon"
-                    :alt="$t(`item.${rwd.id}.name`)"
-                    class="w-full h-full object-contain"
-                  />
-                </template>
-                <template
-                  #count
-                  v-if="rwd.count"
-                  >{{ rwd.count }}</template
-                >
-                {{ $t(`item.${rwd.id}.name`) }}
-              </PopContentItem>
-            </template>
-            <div
-              v-else
-              class="col-span-2 text-center text-gray-400 py-4"
-            >
-              暂无奖励信息
-            </div>
-          </ScrollArea>
+          class="w-full flex-shrink-0 flex-grow-0 bg-[#3E3E3E] top-bar"
+        ></div>
+        <div class="bg-[#3E3E3E] py-1.5">
+          <div class="h-1 bg-[#4C4C4C] mr-1"></div>
         </div>
+        <div
+          class="[writing-mode:vertical-lr] bg-[#3E3E3E] text-[#bfbfbf] font-black pb-6 flex-1 flex items-center justify-center text-2xl"
+        >
+          <DoubleChevronRight
+            class="drop-shadow-[0_0_0.2em_rgba(191,191,191,0.8)] transition-transform"
+            :class="{ 'rotate-180': openSubPopup }"
+          />
+        </div>
+      </button>
+      <div
+        class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
+      >
+        <ScrollArea
+          content-class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 py-4 w-full h-full"
+        >
+          <template v-if="rewards && rewards.length > 0">
+            <PopContentItem
+              v-for="rwd in rewards"
+              :key="rwd.id"
+            >
+              <template #icon>
+                <img
+                  :src="rwd.icon"
+                  :alt="$t(`item.${rwd.id}.name`)"
+                  class="w-full h-full object-contain"
+                />
+              </template>
+              <template
+                #count
+                v-if="rwd.count"
+                >{{ rwd.count }}</template
+              >
+              {{ $t(`item.${rwd.id}.name`) }}
+            </PopContentItem>
+          </template>
+          <div
+            v-else
+            class="col-span-2 text-center text-gray-400 py-4"
+          >
+            暂无奖励信息
+          </div>
+        </ScrollArea>
       </div>
+    </div>
 
-      <!-- 前面的弹出框 -->
+    <!-- 前面的弹出框 -->
+    <div
+      :class="
+        cn(
+          'pop-content',
+          'border-b-6 border-[#656465] relative',
+          'before:absolute before:top-full before:border-solid before:border-transparent before:border-t-[#515151] before:border-12 before:left-11.5 before:-ml-2 before:pointer-events-none'
+        )
+      "
+    >
+      <button
+        class="no-underline absolute top-3 right-5 text-3xl text-[#ece065] z-2"
+        @click="popupManager?.closeToast"
+      >
+        <PowerIcon />
+      </button>
+      <div class="w-full flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"></div>
       <div
         :class="
           cn(
-            'pop-content',
-            'border-b-6 border-[#656465] relative',
-            'before:absolute before:top-full before:border-solid before:border-transparent before:border-t-[#515151] before:border-12 before:left-11.5 before:-ml-2 before:pointer-events-none'
+            'bg-[#272727] popup-content-container overflow-hidden',
+            'after:absolute after:-z-0 after:left-0 after:h-32 after:bottom-0 after:w-54 after:bg-gradient-to-tr after:from-white/25 after:via-white/0 after:to-black/0'
           )
         "
       >
-        <button
-          class="no-underline absolute top-3 right-5 text-3xl text-[#ece065] z-2"
-          @click="popupManager?.closeToast"
-        >
-          <PowerIcon />
-        </button>
         <div
-          class="w-full flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"
-        ></div>
-        <div
-          :class="
-            cn(
-              'bg-[#272727] popup-content-container overflow-hidden',
-              'after:absolute after:-z-0 after:left-0 after:h-32 after:bottom-0 after:w-54 after:bg-gradient-to-tr after:from-white/25 after:via-white/0 after:to-black/0'
-            )
-          "
+          class="-z-0 absolute -top-12 w-full text-[8rem] font-[Outfit] font-bold text-center text-[rgba(70,70,70,0.4)] tracking-[-0.08em] select-none pointer-events-none"
         >
-          <div
-            class="-z-0 absolute -top-12 w-full text-[8rem] font-[Outfit] font-bold text-center text-[rgba(70,70,70,0.4)] tracking-[-0.08em] select-none pointer-events-none"
-          >
-            ZMD
+          ZMD
+        </div>
+        <div
+          class="-z-0 absolute top-1/2 -right-0.5 font-[Outfit] font-bold text-center text-[rgba(70,70,70,0.4)] [writing-mode:vertical-lr] transform translate-y-[-50%] text-xs tracking-[0.5em] select-none pointer-events-none"
+        >
+          ZMDMAPS
+        </div>
+        <div class="p-4 pt-2 z-1 relative">
+          <div>
+            {{
+              (entity && entityInfo[entity.entityDataIdKey]?.entityInfo.name) ||
+              $t('popover.unknow_name')
+            }}
           </div>
-          <div
-            class="-z-0 absolute top-1/2 -right-0.5 font-[Outfit] font-bold text-center text-[rgba(70,70,70,0.4)] [writing-mode:vertical-lr] transform translate-y-[-50%] text-xs tracking-[0.5em] select-none pointer-events-none"
-          >
-            ZMDMAPS
+          <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
+            <span class="ml-auto text-zinc-400"
+              >id: #{{ entity?.levelLogicId }}</span
+            >
+            <!-- <span class="ml-auto">#{{ entity?.levelLogicId }}</span> -->
           </div>
-          <div class="p-4 pt-2 z-1 relative">
-            <div>
-              {{
-                (entity &&
-                  entityInfo[entity.entityDataIdKey]?.entityInfo.name) ||
-                $t('popover.unknow_name')
-              }}
-            </div>
-            <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
-              <span class="ml-auto text-zinc-400"
-                >id: #{{ entity?.levelLogicId }}</span
+          <GuideNode
+            v-if="entity && guide?.nodes"
+            :nodes="guide.nodes"
+          />
+          <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
+            坐标 ({{ entity?.position.x }}, {{ entity?.position.y }},
+            {{ entity?.position.z }})
+          </div>
+          <div class="flex items-center justify-between gap-2 mt-4">
+            <a
+              v-if="guide?.video?.link"
+              :href="guide.video.link"
+              target="_blank"
+              class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
+            >
+              {{ $t('popover.video_link') }}
+            </a>
+            <div class="flex items-center justify-end gap-2">
+              <label
+                v-if="entity"
+                :for="`get-${entity.entityDataIdKey}`"
+                class="text-sm"
               >
-              <!-- <span class="ml-auto">#{{ entity?.levelLogicId }}</span> -->
-            </div>
-            <GuideNode
-              v-if="entity && guide?.nodes"
-              :nodes="guide.nodes"
-            />
-            <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
-              坐标 ({{ entity?.position.x }}, {{ entity?.position.y }},
-              {{ entity?.position.z }})
-            </div>
-            <div class="flex items-center justify-between gap-2 mt-4">
-              <a
-                v-if="guide?.video?.link"
-                :href="guide.video.link"
-                target="_blank"
-                class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
-              >
-                {{ $t('popover.video_link') }}
-              </a>
-              <div class="flex items-center justify-end gap-2">
-                <label
-                  v-if="entity"
-                  :for="`get-${entity.entityDataIdKey}`"
-                  class="text-sm"
-                >
-                  {{ $t('popover.obtained') }}
-                </label>
-                <ZmdSwitch
-                  v-if="entity"
-                  :id="`get-${entity?.entityDataIdKey}`"
-                  v-model:checked="marks[entity.levelLogicId].finish"
-                />
-              </div>
+                {{ $t('popover.obtained') }}
+              </label>
+              <ZmdSwitch
+                v-if="entity"
+                :id="`get-${entity?.entityDataIdKey}`"
+                v-model:checked="marks[entity.levelLogicId].finish"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
-  </Transition>
+  </motion.div>
 </template>
 
 <script setup lang="ts">
@@ -173,6 +172,7 @@ import {
   type ReturnRewardItem,
   shouldShowRewards,
 } from '@/data/reward';
+import { motion } from 'motion-v';
 
 const props = defineProps<{
   entity: PointData | null;
@@ -236,25 +236,13 @@ const toggleSubPopup = () => {
   const newState = !props.openSubPopup;
   emit('update:openSubPopup', newState);
 
-  // 清除可能的动画状态，确保每次都能调整位置
+  // 清除可能的动画状态，确保不会影响motion动画
   if (popupManager?.resetAnimationState) {
     popupManager.resetAnimationState();
   }
 
-  // 使用单一的调整序列，确保每次都能正确调整
   if (popupManager) {
-    // 短暂延迟确保状态已更新
-    setTimeout(() => {
-      // 先调整展开/收起状态
-      popupManager.adjustForExpandedPopup?.(newState);
-
-      // 再调整整体位置
-      setTimeout(() => {
-        // 强制重置动画状态，确保调整一定会执行
-        popupManager.resetAnimationState?.();
-        popupManager.adjustPopupPosition?.(true);
-      }, 350);
-    }, 50);
+    popupManager.adjustForExpandedPopup?.(newState);
   }
 };
 
@@ -286,56 +274,6 @@ watch(
     // 这样可以避免两个组件中的位置调整逻辑相互干扰
   }
 );
-
-const onEnterPopup = (el: Element, done: () => void) => {
-  if (!popupManager) {
-    done();
-    return;
-  }
-
-  // 确保元素在动画开始前可见
-  el.setAttribute(
-    'style',
-    'display: block !important; opacity: 0; transform: scaleY(0);'
-  );
-
-  requestAnimationFrame(() => {
-    el.setAttribute(
-      'style',
-      'display: block !important; opacity: 1; transform: scaleY(1); transition: opacity 0.2s ease, transform 0.2s ease;'
-    );
-
-    setTimeout(() => {
-      el.removeAttribute('style');
-      done();
-    }, 200);
-  });
-};
-
-const onLeavePopup = (el: Element, done: () => void) => {
-  if (!popupManager) {
-    done();
-    return;
-  }
-
-  // 确保元素在动画开始前可见
-  el.setAttribute(
-    'style',
-    'display: block !important; opacity: 1; transform: scaleY(1);'
-  );
-
-  requestAnimationFrame(() => {
-    el.setAttribute(
-      'style',
-      'display: block !important; opacity: 0; transform: scaleY(0); transition: opacity 0.2s ease, transform 0.2s ease;'
-    );
-
-    setTimeout(() => {
-      el.removeAttribute('style');
-      done();
-    }, 200);
-  });
-};
 
 // 明确暴露容器引用
 defineExpose({

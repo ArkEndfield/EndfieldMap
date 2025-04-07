@@ -149,29 +149,51 @@ const horizontalTrackStyle = computed(() => ({
   borderRadius: `${props.scrollbarSize / 2}px`,
 }));
 
-const verticalThumbStyle = computed(() => ({
-  backgroundColor: props.thumbColor,
-  height: `${verticalThumbHeight.value}px`,
-  width: `${props.scrollbarSize * props.thumbSize}px`,
-  left: `${(props.scrollbarSize * (1 - props.thumbSize)) / 2}px`,
-  top: `${
-    (scrollTop.value / (contentHeight.value - viewportHeight.value)) *
-    (viewportHeight.value - verticalThumbHeight.value)
-  }px`,
-  borderRadius: `${props.scrollbarSize / 2}px`,
-}));
+// 修改垂直滚动条位置的计算逻辑，避免 NaN
+const verticalThumbStyle = computed(() => {
+  // 计算垂直滚动条位置，并确保值有效
+  let topPosition = 0;
+  if (contentHeight.value > viewportHeight.value) {
+    const maxScroll = contentHeight.value - viewportHeight.value;
+    const maxThumbPosition = viewportHeight.value - verticalThumbHeight.value;
+    // 确保没有除以0的情况，并且结果为有效数字
+    if (maxScroll > 0 && maxThumbPosition > 0) {
+      topPosition = (scrollTop.value / maxScroll) * maxThumbPosition;
+    }
+  }
 
-const horizontalThumbStyle = computed(() => ({
-  backgroundColor: props.thumbColor,
-  width: `${horizontalThumbWidth.value}px`,
-  height: `${props.scrollbarSize * props.thumbSize}px`,
-  top: `${(props.scrollbarSize * (1 - props.thumbSize)) / 2}px`,
-  left: `${
-    (scrollLeft.value / (contentWidth.value - viewportWidth.value)) *
-    (viewportWidth.value - horizontalThumbWidth.value)
-  }px`,
-  borderRadius: `${props.scrollbarSize / 2}px`,
-}));
+  return {
+    backgroundColor: props.thumbColor,
+    height: `${verticalThumbHeight.value}px`,
+    width: `${props.scrollbarSize * props.thumbSize}px`,
+    left: `${(props.scrollbarSize * (1 - props.thumbSize)) / 2}px`,
+    top: `${topPosition}px`,
+    borderRadius: `${props.scrollbarSize / 2}px`,
+  };
+});
+
+// 修改水平滚动条位置的计算逻辑，避免 NaN
+const horizontalThumbStyle = computed(() => {
+  // 计算水平滚动条位置，并确保值有效
+  let leftPosition = 0;
+  if (contentWidth.value > viewportWidth.value) {
+    const maxScroll = contentWidth.value - viewportWidth.value;
+    const maxThumbPosition = viewportWidth.value - horizontalThumbWidth.value;
+    // 确保没有除以0的情况，并且结果为有效数字
+    if (maxScroll > 0 && maxThumbPosition > 0) {
+      leftPosition = (scrollLeft.value / maxScroll) * maxThumbPosition;
+    }
+  }
+
+  return {
+    backgroundColor: props.thumbColor,
+    width: `${horizontalThumbWidth.value}px`,
+    height: `${props.scrollbarSize * props.thumbSize}px`,
+    top: `${(props.scrollbarSize * (1 - props.thumbSize)) / 2}px`,
+    left: `${leftPosition}px`,
+    borderRadius: `${props.scrollbarSize / 2}px`,
+  };
+});
 
 // 防抖函数
 const debounce = (fn: Function, delay: number) => {

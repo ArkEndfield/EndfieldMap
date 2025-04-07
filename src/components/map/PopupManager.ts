@@ -40,12 +40,14 @@ export class PopupManager {
   async openToast() {
     this.isPopupVisible.value = true;
     this.repositionPopup();
-    // setTimeout(() => {
-    //   this.adjustPopupPosition();
-    // }, 200);
-    await new Promise(resolve => setTimeout(resolve, 200));
 
-    this.adjustPopupPosition();
+    // 等待animation完成后再调整位置，防止与motion动画冲突
+    await new Promise(resolve => setTimeout(resolve, 350));
+
+    // 确保动画已经完成后再调整位置
+    if (this.isPopupVisible.value) {
+      this.adjustPopupPosition();
+    }
   }
 
   addVisibilityChangeListener(callback: (visible: boolean) => void) {
@@ -189,25 +191,22 @@ export class PopupManager {
     this.isPopupAnimating = true;
 
     try {
+      console.log('开始关闭和重新打开弹窗');
       // 1. 先关闭副弹窗
       this.openSubPopup.value = false;
 
       // 2. 开始关闭当前弹窗
-      this.isPopupVisible.value = false;
+      this.closeToast();
 
       // 3. 等待关闭动画完成
-      await new Promise(resolve => setTimeout(resolve, 250));
-
+      await new Promise(resolve => setTimeout(resolve, 300));
       // 4. 更新数据和位置
       this.entity.value = newData;
       this.showVideoInfo.value = false;
       this.currentPosition = popupPosition;
       this.overlay.setPosition(popupPosition);
       // 5. 展开新弹窗
-      this.openToast();
-
-      // 6. 等待弹窗完全展开
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await this.openToast();
 
       // 8. 如果之前是展开状态，检查新标点是否有奖励，只有有奖励时才展开副弹窗
       if (wasExpanded) {
