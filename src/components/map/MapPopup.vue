@@ -299,27 +299,6 @@ defineExpose({
   transform-style: preserve-3d;
   pointer-events: auto;
 
-  // 过渡效果
-  &.v-enter-active,
-  &.v-leave-active {
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    display: block !important;
-  }
-
-  &.v-enter-from,
-  &.v-leave-to {
-    opacity: 0;
-    transform: scaleY(0);
-    display: block !important;
-  }
-
-  &.v-enter-to,
-  &.v-leave-from {
-    opacity: 1;
-    transform: scaleY(1);
-    display: block !important;
-  }
-
   // 子弹窗过渡效果
   .pop-drop {
     transition: top 0.3s ease, right 0.3s ease, width 0.3s ease;

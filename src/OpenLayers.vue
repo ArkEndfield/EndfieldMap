@@ -127,8 +127,8 @@ onMounted(async () => {
 
       // 只在真正需要更新时才更新UI值
       if (Math.abs(zoomLevel.value - stableZoom) >= 0.1) {
-        localStorage.setItem('zoom', stableZoom.toString())
-        loadTextPoints(true)
+        localStorage.setItem('zoom', stableZoom.toString());
+        loadTextPoints(true);
         zoomLevel.value = stableZoom;
       }
 
@@ -160,8 +160,8 @@ onMounted(async () => {
 
         // 确保最终值是准确的
         if (Math.abs(zoomLevel.value - stableZoom) >= 0.01) {
-          localStorage.setItem('zoom', stableZoom.toString())
-          loadTextPoints(true)
+          localStorage.setItem('zoom', stableZoom.toString());
+          loadTextPoints(true);
           zoomLevel.value = stableZoom;
         }
 
@@ -414,58 +414,5 @@ watch(
   -webkit-clip-path: $clip;
   clip-path: $clip;
   margin-bottom: -0.01em;
-}
-
-/* 弹出层容器的样式 */
-.ol-popup {
-  $border-color: rgba(206, 206, 206, 0.5);
-  $border-size: 0.2em;
-
-  /* 仅为弹窗本身应用过渡效果，不影响地图元素 */
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  transform-origin: bottom center;
-  will-change: transform, opacity;
-
-  &.v-enter-from,
-  &.v-leave-to {
-    opacity: 0 !important;
-    transform: scaleY(0) !important;
-    display: block !important;
-  }
-
-  &.v-enter-active,
-  &.v-leave-active {
-    display: block !important;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-
-  &.v-enter-to,
-  &.v-leave-from {
-    opacity: 1;
-    transform: scaleY(1);
-    display: block !important;
-  }
-
-  .pop-drop {
-    transition: top 0.5s ease, right 0.5s ease, width 0.5s ease;
-    filter: drop-shadow(0 $border-size 0 $border-color)
-      drop-shadow(0 calc(0px - $border-size) 0 $border-color)
-      drop-shadow($border-size 0 0 $border-color)
-      drop-shadow(calc(0px - $border-size) 0 0 $border-color);
-    &.unfold {
-      width: 75%;
-      top: 0;
-      right: calc(-75% - 0.5em);
-    }
-  }
-
-  .pop-content {
-    transition: top 0.5s ease, right 0.5s ease;
-    filter: drop-shadow(0 $border-size 0 $border-color)
-      drop-shadow(0 calc(0px - $border-size) 0 $border-color)
-      drop-shadow($border-size 0 0 $border-color)
-      drop-shadow(calc(0px - $border-size) 0 0 $border-color)
-      drop-shadow(0 0 0.4em rgba(0, 0, 0, 0.5));
-  }
 }
 </style>

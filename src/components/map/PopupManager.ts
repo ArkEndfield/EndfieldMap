@@ -197,9 +197,13 @@ export class PopupManager {
 
       // 2. 开始关闭当前弹窗
       this.closeToast();
-
+      console.log('开始等待关闭');
+      console.time('关闭动画时间');
       // 3. 等待关闭动画完成
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 250));
+      console.timeEnd('关闭动画时间');
+      console.log('完成关闭');
+
       // 4. 更新数据和位置
       this.entity.value = newData;
       this.showVideoInfo.value = false;
