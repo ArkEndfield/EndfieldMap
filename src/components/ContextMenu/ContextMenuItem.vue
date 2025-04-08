@@ -1,8 +1,11 @@
 <template>
   <div
     :class="[
-      'menu-item',
-      { 'opacity-50 cursor-not-allowed': disabled },
+      'flex items-center px-3 py-2 text-sm rounded-md',
+      {
+        'opacity-50': disabled,
+        'hover:bg-gray-700': !disabled,
+      },
       className,
     ]"
     @click="!disabled && onClick && onClick()"
@@ -56,8 +59,4 @@ defineProps({
 });
 </script>
 
-<style lang="scss" scoped>
-.menu-item {
-  @apply flex items-center px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700;
-}
-</style>
+<style lang="scss" scoped></style>

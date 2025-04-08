@@ -1,10 +1,9 @@
 <template>
   <Teleport to="body">
     <div
-      v-if="visible"
-      ref="menuRef"
-      class="fixed z-50 min-w-40 p-1 rounded-lg shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
-      :style="{ top: `${y}px`, left: `${x}px` }"
+      ref="scope"
+      class="fixed z-50 top-0 left-0 min-w-40 p-1 rounded-lg shadow-lg bg-[#282828] text-white border border-[#FDFB72] origin-top-left"
+      @contextmenu.prevent
     >
       <slot />
     </div>
@@ -12,44 +11,83 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { useAnimate } from 'motion-v';
+import { watch } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
+const modelValue = defineModel('modelValue', {
+  type: Boolean,
+  default: false,
 });
 
-const emit = defineEmits(['update:modelValue', 'close']);
+const emit = defineEmits(['close']);
 
-const visible = ref(props.modelValue);
 const x = ref(0);
 const y = ref(0);
-const menuRef = ref<HTMLElement | null>(null);
+const [scope, animate] = useAnimate();
 
-// 监听 modelValue 变化
-watch(
-  () => props.modelValue,
-  newVal => {
-    visible.value = newVal;
+const showMenuAnimate = async () => {
+  const el = scope.value;
+  if (el) {
+    await animate(
+      el,
+      {
+        x: x.value,
+        y: y.value,
+      },
+      {
+        duration: 0,
+      }
+    );
+    await animate(
+      el,
+      {
+        opacity: 1,
+        scale: 1,
+        display: 'block',
+      },
+      {
+        duration: 0.2,
+        type: 'spring',
+      }
+    );
   }
-);
+};
+
+const hideMenuAnimate = async () => {
+  const el = scope.value;
+  if (el) {
+    await animate(
+      el,
+      {
+        opacity: 0,
+        scale: 0.6,
+        display: 'none',
+      },
+      {
+        duration: 0.3,
+        type: 'spring',
+      }
+    );
+  }
+};
 
 // 显示菜单
-const showMenu = (event: MouseEvent) => {
+const showMenu = async (event: MouseEvent) => {
   event.preventDefault();
   x.value = event.clientX;
   y.value = event.clientY;
-  visible.value = true;
-  emit('update:modelValue', true);
+  if (modelValue.value) {
+    await hideMenuAnimate();
+    await showMenuAnimate();
+  } else {
+    modelValue.value = true;
+  }
 
   // 确保菜单在视口内显示
   nextTick(() => {
-    if (!menuRef.value) return;
-
-    const menu = menuRef.value;
-    const rect = menu.getBoundingClientRect();
+    const el = scope.value;
+    const rect = el.getBoundingClientRect();
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
 
@@ -67,10 +105,21 @@ const showMenu = (event: MouseEvent) => {
 
 // 关闭菜单
 const closeMenu = () => {
-  visible.value = false;
-  emit('update:modelValue', false);
+  modelValue.value = false;
   emit('close');
 };
+
+watch(
+  modelValue,
+  newValue => {
+    if (newValue) {
+      showMenuAnimate();
+    } else {
+      hideMenuAnimate();
+    }
+  },
+  { immediate: true }
+);
 
 // 暴露方法
 defineExpose({
@@ -81,9 +130,9 @@ defineExpose({
 // 点击其他区域关闭菜单
 const handleClickOutside = (event: MouseEvent) => {
   if (
-    visible.value &&
-    menuRef.value &&
-    !menuRef.value.contains(event.target as Node)
+    modelValue.value &&
+    scope.value &&
+    !scope.value.contains(event.target as Node)
   ) {
     closeMenu();
   }
@@ -91,12 +140,17 @@ const handleClickOutside = (event: MouseEvent) => {
 
 // 按下ESC键关闭菜单
 const handleKeyDown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape' && visible.value) {
+  if (event.key === 'Escape' && modelValue.value) {
     closeMenu();
   }
 };
 
 onMounted(() => {
+  if (modelValue.value) {
+    showMenuAnimate();
+  } else {
+    hideMenuAnimate();
+  }
   document.addEventListener('click', handleClickOutside);
   document.addEventListener('keydown', handleKeyDown);
   window.addEventListener('resize', closeMenu);

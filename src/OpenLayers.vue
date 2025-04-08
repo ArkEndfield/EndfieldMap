@@ -3,6 +3,7 @@
     <div
       id="map"
       class="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center"
+      @contextmenu="onContextMenu"
     ></div>
 
     <MapControls
@@ -15,6 +16,42 @@
       :entity="entity"
       ref="mapPopupRef"
     />
+
+    <ContextMenu
+      v-model="menuVisible"
+      ref="contextMenuRef"
+    >
+      <ContextMenuItem
+        label="查看"
+        icon="👁️"
+        shortcut="Ctrl+V"
+        :onClick="() => handleAction('view')"
+      />
+      <ContextMenuItem
+        label="复制"
+        icon="📋"
+        shortcut="Ctrl+C"
+        :onClick="() => handleAction('copy')"
+      />
+      <ContextMenuItem
+        label="剪切"
+        icon="✂️"
+        shortcut="Ctrl+X"
+        :onClick="() => handleAction('cut')"
+      />
+      <ContextMenuDivider />
+      <ContextMenuItem
+        label="删除"
+        icon="🗑️"
+        :onClick="() => handleAction('delete')"
+        className="text-red-500"
+      />
+      <ContextMenuItem
+        label="禁用选项"
+        icon="🚫"
+        :disabled="true"
+      />
+    </ContextMenu>
   </div>
 </template>
 
@@ -33,16 +70,27 @@ import { Map } from 'ol';
 import MapControls from './components/map/MapControls.vue';
 import MapPopup, { MapPopupRef } from './components/map/MapPopup.vue';
 import { ref } from 'vue';
+import { ContextMenuRef } from './components/ContextMenu/type';
 
+const menuVisible = ref(false);
+const contextMenuRef = ref<ContextMenuRef>();
 // 引用DOM元素
 const mapControlsRef = ref();
 const mapPopupRef = ref<MapPopupRef>();
 
 // 提供弹出层管理器给子组件 - 在setup顶层调用provide
-provide(
-  'popupManager',
-  popupManager // 直接提供响应式引用，而非computed
-);
+provide('popupManager', popupManager);
+
+const onContextMenu = (event: MouseEvent) => {
+  if (contextMenuRef.value) {
+    contextMenuRef.value.showMenu(event);
+  }
+};
+
+const handleAction = (action: string) => {
+  console.log(`执行操作: ${action}`);
+  menuVisible.value = false;
+};
 
 onMounted(() => {
   createMap(

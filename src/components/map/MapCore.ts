@@ -394,7 +394,6 @@ export function createMap(
 }
 
 const pointSelectHandler = async function (event: SelectEvent) {
-  console.log('选择交互触发 - select事件', event);
   const currentMap = map.value;
   if (!currentMap) return;
 

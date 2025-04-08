@@ -1,94 +1,96 @@
 <template>
-  <div
-    v-show="backdropVisible"
-    class="zmd-alert"
-    @click.self="handleDismiss"
-  >
-    <motion.div
-      class="zmd-alert-container"
-      :style="{
-        width: props.width,
-        backgroundImage: `url(${alert_bg})`,
-        transformOrigin: props.open ? 'top' : 'bottom',
-      }"
-      ref="alertRef"
+  <Teleport to="body">
+    <div
+      v-show="backdropVisible"
+      class="zmd-alert"
+      @click.self="handleDismiss"
     >
-      <div class="zmd-alert-bg-banner">
-        <span
-          :style="{
-            backgroundImage: `url(${alert_banner_bg_left})`,
-          }"
-        ></span>
-        <span>
-          <img :src="alert_banner_bg_right" />
-        </span>
-      </div>
-      <div
-        class="zmd-alert-content-wrapper"
-        ref="contentRef"
+      <motion.div
+        class="zmd-alert-container"
+        :style="{
+          width: props.width,
+          backgroundImage: `url(${alert_bg})`,
+          transformOrigin: props.open ? 'top' : 'bottom',
+        }"
+        ref="alertRef"
       >
-        <ScrollArea
-          height="100%"
-          :flexContainer="true"
+        <div class="zmd-alert-bg-banner">
+          <span
+            :style="{
+              backgroundImage: `url(${alert_banner_bg_left})`,
+            }"
+          ></span>
+          <span>
+            <img :src="alert_banner_bg_right" />
+          </span>
+        </div>
+        <div
+          class="zmd-alert-content-wrapper"
+          ref="contentRef"
         >
-          <div class="zmd-alert-content">
-            <slot></slot>
-          </div>
-        </ScrollArea>
-      </div>
-      <div
-        class="zmd-alert-actions"
-        :class="{ single: props.hideCancel }"
-        v-show="props.open"
-        ref="buttonsRef"
-      >
-        <button
-          @click="handleCancel"
-          v-if="!props.hideCancel"
-          :disabled="isProcessing"
-          :class="{ 'is-disabled': isProcessing }"
-        >
-          <slot name="cancel">
-            <div class="zmd-alert-close">
-              <div class="text">{{ $t(props.cancelText) }}</div>
-              <div
-                class="icon"
-                v-if="props.showIcon"
-              >
-                <ZmdAlertCloseIcon />
-              </div>
+          <ScrollArea
+            height="100%"
+            :flexContainer="true"
+          >
+            <div class="zmd-alert-content">
+              <slot></slot>
             </div>
-          </slot>
-        </button>
-        <button
-          @click="handleConfirm"
-          :disabled="isProcessing"
-          :class="{ 'is-disabled': isProcessing }"
+          </ScrollArea>
+        </div>
+        <div
+          class="zmd-alert-actions"
+          :class="{ single: props.hideCancel }"
+          v-show="props.open"
+          ref="buttonsRef"
         >
-          <slot name="confirm">
-            <div
-              class="zmd-alert-confirm"
-              ref="confirmRef"
-              @mouseenter="animateConfirmEnter"
-              @mouseleave="animateConfirmLeave"
-            >
-              <div class="text">{{ $t(props.confirmText) }}</div>
-              <div
-                class="icon"
-                v-if="props.showIcon"
-              >
+          <button
+            @click="handleCancel"
+            v-if="!props.hideCancel"
+            :disabled="isProcessing"
+            :class="{ 'is-disabled': isProcessing }"
+          >
+            <slot name="cancel">
+              <div class="zmd-alert-close">
+                <div class="text">{{ $t(props.cancelText) }}</div>
                 <div
-                  v-if="isProcessing"
-                  class="loading-spinner"
-                ></div>
-                <ZmdAlertTickIcon v-else />
+                  class="icon"
+                  v-if="props.showIcon"
+                >
+                  <ZmdAlertCloseIcon />
+                </div>
               </div>
-            </div>
-          </slot>
-        </button>
-      </div>
-    </motion.div>
-  </div>
+            </slot>
+          </button>
+          <button
+            @click="handleConfirm"
+            :disabled="isProcessing"
+            :class="{ 'is-disabled': isProcessing }"
+          >
+            <slot name="confirm">
+              <div
+                class="zmd-alert-confirm"
+                ref="confirmRef"
+                @mouseenter="animateConfirmEnter"
+                @mouseleave="animateConfirmLeave"
+              >
+                <div class="text">{{ $t(props.confirmText) }}</div>
+                <div
+                  class="icon"
+                  v-if="props.showIcon"
+                >
+                  <div
+                    v-if="isProcessing"
+                    class="loading-spinner"
+                  ></div>
+                  <ZmdAlertTickIcon v-else />
+                </div>
+              </div>
+            </slot>
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">

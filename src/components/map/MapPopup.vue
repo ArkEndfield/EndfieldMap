@@ -175,19 +175,19 @@ import {
   type ReturnRewardItem,
   shouldShowRewards,
 } from '@/data/reward';
-import { motion } from 'motion-v';
+import { motion, useAnimate } from 'motion-v';
 
 const props = defineProps<{
   entity: PointData | null;
 }>();
 
-const popupContainer = ref<HTMLElement>();
 const popupManager = inject<PopupManager | null>('popupManager');
 const showRewards = computed(() => {
   const entity = props.entity;
   const show = shouldShowRewards(entity);
   return show;
 });
+const [popupContainer] = useAnimate();
 
 const rewards = ref<ReturnRewardItem[]>([]);
 
@@ -253,10 +253,7 @@ watch(
 
 // 明确暴露容器引用
 defineExpose({
-  getPopupContainer: () =>
-    popupContainer.value instanceof HTMLElement
-      ? popupContainer.value
-      : (popupContainer.value as any)?.$el,
+  getPopupContainer: () => popupContainer.value,
 });
 
 export type MapPopupRef = {

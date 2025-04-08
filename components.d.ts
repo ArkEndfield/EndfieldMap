@@ -19,7 +19,6 @@ declare module 'vue' {
     CloseSquareIcon: typeof import('./src/components/icons/CloseSquareIcon.vue')['default']
     ContextMenu: typeof import('./src/components/ContextMenu/ContextMenu.vue')['default']
     ContextMenuDivider: typeof import('./src/components/ContextMenu/ContextMenuDivider.vue')['default']
-    ContextMenuExample: typeof import('./src/components/ContextMenu/ContextMenuExample.vue')['default']
     ContextMenuItem: typeof import('./src/components/ContextMenu/ContextMenuItem.vue')['default']
     DoubleChevronLeft: typeof import('./src/components/icons/DoubleChevronLeft.vue')['default']
     DoubleChevronRight: typeof import('./src/components/icons/DoubleChevronRight.vue')['default']
