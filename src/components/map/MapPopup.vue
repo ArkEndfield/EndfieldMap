@@ -7,8 +7,9 @@
       transform: popupManager?.isPopupVisible.value ? 'scaleY(1)' : 'scaleY(0)',
     }"
     :transition="{
-      duration: 0.3,
-      type: 'spring',
+      duration: 0.25,
+      type: 'tween',
+      ease: 'easeOut',
     }"
   >
     <!-- 背面的弹出框 -->
@@ -120,15 +121,17 @@
             >
             <!-- <span class="ml-auto">#{{ entity?.levelLogicId }}</span> -->
           </div>
-          <GuideNode
-            v-if="entity && guide?.nodes"
-            :nodes="guide.nodes"
-          />
+          <div class="min-h-32">
+            <GuideNode
+              v-if="entity && guide?.nodes"
+              :nodes="guide.nodes"
+            />
+          </div>
           <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
             坐标 ({{ entity?.position.x }}, {{ entity?.position.y }},
             {{ entity?.position.z }})
           </div>
-          <div class="flex items-center justify-between gap-2 mt-4">
+          <div class="flex items-center gap-2 mt-4">
             <a
               v-if="guide?.video?.link"
               :href="guide.video.link"
@@ -137,7 +140,7 @@
             >
               {{ $t('popover.video_link') }}
             </a>
-            <div class="flex items-center justify-end gap-2">
+            <div class="flex items-center justify-end gap-2 ml-auto">
               <label
                 v-if="entity"
                 :for="`get-${entity.entityDataIdKey}`"
