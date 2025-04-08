@@ -3,6 +3,7 @@ import Map from 'ol/Map';
 import Overlay from 'ol/Overlay';
 import { PointData } from '@/data/points';
 import { xyz2crd } from '@/utils/common';
+import { shouldShowRewards } from '@/data/reward';
 
 export class PopupManager {
   private map: Map;
@@ -10,31 +11,27 @@ export class PopupManager {
   private popupContainer: HTMLElement;
   public isPopupVisible: Ref<boolean> = ref(false);
   private currentPosition: number[] | undefined;
-  private isPopupAnimating = false;
   private entity: Ref<PointData | null>;
-  private showVideoInfo: Ref<boolean>;
-  private openSubPopup: Ref<boolean>;
+  public showVideoInfo: Ref<boolean> = ref(false);
+  public openSubPopup: Ref<boolean> = ref(false);
   private isMapZooming = false; // 添加地图缩放状态标记
 
   constructor(
     map: Map,
     overlay: Overlay,
     popupContainer: HTMLElement,
-    entity: Ref<PointData | null>,
-    showVideoInfo: Ref<boolean>,
-    openSubPopup: Ref<boolean>
+    entity: Ref<PointData | null>
   ) {
     this.map = map;
     this.overlay = overlay;
     this.popupContainer = popupContainer;
     this.entity = entity;
-    this.showVideoInfo = showVideoInfo;
-    this.openSubPopup = openSubPopup;
   }
 
   // 关闭弹出层
-  closeToast() {
+  async closeToast() {
     this.isPopupVisible.value = false;
+    await new Promise(resolve => setTimeout(resolve, 150));
   }
 
   async openToast() {
@@ -44,7 +41,6 @@ export class PopupManager {
     // 等待animation完成后再调整位置，防止与motion动画冲突
     await new Promise(resolve => setTimeout(resolve, 150));
 
-    // 确保动画已经完成后再调整位置
     if (this.isPopupVisible.value) {
       this.adjustPopupPosition();
     }
@@ -55,41 +51,55 @@ export class PopupManager {
   }
 
   // 切换视频信息显示状态
-  toggleVideoInfo(show: boolean) {
-    this.showVideoInfo.value = show;
+  toggleVideoInfo(show?: boolean) {
+    // 如果提供了参数，直接设置为该值；否则切换状态
+    this.showVideoInfo.value =
+      show !== undefined ? show : !this.showVideoInfo.value;
+    return this.showVideoInfo.value;
+  }
+
+  // 获取视频信息显示状态
+  getVideoInfoStatus() {
+    return this.showVideoInfo.value;
   }
 
   // 切换子弹窗显示状态
   toggleSubPopup() {
-    // 先确保重置动画状态，防止上一次的动画状态阻止本次调整
-    this.isPopupAnimating = false;
-
+    // 如果提供了参数，直接设置为该值；否则切换状态
     this.openSubPopup.value = !this.openSubPopup.value;
+    this.adjustPopupPosition();
+    return this.openSubPopup.value;
+  }
 
-    // 在状态改变后等待过渡动画完成，然后调整位置
-    // 增加延迟时间以确保DOM更新完成
-    setTimeout(() => {
-      if (this.isPopupVisible.value && this.currentPosition) {
-        // 调整地图以适应展开的弹窗
-        this.adjustForExpandedPopup(this.openSubPopup.value);
-      }
-    }, 100); // 先快速响应
+  // 打开副弹窗
+  openSub() {
+    this.openSubPopup.value = true;
+    this.adjustPopupPosition();
+  }
 
-    // 再次检查位置，确保完整展示
-    setTimeout(() => {
-      // 确保重置动画状态，使得此次调整可以生效
-      this.isPopupAnimating = false;
+  // 关闭副弹窗
+  closeSub() {
+    this.openSubPopup.value = false;
+    this.adjustPopupPosition();
+  }
 
-      if (this.isPopupVisible.value && this.currentPosition) {
-        this.adjustPopupPosition(true);
-      }
-    }, 550); // 动画完成后再次调整
+  // 获取子弹窗显示状态
+  getSubPopupStatus() {
+    return this.openSubPopup.value;
+  }
+
+  // 添加视频信息状态变化监听器
+  addVideoInfoChangeListener(callback: (visible: boolean) => void) {
+    return watch(this.showVideoInfo, callback);
+  }
+
+  // 添加子弹窗状态变化监听器
+  addSubPopupChangeListener(callback: (visible: boolean) => void) {
+    return watch(this.openSubPopup, callback);
   }
 
   // 弹出层出现动画
   async onEnterPopup(el: Element, onComplete: () => void) {
-    this.isPopupAnimating = true;
-
     try {
       // 移除可能存在的过渡样式
       el.removeAttribute('style');
@@ -112,14 +122,12 @@ export class PopupManager {
           // 等待过渡完成
           setTimeout(() => {
             el.removeAttribute('style');
-            this.isPopupAnimating = false;
             onComplete();
           }, 200);
         });
       });
     } catch (error) {
       console.error('Animation error:', error);
-      this.isPopupAnimating = false;
       onComplete();
     }
   }
@@ -127,7 +135,6 @@ export class PopupManager {
   // 弹出层离开动画
   async onLeavePopup(el: Element, onComplete: () => void) {
     this.openSubPopup.value = false; // 关闭子弹窗
-    this.isPopupAnimating = true;
 
     try {
       // 移除可能存在的过渡样式
@@ -151,14 +158,12 @@ export class PopupManager {
           // 等待过渡完成
           setTimeout(() => {
             el.removeAttribute('style');
-            this.isPopupAnimating = false;
             onComplete();
           }, 200);
         });
       });
     } catch (error) {
       console.error('Animation error:', error);
-      this.isPopupAnimating = false;
       onComplete();
     }
   }
@@ -169,26 +174,18 @@ export class PopupManager {
       event.propertyName === 'transform' &&
       event.target &&
       (event.target as HTMLElement).classList.contains('popup-slider') &&
-      this.isPopupVisible.value &&
-      !this.isPopupAnimating
+      this.isPopupVisible.value
     ) {
-      this.adjustPopupPosition(true);
+      this.adjustPopupPosition();
     }
   }
 
   // 处理弹出层的关闭和重新打开
   async closeAndReopenPopup(data: PointData, newPosition: number[]) {
-    if (this.isPopupAnimating) {
-      return; // 如果动画正在进行中，不执行新的切换
-    }
-
     // 保存新数据，以便在动画完成后使用
     const newData = data;
     const popupPosition = [...newPosition];
     const wasExpanded = this.openSubPopup.value; // 记录当前弹窗是否展开
-
-    // 标记动画状态
-    this.isPopupAnimating = true;
 
     try {
       console.log('开始关闭和重新打开弹窗');
@@ -196,49 +193,29 @@ export class PopupManager {
       this.openSubPopup.value = false;
 
       // 2. 开始关闭当前弹窗
-      this.closeToast();
-      console.log('开始等待关闭');
-      console.time('关闭动画时间');
-      // 3. 等待关闭动画完成
-      await new Promise(resolve => setTimeout(resolve, 150));
-      console.timeEnd('关闭动画时间');
-      console.log('完成关闭');
+      await this.closeToast();
 
-      // 4. 更新数据和位置
+      // 3. 更新数据和位置
       this.entity.value = newData;
       this.showVideoInfo.value = false;
       this.currentPosition = popupPosition;
       this.overlay.setPosition(popupPosition);
-      // 5. 展开新弹窗
+      // 4. 展开新弹窗
       await this.openToast();
 
-      // 8. 如果之前是展开状态，检查新标点是否有奖励，只有有奖励时才展开副弹窗
+      // 5. 如果之前是展开状态，检查新标点是否有奖励，只有有奖励时才展开副弹窗
       if (wasExpanded) {
-        // 导入 shouldShowRewards 函数
-        const { shouldShowRewards } = await import('@/data/reward');
         const hasRewards = shouldShowRewards(newData);
 
         if (hasRewards) {
-          setTimeout(() => {
-            this.openSubPopup.value = true;
-            // 展开后再次检查位置
-            setTimeout(() => {
-              if (this.isPopupVisible.value) {
-                this.adjustForExpandedPopup(true);
-              } else {
-                this.adjustPopupPosition(true);
-              }
-            }, 100);
-          }, 300);
+          this.openSubPopup.value = true;
+          await new Promise(resolve => setTimeout(resolve, 300));
+          // 展开后再次检查位置
+          this.adjustPopupPosition();
         }
       }
-
-      // 9. 重置动画状态
-      this.isPopupAnimating = false;
     } catch (error) {
       console.error('Popup transition error:', error);
-      // 确保状态被重置
-      this.isPopupAnimating = false;
       this.openSubPopup.value = false;
     }
   }
@@ -254,7 +231,7 @@ export class PopupManager {
   }
 
   // 调整弹窗位置函数 - 添加防止缩放冲突的逻辑
-  adjustPopupPosition(forceAdjust = false) {
+  adjustPopupPosition() {
     if (
       !this.currentPosition ||
       !this.popupContainer ||
@@ -267,13 +244,13 @@ export class PopupManager {
     const mapRect = this.map.getTargetElement().getBoundingClientRect();
 
     // 检查弹窗是否超出视口边界
-    let needAdjust = forceAdjust; // 如果强制调整，则始终进行调整
+    let needAdjust = false;
     let adjustX = 0;
     let adjustY = 0;
 
     // 安全边距
     const safeMargin = 30;
-    const headerOffset = 30; // 顶部Header偏移量
+    const headerOffset = 50;
 
     // 如果子弹窗展开，增加右侧检查的边界
     const extraRightMargin = this.openSubPopup.value ? 320 : 0; // 调整副弹窗宽度估计
@@ -325,138 +302,6 @@ export class PopupManager {
       });
     }
   }
-
-  // 特别为展开副弹窗准备的调整方法 - 添加防止缩放冲突的逻辑
-  async adjustForExpandedPopup(isExpanded: boolean) {
-    if (!this.currentPosition || !this.map || this.isMapZooming) return;
-    // 设置动画中状态，避免重复调整
-    this.isPopupAnimating = true;
-
-    try {
-      const view = this.map.getView();
-      const popupRect = this.popupContainer.getBoundingClientRect();
-      const mapRect = this.map.getTargetElement().getBoundingClientRect();
-
-      if (isExpanded) {
-        // 展开时，只需要确保副弹窗完全可见
-        const resolution = view.getResolution() || 1;
-        const currentCenter = view.getCenter();
-        if (!currentCenter) {
-          this.isPopupAnimating = false;
-          return;
-        }
-
-        // 1. 计算副弹窗的宽度和位置
-        const mainPopupWidth = popupRect.width;
-        const subPopupWidth = mainPopupWidth * 0.75; // 减小副弹窗宽度与CSS保持一致(75%)
-
-        // 2. 计算副弹窗的右边界位置
-        const subPopupRight = popupRect.right + subPopupWidth;
-
-        // 3. 检查副弹窗是否超出视口右侧边界
-        const viewportRightEdge = mapRect.right - 100; // 进一步减小安全边距到5px
-
-        // 4. 只有当副弹窗会超出右侧边界时才调整
-        if (subPopupRight > viewportRightEdge) {
-          // 计算需要的水平偏移量 - 确保副弹窗完全可见，不再添加额外空间
-          const pixelOffsetX = (subPopupRight - viewportRightEdge) * 0.9; // 只调整90%的距离，避免过度移动
-
-          // 将像素偏移转换为地图坐标偏移，只移动必要的距离
-          const coordOffsetX = pixelOffsetX * resolution;
-
-          // 构建新的中心坐标，只调整水平方向
-          const newCenter = [currentCenter[0] + coordOffsetX, currentCenter[1]];
-
-          // 使用平滑动画移动地图
-          await new Promise<void>(resolve => {
-            view.animate(
-              {
-                center: newCenter,
-                duration: 350,
-                easing: t => {
-                  // 使用简单的缓入缓出
-                  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-                },
-              },
-              () => resolve()
-            );
-          });
-        }
-      } else if (this.currentPosition) {
-        // 收起时，如果标点已经被移出了视口，则调整视图让其回到合理位置
-        const pixel = this.map.getPixelFromCoordinate(this.currentPosition);
-        if (!pixel) {
-          this.isPopupAnimating = false;
-          return;
-        }
-
-        const currentCenter = view.getCenter();
-        if (!currentCenter) {
-          this.isPopupAnimating = false;
-          return;
-        }
-
-        // 检查点位置是否太靠近视口右边缘 - 保持30px的安全边距
-        const viewportRightEdge = mapRect.right + 30; // 适当调整安全边距
-
-        // 只有当偏移过大才调整
-        if (pixel[0] > viewportRightEdge) {
-          const resolution = view.getResolution() || 1;
-          const pixelOffsetX = pixel[0] - viewportRightEdge + 20; // 减小额外空间
-
-          const newCenter = [
-            currentCenter[0] + pixelOffsetX * resolution,
-            currentCenter[1],
-          ];
-
-          await new Promise<void>(resolve => {
-            view.animate(
-              {
-                center: newCenter,
-                duration: 250,
-              },
-              () => resolve()
-            );
-          });
-        }
-      }
-
-      // 在调整副弹窗位置时，同时检查并调整垂直位置
-      if (popupRect.top < mapRect.top + 30) {
-        // 添加顶部Header偏移量
-        const currentCenter = view.getCenter();
-        if (!currentCenter) {
-          this.isPopupAnimating = false;
-          return;
-        }
-
-        const resolution = view.getResolution() || 1;
-        const pixelOffsetY = mapRect.top + 30 - popupRect.top;
-        const coordOffsetY = pixelOffsetY * resolution;
-
-        // 垂直方向调整
-        const newCenter = [currentCenter[0], currentCenter[1] - coordOffsetY];
-
-        await new Promise<void>(resolve => {
-          view.animate(
-            {
-              center: newCenter,
-              duration: 250,
-            },
-            () => resolve()
-          );
-        });
-      }
-    } catch (error) {
-      console.error('副弹窗视图调整错误:', error);
-    } finally {
-      // 确保标志位被重置
-      setTimeout(() => {
-        this.isPopupAnimating = false;
-      }, 50);
-    }
-  }
-
   // 更新当前位置
   setCurrentPosition(position: number[] | undefined) {
     this.currentPosition = position;
@@ -465,12 +310,6 @@ export class PopupManager {
   // 获取当前位置
   getCurrentPosition() {
     return this.currentPosition;
-  }
-
-  // 重置动画状态，用于确保缩放后弹窗功能正常
-  resetAnimationState() {
-    // 清除动画标志，确保弹窗响应能力恢复
-    this.isPopupAnimating = false;
   }
 
   // 重新计算弹窗的位置，基于当前标点坐标和分辨率

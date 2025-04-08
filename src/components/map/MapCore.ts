@@ -1,15 +1,23 @@
-import { Map, View } from 'ol';
+import { Map, MapBrowserEvent, View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
 import { XYZ } from 'ol/source';
 import { Projection } from 'ol/proj';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
-import { areaNameLayer } from '@/data/locations';
+import { areaNameLayer, loadTextPoints } from '@/data/locations';
 import { entityClusterLayers } from '@/data/entity';
-import { ref } from 'vue';
+import { ref, shallowRef } from 'vue';
 import { Layer } from 'ol/layer';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
+import Overlay from 'ol/Overlay';
+import { Select } from 'ol/interaction';
+import { click } from 'ol/events/condition';
+import { PopupManager } from './PopupManager';
+import { type PointData } from '@/data/points';
+import { updateClusterDistance } from '@/data/entity';
+import { debounce, xyz2crd } from '@/utils/common';
+import { SelectEvent } from 'ol/interaction/Select';
 
 // 创建简单投影
 export const simpleProjection = new Projection({
@@ -51,6 +59,20 @@ export function createZoomControl(controlsElement: HTMLElement) {
 // 创建并返回地图实例
 export const map = ref<Map | null>(null);
 export const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001');
+export const zoomLevel = ref(Number(localStorage.getItem('zoom')));
+
+// 弹出层相关状态
+export const entity = ref<PointData | null>(null);
+
+// 全局变量
+let overlay: Overlay;
+let selectInteraction: Select = new Select({
+  condition: click,
+  style: null,
+  layers: () => true,
+});
+
+export const popupManager = shallowRef<PopupManager | null>(null);
 
 // 类型保护函数
 function isVectorSource(source: any): source is VectorSource {
@@ -237,19 +259,74 @@ export function cleanupMap() {
     map.value?.removeLayer(layer);
   });
 
+  // 清除事件监听器
+  window.removeEventListener('resize', windowResizeHandler);
+  map.value.un('click', mapClickHandler);
+  map.value.un('moveend', moveEndChange);
+  map.value.getView().un('change:resolution', handleZoomChange);
+  // 清除选择交互
+  if (selectInteraction) {
+    selectInteraction.un('select', pointSelectHandler);
+    selectInteraction.getFeatures().clear();
+    map.value.removeInteraction(selectInteraction);
+  }
+
   // 分离目标元素
   map.value.setTarget(undefined);
-
+  map.value = null;
   // 重置状态
   entityLayersLoaded.value = false;
 }
 
+// 初始化弹窗管理器
+export function initPopupManager(popupElement?: HTMLElement) {
+  if (!map.value || !overlay) return null;
+
+  // 确保弹窗元素存在
+  if (!popupElement) {
+    console.error('弹出层容器未找到 - 请检查DOM和CSS');
+    return null;
+  }
+  // 创建弹出层管理器
+  const manager = new PopupManager(
+    map.value as Map,
+    overlay,
+    popupElement,
+    entity
+  );
+
+  // 设置全局引用
+  popupManager.value = manager;
+  // 当弹出框关闭时，清除选择状态
+  manager.addVisibilityChangeListener(newValue => {
+    if (!newValue && selectInteraction) {
+      selectInteraction.getFeatures().clear();
+    }
+  });
+
+  return manager;
+}
+
+const windowResizeHandler = debounce(() => {
+  if (popupManager.value && popupManager.value.getCurrentPosition()) {
+    popupManager.value?.adjustPopupPosition();
+  }
+}, 200);
+
 export function createMap(
   mapIndex: string,
   controlsElement: HTMLElement,
-  overlay: any
+  overlayElement?: HTMLElement
 ) {
   const zoomControl = createZoomControl(controlsElement);
+
+  // 保存全局overlay引用
+  overlay = new Overlay({
+    element: overlayElement,
+    autoPan: false,
+    offset: [0, 10],
+    positioning: 'bottom-center',
+  });
 
   // 基础图层 - 只包含底图和地名标注
   const baseLayers = [
@@ -294,13 +371,197 @@ export function createMap(
       addEntityLayersToMap();
     }
   });
+
+  initPopupManager(overlayElement);
+
+  // 添加选择交互
+  // 添加选择交互
+  map.value.addInteraction(selectInteraction);
+  // 修改选择交互部分的代码，先关闭弹窗，再放大聚合点
+  selectInteraction.on('select', pointSelectHandler);
+
+  // 设置地图缩放事件监听
+  map.value.getView().on('change:resolution', handleZoomChange);
+
+  // 监听地图移动结束事件，确保最终值是准确的
+  map.value.on('moveend', moveEndChange);
+
+  // 设置地图点击事件处理
+  map.value.on('click', mapClickHandler);
+
+  // 设置窗口大小变化监听器
+  window.addEventListener('resize', windowResizeHandler);
+}
+
+const pointSelectHandler = async function (event: SelectEvent) {
+  console.log('选择交互触发 - select事件', event);
+  const currentMap = map.value;
+  if (!currentMap) return;
+
+  const target = event.selected[0];
+  if (target) {
+    console.log('选中目标:', target);
+    // 检查是否是聚合点
+    const features = target.get('features');
+    if (features && features.length > 1) {
+      console.log('选中了聚合点, 包含特征数量:', features.length);
+      // 聚合点点击处理
+      // 如果有弹窗正在显示，先关闭它
+      if (popupManager.value?.isPopupVisible.value) {
+        await popupManager.value.closeToast();
+      }
+
+      const extent = target.getGeometry()?.getExtent();
+      if (extent && currentMap) {
+        // 放大到聚合范围
+        currentMap.getView().fit(extent, {
+          duration: 500,
+          padding: [50, 50, 50, 50],
+          maxZoom: 5,
+        });
+      }
+      return;
+    }
+
+    // 获取单个点的数据
+    let data = target.get('payload') as PointData | undefined;
+    // 如果是聚合中的单个点，需要从features中获取
+    if (features && features.length === 1) {
+      data = features[0].get('payload');
+    }
+
+    if (!data) {
+      console.warn('未找到点位数据');
+      return;
+    }
+
+    const targetFeaturePosition = xyz2crd(data.position);
+
+    const newPosition = targetFeaturePosition;
+    const currentPosition = popupManager.value?.getCurrentPosition();
+    const positionChanged =
+      !currentPosition ||
+      newPosition[0] !== currentPosition[0] ||
+      newPosition[1] !== currentPosition[1];
+
+    if (!popupManager.value) {
+      console.error('弹窗管理器不存在');
+      return;
+    }
+
+    console.log('弹窗管理器状态:', {
+      isPopupVisible: popupManager.value.isPopupVisible.value,
+      currentPosition: currentPosition,
+      newPosition: newPosition,
+      positionChanged: positionChanged,
+    });
+
+    // 如果位置改变或弹出框当前不可见
+    if (positionChanged || !popupManager.value?.isPopupVisible.value) {
+      if (popupManager.value.isPopupVisible.value) {
+        console.log('重新打开弹窗 - 位置已改变');
+        // 如果弹窗已经显示，使用PopupManager处理关闭和重新打开
+        await popupManager.value.closeAndReopenPopup(data, newPosition);
+      } else {
+        console.log('首次打开弹窗');
+        // 首次显示弹窗
+        entity.value = data;
+        popupManager.value.toggleVideoInfo(false);
+        popupManager.value.setCurrentPosition([...newPosition]);
+        popupManager.value.openToast();
+      }
+    } else {
+      console.log('更新弹窗内容 - 相同位置');
+      // 如果是同一位置的点击，只更新弹窗内容，不关闭再打开
+      entity.value = data;
+    }
+  } else {
+    console.log('未选中目标，关闭弹窗');
+    // 只有当没有选中新Feature时才关闭弹窗
+    popupManager.value?.closeToast();
+  }
+};
+
+const handleZoomChange = function () {
+  const currentMap = map.value;
+  if (!currentMap) return;
+
+  // 标记地图正在缩放中
+  if (popupManager.value) {
+    popupManager.value.setMapZooming(true);
+  }
+
+  const zoom = currentMap.getView().getZoom() || 0;
+
+  // 只在真正需要更新时才更新UI值
+  localStorage.setItem('zoom', zoom.toString());
+  loadTextPoints(true);
+  zoomLevel.value = zoom;
+
+  updateClusterDistance(zoomLevel.value);
+
+  // 如果弹窗是打开的，则在缩放时重新定位弹窗
+  if (popupManager.value && popupManager.value.isPopupVisible.value) {
+    popupManager.value.repositionPopup();
+  }
+};
+
+const moveEndChange = debounce(
+  () => {
+    const currentMap = map.value;
+    if (!currentMap) return;
+
+    const zoom = currentMap.getView().getZoom() || 0;
+    // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
+    const stableZoom = Math.round(zoom * 2) / 2;
+
+    // 确保最终值是准确的
+    if (Math.abs(zoomLevel.value - stableZoom) >= 0.01) {
+      localStorage.setItem('zoom', stableZoom.toString());
+      loadTextPoints(true);
+      zoomLevel.value = stableZoom;
+    }
+
+    // 重要：在移动或缩放结束后，重置缩放状态标志
+    if (popupManager.value) {
+      popupManager.value.setMapZooming(false);
+    }
+  },
+  250,
+  { leading: false, trailing: true }
+);
+
+function mapClickHandler(event: MapBrowserEvent<any>) {
+  // 首先检查是否有Feature被点击
+  const feature = map.value?.forEachFeatureAtPixel(
+    event.pixel,
+    feature => feature
+  );
+
+  // 如果没有Feature被点击，并且弹窗正在显示，则关闭弹窗
+  if (!feature && popupManager.value) {
+    popupManager.value.closeToast();
+  }
 }
 
 // 选择地图
 export const selectMap = (id: string) => {
   console.log('选择地图', id);
   if (cacheMapId.value === id) return;
+
+  // 关闭可能打开的弹窗
+  if (popupManager.value) {
+    popupManager.value.closeToast();
+    // 重置弹窗状态
+    popupManager.value.toggleVideoInfo(false);
+    popupManager.value.closeSub();
+    popupManager.value.setCurrentPosition(undefined);
+  }
+
+  // 更新地图ID
   cacheMapId.value = id;
   localStorage.setItem('map', id);
+
+  // 更新地图
   updateMap(id);
 };

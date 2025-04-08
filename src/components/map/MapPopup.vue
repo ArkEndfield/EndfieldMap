@@ -15,12 +15,12 @@
     <!-- 背面的弹出框 -->
     <div
       class="pop-drop absolute -top-3 w-full -right-4 -z-0 h-full flex flex-col"
-      :class="{ unfold: openSubPopup }"
+      :class="{ unfold: popupManager?.openSubPopup.value }"
       v-if="showRewards"
     >
       <button
         class="absolute -right-6 top-0 bottom-0 flex flex-col w-6"
-        @click="toggleSubPopup"
+        @click="popupManager?.toggleSubPopup"
       >
         <div
           class="w-full flex-shrink-0 flex-grow-0 bg-[#3E3E3E] top-bar"
@@ -33,7 +33,7 @@
         >
           <DoubleChevronRight
             class="drop-shadow-[0_0_0.2em_rgba(191,191,191,0.8)] transition-transform"
-            :class="{ 'rotate-180': openSubPopup }"
+            :class="{ 'rotate-180': popupManager?.openSubPopup.value }"
           />
         </div>
       </button>
@@ -179,16 +179,10 @@ import { motion } from 'motion-v';
 
 const props = defineProps<{
   entity: PointData | null;
-  openSubPopup: boolean;
-}>();
-
-const emit = defineEmits<{
-  (e: 'update:openSubPopup', value: boolean): void;
 }>();
 
 const popupContainer = ref<HTMLElement>();
 const popupManager = inject<PopupManager | null>('popupManager');
-
 const showRewards = computed(() => {
   const entity = props.entity;
   const show = shouldShowRewards(entity);
@@ -235,53 +229,39 @@ watch(
   }
 );
 
-const toggleSubPopup = () => {
-  const newState = !props.openSubPopup;
-  emit('update:openSubPopup', newState);
-
-  // 清除可能的动画状态，确保不会影响motion动画
-  if (popupManager?.resetAnimationState) {
-    popupManager.resetAnimationState();
-  }
-
-  if (popupManager) {
-    popupManager.adjustForExpandedPopup?.(newState);
-  }
-};
-
 // 监听 entity 的变化，当切换到新的标点时，如果没有奖励，则关闭背面弹窗
 watch(
   () => props.entity,
   newEntity => {
-    if (!newEntity) {
+    if (!newEntity || !popupManager) {
       return;
     }
+
     const hasRewards = shouldShowRewards(newEntity);
-    if (!hasRewards && props.openSubPopup) {
+    // 确保 popupManager 和 openSubPopup 都存在，并且检查 openSubPopup.value
+    if (
+      !hasRewards &&
+      popupManager.openSubPopup &&
+      popupManager.openSubPopup.value === true
+    ) {
       // 如果新标点没有奖励，关闭背面弹窗，但不触发视图调整
-      emit('update:openSubPopup', false);
-      // 重置动画状态
-      if (popupManager?.resetAnimationState) {
-        popupManager.resetAnimationState();
-      }
+      popupManager.closeSub();
     }
   },
-  { immediate: true }
-);
-
-// 添加一个新的 watch 来处理 openSubPopup 的变化
-watch(
-  () => props.openSubPopup,
-  () => {
-    // 监听器保留为空，所有位置调整逻辑已移至 OpenLayers.vue 中
-    // 这样可以避免两个组件中的位置调整逻辑相互干扰
-  }
+  { immediate: false } // 修改为 false，避免在 popupManager 初始化前执行
 );
 
 // 明确暴露容器引用
 defineExpose({
-  popupContainer,
+  getPopupContainer: () =>
+    popupContainer.value instanceof HTMLElement
+      ? popupContainer.value
+      : (popupContainer.value as any)?.$el,
 });
+
+export type MapPopupRef = {
+  getPopupContainer: () => HTMLElement | undefined;
+};
 </script>
 
 <style lang="scss">
