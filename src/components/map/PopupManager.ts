@@ -42,7 +42,7 @@ export class PopupManager {
     this.repositionPopup();
 
     // 等待animation完成后再调整位置，防止与motion动画冲突
-    await new Promise(resolve => setTimeout(resolve, 350));
+    await new Promise(resolve => setTimeout(resolve, 150));
 
     // 确保动画已经完成后再调整位置
     if (this.isPopupVisible.value) {
@@ -200,7 +200,7 @@ export class PopupManager {
       console.log('开始等待关闭');
       console.time('关闭动画时间');
       // 3. 等待关闭动画完成
-      await new Promise(resolve => setTimeout(resolve, 250));
+      await new Promise(resolve => setTimeout(resolve, 150));
       console.timeEnd('关闭动画时间');
       console.log('完成关闭');
 

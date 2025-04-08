@@ -7,7 +7,7 @@
       transform: popupManager?.isPopupVisible.value ? 'scaleY(1)' : 'scaleY(0)',
     }"
     :transition="{
-      duration: 0.25,
+      duration: 0.15,
       type: 'tween',
       ease: 'easeOut',
     }"
