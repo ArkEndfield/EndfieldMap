@@ -4,7 +4,10 @@
       class="header"
       @click="toggleContent"
     >
-      <div class="icon">
+      <div
+        class="icon"
+        @click.stop="handleIconClick"
+      >
         <ZmdSidebarLocation :icon-color="props.iconColor" />
       </div>
       <div class="title">
@@ -49,7 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   defaultOpen: true,
 });
 
-const emit = defineEmits(['toggle']);
+const emit = defineEmits(['toggle', 'iconClick']);
 const isOpen = ref(props.defaultOpen);
 const [contentRef, contentAnimate] = useAnimate();
 
@@ -76,6 +79,10 @@ async function onLeave() {
 const toggleContent = () => {
   isOpen.value = !isOpen.value;
   emit('toggle', isOpen.value);
+};
+
+const handleIconClick = () => {
+  emit('iconClick');
 };
 
 watch(isOpen, newVal => {

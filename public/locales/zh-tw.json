@@ -55,6 +55,7 @@
       "not_marked": "未標記獲取"
     },
     "filter": {
+      "cultivation_material": "培养素材",
       "category": {
         "ether": "醚質",
         "chest": "寶箱",

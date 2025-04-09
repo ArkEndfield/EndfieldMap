@@ -1,6 +1,7 @@
 import { reactive, watchEffect, ref } from 'vue';
 import { getAllPoints } from './points';
 import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
+import { refresh } from './entity';
 
 export interface MarkInfoDetail {
   finish: boolean;
@@ -190,10 +191,8 @@ export const setMarkFilter = (filterType: MarkFilterType) => {
   // 触发变更通知以更新UI计数等
   markStateChangeTrigger.value++;
 
-  // 使用entity.ts中的immediateRefresh来应用筛选，避免完全重新加载
-  import('./entity').then(({ immediateRefresh }) => {
-    immediateRefresh();
-  });
+  // 使用entity.ts中的refresh来应用筛选，避免完全重新加载
+  refresh();
 
   return currentMarkFilter.value;
 };

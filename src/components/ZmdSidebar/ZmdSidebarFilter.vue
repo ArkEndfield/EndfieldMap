@@ -13,7 +13,7 @@
       bounce: 0.25,
     }"
   >
-    <div class="zmd-sidebar-operate-buttons grid grid-cols-2">
+    <div class="zmd-sidebar-operate-buttons grid grid-cols-3">
       <ZmdSidebarOperateButton @click="handleClear">
         <template #icon>
           <ZmdSidebarDeleteIcon />
@@ -29,6 +29,17 @@
         <template #subtitle>{{
           isSelectAll ? 'UNSELECT ALL' : 'SELECT ALL'
         }}</template>
+      </ZmdSidebarOperateButton>
+      <ZmdSidebarOperateButton @click="toggleCharacterMaterial">
+        <template #icon>
+          <img
+            src="/images/icon_character.png"
+            alt=""
+            class="opacity-40"
+          />
+        </template>
+        {{ $t('sidebar.filter.cultivation_material') }}
+        <template #subtitle>Cultivation MATERIAL</template>
       </ZmdSidebarOperateButton>
     </div>
 
@@ -56,6 +67,7 @@
       </div>
     </div>
   </motion.div>
+  <CharacterMaterial v-model:open="showCharacterMaterial" />
 </template>
 
 <script setup lang="ts">
@@ -66,6 +78,9 @@ import ZmdSidebarFilterToggle from './ZmdSidebarFilterToggle.vue';
 import { selectAll, clear, isSelectAll } from '@/data/entity';
 import { currentMarkFilter, setMarkFilter } from '@/data/marks';
 import { motion } from 'motion-v';
+import { ref } from 'vue';
+import { watch } from 'vue';
+const showCharacterMaterial = ref(false);
 const props = withDefaults(
   defineProps<{
     open?: boolean;
@@ -75,6 +90,10 @@ const props = withDefaults(
   }
 );
 
+const toggleCharacterMaterial = () => {
+  showCharacterMaterial.value = !showCharacterMaterial.value;
+};
+
 // 处理全选按钮点击
 const handleSelectAll = () => {
   if (isSelectAll.value) {
@@ -83,6 +102,15 @@ const handleSelectAll = () => {
     selectAll();
   }
 };
+
+watch(
+  () => props.open,
+  newVal => {
+    if (!newVal) {
+      showCharacterMaterial.value = false;
+    }
+  }
+);
 
 // 处理清除按钮点击
 const handleClear = () => {

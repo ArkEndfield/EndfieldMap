@@ -4,29 +4,50 @@
     @mouseleave="showPopover = false"
   >
     <div ref="triggerRef"><slot></slot></div>
-    <div
-      ref="popoverRef"
-      v-show="showPopover"
-      :class="[
-        'arknights-popover absolute py-3 px-5 shadow-lg w-max max-w-64 text-sm',
-      ]"
-      :style="popoverStyle"
-    >
-      <div class="scanline-container">
-        <div class="scanline"></div>
-      </div>
-      <div class="popover-corner popover-corner-tl"></div>
-      <div class="popover-corner popover-corner-tr"></div>
-      <div class="popover-corner popover-corner-bl"></div>
-      <div class="popover-corner popover-corner-br"></div>
-      <slot name="popover"></slot>
-    </div>
+    <AnimatePresence :initial="false">
+      <motion.div
+        ref="popoverRef"
+        v-show="showPopover"
+        :class="[
+          'arknights-popover absolute py-3 px-5 shadow-lg w-max max-w-64 text-sm',
+        ]"
+        :initial="{
+          opacity: 0,
+          y: -10,
+        }"
+        :animate="{
+          opacity: showPopover ? 1 : 0,
+          y: showPopover ? 0 : -10,
+        }"
+        :style="{
+          left: position.left + 'px',
+          top: position.top + 'px',
+        }"
+        :exit="{
+          opacity: 0,
+          y: -10,
+        }"
+        :transition="{
+          duration: 0.1,
+        }"
+      >
+        <div class="scanline-container">
+          <div class="scanline"></div>
+        </div>
+        <div class="popover-corner popover-corner-tl"></div>
+        <div class="popover-corner popover-corner-tr"></div>
+        <div class="popover-corner popover-corner-bl"></div>
+        <div class="popover-corner popover-corner-br"></div>
+        <slot name="popover"></slot>
+      </motion.div>
+    </AnimatePresence>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onUnmounted, watch } from 'vue';
-
+import { motion, AnimatePresence, useAnimate } from 'motion-v';
+import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue';
+const [popoverRef] = useAnimate();
 const props = withDefaults(
   defineProps<{ placement?: 'top' | 'bottom' | 'left' | 'right' }>(),
   {
@@ -35,26 +56,17 @@ const props = withDefaults(
 );
 
 const showPopover = ref(false);
-const popoverRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
-const popoverStyle = ref<Record<string, string>>({
-  opacity: '0',
-  transform: 'translateY(-10px)',
-  transition: 'opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
-});
+const position = ref({ left: 0, top: 0 });
 
 function recalcPosition() {
   if (!triggerRef.value || !popoverRef.value) {
     return;
   }
-
-  // 初始隐藏弹窗，但不影响尺寸测量
-  popoverRef.value.style.opacity = '0';
-  popoverRef.value.style.pointerEvents = 'none';
-
+  const popoverElement = popoverRef.value as HTMLElement;
   // 获取元素尺寸
   const triggerRect = triggerRef.value.getBoundingClientRect();
-  const popoverRect = popoverRef.value.getBoundingClientRect();
+  const popoverRect = popoverElement.getBoundingClientRect();
 
   // 计算弹窗尺寸
   const popWidth = popoverRect.width;
@@ -104,35 +116,13 @@ function recalcPosition() {
   );
 
   // 转换为相对于父容器的位置
-  const parentRect = popoverRef.value.offsetParent?.getBoundingClientRect() || {
+  const parentRect = popoverElement.offsetParent?.getBoundingClientRect() || {
     left: 0,
     top: 0,
   };
   const relativeLeft = left - parentRect.left;
   const relativeTop = top - parentRect.top;
-
-  // 应用位置样式 (不包含动画相关样式)
-  popoverStyle.value = {
-    left: `${relativeLeft}px`,
-    top: `${relativeTop}px`,
-    opacity: '0',
-    transform: 'translateY(-10px)',
-    transition:
-      'opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
-    pointerEvents: 'none',
-  };
-
-  // 使用RAF确保在下一帧应用动画样式
-  requestAnimationFrame(() => {
-    if (popoverRef.value && showPopover.value) {
-      popoverStyle.value = {
-        ...popoverStyle.value,
-        opacity: '1',
-        transform: 'translateY(0)',
-        pointerEvents: 'auto',
-      };
-    }
-  });
+  position.value = { left: relativeLeft, top: relativeTop };
 }
 
 // 监听弹窗显示状态变化
@@ -145,18 +135,17 @@ watch(
         window.addEventListener('resize', recalcPosition);
       });
     } else {
-      if (popoverRef.value) {
-        popoverStyle.value = {
-          ...popoverStyle.value,
-          opacity: '0',
-          transform: 'translateY(-10px)',
-          pointerEvents: 'none',
-        };
-      }
       window.removeEventListener('resize', recalcPosition);
     }
   }
 );
+
+onMounted(() => {
+  // 组件挂载后计算初始位置
+  nextTick(() => {
+    recalcPosition();
+  });
+});
 
 // 组件卸载时清理事件监听
 onUnmounted(() => {

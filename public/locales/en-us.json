@@ -55,6 +55,7 @@
       "not_marked": "Unobtained"
     },
     "filter": {
+      "cultivation_material": "Cultivation Material",
       "category": {
         "ether": "Ether",
         "chest": "Chest",

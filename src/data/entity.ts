@@ -940,9 +940,6 @@ export const refresh = () => {
     createEntityClusterLayers();
   }
 
-  // 不再清理样式缓存，减少不必要的重新渲染
-  // Object.keys(styleCache).forEach(key => delete styleCache[key]);
-
   // 不再清理所有源，而是控制图层可见性
   for (const key in entityInfo) {
     const source = entityClusterSources[key];
@@ -1004,47 +1001,101 @@ export const debouncedRefresh = debounce(refresh, 300, {
   trailing: true,
 });
 
-// 添加一个用于筛选操作的即时刷新函数
-export const immediateRefresh = () => {
-  // 直接调用refresh，无延迟
-  refresh();
-};
-
 // 优化的selectAll函数
 export const selectAll = () => {
-  // 清理样式缓存以避免内存泄漏
   Object.keys(styleCache).forEach(key => delete styleCache[key]);
 
   for (const key in entityInfo) {
     entityInfo[key].entityInfo.show = true;
   }
 
-  // 使用即时刷新函数，提高用户体验
-  immediateRefresh();
+  refresh();
 };
 
 // 优化的clear函数
 export const clear = () => {
-  // 清理样式缓存以避免内存泄漏
   Object.keys(styleCache).forEach(key => delete styleCache[key]);
 
   for (const key in entityInfo) {
     entityInfo[key].entityInfo.show = false;
   }
 
-  // 使用即时刷新函数，提高用户体验
-  immediateRefresh();
+  refresh();
 };
 
-export const select = (key: string) => {
-  entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
-  // 使用即时刷新函数，提高用户体验
-  immediateRefresh();
+export const select = (...keys: string[]) => {
+  keys.forEach(key => {
+    if (entityInfo[key]) {
+      entityInfo[key].entityInfo.show = true;
+    }
+  });
+  refresh();
 };
 
-export const toggleSelect = (key: string) => {
-  entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
-  immediateRefresh();
+export const unSelect = (...keys: string[]) => {
+  keys.forEach(key => {
+    if (entityInfo[key]) {
+      entityInfo[key].entityInfo.show = false;
+    }
+  });
+  refresh();
+};
+
+export const toggleSelect = (...keys: string[]) => {
+  keys.forEach(key => {
+    if (entityInfo[key]) {
+      entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
+    }
+  });
+  refresh();
+};
+
+// 选择一大类的实体
+export const selectByCategory = (category: string) => {
+  for (const key in entityInfo) {
+    if (entityInfo[key].category === category) {
+      entityInfo[key].entityInfo.show = true;
+    }
+  }
+  refresh();
+};
+
+// 取消选择一大类的实体
+export const unSelectByCategory = (category: string) => {
+  for (const key in entityInfo) {
+    if (entityInfo[key].category === category) {
+      entityInfo[key].entityInfo.show = false;
+    }
+  }
+  refresh();
+};
+
+export const selectAllByCategory = (category: string) => {
+  for (const key in entityInfo) {
+    if (entityInfo[key].category === category) {
+      entityInfo[key].entityInfo.show = true;
+    }
+  }
+  refresh();
+};
+
+export const unSelectAllByCategory = (category: string) => {
+  for (const key in entityInfo) {
+    if (entityInfo[key].category === category) {
+      entityInfo[key].entityInfo.show = false;
+    }
+  }
+  refresh();
+};
+
+// 切换选择一大类的实体
+export const toggleSelectByCategory = (category: string) => {
+  for (const key in entityInfo) {
+    if (entityInfo[key].category === category) {
+      entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
+    }
+  }
+  refresh();
 };
 
 export const toggleSelectByName = (name: string) => {
@@ -1053,12 +1104,22 @@ export const toggleSelectByName = (name: string) => {
       entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
     }
   }
-  immediateRefresh();
+  refresh();
 };
 
 export const isSelectAll = computed(() => {
   return Object.keys(entityInfo).every(key => entityInfo[key].entityInfo.show);
 });
+
+// 一大类实体是否全选
+export const isSelectAllByCategory = (category: string) => {
+  return Object.keys(entityInfo).every(key => {
+    if (entityInfo[key].category === category) {
+      return entityInfo[key].entityInfo.show;
+    }
+    return true;
+  });
+};
 
 export const clusterSource = new Cluster({
   distance: 1,
@@ -1067,7 +1128,7 @@ export const clusterSource = new Cluster({
 
 // 监听标记筛选状态变化，刷新地图
 watch(currentMarkFilter, () => {
-  immediateRefresh();
+  refresh();
 });
 
 // 获取实体类型对应的点位集合

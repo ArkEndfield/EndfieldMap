@@ -26,7 +26,10 @@
       <span class="bg-amber-300 w-0.5 h-0.5"></span>
     </div>
     <div
-      class="w-[110%] relative left-1/2 -translate-x-1/2 bg-[#FDFBFC] text-center text-[#0E0200] text-sm font-bold truncate z-1"
+      class="w-[110%] relative left-1/2 -translate-x-1/2 bg-[#FDFBFC] text-center text-sm font-bold truncate z-1 h-5"
+    ></div>
+    <div
+      class="w-[110%] absolute -bottom-5 left-1/2 -translate-x-1/2 text-center text-[#0E0200] text-sm font-bold truncate z-2"
     >
       <slot></slot>
     </div>

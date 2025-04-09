@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { getItem, setItem, StorageType } from './indexedDBStorage';
+import { clearStore, getItem, setItem, StorageType } from './indexedDBStorage';
 import { rafTimeout } from './animationTimer';
 
 // 定义加载状态类型
@@ -122,9 +122,6 @@ export async function clearJSONCache(url?: string) {
     // 清除特定URL的缓存
     await setItem(url, null, StorageType.TEMPORARY);
   } else {
-    // 清除所有临时缓存
-    await import('./indexedDBStorage').then(({ clearStore, StorageType }) => {
-      clearStore(StorageType.TEMPORARY);
-    });
+    clearStore(StorageType.TEMPORARY);
   }
 }

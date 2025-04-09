@@ -21,7 +21,8 @@
     </div>
 
     <ZmdSidebarItem
-      icon-color="#FFFFFF"
+      @icon-click="() => toggleSelectAllByCategory(i)"
+      :icon-color="getIconColor(i)"
       :open="props.open"
       v-for="(k, i) in filteredCategoryInfo"
     >
@@ -50,11 +51,14 @@ import {
   refresh,
   entityInfo,
   type EntityInfo,
+  isSelectAllByCategory,
+  selectAllByCategory,
 } from '@/data/entity';
 import { getCurrentPoints } from '@/data/points';
 import { marks, markStateChangeTrigger, onMarkChange } from '@/data/marks';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
+import { unSelectByCategory } from '@/data/entity';
 
 const props = withDefaults(
   defineProps<{
@@ -68,6 +72,15 @@ const props = withDefaults(
 // 搜索功能
 const searchQuery = ref('');
 const scrollListRef = ref<HTMLElement | null>(null);
+
+const toggleSelectAllByCategory = (category: string) => {
+  const isAllSelected = isSelectAllByCategory(category);
+  if (!isAllSelected) {
+    selectAllByCategory(category);
+  } else {
+    unSelectByCategory(category);
+  }
+};
 
 // 过滤后的类别信息
 const filteredCategoryInfo = computed(() => {
@@ -143,6 +156,11 @@ onMounted(async () => {
     calculateEntityMarkCounts();
   });
 });
+
+// 获取图标颜色的计算属性函数
+const getIconColor = (category: string) => {
+  return isSelectAllByCategory(category) ? '#f9f853' : '#FFFFFF';
+};
 
 // 同时监听标记状态变化触发器
 watch(
@@ -272,19 +290,6 @@ watch(
       height: 1em;
       border: 2.5px solid #5a5a5a;
       border-radius: 50%;
-      transition: all 0.3s ease;
-      z-index: 1;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      left: 2.4em;
-      top: 50%;
-      transform: translateY(-40%) rotate(45deg);
-      width: 0.6em;
-      height: 2.5px;
-      background-color: #5a5a5a;
       transition: all 0.3s ease;
       z-index: 1;
     }

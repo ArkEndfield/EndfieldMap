@@ -41,7 +41,7 @@
         class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
       >
         <ScrollArea
-          content-class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 py-4 w-full h-full"
+          content-class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 pt-4 pb-8 w-full h-full"
         >
           <template v-if="rewards && rewards.length > 0">
             <PopContentItem

@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div
-      v-show="backdropVisible"
+      v-if="backdropVisible"
       class="zmd-alert"
       @click.self="handleDismiss"
     >
@@ -13,6 +13,7 @@
           transformOrigin: props.open ? 'top' : 'bottom',
         }"
         ref="alertRef"
+        :initial="false"
       >
         <div class="zmd-alert-bg-banner">
           <span
@@ -101,6 +102,7 @@ import alert_bg from '../../assets/images/bg/alert_bg.png';
 import alert_banner_bg_left from '../../assets/images/bg/alert_banner_bg_left.png';
 import alert_banner_bg_right from '../../assets/images/bg/alert_banner_bg_right.png';
 import { motion, useAnimate } from 'motion-v';
+import { nextTick } from 'vue';
 
 export type ZmdAlertProps = {
   open: boolean;
@@ -307,6 +309,7 @@ watch(
   async newVal => {
     if (newVal) {
       backdropVisible.value = true;
+      await nextTick();
       await alertAnimate(
         alertRef.value,
         {

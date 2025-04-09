@@ -14,6 +14,7 @@ declare module 'vue' {
     ChangeLog: typeof import('./src/components/ChangeLog.vue')['default']
     ChangeLogIcon: typeof import('./src/components/icons/ChangeLogIcon.vue')['default']
     ChangelogMenu: typeof import('./src/components/Header/ChangelogMenu.vue')['default']
+    CharacterMaterial: typeof import('./src/components/map/CharacterMaterial/CharacterMaterial.vue')['default']
     ChatIcon: typeof import('./src/components/icons/ChatIcon.vue')['default']
     CloseIcon: typeof import('./src/components/icons/CloseIcon.vue')['default']
     CloseSquareIcon: typeof import('./src/components/icons/CloseSquareIcon.vue')['default']
