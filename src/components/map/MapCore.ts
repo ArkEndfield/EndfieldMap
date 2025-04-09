@@ -264,6 +264,11 @@ export function cleanupMap() {
     entityLayerTimerId = null;
   }
 
+  // 清理弹窗管理器
+  if (popupManager.value) {
+    popupManager.value = null;
+  }
+
   // 清理地图交互
   const interactions = map.value.getInteractions().getArray();
   interactions.forEach(interaction => {

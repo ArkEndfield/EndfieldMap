@@ -56,12 +56,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, provide } from 'vue';
+import { onMounted, onBeforeUnmount, provide } from 'vue';
 import {
   cacheMapId,
   createMap,
   map,
-  // cleanupMap,
+  cleanupMap,
   entity,
   zoomLevel,
   popupManager,
@@ -101,12 +101,12 @@ onMounted(() => {
 });
 
 // 组件卸载前执行清理工作
-// onBeforeUnmount(() => {
-//   console.log('组件卸载，清理资源');
+onBeforeUnmount(() => {
+  console.log('组件卸载，清理资源');
 
-//   // 使用增强的地图清理函数
-//   cleanupMap();
-// });
+  // 使用增强的地图清理函数
+  cleanupMap();
+});
 </script>
 
 <style lang="scss">

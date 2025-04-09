@@ -11,6 +11,7 @@
       type: 'tween',
       ease: 'easeOut',
     }"
+    @transitionend="onTransitionEnd"
   >
     <!-- 背面的弹出框 -->
     <div
@@ -258,6 +259,16 @@ defineExpose({
 
 export type MapPopupRef = {
   getPopupContainer: () => HTMLElement | undefined;
+};
+
+const onTransitionEnd = (event: TransitionEvent) => {
+  // 确保是弹窗本身的过渡动画结束
+  if (event.target === popupContainer.value) {
+    // 通知 PopupManager 过渡动画已结束
+    if (popupManager) {
+      popupManager.onTransitionEnd(event);
+    }
+  }
 };
 </script>
 

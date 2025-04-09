@@ -27,7 +27,9 @@ export class PopupManager {
     this.overlay = overlay;
     this.popupContainer = popupContainer;
     this.entity = entity;
+    
   }
+
 
   // 关闭弹出层
   async closeToast() {
@@ -40,10 +42,18 @@ export class PopupManager {
     this.repositionPopup();
 
     // 等待animation完成后再调整位置，防止与motion动画冲突
-    await new Promise<void>(resolve => rafTimeout(resolve, 150));
+    // 增加等待时间，确保动画完全完成
+    await new Promise<void>(resolve => rafTimeout(resolve, 200));
 
+    // 再次检查弹窗是否仍然可见
     if (this.isPopupVisible.value) {
-      this.adjustPopupPosition();
+      // 使用 requestAnimationFrame 确保在下一帧调整位置
+      requestAnimationFrame(() => {
+        // 再次检查弹窗是否仍然可见
+        if (this.isPopupVisible.value) {
+          this.adjustPopupPosition();
+        }
+      });
     }
   }
 
@@ -177,7 +187,14 @@ export class PopupManager {
       (event.target as HTMLElement).classList.contains('popup-slider') &&
       this.isPopupVisible.value
     ) {
-      this.adjustPopupPosition();
+      // 使用 requestAnimationFrame 确保在下一帧调整位置
+      requestAnimationFrame(() => {
+        // 再次检查弹窗是否仍然可见
+        if (this.isPopupVisible.value) {
+          console.log('过渡动画结束，调整弹窗位置');
+          this.adjustPopupPosition();
+        }
+      });
     }
   }
 
@@ -195,12 +212,16 @@ export class PopupManager {
 
       // 2. 开始关闭当前弹窗
       await this.closeToast();
+      
+      // 等待弹窗完全关闭
+      await new Promise<void>(resolve => rafTimeout(resolve, 200));
 
       // 3. 更新数据和位置
       this.entity.value = newData;
       this.showVideoInfo.value = false;
       this.currentPosition = popupPosition;
       this.overlay.setPosition(popupPosition);
+      
       // 4. 展开新弹窗
       await this.openToast();
 
@@ -209,8 +230,14 @@ export class PopupManager {
         const hasRewards = shouldShowRewards(newData);
 
         if (hasRewards) {
-          this.openSubPopup.value = true;
+          // 等待主弹窗完全展开后再展开副弹窗
           await new Promise<void>(resolve => rafTimeout(resolve, 300));
+          
+          this.openSubPopup.value = true;
+          
+          // 等待副弹窗展开动画完成
+          await new Promise<void>(resolve => rafTimeout(resolve, 300));
+          
           // 展开后再次检查位置
           this.adjustPopupPosition();
         }
@@ -233,6 +260,7 @@ export class PopupManager {
 
   // 调整弹窗位置函数 - 添加防止缩放冲突的逻辑
   adjustPopupPosition() {
+    console.log('触发调整弹窗位置');
     if (
       !this.currentPosition ||
       !this.popupContainer ||
@@ -240,68 +268,88 @@ export class PopupManager {
       this.isMapZooming
     )
       return;
-    // 获取当前弹窗的实际尺寸
-    const popupRect = this.popupContainer.getBoundingClientRect();
-    const mapRect = this.map.getTargetElement().getBoundingClientRect();
+    
+    // 使用 requestAnimationFrame 确保在下一帧获取位置，避免动画过程中的不准确位置
+    requestAnimationFrame(() => {
+      // 再次检查弹窗是否仍然可见
+      if (!this.isPopupVisible.value) {
+        console.log('弹窗已不可见，取消位置调整');
+        return;
+      }
+      
+      // 获取当前弹窗的实际尺寸
+      const popupRect = this.popupContainer.getBoundingClientRect();
+      const mapRect = this.map.getTargetElement().getBoundingClientRect();
+      
+      // 添加位置有效性检查
+      if (popupRect.width === 0 || popupRect.height === 0) {
+        console.warn('弹窗尺寸为0，可能是尚未完全渲染，延迟重试');
+        // 如果弹窗尺寸为0，可能是尚未完全渲染，延迟重试
+        setTimeout(() => this.adjustPopupPosition(), 50);
+        return;
+      }
+      
+      console.log('弹窗位置', popupRect);
+      
+      // 检查弹窗是否超出视口边界
+      let needAdjust = false;
+      let adjustX = 0;
+      let adjustY = 0;
 
-    // 检查弹窗是否超出视口边界
-    let needAdjust = false;
-    let adjustX = 0;
-    let adjustY = 0;
+      // 安全边距
+      const safeMargin = 30;
+      const headerOffset = 50;
 
-    // 安全边距
-    const safeMargin = 30;
-    const headerOffset = 50;
+      // 如果子弹窗展开，增加右侧检查的边界
+      const extraRightMargin = this.openSubPopup.value ? 320 : 0; // 调整副弹窗宽度估计
+      
+      // 检查是否超出边界
+      if (popupRect.left < mapRect.left + safeMargin) {
+        needAdjust = true;
+        adjustX = mapRect.left + safeMargin - popupRect.left;
+      }
 
-    // 如果子弹窗展开，增加右侧检查的边界
-    const extraRightMargin = this.openSubPopup.value ? 320 : 0; // 调整副弹窗宽度估计
-    // 检查是否超出边界
-    if (popupRect.left < mapRect.left + safeMargin) {
-      needAdjust = true;
-      adjustX = mapRect.left + safeMargin - popupRect.left;
-    }
+      if (popupRect.right + extraRightMargin > mapRect.right - safeMargin) {
+        needAdjust = true;
+        adjustX =
+          mapRect.right - safeMargin - (popupRect.right + extraRightMargin);
+      }
 
-    if (popupRect.right + extraRightMargin > mapRect.right - safeMargin) {
-      needAdjust = true;
-      adjustX =
-        mapRect.right - safeMargin - (popupRect.right + extraRightMargin);
-    }
+      if (popupRect.top < mapRect.top + safeMargin + headerOffset) {
+        // 添加顶部Header偏移量
+        needAdjust = true;
+        adjustY = mapRect.top + safeMargin + headerOffset - popupRect.top;
+      }
+      if (popupRect.bottom > mapRect.bottom - safeMargin) {
+        needAdjust = true;
+        adjustY = mapRect.bottom - safeMargin - popupRect.bottom;
+      }
 
-    if (popupRect.top < mapRect.top + safeMargin + headerOffset) {
-      // 添加顶部Header偏移量
-      needAdjust = true;
-      adjustY = mapRect.top + safeMargin + headerOffset - popupRect.top;
-    }
-    if (popupRect.bottom > mapRect.bottom - safeMargin) {
-      needAdjust = true;
-      adjustY = mapRect.bottom - safeMargin - popupRect.bottom;
-    }
+      if (needAdjust) {
+        const view = this.map.getView();
+        const resolution = view.getResolution() || 1;
+        const currentCenter = view.getCenter();
+        if (!currentCenter) return;
 
-    if (needAdjust) {
-      const view = this.map.getView();
-      const resolution = view.getResolution() || 1;
-      const currentCenter = view.getCenter();
+        // 额外偏移以提供更多空间，但不要太多
+        const extraOffset = 20; // 减少额外偏移
+        const extraX =
+          adjustX !== 0
+            ? Math.sign(adjustX) *
+              (extraOffset + (this.openSubPopup.value && adjustX < 0 ? 40 : 0))
+            : 0;
+        const extraY = adjustY !== 0 ? Math.sign(adjustY) * extraOffset : 0;
 
-      if (!currentCenter) return;
-
-      // 额外偏移以提供更多空间，但不要太多
-      const extraOffset = 20; // 减少额外偏移
-      const extraX =
-        adjustX !== 0
-          ? Math.sign(adjustX) *
-            (extraOffset + (this.openSubPopup.value && adjustX < 0 ? 40 : 0))
-          : 0;
-      const extraY = adjustY !== 0 ? Math.sign(adjustY) * extraOffset : 0;
-
-      // 平滑动画
-      view.animate({
-        center: [
-          currentCenter[0] - (adjustX + extraX) * resolution,
-          currentCenter[1] + (adjustY + extraY) * resolution,
-        ],
-        duration: 250,
-      });
-    }
+        // 平滑动画
+        view.animate({
+          center: [
+            currentCenter[0] - (adjustX + extraX) * resolution,
+            currentCenter[1] + (adjustY + extraY) * resolution,
+          ],
+          duration: 250,
+        });
+      }
+    });
   }
   // 更新当前位置
   setCurrentPosition(position: number[] | undefined) {
