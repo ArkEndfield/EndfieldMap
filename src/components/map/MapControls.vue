@@ -34,6 +34,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { Map } from 'ol';
+import { rafTimeout } from '@/utils/animationTimer';
 
 const props = defineProps<{
   map: Map | null;
@@ -131,7 +132,7 @@ onMounted(() => {
         animateZoomChange(newZoom);
 
         // 设置一个定时器，在动画完成后重置标志
-        setTimeout(() => {
+        rafTimeout(() => {
           isInternalZoomChange = false;
         }, 600); // 比动画时长稍长一些，确保props已经完全更新
       } else if (zoomOutButton && view) {
@@ -151,7 +152,7 @@ onMounted(() => {
         animateZoomChange(newZoom);
 
         // 设置一个定时器，在动画完成后重置标志
-        setTimeout(() => {
+        rafTimeout(() => {
           isInternalZoomChange = false;
         }, 600); // 比动画时长稍长一些，确保props已经完全更新
       }
@@ -223,7 +224,7 @@ const onSlideChange = (newValue: number) => {
   emit('update:zoomLevel', newValue);
 
   // 设置一个定时器，在操作完成后重置标志
-  setTimeout(() => {
+  rafTimeout(() => {
     isInternalZoomChange = false;
   }, 600); // 给足够的时间确保props已经完全更新
 };

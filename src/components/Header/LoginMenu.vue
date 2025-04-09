@@ -33,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+import { rafTimeout } from '@/utils/animationTimer';
 import { ref } from 'vue';
 const username = ref('');
 const password = ref('');
@@ -46,7 +47,7 @@ const onOpen = () => {
 const onLogin = async () => {
   console.log(username, password);
   loading.value = true;
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => rafTimeout(resolve, 1000));
   // openAlert.value = false;
   loading.value = false;
 };

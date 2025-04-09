@@ -5,7 +5,7 @@ import { Projection } from 'ol/proj';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
 import { areaNameLayer, loadTextPoints } from '@/data/locations';
-import { entityClusterLayers } from '@/data/entity';
+import { entityClusterLayers, refresh } from '@/data/entity';
 import { ref, shallowRef } from 'vue';
 import { Layer } from 'ol/layer';
 import VectorSource from 'ol/source/Vector';
@@ -19,6 +19,7 @@ import { updateClusterDistance } from '@/data/entity';
 import { debounce, xyz2crd } from '@/utils/common';
 import { SelectEvent } from 'ol/interaction/Select';
 import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
+import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -80,7 +81,6 @@ async function restoreMapViewState(
     const viewState = await getItem<MapViewState>(key, StorageType.PERMANENT);
 
     if (viewState) {
-      console.log(`已恢复地图 ${mapId} 的视图状态:`, viewState);
       return viewState;
     }
   } catch (error) {
@@ -161,7 +161,7 @@ function isClusterSource(source: any): source is Cluster {
 function addEntityLayersToMap(currentRetry = 0) {
   // 清除之前的计时器
   if (entityLayerTimerId !== null) {
-    clearTimeout(entityLayerTimerId);
+    cancelRafTimeout(entityLayerTimerId);
     entityLayerTimerId = null;
   }
 
@@ -188,13 +188,6 @@ function addEntityLayersToMap(currentRetry = 0) {
       // 记录加载成功
       entityLayersLoaded.value = true;
       console.log('实体图层加载成功');
-
-      // 延迟显示图层，确保它们已经渲染完成
-      requestAnimationFrame(() => {
-        entityClusterLayers.forEach(layer => {
-          layer.setVisible(true);
-        });
-      });
     });
 
     return;
@@ -209,7 +202,7 @@ function addEntityLayersToMap(currentRetry = 0) {
     // 递增重试间隔（指数退避）
     const delay = Math.min(500 * Math.pow(1.5, currentRetry), 5000);
 
-    entityLayerTimerId = window.setTimeout(() => {
+    entityLayerTimerId = rafTimeout(() => {
       addEntityLayersToMap(currentRetry + 1);
     }, delay);
   } else {
@@ -224,30 +217,8 @@ export async function updateMap(mapIndex: string) {
   // 重置实体图层加载状态
   entityLayersLoaded.value = false;
 
-  // 移除所有现有图层前，先清理它们
-  const layers = map.value.getLayers().getArray();
-  layers.forEach(layer => {
-    // 检查图层是否有 getSource 方法
-    if ('getSource' in layer) {
-      const source = (layer as Layer).getSource();
-      if (source) {
-        // 如果是矢量源，清理特征
-        if (isVectorSource(source)) {
-          source.clear();
-        }
-        // 如果是聚合源，清理内部源
-        if (isClusterSource(source)) {
-          const innerSource = source.getSource();
-          if (isVectorSource(innerSource)) {
-            innerSource.clear();
-          }
-        }
-      }
-    }
-  });
-
-  // 移除所有现有图层
-  map.value.getLayers().clear();
+  // 从IndexedDB恢复地图视图状态
+  const restoredViewState = await restoreMapViewState(mapIndex);
 
   // 创建新的瓦片图层
   const tileLayer = new TileLayer({
@@ -258,16 +229,15 @@ export async function updateMap(mapIndex: string) {
     }),
   });
 
+  // 移除所有现有图层
+  map.value.getLayers().clear();
+
   // 重新添加基础图层
   map.value.addLayer(tileLayer);
   map.value.addLayer(areaNameLayer);
 
   // 使用改进的方法添加实体图层
   addEntityLayersToMap();
-
-  // 尝试从IndexedDB恢复地图视图状态
-  const restoredViewState = await restoreMapViewState(mapIndex);
-
   // 更新视图中心点和缩放级别
   const view = map.value.getView();
   if (restoredViewState) {
@@ -280,10 +250,7 @@ export async function updateMap(mapIndex: string) {
     view.setZoom(DEFAULT_ZOOM);
   }
 
-  // 强制更新地图尺寸和重新渲染
-  map.value.updateSize();
-  map.value.render();
-
+  rafTimeout(refresh, 300);
   console.log(`已更新地图到 ${mapIndex}`);
 }
 
@@ -293,7 +260,7 @@ export function cleanupMap() {
 
   // 清除实体图层的加载计时器
   if (entityLayerTimerId !== null) {
-    clearTimeout(entityLayerTimerId);
+    cancelRafTimeout(entityLayerTimerId);
     entityLayerTimerId = null;
   }
 
@@ -595,7 +562,6 @@ const moveEndChange = debounce(
     // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
     const stableZoom = Math.round(zoom * 2) / 2;
     const position = currentMap.getView().getCenter();
-    console.log('地图移动结束，当前缩放级别:', stableZoom, '位置:', position);
     // 确保最终值是准确的
     if (Math.abs(zoomLevel.value - stableZoom) >= 0.01) {
       localStorage.setItem('zoom', stableZoom.toString());

@@ -1,3 +1,5 @@
+import { cancelRafTimeout, rafTimeout } from './animationTimer';
+
 export const xyz2crd = (pos: { x: number; y: number; z: number }) => {
   const coords =
     localStorage.getItem('map') === 'map002'
@@ -49,12 +51,12 @@ export function debounce<T extends (...args: any[]) => any>(
 
         // 清除现有定时器
         if (timer) {
-          clearTimeout(timer);
+          cancelRafTimeout(timer);
         }
 
         // 设置延迟执行
         if (trailing) {
-          timer = window.setTimeout(() => {
+          timer = rafTimeout(() => {
             if (!lastArgs) return;
 
             try {
@@ -91,7 +93,7 @@ export function debounce<T extends (...args: any[]) => any>(
   // 添加取消方法
   debouncedFunction.cancel = function () {
     if (timer) {
-      clearTimeout(timer);
+      cancelRafTimeout(timer);
       timer = null;
     }
     lastArgs = null;
@@ -102,7 +104,7 @@ export function debounce<T extends (...args: any[]) => any>(
   // 添加立即执行方法
   debouncedFunction.flush = function (): Promise<ReturnType<T>> | null {
     if (timer) {
-      clearTimeout(timer);
+      cancelRafTimeout(timer);
       timer = null;
     }
 
@@ -153,7 +155,7 @@ export function throttle<T extends (...args: any[]) => any>(
     // 如果时间已过期，或者是第一次调用并启用了leading
     if (remaining <= 0 || remaining > delay) {
       if (timer) {
-        clearTimeout(timer);
+        cancelRafTimeout(timer);
         timer = null;
       }
 
@@ -165,7 +167,7 @@ export function throttle<T extends (...args: any[]) => any>(
     } else if (trailing && !timer && !pendingExecute) {
       // 设置延迟执行
       pendingExecute = true;
-      timer = window.setTimeout(() => {
+      timer = rafTimeout(() => {
         lastTime = leading ? Date.now() : 0;
         timer = null;
         if (lastArgs && lastThis) {

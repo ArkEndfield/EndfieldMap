@@ -88,6 +88,10 @@ $arrow-height: 5em;
     }
   }
 
+  @media (min-width: zmd.$large-screen-width) {
+    width: calc(100% + $arrow-size * 2 + 7em);
+  }
+
   &:has(
       .zmd-sidebar-title-arrow-start-part:hover,
       .zmd-sidebar-title-arrow-middle-part:hover,

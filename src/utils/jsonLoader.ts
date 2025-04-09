@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { getItem, setItem, StorageType } from './indexedDBStorage';
+import { rafTimeout } from './animationTimer';
 
 // 定义加载状态类型
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
@@ -51,7 +52,7 @@ export async function loadJSON<T>(
         );
       }
       // 等待一段时间后重试
-      await new Promise(resolve => setTimeout(resolve, retryDelay));
+      await new Promise<void>(resolve => rafTimeout(resolve, retryDelay));
     }
   }
 

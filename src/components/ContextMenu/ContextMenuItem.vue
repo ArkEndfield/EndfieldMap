@@ -1,10 +1,10 @@
 <template>
   <div
     :class="[
-      'flex items-center px-3 py-2 text-sm rounded-md',
+      'flex items-center px-2 py-2 gap-1 text-sm rounded-md',
       {
         'opacity-50': disabled,
-        'hover:bg-gray-700': !disabled,
+        'hover:bg-[#FDFB72]/10': !disabled,
       },
       className,
     ]"
@@ -12,7 +12,7 @@
   >
     <span
       v-if="icon"
-      class="mr-2"
+      class="w-5 flex justify-center items-center"
     >
       <slot name="icon">
         {{ icon }}
@@ -23,7 +23,7 @@
     </span>
     <span
       v-if="shortcut"
-      class="ml-auto pl-4 text-xs text-gray-500 dark:text-gray-400"
+      class="ml-auto pl-4 text-xs text-gray-500"
     >
       {{ shortcut }}
     </span>

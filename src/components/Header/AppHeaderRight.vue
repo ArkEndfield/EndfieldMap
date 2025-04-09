@@ -175,6 +175,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { cacheMapId, selectMap } from '../map/MapCore';
 import { motion } from 'motion-v';
+import { rafTimeout } from '@/utils/animationTimer';
 
 const showPopover = ref(false);
 const popoverRef = ref<HTMLElement | null>(null);
@@ -202,7 +203,7 @@ function clickOutside(event: MouseEvent) {
 function changeMap(mapId: string) {
   selectMap(mapId);
   showChangeAnimation.value = true;
-  setTimeout(() => {
+  rafTimeout(() => {
     showChangeAnimation.value = false;
   }, 1500);
 }

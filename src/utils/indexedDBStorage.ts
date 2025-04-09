@@ -2,6 +2,7 @@
  * IndexedDB 存储工具
  * 提供临时缓存和永久存储能力
  */
+import { rafTimeout } from './animationTimer';
 
 // 存储类型枚举
 export enum StorageType {
@@ -311,7 +312,7 @@ export async function getItem<T>(
               }
 
               // 创建单独的删除操作，不阻塞当前的读取流程
-              setTimeout(() => {
+              rafTimeout(() => {
                 removeItem(key, type).catch(err => {
                   console.error(`删除过期数据失败: ${key}`, err);
                 });
@@ -350,7 +351,9 @@ export async function getItem<T>(
       }
 
       // 等待一段时间再重试
-      await new Promise(resolve => setTimeout(resolve, 300 * retryCount));
+      await new Promise<void>(resolve =>
+        rafTimeout(() => resolve(), 300 * retryCount)
+      );
 
       // 重新初始化数据库
       try {

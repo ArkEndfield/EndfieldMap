@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import {
   categoryInfo,
   refresh,
@@ -160,16 +160,6 @@ watch(
     calculateEntityMarkCounts();
   }
 );
-
-// 删除定时器，减少不必要的数据库查询
-// const updateInterval = setInterval(async () => {
-//   await calculateEntityMarkCounts();
-// }, 3000);
-
-// 组件卸载时清除定时器 - 不再需要
-onBeforeUnmount(() => {
-  // clearInterval(updateInterval);
-});
 </script>
 
 <style lang="scss" scoped>

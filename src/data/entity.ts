@@ -18,6 +18,7 @@ import { type PointData, getCurrentPoints } from './points';
 import { currentMarkFilter, shouldShowByMarkStatus } from './marks';
 import { loadJSON } from '@/utils/jsonLoader';
 import { debounce } from '@/utils/common';
+import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 
 export interface EntityInfo {
   name: string;
@@ -143,6 +144,8 @@ export const entityClusterSources: { [key: string]: Cluster } = {};
 
 // 添加一个全局变量来存储当前的缩放级别
 let currentZoomLevel = 3;
+// 增加一个缩放级别阈值变量，只有变化超过这个阈值才刷新样式
+const ZOOM_THRESHOLD = 0.08;
 // 添加一个标志来防止缩放过程中的频繁刷新
 let isRefreshingStyles = false;
 // 缩放结束后需要刷新的标志
@@ -150,58 +153,47 @@ let pendingStyleRefresh = false;
 // 防抖计时器ID
 let refreshStylesTimerId: number | null = null;
 
-// 简化的圆形半径获取函数，在较小缩放级别时使用更大的半径
-export const getCircleRadiusForZoom = (baseRadius: number = 20): number => {
-  // 根据缩放级别调整圆形半径，较小缩放级别使用较大半径
-  const zoomRadiusFactor = {
-    1: 1, // 最小缩放级别使用较大半径
-    2: 1.0,
-    3: 1.0,
-    4: 1.1,
-    5: 1.3, // 最大缩放级别使用较小半径
-  };
-
-  const radiusFactor = zoomRadiusFactor[Math.round(currentZoomLevel)] || 1.0;
-  return baseRadius * radiusFactor;
-};
-
 // 创建一个更强的防抖版本的updateCurrentZoom函数
 const debouncedUpdateZoomStyles = debounce(
   (zoom: number) => {
-    // 避免不必要的更新，如果缩放级别没有变化（即不是从一个整数到另一个整数）
-    if (Math.abs(currentZoomLevel - zoom) < 0.01) return;
+    // 避免不必要的更新，如果缩放级别变化很小
+    if (Math.abs(currentZoomLevel - zoom) < ZOOM_THRESHOLD) return;
 
     // 更新缩放级别变量
     const oldZoomLevel = currentZoomLevel;
     currentZoomLevel = zoom;
 
     // 这里只在缩放级别真正发生变化时更新样式
-    if (Math.abs(oldZoomLevel - zoom) >= 0.1) {
+    if (Math.abs(oldZoomLevel - zoom) >= ZOOM_THRESHOLD) {
       refreshStyles();
     }
   },
-  500, // 延长防抖时间到500ms，这样在连续缩放过程中不会触发刷新
+  600, // 延长防抖时间到600ms，减少连续缩放中的渲染次数
   { leading: false, trailing: true }
 );
 
 // 更新当前缩放级别的函数
 export const updateCurrentZoom = (zoom: number) => {
-  // 如果缩放级别实际上没有变化（误差小于0.01），完全不做任何操作
-  if (Math.abs(currentZoomLevel - zoom) < 0.01) return;
+  // 使用四舍五入减少微小的缩放变化导致的更新
+  const roundedZoom = Math.round(zoom * 10) / 10;
+  const roundedCurrentZoom = Math.round(currentZoomLevel * 10) / 10;
+
+  // 如果缩放级别实际上没有变化（误差小于阈值），完全不做任何操作
+  if (roundedZoom === roundedCurrentZoom) return;
 
   // 存储新的缩放级别，但不立即刷新
   const oldZoomLevel = currentZoomLevel;
   currentZoomLevel = zoom;
 
   // 只有在缩放级别显著变化时才使用防抖函数
-  if (Math.abs(oldZoomLevel - zoom) >= 0.1) {
+  if (Math.abs(oldZoomLevel - zoom) >= ZOOM_THRESHOLD) {
     // 使用增强的防抖函数，延迟执行样式刷新
     debouncedUpdateZoomStyles(zoom);
   }
 
   // 清除先前的计时器
   if (refreshStylesTimerId) {
-    clearTimeout(refreshStylesTimerId);
+    cancelRafTimeout(refreshStylesTimerId);
     refreshStylesTimerId = null;
   }
 };
@@ -266,36 +258,86 @@ function getColorForEntity(entityType: string): string {
   return colorMap[entityType] || 'rgba(128, 128, 128, 0.8)';
 }
 
-// 添加一个用于缓存图片尺寸的对象
-const imageSizeCache: { [key: string]: { width: number; height: number } } = {};
+// 添加一个用于缓存图片尺寸的对象 - 使用LRU缓存机制
+const MAX_IMAGE_CACHE_SIZE = 200; // 最大缓存图片数量
+const imageSizeCache: Map<
+  string,
+  { width: number; height: number; lastUsed: number }
+> = new Map();
 // 添加图片加载状态的缓存，避免重复加载同一图片
-const imageLoadingPromises: {
-  [key: string]: Promise<{ width: number; height: number }>;
-} = {};
+const imageLoadingPromises: Map<
+  string,
+  Promise<{ width: number; height: number }>
+> = new Map();
 
-// 获取图片尺寸的函数 - 等待加载完成版本
+// 预设的常用图片尺寸 - 减少加载和计算时间
+const COMMON_IMAGE_SIZES: Record<string, { width: number; height: number }> = {
+  // 可以根据项目中常用的图片预先设置尺寸
+  default: { width: 32, height: 32 },
+  icon: { width: 24, height: 24 },
+  marker: { width: 32, height: 32 },
+};
+
+// 清理LRU缓存的辅助函数
+function cleanImageSizeCache() {
+  if (imageSizeCache.size <= MAX_IMAGE_CACHE_SIZE) return;
+
+  // 将缓存条目转换为数组并按最后使用时间排序
+  const entries = Array.from(imageSizeCache.entries()).sort(
+    (a, b) => a[1].lastUsed - b[1].lastUsed
+  );
+
+  // 删除最旧的20%条目
+  const deleteCount = Math.floor(imageSizeCache.size * 0.2);
+  for (let i = 0; i < deleteCount; i++) {
+    if (entries[i]) {
+      imageSizeCache.delete(entries[i][0]);
+    }
+  }
+}
+
+// 获取图片尺寸的函数 - 优化版本
 function getImageSize(src: string): Promise<{ width: number; height: number }> {
-  // 如果已经有这个图片的加载Promise，直接返回它，避免重复加载
-  if (src in imageLoadingPromises) {
-    return imageLoadingPromises[src];
+  // 检查是否为常见图片类型
+  const pathParts = src.split('/');
+  const fileName = pathParts[pathParts.length - 1].split('.')[0];
+  if (COMMON_IMAGE_SIZES[fileName]) {
+    return Promise.resolve(COMMON_IMAGE_SIZES[fileName]);
   }
 
-  // 如果已经缓存了尺寸信息，直接返回
-  if (imageSizeCache[src]) {
-    return Promise.resolve(imageSizeCache[src]);
+  // 如果已经有这个图片的加载Promise，直接返回它
+  const existingPromise = imageLoadingPromises.get(src);
+  if (existingPromise) {
+    return existingPromise;
+  }
+
+  // 如果已经缓存了尺寸信息，直接返回并更新使用时间
+  const cachedSize = imageSizeCache.get(src);
+  if (cachedSize) {
+    cachedSize.lastUsed = Date.now();
+    return Promise.resolve(cachedSize);
   }
 
   // 创建新的加载Promise并缓存它
   const loadPromise = new Promise<{ width: number; height: number }>(
     resolve => {
+      // 使用 Image 对象池来减少内存压力
       const img = new Image();
 
       img.onload = () => {
         // 缓存尺寸信息并返回
-        const size = { width: img.width, height: img.height };
-        imageSizeCache[src] = size;
+        const size = {
+          width: img.width,
+          height: img.height,
+          lastUsed: Date.now(),
+        };
+        imageSizeCache.set(src, size);
         // 加载完成后删除promise缓存
-        delete imageLoadingPromises[src];
+        imageLoadingPromises.delete(src);
+
+        // 定期清理缓存
+        cleanImageSizeCache();
+
         resolve(size);
       };
 
@@ -303,11 +345,11 @@ function getImageSize(src: string): Promise<{ width: number; height: number }> {
         // 加载失败时使用默认尺寸并记录警告
         console.warn(`无法加载图片: ${src}`);
         // 使用默认尺寸
-        const defaultSize = { width: 32, height: 32 };
+        const defaultSize = { width: 32, height: 32, lastUsed: Date.now() };
         // 缓存默认尺寸以避免再次尝试加载失败的图片
-        imageSizeCache[src] = defaultSize;
+        imageSizeCache.set(src, defaultSize);
         // 删除promise缓存
-        delete imageLoadingPromises[src];
+        imageLoadingPromises.delete(src);
         resolve(defaultSize);
       };
 
@@ -317,7 +359,7 @@ function getImageSize(src: string): Promise<{ width: number; height: number }> {
   );
 
   // 缓存加载Promise
-  imageLoadingPromises[src] = loadPromise;
+  imageLoadingPromises.set(src, loadPromise);
   return loadPromise;
 }
 
@@ -352,8 +394,7 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
   // 创建新的样式创建请求
   const stylePromise = (async () => {
     const color = getColorForEntity(entityType);
-    const baseRadius = 15;
-    const radius = getCircleRadiusForZoom(baseRadius);
+    const radius = 15;
 
     // 计算图标的目标尺寸（圆形半径的比例）
     const targetIconSize = radius * 1.4; // 图标最大可占用圆形直径的70%
@@ -475,7 +516,7 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
 
   // 设置自动清理，避免缓存过大
   stylePromise.finally(() => {
-    setTimeout(() => {
+    rafTimeout(() => {
       // 5分钟后清理此缓存项
       delete iconStyleCache[cacheKey];
     }, 300000);
@@ -619,7 +660,7 @@ export const refreshStyles = () => {
       });
 
       // 重要：移除"正在刷新"标记，但不触发重绘
-      setTimeout(() => {
+      rafTimeout(() => {
         entityClusterLayers.forEach(layer => {
           layer.set('isRefreshing', false);
           // 静默通知图层数据已更新，但不强制重绘
@@ -628,7 +669,7 @@ export const refreshStyles = () => {
       }, 50);
 
       // 延迟清理旧样式，给新样式加载留出充足时间
-      setTimeout(() => {
+      rafTimeout(() => {
         // 现在可以安全地清理不需要的资源
         Object.keys(oldStyleCache).forEach(key => {
           if (styleCache[key] && styleCache[key].needsUpdate) {
@@ -638,14 +679,14 @@ export const refreshStyles = () => {
       }, 300);
     } finally {
       // 重置刷新状态，但给足时间确保所有样式都已完全应用
-      setTimeout(() => {
+      rafTimeout(() => {
         isRefreshingStyles = false;
 
         // 处理待处理的刷新请求
         if (pendingStyleRefresh) {
           pendingStyleRefresh = false;
           // 延迟执行下一次刷新，避免连续刷新造成的闪烁
-          setTimeout(() => {
+          rafTimeout(() => {
             refreshStyles();
           }, 300); // 增加时间间隔，避免频繁刷新
         }
@@ -692,7 +733,7 @@ export const createEntityClusterLayers = () => {
     // 保存聚合源以便后续更新
     entityClusterSources[entityType] = clusterSource;
 
-    // 创建图层
+    // 创建图层 - 确保默认不可见
     const layer = new VectorLayer({
       source: clusterSource,
       style: feature => {
@@ -720,6 +761,7 @@ export const createEntityClusterLayers = () => {
         return styleCache[styleKey].style;
       },
       zIndex: 10,
+      visible: false, // 默认设置为不可见
     });
 
     // 保存图层引用

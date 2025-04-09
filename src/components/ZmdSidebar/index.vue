@@ -76,7 +76,7 @@ const open = () => {
 }
 
 .zmd-sidebar-collapse-arrows {
-  width: calc(zmd.$side-width);
+  width: zmd.$side-width;
   left: calc(0px - zmd.$side-width * 0.04);
   top: 4.5em;
   z-index: 53;
@@ -116,8 +116,8 @@ const open = () => {
     top: 0;
     bottom: 0 !important;
   }
-  @media (min-width: 1920px) {
-    width: 420px;
+  @media (min-width: zmd.$large-screen-width) {
+    width: zmd.$side-large-width;
   }
   * {
     box-sizing: border-box;

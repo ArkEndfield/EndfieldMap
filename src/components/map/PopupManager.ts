@@ -4,6 +4,7 @@ import Overlay from 'ol/Overlay';
 import { PointData } from '@/data/points';
 import { xyz2crd } from '@/utils/common';
 import { shouldShowRewards } from '@/data/reward';
+import { rafTimeout } from '@/utils/animationTimer';
 
 export class PopupManager {
   private map: Map;
@@ -31,7 +32,7 @@ export class PopupManager {
   // 关闭弹出层
   async closeToast() {
     this.isPopupVisible.value = false;
-    await new Promise(resolve => setTimeout(resolve, 150));
+    await new Promise<void>(resolve => rafTimeout(resolve, 150));
   }
 
   async openToast() {
@@ -39,7 +40,7 @@ export class PopupManager {
     this.repositionPopup();
 
     // 等待animation完成后再调整位置，防止与motion动画冲突
-    await new Promise(resolve => setTimeout(resolve, 150));
+    await new Promise<void>(resolve => rafTimeout(resolve, 150));
 
     if (this.isPopupVisible.value) {
       this.adjustPopupPosition();
@@ -120,7 +121,7 @@ export class PopupManager {
           );
 
           // 等待过渡完成
-          setTimeout(() => {
+          rafTimeout(() => {
             el.removeAttribute('style');
             onComplete();
           }, 200);
@@ -156,7 +157,7 @@ export class PopupManager {
           );
 
           // 等待过渡完成
-          setTimeout(() => {
+          rafTimeout(() => {
             el.removeAttribute('style');
             onComplete();
           }, 200);
@@ -209,7 +210,7 @@ export class PopupManager {
 
         if (hasRewards) {
           this.openSubPopup.value = true;
-          await new Promise(resolve => setTimeout(resolve, 300));
+          await new Promise<void>(resolve => rafTimeout(resolve, 300));
           // 展开后再次检查位置
           this.adjustPopupPosition();
         }

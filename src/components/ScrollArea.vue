@@ -67,6 +67,7 @@
 <script setup lang="ts">
 import { motion } from 'motion-v';
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
+import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 
 interface Props {
   width?: string;
@@ -199,8 +200,8 @@ const horizontalThumbStyle = computed(() => {
 const debounce = (fn: Function, delay: number) => {
   let timer: number | null = null;
   return function (...args: any[]) {
-    if (timer) clearTimeout(timer);
-    timer = window.setTimeout(() => {
+    if (timer) cancelRafTimeout(timer);
+    timer = rafTimeout(() => {
       fn(...args);
       timer = null;
     }, delay);
@@ -265,18 +266,18 @@ const handleScroll = (e?: Event) => {
 
   // 清除之前的超时
   if (scrollingTimeout.value !== null) {
-    clearTimeout(scrollingTimeout.value);
+    cancelRafTimeout(scrollingTimeout.value);
   }
   if (scrollbarFadeTimeout.value !== null) {
-    clearTimeout(scrollbarFadeTimeout.value);
+    cancelRafTimeout(scrollbarFadeTimeout.value);
   }
 
   // 设置新的超时
-  scrollingTimeout.value = window.setTimeout(() => {
+  scrollingTimeout.value = rafTimeout(() => {
     isScrolling.value = false;
 
     // 设置滚动条淡出超时
-    scrollbarFadeTimeout.value = window.setTimeout(() => {
+    scrollbarFadeTimeout.value = rafTimeout(() => {
       if (
         !verticalDragging.value &&
         !horizontalDragging.value &&
@@ -337,7 +338,7 @@ const stopVerticalDrag = () => {
   document.body.style.cursor = '';
 
   // 延迟隐藏滚动条
-  setTimeout(() => {
+  rafTimeout(() => {
     if (
       !isScrolling.value &&
       !horizontalDragging.value &&
@@ -428,7 +429,7 @@ const stopHorizontalDrag = () => {
   document.body.style.cursor = '';
 
   // 延迟隐藏滚动条
-  setTimeout(() => {
+  rafTimeout(() => {
     if (
       !isScrolling.value &&
       !verticalDragging.value &&
@@ -508,10 +509,10 @@ onUnmounted(() => {
 
   // 清除所有超时和动画
   if (scrollingTimeout.value !== null) {
-    clearTimeout(scrollingTimeout.value);
+    cancelRafTimeout(scrollingTimeout.value);
   }
   if (scrollbarFadeTimeout.value !== null) {
-    clearTimeout(scrollbarFadeTimeout.value);
+    cancelRafTimeout(scrollbarFadeTimeout.value);
   }
 });
 
