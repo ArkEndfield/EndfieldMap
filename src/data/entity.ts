@@ -1114,7 +1114,10 @@ export const isSelectAll = computed(() => {
 // 一大类实体是否全选
 export const isSelectAllByCategory = (category: string) => {
   return Object.keys(entityInfo).every(key => {
-    if (entityInfo[key].category === category) {
+    if (
+      entityInfo[key].category === category &&
+      entityInfo[key].entityInfo.count > 0
+    ) {
       return entityInfo[key].entityInfo.show;
     }
     return true;

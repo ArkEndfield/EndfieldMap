@@ -1,7 +1,8 @@
 <template>
   <Teleport to="body">
-    <div
+    <dialog
       v-if="backdropVisible"
+      ref="dialog"
       class="zmd-alert"
       @click.self="handleDismiss"
     >
@@ -90,7 +91,7 @@
           </button>
         </div>
       </motion.div>
-    </div>
+    </dialog>
   </Teleport>
 </template>
 
@@ -103,6 +104,7 @@ import alert_banner_bg_left from '../../assets/images/bg/alert_banner_bg_left.pn
 import alert_banner_bg_right from '../../assets/images/bg/alert_banner_bg_right.png';
 import { motion, useAnimate } from 'motion-v';
 import { nextTick } from 'vue';
+const dialog = ref<HTMLDialogElement | null>(null);
 
 export type ZmdAlertProps = {
   open: boolean;
@@ -345,6 +347,18 @@ watch(
     }
   }
 );
+
+watch(
+  backdropVisible,
+  newVal => {
+    if (newVal) {
+      dialog.value?.showModal();
+    } else {
+      dialog.value?.close();
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -359,15 +373,17 @@ $default-hover-color: #f2f1efb5;
 $default-border-color: #a0a2a3;
 
 .zmd-alert {
-  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 60;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: transparent;
 
   .zmd-alert-container {
     min-height: 10em;

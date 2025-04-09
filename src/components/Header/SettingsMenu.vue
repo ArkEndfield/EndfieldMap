@@ -1,0 +1,28 @@
+<template>
+  <HeaderMenu v-on:click="onOpen">
+    <CogIcon />
+    <template #title>{{ $t('header.settings') }}</template>
+  </HeaderMenu>
+  <ZmdAlert
+    v-model:open="openAlert"
+    confirm-text="close"
+    hide-cancel
+    width="40em"
+  >
+    <h1 class="text-lg font-bold text-center">{{ $t('header.settings') }}</h1>
+    <div class="flex flex-col gap-4 mt-4 w-full px-16">
+      <Settings />
+    </div>
+  </ZmdAlert>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+const openAlert = ref(false);
+
+const onOpen = () => {
+  openAlert.value = true;
+};
+</script>
+
+<style lang="scss" scoped></style>

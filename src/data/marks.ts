@@ -220,3 +220,8 @@ export const shouldShowByMarkStatus = (seq: number): boolean => {
 
   return true;
 };
+
+// 获取当前标点数据（indexedDB）
+export const getMarks = () => {
+  return JSON.parse(JSON.stringify(marks));
+};

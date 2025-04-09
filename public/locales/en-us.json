@@ -29,6 +29,14 @@
   "no_more": "No More",
   "none": "None",
   "unknown": "Unknown",
+  "success": "Success",
+  "failed": "Failed",
+  "error": "Error",
+  "warning": "Warning",
+  "info": "Info",
+  "notice": "Notice",
+  "tips": "Tips",
+  "download": "Download",
   "header": {
     "menu": "Menu",
     "about": "About",
@@ -41,7 +49,26 @@
     "change_region": "Change Region",
     "up": "Up",
     "community_not_constructed": "Click to enter a title",
-    "map_change": "Map Change"
+    "map_change": "Map Change",
+    "settings": "Settings"
+  },
+  "settings": {
+    "export_data": "Export Data",
+    "export_data_tips": "Export data as JSON format for backup and migration",
+    "export_data_success_tips": "Data export successful",
+    "export_data_failed_tips": "Data export failed",
+    "delete_data": "Delete Data",
+    "delete_data_tips": "Delete all current data, this operation is irreversible",
+    "delete_data_success_tips": "Data deletion successful, please refresh the page",
+    "delete_data_failed_tips": "Data deletion failed",
+    "import_data": "Import Data",
+    "import_data_tips": "Import JSON format data into the current session",
+    "import_data_success_tips": "Data import successful, please refresh the page",
+    "import_data_failed_tips": "Data import failed",
+    "clear_cache": "Clear Cache",
+    "clear_cache_tips": "For example, marker point positions, language files, marker point strategies, etc.",
+    "clear_cache_success_tips": "Cache cleared successfully, please refresh the page",
+    "clear_cache_failed_tips": "Cache clearing failed"
   },
   "sidebar": {
     "title": "EndField Map",

@@ -29,6 +29,14 @@
   "no_more": "沒有更多了",
   "none": "無",
   "unknown": "未知",
+  "success": "成功",
+  "failed": "失敗",
+  "error": "錯誤",
+  "warning": "警告",
+  "info": "信息",
+  "notice": "通知",
+  "tips": "提示",
+  "download": "下載",
   "header": {
     "menu": "菜單",
     "about": "关于",
@@ -41,7 +49,25 @@
     "change_region": "切換地區",
     "up": "煮啵",
     "community_not_constructed": "點擊輸入標題",
-    "map_change": "地圖切換"
+    "map_change": "地圖切換",
+    "settings": "設置"
+  },
+  "settings": {
+    "export_data": "導出數據",
+    "export_data_tips": "將數據導出為 JSON 格式，方便備份和遷移",
+    "export_data_success_tips": "數據導出成功",
+    "export_data_failed_tips": "數據導出失敗",
+    "delete_data": "刪除數據",
+    "delete_data_tips": "刪除當前所有數據，這個操作不可逆",
+    "delete_data_success_tips": "數據刪除成功，需要重新加載頁面",
+    "delete_data_failed_tips": "數據刪除失敗",
+    "import_data": "導入數據",
+    "import_data_tips": "將 JSON 格式的數據導入到當前會話中",
+    "import_data_success_tips": "數據導入成功，需要重新加載頁面",
+    "import_data_failed_tips": "數據導入失敗，請檢查數據格式",
+    "clear_cache": "清除緩存",
+    "clear_cache_tips": "例如標點位置、語言文件、標點攻略等數據緩存",
+    "clear_cache_success_tips": "緩存清除成功"
   },
   "sidebar": {
     "title": "終末地互動地圖",

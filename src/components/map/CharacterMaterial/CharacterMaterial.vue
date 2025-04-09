@@ -42,11 +42,11 @@ const close = () => {
 <style lang="scss" scoped>
 @use '../../../styles/zmd.scss' as zmd;
 .character-material-panel {
-  --character-material-panel-width: calc(#{zmd.$side-width} - 1.35em);
+  --character-material-panel-width: calc(#{zmd.$side-width} - 1.3em);
   width: var(--character-material-panel-width);
-  top: calc(#{zmd.$side-margin-y} + 1.05em);
+  top: calc(#{zmd.$side-margin-y} + 1.1em);
   @media screen and (min-width: zmd.$large-screen-width) {
-    --character-material-panel-width: calc(#{zmd.$side-large-width} - 1.35em);
+    --character-material-panel-width: calc(#{zmd.$side-large-width} - 1.5em);
   }
 }
 </style>

@@ -29,6 +29,14 @@
   "no_more": "没有更多了",
   "none": "无",
   "unknown": "未知",
+  "success": "成功",
+  "failed": "失败",
+  "error": "错误",
+  "warning": "警告",
+  "info": "信息",
+  "notice": "通知",
+  "tips": "提示",
+  "download": "下载",
   "header": {
     "menu": "菜单",
     "about": "关于",
@@ -41,7 +49,26 @@
     "change_region": "切换地区",
     "up": "煮啵",
     "community_not_constructed": "点击输入标题",
-    "map_change": "地图切换"
+    "map_change": "地图切换",
+    "settings": "设置"
+  },
+  "settings": {
+    "export_data": "导出数据",
+    "export_data_tips": "将数据导出为 JSON 格式，方便备份和迁移",
+    "export_data_success_tips": "数据导出成功",
+    "export_data_failed_tips": "数据导出失败",
+    "delete_data": "删除数据",
+    "delete_data_tips": "删除当前所有数据，这个操作不可逆",
+    "delete_data_success_tips": "数据删除成功，需要刷新页面",
+    "delete_data_failed_tips": "数据删除失败",
+    "import_data": "导入数据",
+    "import_data_tips": "将 JSON 格式的数据导入到当前会话中",
+    "import_data_success_tips": "数据导入成功，需要刷新页面",
+    "import_data_failed_tips": "数据导入失败",
+    "clear_cache": "清除缓存",
+    "clear_cache_tips": "例如标点位置、语言文件、标点攻略等数据缓存",
+    "clear_cache_success_tips": "缓存清除成功，需要刷新页面",
+    "clear_cache_failed_tips": "缓存清除失败"
   },
   "sidebar": {
     "title": "终末地互动地图",

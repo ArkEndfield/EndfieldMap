@@ -44,9 +44,9 @@
       "
     >
       <FeedbackMenu />
-      <LoginMenu />
       <ChangelogMenu />
       <LanguageMenu />
+      <SettingsMenu />
       <AboutMenu />
       <div
         :class="
