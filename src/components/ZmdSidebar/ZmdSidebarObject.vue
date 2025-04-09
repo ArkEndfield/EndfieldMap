@@ -89,7 +89,6 @@ const toggle = () => {
   display: flex;
   align-items: center;
   filter: drop-shadow(0 0 0.2em rgba(0, 0, 0, 0.6));
-  transition: all 0.3s ease;
   padding: 0.5em 0.3em;
   position: relative;
   overflow: hidden;
@@ -102,7 +101,6 @@ const toggle = () => {
     height: 2px;
     background: #343434;
     transform: translateY(-50%);
-    transition: width 0.3s ease;
     z-index: 0;
   }
 
@@ -115,7 +113,6 @@ const toggle = () => {
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    transition: all 0.3s ease;
 
     .icon-inner {
       width: 100%;
@@ -128,7 +125,6 @@ const toggle = () => {
       justify-content: center;
       align-items: center;
       padding: 0.4em;
-      transition: all 0.4s ease;
       position: relative;
       z-index: 2;
       overflow: hidden;
@@ -139,7 +135,6 @@ const toggle = () => {
         inset: 0;
         border-radius: 50%;
         box-shadow: inset 0 0 0.1em rgba(253, 251, 85, 0);
-        transition: all 0.3s ease;
       }
 
       img {
@@ -147,7 +142,6 @@ const toggle = () => {
         height: 100%;
         border-radius: 50%;
         object-fit: contain;
-        transition: transform 0.4s ease;
       }
     }
 
@@ -156,7 +150,6 @@ const toggle = () => {
       inset: -3px;
       border-radius: 50%;
       opacity: 0;
-      transition: all 0.3s ease;
       z-index: 1;
 
       &::before,
@@ -191,7 +184,6 @@ const toggle = () => {
     margin-left: -1em;
     border-radius: 0 9999px 9999px 0;
     flex-grow: 1;
-    transition: all 0.3s ease;
     overflow: hidden;
 
     .detail-inner {
@@ -210,7 +202,6 @@ const toggle = () => {
     .name {
       flex: 1;
       font-size: 0.8em;
-      transition: color 0.3s ease;
       margin-right: 0.5em;
       color: #cccccc;
       white-space: nowrap;
@@ -224,7 +215,6 @@ const toggle = () => {
       flex-grow: 0;
       flex-shrink: 0;
       font-weight: 500;
-      transition: all 0.3s ease;
       background-color: #2a2a2a;
       color: #aaaaaa;
       padding: 0.03em 0.05em;
@@ -247,7 +237,6 @@ const toggle = () => {
       width: 0.5em;
       height: 0.5em;
       opacity: 0;
-      transition: opacity 0.3s ease;
 
       &.top-right {
         top: 0;
@@ -274,8 +263,6 @@ const toggle = () => {
     }
 
     .icon {
-      transform: scale(1.05);
-
       .icon-inner {
         box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.3), 0 0 0 0.15em #313131 inset,
           0 0 0 0.25em #fdfb55 inset;
@@ -283,16 +270,11 @@ const toggle = () => {
         &::after {
           box-shadow: inset 0 0 0.5em rgba(253, 251, 85, 0.5);
         }
-
-        img {
-          transform: scale(1.1) rotate(5deg);
-        }
       }
 
       .icon-decoration {
         opacity: 1;
         border-color: rgba(253, 251, 85, 0.5);
-        animation: rotate 3s linear infinite;
       }
     }
 
@@ -317,14 +299,14 @@ const toggle = () => {
         &.top-right {
           height: 100%;
           border-color: rgba(253, 251, 85, 0.7);
-          animation: cornerExpandTopRight 1.5s ease-in-out infinite alternate;
           border-top-right-radius: 9999px;
           border-bottom-right-radius: 9999px;
+          width: 1em; // 固定宽度，移除动画
         }
 
         &.bottom-left {
           border-color: rgba(253, 251, 85, 0.7);
-          animation: cornerExpandBottomLeft 1.5s ease-in-out infinite alternate;
+          width: 0.8em; // 固定宽度，移除动画
         }
       }
     }
@@ -351,30 +333,5 @@ const toggle = () => {
   }
 }
 
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes cornerExpandTopRight {
-  0% {
-    width: 1em;
-  }
-  100% {
-    width: 3em;
-  }
-}
-
-@keyframes cornerExpandBottomLeft {
-  0% {
-    width: 0.6em;
-  }
-  100% {
-    width: 1em;
-  }
-}
+// 已删除所有动画关键帧
 </style>

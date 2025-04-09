@@ -18,6 +18,77 @@ import { type PointData } from '@/data/points';
 import { updateClusterDistance } from '@/data/entity';
 import { debounce, xyz2crd } from '@/utils/common';
 import { SelectEvent } from 'ol/interaction/Select';
+import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
+
+// 地图视图状态存储键前缀
+const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
+// 默认地图中心点
+const DEFAULT_MAP_CENTERS = {
+  map001: [100, 152],
+  map002: [50, 188],
+};
+// 默认缩放级别
+const DEFAULT_ZOOM = 3;
+
+// 地图视图状态接口
+interface MapViewState {
+  center: number[];
+  zoom: number;
+  timestamp: number;
+}
+
+/**
+ * 保存地图视图状态到IndexedDB
+ * @param mapId 地图ID
+ */
+async function saveMapViewState(mapId: string): Promise<void> {
+  if (!map.value) return;
+
+  const view = map.value.getView();
+  const center = view.getCenter();
+  const zoom = view.getZoom();
+
+  if (!center || zoom === undefined) return;
+
+  // 确保中心点坐标是简单数组，不是 OpenLayers 内部对象
+  const viewState: MapViewState = {
+    center: [center[0], center[1]], // 创建新数组，确保是简单的数字数组
+    zoom: zoom,
+    timestamp: Date.now(),
+  };
+
+  try {
+    const key = `${MAP_VIEW_STATE_KEY_PREFIX}${mapId}`;
+    await setItem(key, viewState, StorageType.PERMANENT, null);
+    // console.log(`已保存地图 ${mapId} 的视图状态:`, viewState);
+  } catch (error) {
+    console.error(`保存地图 ${mapId} 视图状态失败:`, error);
+  }
+}
+
+/**
+ * 从IndexedDB恢复地图视图状态
+ * @param mapId 地图ID
+ */
+async function restoreMapViewState(
+  mapId: string
+): Promise<MapViewState | null> {
+  if (!map.value) return null;
+
+  try {
+    const key = `${MAP_VIEW_STATE_KEY_PREFIX}${mapId}`;
+    const viewState = await getItem<MapViewState>(key, StorageType.PERMANENT);
+
+    if (viewState) {
+      console.log(`已恢复地图 ${mapId} 的视图状态:`, viewState);
+      return viewState;
+    }
+  } catch (error) {
+    console.error(`恢复地图 ${mapId} 视图状态失败:`, error);
+  }
+
+  return null;
+}
 
 // 创建简单投影
 export const simpleProjection = new Projection({
@@ -147,7 +218,7 @@ function addEntityLayersToMap(currentRetry = 0) {
 }
 
 // 更新地图视图和图层
-export function updateMap(mapIndex: string) {
+export async function updateMap(mapIndex: string) {
   if (!map.value) return;
 
   // 重置实体图层加载状态
@@ -194,10 +265,20 @@ export function updateMap(mapIndex: string) {
   // 使用改进的方法添加实体图层
   addEntityLayersToMap();
 
-  // 更新视图中心点
+  // 尝试从IndexedDB恢复地图视图状态
+  const restoredViewState = await restoreMapViewState(mapIndex);
+
+  // 更新视图中心点和缩放级别
   const view = map.value.getView();
-  view.setCenter(mapIndex === 'map001' ? [100, 152] : [50, 188]);
-  view.setZoom(3);
+  if (restoredViewState) {
+    view.setCenter(restoredViewState.center);
+    view.setZoom(restoredViewState.zoom);
+  } else {
+    view.setCenter(
+      DEFAULT_MAP_CENTERS[mapIndex] || DEFAULT_MAP_CENTERS['map001']
+    );
+    view.setZoom(DEFAULT_ZOOM);
+  }
 
   // 强制更新地图尺寸和重新渲染
   map.value.updateSize();
@@ -513,12 +594,18 @@ const moveEndChange = debounce(
     const zoom = currentMap.getView().getZoom() || 0;
     // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
     const stableZoom = Math.round(zoom * 2) / 2;
-
+    const position = currentMap.getView().getCenter();
+    console.log('地图移动结束，当前缩放级别:', stableZoom, '位置:', position);
     // 确保最终值是准确的
     if (Math.abs(zoomLevel.value - stableZoom) >= 0.01) {
       localStorage.setItem('zoom', stableZoom.toString());
       loadTextPoints(true);
       zoomLevel.value = stableZoom;
+    }
+
+    // 保存当前视图状态到 IndexedDB (永久存储)
+    if (position && cacheMapId.value) {
+      saveMapViewState(cacheMapId.value);
     }
 
     // 重要：在移动或缩放结束后，重置缩放状态标志

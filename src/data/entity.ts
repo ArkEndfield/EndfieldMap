@@ -1110,10 +1110,10 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
 
     console.log(`成功初始化 ${features.length} 个实体特征`);
 
-    // 默认显示所有实体
+    // 默认隐藏所有实体
     Object.keys(entityInfo).forEach(key => {
       if (entityInfo[key]) {
-        entityInfo[key].entityInfo.show = true;
+        entityInfo[key].entityInfo.show = false;
       }
     });
   } catch (error) {
