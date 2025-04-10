@@ -82,7 +82,7 @@
           </template>
         </CultivationMaterialListTitle>
 
-        <div class="min-h-[18em] py-4 space-y-2">
+        <div class="min-h-[5em] py-4 space-y-2">
           <AnimatePresence>
             <CultivationMaterialItem
               v-for="item in chooseWeapons"

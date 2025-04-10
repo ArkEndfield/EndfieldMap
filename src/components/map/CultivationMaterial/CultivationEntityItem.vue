@@ -1,12 +1,12 @@
 <template>
-  <button
+  <!-- <button
     class="text-xs"
     @click="toggle"
   >
     <div
       :class="
         cn(
-          'aspect-square mx-1 p-0.5 bg-[#414140] rounded-t-sm border transition-colors duration-200',
+          'aspect-square mx-1 p-0.5 bg-[#414140] transition-colors duration-200',
           entityInfo.entityInfo.show ? 'border-[#FDFD75]' : 'border-[#414140]',
           'border-b-0'
         )
@@ -21,7 +21,7 @@
     <div
       :class="
         cn(
-          'text-center truncate rounded-t-xs rounded-b-sm transition-colors duration-200',
+          'text-center truncate transition-colors duration-200',
           entityInfo.entityInfo.show
             ? 'bg-[#FDFD75] text-[#272727]'
             : 'bg-[#FDFBFC] text-black'
@@ -30,19 +30,27 @@
     >
       {{ entityInfo.entityInfo.name }}
     </div>
-  </button>
+  </button> -->
+  <ZmdSidebarObject
+    :name="entity.entityInfo.name"
+    :checked="entity.entityInfo.show"
+    @change="toggle"
+    :hide-count="true"
+  >
+    <img :src="`/assets/${entity.category}/${entity.entityInfo.pic}.png`" />
+  </ZmdSidebarObject>
 </template>
 
 <script setup lang="ts">
 import { toggleSelect } from '@/data/entity';
 import { getEntityDataByKey } from '@/data/entity';
-import { cn } from '@/utils/tailwind';
+// import { cn } from '@/utils/tailwind';
 import { computed } from 'vue';
 
 const props = defineProps<{
   id: string;
 }>();
-const entityInfo = computed(() => {
+const entity = computed(() => {
   return getEntityDataByKey(props.id);
 });
 const toggle = () => {

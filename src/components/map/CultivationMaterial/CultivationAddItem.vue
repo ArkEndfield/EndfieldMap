@@ -31,7 +31,6 @@
         alt="icon"
         class="h-full w-full object-contain absolute right-0 z-1 object-right"
         :animate=" {
-  // 从左往右展开，从右往左收起clipPath
           clipPath: props.active ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
         }"
       ></motion.img>

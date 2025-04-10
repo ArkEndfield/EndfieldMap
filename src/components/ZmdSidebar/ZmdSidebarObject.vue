@@ -15,7 +15,10 @@
         <div class="name">
           {{ props.name }}
         </div>
-        <div class="count">
+        <div
+          class="count"
+          v-if="!props.hideCount"
+        >
           <div class="text">{{ formattedValue }}</div>
         </div>
       </div>
@@ -33,6 +36,7 @@ interface Props {
   value?: string | number;
   markCount?: number;
   checked?: boolean;
+  hideCount?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -40,6 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
   value: 0,
   markCount: 0,
   checked: undefined,
+  hideCount: false,
 });
 
 const modelValue = defineModel<boolean>({ default: false });

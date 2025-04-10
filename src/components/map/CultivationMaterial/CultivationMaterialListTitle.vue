@@ -28,7 +28,7 @@
     </div>
     <motion.div
       ref="scope"
-      class="absolute top-full left-0 right-0 bg-white text-[#272727] rounded-b-md shadow-md z-10"
+      class="relative top-0 left-0 right-0 bg-[#464646] text-[#272727] shadow-md z-10"
       :animate="{
         opacity: showContent ? 1 : 0,
         height: showContent ? '15em' : 0,
