@@ -42,6 +42,7 @@ export default function useStateOperate<T>(
   const success = ref(false);
   const finished = ref(false);
   const execute = async () => {
+    reset();
     loading.value = true;
     error.value = null;
     try {

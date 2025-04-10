@@ -225,3 +225,68 @@ export const shouldShowByMarkStatus = (seq: number): boolean => {
 export const getMarks = () => {
   return JSON.parse(JSON.stringify(marks));
 };
+
+export const isMarkDataValid = (data: any): data is MarkInfo => {
+  if (typeof data !== 'object' || data === null) {
+    return false;
+  }
+  for (const key in data) {
+    if (typeof key !== 'string' && typeof key !== 'number') {
+      return false;
+    }
+    if (typeof data[key] !== 'object' || data[key] === null) {
+      return false;
+    }
+    if (typeof data[key].finish !== 'boolean') {
+      return false;
+    }
+  }
+  return true;
+};
+
+// 导入标点数据（覆盖）
+export const coverMarks = async (newMarks?: MarkInfo | null) => {
+  if (!isMarkDataValid(newMarks)) {
+    throw new Error('无效的标记数据格式');
+  }
+  // 清空现有数据
+  Object.keys(marks).forEach(key => {
+    delete marks[key];
+  });
+
+  // 重新初始化标记数据
+  await initMarks();
+
+  // 导入新数据
+  Object.keys(newMarks).forEach(key => {
+    marks[key] = newMarks[key];
+  });
+
+  // 保存到IndexedDB
+  await saveMarksToStorage();
+
+  // 刷新状态
+  refresh();
+};
+
+// 导入标点数据（合并）
+export const mergeMarks = async (newMarks?: MarkInfo | null) => {
+  if (!isMarkDataValid(newMarks)) {
+    throw new Error('无效的标记数据格式');
+  }
+
+  // 合并新数据
+  Object.keys(newMarks).forEach(key => {
+    if (!marks[key]) {
+      marks[key] = newMarks[key];
+    } else {
+      marks[key].finish = marks[key].finish || newMarks[key].finish;
+    }
+  });
+
+  // 保存到IndexedDB
+  await saveMarksToStorage();
+
+  // 刷新状态
+  refresh();
+};

@@ -2,6 +2,7 @@
   <div class="space-y-2">
     <ClearCache />
     <ExportData />
+    <ImportData />
     <DeleteData />
   </div>
 </template>

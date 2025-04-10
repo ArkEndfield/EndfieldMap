@@ -37,6 +37,8 @@
   "notice": "通知",
   "tips": "提示",
   "download": "下載",
+  "merge": "合併",
+  "cover": "覆蓋",
   "header": {
     "menu": "菜單",
     "about": "关于",
@@ -63,7 +65,8 @@
     "delete_data_failed_tips": "數據刪除失敗",
     "import_data": "導入數據",
     "import_data_tips": "將 JSON 格式的數據導入到當前會話中",
-    "import_data_success_tips": "數據導入成功，需要重新加載頁面",
+    "import_data_success_tips": "數據導入成功",
+    "import_data_type_tips": "請選擇導入方式",
     "import_data_failed_tips": "數據導入失敗，請檢查數據格式",
     "clear_cache": "清除緩存",
     "clear_cache_tips": "例如標點位置、語言文件、標點攻略等數據緩存",

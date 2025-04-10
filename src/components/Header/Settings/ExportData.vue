@@ -50,7 +50,11 @@ const { loading, error, data, success, execute } = useStateOperate(
 
 const openDownloadLink = () => {
   if (data.value) {
-    window.open(data.value, '_blank');
+    const a = document.createElement('a');
+    a.href = data.value;
+    a.download = 'marks.json';
+    a.click();
+    a.remove();
     URL.revokeObjectURL(data.value);
   }
 };

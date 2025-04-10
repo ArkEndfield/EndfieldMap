@@ -45,6 +45,9 @@ const close = () => {
   --character-material-panel-width: calc(#{zmd.$side-width} - 1.3em);
   width: var(--character-material-panel-width);
   top: calc(#{zmd.$side-margin-y} + 1.1em);
+  @media screen and (max-width: zmd.$phone-width) {
+    top: 1.1em;
+  }
   @media screen and (min-width: zmd.$large-screen-width) {
     --character-material-panel-width: calc(#{zmd.$side-large-width} - 1.5em);
   }

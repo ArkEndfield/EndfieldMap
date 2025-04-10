@@ -4,7 +4,7 @@
     :loading="loading"
     :error="error"
     :disabled="success"
-    @end-click="execute"
+    @end-click="open = true"
   >
     {{ $t('settings.delete_data') }}
     <template #description>
@@ -31,12 +31,21 @@
       </div>
     </template>
   </SettingsItem>
+  <ZmdAlert
+    v-model:open="open"
+    @confirm="execute"
+  >
+    <div class="text-center mb-4">
+      {{ $t('settings.delete_data_tips') }}
+    </div>
+  </ZmdAlert>
 </template>
 
 <script setup lang="ts">
 import useStateOperate from '@/hooks/useStateOperate';
 import { clearStore, StorageType } from '@/utils/indexedDBStorage';
-
+import { ref } from 'vue';
+const open = ref(false);
 const { loading, error, success, execute } = useStateOperate(
   async () => {
     await clearStore(StorageType.PERMANENT);
