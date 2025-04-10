@@ -477,6 +477,7 @@ const clickHorizontalTrack = (e: MouseEvent) => {
 
 // 监听内容变化
 const resizeObserver = ref<ResizeObserver | null>(null);
+const mutationObserver = ref<MutationObserver | null>(null);
 
 onMounted(() => {
   nextTick(() => {
@@ -488,6 +489,17 @@ onMounted(() => {
         updateScrollbars();
       });
       resizeObserver.value.observe(contentRef.value);
+
+      // 使用 MutationObserver 监听内容 DOM 变化
+      mutationObserver.value = new MutationObserver(() => {
+        updateScrollbars();
+      });
+      mutationObserver.value.observe(contentRef.value, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true,
+      });
     }
 
     // 监听窗口尺寸变化
@@ -499,6 +511,10 @@ onUnmounted(() => {
   // 清理监听器
   if (resizeObserver.value) {
     resizeObserver.value.disconnect();
+  }
+
+  if (mutationObserver.value) {
+    mutationObserver.value.disconnect();
   }
 
   window.removeEventListener('resize', debouncedUpdateScrollbars);
@@ -519,6 +535,19 @@ onUnmounted(() => {
 // 监听 props 变化
 watch([() => props.width, () => props.height], () => {
   updateScrollbars();
+});
+
+// 强制刷新滚动条状态
+const forceUpdate = () => {
+  nextTick(() => {
+    updateScrollbars();
+  });
+};
+
+// 暴露组件方法给父组件使用
+defineExpose({
+  updateScrollbars,
+  forceUpdate,
 });
 </script>
 

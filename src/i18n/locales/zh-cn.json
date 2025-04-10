@@ -39,6 +39,13 @@
   "download": "下载",
   "merge": "合并",
   "cover": "覆盖",
+  "character": "角色",
+  "weapon": "武器",
+  "add": "添加",
+  "remove": "移除",
+  "copy": "复制",
+  "cut": "剪切",
+  "paste": "粘贴",
   "header": {
     "menu": "菜单",
     "about": "关于",

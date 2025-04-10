@@ -39,6 +39,13 @@
   "download": "Download",
   "merge": "Merge",
   "cover": "Cover",
+  "character": "Character",
+  "weapon": "Weapon",
+  "add": "Add",
+  "remove": "Remove",
+  "copy": "Copy",
+  "cut": "Cut",
+  "paste": "Paste",
   "header": {
     "menu": "Menu",
     "about": "About",

@@ -1227,3 +1227,8 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
     throw error;
   }
 }
+
+// 获取entity数据
+export const getEntityDataByKey = (key: string) => {
+  return entityInfo[key];
+};

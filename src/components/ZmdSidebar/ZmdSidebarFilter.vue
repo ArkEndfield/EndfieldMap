@@ -30,7 +30,7 @@
           isSelectAll ? 'UNSELECT ALL' : 'SELECT ALL'
         }}</template>
       </ZmdSidebarOperateButton>
-      <ZmdSidebarOperateButton @click="toggleCharacterMaterial">
+      <ZmdSidebarOperateButton @click="toggleCultivationMaterial">
         <template #icon>
           <img
             src="/images/icon_character.png"
@@ -67,7 +67,7 @@
       </div>
     </div>
   </motion.div>
-  <CharacterMaterial v-model:open="showCharacterMaterial" />
+  <CultivationMaterial v-model:open="showCultivationMaterial" />
 </template>
 
 <script setup lang="ts">
@@ -80,7 +80,7 @@ import { currentMarkFilter, setMarkFilter } from '@/data/marks';
 import { motion } from 'motion-v';
 import { ref } from 'vue';
 import { watch } from 'vue';
-const showCharacterMaterial = ref(false);
+const showCultivationMaterial = ref(false);
 const props = withDefaults(
   defineProps<{
     open?: boolean;
@@ -90,8 +90,8 @@ const props = withDefaults(
   }
 );
 
-const toggleCharacterMaterial = () => {
-  showCharacterMaterial.value = !showCharacterMaterial.value;
+const toggleCultivationMaterial = () => {
+  showCultivationMaterial.value = !showCultivationMaterial.value;
 };
 
 // 处理全选按钮点击
@@ -107,7 +107,7 @@ watch(
   () => props.open,
   newVal => {
     if (!newVal) {
-      showCharacterMaterial.value = false;
+      showCultivationMaterial.value = false;
     }
   }
 );
