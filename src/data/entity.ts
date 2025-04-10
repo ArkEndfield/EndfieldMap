@@ -940,6 +940,15 @@ export const refresh = () => {
     createEntityClusterLayers();
   }
 
+  // 从localStorage中获取最新缩放级别，确保使用最新值
+  try {
+    const storedZoom = Number(localStorage.getItem('zoom') || '3');
+    // 更新全局变量，确保使用最新的缩放级别
+    currentZoomLevel = storedZoom;
+  } catch (e) {
+    console.warn('无法获取最新缩放级别，使用当前值:', currentZoomLevel);
+  }
+
   // 不再清理所有源，而是控制图层可见性
   for (const key in entityInfo) {
     const source = entityClusterSources[key];
@@ -986,13 +995,26 @@ export const refresh = () => {
     }
   }
 
-  // 更新聚合距离
-  updateClusterDistance(currentZoomLevel);
+  // 根据最新缩放级别确定是否应该聚合
+  const shouldCluster = currentZoomLevel < 4;
+  const newDistance = shouldCluster ? 30 : 0;
+
+  // 立即更新所有聚合源的距离
+  Object.values(entityClusterSources).forEach(source => {
+    source.setDistance(newDistance);
+  });
 
   // 在最大缩放级别时强制禁用聚合
   if (currentZoomLevel >= 5) {
-    forceDisperseAtMaxZoom(currentZoomLevel);
+    // 直接应用，不使用防抖版本
+    Object.values(entityClusterSources).forEach(source => {
+      source.setDistance(0);
+    });
   }
+
+  console.log(
+    `刷新实体图层：缩放级别=${currentZoomLevel}, 聚合距离=${newDistance}`
+  );
 };
 
 // 创建一个防抖版本的refresh函数，延迟300ms执行，避免短时间内频繁刷新
