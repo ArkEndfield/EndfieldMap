@@ -100,19 +100,7 @@ $arrow-height: 5em;
       .zmd-sidebar-title-arrow-arrow-line:hover
     ) {
     .zmd-sidebar-title-arrow-arrow-line {
-      // animation: arrowAnimation 1s infinite;
       transform: translateX(-0.5em);
-    }
-    @keyframes arrowAnimation {
-      0% {
-        transform: translateX(0);
-      }
-      50% {
-        transform: translateX(-0.5em);
-      }
-      100% {
-        transform: translateX(0);
-      }
     }
   }
   .zmd-sidebar-title-arrow-start-part {

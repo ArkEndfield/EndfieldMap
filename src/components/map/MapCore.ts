@@ -20,6 +20,7 @@ import { debounce, xyz2crd } from '@/utils/common';
 import { SelectEvent } from 'ol/interaction/Select';
 import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
 import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
+import { RenderOptimizer } from '@/utils/renderOptimizer';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -128,7 +129,8 @@ export function createZoomControl(controlsElement: HTMLElement) {
 }
 
 // 创建并返回地图实例
-export const map = ref<Map | null>(null);
+export const map = shallowRef<Map | null>(null);
+export const renderOptimizer = shallowRef<RenderOptimizer | null>(null);
 export const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001');
 export const zoomLevel = ref(Number(localStorage.getItem('zoom')));
 
@@ -257,6 +259,12 @@ export async function updateMap(mapIndex: string) {
 // 清理地图资源的函数
 export function cleanupMap() {
   if (!map.value) return;
+
+  // 清理渲染优化器
+  if (renderOptimizer.value) {
+    renderOptimizer.value.dispose();
+    renderOptimizer.value = null;
+  }
 
   // 清除实体图层的加载计时器
   if (entityLayerTimerId !== null) {
@@ -413,6 +421,12 @@ export function createMap(
     controls: [zoomControl],
     pixelRatio: 2, // 提高像素比以提升移动中的渲染质量
   });
+
+  // 初始化渲染优化器
+  if (map.value) {
+    renderOptimizer.value = new RenderOptimizer(map.value);
+    console.log('渲染优化器已初始化');
+  }
 
   // 使用改进的方法添加实体图层
   addEntityLayersToMap();

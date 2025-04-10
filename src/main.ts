@@ -72,8 +72,11 @@ async function initializeApp() {
     if (process.env.NODE_ENV === 'development') {
       try {
         // 添加性能监控模块
-        const { monitorMemory } = await import('./utils/performance');
+        const { monitorMemory, monitorCPU } = await import(
+          './utils/performance'
+        );
         monitorMemory();
+        monitorCPU();
       } catch (error) {
         console.warn('无法初始化性能监控:', error);
       }

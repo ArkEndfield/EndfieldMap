@@ -32,7 +32,17 @@
         }"
       >
         <div class="scanline-container">
-          <div class="scanline"></div>
+          <motion.div
+            class="scanline"
+            :animate="{
+              left: ['-100%', '200%'],
+            }"
+            :transition="{
+              duration: 3,
+              ease: 'easeInOut',
+              repeat: Infinity,
+            }"
+          ></motion.div>
         </div>
         <div class="popover-corner popover-corner-tl"></div>
         <div class="popover-corner popover-corner-tr"></div>
@@ -210,7 +220,6 @@ onUnmounted(() => {
 .scanline {
   position: absolute;
   top: 0;
-  left: -100%;
   width: 50%;
   height: 100%;
   background: linear-gradient(
@@ -219,7 +228,6 @@ onUnmounted(() => {
     rgba(220, 220, 220, 0.08),
     transparent
   );
-  animation: scanline 3s infinite ease-in-out;
 }
 
 .popover-corner {
@@ -267,27 +275,5 @@ onUnmounted(() => {
   50% {
     opacity: 1;
   }
-}
-
-@keyframes scanline {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 200%;
-  }
-}
-
-// 修改动画配置，使动画更加流畅
-:deep(.v-enter-active),
-:deep(.v-leave-active) {
-  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  will-change: opacity, transform;
-}
-
-:deep(.v-enter-from),
-:deep(.v-leave-to) {
-  opacity: 0;
-  transform: translateY(-5px) scale(0.98);
 }
 </style>

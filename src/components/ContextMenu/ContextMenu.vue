@@ -87,18 +87,49 @@ const showMenu = async (event: MouseEvent) => {
   // 确保菜单在视口内显示
   nextTick(() => {
     const el = scope.value;
+    if (!el) return;
+
     const rect = el.getBoundingClientRect();
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
+    let newX = x.value;
+    let newY = y.value;
+
+    // 检查是否超出左边界
+    if (rect.left < 0) {
+      newX = 0;
+    }
+
+    // 检查是否超出上边界
+    if (rect.top < 0) {
+      newY = 0;
+    }
 
     // 检查是否超出右边界
     if (rect.right > windowWidth) {
-      x.value = windowWidth - rect.width;
+      newX = windowWidth - rect.width;
     }
 
     // 检查是否超出下边界
     if (rect.bottom > windowHeight) {
-      y.value = windowHeight - rect.height;
+      newY = windowHeight - rect.height;
+    }
+
+    // 如果位置有变化，重新设置位置并应用动画
+    if (newX !== x.value || newY !== y.value) {
+      x.value = newX;
+      y.value = newY;
+
+      animate(
+        el,
+        {
+          x: newX,
+          y: newY,
+        },
+        {
+          duration: 0.1,
+        }
+      );
     }
   });
 };

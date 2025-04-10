@@ -8,10 +8,18 @@
     :disabled="disabled || loading"
     @click="$emit('click', $event)"
   >
-    <div
+    <motion.div
       v-if="loading"
       class="loading-spinner"
-    ></div>
+      :animate="{
+        rotate: 360,
+      }"
+      :transition="{
+        duration: 0.8,
+        ease: 'linear',
+        repeat: Infinity,
+      }"
+    ></motion.div>
     <span
       v-else
       class="button-content"
@@ -22,6 +30,8 @@
 </template>
 
 <script setup lang="ts">
+import { motion } from 'motion-v';
+
 defineProps({
   loading: {
     type: Boolean,
@@ -95,16 +105,6 @@ defineEmits(['click']);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: #fff;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 /* 按钮内容样式 */

@@ -29,7 +29,7 @@
         <span class="font-medium">{{ locale.name }}</span>
         <span
           v-if="currentLocale === locale.code"
-          class="text-[white] animate-scale-in"
+          class="text-[white]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -89,19 +89,4 @@ const changeLanguage = async (lang: string) => {
 };
 </script>
 
-<style lang="scss" scoped>
-@keyframes scale-in {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.animate-scale-in {
-  animation: scale-in 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-</style>
+<style lang="scss" scoped></style>

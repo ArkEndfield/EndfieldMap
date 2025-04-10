@@ -80,10 +80,16 @@
                   class="icon"
                   v-if="props.showIcon"
                 >
-                  <div
+                  <motion.div
                     v-if="isProcessing"
                     class="loading-spinner"
-                  ></div>
+                    :animate="{ rotate: 360 }"
+                    :transition="{
+                      duration: 1,
+                      ease: 'linear',
+                      repeat: Infinity,
+                    }"
+                  ></motion.div>
                   <ZmdAlertTickIcon v-else />
                 </div>
               </div>
@@ -496,15 +502,6 @@ $default-border-color: #a0a2a3;
               border: 2px solid rgb(255, 187, 0);
               border-top: 2px solid #fff;
               border-radius: 50%;
-              animation: spin 1s linear infinite;
-            }
-            @keyframes spin {
-              0% {
-                transform: rotate(0deg);
-              }
-              100% {
-                transform: rotate(360deg);
-              }
             }
           }
         }
