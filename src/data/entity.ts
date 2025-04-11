@@ -41,13 +41,14 @@ export const categoryInfo = computed(() => {
   // 将实体信息填充到对应分类中，只包含 count > 0 的实体
   for (const key in entityInfo) {
     const entity = entityInfo[key];
-    if (entity.entityInfo.count > 0) {
-      // 只处理 count > 0 的实体
-      const category = entity.category;
-      if (categories[category]) {
-        categories[category].push(entity.entityInfo);
-      }
+    // if (entity.entityInfo.count > 0) {
+    // 并非处理
+    // 只处理 count > 0 的实体
+    const category = entity.category;
+    if (categories[category]) {
+      categories[category].push(entity.entityInfo);
     }
+    // }
   }
 
   // 过滤掉空的分类

@@ -19,28 +19,30 @@
         <CloseIcon />
       </div>
     </div>
-
-    <ZmdSidebarItem
-      @icon-click="() => toggleSelectAllByCategory(i)"
-      :icon-color="getIconColor(i)"
-      :open="props.open"
-      v-for="(k, i) in filteredCategoryInfo"
-    >
-      <template #title> {{ $t(`sidebar.filter.category.${i}`) }} </template>
-      <template #subtitle> {{ i }} </template>
-      <div class="objecg-list">
-        <ZmdSidebarObject
-          v-for="v in k"
-          :name="v.name"
-          :value="v.count"
-          :mark-count="getMarkCountForEntity(i, v.name)"
-          v-model="v.show"
-          @change="refreshMap"
-        >
-          <img :src="`/assets/${i}/${v.pic}.png`" />
-        </ZmdSidebarObject>
-      </div>
-    </ZmdSidebarItem>
+    <template v-for="(k, i) in filteredCategoryInfo">
+      <ZmdSidebarItem
+        @icon-click="() => toggleSelectAllByCategory(i)"
+        :icon-color="getIconColor(i)"
+        :open="props.open"
+        v-if="k.reduce((sum, item) => sum + item.count, 0) > 0"
+      >
+        <template #title> {{ $t(`sidebar.filter.category.${i}`) }} </template>
+        <template #subtitle> {{ i }} </template>
+        <div class="objecg-list">
+          <ZmdSidebarObject
+            v-for="v in k.filter((item) => item.count > 0)"
+            :name="v.name"
+            :value="v.count"
+            :mark-count="getMarkCountForEntity(i, v.name)"
+            v-model="v.show"
+            @change="refreshMap"
+          >
+            <img :src="`/assets/${i}/${v.pic}.png`" />
+          </ZmdSidebarObject>
+        </div>
+      </ZmdSidebarItem>
+    </template>
+    
   </div>
 </template>
 
