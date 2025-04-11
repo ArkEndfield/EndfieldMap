@@ -33,12 +33,12 @@
 </template>
 
 <script setup lang="ts">
-import { getMarks } from '@/services/marks';
+import { backupData } from '@/services/data';
 import useStateOperate from '@/hooks/useStateOperate';
 
 const { loading, error, data, success, execute } = useStateOperate(
   async () => {
-    const data = getMarks();
+    const data = backupData();
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     return url;
@@ -52,7 +52,7 @@ const openDownloadLink = () => {
   if (data.value) {
     const a = document.createElement('a');
     a.href = data.value;
-    a.download = 'marks.json';
+    a.download = 'backup.json';
     a.click();
     a.remove();
     URL.revokeObjectURL(data.value);

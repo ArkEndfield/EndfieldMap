@@ -68,13 +68,13 @@
 
 <script setup lang="ts">
 import useStateOperate from '@/hooks/useStateOperate';
-import { isMarkDataValid, mergeMarks, coverMarks } from '@/services/marks';
-import { type MarkInfo } from '@/types/marks';
+import { isBackupDataValid, mergeData, coverData } from '@/services/data';
 import { ref } from 'vue';
 import { watch } from 'vue';
 import { rafTimeout } from '@/utils/animationTimer';
+import type { BackupData } from '@/types/data';
 const open = ref(false);
-const chooseFile = (): Promise<MarkInfo> => {
+const chooseFile = (): Promise<BackupData> => {
   return new Promise((resolve, reject) => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -88,7 +88,7 @@ const chooseFile = (): Promise<MarkInfo> => {
           const content = e.target?.result as string;
           try {
             const data = JSON.parse(content);
-            if (!isMarkDataValid(data)) {
+            if (!isBackupDataValid(data)) {
               reject('Invalid data format');
               return;
             }
@@ -109,12 +109,12 @@ const chooseFile = (): Promise<MarkInfo> => {
   });
 };
 // 合并数据
-const mergeData = () => {
-  return mergeMarks(data.value);
+const mergeDataFunc = () => {
+  return mergeData(data.value);
 };
 // 覆盖数据方法
-const coverData = () => {
-  return coverMarks(data.value);
+const coverDataFunc = () => {
+  return coverData(data.value);
 };
 const { loading, error, data, success, execute, reset } =
   useStateOperate(chooseFile);
@@ -123,7 +123,7 @@ const {
   error: mergeError,
   execute: mergeExecute,
   success: mergeSuccess,
-} = useStateOperate(mergeData, {
+} = useStateOperate(mergeDataFunc, {
   resetTime: 5000,
 });
 const {
@@ -131,7 +131,7 @@ const {
   error: coverError,
   execute: coverExecute,
   success: coverSuccess,
-} = useStateOperate(coverData, {
+} = useStateOperate(coverDataFunc, {
   resetTime: 5000,
 });
 watch(success, () => {

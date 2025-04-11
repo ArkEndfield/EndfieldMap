@@ -22,6 +22,7 @@ export const setLanguage = (lang: Language) => {
   if (lang !== 'zh-CN') {
     loadLanguage(lang).catch(console.error);
   }
+  i18n.global.locale = lang;
 };
 
 export const resetLanguage = () => {

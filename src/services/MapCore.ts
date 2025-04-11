@@ -36,6 +36,7 @@ import {
 import { entityInfo } from '@/data/entity';
 import { currentMarkFilter } from '@/data/marks';
 import { offMarkChange, onMarkChange, shouldShowByMarkStatus } from './marks';
+import type { MapViewState } from '@/types/map';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -46,13 +47,6 @@ const DEFAULT_MAP_CENTERS = {
 };
 // 默认缩放级别
 const DEFAULT_ZOOM = 3;
-
-// 地图视图状态接口
-interface MapViewState {
-  center: number[];
-  zoom: number;
-  timestamp: number;
-}
 
 /**
  * 保存地图视图状态到IndexedDB
@@ -94,6 +88,7 @@ async function restoreMapViewState(
   try {
     const key = `${MAP_VIEW_STATE_KEY_PREFIX}${mapId}`;
     const viewState = await getItem<MapViewState>(key, StorageType.PERMANENT);
+    console.log(`恢复地图 ${mapId} 的视图状态:`, viewState);
 
     if (viewState) {
       console.log(`已恢复地图 ${mapId} 的视图状态:`, viewState);

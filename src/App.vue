@@ -57,18 +57,17 @@ async function loadAllData() {
     loadError.value = null;
 
     console.log('开始加载所有数据...');
-
+    const mapID = getCurrentMapId();
     // 先加载实体数据
     await loadEntityData();
     console.log('实体数据加载完成');
-
+    await updatePoints(mapID);
     // 加载点位数据 - 使用getCurrentPoints获取预加载的点位
     const points = await getCurrentPoints();
 
     // 如果没有点位数据，可能是预加载失败，尝试重新加载
     if (!points || points.length === 0) {
       console.log('未找到预加载的点位数据，尝试重新加载...');
-      const mapID = getCurrentMapId();
       const freshPoints = await updatePoints(mapID);
       console.log('点位数据重新加载完成，加载了', freshPoints.length, '个点位');
     } else {

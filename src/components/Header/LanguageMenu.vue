@@ -77,7 +77,6 @@ const changeLanguage = async (lang: Language) => {
   // 先尝试加载语言文件
   const success = await loadLanguage(lang);
   if (success) {
-    locale.value = lang;
     openAlert.value = false;
     setLanguage(lang);
   } else {

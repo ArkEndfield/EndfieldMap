@@ -1,6 +1,6 @@
 export const DATA_DB_KEY = {
   MARKS: 'endfield-map-marks',
-};
+} as const;
 
 export const CACHE_DB_KEY = {
   POINTS: 'allPoints',
@@ -8,10 +8,10 @@ export const CACHE_DB_KEY = {
   REWARDS: 'allRewards',
   REWARDS_DATA: 'allRewardData',
   GUIDES: 'allGuides',
-};
+} as const;
 
 export const LOCAL_STORAGE_KEY = {
   MAP: 'map',
   ZOOM: 'zoom',
   LANGUAGE: 'userLanguage',
-};
+} as const;

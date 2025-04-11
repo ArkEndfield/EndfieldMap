@@ -109,7 +109,7 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
     // 默认隐藏所有实体
     Object.keys(entityInfo).forEach(key => {
       if (entityInfo[key]) {
-        entityInfo[key].entityInfo.show = true;
+        entityInfo[key].entityInfo.show = false;
       }
     });
   } catch (error) {
