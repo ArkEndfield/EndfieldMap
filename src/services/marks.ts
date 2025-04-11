@@ -1,15 +1,9 @@
-import { watchEffect } from 'vue';
+import { watch } from 'vue';
 import { getAllPoints } from './points';
 import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
-import { refresh } from './render';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { MarkChangeCallback, MarkFilterType, MarkInfo } from '@/types/marks';
-import {
-  currentMarkFilter,
-  markChangeCallbacks,
-  marks,
-  markStateChangeTrigger,
-} from '@/data/marks';
+import { currentMarkFilter, markChangeCallbacks, marks } from '@/data/marks';
 
 const STORAGE_KEY = DATA_DB_KEY.MARKS;
 
@@ -17,10 +11,15 @@ export const onMarkChange = (callback: MarkChangeCallback) => {
   markChangeCallbacks.push(callback);
 };
 
+export const offMarkChange = (callback: MarkChangeCallback) => {
+  const index = markChangeCallbacks.indexOf(callback);
+  if (index !== -1) {
+    markChangeCallbacks.splice(index, 1);
+  }
+};
+
 // 添加触发回调的函数
 const notifyMarkChange = () => {
-  // 确保是同步调用所有回调，避免任何延迟
-  // console.log(`执行${markChangeCallbacks.length}个标记变更回调`);
   markChangeCallbacks.forEach(callback => {
     try {
       callback();
@@ -52,8 +51,9 @@ export const initMarksData = async () => {
     Object.keys(marks).length,
     '个'
   );
+
   // 监听变化并保存
-  watchEffect(() => {
+  watch(marks, () => {
     // 同时仍然调用现有的回调机制
     notifyMarkChange();
     saveMarksToStorage();
@@ -74,9 +74,8 @@ export const markPoint = (seq: number) => {
     // 确保存储更新
     saveMarksToStorage();
 
-    // 使用计数器触发变更通知
-    markStateChangeTrigger.value++;
-    // console.log('触发标记状态变更计数器:', markStateChangeTrigger.value);
+    // 触发状态变更通知
+    notifyMarkChange();
 
     return marks[seq].finish;
   }
@@ -98,21 +97,6 @@ export const saveMarksToStorage = async () => {
     // console.log('标记数据已保存到IndexedDB永久存储');
   } catch (error) {
     console.error('保存标记数据到IndexedDB失败:', error);
-    // 当IndexedDB存储失败时，尝试使用localStorage作为备份
-    try {
-      // 同样使用普通对象进行序列化
-      const plainMarks = Object.keys(marks).reduce((obj, key) => {
-        obj[key] = {
-          finish: marks[key].finish,
-        };
-        return obj;
-      }, {} as MarkInfo);
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(plainMarks));
-      console.log('标记数据已备份到localStorage');
-    } catch (e) {
-      console.error('备份标记数据到localStorage也失败了:', e);
-    }
   }
 };
 
@@ -159,19 +143,14 @@ export const setMarkFilter = (filterType: MarkFilterType) => {
   // 更新筛选状态
   currentMarkFilter.value = filterType;
 
-  // 触发变更通知以更新UI计数等
-  markStateChangeTrigger.value++;
-
   // 使用entity.ts中的refresh来应用筛选，避免完全重新加载
-  refresh();
+  notifyMarkChange();
 
   return currentMarkFilter.value;
 };
 
 // 判断指定序号的点位是否应该显示
 export const shouldShowByMarkStatus = (seq: number): boolean => {
-  // 通过闭包捕获当前的markStateChangeTrigger值，确保函数会重新评估
-
   // 如果没有筛选，则显示所有点位
   if (currentMarkFilter.value === 'all') {
     return true;
@@ -237,7 +216,7 @@ export const coverMarks = async (newMarks?: MarkInfo | null) => {
   await saveMarksToStorage();
 
   // 刷新状态
-  refresh();
+  notifyMarkChange();
 };
 
 // 导入标点数据（合并）
@@ -259,5 +238,5 @@ export const mergeMarks = async (newMarks?: MarkInfo | null) => {
   await saveMarksToStorage();
 
   // 刷新状态
-  refresh();
+  notifyMarkChange();
 };

@@ -27,23 +27,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { updatePoints, getCurrentPoints } from './services/points';
-import {
-  loadEntityData,
-  reinitializeEntityLayers,
-  initializeMap,
-} from './services/entity';
+import { loadEntityData, initializeEntity } from './services/entity';
 import { loadRewardData } from './services/reward';
-import { loadTextPoints } from './data/locations';
-import {
-  map,
-  updateMap,
-  cacheMapId,
-  getCurrentMapId,
-} from './services/MapCore';
+import { getCurrentMapId } from './services/MapCore';
 import OpenLayersComponent from './OpenLayers.vue';
-import { PopupManager } from './services/PopupManager';
 import AppHeaderLeft from './components/Header/AppHeaderLeft.vue';
 import AppHeaderRight from './components/Header/AppHeaderRight.vue';
 import ZmdSidebar from './components/ZmdSidebar/index.vue';
@@ -60,14 +49,6 @@ const appLoaded = ref(false);
 // 在 setup 中添加数据加载逻辑
 const isLoading = ref(true);
 const loadError = ref<Error | null>(null);
-
-// 从OpenLayers.vue中导入的状态
-const isPopupVisible = ref(false);
-const showVideoInfo = ref(false);
-const openSubPopup = ref(false);
-const popupManager = ref<PopupManager | null>(null);
-let overlay: any = null;
-let selectInteraction: any = null;
 
 // 加载所有必要的数据
 async function loadAllData() {
@@ -106,19 +87,13 @@ async function loadAllData() {
 
     console.log('开始初始化地图...');
     // 初始化实体信息和地图
-    await initializeMap();
+    await initializeEntity();
     console.log('地图初始化完成');
 
     console.log('开始初始化已完成数据...');
     // 确保使用await等待marks数据初始化完成
     await initMarksData();
     console.log('已完成数据初始化完成');
-
-    console.log('开始加载地名标注...');
-    // 加载地名标注
-    const currentMapID = getCurrentMapId();
-    loadTextPoints(true, currentMapID);
-    console.log('地名标注加载完成');
 
     console.log('所有数据加载完成');
     isLoading.value = false;
@@ -150,62 +125,6 @@ onBeforeUnmount(() => {
   // 移除事件监听器
   window.removeEventListener('app-loading-complete', handleAppLoadingComplete);
 });
-
-// 监听地图切换
-watch(
-  () => cacheMapId.value,
-  async newValue => {
-    console.log(`开始切换地图到: ${newValue}`);
-
-    // 关闭可能打开的弹窗
-    isPopupVisible.value = false;
-    showVideoInfo.value = false;
-    openSubPopup.value = false;
-    popupManager.value?.setCurrentPosition(undefined);
-
-    // 如果overlay还存在，清除位置
-    if (overlay) {
-      overlay.setPosition(undefined);
-    }
-
-    // 清除选择状态
-    if (selectInteraction) {
-      selectInteraction.getFeatures().clear();
-    }
-
-    try {
-      const mapID = getCurrentMapId();
-      // 重新加载数据
-      const points = await updatePoints(mapID);
-      console.log(`地图切换，加载了 ${points.length} 个点位`);
-
-      // 等待 Vue 更新完成
-      await nextTick();
-
-      // 重新初始化实体图层
-      await reinitializeEntityLayers();
-
-      // 等待实体图层初始化完成
-      await nextTick();
-
-      // 更新地图图层
-      updateMap(newValue);
-
-      // 重新加载地名标注
-      loadTextPoints(true, newValue === 'map002' ? 'map02' : 'map01');
-
-      // 强制刷新一次地图显示
-      if (map.value) {
-        map.value.updateSize();
-        map.value.render();
-      }
-    } catch (error) {
-      console.error('切换地图时加载数据失败:', error);
-      // 可以在这里添加错误处理UI
-    }
-  },
-  { flush: 'post' } // 确保在 DOM 更新后执行
-);
 </script>
 
 <style lang="scss" scoped>

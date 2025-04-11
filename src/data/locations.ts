@@ -7,7 +7,6 @@ import { Style, Text, Fill, Stroke } from 'ol/style';
 
 import locations from '../assets/result.json';
 import { getLanguage } from '@/i18n';
-import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 
 const vectorSource = new VectorSource();
 
@@ -26,10 +25,12 @@ const selectLang = {
   'en-US': 1,
 };
 
-export const loadTextPoints = (reset = false, scene = 'map01') => {
-  const detail =
-    Number(localStorage.getItem(LOCAL_STORAGE_KEY.ZOOM)) >= 3.5 ||
-    scene === 'map02';
+export const loadTextPoints = (
+  reset = false,
+  scene = 'map01',
+  zoom: number
+) => {
+  const detail = zoom >= 3.5 || scene === 'map02';
   const styleFn = (text: string) =>
     new Style({
       text: new Text({

@@ -13,11 +13,8 @@ import {
   RegularShape,
 } from 'ol/style';
 
-import { rafTimeout, cancelRafTimeout } from '@/utils/animationTimer';
+import { rafTimeout } from '@/utils/animationTimer';
 import { debounce, xyz2crd } from '@/utils/common';
-import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
-import { shouldShowByMarkStatus } from '@/services/marks';
-import { currentMarkFilter } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
 import { PointData } from '@/types/points';
 
@@ -48,17 +45,6 @@ export const styleCache: { [key: string]: StyleCacheEntry } = {};
 export const entityClusterLayers: VectorLayer<any>[] = [];
 export const entityClusterSources: { [key: string]: Cluster } = {};
 
-// 添加一个全局变量来存储当前的缩放级别
-let currentZoomLevel = 3;
-// 增加一个缩放级别阈值变量，只有变化超过这个阈值才刷新样式
-const ZOOM_THRESHOLD = 0.08;
-// 添加一个标志来防止缩放过程中的频繁刷新
-let isRefreshingStyles = false;
-// 缩放结束后需要刷新的标志
-let pendingStyleRefresh = false;
-// 防抖计时器ID
-let refreshStylesTimerId: number | null = null;
-
 // 创建防抖版本的 createCircleIconStyle 函数缓存
 const iconStyleCache: { [key: string]: Promise<Style[] | Style> | undefined } =
   {};
@@ -81,51 +67,6 @@ const COMMON_IMAGE_SIZES: Record<string, { width: number; height: number }> = {
   default: { width: 32, height: 32 },
   icon: { width: 24, height: 24 },
   marker: { width: 32, height: 32 },
-};
-
-// 创建一个更强的防抖版本的updateCurrentZoom函数
-const debouncedUpdateZoomStyles = debounce(
-  (zoom: number) => {
-    // 避免不必要的更新，如果缩放级别变化很小
-    if (Math.abs(currentZoomLevel - zoom) < ZOOM_THRESHOLD) return;
-
-    // 更新缩放级别变量
-    const oldZoomLevel = currentZoomLevel;
-    currentZoomLevel = zoom;
-
-    // 这里只在缩放级别真正发生变化时更新样式
-    if (Math.abs(oldZoomLevel - zoom) >= ZOOM_THRESHOLD) {
-      refreshStyles();
-    }
-  },
-  600, // 延长防抖时间到600ms，减少连续缩放中的渲染次数
-  { leading: false, trailing: true }
-);
-
-// 更新当前缩放级别的函数
-export const updateCurrentZoom = (zoom: number) => {
-  // 使用四舍五入减少微小的缩放变化导致的更新
-  const roundedZoom = Math.round(zoom * 10) / 10;
-  const roundedCurrentZoom = Math.round(currentZoomLevel * 10) / 10;
-
-  // 如果缩放级别实际上没有变化（误差小于阈值），完全不做任何操作
-  if (roundedZoom === roundedCurrentZoom) return;
-
-  // 存储新的缩放级别，但不立即刷新
-  const oldZoomLevel = currentZoomLevel;
-  currentZoomLevel = zoom;
-
-  // 只有在缩放级别显著变化时才使用防抖函数
-  if (Math.abs(oldZoomLevel - zoom) >= ZOOM_THRESHOLD) {
-    // 使用增强的防抖函数，延迟执行样式刷新
-    debouncedUpdateZoomStyles(zoom);
-  }
-
-  // 清除先前的计时器
-  if (refreshStylesTimerId) {
-    cancelRafTimeout(refreshStylesTimerId);
-    refreshStylesTimerId = null;
-  }
 };
 
 // 为实体类型获取颜色
@@ -288,9 +229,7 @@ function calculateOptimalScale(
 // 修改创建样式的函数，加入图片尺寸自适应和内部尖头装饰
 async function createCircleIconStyle(entityType: string, size: number = 1) {
   // 使用缓存键，避免重复创建相同样式
-  const cacheKey = `${entityType}-${size}-${
-    Math.round(currentZoomLevel * 10) / 10
-  }`;
+  const cacheKey = `${entityType}-${size}`;
 
   // 如果已经有缓存的样式创建请求，直接返回它
   if (iconStyleCache[cacheKey] !== undefined) {
@@ -442,9 +381,6 @@ export const marker = (entry: PointData) => {
     payload: entry,
   });
 
-  // 应用样式
-  applyFeatureStyle(feature, entry.entityDataIdKey);
-
   // 注册到实体组中
   if (!entityGroup[entry.entityDataIdKey]?.points?.length) {
     entityGroup[entry.entityDataIdKey] = {
@@ -455,150 +391,6 @@ export const marker = (entry: PointData) => {
     entityGroup[entry.entityDataIdKey].points.push(feature);
   }
   return feature;
-};
-
-// 提取的应用样式函数，可以单独调用以更新样式
-export const applyFeatureStyle = (
-  feature: Feature<Point>,
-  entityTypeKey: string
-) => {
-  // 样式缓存键
-  const styleKey = `${entityTypeKey}-1-${
-    Math.round(currentZoomLevel * 10) / 10
-  }`;
-
-  // 不设置初始样式，而是设置一个不可见的样式，等待最终样式加载
-  feature.setStyle(new Style({})); // 空样式，实际上是不可见的
-
-  // 加载和应用最终样式
-  if (!iconStyleCache[styleKey]) {
-    // 创建样式并直接应用，避免中间状态
-    const stylePromise = createCircleIconStyle(entityTypeKey).then(style => {
-      // 仅当样式缓存还不存在时才设置
-      if (!iconStyleCache[styleKey]) {
-        iconStyleCache[styleKey] = Promise.resolve(style);
-      }
-      // 检查特征是否仍然有效（未被移除）
-      if (features.includes(feature)) {
-        feature.setStyle(style);
-      }
-      return style;
-    });
-
-    // 缓存样式创建请求
-    iconStyleCache[styleKey] = stylePromise;
-  } else {
-    // 如果已经有缓存的样式，则应用它
-    iconStyleCache[styleKey].then(style => {
-      // 检查特征是否仍然有效（未被移除）
-      if (features.includes(feature)) {
-        feature.setStyle(style);
-      }
-    });
-  }
-};
-
-// 单独更新聚合标点样式的函数
-export const updateClusterMarkerStyles = (zoom?: number) => {
-  if (zoom !== undefined) {
-    currentZoomLevel = zoom;
-  }
-
-  // 为每个特征更新样式
-  features.forEach(feature => {
-    const payload = feature.get('payload');
-    if (payload && payload.entityDataIdKey) {
-      applyFeatureStyle(feature, payload.entityDataIdKey);
-    }
-  });
-
-  // 更新聚合相关设置
-  updateClusterDistance(currentZoomLevel);
-
-  // 在最大缩放级别时强制禁用聚合
-  if (currentZoomLevel >= 5) {
-    forceDisperseAtMaxZoom(currentZoomLevel);
-  }
-
-  // 通知图层刷新
-  entityClusterLayers.forEach(layer => {
-    layer.changed();
-  });
-
-  // 清理不再需要的样式缓存
-  const currentZoomRounded = Math.round(currentZoomLevel * 10) / 10;
-  Object.keys(styleCache).forEach(key => {
-    if (!key.includes(`-${currentZoomRounded}`)) {
-      delete styleCache[key];
-    }
-  });
-};
-
-// 刷新所有样式的函数
-export const refreshStyles = () => {
-  // 如果已经在刷新中，标记待处理并退出
-  if (isRefreshingStyles) {
-    pendingStyleRefresh = true;
-    return;
-  }
-
-  // 设置正在刷新标志
-  isRefreshingStyles = true;
-
-  // 使用优化的渲染策略：不再使用透明度变化，而是保持旧图层完整直到新图层准备好
-  requestAnimationFrame(() => {
-    try {
-      // 创建样式的深度副本，而不是仅标记它们
-      const oldStyleCache = {};
-      Object.keys(styleCache).forEach(key => {
-        oldStyleCache[key] = {
-          style: Array.isArray(styleCache[key].style)
-            ? [...styleCache[key].style]
-            : styleCache[key].style,
-          needsUpdate: false,
-        };
-      });
-
-      // 保持原有图层的引用和可见性，而不是改变透明度
-      entityClusterLayers.forEach(layer => {
-        // 添加自定义属性来标记图层状态而不是修改透明度
-        layer.set('isRefreshing', true);
-      });
-
-      // 重要：移除"正在刷新"标记，但不触发重绘
-      rafTimeout(() => {
-        entityClusterLayers.forEach(layer => {
-          layer.set('isRefreshing', false);
-          // 静默通知图层数据已更新，但不强制重绘
-          layer.changed();
-        });
-      }, 50);
-
-      // 延迟清理旧样式，给新样式加载留出充足时间
-      rafTimeout(() => {
-        // 现在可以安全地清理不需要的资源
-        Object.keys(oldStyleCache).forEach(key => {
-          if (styleCache[key] && styleCache[key].needsUpdate) {
-            delete styleCache[key].needsUpdate;
-          }
-        });
-      }, 300);
-    } finally {
-      // 重置刷新状态，但给足时间确保所有样式都已完全应用
-      rafTimeout(() => {
-        isRefreshingStyles = false;
-
-        // 处理待处理的刷新请求
-        if (pendingStyleRefresh) {
-          pendingStyleRefresh = false;
-          // 延迟执行下一次刷新，避免连续刷新造成的闪烁
-          rafTimeout(() => {
-            refreshStyles();
-          }, 300); // 增加时间间隔，避免频繁刷新
-        }
-      }, 100);
-    }
-  });
 };
 
 // 按实体类型分组创建聚合源和图层
@@ -646,7 +438,7 @@ export const createEntityClusterLayers = () => {
         const size = feature.get('features')?.length;
 
         // 样式键
-        const styleKey = `${entityType}-${size}-${currentZoomLevel}`;
+        const styleKey = `${entityType}-${size}`;
 
         // 如果缓存中没有样式
         if (!styleCache[styleKey]) {
@@ -715,142 +507,7 @@ const debouncedUpdateClusterDistance = debounce(
   { leading: false, trailing: true }
 );
 
-// 强制分散最大缩放级别的聚合点 - 添加防抖处理
-const debouncedForceDisperseAtMaxZoom = debounce(
-  (zoom: number) => {
-    if (zoom >= 5) {
-      // 在最大缩放级别强制所有聚合源的距离为0
-      Object.values(entityClusterSources).forEach(source => {
-        source.setDistance(0);
-      });
-    }
-  },
-  250,
-  { leading: false, trailing: true }
-);
-
 // 原始函数现在调用防抖版本
 export const updateClusterDistance = (zoom: number) => {
   debouncedUpdateClusterDistance(zoom);
 };
-
-export const forceDisperseAtMaxZoom = (zoom: number) => {
-  debouncedForceDisperseAtMaxZoom(zoom);
-};
-
-// 实现刷新聚合函数
-export const refreshCluster = () => {
-  // 清空现有的聚合层
-  entityClusterLayers.length = 0;
-  Object.keys(entityClusterSources).forEach(
-    key => delete entityClusterSources[key]
-  );
-
-  // 重新创建聚合层
-  createEntityClusterLayers();
-
-  // 重置当前缩放级别的聚合距离
-  updateClusterDistance(currentZoomLevel);
-  // 在最大缩放级别时强制禁用聚合
-  if (currentZoomLevel >= 4) {
-    forceDisperseAtMaxZoom(currentZoomLevel);
-  }
-};
-
-// 修改refresh函数，加入更多调试信息
-export const refresh = () => {
-  // 确保所有源都被正确初始化
-  if (Object.keys(entityClusterSources).length === 0) {
-    createEntityClusterLayers();
-  }
-
-  // 从localStorage中获取最新缩放级别，确保使用最新值
-  try {
-    const storedZoom = Number(
-      localStorage.getItem(LOCAL_STORAGE_KEY.ZOOM) || '3'
-    );
-    // 更新全局变量，确保使用最新的缩放级别
-    currentZoomLevel = storedZoom;
-  } catch (e) {
-    console.warn('无法获取最新缩放级别，使用当前值:', currentZoomLevel);
-  }
-
-  // 不再清理所有源，而是控制图层可见性
-  for (const key in entityInfo) {
-    const source = entityClusterSources[key];
-    if (!source) continue;
-
-    // 查找对应的图层
-    const layer = entityClusterLayers.find(l => l.getSource() === source);
-
-    if (!layer) continue;
-
-    // 检查是否需要显示该类型的实体
-    const shouldShowEntityType = entityInfo[key].entityInfo.show;
-
-    // 通过设置图层可见性来控制标点显示/隐藏，而不是重新添加/删除特征
-    layer.setVisible(shouldShowEntityType);
-
-    // 如果需要显示，则根据标记状态更新特征集合
-    if (shouldShowEntityType) {
-      // 获取原始的矢量源
-      const vectorSource = source.getSource();
-      if (!vectorSource) continue;
-
-      // 在执行过滤前清空源
-      vectorSource.clear();
-
-      // 找出属于这个类型的所有特征
-      let typeFeatures = features.filter(f => {
-        const payload = f.get('payload');
-        return payload?.entityDataIdKey === key;
-      });
-
-      // 如果不是"全部"筛选状态，则根据标记状态进行过滤
-      if (currentMarkFilter.value !== 'all') {
-        typeFeatures = typeFeatures.filter(f => {
-          const payload = f.get('payload');
-          return shouldShowByMarkStatus(payload?.levelLogicId);
-        });
-      }
-
-      // 如果有特征要显示，添加到对应的源
-      if (typeFeatures.length > 0) {
-        vectorSource.addFeatures(typeFeatures);
-      }
-    }
-  }
-
-  // 根据最新缩放级别确定是否应该聚合
-  const shouldCluster = currentZoomLevel < 4;
-  const newDistance = shouldCluster ? 30 : 0;
-
-  // 立即更新所有聚合源的距离
-  Object.values(entityClusterSources).forEach(source => {
-    source.setDistance(newDistance);
-  });
-
-  // 在最大缩放级别时强制禁用聚合
-  if (currentZoomLevel >= 5) {
-    // 直接应用，不使用防抖版本
-    Object.values(entityClusterSources).forEach(source => {
-      source.setDistance(0);
-    });
-  }
-
-  console.log(
-    `刷新实体图层：缩放级别=${currentZoomLevel}, 聚合距离=${newDistance}`
-  );
-};
-
-// 创建一个防抖版本的refresh函数，延迟300ms执行，避免短时间内频繁刷新
-export const debouncedRefresh = debounce(refresh, 300, {
-  leading: false,
-  trailing: true,
-});
-
-// 聚合源
-export const clusterSource = new Cluster({
-  distance: 1,
-  source: new VectorSource(),
-});

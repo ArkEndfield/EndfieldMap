@@ -54,7 +54,7 @@ import { cn } from '@/utils/tailwind';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { type Language, loadLanguage, setLanguage } from '@/i18n';
-import { getCurrentMapId } from '@/services/MapCore';
+import { getCurrentMapId, getZoom } from '@/services/MapCore';
 
 const openAlert = ref(false);
 const { locale } = useI18n();
@@ -87,7 +87,8 @@ const changeLanguage = async (lang: Language) => {
     setLanguage('zh-CN');
   }
   const currentMapId = getCurrentMapId();
-  loadTextPoints(true, currentMapId);
+  const zoom = getZoom();
+  loadTextPoints(true, currentMapId, zoom);
 };
 </script>
 

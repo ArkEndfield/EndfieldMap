@@ -6,8 +6,10 @@ import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
 import { areaNameLayer, loadTextPoints } from '@/data/locations';
 import {
+  createEntityClusterLayers,
   entityClusterLayers,
-  refresh,
+  entityClusterSources,
+  features,
   updateClusterDistance,
 } from '@/services/render';
 import { ref, shallowRef } from 'vue';
@@ -25,6 +27,15 @@ import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
 import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 import { RenderOptimizer } from '@/utils/renderOptimizer';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
+import { updatePoints } from './points';
+import {
+  offSelectChange,
+  onSelectChange,
+  initializeEntityLayers,
+} from './entity';
+import { entityInfo } from '@/data/entity';
+import { currentMarkFilter } from '@/data/marks';
+import { offMarkChange, onMarkChange, shouldShowByMarkStatus } from './marks';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -52,7 +63,7 @@ async function saveMapViewState(mapId: string): Promise<void> {
 
   const view = map.value.getView();
   const center = view.getCenter();
-  const zoom = view.getZoom();
+  const zoom = getZoom();
 
   if (!center || zoom === undefined) return;
 
@@ -200,6 +211,9 @@ function addEntityLayersToMap(currentRetry = 0) {
       // 记录加载成功
       entityLayersLoaded.value = true;
       console.log('实体图层加载成功');
+
+      // 在实体图层成功添加到地图后，主动调用refreshMap显示标点
+      refreshMap();
     });
 
     return;
@@ -224,6 +238,7 @@ function addEntityLayersToMap(currentRetry = 0) {
 
 // 更新地图视图和图层
 export async function updateMap(mapIndex: string) {
+  console.log('更新地图', mapIndex);
   if (!map.value) return;
 
   // 重置实体图层加载状态
@@ -273,11 +288,6 @@ export async function updateMap(mapIndex: string) {
     view.setZoom(DEFAULT_ZOOM);
   }
 
-  rafTimeout(refresh, 300);
-
-  // 更新地图ID
-  cacheMapId.value = mapIndex;
-  localStorage.setItem(MAP_ID_KEY, mapIndex);
   console.log(`已更新地图到 ${mapIndex}`);
 }
 
@@ -355,6 +365,10 @@ export function cleanupMap() {
   map.value.un('click', mapClickHandler);
   map.value.un('moveend', moveEndChange);
   map.value.getView().un('change:resolution', handleZoomChange);
+
+  offMarkChange(refreshMap);
+  offSelectChange(refreshMap);
+
   // 清除选择交互
   if (selectInteraction) {
     selectInteraction.un('select', pointSelectHandler);
@@ -489,7 +503,6 @@ export async function createMap(
   initPopupManager(overlayElement);
 
   // 添加选择交互
-  // 添加选择交互
   map.value.addInteraction(selectInteraction);
   // 修改选择交互部分的代码，先关闭弹窗，再放大聚合点
   selectInteraction.on('select', pointSelectHandler);
@@ -505,6 +518,12 @@ export async function createMap(
 
   // 设置窗口大小变化监听器
   window.addEventListener('resize', windowResizeHandler);
+
+  onMarkChange(refreshMap);
+  onSelectChange(refreshMap);
+
+  // 地图创建完成后，主动调用refreshMap显示标点
+  refreshMap();
 }
 
 const pointSelectHandler = async function (event: SelectEvent) {
@@ -595,6 +614,13 @@ const pointSelectHandler = async function (event: SelectEvent) {
   }
 };
 
+export const getZoom = () => {
+  const currentMap = map.value;
+  if (!currentMap) return 0;
+  const zoom = currentMap.getView().getZoom();
+  return zoom || 0;
+};
+
 const handleZoomChange = function () {
   const currentMap = map.value;
   if (!currentMap) return;
@@ -604,9 +630,9 @@ const handleZoomChange = function () {
     popupManager.value.setMapZooming(true);
   }
 
-  const zoom = currentMap.getView().getZoom() || 0;
+  const zoom = getZoom() || 0;
   const currentMapID = getCurrentMapId();
-  loadTextPoints(true, currentMapID);
+  loadTextPoints(true, currentMapID, zoom);
 
   updateZoomValue(zoom);
 
@@ -628,13 +654,13 @@ const moveEndChange = debounce(
     const currentMap = map.value;
     if (!currentMap) return;
 
-    const zoom = currentMap.getView().getZoom() || 0;
+    const zoom = getZoom();
     // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
     const position = currentMap.getView().getCenter();
     // 确保最终值是准确的
     if (Math.abs(zoomLevel.value - zoom) >= 0.01) {
       const currentMapID = getCurrentMapId();
-      loadTextPoints(true, currentMapID);
+      loadTextPoints(true, currentMapID, zoom);
       updateZoomValue(zoom);
     }
     const currentMapID = getCurrentMapId();
@@ -676,8 +702,7 @@ function mapClickHandler(event: MapBrowserEvent<any>) {
 }
 
 // 选择地图
-export const selectMap = (id: string) => {
-  console.log('选择地图', id);
+export const selectMap = async (id: string) => {
   if (getCurrentMapId() === id) return;
 
   // 关闭可能打开的弹窗
@@ -689,6 +714,73 @@ export const selectMap = (id: string) => {
     popupManager.value.setCurrentPosition(undefined);
   }
 
+  // 更新地图ID
+  cacheMapId.value = id;
+  localStorage.setItem(MAP_ID_KEY, id);
   // 更新地图
+  // 重新加载数据
+  await updatePoints(id);
+  // console.log(`地图切换，加载了 ${points.length} 个点位`);
+  // 初始化实体图层
+  await initializeEntityLayers();
+
+  // 更新地图图层
   updateMap(id);
+
+  // 重新加载地名标注
+  loadTextPoints(true, id === 'map002' ? 'map02' : 'map01', zoomLevel.value);
+};
+
+// 修改refresh函数，加入更多调试信息
+export const refreshMap = () => {
+  // 确保所有源都被正确初始化
+  if (Object.keys(entityClusterSources).length === 0) {
+    createEntityClusterLayers();
+  }
+
+  // 不再清理所有源，而是控制图层可见性
+  for (const key in entityInfo) {
+    const source = entityClusterSources[key];
+    if (!source) continue;
+
+    // 查找对应的图层
+    const layer = entityClusterLayers.find(l => l.getSource() === source);
+
+    if (!layer) continue;
+
+    // 检查是否需要显示该类型的实体
+    const shouldShowEntityType = entityInfo[key].entityInfo.show;
+
+    // 通过设置图层可见性来控制标点显示/隐藏，而不是重新添加/删除特征
+    layer.setVisible(shouldShowEntityType);
+
+    // 如果需要显示，则根据标记状态更新特征集合
+    if (shouldShowEntityType) {
+      // 获取原始的矢量源
+      const vectorSource = source.getSource();
+      if (!vectorSource) continue;
+
+      // 在执行过滤前清空源
+      vectorSource.clear();
+
+      // 找出属于这个类型的所有特征
+      let typeFeatures = features.filter(f => {
+        const payload = f.get('payload');
+        return payload?.entityDataIdKey === key;
+      });
+
+      // 如果不是"全部"筛选状态，则根据标记状态进行过滤
+      if (currentMarkFilter.value !== 'all') {
+        typeFeatures = typeFeatures.filter(f => {
+          const payload = f.get('payload');
+          return shouldShowByMarkStatus(payload?.levelLogicId);
+        });
+      }
+
+      // 如果有特征要显示，添加到对应的源
+      if (typeFeatures.length > 0) {
+        vectorSource.addFeatures(typeFeatures);
+      }
+    }
+  }
 };

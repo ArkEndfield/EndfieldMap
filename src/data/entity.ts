@@ -8,6 +8,9 @@ import type {
 // 实体信息
 export const entityInfo: EntityCategories = reactive({});
 
+// 选择 callbacks
+export const selectCallbacks: (() => void)[] = [];
+
 export const isSelectAll = computed(() => {
   return Object.keys(entityInfo).every(key => entityInfo[key].entityInfo.show);
 });

@@ -1,6 +1,6 @@
 import { watch } from 'vue';
 import { loadJSON } from '@/utils/jsonLoader';
-import { entityInfo } from '@/data/entity';
+import { entityInfo, selectCallbacks } from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
 import type { PointData } from '@/types/points';
 import {
@@ -11,10 +11,9 @@ import {
   entityClusterSources,
   entityClusterLayers,
 } from '@/services/render';
-import { marker, createEntityClusterLayers, refresh } from '@/services/render';
+import { marker, createEntityClusterLayers } from '@/services/render';
 import type { EntityCategories } from '@/types/entity';
 import { currentMarkFilter } from '@/data/marks';
-import { debounce } from '@/utils/common';
 
 // 获取entity数据
 export const getEntityDataByKey = (key: string) => {
@@ -30,7 +29,7 @@ export const getPointsByEntityType = async (
 };
 
 // 初始化地图
-export async function initializeMap() {
+export async function initializeEntity() {
   try {
     await loadEntityData(); // 先加载实体数据
     const currentPoints = await getCurrentPoints(); // 使用导入的获取当前点位的函数
@@ -40,6 +39,10 @@ export async function initializeMap() {
     console.error('初始化地图失败:', error);
     throw error;
   }
+  // 监听标记筛选状态变化，刷新地图
+  watch(currentMarkFilter, () => {
+    notifySelectChange();
+  });
 }
 
 // 初始化实体信息
@@ -106,7 +109,7 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
     // 默认隐藏所有实体
     Object.keys(entityInfo).forEach(key => {
       if (entityInfo[key]) {
-        entityInfo[key].entityInfo.show = false;
+        entityInfo[key].entityInfo.show = true;
       }
     });
   } catch (error) {
@@ -135,7 +138,7 @@ export async function loadEntityData() {
 }
 
 // 重新初始化实体图层
-export const reinitializeEntityLayers = async () => {
+export const initializeEntityLayers = async () => {
   // 保存原有的显示状态
   const showStates = Object.fromEntries(
     Object.entries(entityInfo).map(([key, info]) => [key, info.entityInfo.show])
@@ -215,7 +218,7 @@ export const selectAll = () => {
   for (const key in entityInfo) {
     entityInfo[key].entityInfo.show = true;
   }
-  refresh();
+  notifySelectChange();
 };
 
 // 清除所有选择
@@ -223,7 +226,7 @@ export const clear = () => {
   for (const key in entityInfo) {
     entityInfo[key].entityInfo.show = false;
   }
-  refresh();
+  notifySelectChange();
 };
 
 export const select = (...keys: string[]) => {
@@ -232,7 +235,7 @@ export const select = (...keys: string[]) => {
       entityInfo[key].entityInfo.show = true;
     }
   });
-  refresh();
+  notifySelectChange();
 };
 
 export const unSelect = (...keys: string[]) => {
@@ -241,7 +244,7 @@ export const unSelect = (...keys: string[]) => {
       entityInfo[key].entityInfo.show = false;
     }
   });
-  refresh();
+  notifySelectChange();
 };
 
 export const toggleSelect = (...keys: string[]) => {
@@ -250,7 +253,7 @@ export const toggleSelect = (...keys: string[]) => {
       entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
     }
   });
-  refresh();
+  notifySelectChange();
 };
 
 // 选择一大类的实体
@@ -260,7 +263,7 @@ export const selectByCategory = (category: string) => {
       entityInfo[key].entityInfo.show = true;
     }
   }
-  refresh();
+  notifySelectChange();
 };
 
 // 取消选择一大类的实体
@@ -270,7 +273,7 @@ export const unSelectByCategory = (category: string) => {
       entityInfo[key].entityInfo.show = false;
     }
   }
-  refresh();
+  notifySelectChange();
 };
 
 export const selectAllByCategory = (category: string) => {
@@ -279,7 +282,7 @@ export const selectAllByCategory = (category: string) => {
       entityInfo[key].entityInfo.show = true;
     }
   }
-  refresh();
+  notifySelectChange();
 };
 
 export const unSelectAllByCategory = (category: string) => {
@@ -288,7 +291,7 @@ export const unSelectAllByCategory = (category: string) => {
       entityInfo[key].entityInfo.show = false;
     }
   }
-  refresh();
+  notifySelectChange();
 };
 
 // 切换选择一大类的实体
@@ -298,7 +301,7 @@ export const toggleSelectByCategory = (category: string) => {
       entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
     }
   }
-  refresh();
+  notifySelectChange();
 };
 
 export const toggleSelectByName = (name: string) => {
@@ -307,16 +310,34 @@ export const toggleSelectByName = (name: string) => {
       entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
     }
   }
-  refresh();
+  notifySelectChange();
 };
 
-// 创建一个防抖版本的refresh函数，延迟300ms执行，避免短时间内频繁刷新
-export const debouncedRefresh = debounce(refresh, 300, {
-  leading: false,
-  trailing: true,
-});
+export const onSelectChange = (callback: () => void) => {
+  if (typeof callback === 'function') {
+    selectCallbacks.push(callback);
+  } else {
+    console.error('回调函数无效:', callback);
+  }
+};
 
-// 监听标记筛选状态变化，刷新地图
-watch(currentMarkFilter, () => {
-  refresh();
-});
+export const offSelectChange = (callback: () => void) => {
+  const index = selectCallbacks.indexOf(callback);
+  if (index !== -1) {
+    selectCallbacks.splice(index, 1);
+  } else {
+    console.error('未找到回调函数:', callback);
+  }
+};
+
+const notifySelectChange = () => {
+  selectCallbacks.forEach(callback => {
+    if (typeof callback === 'function') {
+      try {
+        callback();
+      } catch (error) {
+        console.error('执行选择状态回调时发生错误:', error);
+      }
+    }
+  });
+};

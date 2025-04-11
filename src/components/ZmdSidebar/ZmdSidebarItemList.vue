@@ -35,7 +35,7 @@
           :value="v.count"
           :mark-count="getMarkCountForEntity(i, v.name)"
           v-model="v.show"
-          @change="refresh"
+          @change="refreshMap"
         >
           <img :src="`/assets/${i}/${v.pic}.png`" />
         </ZmdSidebarObject>
@@ -45,16 +45,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import { categoryInfo, entityInfo, isSelectAllByCategory } from '@/data/entity';
-import { refresh } from '@/services/render';
 import { getCurrentPoints } from '@/services/points';
-import { marks, markStateChangeTrigger } from '@/data/marks';
-import { onMarkChange } from '@/services/marks';
+import { marks } from '@/data/marks';
+import { onMarkChange, offMarkChange } from '@/services/marks';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
 import { selectAllByCategory, unSelectByCategory } from '@/services/entity';
-import { getCurrentMapId } from '@/services/MapCore';
+import { getCurrentMapId, refreshMap } from '@/services/MapCore';
 import type { EntityInfo } from '@/types/entity';
 
 const props = withDefaults(
@@ -149,9 +148,12 @@ onMounted(async () => {
   await calculateEntityMarkCounts();
 
   // 使用onMarkChange注册标记变更回调
-  onMarkChange(() => {
-    calculateEntityMarkCounts();
-  });
+  onMarkChange(calculateEntityMarkCounts);
+});
+
+onUnmounted(() => {
+  // 清除标记变更回调
+  offMarkChange(calculateEntityMarkCounts);
 });
 
 // 获取图标颜色的计算属性函数
@@ -159,16 +161,6 @@ const getIconColor = (category: string) => {
   return isSelectAllByCategory(category) ? '#f9f853' : '#FFFFFF';
 };
 
-// 同时监听标记状态变化触发器
-watch(
-  markStateChangeTrigger,
-  () => {
-    calculateEntityMarkCounts();
-  },
-  { immediate: true }
-);
-
-// 监听地图切换 (使用localStorage中的map值)
 watch(
   () => getCurrentMapId(),
   () => {
