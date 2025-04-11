@@ -7,7 +7,7 @@
     <AnimatePresence :initial="false">
       <motion.div
         ref="popoverRef"
-        v-show="showPopover"
+        v-if="showPopover"
         :class="[
           'arknights-popover absolute py-3 px-5 shadow-lg w-max max-w-64 text-sm',
         ]"
