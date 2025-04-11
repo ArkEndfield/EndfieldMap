@@ -97,7 +97,7 @@ function getColorForEntity(entityType: string): string {
     // 矿物 - 棕色
     int_doodad_core_mine_copper: 'rgba(121, 85, 72, 0.8)',
     int_doodad_core_mine_iron: 'rgba(121, 85, 72, 0.8)',
-    int_doodad_core_mine_originum: 'rgba(121, 85, 72, 0.8)',
+    int_doodad_core_mine_originium: 'rgba(121, 85, 72, 0.8)',
     int_doodad_core_mine_quartz: 'rgba(121, 85, 72, 0.8)',
 
     // 植物 - 绿色

@@ -157,11 +157,11 @@
       "count": 1
     }
   },
-  "int_doodad_core_mine_originum": {
+  "int_doodad_core_mine_originium": {
     "category": "mineral",
     "entityInfo": {
       "name": "源矿矿脉",
-      "point": "int_doodad_core_mine_originum",
+      "point": "int_doodad_core_mine_originium",
       "pic": "item_originium_ore",
       "show": true,
       "count": 1
@@ -177,131 +177,131 @@
       "count": 1
     }
   },
-  "int_doodad_core_crylplant_1_1": {
+  "int_doodad_crylplant_1_1": {
     "category": "plant",
     "entityInfo": {
       "name": "晶化多齿叶",
-      "point": "int_doodad_core_crylplant_1_1",
+      "point": "int_doodad_crylplant_1_1",
       "pic": "item_plant_crylplant_1_1",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_crylplant_1_2": {
+  "int_doodad_crylplant_1_2": {
     "category": "plant",
     "entityInfo": {
       "name": "纯晶多齿叶",
-      "point": "int_doodad_core_crylplant_1_2",
+      "point": "int_doodad_crylplant_1_2",
       "pic": "item_plant_crylplant_1_2",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_crylplant_1_3": {
+  "int_doodad_crylplant_1_3": {
     "category": "plant",
     "entityInfo": {
       "name": "至晶多齿叶",
-      "point": "int_doodad_core_crylplant_1_3",
+      "point": "int_doodad_crylplant_1_3",
       "pic": "item_plant_crylplant_1_3",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_crylplant_2_1": {
+  "int_doodad_crylplant_2_1": {
     "category": "plant",
     "entityInfo": {
       "name": "受蚀玉化叶",
-      "point": "int_doodad_core_crylplant_2_1",
+      "point": "int_doodad_crylplant_2_1",
       "pic": "item_plant_crylplant_2_1",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_mushroom_1_1": {
+  "int_doodad_mushroom_1_1": {
     "category": "plant",
     "entityInfo": {
       "name": "轻红柱状菌",
-      "point": "int_doodad_core_mushroom_1_1",
+      "point": "int_doodad_mushroom_1_1",
       "pic": "item_plant_mushroom_1_1",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_mushroom_1_2": {
+  "int_doodad_mushroom_1_2": {
     "category": "plant",
     "entityInfo": {
       "name": "中红柱状菌",
-      "point": "int_doodad_core_mushroom_1_2",
+      "point": "int_doodad_mushroom_1_2",
       "pic": "item_plant_mushroom_1_2",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_mushroom_1_3": {
+  "int_doodad_mushroom_1_3": {
     "category": "plant",
     "entityInfo": {
       "name": "重红柱状菌",
-      "point": "int_doodad_core_mushroom_1_3",
+      "point": "int_doodad_mushroom_1_3",
       "pic": "item_plant_mushroom_1_3",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_mushroom_2_1": {
+  "int_doodad_mushroom_2_1": {
     "category": "plant",
     "entityInfo": {
       "name": "血菌",
-      "point": "int_doodad_core_mushroom_2_1",
+      "point": "int_doodad_mushroom_2_1",
       "pic": "item_plant_mushroom_2_1",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_spcstone_1_1": {
+  "int_doodad_spcstone_1_1": {
     "category": "spcstone",
     "entityInfo": {
       "name": "轻黯石",
-      "point": "int_doodad_core_spcstone_1_1",
+      "point": "int_doodad_spcstone_1_1",
       "pic": "item_plant_spcstone_1_1",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_spcstone_1_2": {
+  "int_doodad_spcstone_1_2": {
     "category": "spcstone",
     "entityInfo": {
       "name": "中黯石",
-      "point": "int_doodad_core_spcstone_1_2",
+      "point": "int_doodad_spcstone_1_2",
       "pic": "item_plant_spcstone_1_2",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_spcstone_1_3": {
+  "int_doodad_spcstone_1_3": {
     "category": "spcstone",
     "entityInfo": {
       "name": "重黯石",
-      "point": "int_doodad_core_spcstone_1_3",
+      "point": "int_doodad_spcstone_1_3",
       "pic": "item_plant_spcstone_1_3",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_spcstone_2_1": {
+  "int_doodad_spcstone_2_1": {
     "category": "spcstone",
     "entityInfo": {
       "name": "燎石",
-      "point": "int_doodad_core_spcstone_2_1",
+      "point": "int_doodad_spcstone_2_1",
       "pic": "item_plant_spcstone_2_1",
       "show": true,
       "count": 1
     }
   },
-  "int_doodad_core_recycle": {
+  "int_doodad_recycle": {
     "category": "special",
     "entityInfo": {
       "name": "资源回收站",
-      "point": "int_doodad_core_recycle",
+      "point": "int_doodad_recycle",
       "pic": "icon_map_recycle",
       "show": true,
       "count": 1
