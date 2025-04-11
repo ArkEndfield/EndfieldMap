@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { getMarks } from '@/data/marks';
+import { getMarks } from '@/services/marks';
 import useStateOperate from '@/hooks/useStateOperate';
 
 const { loading, error, data, success, execute } = useStateOperate(

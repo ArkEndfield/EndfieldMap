@@ -1,9 +1,9 @@
 import { ref, Ref, watch } from 'vue';
 import Map from 'ol/Map';
 import Overlay from 'ol/Overlay';
-import { PointData } from '@/data/points';
+import type { PointData } from '@/types/points';
 import { xyz2crd } from '@/utils/common';
-import { shouldShowRewards } from '@/data/reward';
+import { shouldShowRewards } from '@/services/reward';
 import { rafTimeout } from '@/utils/animationTimer';
 
 export class PopupManager {
@@ -27,9 +27,7 @@ export class PopupManager {
     this.overlay = overlay;
     this.popupContainer = popupContainer;
     this.entity = entity;
-    
   }
-
 
   // 关闭弹出层
   async closeToast() {
@@ -212,7 +210,7 @@ export class PopupManager {
 
       // 2. 开始关闭当前弹窗
       await this.closeToast();
-      
+
       // 等待弹窗完全关闭
       await new Promise<void>(resolve => rafTimeout(resolve, 200));
 
@@ -221,7 +219,7 @@ export class PopupManager {
       this.showVideoInfo.value = false;
       this.currentPosition = popupPosition;
       this.overlay.setPosition(popupPosition);
-      
+
       // 4. 展开新弹窗
       await this.openToast();
 
@@ -232,12 +230,12 @@ export class PopupManager {
         if (hasRewards) {
           // 等待主弹窗完全展开后再展开副弹窗
           await new Promise<void>(resolve => rafTimeout(resolve, 300));
-          
+
           this.openSubPopup.value = true;
-          
+
           // 等待副弹窗展开动画完成
           await new Promise<void>(resolve => rafTimeout(resolve, 300));
-          
+
           // 展开后再次检查位置
           this.adjustPopupPosition();
         }
@@ -268,7 +266,7 @@ export class PopupManager {
       this.isMapZooming
     )
       return;
-    
+
     // 使用 requestAnimationFrame 确保在下一帧获取位置，避免动画过程中的不准确位置
     requestAnimationFrame(() => {
       // 再次检查弹窗是否仍然可见
@@ -276,11 +274,11 @@ export class PopupManager {
         console.log('弹窗已不可见，取消位置调整');
         return;
       }
-      
+
       // 获取当前弹窗的实际尺寸
       const popupRect = this.popupContainer.getBoundingClientRect();
       const mapRect = this.map.getTargetElement().getBoundingClientRect();
-      
+
       // 添加位置有效性检查
       if (popupRect.width === 0 || popupRect.height === 0) {
         console.warn('弹窗尺寸为0，可能是尚未完全渲染，延迟重试');
@@ -288,9 +286,9 @@ export class PopupManager {
         setTimeout(() => this.adjustPopupPosition(), 50);
         return;
       }
-      
+
       console.log('弹窗位置', popupRect);
-      
+
       // 检查弹窗是否超出视口边界
       let needAdjust = false;
       let adjustX = 0;
@@ -302,7 +300,7 @@ export class PopupManager {
 
       // 如果子弹窗展开，增加右侧检查的边界
       const extraRightMargin = this.openSubPopup.value ? 320 : 0; // 调整副弹窗宽度估计
-      
+
       // 检查是否超出边界
       if (popupRect.left < mapRect.left + safeMargin) {
         needAdjust = true;

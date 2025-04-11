@@ -2,15 +2,39 @@ import { createI18n } from 'vue-i18n';
 import { loadJSON } from '@/utils/jsonLoader';
 import zhCN from './locales/zh-cn.json';
 import rewardZhCN from './locales/item_i18n_cn.json';
+import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 
 const zhCNLang = {
   ...zhCN,
   item: rewardZhCN,
 };
 
+const KEY = LOCAL_STORAGE_KEY.LANGUAGE;
+
 export type MessageSchema = typeof zhCNLang;
+
 export type Language = 'zh-CN' | 'zh-TW' | 'en-US';
-const storagedLocale = localStorage.getItem('userLanguage');
+
+const storagedLocale = localStorage.getItem(KEY);
+
+export const setLanguage = (lang: Language) => {
+  localStorage.setItem(KEY, lang);
+  if (lang !== 'zh-CN') {
+    loadLanguage(lang).catch(console.error);
+  }
+};
+
+export const resetLanguage = () => {
+  localStorage.removeItem(KEY);
+};
+
+export const getLanguage = () => {
+  const lang = localStorage.getItem(KEY);
+  if (lang) {
+    return lang;
+  }
+  return 'zh-CN';
+};
 
 const i18n = createI18n({
   locale: (storagedLocale as Language) || window.navigator.language,

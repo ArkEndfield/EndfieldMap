@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { type GuideTextNode } from '@/data/guides';
+import { type GuideTextNode } from '@/types/guides';
 
 const props = withDefaults(
   defineProps<{

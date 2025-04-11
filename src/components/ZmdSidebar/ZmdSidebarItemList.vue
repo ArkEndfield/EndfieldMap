@@ -46,19 +46,16 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue';
-import {
-  categoryInfo,
-  refresh,
-  entityInfo,
-  type EntityInfo,
-  isSelectAllByCategory,
-  selectAllByCategory,
-} from '@/data/entity';
-import { getCurrentPoints } from '@/data/points';
-import { marks, markStateChangeTrigger, onMarkChange } from '@/data/marks';
+import { categoryInfo, entityInfo, isSelectAllByCategory } from '@/data/entity';
+import { refresh } from '@/services/render';
+import { getCurrentPoints } from '@/services/points';
+import { marks, markStateChangeTrigger } from '@/data/marks';
+import { onMarkChange } from '@/services/marks';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
-import { unSelectByCategory } from '@/data/entity';
+import { selectAllByCategory, unSelectByCategory } from '@/services/entity';
+import { getCurrentMapId } from '@/services/MapCore';
+import type { EntityInfo } from '@/types/entity';
 
 const props = withDefaults(
   defineProps<{
@@ -173,7 +170,7 @@ watch(
 
 // 监听地图切换 (使用localStorage中的map值)
 watch(
-  () => localStorage.getItem('map'),
+  () => getCurrentMapId(),
   () => {
     calculateEntityMarkCounts();
   }

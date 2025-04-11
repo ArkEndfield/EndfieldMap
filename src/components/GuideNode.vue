@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { type NodeType } from '@/data/guides';
+import { type NodeType } from '@/types/guides';
 
 const props = withDefaults(
   defineProps<{

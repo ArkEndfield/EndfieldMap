@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { type GuideImageNode } from '@/data/guides';
+import { type GuideImageNode } from '@/types/guides';
 
 const props = withDefaults(
   defineProps<{

@@ -28,22 +28,27 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
-import { updatePoints, getCurrentPoints } from './data/points';
+import { updatePoints, getCurrentPoints } from './services/points';
 import {
   loadEntityData,
   reinitializeEntityLayers,
   initializeMap,
-} from './data/entity';
-import { loadRewardData } from './data/reward';
+} from './services/entity';
+import { loadRewardData } from './services/reward';
 import { loadTextPoints } from './data/locations';
-import { map, updateMap, cacheMapId } from './components/map/MapCore';
+import {
+  map,
+  updateMap,
+  cacheMapId,
+  getCurrentMapId,
+} from './services/MapCore';
 import OpenLayersComponent from './OpenLayers.vue';
-import { PopupManager } from './components/map/PopupManager';
+import { PopupManager } from './services/PopupManager';
 import AppHeaderLeft from './components/Header/AppHeaderLeft.vue';
 import AppHeaderRight from './components/Header/AppHeaderRight.vue';
 import ZmdSidebar from './components/ZmdSidebar/index.vue';
-import { loadGuidesData } from './data/guides';
-import { initMarksData } from './data/marks';
+import { loadGuidesData } from './services/guides';
+import { initMarksData } from './services/marks';
 
 // const getQueryParam = (param: string): string | null => {
 //   const urlParams = new URLSearchParams(window.location.search);
@@ -82,7 +87,8 @@ async function loadAllData() {
     // 如果没有点位数据，可能是预加载失败，尝试重新加载
     if (!points || points.length === 0) {
       console.log('未找到预加载的点位数据，尝试重新加载...');
-      const freshPoints = await updatePoints();
+      const mapID = getCurrentMapId();
+      const freshPoints = await updatePoints(mapID);
       console.log('点位数据重新加载完成，加载了', freshPoints.length, '个点位');
     } else {
       console.log('使用预加载的点位数据，共', points.length, '个点位');
@@ -110,7 +116,8 @@ async function loadAllData() {
 
     console.log('开始加载地名标注...');
     // 加载地名标注
-    loadTextPoints(true);
+    const currentMapID = getCurrentMapId();
+    loadTextPoints(true, currentMapID);
     console.log('地名标注加载完成');
 
     console.log('所有数据加载完成');
@@ -167,8 +174,9 @@ watch(
     }
 
     try {
+      const mapID = getCurrentMapId();
       // 重新加载数据
-      const points = await updatePoints();
+      const points = await updatePoints(mapID);
       console.log(`地图切换，加载了 ${points.length} 个点位`);
 
       // 等待 Vue 更新完成

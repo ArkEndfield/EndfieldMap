@@ -5,8 +5,9 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Style, Text, Fill, Stroke } from 'ol/style';
 
-// @ts-ignore
 import locations from '../assets/result.json';
+import { getLanguage } from '@/i18n';
+import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 
 const vectorSource = new VectorSource();
 
@@ -25,12 +26,10 @@ const selectLang = {
   'en-US': 1,
 };
 
-export const loadTextPoints = (
-  reset = false,
-  scene = localStorage.getItem('map') === 'map002' ? 'map02' : 'map01'
-) => {
+export const loadTextPoints = (reset = false, scene = 'map01') => {
   const detail =
-    Number(localStorage.getItem('zoom')) >= 3.5 || scene === 'map02';
+    Number(localStorage.getItem(LOCAL_STORAGE_KEY.ZOOM)) >= 3.5 ||
+    scene === 'map02';
   const styleFn = (text: string) =>
     new Style({
       text: new Text({
@@ -38,13 +37,7 @@ export const loadTextPoints = (
         font: '1.5rem "Noto Sans SC"',
         fill: new Fill({ color: '#fff' }),
         stroke: new Stroke({ color: '#000', width: 2 }),
-        padding: [5, 10, 5, 10], // 文字内边距
-        // backgroundFill: new Fill({ color: 'rgba(255, 255, 255, 0.5)' }), // 半透明背景
-        // backgroundStroke: new Stroke({
-        //   color: 'rgba(255, 255, 255, 0.1)',
-        //   width: 1.5,
-        // }), // 轻微边框
-        // 添加偏移，确保文字不会被其他元素遮挡
+        padding: [5, 10, 5, 10],
         offsetY: -15,
       }),
     });
@@ -80,8 +73,7 @@ export const loadTextPoints = (
     cacheKey[loc.key] = true;
 
     if (!loc?.position || !locations[k].map?.includes(scene)) continue;
-    const text =
-      loc.langs[selectLang[localStorage.getItem('userLanguage') || 'zh-CN']];
+    const text = loc.langs[selectLang[getLanguage()]];
 
     const feature = new Feature({ geometry: new Point(xyz2crd(loc.position)) });
     feature.setStyle(styleFn(text));
@@ -91,11 +83,4 @@ export const loadTextPoints = (
     feature.set('isTextLabel', true);
     vectorSource.addFeature(feature);
   }
-
-  // 添加调试信息
-  // console.log(
-  //   `已加载 ${Object.keys(cacheKey).length} 个地名标签 (${
-  //     detail ? '详细' : '基本'
-  //   })`
-  // );
 };

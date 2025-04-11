@@ -173,7 +173,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { cacheMapId, selectMap } from '../map/MapCore';
+import { cacheMapId, selectMap } from '@/services/MapCore';
 import { motion } from 'motion-v';
 import { rafTimeout } from '@/utils/animationTimer';
 

@@ -13,7 +13,7 @@ import {
   setupCacheCleanupScheduler,
 } from './utils/storageInit';
 import { initDB } from './utils/indexedDBStorage';
-import { loadPoints } from './data/points';
+import { loadPoints } from './services/points';
 
 // 应用启动序列 - 确保顺序执行所有初始化步骤
 async function initializeApp() {

@@ -65,7 +65,7 @@ import {
   entity,
   zoomLevel,
   popupManager,
-} from './components/map/MapCore';
+} from './services/MapCore';
 import { Map } from 'ol';
 import MapControls from './components/map/MapControls.vue';
 import MapPopup, { MapPopupRef } from './components/map/MapPopup.vue';

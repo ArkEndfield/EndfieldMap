@@ -5,7 +5,11 @@ import { Projection } from 'ol/proj';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
 import { areaNameLayer, loadTextPoints } from '@/data/locations';
-import { entityClusterLayers, refresh } from '@/data/entity';
+import {
+  entityClusterLayers,
+  refresh,
+  updateClusterDistance,
+} from '@/services/render';
 import { ref, shallowRef } from 'vue';
 import { Layer } from 'ol/layer';
 import VectorSource from 'ol/source/Vector';
@@ -14,13 +18,13 @@ import Overlay from 'ol/Overlay';
 import { Select } from 'ol/interaction';
 import { click } from 'ol/events/condition';
 import { PopupManager } from './PopupManager';
-import { type PointData } from '@/data/points';
-import { updateClusterDistance } from '@/data/entity';
+import { type PointData } from '@/types/points';
 import { debounce, xyz2crd } from '@/utils/common';
 import { SelectEvent } from 'ol/interaction/Select';
 import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
 import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 import { RenderOptimizer } from '@/utils/renderOptimizer';
+import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -130,11 +134,15 @@ export function createZoomControl(controlsElement: HTMLElement) {
   });
 }
 
+const MAP_ID_KEY = LOCAL_STORAGE_KEY.MAP;
+const ZOOM_KEY = LOCAL_STORAGE_KEY.ZOOM;
 // 创建并返回地图实例
 export const map = shallowRef<Map | null>(null);
 export const renderOptimizer = shallowRef<RenderOptimizer | null>(null);
-export const cacheMapId = ref<string>(localStorage.getItem('map') || 'map001');
-export const zoomLevel = ref(Number(localStorage.getItem('zoom')));
+export const cacheMapId = ref<string>(
+  localStorage.getItem(MAP_ID_KEY) || 'map001'
+);
+export const zoomLevel = ref(Number(localStorage.getItem(ZOOM_KEY)));
 
 // 弹出层相关状态
 export const entity = ref<PointData | null>(null);
@@ -266,7 +274,16 @@ export async function updateMap(mapIndex: string) {
   }
 
   rafTimeout(refresh, 300);
+
+  // 更新地图ID
+  cacheMapId.value = mapIndex;
+  localStorage.setItem(MAP_ID_KEY, mapIndex);
   console.log(`已更新地图到 ${mapIndex}`);
+}
+
+// 获取当前地图的ID
+export function getCurrentMapId(): string {
+  return cacheMapId.value;
 }
 
 // 清理地图资源的函数
@@ -412,7 +429,7 @@ export async function createMap(
     (mapIndex === 'map001' ? [100, 152] : [50, 188]);
   const initialZoom =
     restoredViewState?.zoom ||
-    Number(localStorage.getItem('zoom')) ||
+    Number(localStorage.getItem(ZOOM_KEY)) ||
     DEFAULT_ZOOM;
 
   console.log(
@@ -588,11 +605,10 @@ const handleZoomChange = function () {
   }
 
   const zoom = currentMap.getView().getZoom() || 0;
+  const currentMapID = getCurrentMapId();
+  loadTextPoints(true, currentMapID);
 
-  // 只在真正需要更新时才更新UI值
-  localStorage.setItem('zoom', zoom.toString());
-  loadTextPoints(true);
-  zoomLevel.value = zoom;
+  updateZoomValue(zoom);
 
   updateClusterDistance(zoomLevel.value);
 
@@ -602,6 +618,11 @@ const handleZoomChange = function () {
   }
 };
 
+export const updateZoomValue = (zoom: number) => {
+  zoomLevel.value = zoom;
+  localStorage.setItem(ZOOM_KEY, zoom.toString());
+};
+
 const moveEndChange = debounce(
   () => {
     const currentMap = map.value;
@@ -609,27 +630,26 @@ const moveEndChange = debounce(
 
     const zoom = currentMap.getView().getZoom() || 0;
     // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
-    const stableZoom = Math.round(zoom * 2) / 2;
     const position = currentMap.getView().getCenter();
     // 确保最终值是准确的
-    if (Math.abs(zoomLevel.value - stableZoom) >= 0.01) {
-      localStorage.setItem('zoom', stableZoom.toString());
-      loadTextPoints(true);
-      zoomLevel.value = stableZoom;
+    if (Math.abs(zoomLevel.value - zoom) >= 0.01) {
+      const currentMapID = getCurrentMapId();
+      loadTextPoints(true, currentMapID);
+      updateZoomValue(zoom);
     }
-
+    const currentMapID = getCurrentMapId();
     // 保存当前视图状态到 IndexedDB (永久存储)
-    if (position && cacheMapId.value) {
+    if (position && currentMapID) {
       console.log(
-        `地图移动/缩放结束，正在保存视图状态，地图ID: ${cacheMapId.value}, 中心点: [${position[0]}, ${position[1]}], 缩放级别: ${stableZoom}`
+        `地图移动/缩放结束，正在保存视图状态，地图ID: ${currentMapID}, 中心点: [${position[0]}, ${position[1]}], 缩放级别: ${zoom}`
       );
-      saveMapViewState(cacheMapId.value).catch(error => {
+      saveMapViewState(currentMapID).catch(error => {
         console.error('保存视图状态时出错:', error);
       });
     } else {
       console.warn('无法保存视图状态，缺少必要参数:', {
         position: position ? '存在' : '不存在',
-        cacheMapId: cacheMapId.value,
+        cacheMapId: currentMapID,
       });
     }
 
@@ -658,7 +678,7 @@ function mapClickHandler(event: MapBrowserEvent<any>) {
 // 选择地图
 export const selectMap = (id: string) => {
   console.log('选择地图', id);
-  if (cacheMapId.value === id) return;
+  if (getCurrentMapId() === id) return;
 
   // 关闭可能打开的弹窗
   if (popupManager.value) {
@@ -668,10 +688,6 @@ export const selectMap = (id: string) => {
     popupManager.value.closeSub();
     popupManager.value.setCurrentPosition(undefined);
   }
-
-  // 更新地图ID
-  cacheMapId.value = id;
-  localStorage.setItem('map', id);
 
   // 更新地图
   updateMap(id);

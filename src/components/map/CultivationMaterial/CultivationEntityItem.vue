@@ -42,8 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { toggleSelect } from '@/data/entity';
-import { getEntityDataByKey } from '@/data/entity';
+import { toggleSelect, getEntityDataByKey } from '@/services/entity';
 // import { cn } from '@/utils/tailwind';
 import { computed } from 'vue';
 

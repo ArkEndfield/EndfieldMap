@@ -68,12 +68,8 @@
 
 <script setup lang="ts">
 import useStateOperate from '@/hooks/useStateOperate';
-import {
-  isMarkDataValid,
-  mergeMarks,
-  coverMarks,
-  type MarkInfo,
-} from '@/data/marks';
+import { isMarkDataValid, mergeMarks, coverMarks } from '@/services/marks';
+import { type MarkInfo } from '@/types/marks';
 import { ref } from 'vue';
 import { watch } from 'vue';
 import { rafTimeout } from '@/utils/animationTimer';

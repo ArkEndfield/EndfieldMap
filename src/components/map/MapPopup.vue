@@ -165,17 +165,15 @@
 <script setup lang="ts">
 import { ref, inject, watch, onMounted } from 'vue';
 import { cn } from '@/utils/tailwind';
-import { PopupManager } from './PopupManager';
+import { PopupManager } from '@/services/PopupManager';
 import { marks } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
-import { getGuide, type GuideInfoDetail } from '@/data/guides';
-import { type PointData } from '@/data/points';
+import { getGuide } from '@/services/guides';
+import { type GuideInfoDetail } from '@/types/guides';
+import { type PointData } from '@/types/points';
 import { computed } from 'vue';
-import {
-  getRewards,
-  type ReturnRewardItem,
-  shouldShowRewards,
-} from '@/data/reward';
+import { getRewards, shouldShowRewards } from '@/services/reward';
+import { type ReturnRewardItem } from '@/types/reward';
 import { motion, useAnimate } from 'motion-v';
 
 const props = defineProps<{

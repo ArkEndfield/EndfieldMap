@@ -1,45 +1,18 @@
 import { loadJSON } from '@/utils/jsonLoader';
-import { type PointData } from './points';
+import { type PointData } from '@/types/points';
 import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
-
-export interface RewardItemWithCountItem {
-  id: string;
-  count: number;
-}
-
-export interface RewardItemWithCount {
-  itemBundles: RewardItemWithCountItem[];
-}
-
-export interface RewardItemWitoutCount {
-  itemIds: string[];
-}
-
-export interface ReturnRewardItem {
-  type: 'withCount' | 'withoutCount';
-  id: string;
-  icon: string;
-  count?: number;
-}
-
-export type RewardItem = RewardItemWithCount | RewardItemWitoutCount;
-
-export type RewardType = Record<string, RewardItem>;
-
-export interface RewardItemData {
-  id: string;
-  iconId: string;
-  rarity: number;
-  valuableTabType: string;
-  obtainWays: {
-    id: string;
-    iconId: string;
-  }[];
-}
+import { CACHE_DB_KEY } from '@/constants/db_key';
+import {
+  ReturnRewardItem,
+  RewardItem,
+  RewardItemData,
+  RewardItemWithCount,
+  RewardType,
+} from '@/types/reward';
 
 // IndexedDB 存储键名
-const DB_ALL_REWARDS_KEY = 'allRewards';
-const DB_ALL_REWARD_DATA_KEY = 'allRewardData';
+const DB_ALL_REWARDS_KEY = CACHE_DB_KEY.REWARDS;
+const DB_ALL_REWARD_DATA_KEY = CACHE_DB_KEY.REWARDS_DATA;
 
 // 从 IndexedDB 获取所有奖励数据
 export async function getAllRewards(): Promise<RewardType> {

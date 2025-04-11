@@ -53,7 +53,8 @@ import { loadTextPoints } from '@/data/locations';
 import { cn } from '@/utils/tailwind';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { type Language, loadLanguage } from '@/i18n';
+import { type Language, loadLanguage, setLanguage } from '@/i18n';
+import { getCurrentMapId } from '@/services/MapCore';
 
 const openAlert = ref(false);
 const { locale } = useI18n();
@@ -65,27 +66,28 @@ const availableLocales = [
   { code: 'zh-CN', name: '简体中文' },
   { code: 'zh-TW', name: '繁体中文' },
   { code: 'en-US', name: 'English' },
-];
+] satisfies { code: Language; name: string }[];
 
 const onOpen = () => {
   openAlert.value = true;
 };
 
 // 切换语言
-const changeLanguage = async (lang: string) => {
+const changeLanguage = async (lang: Language) => {
   // 先尝试加载语言文件
-  const success = await loadLanguage(lang as Language);
+  const success = await loadLanguage(lang);
   if (success) {
     locale.value = lang;
     openAlert.value = false;
-    localStorage.setItem('userLanguage', lang);
+    setLanguage(lang);
   } else {
     console.error('加载语言文件失败，将使用中文作为后备语言');
     // 如果加载失败，使用中文作为后备语言
     locale.value = 'zh-CN';
-    localStorage.setItem('userLanguage', 'zh-CN');
+    setLanguage('zh-CN');
   }
-  loadTextPoints(true);
+  const currentMapId = getCurrentMapId();
+  loadTextPoints(true, currentMapId);
 };
 </script>
 

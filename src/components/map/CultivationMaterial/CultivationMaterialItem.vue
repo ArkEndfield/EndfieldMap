@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { select } from '@/data/entity';
+import { select } from '@/services/entity';
 import { motion } from 'motion-v';
 import { onMounted } from 'vue';
 const fakeIds = [
