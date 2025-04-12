@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <CogIcon />
-    <template #title>{{ $t('header.settings') }}</template>
+    <template #title>{{ t('header.settings') }}</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"
@@ -9,7 +9,7 @@
     hide-cancel
     width="40em"
   >
-    <h1 class="text-lg font-bold text-center">{{ $t('header.settings') }}</h1>
+    <h1 class="text-lg font-bold text-center">{{ t('header.settings') }}</h1>
     <div class="flex flex-col gap-4 mt-4 w-full md:px-16">
       <Settings />
     </div>
@@ -18,8 +18,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 const openAlert = ref(false);
-
+const { t } = useI18n();
 const onOpen = () => {
   openAlert.value = true;
 };

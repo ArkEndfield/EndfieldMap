@@ -53,7 +53,7 @@
           >
             <slot name="cancel">
               <div class="zmd-alert-close">
-                <div class="text">{{ $t(props.cancelText) }}</div>
+                <div class="text">{{ t(props.cancelText) }}</div>
                 <div
                   class="icon"
                   v-if="props.showIcon"
@@ -75,7 +75,7 @@
                 @mouseenter="animateConfirmEnter"
                 @mouseleave="animateConfirmLeave"
               >
-                <div class="text">{{ $t(props.confirmText) }}</div>
+                <div class="text">{{ t(props.confirmText) }}</div>
                 <div
                   class="icon"
                   v-if="props.showIcon"
@@ -110,8 +110,9 @@ import alert_banner_bg_left from '../../assets/images/bg/alert_banner_bg_left.pn
 import alert_banner_bg_right from '../../assets/images/bg/alert_banner_bg_right.png';
 import { motion, useAnimate } from 'motion-v';
 import { nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 const dialog = ref<HTMLDialogElement | null>(null);
-
+const { t } = useI18n();
 export type ZmdAlertProps = {
   open: boolean;
   dismissible?: boolean;

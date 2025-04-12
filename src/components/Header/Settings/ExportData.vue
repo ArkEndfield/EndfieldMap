@@ -5,27 +5,27 @@
     :disabled="success"
     @end-click="execute"
   >
-    {{ $t('settings.export_data') }}
+    {{ t('settings.export_data') }}
     <template #description>
-      <div>{{ $t('settings.export_data_tips') }}</div>
+      <div>{{ t('settings.export_data_tips') }}</div>
     </template>
     <template #before>
       <div><ExportIcon /></div>
     </template>
     <template #after>
       <div v-if="!loading && !error && !success">
-        {{ $t('settings.export_data') }}
+        {{ t('settings.export_data') }}
       </div>
       <div
         v-else-if="success"
         class="text-xs"
       >
-        {{ $t('settings.export_data_success_tips') }}
+        {{ t('settings.export_data_success_tips') }}
         <button
           class="bg-[#272727] text-white rounded px-1 py-0.5 ml-0.5"
           @click="openDownloadLink"
         >
-          {{ $t('download') }}
+          {{ t('download') }}
         </button>
       </div>
     </template>
@@ -35,7 +35,8 @@
 <script setup lang="ts">
 import { backupData } from '@/services/data';
 import useStateOperate from '@/hooks/useStateOperate';
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const { loading, error, data, success, execute } = useStateOperate(
   async () => {
     const data = backupData();

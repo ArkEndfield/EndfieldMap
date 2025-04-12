@@ -18,14 +18,14 @@
         <template #icon>
           <ZmdSidebarDeleteIcon />
         </template>
-        {{ $t('clear_select') }}
+        {{ t('clear_select') }}
         <template #subtitle>CLEAR SELECT</template>
       </ZmdSidebarOperateButton>
       <ZmdSidebarOperateButton @click="handleSelectAll">
         <template #icon>
           <ZmdSidebarCheckboxCheckedIcon />
         </template>
-        {{ isSelectAll ? $t('unselect_all') : $t('select_all') }}
+        {{ isSelectAll ? t('unselect_all') : t('select_all') }}
         <template #subtitle>{{
           isSelectAll ? 'UNSELECT ALL' : 'SELECT ALL'
         }}</template>
@@ -38,31 +38,31 @@
             class="opacity-40"
           />
         </template>
-        {{ $t('sidebar.filter.cultivation_material') }}
+        {{ t('sidebar.filter.cultivation_material') }}
         <template #subtitle>Cultivation MATERIAL</template>
       </ZmdSidebarOperateButton>
     </div>
 
     <div class="zmd-sidebar-filter-collect-filter">
-      <div class="title">{{ $t('sidebar.marker_point_filter') }}</div>
+      <div class="title">{{ t('sidebar.marker_point_filter') }}</div>
       <div class="list">
         <ZmdSidebarFilterToggle
           :checked="currentMarkFilter === 'all'"
           @change="setMarkFilter('all')"
         >
-          {{ $t('sidebar.collection.all') }}
+          {{ t('sidebar.collection.all') }}
         </ZmdSidebarFilterToggle>
         <ZmdSidebarFilterToggle
           :checked="currentMarkFilter === 'marked'"
           @change="setMarkFilter('marked')"
         >
-          {{ $t('sidebar.collection.marked') }}
+          {{ t('sidebar.collection.marked') }}
         </ZmdSidebarFilterToggle>
         <ZmdSidebarFilterToggle
           :checked="currentMarkFilter === 'unmarked'"
           @change="setMarkFilter('unmarked')"
         >
-          {{ $t('sidebar.collection.not_marked') }}
+          {{ t('sidebar.collection.not_marked') }}
         </ZmdSidebarFilterToggle>
       </div>
     </div>
@@ -82,6 +82,8 @@ import { setMarkFilter } from '@/services/marks';
 import { motion } from 'motion-v';
 import { ref } from 'vue';
 import { watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const showCultivationMaterial = ref(false);
 const props = withDefaults(
   defineProps<{

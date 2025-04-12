@@ -8,7 +8,7 @@
       <input
         type="text"
         v-model="searchQuery"
-        :placeholder="$t('search')"
+        :placeholder="t('search')"
         class="search-input"
       />
       <div
@@ -26,11 +26,11 @@
         :open="props.open"
         v-if="k.reduce((sum, item) => sum + item.count, 0) > 0"
       >
-        <template #title> {{ $t(`sidebar.filter.category.${i}`) }} </template>
+        <template #title> {{ t(`sidebar.filter.category.${i}`) }} </template>
         <template #subtitle> {{ i }} </template>
         <div class="objecg-list">
           <ZmdSidebarObject
-            v-for="v in k.filter((item) => item.count > 0)"
+            v-for="v in k.filter(item => item.count > 0)"
             :name="v.name"
             :value="v.count"
             :mark-count="getMarkCountForEntity(i, v.name)"
@@ -42,7 +42,6 @@
         </div>
       </ZmdSidebarItem>
     </template>
-    
   </div>
 </template>
 
@@ -57,6 +56,7 @@ import ZmdSidebarObject from './ZmdSidebarObject.vue';
 import { selectAllByCategory, unSelectByCategory } from '@/services/entity';
 import { getCurrentMapId, refreshMap } from '@/services/MapCore';
 import type { EntityInfo } from '@/types/entity';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
   defineProps<{
@@ -66,7 +66,7 @@ const props = withDefaults(
     open: true,
   }
 );
-
+const { t } = useI18n();
 // 搜索功能
 const searchQuery = ref('');
 const scrollListRef = ref<HTMLElement | null>(null);

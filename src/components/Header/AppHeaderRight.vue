@@ -15,7 +15,7 @@
             <div class="text-[#FBFA54] mt-1">
               <SwitchIcon />
             </div>
-            <div class="mt-1 pr-1">{{ $t('header.change_region') }}</div>
+            <div class="mt-1 pr-1">{{ t('header.change_region') }}</div>
           </div>
           <div
             class="with-clip-path bg-[#1E1E1D] group-hover:bg-black transition-colors -z-1 relative"
@@ -25,7 +25,7 @@
           class="text-3xl font-extrabold [text-shadow:0_0_0.1em_rgba(0,0,0,0.2)] hover:text-[#fdfb55]"
           @click="togglePopover"
         >
-          {{ $t(`map.${cacheMapId}`) }}
+          {{ t(`map.${cacheMapId}`) }}
         </div>
       </div>
       <motion.div
@@ -58,12 +58,12 @@
             <MapButton
               :active="cacheMapId === 'map001'"
               @click="changeMap('map001')"
-              >{{ $t('map.map001') }}</MapButton
+              >{{ t('map.map001') }}</MapButton
             >
             <MapButton
               :active="cacheMapId === 'map002'"
               @click="changeMap('map002')"
-              >{{ $t('map.map002') }}</MapButton
+              >{{ t('map.map002') }}</MapButton
             >
           </div>
         </div>
@@ -107,7 +107,7 @@
           y: '1em',
         }"
       >
-        {{ $t(`map.${cacheMapId}`) }}
+        {{ t(`map.${cacheMapId}`) }}
       </motion.div>
       <motion.div
         class="bg-[#272727] text-[#EDEBED] text-sm px-5 relative z-10"
@@ -123,7 +123,7 @@
           y: '1.5em',
         }"
       >
-        {{ $t('header.map_change') }}
+        {{ t('header.map_change') }}
       </motion.div>
       <motion.div
         class="bg-gradient-to-r from-[rgba(252,250,84,0)] via-[rgba(252,250,84,0.5)] to-[rgba(252,250,84,0)] h-1"
@@ -176,7 +176,8 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { cacheMapId, selectMap } from '@/services/MapCore';
 import { motion } from 'motion-v';
 import { rafTimeout } from '@/utils/animationTimer';
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const showPopover = ref(false);
 const popoverRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);

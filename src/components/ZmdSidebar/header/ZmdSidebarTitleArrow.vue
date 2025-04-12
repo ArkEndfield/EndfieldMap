@@ -31,7 +31,7 @@
         class="zmd-sidebar-open-arrow-title"
         :class="{ 'zmd-sidebar-open-arrow-title-open': open }"
       >
-        {{ open ? $t('sidebar.fold') : $t('sidebar.unfold') }}
+        {{ open ? t('sidebar.fold') : t('sidebar.unfold') }}
       </div>
       <div class="zmd-sidebar-title-arrow-lines">
         <span></span>
@@ -52,7 +52,8 @@
 
 <script setup lang="ts">
 import { motion } from 'motion-v';
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const open = defineModel<boolean>('open', { default: false });
 // 切换open状态
 const toggleOpen = () => {

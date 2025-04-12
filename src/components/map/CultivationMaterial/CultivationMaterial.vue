@@ -36,7 +36,7 @@
         flex-container
       >
         <CultivationMaterialListTitle>
-          {{ $t('character') }}
+          {{ t('character') }}
           <template #content>
             <div class="grid grid-cols-2 gap-2">
               <CultivationAddItem
@@ -67,7 +67,7 @@
         </div>
 
         <CultivationMaterialListTitle>
-          {{ $t('weapon') }}
+          {{ t('weapon') }}
           <template #content>
             <div class="grid grid-cols-2 gap-2">
               <CultivationAddItem
@@ -106,6 +106,7 @@ import { getAllMaterialCharIDs } from '@/services/charMaterial';
 import { cn } from '@/utils/tailwind';
 import { AnimatePresence, motion } from 'motion-v';
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const chooseCharacters = ref<string[]>([]);
 const chooseWeapons = ref<string[]>([]);
@@ -113,6 +114,7 @@ const open = defineModel<boolean>('open', {
   default: false,
 });
 const allCharIDs = ref<string[]>([]);
+const { t } = useI18n();
 
 const loadAllCharEntityData = async () => {
   allCharIDs.value = await getAllMaterialCharIDs();

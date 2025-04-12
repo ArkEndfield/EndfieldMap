@@ -52,7 +52,7 @@
               <template #icon>
                 <img
                   :src="rwd.icon"
-                  :alt="$t(`item.${rwd.id}.name`)"
+                  :alt="t(`item.${rwd.id}.name`)"
                   class="w-full h-full object-contain"
                 />
               </template>
@@ -61,7 +61,7 @@
                 v-if="rwd.count"
                 >{{ rwd.count }}</template
               >
-              {{ $t(`item.${rwd.id}.name`) }}
+              {{ t(`item.${rwd.id}.name`) }}
             </PopContentItem>
           </template>
           <div
@@ -113,7 +113,7 @@
           <div>
             {{
               (entity && entityInfo[entity.entityDataIdKey]?.entityInfo.name) ||
-              $t('popover.unknow_name')
+              t('popover.unknow_name')
             }}
           </div>
           <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
@@ -139,7 +139,7 @@
               target="_blank"
               class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
             >
-              {{ $t('popover.video_link') }}
+              {{ t('popover.video_link') }}
             </a>
             <div class="flex items-center justify-end gap-2 ml-auto">
               <label
@@ -147,7 +147,7 @@
                 :for="`get-${entity.entityDataIdKey}`"
                 class="text-sm"
               >
-                {{ $t('popover.obtained') }}
+                {{ t('popover.obtained') }}
               </label>
               <ZmdSwitch
                 v-if="entity"
@@ -175,6 +175,7 @@ import { computed } from 'vue';
 import { getRewards, shouldShowRewards } from '@/services/reward';
 import { type ReturnRewardItem } from '@/types/reward';
 import { motion, useAnimate } from 'motion-v';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
   entity: PointData | null;
@@ -191,6 +192,9 @@ const [popupContainer] = useAnimate();
 const rewards = ref<ReturnRewardItem[]>([]);
 
 const guide = ref<GuideInfoDetail | null>(null);
+
+const { t } = useI18n();
+
 // 当 entity 变化时异步加载奖励数据
 onMounted(async () => {
   if (props.entity && shouldShowRewards(props.entity)) {

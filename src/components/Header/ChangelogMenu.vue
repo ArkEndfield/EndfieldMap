@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <ChangeLogIcon />
-    <template #title>{{ $t('header.changelog') }}</template>
+    <template #title>{{ t('header.changelog') }}</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"
@@ -9,7 +9,7 @@
     width="800px"
   >
     <h1 class="text-lg font-bold mt-10 text-center sticky top-0 bg-white z-10">
-      {{ $t('header.changelog') }}
+      {{ t('header.changelog') }}
     </h1>
     <ChangeLog />
   </ZmdAlert>
@@ -18,7 +18,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { formatDate, formatRelativeTime } from '../../utils/dateFormatter';
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const openAlert = ref(false);
 
 const onOpen = () => {

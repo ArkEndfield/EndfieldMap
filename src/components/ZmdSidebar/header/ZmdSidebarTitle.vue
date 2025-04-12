@@ -71,7 +71,7 @@
           y: props.open ? 0 : -10,
         }"
       >
-        {{ $t('sidebar.title') }}
+        {{ t('sidebar.title') }}
         <div class="triangle"></div>
       </motion.div>
     </motion.div>
@@ -79,9 +79,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import ZmdSidebarTitleBigTitle from './ZmdSidebarTitleBigTitle.vue';
 import { motion } from 'motion-v';
-
+const { t } = useI18n();
 const props = withDefaults(
   defineProps<{
     open?: boolean;

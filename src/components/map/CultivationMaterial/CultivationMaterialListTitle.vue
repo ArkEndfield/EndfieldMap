@@ -16,7 +16,7 @@
         @click="toggleContent"
         ref="button"
       >
-        <div>{{ $t('add') }}</div>
+        <div>{{ t('add') }}</div>
         <PlusIcon />
       </button>
     </div>
@@ -46,7 +46,7 @@
       }"
     >
       <ScrollArea class="p-1">
-        <slot name="content"> {{ $t('none') }} </slot>
+        <slot name="content"> {{ t('none') }} </slot>
       </ScrollArea>
     </motion.div>
   </div>
@@ -56,9 +56,11 @@
 import { motion, useAnimate } from 'motion-v';
 import { onBeforeUnmount } from 'vue';
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 const showContent = ref(false);
 const button = ref<HTMLElement | null>(null);
 const [scope] = useAnimate();
+const { t } = useI18n();
 const toggleContent = () => {
   showContent.value = !showContent.value;
 };

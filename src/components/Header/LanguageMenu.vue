@@ -1,7 +1,7 @@
 <template>
   <HeaderMenu v-on:click="onOpen">
     <TranslateIcon />
-    <template #title>{{ $t('header.language') }}</template>
+    <template #title>{{ t('header.language') }}</template>
   </HeaderMenu>
   <ZmdAlert
     v-model:open="openAlert"
@@ -9,7 +9,7 @@
     confirm-text="close"
   >
     <h1 class="text-lg font-bold mb-4 text-[#282828] text-center">
-      {{ $t('header.change_language') }}
+      {{ t('header.change_language') }}
     </h1>
     <div class="flex flex-col gap-2 w-full py-2 px-6">
       <div
@@ -57,7 +57,7 @@ import { type Language, loadLanguage, setLanguage } from '@/i18n';
 import { getCurrentMapId, getZoom } from '@/services/MapCore';
 
 const openAlert = ref(false);
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const currentLocale = computed(() => locale.value);
 

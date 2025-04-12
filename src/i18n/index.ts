@@ -40,6 +40,7 @@ export const getLanguage = () => {
 const i18n = createI18n({
   locale: (storagedLocale as Language) || window.navigator.language,
   fallbackLocale: 'zh-CN',
+  globalInjection: true,
   messages: {
     'zh-CN': zhCNLang,
   },

@@ -4,16 +4,16 @@
     :error="error"
     @end-click="execute"
   >
-    {{ $t('settings.import_data') }}
+    {{ t('settings.import_data') }}
     <template #description>
-      <div>{{ $t('settings.import_data_tips') }}</div>
+      <div>{{ t('settings.import_data_tips') }}</div>
     </template>
     <template #before>
       <div><ImportIcon /></div>
     </template>
     <template #after>
       <div v-if="!loading">
-        {{ $t('settings.import_data') }}
+        {{ t('settings.import_data') }}
       </div>
     </template>
   </SettingsItem>
@@ -23,27 +23,27 @@
     confirm-text="close"
   >
     <div class="text-center mb-4">
-      {{ $t('settings.import_data_type_tips') }}
+      {{ t('settings.import_data_type_tips') }}
     </div>
     <div class="flex justify-center space-x-4">
       <SquareButton
         :loading="mergeLoading"
         @click="mergeExecute"
       >
-        {{ $t('merge') }}
+        {{ t('merge') }}
       </SquareButton>
       <SquareButton
         :loading="coverLoading"
         @click="coverExecute"
       >
-        {{ $t('cover') }}
+        {{ t('cover') }}
       </SquareButton>
     </div>
     <div
       v-if="mergeError || coverError"
       class="text-red-500 text-center mt-4"
     >
-      {{ $t('settings.import_data_failed_tips') }}
+      {{ t('settings.import_data_failed_tips') }}
     </div>
     <div
       v-if="mergeError"
@@ -61,7 +61,7 @@
       v-if="mergeSuccess || coverSuccess"
       class="text-green-500 text-center mt-4"
     >
-      {{ $t('settings.import_data_success_tips') }}
+      {{ t('settings.import_data_success_tips') }}
     </div>
   </ZmdAlert>
 </template>
@@ -73,6 +73,8 @@ import { ref } from 'vue';
 import { watch } from 'vue';
 import { rafTimeout } from '@/utils/animationTimer';
 import type { BackupData } from '@/types/data';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const open = ref(false);
 const chooseFile = (): Promise<BackupData> => {
   return new Promise((resolve, reject) => {

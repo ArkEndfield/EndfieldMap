@@ -10,10 +10,14 @@
       <span class="h-0.5 w-4 bg-white"></span>
       <span class="h-0.5 w-4 bg-white"></span>
     </button>
-    <template #popover> {{ $t('header.menu') }} </template>
+    <template #popover> {{ t('header.menu') }} </template>
   </Popover>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+</script>
 
 <style lang="scss" scoped></style>
