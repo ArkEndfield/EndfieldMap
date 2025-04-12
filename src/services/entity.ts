@@ -20,6 +20,14 @@ export const getEntityDataByKey = (key: string) => {
   return entityInfo[key];
 };
 
+export const getEntityDataByPic = (pic: string) => {
+  const result = Object.keys(entityInfo).find(key => {
+    const entity = entityInfo[key];
+    return entity.entityInfo.pic === pic;
+  });
+  return result ? entityInfo[result] : null;
+};
+
 // 获取实体类型对应的点位集合
 export const getPointsByEntityType = async (
   entityType: string
@@ -328,6 +336,15 @@ export const offSelectChange = (callback: () => void) => {
   } else {
     console.error('未找到回调函数:', callback);
   }
+};
+
+// 判断 id 是否在当前 entityInfo 中（pic属性等于id）
+export const isIdInEntityInfoByPic = (id: string) => {
+  const result = Object.keys(entityInfo).some(key => {
+    const entity = entityInfo[key];
+    return entity.entityInfo.pic === id;
+  });
+  return result;
 };
 
 const notifySelectChange = () => {

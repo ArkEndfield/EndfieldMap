@@ -40,7 +40,7 @@
           <template #content>
             <div class="grid grid-cols-2 gap-2">
               <CultivationAddItem
-                v-for="item in 10"
+                v-for="item in allCharIDs"
                 :key="item"
                 icon="/enemy/adventure_eny_0018_lbtough.png"
                 :name="`char_name_${item}`"
@@ -59,6 +59,7 @@
               :key="item"
               :id="item"
               :name="`char_name_${item}`"
+              type="character"
               icon="/enemy/adventure_eny_0018_lbtough.png"
               @delete="deleteCharacter"
             />
@@ -88,6 +89,7 @@
               v-for="item in chooseWeapons"
               :key="item"
               :id="item"
+              type="weapon"
               :name="`weapon_name_${item}`"
               icon="/enemy/adventure_eny_0018_lbtough.png"
               @delete="deleteWeapon"
@@ -100,14 +102,22 @@
 </template>
 
 <script setup lang="ts">
+import { getAllMaterialCharIDs } from '@/services/charMaterial';
 import { cn } from '@/utils/tailwind';
 import { AnimatePresence, motion } from 'motion-v';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+
 const chooseCharacters = ref<string[]>([]);
 const chooseWeapons = ref<string[]>([]);
 const open = defineModel<boolean>('open', {
   default: false,
 });
+const allCharIDs = ref<string[]>([]);
+
+const loadAllCharEntityData = async () => {
+  allCharIDs.value = await getAllMaterialCharIDs();
+};
+
 const toggleCharacter = (id: string) => {
   if (chooseCharacters.value.includes(id)) {
     chooseCharacters.value = chooseCharacters.value.filter(item => item !== id);
@@ -115,9 +125,11 @@ const toggleCharacter = (id: string) => {
     chooseCharacters.value.push(id);
   }
 };
+
 const deleteCharacter = (id: string) => {
   chooseCharacters.value = chooseCharacters.value.filter(item => item !== id);
 };
+
 const toggleWeapon = (id: string) => {
   if (chooseWeapons.value.includes(id)) {
     chooseWeapons.value = chooseWeapons.value.filter(item => item !== id);
@@ -125,12 +137,18 @@ const toggleWeapon = (id: string) => {
     chooseWeapons.value.push(id);
   }
 };
+
 const deleteWeapon = (id: string) => {
   chooseWeapons.value = chooseWeapons.value.filter(item => item !== id);
 };
+
 const close = () => {
   open.value = false;
 };
+
+onMounted(() => {
+  loadAllCharEntityData();
+});
 </script>
 
 <style lang="scss" scoped>

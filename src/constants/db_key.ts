@@ -8,6 +8,8 @@ export const CACHE_DB_KEY = {
   REWARDS: 'allRewards',
   REWARDS_DATA: 'allRewardData',
   GUIDES: 'allGuides',
+  CHARACTER: 'character',
+  CHARACTER_ENTITY: 'characterEntity',
 } as const;
 
 export const LOCAL_STORAGE_KEY = {

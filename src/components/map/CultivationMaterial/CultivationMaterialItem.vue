@@ -37,9 +37,9 @@
       </div>
       <div class="bg-[#272727] text-white p-2 mt-2 grid grid-cols-2 gap-1">
         <CultivationEntityItem
-          v-for="id in fakeIds"
-          :key="id"
-          :id="id"
+          v-for="entity in displayEntity"
+          :key="entity.entityInfo.point"
+          :entity="entity"
         />
       </div>
     </div>
@@ -47,21 +47,38 @@
 </template>
 
 <script setup lang="ts">
-import { select } from '@/services/entity';
+import { getCharMaterial } from '@/services/charMaterial';
+import { select, unSelect } from '@/services/entity';
+import type { Material } from '@/types/material';
 import { motion } from 'motion-v';
-import { onMounted } from 'vue';
-const fakeIds = [
-  'int_collection_coin',
-  'int_collection_coin_puzzle',
-  'int_doodad_core_mine_quartz',
-  'int_doodad_core_crylplant_1_1',
-  'int_doodad_core_crylplant_1_2',
-  'int_doodad_core_crylplant_1_3',
-];
+import { onUnmounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { getEntityDataByPic, getEntityDataByKey } from '@/services/entity';
+import { EntityCategories } from '@/types/entity';
+import { watch } from 'vue';
+const material = ref<Material>();
+const displayEntity = computed(() => {
+  const data: EntityCategories['string'][] = [];
+  for (const key in material.value) {
+    if (props.type === 'character') {
+      const entity = getEntityDataByPic(key);
+      if (entity) data.push(entity);
+    } else {
+      const entity = getEntityDataByKey(key);
+      if (entity) data.push(entity);
+    }
+  }
+  return data;
+});
+const fakeIds = {
+  int_collection_coin: 10,
+  int_collection_coin_puzzle: 10,
+};
 const props = defineProps<{
   id: string;
   name: string;
   icon: string;
+  type: 'character' | 'weapon';
 }>();
 const emit = defineEmits<{
   (e: 'delete', id: string): void;
@@ -69,8 +86,36 @@ const emit = defineEmits<{
 const deleteItem = () => {
   emit('delete', props.id);
 };
-onMounted(() => {
-  select(...fakeIds);
+const getEntityData = async () => {
+  if (props.type === 'character') {
+    const data = await getCharMaterial(props.id);
+    return data || {};
+  }
+  return fakeIds;
+};
+
+watch(
+  () => displayEntity.value,
+  newVal => {
+    if (newVal.length > 0) {
+      select(...newVal.map(item => item.entityInfo.point));
+    }
+  },
+  { immediate: true }
+);
+
+onMounted(async () => {
+  const idList = await getEntityData();
+  if (idList) {
+    material.value = idList;
+  }
+});
+
+onUnmounted(() => {
+  if (displayEntity.value.length > 0) {
+    unSelect(...displayEntity.value.map(item => item.entityInfo.point));
+  }
+  material.value = {};
 });
 </script>
 

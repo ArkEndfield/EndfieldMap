@@ -38,6 +38,7 @@ import AppHeaderRight from './components/Header/AppHeaderRight.vue';
 import ZmdSidebar from './components/ZmdSidebar/index.vue';
 import { loadGuidesData } from './services/guides';
 import { initMarksData } from './services/marks';
+import { loadMaterialData } from './services/charMaterial';
 
 // const getQueryParam = (param: string): string | null => {
 //   const urlParams = new URLSearchParams(window.location.search);
@@ -83,6 +84,10 @@ async function loadAllData() {
     // 加载攻略数据
     await loadGuidesData();
     console.log('攻略数据加载完成');
+
+    console.log('开始加载材料数据...');
+    await loadMaterialData();
+    console.log('材料数据加载完成');
 
     console.log('开始初始化地图...');
     // 初始化实体信息和地图

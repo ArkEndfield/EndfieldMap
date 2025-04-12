@@ -30,7 +30,7 @@ export async function loadGuidesData() {
     // 存储到 IndexedDB
     await setItem(DBGuidesKey, guidesData, StorageType.PERMANENT);
 
-    console.log('攻略列表加载完成，总数:', Object.keys(DBGuidesKey).length);
+    console.log('攻略列表加载完成，总数:', Object.keys(guidesData).length);
 
     return guidesData;
   } catch (error) {
