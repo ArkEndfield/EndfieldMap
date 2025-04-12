@@ -26,7 +26,7 @@ interface StyleCacheEntry {
 
 // 这些变量从data/entity.ts中提取
 export const features: Feature<Point>[] = [];
-export const itemMap: any = {};
+export const itemMap: Record<number, Feature<Point>> = {};
 export const entityGroup: Record<
   string,
   {

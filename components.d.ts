@@ -28,6 +28,7 @@ declare module 'vue' {
     CultivationMaterial: typeof import('./src/components/map/CultivationMaterial/CultivationMaterial.vue')['default']
     CultivationMaterialItem: typeof import('./src/components/map/CultivationMaterial/CultivationMaterialItem.vue')['default']
     CultivationMaterialListTitle: typeof import('./src/components/map/CultivationMaterial/CultivationMaterialListTitle.vue')['default']
+    Debug: typeof import('./src/components/Debug.vue')['default']
     DeleteData: typeof import('./src/components/Header/Settings/DeleteData.vue')['default']
     DoubleChevronLeft: typeof import('./src/components/icons/DoubleChevronLeft.vue')['default']
     DoubleChevronRight: typeof import('./src/components/icons/DoubleChevronRight.vue')['default']

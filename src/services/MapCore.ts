@@ -37,6 +37,7 @@ import { entityInfo } from '@/data/entity';
 import { currentMarkFilter } from '@/data/marks';
 import { offMarkChange, onMarkChange, shouldShowByMarkStatus } from './marks';
 import type { MapViewState } from '@/types/map';
+import { removeAllLines, setMapForLines } from './lineConnector';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -519,6 +520,9 @@ export async function createMap(
 
   // 地图创建完成后，主动调用refreshMap显示标点
   refreshMap();
+
+  setMapForLines(map.value);
+  console.log('地图创建完成');
 }
 
 const pointSelectHandler = async function (event: SelectEvent) {
@@ -712,6 +716,8 @@ export const selectMap = async (id: string) => {
   // 更新地图ID
   cacheMapId.value = id;
   localStorage.setItem(MAP_ID_KEY, id);
+
+  removeAllLines();
   // 更新地图
   // 重新加载数据
   await updatePoints(id);

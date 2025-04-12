@@ -17,10 +17,10 @@
       </div>
     </div>
     <template v-else>
+      <!-- <Debug v-if="isDev" /> -->
       <AppHeaderLeft v-show="appLoaded" />
       <AppHeaderRight v-show="appLoaded" />
       <ZmdSidebar v-if="appLoaded" />
-      <!-- <component :is="currentMapComponent" /> -->
       <OpenLayersComponent v-show="appLoaded" />
     </template>
   </div>
@@ -39,7 +39,7 @@ import ZmdSidebar from './components/ZmdSidebar/index.vue';
 import { loadGuidesData } from './services/guides';
 import { initMarksData } from './services/marks';
 import { loadMaterialData } from './services/charMaterial';
-
+// const isDev = import.meta.env.MODE === 'development';
 // const getQueryParam = (param: string): string | null => {
 //   const urlParams = new URLSearchParams(window.location.search);
 //   return urlParams.get(param);
