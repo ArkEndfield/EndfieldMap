@@ -5,19 +5,13 @@
         class="zmd-sidebar-location-marker"
         :style="markerStyle"
       >
-        <motion.div
+        <div
           class="zmd-sidebar-location-content"
-          :style="{ perspective: props.rotationEnabled ? '800px' : 'none' }"
-          :animate="rotationAnimationProps"
-          :transition="{
-            duration: 4,
-            ease: 'linear',
-            repeat: Infinity,
-          }"
+          :class="{ 'rotate-animation': props.rotationEnabled }"
         >
           <div class="zmd-sidebar-location-ring"></div>
           <div class="zmd-sidebar-location-triangle"></div>
-        </motion.div>
+        </div>
         <div class="zmd-sidebar-location-shadow"></div>
       </div>
     </div>
@@ -26,7 +20,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { motion } from 'motion-v';
 
 interface Props {
   iconColor?: string;
@@ -44,17 +37,6 @@ const markerStyle = computed(() => ({
   '--icon-color': props.iconColor,
   '--shadow-color': props.shadowColor,
 }));
-
-// 根据是否启用旋转来设置旋转动画
-const rotationAnimationProps = computed(() => {
-  if (!props.rotationEnabled) return {};
-
-  return {
-    rotateY: [0, 360],
-    // perspective不是可动画的属性，应该通过style设置
-    transformStyle: 'preserve-3d',
-  };
-});
 </script>
 
 <style lang="scss" scoped>
@@ -86,6 +68,10 @@ const rotationAnimationProps = computed(() => {
     align-items: center;
     transform-style: preserve-3d;
     position: relative;
+
+    &.rotate-animation {
+      animation: rotate3d 4s linear infinite;
+    }
   }
 
   &-ring {
@@ -119,6 +105,18 @@ const rotationAnimationProps = computed(() => {
     position: absolute;
     bottom: 0.6em;
     z-index: 1 !important;
+  }
+}
+
+@keyframes rotate3d {
+  0% {
+    transform: perspective(800px) rotateY(0deg);
+  }
+  50% {
+    transform: perspective(800px) rotateY(180deg);
+  }
+  100% {
+    transform: perspective(800px) rotateY(360deg);
   }
 }
 </style>
