@@ -54,7 +54,7 @@ import { motion } from 'motion-v';
 import { onUnmounted } from 'vue';
 import { computed, onMounted, ref } from 'vue';
 import { getEntityDataByPic, getEntityDataByKey } from '@/services/entity';
-import { EntityCategories } from '@/types/entity';
+import type { EntityCategories } from '@/types/entity';
 import { watch } from 'vue';
 const material = ref<Material>();
 const displayEntity = computed(() => {
