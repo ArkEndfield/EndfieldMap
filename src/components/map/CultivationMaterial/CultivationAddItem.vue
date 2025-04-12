@@ -23,13 +23,13 @@
       <img
         :src="props.icon"
         alt="icon"
-        class="h-full w-full object-contain opacity-30 mix-blend-luminosity relative z-1 object-right"
+        class="h-full w-full object-contain opacity-30 mix-blend-luminosity relative z-1 [object-position:right_bottom]"
       ></img>
 
       <motion.img
         :src="props.icon"
         alt="icon"
-        class="h-full w-full object-contain absolute right-0 z-1 object-right"
+        class="h-full w-full object-contain absolute right-0 z-1 [object-position:right_bottom]"
         :animate=" {
           clipPath: props.active ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
         }"

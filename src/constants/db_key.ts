@@ -10,6 +10,8 @@ export const CACHE_DB_KEY = {
   GUIDES: 'allGuides',
   CHARACTER: 'character',
   CHARACTER_ENTITY: 'characterEntity',
+  WEAPON: 'weapon',
+  WEAPON_ENTITY: 'weaponEntity',
 } as const;
 
 export const LOCAL_STORAGE_KEY = {

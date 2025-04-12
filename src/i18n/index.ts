@@ -2,11 +2,13 @@ import { createI18n } from 'vue-i18n';
 import { loadJSON } from '@/utils/jsonLoader';
 import zhCN from './locales/zh-cn.json';
 import rewardZhCN from './locales/item_i18n_cn.json';
+import characterZhCN from './locales/character_i18n_cn.json';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 
 const zhCNLang = {
   ...zhCN,
   item: rewardZhCN,
+  character: characterZhCN,
 };
 
 const KEY = LOCAL_STORAGE_KEY.LANGUAGE;
@@ -22,7 +24,7 @@ export const setLanguage = (lang: Language) => {
   if (lang !== 'zh-CN') {
     loadLanguage(lang).catch(console.error);
   }
-  i18n.global.locale = lang;
+  i18n.global.locale.value = lang;
 };
 
 export const resetLanguage = () => {
@@ -40,7 +42,7 @@ export const getLanguage = () => {
 const i18n = createI18n({
   locale: (storagedLocale as Language) || window.navigator.language,
   fallbackLocale: 'zh-CN',
-  globalInjection: true,
+  legacy: false,
   messages: {
     'zh-CN': zhCNLang,
   },
@@ -137,18 +139,24 @@ export async function loadLanguage(lang: Language) {
     const loadLangBase = loadJSON<MessageSchema>(
       `/locales/${lang.toLowerCase()}.json`
     );
-    const loadLangReward = loadJSON<MessageSchema>(
+    const loadLangItem = loadJSON<MessageSchema>(
       `/locales/item_i18n_${rewardLang}.json`
     );
-
-    const messages = await Promise.all([loadLangBase, loadLangReward]).then(
-      ([base, reward]) => {
-        return {
-          ...base,
-          reward,
-        } as unknown as MessageSchema;
-      }
+    const loadLangCharacter = loadJSON<MessageSchema>(
+      `/locales/character_i18n_${rewardLang}.json`
     );
+
+    const messages = await Promise.all([
+      loadLangBase,
+      loadLangItem,
+      loadLangCharacter,
+    ]).then(([base, item, character]) => {
+      return {
+        ...base,
+        item,
+        character,
+      } as unknown as MessageSchema;
+    });
     if (i18n.global.availableLocales.includes(lang)) {
       i18n.global.mergeLocaleMessage(lang, messages);
     } else {

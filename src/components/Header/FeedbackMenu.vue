@@ -7,8 +7,15 @@
     v-model:open="openAlert"
     hide-cancel
   >
-    <h1 class="text-lg font-bold text-center">{{ t('header.feedback') }}</h1>
-    <p class="text-center">输入反馈内容</p>
+    <h1 class="text-lg font-bold text-center mb-2">
+      {{ t('header.feedback') }}
+    </h1>
+    <div class="px-4">
+      <textarea
+        class="resize-none block w-full border-2 p-2 min-h-40 rounded-sm outline-none"
+        :placeholder="t('header.feedback')"
+      ></textarea>
+    </div>
   </ZmdAlert>
 </template>
 

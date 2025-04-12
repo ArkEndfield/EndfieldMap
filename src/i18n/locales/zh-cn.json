@@ -39,7 +39,7 @@
   "download": "下载",
   "merge": "合并",
   "cover": "覆盖",
-  "character": "角色",
+  "_character": "角色",
   "weapon": "武器",
   "add": "添加",
   "remove": "移除",

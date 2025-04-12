@@ -39,7 +39,7 @@
   "download": "Download",
   "merge": "Merge",
   "cover": "Cover",
-  "character": "Character",
+  "_character": "Character",
   "weapon": "Weapon",
   "add": "Add",
   "remove": "Remove",

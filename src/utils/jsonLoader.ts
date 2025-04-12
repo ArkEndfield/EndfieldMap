@@ -13,6 +13,16 @@ export interface LoadResult<T> {
 }
 
 /**
+ * 给URL添加时间戳参数
+ * @param url 原始URL
+ * @returns 添加了时间戳参数的URL
+ */
+export function addTimestampToURL(url: string): string {
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}t=${new Date().getTime()}`;
+}
+
+/**
  * 通用JSON加载函数
  * @param url JSON文件的URL
  * @param maxRetries 最大重试次数
@@ -34,7 +44,9 @@ export async function loadJSON<T>(
 
   while (retries < maxRetries) {
     try {
-      const response = await fetch(url);
+      // 使用添加了时间戳的URL进行请求
+      const timestampedURL = addTimestampToURL(url);
+      const response = await fetch(timestampedURL);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

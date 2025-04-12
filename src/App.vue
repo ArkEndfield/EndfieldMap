@@ -38,7 +38,7 @@ import AppHeaderRight from './components/Header/AppHeaderRight.vue';
 import ZmdSidebar from './components/ZmdSidebar/index.vue';
 import { loadGuidesData } from './services/guides';
 import { initMarksData } from './services/marks';
-import { loadMaterialData } from './services/charMaterial';
+import { loadMaterialData } from './services/material';
 // const isDev = import.meta.env.MODE === 'development';
 // const getQueryParam = (param: string): string | null => {
 //   const urlParams = new URLSearchParams(window.location.search);

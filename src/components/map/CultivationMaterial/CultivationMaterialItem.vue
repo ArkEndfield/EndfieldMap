@@ -21,7 +21,7 @@
           <img
             :src="icon"
             alt="icon"
-            class="w-8 h-8"
+            class="w-8 h-8 object-contain"
           />
         </div>
         <div class="flex flex-col">
@@ -47,13 +47,13 @@
 </template>
 
 <script setup lang="ts">
-import { getCharMaterial } from '@/services/charMaterial';
+import { getCharMaterial, getWeaponMaterial } from '@/services/material';
 import { select, unSelect } from '@/services/entity';
 import type { Material } from '@/types/material';
 import { motion } from 'motion-v';
 import { onUnmounted } from 'vue';
 import { computed, onMounted, ref } from 'vue';
-import { getEntityDataByPic, getEntityDataByKey } from '@/services/entity';
+import { getEntityDataByPic } from '@/services/entity';
 import type { EntityCategories } from '@/types/entity';
 import { watch } from 'vue';
 const material = ref<Material>();
@@ -64,16 +64,12 @@ const displayEntity = computed(() => {
       const entity = getEntityDataByPic(key);
       if (entity) data.push(entity);
     } else {
-      const entity = getEntityDataByKey(key);
+      const entity = getEntityDataByPic(key);
       if (entity) data.push(entity);
     }
   }
   return data;
 });
-const fakeIds = {
-  int_collection_coin: 10,
-  int_collection_coin_puzzle: 10,
-};
 const props = defineProps<{
   id: string;
   name: string;
@@ -91,7 +87,8 @@ const getEntityData = async () => {
     const data = await getCharMaterial(props.id);
     return data || {};
   }
-  return fakeIds;
+  const data = await getWeaponMaterial(props.id);
+  return data || {};
 };
 
 watch(

@@ -36,14 +36,14 @@
         flex-container
       >
         <CultivationMaterialListTitle>
-          {{ t('character') }}
+          {{ t('_character') }}
           <template #content>
             <div class="grid grid-cols-2 gap-2">
               <CultivationAddItem
                 v-for="item in allCharIDs"
                 :key="item"
-                icon="/enemy/adventure_eny_0018_lbtough.png"
-                :name="`char_name_${item}`"
+                :icon="`/images/character/rectangle/icon_cutin_${item}.png`"
+                :name="t(`character.${item}.name`)"
                 :id="String(item)"
                 @toggle="toggleCharacter"
                 :active="chooseCharacters.includes(String(item))"
@@ -58,9 +58,9 @@
               v-for="item in chooseCharacters"
               :key="item"
               :id="item"
-              :name="`char_name_${item}`"
+              :name="t(`character.${item}.name`)"
               type="character"
-              icon="/enemy/adventure_eny_0018_lbtough.png"
+              :icon="`/images/character/rectangle/icon_cutin_${item}.png`"
               @delete="deleteCharacter"
             />
           </AnimatePresence>
@@ -71,10 +71,10 @@
           <template #content>
             <div class="grid grid-cols-2 gap-2">
               <CultivationAddItem
-                v-for="item in 10"
+                v-for="item in allWeaponIDs"
                 :key="item"
-                icon="/enemy/adventure_eny_0018_lbtough.png"
-                :name="`weapon_name_${item}`"
+                :icon="`/item/${item}.png`"
+                :name="t(`item.${item}.name`)"
                 :id="String(item)"
                 :active="chooseWeapons.includes(String(item))"
                 @toggle="toggleWeapon"
@@ -90,8 +90,8 @@
               :key="item"
               :id="item"
               type="weapon"
-              :name="`weapon_name_${item}`"
-              icon="/enemy/adventure_eny_0018_lbtough.png"
+              :name="t(`item.${item}.name`)"
+              :icon="`/item/${item}.png`"
               @delete="deleteWeapon"
             />
           </AnimatePresence>
@@ -102,7 +102,10 @@
 </template>
 
 <script setup lang="ts">
-import { getAllMaterialCharIDs } from '@/services/charMaterial';
+import {
+  getAllMaterialCharIDs,
+  getAllMaterialWeaponIDs,
+} from '@/services/material';
 import { cn } from '@/utils/tailwind';
 import { AnimatePresence, motion } from 'motion-v';
 import { onMounted, ref } from 'vue';
@@ -114,10 +117,12 @@ const open = defineModel<boolean>('open', {
   default: false,
 });
 const allCharIDs = ref<string[]>([]);
+const allWeaponIDs = ref<string[]>([]);
 const { t } = useI18n();
 
 const loadAllCharEntityData = async () => {
   allCharIDs.value = await getAllMaterialCharIDs();
+  allWeaponIDs.value = await getAllMaterialWeaponIDs();
 };
 
 const toggleCharacter = (id: string) => {
