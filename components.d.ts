@@ -46,6 +46,7 @@ declare module 'vue' {
     ImportIcon: typeof import('./src/components/icons/ImportIcon.vue')['default']
     KeyIcon: typeof import('./src/components/icons/KeyIcon.vue')['default']
     LanguageMenu: typeof import('./src/components/Header/LanguageMenu.vue')['default']
+    LayoutGroup: typeof import('motion-v')['LayoutGroup']
     LoginInIcon: typeof import('./src/components/icons/LoginInIcon.vue')['default']
     MapButton: typeof import('./src/components/Header/MapButton.vue')['default']
     MapControls: typeof import('./src/components/map/MapControls.vue')['default']

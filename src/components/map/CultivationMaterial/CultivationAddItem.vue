@@ -1,11 +1,11 @@
 <template>
   <button
     @click="add"
-    class="transition-colors duration-200 text-sm relative text-left"
+    class="transition-colors rounded-md duration-200 text-sm relative text-left overflow-hidden"
     :class="cn(!props.active ? 'text-[#D4D4D4]' : 'text-[#272727]')"
   >
     <div
-      class="h-17 w-full rounded-md overflow-hidden transition-colors duration-200 flex justify-end bg-[#383838]"
+      class="h-17 w-full overflow-hidden transition-colors duration-200 flex justify-end bg-[#383838]"
     >
       <AnimatePresence>
         <motion.div class="absolute top-0 left-0 bottom-0 bg-[#FDFD59] pointer-events-none" v-if="props.active"
