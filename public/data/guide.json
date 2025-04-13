@@ -6,12 +6,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4133,
+            "text": 2800000149,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -20,13 +20,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_1.jpeg"
+            "src": "/images/1_1.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300001877": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300001877,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "采石区角落铁丝网旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_1.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000155": {
@@ -36,12 +66,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4134,
+            "text": 2800000155,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -50,13 +80,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_3.jpeg"
+            "src": "/images/1_2.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300001878": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300001878,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "黑色平台上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_2.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000156": {
@@ -66,12 +126,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4135,
+            "text": 2800000156,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -80,13 +140,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_5.jpeg"
+            "src": "/images/1_3.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300001891": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300001891,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "上台阶屋内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_3.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000163": {
@@ -96,12 +186,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4136,
+            "text": 2800000163,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -110,13 +200,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_7.jpeg"
+            "src": "/images/1_4.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300001984": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300001984,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "左侧棚屋靠墙"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_4.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000183": {
@@ -126,12 +246,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4143,
+            "text": 2800000183,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -140,13 +260,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_9.jpeg"
+            "src": "/images/1_5.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002200": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002200,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "巨型石堆角落"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_5.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000184": {
@@ -156,12 +306,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4144,
+            "text": 2800000184,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -170,13 +320,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_11.jpeg"
+            "src": "/images/1_6.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002216": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002216,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "绿色箱子旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_6.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000194": {
@@ -186,12 +366,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4148,
+            "text": 2800000194,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -200,13 +380,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_13.jpeg"
+            "src": "/images/1_7.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002223": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002223,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "故障机器人右边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_7.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000201": {
@@ -216,12 +426,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4149,
+            "text": 2800000201,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -230,13 +440,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_15.jpeg"
+            "src": "/images/1_8.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002224": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002224,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "洞口内架子下方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_8.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000225": {
@@ -246,12 +486,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4155,
+            "text": 2800000225,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -260,13 +500,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_16.jpeg"
+            "src": "/images/1_9.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002231": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002231,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "箱子右侧"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_9.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000226": {
@@ -276,12 +546,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4156,
+            "text": 2800000226,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -290,13 +560,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_17.jpeg"
+            "src": "/images/1_10.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002234": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002234,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "小型洞穴内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_10.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000481": {
@@ -306,12 +606,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4185,
+            "text": 2800000481,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -320,13 +620,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_18.jpeg"
+            "src": "/images/1_11.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002235": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002235,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "叉车抬起后空间内部"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_11.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000533": {
@@ -336,12 +666,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4192,
+            "text": 2800000533,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -350,13 +680,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_19.jpeg"
+            "src": "/images/1_12.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002334": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002334,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集装箱中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_12.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800000654": {
@@ -366,12 +726,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4210,
+            "text": 2800000654,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -380,13 +740,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_20.jpeg"
+            "src": "/images/1_13.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002336": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002336,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "石柱上方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_13.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001109": {
@@ -396,12 +786,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4224,
+            "text": 2800001109,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -410,13 +800,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_21.jpeg"
+            "src": "/images/1_14.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002340": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002340,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "上台阶平台上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_14.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001175": {
@@ -426,12 +846,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4243,
+            "text": 2800001175,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -440,13 +860,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_22.jpeg"
+            "src": "/images/1_15.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002341": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002341,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "上台阶平台上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_15.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001182": {
@@ -456,12 +906,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4245,
+            "text": 2800001182,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -470,13 +920,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_23.jpeg"
+            "src": "/images/1_16.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002342": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002342,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "上台阶平台上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_16.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001183": {
@@ -486,12 +966,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4246,
+            "text": 2800001183,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -500,13 +980,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_24.jpeg"
+            "src": "/images/1_17.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002347": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002347,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "墙边箱子上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_17.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001191": {
@@ -516,12 +1026,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4250,
+            "text": 2800001191,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -530,13 +1040,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_25.jpeg"
+            "src": "/images/1_18.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002383": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002383,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "柜子下方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_18.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001196": {
@@ -546,12 +1086,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4254,
+            "text": 2800001196,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -560,13 +1100,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_26.jpeg"
+            "src": "/images/1_19.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002545": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002545,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "绿色箱子上方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_19.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001199": {
@@ -576,12 +1146,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4256,
+            "text": 2800001199,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -590,13 +1160,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_27.jpeg"
+            "src": "/images/1_20.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002560": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002560,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "绿色箱子旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_20.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001200": {
@@ -606,12 +1206,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4257,
+            "text": 2800001200,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -620,13 +1220,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_28.jpeg"
+            "src": "/images/1_21.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002564": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002564,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集装箱旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_21.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001201": {
@@ -636,12 +1266,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4258,
+            "text": 2800001201,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -650,13 +1280,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_29.jpeg"
+            "src": "/images/1_22.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002566": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002566,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "柜子旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_22.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001204": {
@@ -666,12 +1326,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4261,
+            "text": 2800001204,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -680,13 +1340,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_30.jpeg"
+            "src": "/images/1_23.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002599": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002599,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "架子下墙边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_23.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800001243": {
@@ -696,12 +1386,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4292,
+            "text": 2800001243,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -710,13 +1400,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_31.jpeg"
+            "src": "/images/1_24.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002601": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002601,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集装箱内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_24.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800020010": {
@@ -726,12 +1446,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4299,
+            "text": 2800020010,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -740,13 +1460,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_32.jpeg"
+            "src": "/images/1_25.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002603": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002603,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "绿色箱子旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_25.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800200006": {
@@ -756,12 +1506,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4772,
+            "text": 2800200006,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -770,13 +1520,43 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_33.jpeg"
+            "src": "/images/1_26.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002604": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002604,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "机器左侧"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_26.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   },
   "2800200036": {
@@ -786,12 +1566,12 @@
         "nodes": [
           {
             "type": "text",
-            "text": 4774,
+            "text": 2800200036,
             "color": "#ff0"
           },
           {
             "type": "text",
-            "text": "标点"
+            "text": null
           }
         ]
       },
@@ -800,13 +1580,6883 @@
         "nodes": [
           {
             "type": "image",
-            "src": "/images/工作表1_image_34.jpeg"
+            "src": "/images/1_27.png"
           }
         ]
       }
     ],
     "video": {
-      "link": null
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002605": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002605,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "机器右侧"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_27.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002606": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002606,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "石块上方油桶旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_28.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021869": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021869,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_29.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002608": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002608,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "存料处下方草地中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_29.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021871": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021871,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_30.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "300002639": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 300002639,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "下台阶平台处"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_30.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021873": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021873,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_32.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001194": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001194,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "柜子旁靠墙"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_32.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021878": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021878,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_33.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001312": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001312,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "小屋内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_33.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021879": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021879,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_34.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001313": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001313,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "上楼梯最上面平台处"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_34.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021880": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021880,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_35.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001333": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001333,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "下台阶墙边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_35.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021881": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021881,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_36.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001409": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001409,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山洞内小房间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_36.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021887": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021887,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_37.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001479": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001479,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "军械库山洞里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_37.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021888": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021888,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_38.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001480": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001480,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "风扇管道内洞穴"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_38.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021889": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021889,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_39.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001481": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001481,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山脚下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_39.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021890": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021890,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_40.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001482": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001482,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "一大堆轮胎旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_40.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021891": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021891,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_41.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001483": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001483,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集装箱小屋内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_41.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021892": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021892,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_42.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "200001484": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 200001484,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "大卡车后方屋内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_42.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500021941": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500021941,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_44.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100000097": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100000097,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "拖箱子跳到上方平台"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_44.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400160022": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400160022,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_45.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100000149": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100000149,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "源石副产物中心大楼一层右前方的房间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_45.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500022181": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500022181,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_46.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100000152": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100000152,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "源石副产物中心左手边围栏区域内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_46.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500022204": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500022204,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_47.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100000154": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100000154,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "大门旁边跟着醚质跳下来的角落"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_47.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500022205": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500022205,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_48.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100000157": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100000157,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "源石副产物中心右手边叉车旁角落里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_48.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500022206": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500022206,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_49.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100000180": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100000180,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "旧工厂区绿色箱子上方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_49.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030704": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030704,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_50.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100000186": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100000186,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "研究所内悬吊平台下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_50.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500022208": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500022208,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_51.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010036": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010036,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "塔吊拉到操作台边头顶上平台"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_51.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500022216": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500022216,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_52.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010037": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010037,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "塔吊旁边跳上来平台另一侧"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_52.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030643": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030643,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_53.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010079": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010079,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "跳绿箱子上房顶"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_53.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030645": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030645,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_54.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010182": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010182,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "崖边小屋两把椅子中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_54.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030672": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030672,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_55.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010263": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010263,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "小皮卡旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_55.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030705": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030705,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_56.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010264": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010264,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "研究所右下前两辆车中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_56.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030709": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030709,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_57.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010265": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010265,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "研究所右上方上台阶左前"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_57.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030719": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030719,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_58.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010320": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010320,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "拖箱子上平台再拖箱子跳白色箱子上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_58.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030727": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030727,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_59.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010418": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010418,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "机械臂下方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_59.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030728": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030728,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_60.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010419": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010419,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "绿色箱子旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_60.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030734": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030734,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_61.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100010420": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100010420,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "台阶旁边转角处"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_61.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030735": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030735,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_62.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020059": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020059,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山脚下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_62.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030744": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030744,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_63.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020337": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020337,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "终末地闪送后方货物存储处"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_63.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030754": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030754,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_64.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020338": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020338,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "杂物堆中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_64.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030760": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030760,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_65.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020339": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020339,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "黄白广告牌下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_65.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030779": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030779,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_66.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020340": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020340,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "两个连续悬吊平台跳到平台上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_66.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030818": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030818,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_67.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020343": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020343,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "旧工厂区右下基地区走廊墙边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_67.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030845": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030845,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_68.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020361": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020361,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山洞内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_68.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030849": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030849,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_69.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020362": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020362,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "无色印记任务"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_69.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030857": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030857,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_70.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020401": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020401,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "巨型源石晶簇下方战斗"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_70.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030860": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030860,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_71.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020548": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020548,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "安德烈旁边的车头前面"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_71.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030868": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030868,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_72.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020775": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020775,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "基地区二楼办公桌内侧"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_72.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030873": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030873,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_73.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020776": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020776,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "咖啡右边角落"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_73.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030877": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030877,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_74.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100020796": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100020796,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "墙边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_74.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030878": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030878,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_75.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390144": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390144,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "关闭供电终端右手边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_75.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030879": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030879,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_76.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390175": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390175,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "基电站跳上去左边箱子上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_76.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030936": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030936,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_77.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390250": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390250,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "关掉供电终端左前方解锁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_77.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031030": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031030,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_78.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390254": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390254,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "基电站停车位中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_78.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031049": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031049,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_79.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390272": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390272,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "传送点右前方沟里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_79.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031050": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031050,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_80.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390315": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390315,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "源石副产物中心左手边围栏区域内绿色货物旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_80.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031064": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031064,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_81.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390344": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390344,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "挑战次级能量淤积点后显示"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_81.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031110": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031110,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_82.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390413": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390413,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "传送点下方下台阶斜坡车上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_82.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031181": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031181,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_83.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100390438": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100390438,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "崖边草地上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_83.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031182": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031182,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_84.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420138": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420138,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "河边击败精英怪三个宝箱"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_84.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031184": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031184,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_85.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420139": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420139,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "河边击败精英怪三个宝箱"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_85.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031185": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031185,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_86.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420140": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420140,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "河边击败精英怪三个宝箱"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_86.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031187": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031187,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_87.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420143": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420143,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山洞里往上走"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_87.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031189": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031189,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_88.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420144": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420144,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "右边管道内爆炸物炸开"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_88.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500031191": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500031191,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_89.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420165": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420165,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "铁箱子上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_89.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3500030761": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3500030761,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_90.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420188": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420188,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "传动点边皮卡上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_90.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420193": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420193,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "小屋的顶部"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_91.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400010137": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400010137,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_92.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420197": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420197,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "左下角悬崖边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_92.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400010143": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400010143,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_93.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420220": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420220,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集装箱内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_93.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400010187": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400010187,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_94.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420234": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420234,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "出山洞柱子下方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_94.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400010191": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400010191,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_95.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420252": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420252,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集装箱内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_95.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400010213": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400010213,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_96.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420259": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420259,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "传送锚点左边大石头上收集碎片解锁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_96.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400010232": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400010232,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_97.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420301": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420301,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "爆炸物炸开进去左拐"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_97.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400010235": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400010235,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_98.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420303": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420303,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "碎片前绿色椅子里面"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_98.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020018": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020018,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_99.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420315": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420315,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "收集碎片解锁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_99.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020028": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020028,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_100.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420351": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420351,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "基电站左下箱子堆中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_100.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020085": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020085,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_101.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420362": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420362,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "出山洞柱子下方另一侧"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_101.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020119": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020119,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_102.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420363": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420363,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "河边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_102.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020604": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020604,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_103.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420376": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420376,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "爆炸物炸开进去左拐"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_103.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020637": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020637,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_104.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420382": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420382,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集装箱中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_104.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020638": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020638,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_105.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420386": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420386,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "铁架下方挑战次级能量淤积点"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_105.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020639": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020639,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_106.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100420388": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100420388,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "挑战次级能量淤积点后显示"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_106.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400020691": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400020691,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_107.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430034": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430034,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集齐四只兔子显示"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_107.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021022": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021022,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_108.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430057": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430057,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "踩喷气收集碎片解锁车旁箱子"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_108.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021032": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021032,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_109.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430066": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430066,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "醚质右侧围栏边绿箱子上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_109.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021043": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021043,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_110.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430083": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430083,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "平台下左转左边角落里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_110.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021054": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021054,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_111.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430088": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430088,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "收集碎片解锁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_111.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021071": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021071,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_112.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430122": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430122,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "爆炸物炸开山洞内"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_112.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021078": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021078,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_113.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430130": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430130,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "箱子旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_113.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021096": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021096,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_114.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430180": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430180,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "杂物堆"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_114.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021170": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021170,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_115.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430181": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430181,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山脚下帐篷左边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_115.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021214": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021214,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_116.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430189": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430189,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "小山坡上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_116.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400021220": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400021220,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_117.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430200": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430200,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "再上台阶绿色椅子旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_117.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400090174": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400090174,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_118.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430213": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430213,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "台阶旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_118.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400090436": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400090436,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_119.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430226": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430226,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "挑战次级能量淤积点后显示"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_119.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400090460": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400090460,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_120.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430233": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430233,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "林中小屋顶部"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_120.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400090491": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400090491,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_121.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430234": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430234,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "上台阶角落里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_121.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "3400090571": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 3400090571,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": null
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/1_122.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430244": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430244,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "大型源石晶簇下方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_122.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100430251": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100430251,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "巨型源石晶簇下方"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_123.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "2100040029": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": 2100040029,
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "入口处走廊中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_124.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030712": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030712",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山脚下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_126.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050626": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050626",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "平台中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_127.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050660": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050660",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "中间台子上集齐碎片解锁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_128.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100020298": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100020298",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "空地中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_129.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030723": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030723",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "岸边大石头旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_130.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100100004": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100100004",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "树下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_131.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100020126": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100020126",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "小石柱旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_132.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100020108": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100020108",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "高处的石头上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_133.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100020125": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100020125",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "最高的平台上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_134.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050492": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050492",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "屋子里墙边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_135.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050628": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050628",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "水池里荷叶上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_136.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050619": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050619",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "墙角"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_137.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100060084": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100060084",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "小石柱旁石板上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_138.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100020269": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100020269",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "岸边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_139.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100020274": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100020274",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "小石柱旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_140.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100040253": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100040253",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "上台子最高的平台上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_141.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030279": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030279",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "墙边一堆小箱子旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_142.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030746": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030746",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "发电站里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_143.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030750": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030750",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "瀑布旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_144.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030747": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030747",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "墙边大石头中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_145.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030753": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030753",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "岸边竹子底下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_146.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050632": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050632",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山洞里瀑布下面"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_147.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050494": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050494",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "楼上窗边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_148.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050491": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050491",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "水池里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_149.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050576": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050576",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山洞深处角落里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_150.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050657": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050657",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "台阶下面的角落里"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_151.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030748": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030748",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "亭子角"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_152.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100060142": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100060142",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "栅栏旁白箱子旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_153.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100060081": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100060081",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "洞内墙边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_154.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100040503": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100040503",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山脚下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_155.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100040500": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100040500",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "大石头旁"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_156.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100040250": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100040250",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "竹子旁边草地上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_157.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030745": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030745",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "环境监测站内墙边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_158.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100010025": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100010025",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "桥旁边悬崖边上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_159.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030713": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030713",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "崖边草地上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_160.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030751": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030751",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "山脚下"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_161.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050630": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050630",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "荷叶上"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_162.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100050638": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100050638",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "岸边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_163.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100030749": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100030749",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "路边的竹子中间"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_164.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100040249": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100040249",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "石头旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_165.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100040243": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100040243",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "石头旁边"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_166.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
+    }
+  },
+  "10100040537": {
+    "nodes": [
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "text",
+            "text": "10100040537",
+            "color": "#ff0"
+          },
+          {
+            "type": "text",
+            "text": "集齐碎片获取"
+          }
+        ]
+      },
+      {
+        "type": "node",
+        "nodes": [
+          {
+            "type": "image",
+            "src": "/images/6_167.png"
+          }
+        ]
+      }
+    ],
+    "video": {
+      "link": "https://www.bilibili.com/video/BV11YdQYqEmd/"
     }
   }
 }

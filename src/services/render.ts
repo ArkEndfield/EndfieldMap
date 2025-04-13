@@ -241,8 +241,8 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
     const color = getColorForEntity(entityType);
     const radius = 15;
 
-    // 计算图标的目标尺寸（圆形半径的比例）
-    const targetIconSize = radius * 1.4; // 图标最大可占用圆形直径的70%
+    // 计算图标的目标尺寸（与圆形直径相同）
+    const targetIconSize = radius * 2; // 图标尺寸等于圆形直径
 
     // 获取图片路径
     const imagePath = `/assets/${
