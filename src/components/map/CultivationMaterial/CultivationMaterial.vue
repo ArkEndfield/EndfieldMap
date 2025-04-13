@@ -60,7 +60,7 @@
               :id="item"
               :name="t(`character.${item}.name`)"
               type="character"
-              :icon="`/images/character/rectangle/icon_cutin_${item}.png`"
+              :icon="`/images/character/square_round/icon_round_${item}.png`"
               @delete="deleteCharacter"
             />
           </AnimatePresence>
