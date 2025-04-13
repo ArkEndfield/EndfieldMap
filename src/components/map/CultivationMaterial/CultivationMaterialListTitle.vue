@@ -16,8 +16,9 @@
         @click="toggleContent"
         ref="button"
       >
-        <div>{{ t('add') }}</div>
-        <PlusIcon />
+        <div>{{ showContent ? t('fold') : t('add') }}</div>
+        <PlusIcon v-show="!showContent" />
+        <MinusIcon v-show="showContent" />
       </button>
     </div>
     <div class="flex h-2 items-stretch">

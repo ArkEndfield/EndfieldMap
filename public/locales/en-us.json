@@ -42,6 +42,7 @@
   "_character": "Character",
   "weapon": "Weapon",
   "add": "Add",
+  "fold": "Fold",
   "remove": "Remove",
   "copy": "Copy",
   "cut": "Cut",
