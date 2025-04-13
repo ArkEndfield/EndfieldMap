@@ -641,6 +641,8 @@ const handleZoomChange = function () {
   if (popupManager.value && popupManager.value.isPopupVisible.value) {
     popupManager.value.repositionPopup();
   }
+
+  refreshMap();
 };
 
 export const updateZoomValue = (zoom: number) => {
@@ -738,6 +740,12 @@ export const refreshMap = () => {
   if (Object.keys(entityClusterSources).length === 0) {
     createEntityClusterLayers();
   }
+
+  loadTextPoints(
+    true,
+    cacheMapId.value === 'map002' ? 'map02' : 'map01',
+    zoomLevel.value
+  );
 
   // 不再清理所有源，而是控制图层可见性
   for (const key in entityInfo) {
