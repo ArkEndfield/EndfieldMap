@@ -55,7 +55,6 @@
 
 <script setup lang="ts">
 import { motion, useAnimate } from 'motion-v';
-import { onBeforeUnmount } from 'vue';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 const showContent = ref(false);
@@ -65,18 +64,6 @@ const { t } = useI18n();
 const toggleContent = () => {
   showContent.value = !showContent.value;
 };
-const clickOutside = (e: MouseEvent) => {
-  const target = e.target as HTMLElement;
-  const isScope =
-    scope.value.contains(target) || button.value?.contains(target);
-  if (!isScope) {
-    showContent.value = false;
-  }
-};
-document.addEventListener('click', clickOutside);
-onBeforeUnmount(() => {
-  document.removeEventListener('click', clickOutside);
-});
 </script>
 
 <style lang="scss" scoped></style>

@@ -4,6 +4,8 @@ import zhCN from './locales/zh-cn.json';
 import rewardZhCN from './locales/item_i18n_cn.json';
 import characterZhCN from './locales/character_i18n_cn.json';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
+import { refreshMap } from '@/services/MapCore';
+import { rafTimeout } from '@/utils/animationTimer';
 
 const zhCNLang = {
   ...zhCN,
@@ -25,10 +27,12 @@ export const setLanguage = (lang: Language) => {
     loadLanguage(lang).catch(console.error);
   }
   i18n.global.locale.value = lang;
+  rafTimeout(refreshMap, 0);
 };
 
 export const resetLanguage = () => {
   localStorage.removeItem(KEY);
+  rafTimeout(refreshMap, 0);
 };
 
 export const getLanguage = () => {
