@@ -145,7 +145,7 @@
               <label
                 v-if="entity"
                 :for="`get-${entity.entityDataIdKey}`"
-                class="text-sm"
+                class="text-xs"
               >
                 {{ t('popover.obtained') }}
               </label>
@@ -153,6 +153,7 @@
                 v-if="entity"
                 :id="`get-${entity?.entityDataIdKey}`"
                 v-model:checked="marks[entity.levelLogicId].finish"
+                border-style="shadow"
               />
             </div>
           </div>
