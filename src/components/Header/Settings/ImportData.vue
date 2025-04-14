@@ -4,16 +4,16 @@
     :error="error"
     @end-click="execute"
   >
-    {{ t('settings.import_data') }}
+    {{ t('settings.import_data.title') }}
     <template #description>
-      <div>{{ t('settings.import_data_tips') }}</div>
+      <div>{{ t('settings.import_data.tips') }}</div>
     </template>
     <template #before>
       <div><ImportIcon /></div>
     </template>
     <template #after>
       <div v-if="!loading">
-        {{ t('settings.import_data') }}
+        {{ t('settings.import_data.title') }}
       </div>
     </template>
   </SettingsItem>
@@ -23,7 +23,7 @@
     confirm-text="close"
   >
     <div class="text-center mb-4">
-      {{ t('settings.import_data_type_tips') }}
+      {{ t('settings.import_data.type_tips') }}
     </div>
     <div class="flex justify-center space-x-4">
       <SquareButton
@@ -61,7 +61,7 @@
       v-if="mergeSuccess || coverSuccess"
       class="text-green-500 text-center mt-4"
     >
-      {{ t('settings.import_data_success_tips') }}
+      {{ t('settings.import_data.success_tips') }}
     </div>
   </ZmdAlert>
 </template>
@@ -91,21 +91,25 @@ const chooseFile = (): Promise<BackupData> => {
           try {
             const data = JSON.parse(content);
             if (!isBackupDataValid(data)) {
-              reject('Invalid data format');
+              reject(new Error('Invalid data format'));
               return;
             }
             resolve(data);
           } catch (error) {
-            reject('Invalid JSON file');
+            reject(new Error('Invalid JSON file'));
           } finally {
             input.remove();
           }
         };
         reader.readAsText(file);
       } else {
-        reject('No file selected');
+        reject(new Error('No file selected'));
         input.remove();
       }
+    });
+    input.addEventListener('cancel', () => {
+      reject(new Error('File selection cancelled'));
+      input.remove();
     });
     input.click();
   });
@@ -144,7 +148,13 @@ watch(open, () => {
     reset();
   }
 });
-// 如果成功（任一），则过五秒钟后关闭
+watch(error, () => {
+  if (error.value) {
+    rafTimeout(() => {
+      reset();
+    }, 3000);
+  }
+});
 watch(
   () => mergeSuccess.value || coverSuccess.value,
   () => {

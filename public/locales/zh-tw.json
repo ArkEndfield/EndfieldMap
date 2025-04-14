@@ -63,22 +63,35 @@
     "settings": "設置"
   },
   "settings": {
-    "export_data": "導出數據",
-    "export_data_tips": "將數據導出為 JSON 格式，方便備份和遷移",
-    "export_data_success_tips": "數據導出成功",
-    "export_data_failed_tips": "數據導出失敗",
-    "delete_data": "刪除數據",
-    "delete_data_tips": "刪除當前所有數據，這個操作不可逆",
-    "delete_data_success_tips": "數據刪除成功，需要重新加載頁面",
-    "delete_data_failed_tips": "數據刪除失敗",
-    "import_data": "導入數據",
-    "import_data_tips": "將 JSON 格式的數據導入到當前會話中",
-    "import_data_success_tips": "數據導入成功",
-    "import_data_type_tips": "請選擇導入方式",
-    "import_data_failed_tips": "數據導入失敗，請檢查數據格式",
-    "clear_cache": "清除緩存",
-    "clear_cache_tips": "例如標點位置、語言文件、標點攻略等數據緩存",
-    "clear_cache_success_tips": "緩存清除成功"
+    "export_data": {
+      "title": "導出數據",
+      "tips": "將數據導出為 JSON 格式，方便備份和遷移",
+      "success_tips": "數據導出成功",
+      "failed_tips": "數據導出失敗"
+    },
+    "delete_data": {
+      "title": "刪除數據",
+      "tips": "刪除當前所有數據，這個操作不可逆",
+      "success_tips": "數據刪除成功，需要重新加載頁面",
+      "failed_tips": "數據刪除失敗"
+    },
+    "import_data": {
+      "title": "導入數據",
+      "tips": "將 JSON 格式的數據導入到當前會話中",
+      "success_tips": "數據導入成功",
+      "failed_tips": "數據導入失敗，請檢查數據格式",
+      "type_tips": "請選擇導入方式"
+    },
+    "clear_cache": {
+      "title": "清除緩存",
+      "tips": "例如標點位置、語言文件、標點攻略等數據緩存",
+      "success_tips": "緩存清除成功",
+      "failed_tips": "緩存清除失敗"
+    },
+    "clustering_enable": {
+      "title": "標點聚合",
+      "tips": "標點聚合功能會根據地圖縮放級別自動合併標點，提高地圖性能"
+    }
   },
   "sidebar": {
     "title": "終末地互動地圖",

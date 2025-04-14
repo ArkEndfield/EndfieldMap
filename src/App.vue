@@ -39,6 +39,7 @@ import ZmdSidebar from './components/ZmdSidebar/index.vue';
 import { loadGuidesData } from './services/guides';
 import { initMarksData } from './services/marks';
 import { loadMaterialData } from './services/material';
+import { initializeSettings } from './services/settings';
 // const isDev = import.meta.env.MODE === 'development';
 // const getQueryParam = (param: string): string | null => {
 //   const urlParams = new URLSearchParams(window.location.search);
@@ -98,6 +99,10 @@ async function loadAllData() {
     // 确保使用await等待marks数据初始化完成
     await initMarksData();
     console.log('已完成数据初始化完成');
+
+    console.log('开始初始化设置...');
+    await initializeSettings();
+    console.log('设置初始化完成');
 
     console.log('所有数据加载完成');
     isLoading.value = false;

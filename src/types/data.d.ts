@@ -6,6 +6,7 @@ export interface BackupData {
   version: string;
   db: {
     marks: MarkInfo;
+    settings: Settings;
   };
   storage: {
     [LOCAL_STORAGE_KEY.MAP]: string;

@@ -3,6 +3,7 @@ import { coverMarks, getMarks, isMarkDataValid, mergeMarks } from './marks';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { Language, setLanguage } from '@/i18n';
 import { selectMap } from './MapCore';
+import settings from '@/data/settings';
 
 // 检查数据格式是否合法
 export const isBackupDataValid = (data: BackupData) => {
@@ -27,6 +28,10 @@ export const coverData = async (data: BackupData | null) => {
   if (data?.storage?.userLanguage) {
     setLanguage(data.storage.userLanguage);
   }
+  // 设置设置
+  if (data?.db?.settings) {
+    settings.value = data.db.settings;
+  }
 };
 
 // 合并恢复数据
@@ -43,14 +48,19 @@ export const mergeData = async (data: BackupData | null) => {
   if (data?.storage?.userLanguage) {
     setLanguage(data.storage.userLanguage);
   }
+  // 设置设置
+  if (data?.db?.settings) {
+    settings.value = data.db.settings;
+  }
 };
 
 // 备份数据
 export const backupData = () => {
   const data: BackupData = {
-    version: '0.0.1',
+    version: '0.0.2',
     db: {
       marks: getMarks(),
+      settings: settings.value,
     },
     storage: {
       [LOCAL_STORAGE_KEY.MAP]:

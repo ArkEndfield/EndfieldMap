@@ -41,10 +41,10 @@
         name="error"
         v-if="props.error"
       >
-        <div class="text-red-500">
+        <div class="text-red-500 flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
+            class="h-5 w-5 shrink-0"
             viewBox="0 0 20 20"
             fill="currentColor"
             aria-hidden="true"
@@ -55,6 +55,7 @@
               clip-rule="evenodd"
             />
           </svg>
+          <span class="text-xs">{{ props.error.message }}</span>
         </div>
       </slot>
       <slot

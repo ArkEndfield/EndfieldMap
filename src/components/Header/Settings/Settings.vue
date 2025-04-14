@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-2">
+    <ClusteringEnable />
     <ClearCache />
     <ExportData />
     <ImportData />

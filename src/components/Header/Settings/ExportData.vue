@@ -5,22 +5,22 @@
     :disabled="success"
     @end-click="execute"
   >
-    {{ t('settings.export_data') }}
+    {{ t('settings.export_data.title') }}
     <template #description>
-      <div>{{ t('settings.export_data_tips') }}</div>
+      <div>{{ t('settings.export_data.tips') }}</div>
     </template>
     <template #before>
       <div><ExportIcon /></div>
     </template>
     <template #after>
       <div v-if="!loading && !error && !success">
-        {{ t('settings.export_data') }}
+        {{ t('settings.export_data.title') }}
       </div>
       <div
         v-else-if="success"
         class="text-xs"
       >
-        {{ t('settings.export_data_success_tips') }}
+        {{ t('settings.export_data.success_tips') }}
         <button
           class="bg-[#272727] text-white rounded px-1 py-0.5 ml-0.5"
           @click="openDownloadLink"

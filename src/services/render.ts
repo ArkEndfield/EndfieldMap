@@ -17,12 +17,15 @@ import { rafTimeout } from '@/utils/animationTimer';
 import { debounce, xyz2crd } from '@/utils/common';
 import { entityInfo } from '@/data/entity';
 import { PointData } from '@/types/points';
+import settings from '@/data/settings';
 
 // 重新定义样式缓存类型，使其能够存储更新状态
 interface StyleCacheEntry {
   style: Style | Style[];
   needsUpdate?: boolean;
 }
+
+let isCluster = true;
 
 // 这些变量从data/entity.ts中提取
 export const features: Feature<Point>[] = [];
@@ -226,7 +229,20 @@ function calculateOptimalScale(
   return targetSize / maxDimension;
 }
 
-// 修改创建样式的函数，加入图片尺寸自适应和内部尖头装饰
+// 添加动画相关的常量和类型
+const ANIMATION_DURATION = 300; // 缩短动画持续时间到300ms
+const ANIMATION_EASING = (t: number) => t * (2 - t); // 保持缓动函数不变
+
+interface AnimationState {
+  startTime: number;
+  startDistance: number;
+  targetDistance: number;
+  isAnimating: boolean;
+}
+
+const animationStates: { [key: string]: AnimationState } = {};
+
+// 修改样式创建函数，添加动画效果
 async function createCircleIconStyle(entityType: string, size: number = 1) {
   // 使用缓存键，避免重复创建相同样式
   const cacheKey = `${entityType}-${size}`;
@@ -260,7 +276,7 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
     );
 
     // 创建统一的样式
-    let styles = [
+    const baseStyles = [
       // 圆形外部描边 - 与背景色相同
       new Style({
         image: new CircleStyle({
@@ -326,7 +342,7 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
 
     // 如果是聚合点，添加数字标记
     if (size > 1) {
-      styles.push(
+      baseStyles.push(
         new Style({
           // 给文字添加圆形背景
           image: new CircleStyle({
@@ -352,6 +368,12 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
         })
       );
     }
+
+    // 在创建样式时添加动画效果
+    const styles = baseStyles.map(style => {
+      // 直接使用样式对象
+      return style;
+    });
 
     return styles;
   })();
@@ -469,11 +491,11 @@ export const createEntityClusterLayers = () => {
   return entityClusterLayers;
 };
 
-// 更新聚合距离的函数 - 添加防抖处理
+// 更新聚合距离的函数 - 添加动画处理
 const debouncedUpdateClusterDistance = debounce(
   (zoom: number) => {
-    // 获取当前聚合状态 - 简化为只有两种状态：聚合(30)或不聚合(0)
-    const shouldCluster = zoom < 4;
+    // 获取当前聚合状态
+    const shouldCluster = settings.value.isClusteringEnabled && zoom < 4;
     const newDistance = shouldCluster ? 30 : 0;
 
     // 检查是否需要更新聚合状态 - 比较当前第一个聚合源的距离
@@ -484,30 +506,83 @@ const debouncedUpdateClusterDistance = debounce(
       // 只有当聚合状态发生变化时才更新
       if (
         (shouldCluster && currentDistance === 0) ||
-        (!shouldCluster && currentDistance > 0)
+        (!shouldCluster && currentDistance > 0) ||
+        isCluster !== shouldCluster
       ) {
         console.log(
-          `聚合状态变化：${currentDistance} -> ${newDistance}，开始更新聚合图层`
+          `聚合状态变化：${currentDistance} -> ${newDistance}，开始动画过渡`
         );
-
-        // 更新每个聚合源的距离
-        Object.values(entityClusterSources).forEach(source => {
-          source.setDistance(newDistance);
+        isCluster = shouldCluster;
+        // 为每个聚合源设置动画状态
+        Object.keys(entityClusterSources).forEach(key => {
+          animationStates[key] = {
+            startTime: performance.now(),
+            startDistance: currentDistance,
+            targetDistance: newDistance,
+            isAnimating: true,
+          };
         });
 
-        // 清除缓存的样式
-        Object.keys(styleCache).forEach(key => delete styleCache[key]);
+        // 使用 requestAnimationFrame 的优化版本
+        let lastFrameTime = performance.now();
+        const animate = (timestamp: number) => {
+          // 计算帧间隔时间
+          const deltaTime = timestamp - lastFrameTime;
+          lastFrameTime = timestamp;
+
+          // 如果帧间隔时间过长，跳过这一帧
+          if (deltaTime > 100) {
+            requestAnimationFrame(animate);
+            return;
+          }
+
+          let stillAnimating = false;
+
+          Object.entries(entityClusterSources).forEach(([key, source]) => {
+            const state = animationStates[key];
+            if (!state || !state.isAnimating) return;
+
+            const elapsed = timestamp - state.startTime;
+            const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
+            const easedProgress = ANIMATION_EASING(progress);
+
+            // 计算当前距离
+            const currentDistance =
+              state.startDistance +
+              (state.targetDistance - state.startDistance) * easedProgress;
+
+            // 更新聚合源的距离
+            source.setDistance(currentDistance);
+
+            // 如果动画未完成，继续下一帧
+            if (progress < 1) {
+              stillAnimating = true;
+            } else {
+              // 动画完成，清理状态
+              state.isAnimating = false;
+              // 确保最终距离准确
+              source.setDistance(state.targetDistance);
+            }
+          });
+
+          // 如果还有动画在进行，继续下一帧
+          if (stillAnimating) {
+            requestAnimationFrame(animate);
+          }
+        };
+
+        requestAnimationFrame(animate);
       }
     } else {
       // 如果尚未创建聚合源，直接返回
       console.log('聚合源尚未初始化，跳过更新');
     }
   },
-  250,
+  100,
   { leading: false, trailing: true }
 );
 
 // 原始函数现在调用防抖版本
-export const updateClusterDistance = (zoom: number) => {
-  debouncedUpdateClusterDistance(zoom);
+export const updateClusterDistance = async (zoom: number) => {
+  await debouncedUpdateClusterDistance(zoom);
 };

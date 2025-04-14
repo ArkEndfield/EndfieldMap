@@ -63,23 +63,35 @@
     "settings": "설정"
   },
   "settings": {
-    "export_data": "데이터 내보내기",
-    "export_data_tips": "백업 및 마이그레이션을 위해 데이터를 JSON 형식으로 내보내기",
-    "export_data_success_tips": "데이터 내보내기 성공",
-    "export_data_failed_tips": "데이터 내보내기 실패",
-    "delete_data": "데이터 삭제",
-    "delete_data_tips": "현재 모든 데이터 삭제, 이 작업은 되돌릴 수 없습니다",
-    "delete_data_success_tips": "데이터 삭제 성공, 페이지를 새로 고침하세요",
-    "delete_data_failed_tips": "데이터 삭제 실패",
-    "import_data": "데이터 가져오기",
-    "import_data_tips": "JSON 형식 데이터를 현재 세션으로 가져오기",
-    "import_data_success_tips": "데이터 가져오기 성공",
-    "import_data_type_tips": "가져오기 방법을 선택하세요",
-    "import_data_failed_tips": "데이터 가져오기 실패, 데이터 형식을 확인하세요",
-    "clear_cache": "캐시 지우기",
-    "clear_cache_tips": "예를 들어 마커 위치, 언어 파일, 마커 전략 등",
-    "clear_cache_success_tips": "캐시 지우기 성공, 페이지를 새로 고침하세요",
-    "clear_cache_failed_tips": "캐시 지우기 실패"
+    "export_data": {
+      "title": "데이터 내보내기",
+      "tips": "JSON 형식의 데이터를 현재 세션에 내보냅니다",
+      "success_tips": "데이터 내보내기에 성공했습니다",
+      "failed_tips": "데이터 내보내기에 실패했습니다"
+    },
+    "delete_data": {
+      "title": "데이터 삭제",
+      "tips": "현재 모든 데이터를 삭제합니다. 이 작업은 되돌릴 수 없습니다",
+      "success_tips": "데이터 삭제에 성공했습니다. 페이지를 새로 고침하세요",
+      "failed_tips": "데이터 삭제에 실패했습니다"
+    },
+    "import_data": {
+      "title": "데이터 가져오기",
+      "tips": "JSON 형식의 데이터를 현재 세션에 가져옵니다",
+      "type_tips": "가져오기 방법을 선택하세요",
+      "success_tips": "데이터 가져오기에 성공했습니다",
+      "failed_tips": "데이터 가져오기에 실패했습니다"
+    },
+    "clear_cache": {
+      "title": "캐시 지우기",
+      "tips": "예를 들어 마커 위치, 언어 파일, 마커 전략 등",
+      "success_tips": "캐시 지우기에 성공했습니다. 페이지를 새로 고침하세요",
+      "failed_tips": "캐시 지우기에 실패했습니다"
+    },
+    "clustering_enable": {
+      "title": "마커 포인트 클러스터링",
+      "tips": "마커 포인트 클러스터링 기능은 지도 줌 레벨에 따라 자동으로 마커 포인트를 결합하여 지도 성능을 향상시킵니다"
+    }
   },
   "sidebar": {
     "title": "엔드필드 맵",

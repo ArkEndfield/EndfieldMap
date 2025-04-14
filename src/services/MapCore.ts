@@ -623,9 +623,9 @@ export const getZoom = () => {
 const handleZoomChange = function () {
   const currentMap = map.value;
   if (!currentMap) return;
-
   // 标记地图正在缩放中
   if (popupManager.value) {
+    console.log('设置缩放状态标志');
     popupManager.value.setMapZooming(true);
   }
 
@@ -648,6 +648,11 @@ const handleZoomChange = function () {
 export const updateZoomValue = (zoom: number) => {
   zoomLevel.value = zoom;
   localStorage.setItem(ZOOM_KEY, zoom.toString());
+};
+
+export const recalculateCluster = () => {
+  const zoom = getZoom();
+  updateClusterDistance(zoom);
 };
 
 const moveEndChange = debounce(
@@ -680,8 +685,9 @@ const moveEndChange = debounce(
       });
     }
 
-    // 重要：在移动或缩放结束后，重置缩放状态标志
+    // 在移动或缩放结束后，重置缩放状态标志
     if (popupManager.value) {
+      console.log('重置缩放状态标志');
       popupManager.value.setMapZooming(false);
     }
   },
@@ -734,7 +740,6 @@ export const selectMap = async (id: string) => {
   loadTextPoints(true, id === 'map002' ? 'map02' : 'map01', zoomLevel.value);
 };
 
-// 修改refresh函数，加入更多调试信息
 export const refreshMap = () => {
   // 确保所有源都被正确初始化
   if (Object.keys(entityClusterSources).length === 0) {

@@ -63,23 +63,35 @@
     "settings": "設定"
   },
   "settings": {
-    "export_data": "データのエクスポート",
-    "export_data_tips": "バックアップと移行のためにデータをJSON形式でエクスポート",
-    "export_data_success_tips": "データのエクスポートに成功しました",
-    "export_data_failed_tips": "データのエクスポートに失敗しました",
-    "delete_data": "データの削除",
-    "delete_data_tips": "現在のすべてのデータを削除します。この操作は元に戻せません",
-    "delete_data_success_tips": "データの削除に成功しました。ページを更新してください",
-    "delete_data_failed_tips": "データの削除に失敗しました",
-    "import_data": "データのインポート",
-    "import_data_tips": "JSON形式のデータを現在のセッションにインポート",
-    "import_data_success_tips": "データのインポートに成功しました",
-    "import_data_type_tips": "インポート方法を選択してください",
-    "import_data_failed_tips": "データのインポートに失敗しました。データ形式を確認してください",
-    "clear_cache": "キャッシュのクリア",
-    "clear_cache_tips": "例えば、マーカーポイント位置、言語ファイル、マーカーポイント戦略など",
-    "clear_cache_success_tips": "キャッシュのクリアに成功しました。ページを更新してください",
-    "clear_cache_failed_tips": "キャッシュのクリアに失敗しました"
+    "export_data": {
+      "title": "データのエクスポート",
+      "tips": "バックアップと移行のためにデータをJSON形式でエクスポート",
+      "success_tips": "データのエクスポートに成功しました",
+      "failed_tips": "データのエクスポートに失敗しました"
+    },
+    "delete_data": {
+      "title": "データの削除",
+      "tips": "現在のすべてのデータを削除します。この操作は元に戻せません",
+      "success_tips": "データの削除に成功しました。ページを更新してください",
+      "failed_tips": "データの削除に失敗しました"
+    },
+    "import_data": {
+      "title": "データのインポート",
+      "tips": "JSON形式のデータを現在のセッションにインポート",
+      "type_tips": "インポート方法を選択してください",
+      "success_tips": "データのインポートに成功しました",
+      "failed_tips": "データのインポートに失敗しました。データ形式を確認してください"
+    },
+    "clear_cache": {
+      "title": "キャッシュのクリア",
+      "tips": "例えば、マーカーポイント位置、言語ファイル、マーカーポイント戦略など",
+      "success_tips": "キャッシュのクリアに成功しました。ページを更新してください",
+      "failed_tips": "キャッシュのクリアに失敗しました"
+    },
+    "clustering_enable": {
+      "title": "マーカーポイントの聚合",
+      "tips": "マーカーポイントの聚合機能は、マップのズームレベルに応じて自動的にマーカーポイントを結合し、マップの性能を向上させます"
+    }
   },
   "sidebar": {
     "title": "エンドフィールドマップ",

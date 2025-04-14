@@ -6,22 +6,22 @@
     :disabled="success"
     @end-click="open = true"
   >
-    {{ t('settings.delete_data') }}
+    {{ t('settings.delete_data.title') }}
     <template #description>
-      <div>{{ t('settings.delete_data_tips') }}</div>
+      <div>{{ t('settings.delete_data.tips') }}</div>
     </template>
     <template #before>
       <div><TrashIcon /></div>
     </template>
     <template #after>
       <div v-if="!loading && !error && !success">
-        {{ t('settings.delete_data') }}
+        {{ t('settings.delete_data.title') }}
       </div>
       <div
         v-else-if="success"
         class="text-xs"
       >
-        {{ t('settings.delete_data_success_tips') }}
+        {{ t('settings.delete_data.success_tips') }}
         <button
           class="bg-[#272727] text-white rounded px-1 py-0.5 ml-0.5"
           @click="refreshPage"
@@ -36,13 +36,14 @@
     @confirm="execute"
   >
     <div class="text-center mb-4">
-      {{ t('settings.delete_data_tips') }}
+      {{ t('settings.delete_data.tips') }}
     </div>
   </ZmdAlert>
 </template>
 
 <script setup lang="ts">
 import useStateOperate from '@/hooks/useStateOperate';
+import { resetSettings } from '@/services/settings';
 import { clearStore, StorageType } from '@/utils/indexedDBStorage';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -55,6 +56,7 @@ const { loading, error, success, execute } = useStateOperate(
     for (const key of keys) {
       localStorage.removeItem(key);
     }
+    resetSettings();
   },
   {
     resetTime: 5000,

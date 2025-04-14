@@ -1,5 +1,6 @@
 export const DATA_DB_KEY = {
   MARKS: 'endfield-map-marks',
+  SETTINGS: 'endfield-map-settings',
 } as const;
 
 export const CACHE_DB_KEY = {
