@@ -359,7 +359,7 @@ async function createCircleIconStyle(entityType: string, size: number = 1) {
               color: '#fff',
             }),
             font: '8px "Noto Sans SC"',
-            offsetY: radius - 5, // 数字显示在圆下方
+            offsetY: radius - 5,
             stroke: new Stroke({
               color: '#000',
               width: 2,

@@ -24,7 +24,6 @@ declare module 'vue' {
     ContextMenu: typeof import('./src/components/ContextMenu/ContextMenu.vue')['default']
     ContextMenuDivider: typeof import('./src/components/ContextMenu/ContextMenuDivider.vue')['default']
     ContextMenuItem: typeof import('./src/components/ContextMenu/ContextMenuItem.vue')['default']
-    copy: typeof import('./src/components/icons/PlusIcon copy.vue')['default']
     CultivationAddItem: typeof import('./src/components/map/CultivationMaterial/CultivationAddItem.vue')['default']
     CultivationEntityItem: typeof import('./src/components/map/CultivationMaterial/CultivationEntityItem.vue')['default']
     CultivationMaterial: typeof import('./src/components/map/CultivationMaterial/CultivationMaterial.vue')['default']

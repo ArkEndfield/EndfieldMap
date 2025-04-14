@@ -35,7 +35,7 @@ export const loadTextPoints = (
     new Style({
       text: new Text({
         text,
-        font: '1.5rem "Noto Sans SC"',
+        font: 'bold 1.5rem "Noto Sans SC", sans-serif',
         fill: new Fill({ color: '#fff' }),
         stroke: new Stroke({ color: '#000', width: 2 }),
         padding: [5, 10, 5, 10],
