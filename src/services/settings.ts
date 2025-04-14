@@ -27,6 +27,10 @@ export const resetSettings = () => {
   settings.value = DEFAULT_SETTINGS;
 };
 
+export const mergeSettings = (newVal: Settings) => {
+  settings.value = { ...settings.value, ...newVal };
+};
+
 const syncSettings = debounce(async (newVal: Settings) => {
   const plainSettings = { ...newVal };
   await setItem(DB_KEY, plainSettings);

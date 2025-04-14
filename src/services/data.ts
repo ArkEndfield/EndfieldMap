@@ -4,6 +4,7 @@ import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { Language, setLanguage } from '@/i18n';
 import { selectMap } from './MapCore';
 import settings from '@/data/settings';
+import { mergeSettings } from './settings';
 
 // 检查数据格式是否合法
 export const isBackupDataValid = (data: BackupData) => {
@@ -30,7 +31,7 @@ export const coverData = async (data: BackupData | null) => {
   }
   // 设置设置
   if (data?.db?.settings) {
-    settings.value = data.db.settings;
+    mergeSettings(data.db.settings);
   }
 };
 
@@ -50,7 +51,7 @@ export const mergeData = async (data: BackupData | null) => {
   }
   // 设置设置
   if (data?.db?.settings) {
-    settings.value = data.db.settings;
+    mergeSettings(data.db.settings);
   }
 };
 
