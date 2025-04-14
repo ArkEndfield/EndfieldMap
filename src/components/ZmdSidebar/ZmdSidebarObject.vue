@@ -40,7 +40,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  name: '未命名',
+  name: '',
   value: 0,
   markCount: 0,
   checked: undefined,

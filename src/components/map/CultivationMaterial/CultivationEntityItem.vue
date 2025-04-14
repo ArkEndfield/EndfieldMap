@@ -1,6 +1,6 @@
 <template>
   <ZmdSidebarObject
-    :name="entity.entityInfo.name"
+    :name="t(`entities.${entity.entityInfo.point}`)"
     :checked="entity.entityInfo.show"
     @change="toggle"
     :hide-count="true"
@@ -12,6 +12,9 @@
 <script setup lang="ts">
 import { toggleSelect } from '@/services/entity';
 import type { EntityCategories } from '@/types/entity';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   entity: EntityCategories[string];

@@ -31,7 +31,7 @@
         <div class="objecg-list">
           <ZmdSidebarObject
             v-for="v in k.filter(item => item.count > 0)"
-            :name="v.name"
+            :name="t(`entities.${v.point}`)"
             :value="v.count"
             :mark-count="getMarkCountForEntity(i, v.name)"
             v-model="v.show"

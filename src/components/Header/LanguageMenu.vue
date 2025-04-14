@@ -66,6 +66,8 @@ const availableLocales = [
   { code: 'zh-CN', name: '简体中文' },
   { code: 'zh-TW', name: '繁体中文' },
   { code: 'en-US', name: 'English' },
+  { code: 'ja-JP', name: '日本語' },
+  { code: 'ko-KR', name: '한국어' },
 ] satisfies { code: Language; name: string }[];
 
 const onOpen = () => {

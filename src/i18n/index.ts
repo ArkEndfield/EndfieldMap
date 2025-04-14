@@ -17,7 +17,7 @@ const KEY = LOCAL_STORAGE_KEY.LANGUAGE;
 
 export type MessageSchema = typeof zhCNLang;
 
-export type Language = 'zh-CN' | 'zh-TW' | 'en-US';
+export type Language = 'zh-CN' | 'zh-TW' | 'en-US' | 'ja-JP' | 'ko-KR';
 
 const storagedLocale = localStorage.getItem(KEY);
 
@@ -66,6 +66,20 @@ const i18n = createI18n({
       },
     },
     'zh-TW': {
+      decimal: {
+        style: 'decimal',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1,
+      },
+    },
+    'ja-JP': {
+      decimal: {
+        style: 'decimal',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1,
+      },
+    },
+    'ko-KR': {
       decimal: {
         style: 'decimal',
         minimumFractionDigits: 0,
@@ -121,6 +135,38 @@ const i18n = createI18n({
         hour12: false,
       },
     },
+    'ja-JP': {
+      short: {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      },
+      long: {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        weekday: 'narrow',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false,
+      },
+    },
+    'ko-KR': {
+      short: {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      },
+      long: {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        weekday: 'narrow',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false,
+      },
+    },
   },
 });
 
@@ -136,6 +182,10 @@ export async function loadLanguage(lang: Language) {
       rewardLang = 'tc';
     } else if (lang === 'en-US') {
       rewardLang = 'en';
+    } else if (lang === 'ja-JP') {
+      rewardLang = 'jp';
+    } else if (lang === 'ko-KR') {
+      rewardLang = 'kr';
     } else if (lang === 'ko-KR') {
       rewardLang = 'kr';
     }
