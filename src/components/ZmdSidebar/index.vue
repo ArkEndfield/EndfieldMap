@@ -4,12 +4,12 @@
   <div
     class="zmd-sidebar-collapse-arrows"
     :style="{
-      zIndex: isOpen ? 53 : 2,
+      zIndex: settings.sidebarExpanded ? 53 : 2,
     }"
   >
-    <ZmdSidebarHeader :open="isOpen" />
+    <ZmdSidebarHeader :open="settings.sidebarExpanded" />
 
-    <ZmdSidebarTitleArrow v-model:open="isOpen" />
+    <ZmdSidebarTitleArrow v-model:open="settings.sidebarExpanded" />
   </div>
   <motion.div
     class="zmd-sidebar"
@@ -17,7 +17,7 @@
       x: '-130%',
     }"
     :animate="{
-      x: isOpen ? '-4%' : '-130%',
+      x: settings.sidebarExpanded ? '-4%' : '-130%',
     }"
     :transition="{
       duration: 0.5,
@@ -29,8 +29,8 @@
     <div class="zmd-sidebar-bg zmd-sidebar-main">
       <div class="header-container"></div>
       <div class="zmd-sidebar-content">
-        <ZmdSidebarFilter :open="isOpen" />
-        <ZmdSidebarItemList :open="isOpen" />
+        <ZmdSidebarFilter :open="settings.sidebarExpanded" />
+        <ZmdSidebarItemList :open="settings.sidebarExpanded" />
       </div>
       <div class="zmd-sidebar-copyright">
         <a
@@ -48,13 +48,11 @@ import ZmdSidebarHeader from './ZmdSidebarHeader.vue';
 import ZmdSidebarFilter from './ZmdSidebarFilter.vue';
 import ZmdSidebarItemList from './ZmdSidebarItemList.vue';
 import ZmdSidebarTitleArrow from './header/ZmdSidebarTitleArrow.vue';
-import { ref } from 'vue';
 import { motion } from 'motion-v';
-
-const isOpen = ref(true);
+import settings from '@/data/settings';
 
 const open = () => {
-  isOpen.value = true;
+  settings.value.sidebarExpanded = true;
 };
 </script>
 <style lang="scss" scoped>

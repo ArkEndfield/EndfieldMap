@@ -13,7 +13,7 @@ export const initializeSettings = async () => {
   if (!settingsDbData) {
     await setItem(DB_KEY, DEFAULT_SETTINGS);
   } else {
-    settings.value = settingsDbData;
+    mergeSettings(settingsDbData);
   }
   watchEffect(() => {
     recalculateCluster();
