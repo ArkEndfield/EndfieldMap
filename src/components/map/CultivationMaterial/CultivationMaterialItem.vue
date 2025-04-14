@@ -3,16 +3,24 @@
     :animate="{
       x: 0,
       opacity: 1,
+      height: 'auto',
     }"
     :exit="{
       x: -100,
       opacity: 0,
+      height: 0,
     }"
     :initial="{
       x: -100,
       opacity: 0,
+      height: 0,
     }"
-    class="text-white"
+    :transition="{
+      duration: 0.3,
+      type: 'spring',
+      bounce: 0.2,
+    }"
+    class="text-white overflow-hidden"
   >
     <div class="top-bar bg-[#464646]"></div>
     <div class="bg-[#464646] p-2">
