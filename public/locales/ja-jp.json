@@ -136,7 +136,12 @@
     "play": "再生回数",
     "number": {
       "wan": "万",
-      "yi": "億"
+      "yi": "億",
+      "thousand": "千",
+      "million": "百万",
+      "man": "万",
+      "oku": "億",
+      "eok": "億"
     },
     "certification": {
       "game": "ビリビリ認定ゲームUP主"

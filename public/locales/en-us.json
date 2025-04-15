@@ -136,7 +136,12 @@
     "play": "Views",
     "number": {
       "wan": "K",
-      "yi": "M"
+      "yi": "M",
+      "thousand": "K",
+      "million": "M",
+      "man": "K",
+      "oku": "M", 
+      "eok": "M"
     },
     "certification": {
       "game": "Bilibili Certified Game UP"

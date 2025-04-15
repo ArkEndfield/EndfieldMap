@@ -136,7 +136,12 @@
     "play": "播放",
     "number": {
       "wan": "万",
-      "yi": "亿"
+      "yi": "亿",
+      "thousand": "千",
+      "million": "百万",
+      "man": "万",
+      "oku": "亿",
+      "eok": "亿"
     },
     "certification": {
       "game": "bilibili 知名游戏UP主"

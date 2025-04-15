@@ -142,13 +142,29 @@ const formatFansCount = (count: number) => {
     if (count >= 10000) {
       return (count / 10000).toFixed(1) + t('bilibili_card.number.wan');
     }
+  } else if (locale.value.startsWith('ja')) {
+    // 日文格式
+    if (count >= 100000000) {
+      return (count / 100000000).toFixed(1) + t('bilibili_card.number.oku'); // 億
+    }
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + t('bilibili_card.number.man'); // 万
+    }
+  } else if (locale.value.startsWith('ko')) {
+    // 韩文格式
+    if (count >= 100000000) {
+      return (count / 100000000).toFixed(1) + t('bilibili_card.number.eok'); // 억
+    }
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + t('bilibili_card.number.man'); // 만
+    }
   } else {
     // 英文格式
     if (count >= 1000000) {
-      return (count / 1000000).toFixed(1) + t('bilibili_card.number.yi'); // M
+      return (count / 1000000).toFixed(1) + t('bilibili_card.number.million'); // M
     }
     if (count >= 1000) {
-      return (count / 1000).toFixed(1) + t('bilibili_card.number.wan'); // K
+      return (count / 1000).toFixed(1) + t('bilibili_card.number.thousand'); // K
     }
   }
   return count.toString();
@@ -164,13 +180,29 @@ const formatCount = (count: number) => {
     if (count >= 10000) {
       return (count / 10000).toFixed(1) + t('bilibili_card.number.wan');
     }
+  } else if (locale.value.startsWith('ja')) {
+    // 日文格式
+    if (count >= 100000000) {
+      return (count / 100000000).toFixed(1) + t('bilibili_card.number.oku'); // 億
+    }
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + t('bilibili_card.number.man'); // 万
+    }
+  } else if (locale.value.startsWith('ko')) {
+    // 韩文格式
+    if (count >= 100000000) {
+      return (count / 100000000).toFixed(1) + t('bilibili_card.number.eok'); // 억
+    }
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + t('bilibili_card.number.man'); // 만
+    }
   } else {
     // 英文格式
     if (count >= 1000000) {
-      return (count / 1000000).toFixed(1) + t('bilibili_card.number.yi'); // M
+      return (count / 1000000).toFixed(1) + t('bilibili_card.number.million'); // M
     }
     if (count >= 1000) {
-      return (count / 1000).toFixed(1) + t('bilibili_card.number.wan'); // K
+      return (count / 1000).toFixed(1) + t('bilibili_card.number.thousand'); // K
     }
   }
   return count.toString();

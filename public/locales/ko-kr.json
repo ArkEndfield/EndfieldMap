@@ -136,7 +136,12 @@
     "play": "조회수",
     "number": {
       "wan": "만",
-      "yi": "억"
+      "yi": "억",
+      "thousand": "천",
+      "million": "백만",
+      "man": "만",
+      "oku": "억",
+      "eok": "억"
     },
     "certification": {
       "game": "빌리빌리 인증 게임 UP"
