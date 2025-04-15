@@ -17,7 +17,8 @@ export type EntityCategory =
   | 'plant'
   | 'spcstone'
   | 'settlement'
-  | 'enemy';
+  | 'enemy'
+  | 'custom';
 
 export type EntityCategories = Record<
   string,

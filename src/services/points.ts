@@ -1,17 +1,26 @@
 import { loadJSON } from '@/utils/jsonLoader';
 import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
-import { CACHE_DB_KEY } from '@/constants/db_key';
+import { CACHE_DB_KEY, DATA_DB_KEY } from '@/constants/db_key';
 import { PointData } from '@/types/points';
 import { mapFileNames, mapFolders } from '@/data/points';
 
 // IndexedDB 存储键名
 const DB_ALL_POINTS_KEY = CACHE_DB_KEY.POINTS;
 const DB_CURRENT_POINTS_KEY = CACHE_DB_KEY.CURRENT_POINTS;
+const DB_CUSTOM_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;
 
 // 从 IndexedDB 获取所有点位
 export async function getAllPoints(): Promise<PointData[]> {
   const points = await getItem<PointData[]>(
     DB_ALL_POINTS_KEY,
+    StorageType.PERMANENT
+  );
+  return points || [];
+}
+
+export async function getCustomPoints(): Promise<PointData[]> {
+  const points = await getItem<PointData[]>(
+    DB_CUSTOM_POINTS_KEY,
     StorageType.PERMANENT
   );
   return points || [];
@@ -27,12 +36,15 @@ export async function getCurrentPoints(): Promise<PointData[]> {
 }
 
 // 筛选并更新点位数据的通用函数
-async function filterAndUpdatePoints(mapId: string): Promise<PointData[]> {
+export async function filterAndUpdatePoints(
+  mapId: string
+): Promise<PointData[]> {
   // 获取所有点位数据
-  const allPoints = await getAllPoints();
-
+  const allPoints = (await getAllPoints()) || [];
+  const customPoints = (await getCustomPoints()) || [];
+  const mergedPoints = [...allPoints, ...customPoints];
   // 根据地图ID筛选点位
-  const filteredPoints = allPoints.filter(point => {
+  const filteredPoints = mergedPoints.filter(point => {
     const isMap2 = mapId === 'map002';
     return isMap2
       ? point.sceneId.includes('map02')

@@ -22,34 +22,17 @@
       ref="contextMenuRef"
     >
       <ContextMenuItem
-        label="查看"
-        icon="👁️"
-        shortcut="Ctrl+V"
-        :onClick="() => handleAction('view')"
+        label="创建标点"
+        icon="📍"
+        :onClick="() => handleAction('create')"
+        :disabled="!!rightClickPoint || !rightClickCoordinates"
       />
       <ContextMenuItem
-        label="复制"
-        icon="📋"
-        shortcut="Ctrl+C"
-        :onClick="() => handleAction('copy')"
-      />
-      <ContextMenuItem
-        label="剪切"
-        icon="✂️"
-        shortcut="Ctrl+X"
-        :onClick="() => handleAction('cut')"
-      />
-      <ContextMenuDivider />
-      <ContextMenuItem
-        label="删除"
+        label="删除标点"
         icon="🗑️"
+        v-show="!!rightClickPoint"
         :onClick="() => handleAction('delete')"
         className="text-red-500"
-      />
-      <ContextMenuItem
-        label="禁用选项"
-        icon="🚫"
-        :disabled="true"
       />
     </ContextMenu>
   </div>
@@ -65,18 +48,28 @@ import {
   entity,
   zoomLevel,
   popupManager,
+  getCurrentMapId,
 } from './services/MapCore';
 import { Map } from 'ol';
 import MapControls from './components/map/MapControls.vue';
 import MapPopup, { MapPopupRef } from './components/map/MapPopup.vue';
 import { ref } from 'vue';
 import { ContextMenuRef } from './components/ContextMenu/type';
-
+import type { Coordinate } from 'ol/coordinate';
+import { addMapContextMenuListener } from './services/MapCore';
+import {
+  createCustomPoint,
+  deleteCustomPoint,
+  isCustomPoint,
+} from './services/customPoints';
+import type { PointData } from './types/points';
 const menuVisible = ref(false);
 const contextMenuRef = ref<ContextMenuRef>();
 // 引用DOM元素
 const mapControlsRef = ref();
 const mapPopupRef = ref<MapPopupRef>();
+const rightClickCoordinates = ref<Coordinate>([0, 0]);
+const rightClickPoint = ref<PointData | null>(null);
 
 // 提供弹出层管理器给子组件 - 在setup顶层调用provide
 provide('popupManager', popupManager);
@@ -90,14 +83,30 @@ const onContextMenu = (event: MouseEvent) => {
 const handleAction = (action: string) => {
   console.log(`执行操作: ${action}`);
   menuVisible.value = false;
+  const currentMap = getCurrentMapId();
+  if (action === 'create') {
+    createCustomPoint(rightClickCoordinates.value, currentMap);
+  } else if (action === 'delete') {
+    // 处理删除坐标的逻辑
+    if (rightClickPoint.value?.levelLogicId)
+      deleteCustomPoint(rightClickPoint.value.levelLogicId);
+  }
 };
 
-onMounted(() => {
-  createMap(
+onMounted(async () => {
+  await createMap(
     cacheMapId.value,
     mapControlsRef.value.controls,
     mapPopupRef.value?.getPopupContainer()
   );
+  addMapContextMenuListener((_, coordinate, point) => {
+    rightClickCoordinates.value = coordinate;
+    if (point && isCustomPoint(point)) {
+      rightClickPoint.value = point;
+    } else {
+      rightClickPoint.value = null;
+    }
+  });
 });
 
 // 组件卸载前执行清理工作

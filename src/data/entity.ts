@@ -8,6 +8,40 @@ import type {
 // 实体信息
 export const entityInfo: EntityCategories = reactive({});
 
+// 自定义实体
+export const customEntityInfo: EntityCategories = {
+  custom: {
+    entityInfo: {
+      name: '自定义点位',
+      pic: 'default',
+      count: 0,
+      show: true,
+      point: 'custom',
+    },
+    category: 'custom',
+  },
+  custom1: {
+    entityInfo: {
+      name: '自定义点位1',
+      pic: 'default',
+      count: 0,
+      show: true,
+      point: 'custom1',
+    },
+    category: 'custom',
+  },
+  custom2: {
+    entityInfo: {
+      name: '自定义点位2',
+      pic: 'default',
+      count: 0,
+      show: true,
+      point: 'custom2',
+    },
+    category: 'custom',
+  },
+};
+
 // 选择 callbacks
 export const selectCallbacks: (() => void)[] = [];
 
@@ -19,15 +53,16 @@ export const isSelectAll = computed(() => {
 export const categoryInfo = computed(() => {
   // 定义类别顺序
   const categoryOrder: EntityCategory[] = [
-    'settlement', // 定居点
-    'dungeon', // 副本点位
+    'custom', // 自定义点位
+    'ether', // 醚质
     'chest', // 宝箱
-    'mineral', // 矿物
+    'settlement', // 定居点
     'spcstone', // 稀有矿物
     'plant', // 植物类素材
-    'ether', // 醚质
-    'enemy', // 敌人
     'special', // 特殊点位
+    'dungeon', // 副本点位
+    'mineral', // 矿物
+    'enemy', // 敌人
   ];
 
   // 创建一个有序的分类对象

@@ -115,7 +115,8 @@
         "spcstone": "稀有礦物",
         "special": "特殊點位",
         "plant": "植物類素材",
-        "dungeon": "副本點位"
+        "dungeon": "副本點位",
+        "custom": "自定義點位"
       }
     }
   },

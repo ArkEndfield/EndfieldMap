@@ -6,20 +6,26 @@
   >
     <div class="icon">
       <div class="icon-inner">
-        <slot />
+        <slot>
+          <!-- 如果提供了entity和category，生成默认图标 -->
+          <img
+            v-if="props.entity && props.category"
+            :src="`/assets/${props.category}/${entity?.pic}.png`"
+          />
+        </slot>
       </div>
       <div class="icon-decoration"></div>
     </div>
     <div class="detail">
       <div class="detail-inner">
         <div class="name">
-          {{ props.name }}
+          {{ displayName }}
         </div>
         <div
           class="count"
           v-if="!props.hideCount"
         >
-          <div class="text">{{ formattedValue }}</div>
+          <div class="text">{{ markCount }}/{{ props.entity?.count }}</div>
         </div>
       </div>
       <div class="corner-decoration top-right"></div>
@@ -30,52 +36,81 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { categoryInfo, entityInfo } from '@/data/entity';
+import { useI18n } from 'vue-i18n';
+import { toggleSelect, isCustomEntity } from '@/services/entity';
+import { refreshMap } from '@/services/MapCore';
+import type { EntityInfo } from '@/types/entity';
 
 interface Props {
-  name?: string;
-  value?: string | number;
-  markCount?: number;
-  checked?: boolean;
   hideCount?: boolean;
+  markCount?: number;
+  entity?: EntityInfo;
+  category?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  name: '',
-  value: 0,
-  markCount: 0,
-  checked: undefined,
   hideCount: false,
+  entity: undefined,
+  category: undefined,
 });
+
+const { t } = useI18n();
 
 const modelValue = defineModel<boolean>({ default: false });
 
-const emit = defineEmits(['change']);
-
 const internalActive = ref(false);
 
+// 计算显示名称
+const displayName = computed(() => {
+  if (props.entity && props.category && !isCustomEntity(props.entity.point)) {
+    return t(`entities.${props.entity.point}`);
+  }
+  return props.entity ? props.entity?.name : '未命名';
+});
+
 const isActive = computed(() => {
-  if (props.checked !== undefined) {
-    return props.checked;
-  } else if (modelValue.value !== undefined) {
+  if (props.entity && props.category) {
+    // 如果提供了 entity 和 category，检查该实体是否显示
+    const categoryData = categoryInfo.value[props.category];
+    if (categoryData) {
+      const entityData = categoryData.find(
+        item => item.point === props.entity?.point
+      );
+      if (entityData) {
+        return entityData.show;
+      }
+    }
+
+    // 如果在categoryInfo中找不到，则尝试直接从entityInfo中获取
+    const entityKey = Object.keys(entityInfo).find(
+      key =>
+        entityInfo[key].category === props.category &&
+        entityInfo[key].entityInfo.point === props.entity?.point
+    );
+
+    if (entityKey) {
+      return entityInfo[entityKey].entityInfo.show;
+    }
+  }
+
+  // 如果没有提供entity和category，则使用原来的逻辑
+  if (modelValue.value !== undefined) {
     return modelValue.value;
   } else {
     return internalActive.value;
   }
 });
 
-// 格式化显示的值
-const formattedValue = computed(() => {
-  if (typeof props.value === 'number' && props.markCount !== undefined) {
-    return `${props.markCount}/${props.value}`;
-  }
-  return props.value;
-});
-
 const toggle = () => {
   const newValue = !isActive.value;
 
-  if (props.checked !== undefined) {
-    emit('change', newValue);
+  // 如果是特定实体，使用特定逻辑来处理切换
+  if (props.entity && props.category) {
+    // 直接调用toggleSelect函数切换实体显示状态
+    toggleSelect(props.entity.point);
+    // 刷新地图
+    refreshMap();
     return;
   }
 
@@ -84,8 +119,6 @@ const toggle = () => {
   } else {
     internalActive.value = newValue;
   }
-
-  emit('change', newValue);
 };
 </script>
 

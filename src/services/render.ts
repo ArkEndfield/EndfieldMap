@@ -428,14 +428,22 @@ export const createEntityClusterLayers = () => {
     const entityType = feature.get('payload')?.entityDataIdKey;
     if (!entityType) continue;
 
-    // 只处理当前地图中存在的实体类型
-    if (entityInfo[entityType]?.entityInfo.count > 0) {
+    // 处理当前地图中存在的实体类型，或者是自定义标点类型
+    const isCustomType = ['custom', 'custom1', 'custom2'].includes(entityType);
+    if (isCustomType || entityInfo[entityType]?.entityInfo.count > 0) {
       if (!featuresByType[entityType]) {
         featuresByType[entityType] = [];
       }
       featuresByType[entityType].push(feature);
     }
   }
+
+  // 确保自定义标点类型总是有图层，即使还没有点位
+  ['custom', 'custom1', 'custom2'].forEach(customType => {
+    if (!featuresByType[customType] && entityInfo[customType]) {
+      featuresByType[customType] = [];
+    }
+  });
 
   // 为每种类型创建单独的聚合源和图层
   for (const entityType in featuresByType) {

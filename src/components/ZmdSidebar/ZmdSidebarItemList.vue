@@ -31,11 +31,10 @@
         <div class="objecg-list">
           <ZmdSidebarObject
             v-for="v in k.filter(item => item.count > 0)"
-            :name="t(`entities.${v.point}`)"
-            :value="v.count"
-            :mark-count="getMarkCountForEntity(i, v.name)"
-            v-model="v.show"
-            @change="refreshMap"
+            :entity="v"
+            :mark-count="getMarkCountForEntity(v)"
+            :category="i"
+            :hide-count="false"
           >
             <img :src="`/assets/${i}/${v.pic}.png`" />
           </ZmdSidebarObject>
@@ -47,14 +46,14 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
-import { categoryInfo, entityInfo, isSelectAllByCategory } from '@/data/entity';
+import { categoryInfo, isSelectAllByCategory } from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
 import { marks } from '@/data/marks';
 import { onMarkChange, offMarkChange } from '@/services/marks';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
 import { selectAllByCategory, unSelectByCategory } from '@/services/entity';
-import { getCurrentMapId, refreshMap } from '@/services/MapCore';
+import { getCurrentMapId } from '@/services/MapCore';
 import type { EntityInfo } from '@/types/entity';
 import { useI18n } from 'vue-i18n';
 
@@ -131,17 +130,8 @@ const calculateEntityMarkCounts = async () => {
 };
 
 // 获取特定实体类型的标记数量
-const getMarkCountForEntity = (category: string, name: string) => {
-  // 找到对应的实体key
-  const entityKey = Object.keys(entityInfo).find(
-    key =>
-      entityInfo[key].category === category &&
-      entityInfo[key].entityInfo.name === name
-  );
-
-  if (!entityKey) return 0;
-
-  return entityMarkCounts.value[entityKey] || 0;
+const getMarkCountForEntity = (entity: EntityInfo) => {
+  return entityMarkCounts.value[entity.point] || 0;
 };
 
 // 使用onMounted确保组件挂载后注册回调和计算标记数量

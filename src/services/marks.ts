@@ -4,6 +4,7 @@ import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { MarkChangeCallback, MarkFilterType, MarkInfo } from '@/types/marks';
 import { currentMarkFilter, markChangeCallbacks, marks } from '@/data/marks';
+import { getCustomPoints } from './customPoints';
 
 const STORAGE_KEY = DATA_DB_KEY.MARKS;
 
@@ -19,7 +20,7 @@ export const offMarkChange = (callback: MarkChangeCallback) => {
 };
 
 // 添加触发回调的函数
-const notifyMarkChange = () => {
+export const notifyMarkChange = () => {
   markChangeCallbacks.forEach(callback => {
     try {
       callback();
@@ -39,7 +40,15 @@ export const initMarksData = async () => {
   await loadMarksFromStorage();
   // 初始化标记数据
   const allPoints = await getAllPoints();
+  const customPoints = await getCustomPoints();
   allPoints.forEach(point => {
+    if (!marks[point.levelLogicId]) {
+      marks[point.levelLogicId] = {
+        finish: false,
+      };
+    }
+  });
+  customPoints.forEach(point => {
     if (!marks[point.levelLogicId]) {
       marks[point.levelLogicId] = {
         finish: false,

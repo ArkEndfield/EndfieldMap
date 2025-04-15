@@ -1,6 +1,6 @@
 import { watch } from 'vue';
 import { loadJSON } from '@/utils/jsonLoader';
-import { entityInfo, selectCallbacks } from '@/data/entity';
+import { customEntityInfo, entityInfo, selectCallbacks } from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
 import type { PointData } from '@/types/points';
 import {
@@ -120,6 +120,17 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
         entityInfo[key].entityInfo.show = false;
       }
     });
+
+    // 特殊处理：确保自定义标点类型默认为显示状态
+    if (entityInfo['custom']) {
+      entityInfo['custom'].entityInfo.show = true;
+    }
+    if (entityInfo['custom1']) {
+      entityInfo['custom1'].entityInfo.show = true;
+    }
+    if (entityInfo['custom2']) {
+      entityInfo['custom2'].entityInfo.show = true;
+    }
   } catch (error) {
     console.error('初始化实体信息时发生错误:', error);
     throw error;
@@ -134,8 +145,13 @@ export async function loadEntityData() {
     Object.keys(entityInfo).forEach(key => {
       delete entityInfo[key];
     });
+
     // 添加新数据
     Object.entries(data).forEach(([key, value]) => {
+      entityInfo[key] = value;
+    });
+    // 添加自定义实体
+    Object.entries(customEntityInfo).forEach(([key, value]) => {
       entityInfo[key] = value;
     });
     return entityInfo;
@@ -219,6 +235,10 @@ export const initializeEntityLayers = async () => {
     console.error('重新初始化实体图层失败:', error);
     throw error;
   }
+};
+
+export const isCustomEntity = (key: string) => {
+  return Object.keys(customEntityInfo).includes(key);
 };
 
 // 选择所有实体

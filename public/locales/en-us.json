@@ -115,7 +115,8 @@
         "spcstone": "Rare Mineral",
         "special": "Special Point",
         "plant": "Plant Material",
-        "dungeon": "Dungeon Point"
+        "dungeon": "Dungeon Point",
+        "custom": "Custom Point"
       }
     }
   },

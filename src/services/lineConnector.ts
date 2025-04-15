@@ -211,8 +211,6 @@ export const connectPointsByEntityId = (
     );
 
     if (matchedFeatures.length > 0) {
-      // 添加第一个匹配的点位ID
-      // levelLogicId 是数字，需要转换为字符串使用
       const pointId = matchedFeatures[0].get('payload')?.levelLogicId;
       if (pointId !== undefined) {
         pointIds.push(pointId);

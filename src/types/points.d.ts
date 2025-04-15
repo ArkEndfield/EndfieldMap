@@ -1,5 +1,5 @@
 export interface PointData {
-  levelLogicId: number;
+  levelLogicId: number | string;
   sceneId: string;
   position: { x: number; y: number; z: number };
   entityDataIdKey: string;

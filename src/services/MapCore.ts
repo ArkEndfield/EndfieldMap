@@ -38,6 +38,12 @@ import { currentMarkFilter } from '@/data/marks';
 import { offMarkChange, onMarkChange, shouldShowByMarkStatus } from './marks';
 import type { MapViewState } from '@/types/map';
 import { removeAllLines, setMapForLines } from './lineConnector';
+import {
+  setMapForIndicator,
+  showSelectionIndicator,
+  clearSelectionIndicator,
+} from './selectionIndicator';
+import type { Coordinate } from 'ol/coordinate';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -48,6 +54,10 @@ const DEFAULT_MAP_CENTERS = {
 };
 // 默认缩放级别
 const DEFAULT_ZOOM = 3;
+// 菜单事件监听器
+const mapContextMenuListeners = new Set<
+  (event: MouseEvent, coordinate?: Coordinate, pointData?: PointData) => void
+>();
 
 /**
  * 保存地图视图状态到IndexedDB
@@ -361,6 +371,7 @@ export function cleanupMap() {
   map.value.un('click', mapClickHandler);
   map.value.un('moveend', moveEndChange);
   map.value.getView().un('change:resolution', handleZoomChange);
+  map.value.getViewport().removeEventListener('contextmenu', handleContextMenu);
 
   offMarkChange(refreshMap);
   offSelectChange(refreshMap);
@@ -398,10 +409,11 @@ export function initPopupManager(popupElement?: HTMLElement) {
 
   // 设置全局引用
   popupManager.value = manager;
-  // 当弹出框关闭时，清除选择状态
+  // 当弹出框关闭时，清除选择状态和指示器
   manager.addVisibilityChangeListener(newValue => {
     if (!newValue && selectInteraction) {
       selectInteraction.getFeatures().clear();
+      clearSelectionIndicator(); // 清除选中标点的四个角落线条
     }
   });
 
@@ -512,6 +524,9 @@ export async function createMap(
   // 设置地图点击事件处理
   map.value.on('click', mapClickHandler);
 
+  // 地图右击事件处理
+  map.value.getViewport().addEventListener('contextmenu', handleContextMenu);
+
   // 设置窗口大小变化监听器
   window.addEventListener('resize', windowResizeHandler);
 
@@ -522,6 +537,7 @@ export async function createMap(
   refreshMap();
 
   setMapForLines(map.value);
+  setMapForIndicator(map.value);
   console.log('地图创建完成');
 }
 
@@ -585,10 +601,11 @@ const pointSelectHandler = async function (event: SelectEvent) {
       currentPosition: currentPosition,
       newPosition: newPosition,
       positionChanged: positionChanged,
-    });
-
-    // 如果位置改变或弹出框当前不可见
+    }); // 如果位置改变或弹出框当前不可见
     if (positionChanged || !popupManager.value?.isPopupVisible.value) {
+      // 立即清除旧的指示器
+      clearSelectionIndicator();
+
       if (popupManager.value.isPopupVisible.value) {
         console.log('重新打开弹窗 - 位置已改变');
         // 如果弹窗已经显示，使用PopupManager处理关闭和重新打开
@@ -601,6 +618,11 @@ const pointSelectHandler = async function (event: SelectEvent) {
         popupManager.value.setCurrentPosition([...newPosition]);
         popupManager.value.openToast();
       }
+
+      // 立即显示新的指示器，不要等待弹窗动画完成
+      if (data.levelLogicId) {
+        showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
+      }
     } else {
       console.log('更新弹窗内容 - 相同位置');
       // 如果是同一位置的点击，只更新弹窗内容，不关闭再打开
@@ -610,6 +632,8 @@ const pointSelectHandler = async function (event: SelectEvent) {
     console.log('未选中目标，关闭弹窗');
     // 只有当没有选中新Feature时才关闭弹窗
     popupManager.value?.closeToast();
+    // 清除选中指示器
+    clearSelectionIndicator();
   }
 };
 
@@ -645,6 +669,59 @@ const handleZoomChange = function () {
   refreshMap();
 };
 
+export const addMapContextMenuListener = (
+  listener: (
+    event: MouseEvent,
+    coordinate: Coordinate,
+    point?: PointData
+  ) => void
+) => {
+  if (mapContextMenuListeners.has(listener)) {
+    console.warn('该右键菜单监听器已存在');
+    return;
+  }
+  mapContextMenuListeners.add(listener);
+};
+
+export const removeMapContextMenuListener = (
+  listener: (event: MouseEvent, coordinate: Coordinate) => void
+) => {
+  if (!mapContextMenuListeners.has(listener)) {
+    console.warn('该右键菜单监听器不存在');
+    return;
+  }
+  mapContextMenuListeners.delete(listener);
+};
+
+const handleContextMenu = (event: MouseEvent) => {
+  event.preventDefault();
+  const coordinate = map.value?.getEventCoordinate(event);
+  // 获取右键点击的点位数据
+  const feature = map.value?.forEachFeatureAtPixel(
+    map.value.getEventPixel(event),
+    feature => feature
+  );
+  let pointData: PointData | undefined;
+  if (feature) {
+    // 检查是否是聚合点
+    const features = feature.get('features');
+    if (features && features.length > 0) {
+      // 从聚合中获取第一个点的数据
+      pointData = features[0].get('payload');
+    } else {
+      // 非聚合点，直接获取payload
+      pointData = feature.get('payload') as PointData;
+    }
+  }
+  console.log('右键菜单事件:', {
+    coordinate: coordinate,
+    pointData: pointData,
+  });
+  mapContextMenuListeners.forEach(listener => {
+    listener(event, coordinate, pointData);
+  });
+};
+
 export const updateZoomValue = (zoom: number) => {
   zoomLevel.value = zoom;
   localStorage.setItem(ZOOM_KEY, zoom.toString());
@@ -655,45 +732,41 @@ export const recalculateCluster = () => {
   updateClusterDistance(zoom);
 };
 
-const moveEndChange = debounce(
-  () => {
-    const currentMap = map.value;
-    if (!currentMap) return;
+const moveEndChange = debounce(() => {
+  const currentMap = map.value;
+  if (!currentMap) return;
 
-    const zoom = getZoom();
-    // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
-    const position = currentMap.getView().getCenter();
-    // 确保最终值是准确的
-    if (Math.abs(zoomLevel.value - zoom) >= 0.01) {
-      const currentMapID = getCurrentMapId();
-      loadTextPoints(true, currentMapID, zoom);
-      updateZoomValue(zoom);
-    }
+  const zoom = getZoom();
+  // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
+  const position = currentMap.getView().getCenter();
+  // 确保最终值是准确的
+  if (Math.abs(zoomLevel.value - zoom) >= 0.01) {
     const currentMapID = getCurrentMapId();
-    // 保存当前视图状态到 IndexedDB (永久存储)
-    if (position && currentMapID) {
-      console.log(
-        `地图移动/缩放结束，正在保存视图状态，地图ID: ${currentMapID}, 中心点: [${position[0]}, ${position[1]}], 缩放级别: ${zoom}`
-      );
-      saveMapViewState(currentMapID).catch(error => {
-        console.error('保存视图状态时出错:', error);
-      });
-    } else {
-      console.warn('无法保存视图状态，缺少必要参数:', {
-        position: position ? '存在' : '不存在',
-        cacheMapId: currentMapID,
-      });
-    }
+    loadTextPoints(true, currentMapID, zoom);
+    updateZoomValue(zoom);
+  }
+  const currentMapID = getCurrentMapId();
+  // 保存当前视图状态到 IndexedDB (永久存储)
+  if (position && currentMapID) {
+    console.log(
+      `地图移动/缩放结束，正在保存视图状态，地图ID: ${currentMapID}, 中心点: [${position[0]}, ${position[1]}], 缩放级别: ${zoom}`
+    );
+    saveMapViewState(currentMapID).catch(error => {
+      console.error('保存视图状态时出错:', error);
+    });
+  } else {
+    console.warn('无法保存视图状态，缺少必要参数:', {
+      position: position ? '存在' : '不存在',
+      cacheMapId: currentMapID,
+    });
+  }
 
-    // 在移动或缩放结束后，重置缩放状态标志
-    if (popupManager.value) {
-      console.log('重置缩放状态标志');
-      popupManager.value.setMapZooming(false);
-    }
-  },
-  250,
-  { leading: false, trailing: true }
-);
+  // 在移动或缩放结束后，重置缩放状态标志
+  if (popupManager.value) {
+    console.log('重置缩放状态标志');
+    popupManager.value.setMapZooming(false);
+  }
+}, 200);
 
 function mapClickHandler(event: MapBrowserEvent<any>) {
   // 首先检查是否有Feature被点击
@@ -738,6 +811,17 @@ export const selectMap = async (id: string) => {
 
   // 重新加载地名标注
   loadTextPoints(true, id === 'map002' ? 'map02' : 'map01', zoomLevel.value);
+};
+
+export const closePopup = () => {
+  if (popupManager.value) {
+    popupManager.value.closeToast();
+    popupManager.value.toggleVideoInfo(false);
+    popupManager.value.closeSub();
+    popupManager.value.setCurrentPosition(undefined);
+    popupManager.value.setMapZooming(false);
+    entity.value = null;
+  }
 };
 
 export const refreshMap = () => {
@@ -797,4 +881,21 @@ export const refreshMap = () => {
       }
     }
   }
+};
+
+export const refreshPoints = async () => {
+  // 重新加载数据
+  await updatePoints(cacheMapId.value);
+  // 初始化实体图层
+  await initializeEntityLayers();
+
+  // 更新地图图层
+  updateMap(cacheMapId.value);
+
+  // 重新加载地名标注
+  loadTextPoints(
+    true,
+    cacheMapId.value === 'map002' ? 'map02' : 'map01',
+    zoomLevel.value
+  );
 };

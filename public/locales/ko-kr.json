@@ -115,7 +115,8 @@
         "spcstone": "희귀 광물",
         "special": "특수 포인트",
         "plant": "식물 재료",
-        "dungeon": "던전 포인트"
+        "dungeon": "던전 포인트",
+        "custom": "사용자 지정 포인트"
       }
     }
   },

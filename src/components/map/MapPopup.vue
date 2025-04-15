@@ -13,66 +13,8 @@
     }"
     @transitionend="onTransitionEnd"
   >
-    <!-- 背面的弹出框 -->
-    <div
-      class="pop-drop absolute -top-3 w-full -right-4 -z-0 h-full flex flex-col"
-      :class="{ unfold: popupManager?.openSubPopup.value }"
-      v-if="showRewards"
-    >
-      <button
-        class="absolute -right-6 top-0 bottom-0 flex flex-col w-6"
-        @click="popupManager?.toggleSubPopup"
-      >
-        <div
-          class="w-full flex-shrink-0 flex-grow-0 bg-[#3E3E3E] top-bar"
-        ></div>
-        <div class="bg-[#3E3E3E] py-1.5">
-          <div class="h-1 bg-[#4C4C4C] mr-1"></div>
-        </div>
-        <div
-          class="[writing-mode:vertical-lr] bg-[#3E3E3E] text-[#bfbfbf] font-black pb-6 flex-1 flex items-center justify-center text-2xl"
-        >
-          <DoubleChevronRight
-            class="drop-shadow-[0_0_0.2em_rgba(191,191,191,0.8)] transition-transform"
-            :class="{ 'rotate-180': popupManager?.openSubPopup.value }"
-          />
-        </div>
-      </button>
-      <div
-        class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
-      >
-        <ScrollArea
-          content-class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 pt-4 pb-8 w-full h-full"
-        >
-          <template v-if="rewards && rewards.length > 0">
-            <PopContentItem
-              v-for="rwd in rewards"
-              :key="rwd.id"
-            >
-              <template #icon>
-                <img
-                  :src="rwd.icon"
-                  :alt="t(`item.${rwd.id}.name`)"
-                  class="w-full h-full object-contain"
-                />
-              </template>
-              <template
-                #count
-                v-if="rwd.count"
-                >{{ rwd.count }}</template
-              >
-              {{ t(`item.${rwd.id}.name`) }}
-            </PopContentItem>
-          </template>
-          <div
-            v-else
-            class="col-span-2 text-center text-gray-400 py-4"
-          >
-            暂无奖励信息
-          </div>
-        </ScrollArea>
-      </div>
-    </div>
+    <!-- 背面的弹出框 - 奖励信息 -->
+    <RewardInfo :entity="entity" />
 
     <!-- 前面的弹出框 -->
     <div
@@ -99,16 +41,7 @@
           )
         "
       >
-        <div
-          class="-z-0 absolute -top-12 w-full text-[8rem] font-[Outfit] font-bold text-center text-[rgba(70,70,70,0.4)] tracking-[-0.08em] select-none pointer-events-none"
-        >
-          ZMD
-        </div>
-        <div
-          class="-z-0 absolute top-1/2 -right-0.5 font-[Outfit] font-bold text-center text-[rgba(70,70,70,0.4)] [writing-mode:vertical-lr] transform translate-y-[-50%] text-xs tracking-[0.5em] select-none pointer-events-none"
-        >
-          ZMDMAPS
-        </div>
+        <MapPopupDeco />
         <div class="p-4 pt-2 z-1 relative">
           <div>
             {{
@@ -118,29 +51,18 @@
           </div>
           <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
             <span class="ml-auto text-zinc-400"
-              >id: #{{ entity?.levelLogicId }}</span
+              >id: {{ entity?.levelLogicId }}</span
             >
-            <!-- <span class="ml-auto">#{{ entity?.levelLogicId }}</span> -->
           </div>
-          <div class="min-h-32">
-            <GuideNode
-              v-if="entity && guide?.nodes"
-              :nodes="guide.nodes"
-            />
-          </div>
-          <div class="border-t border-[#404140] mt-2 pt-2 text-sm mx-1">
-            坐标 ({{ entity?.position.x }}, {{ entity?.position.y }},
-            {{ entity?.position.z }})
-          </div>
-          <div class="flex items-center gap-2 mt-4">
-            <a
-              v-if="guide?.video?.link"
-              :href="guide.video.link"
-              target="_blank"
-              class="text-[#ece065] text-sm px-3 py-1 bg-black/20 rounded-md hover:bg-black/30 transition-colors"
-            >
-              {{ t('popover.video_link') }}
-            </a>
+          <CustomPointPopup
+            :entity="entity"
+            v-if="isCustomPoint"
+          />
+          <GuideInfo
+            :entity="entity"
+            v-else
+          />
+          <div class="flex items-center justify-end gap-2 mt-4">
             <div class="flex items-center justify-end gap-2 ml-auto">
               <label
                 v-if="entity"
@@ -164,96 +86,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, watch, onMounted } from 'vue';
+import { inject } from 'vue';
 import { cn } from '@/utils/tailwind';
 import { PopupManager } from '@/services/PopupManager';
 import { marks } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
-import { getGuide } from '@/services/guides';
-import { type GuideInfoDetail } from '@/types/guides';
 import { type PointData } from '@/types/points';
-import { computed } from 'vue';
-import { getRewards, shouldShowRewards } from '@/services/reward';
-import { type ReturnRewardItem } from '@/types/reward';
 import { motion, useAnimate } from 'motion-v';
 import { useI18n } from 'vue-i18n';
+import GuideInfo from './GuideInfo.vue';
+import RewardInfo from './RewardInfo.vue';
+import { isCustomEntity } from '@/services/entity';
+import { computed } from 'vue';
 
 const props = defineProps<{
   entity: PointData | null;
 }>();
 
 const popupManager = inject<PopupManager | null>('popupManager');
-const showRewards = computed(() => {
-  const entity = props.entity;
-  const show = shouldShowRewards(entity);
-  return show;
-});
 const [popupContainer] = useAnimate();
-
-const rewards = ref<ReturnRewardItem[]>([]);
-
-const guide = ref<GuideInfoDetail | null>(null);
-
 const { t } = useI18n();
-
-// 当 entity 变化时异步加载奖励数据
-onMounted(async () => {
-  if (props.entity && shouldShowRewards(props.entity)) {
-    const rewardsPromise = getRewards(props.entity);
-    const guidePromise = getGuide(props.entity.levelLogicId);
-    const [rewardsData, guideData] = await Promise.all([
-      rewardsPromise,
-      guidePromise,
-    ]);
-    rewards.value = rewardsData;
-    guide.value = guideData;
-  }
-});
-
-// 监听 entity 变化以异步加载奖励数据
-watch(
-  () => props.entity,
-  async newEntity => {
-    if (newEntity && shouldShowRewards(newEntity)) {
-      rewards.value = await getRewards(newEntity);
-    } else {
-      rewards.value = [];
-    }
-  }
-);
-
-watch(
-  () => props.entity,
-  async newEntity => {
-    if (newEntity) {
-      guide.value = await getGuide(newEntity.levelLogicId);
-    } else {
-      guide.value = null;
-    }
-  }
-);
-
-// 监听 entity 的变化，当切换到新的标点时，如果没有奖励，则关闭背面弹窗
-watch(
-  () => props.entity,
-  newEntity => {
-    if (!newEntity || !popupManager) {
-      return;
-    }
-
-    const hasRewards = shouldShowRewards(newEntity);
-    // 确保 popupManager 和 openSubPopup 都存在，并且检查 openSubPopup.value
-    if (
-      !hasRewards &&
-      popupManager.openSubPopup &&
-      popupManager.openSubPopup.value === true
-    ) {
-      // 如果新标点没有奖励，关闭背面弹窗，但不触发视图调整
-      popupManager.closeSub();
-    }
-  },
-  { immediate: false } // 修改为 false，避免在 popupManager 初始化前执行
-);
 
 // 明确暴露容器引用
 defineExpose({
@@ -273,6 +125,13 @@ const onTransitionEnd = (event: TransitionEvent) => {
     }
   }
 };
+
+const isCustomPoint = computed(() => {
+  return (
+    props.entity?.entityDataIdKey &&
+    isCustomEntity(props.entity.entityDataIdKey)
+  );
+});
 </script>
 
 <style lang="scss">

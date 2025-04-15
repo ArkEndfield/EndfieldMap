@@ -1,5 +1,6 @@
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { cancelRafTimeout, rafTimeout } from './animationTimer';
+import { Coordinate } from 'ol/coordinate';
 
 export const xyz2crd = (pos: { x: number; y: number; z: number }) => {
   const coords =
@@ -8,6 +9,17 @@ export const xyz2crd = (pos: { x: number; y: number; z: number }) => {
       : [pos.x / 8 + 128, pos.z / 8 + 160];
 
   return coords;
+};
+
+export const crd2xyz = (coordinate: Coordinate) => {
+  const mapId = localStorage.getItem(LOCAL_STORAGE_KEY.MAP);
+  const x = mapId === 'map002' ? coordinate[0] - 80 : coordinate[0] - 128;
+  const z = mapId === 'map002' ? coordinate[1] - 224 : coordinate[1] - 160;
+  return {
+    x: x * 8,
+    y: 0,
+    z: z * 8,
+  };
 };
 
 // 添加防抖函数，支持Promise和立即执行模式
