@@ -39,7 +39,7 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const { loading, error, data, success, execute } = useStateOperate(
   async () => {
-    const data = backupData();
+    const data = await backupData();
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     return url;

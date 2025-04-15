@@ -2,6 +2,7 @@ export const DATA_DB_KEY = {
   MARKS: 'endfield-map-marks',
   SETTINGS: 'endfield-map-settings',
   CUSTOM_POINTS: 'endfield-map-custom-points',
+  CUSTOM_POINTS_DATA: 'endfield-map-custom-points-data',
 } as const;
 
 export const CACHE_DB_KEY = {

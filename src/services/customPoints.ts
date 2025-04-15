@@ -1,4 +1,4 @@
-import type { PointData } from '@/types/points';
+import type { CustomPointDataType, PointData } from '@/types/points';
 import { getItem, setItem } from '@/utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
@@ -11,7 +11,7 @@ import {
   entity,
   popupManager,
 } from './MapCore';
-import { filterAndUpdatePoints } from './points';
+import { filterAndUpdatePoints, getCurrentPoints } from './points';
 import { itemMap, features, source } from './render';
 import { marker } from './render';
 import { marks } from '@/data/marks';
@@ -19,7 +19,12 @@ import { entityInfo } from '@/data/entity';
 import { select } from './entity';
 
 const DB_ALL_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;
+const DB_ALL_POINTS_DATA_KEY = DATA_DB_KEY.CUSTOM_POINTS_DATA;
 
+/**
+ * 获取所有自定义标点
+ * @returns 自定义标点数组
+ */
 export async function getCustomPoints(): Promise<PointData[]> {
   const customPoints =
     (await getItem<PointData[]>(DB_ALL_POINTS_KEY, StorageType.PERMANENT)) ||
@@ -27,6 +32,51 @@ export async function getCustomPoints(): Promise<PointData[]> {
   return customPoints;
 }
 
+/**
+ * 获取所有自定义标点数据
+ * @returns 自定义标点数据
+ */
+export async function getAllCustomPointsData(): Promise<CustomPointDataType> {
+  const customPointsData =
+    (await getItem<CustomPointDataType>(
+      DB_ALL_POINTS_DATA_KEY,
+      StorageType.PERMANENT
+    )) || {};
+  return customPointsData;
+}
+
+/**
+ * 获取自定义标点数据
+ * @param id 自定义标点ID
+ * @returns 自定义标点数据
+ */
+export async function getCustomPointData(id: string) {
+  const customPointsData = await getAllCustomPointsData();
+  return customPointsData[id] || null;
+}
+
+/**
+ * 保存自定义标点数据
+ * @param id 自定义标点ID
+ * @param data 自定义标点数据
+ */
+export async function saveCustomPointData(
+  id: string,
+  data: CustomPointDataType[string]
+): Promise<void> {
+  const customPointsData = await getAllCustomPointsData();
+  customPointsData[id] = data;
+  await setItem(
+    DB_ALL_POINTS_DATA_KEY,
+    customPointsData,
+    StorageType.PERMANENT
+  );
+}
+
+/**
+ * 保存自定义标点
+ * @param points 自定义标点
+ */
 export async function saveCustomPoints(...points: PointData[]): Promise<void> {
   const customPoints = await getCustomPoints();
   const mergedPoints = [...customPoints, ...points];
@@ -243,6 +293,195 @@ export async function updateCustomPoint(
   refreshMap();
 }
 
+/**
+ * 判断是否为自定义标点
+ * @param point 点位
+ * @returns 是否为自定义标点
+ */
 export const isCustomPoint = (point: PointData): boolean => {
   return ['custom', 'custom1', 'custom2'].includes(point.entityDataIdKey);
 };
+
+/**
+ * 获取数据用于备份
+ * @returns 备份数据
+ */
+export async function getBackupData(): Promise<{
+  customPointsData: CustomPointDataType;
+  customPoints: PointData[];
+}> {
+  const customPointsData = await getAllCustomPointsData();
+  const customPoints = await getCustomPoints();
+  return {
+    customPointsData,
+    customPoints,
+  };
+}
+
+/**
+ * 恢复备份数据(merge)
+ * @param data 备份数据
+ */
+export async function restoreBackupData(data: {
+  customPointsData: CustomPointDataType;
+  customPoints: PointData[];
+}): Promise<void> {
+  // 验证数据
+  const customPointsIds = new Set(
+    data.customPoints.map(point => point.levelLogicId)
+  );
+  const invalidIds = Object.keys(data.customPointsData).filter(
+    id => !customPointsIds.has(id)
+  );
+
+  if (invalidIds.length > 0) {
+    throw new Error(
+      '以下ID在customPointsData中存在但在customPoints中不存在:' +
+        invalidIds.join(',')
+    );
+  }
+
+  const customPointsData = await getAllCustomPointsData();
+  const customPoints = await getCustomPoints();
+  // 根据 id 合并 data，直接合并 points
+  Object.keys(data.customPointsData).forEach(id => {
+    customPointsData[id] = data.customPointsData[id];
+  });
+  data.customPoints.forEach(point => {
+    customPoints.push(point);
+  });
+  await setItem(
+    DB_ALL_POINTS_DATA_KEY,
+    customPointsData,
+    StorageType.PERMANENT
+  );
+  await setItem(DB_ALL_POINTS_KEY, customPoints, StorageType.PERMANENT);
+}
+
+/**
+ * 刷新标点显示
+ * 更新点位集合并刷新地图渲染
+ */
+export async function refreshPointsDisplay(): Promise<void> {
+  console.log('开始刷新标点显示...');
+
+  // 清除现有的标记
+  source.clear();
+  features.length = 0;
+  Object.keys(itemMap).forEach(key => {
+    delete itemMap[key];
+  });
+
+  // 更新当前显示的点位集合
+  await filterAndUpdatePoints(getCurrentMapId());
+
+  // 重新加载所有标记
+  const currentPoints = await getCurrentPoints();
+  console.log('当前点位数量:', currentPoints.length);
+
+  // 重置所有实体类型的计数
+  Object.keys(entityInfo).forEach(key => {
+    if (entityInfo[key] && entityInfo[key].entityInfo) {
+      entityInfo[key].entityInfo.count = 0;
+    }
+  });
+
+  // 更新实体类型的计数
+  currentPoints.forEach(point => {
+    const feature = marker(point);
+    if (feature) {
+      features.push(feature);
+      itemMap[point.levelLogicId] = feature;
+      source.addFeature(feature);
+
+      // 更新计数
+      if (
+        entityInfo[point.entityDataIdKey] &&
+        entityInfo[point.entityDataIdKey].entityInfo
+      ) {
+        entityInfo[point.entityDataIdKey].entityInfo.count++;
+      }
+    }
+  });
+
+  // 刷新地图渲染
+  refreshMap();
+  console.log('标点显示刷新完成');
+}
+
+/**
+ * 恢复备份数据(replace)
+ * @param data 备份数据
+ */
+export async function restoreBackupDataReplace(data: {
+  customPointsData: CustomPointDataType;
+  customPoints: PointData[];
+}): Promise<void> {
+  console.log('开始恢复备份数据...');
+  console.log('备份数据中的点位数量:', data.customPoints.length);
+
+  // 验证数据
+  const customPointsIds = new Set(
+    data.customPoints.map(point => point.levelLogicId)
+  );
+  const invalidIds = Object.keys(data.customPointsData).filter(
+    id => !customPointsIds.has(id)
+  );
+
+  if (invalidIds.length > 0) {
+    throw new Error(
+      '以下ID在customPointsData中存在但在customPoints中不存在:' +
+        invalidIds.join(',')
+    );
+  }
+
+  // 序列化数据以移除循环引用
+  const serializedCustomPointsData = JSON.parse(
+    JSON.stringify(data.customPointsData)
+  );
+  const serializedCustomPoints = JSON.parse(JSON.stringify(data.customPoints));
+
+  // 存储数据
+  await setItem(
+    DB_ALL_POINTS_DATA_KEY,
+    serializedCustomPointsData,
+    StorageType.PERMANENT
+  );
+  await setItem(
+    DB_ALL_POINTS_KEY,
+    serializedCustomPoints,
+    StorageType.PERMANENT
+  );
+
+  console.log('数据已存储到 IndexedDB');
+
+  // 验证数据是否存储成功
+  const storedPoints = await getCustomPoints();
+  console.log('从 IndexedDB 读取的点位数量:', storedPoints.length);
+
+  // 刷新标点显示
+  await refreshPointsDisplay();
+  console.log('备份数据恢复完成');
+}
+
+/**
+ * 恢复标点（merge）
+ */
+export async function restorePointsMerge(
+  customPoints: PointData[]
+): Promise<void> {
+  await setItem(DB_ALL_POINTS_KEY, customPoints, StorageType.PERMANENT);
+  // 刷新标点显示
+  await refreshPointsDisplay();
+}
+
+/**
+ * 恢复标点（replace）
+ */
+export async function restorePointsReplace(
+  customPoints: PointData[]
+): Promise<void> {
+  await setItem(DB_ALL_POINTS_KEY, customPoints, StorageType.PERMANENT);
+  // 刷新标点显示
+  await refreshPointsDisplay();
+}

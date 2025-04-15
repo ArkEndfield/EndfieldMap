@@ -39,10 +39,17 @@ export async function getCurrentPoints(): Promise<PointData[]> {
 export async function filterAndUpdatePoints(
   mapId: string
 ): Promise<PointData[]> {
+  console.log('开始筛选和更新点位数据...');
+
   // 获取所有点位数据
   const allPoints = (await getAllPoints()) || [];
   const customPoints = (await getCustomPoints()) || [];
+  console.log('原始点位数量:', allPoints.length);
+  console.log('自定义点位数量:', customPoints.length);
+
   const mergedPoints = [...allPoints, ...customPoints];
+  console.log('合并后的点位数量:', mergedPoints.length);
+
   // 根据地图ID筛选点位
   const filteredPoints = mergedPoints.filter(point => {
     const isMap2 = mapId === 'map002';
@@ -50,13 +57,15 @@ export async function filterAndUpdatePoints(
       ? point.sceneId.includes('map02')
       : point.sceneId.includes('map01');
   });
+  console.log('筛选后的点位数量:', filteredPoints.length);
 
   // 更新过滤后的点位到 IndexedDB
   await setItem(DB_CURRENT_POINTS_KEY, filteredPoints, StorageType.PERMANENT);
+  console.log('点位数据已更新到 IndexedDB');
 
-  console.log(
-    `地图 ${mapId} 的点位数据已更新，当前点位数量: ${filteredPoints.length}`
-  );
+  // 验证数据是否存储成功
+  const storedPoints = await getCurrentPoints();
+  console.log('从 IndexedDB 读取的点位数量:', storedPoints.length);
 
   return filteredPoints;
 }

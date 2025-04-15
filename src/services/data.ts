@@ -5,6 +5,13 @@ import { Language, setLanguage } from '@/i18n';
 import { selectMap } from './MapCore';
 import settings from '@/data/settings';
 import { mergeSettings } from './settings';
+import {
+  getBackupData,
+  restoreBackupData,
+  restoreBackupDataReplace,
+  restorePointsMerge,
+  restorePointsReplace,
+} from './customPoints';
 
 // 检查数据格式是否合法
 export const isBackupDataValid = (data: BackupData) => {
@@ -33,6 +40,15 @@ export const coverData = async (data: BackupData | null) => {
   if (data?.db?.settings) {
     mergeSettings(data.db.settings);
   }
+  // 设置自定义点
+  if (data?.db?.customPoints && data?.db?.customPointsData) {
+    restoreBackupDataReplace({
+      customPoints: data.db.customPoints,
+      customPointsData: data.db.customPointsData,
+    });
+  } else if (data?.db?.customPoints) {
+    restorePointsReplace(data.db.customPoints);
+  }
 };
 
 // 合并恢复数据
@@ -53,15 +69,27 @@ export const mergeData = async (data: BackupData | null) => {
   if (data?.db?.settings) {
     mergeSettings(data.db.settings);
   }
+  // 设置自定义标点
+  if (data?.db?.customPoints && data?.db?.customPointsData) {
+    restoreBackupData({
+      customPoints: data.db.customPoints,
+      customPointsData: data.db.customPointsData,
+    });
+  } else if (data?.db?.customPoints) {
+    restorePointsMerge(data.db.customPoints);
+  }
 };
 
 // 备份数据
-export const backupData = () => {
+export const backupData = async () => {
+  const { customPoints, customPointsData } = await getBackupData();
   const data: BackupData = {
-    version: '0.0.2',
+    version: '0.0.3',
     db: {
       marks: getMarks(),
       settings: settings.value,
+      customPoints,
+      customPointsData,
     },
     storage: {
       [LOCAL_STORAGE_KEY.MAP]:

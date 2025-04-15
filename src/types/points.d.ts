@@ -1,3 +1,5 @@
+import { NodeType } from './guides';
+
 export interface PointData {
   levelLogicId: number | string;
   sceneId: string;
@@ -6,6 +8,14 @@ export interface PointData {
   reward_id?: string;
 }
 
+export interface CustomPointData {
+  nodes: NodeType[];
+}
+
 export type PointType = {
   [key: string]: PointData[];
+};
+
+export type CustomPointDataType = {
+  [key: string]: CustomPointData;
 };
