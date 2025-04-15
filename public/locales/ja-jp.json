@@ -270,5 +270,24 @@
     "eny_0069_aghornb2": "剛角天使α",
     "eny_0070_agscorp2": "重突刺天使α",
     "unnamed": "名前なし"
+  },
+  "custom_point": {
+    "title": "カスタムポイント",
+    "edit": "編集",
+    "edit_title": "カスタムポイント編集",
+    "type": "ポイントタイプ",
+    "type_custom": "カスタム",
+    "type_custom1": "カスタム1",
+    "type_custom2": "カスタム2",
+    "content": "ポイント内容",
+    "add_text": "テキストを追加",
+    "add_image": "画像を追加",
+    "text_placeholder": "テキスト内容を入力...",
+    "image_placeholder": "画像URLを入力...",
+    "empty_content": "内容がありません。テキストまたは画像を追加してください"
+  },
+  "image_uploader": {
+    "drag_drop": "画像をここにドラッグ&ドロップ",
+    "or_click": "またはクリックしてアップロード"
   }
 }

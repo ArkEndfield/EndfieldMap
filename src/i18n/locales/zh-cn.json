@@ -270,5 +270,24 @@
     "eny_0069_aghornb2": "刚角天使α",
     "eny_0070_agscorp2": "重刺天使α",
     "unnamed": "未命名"
+  },
+  "custom_point": {
+    "title": "自定义点位",
+    "edit": "编辑",
+    "edit_title": "编辑自定义点位",
+    "type": "点位类型",
+    "type_custom": "自定义",
+    "type_custom1": "自定义1",
+    "type_custom2": "自定义2",
+    "content": "点位内容",
+    "add_text": "添加文本",
+    "add_image": "添加图片",
+    "text_placeholder": "请输入文本内容...",
+    "image_placeholder": "请输入图片URL...",
+    "empty_content": "暂无内容，请添加文本或图片"
+  },
+  "image_uploader": {
+    "drag_drop": "拖拽图片到此处",
+    "or_click": "或点击上传"
   }
 }

@@ -10,6 +10,7 @@
         class="zmd-alert-container"
         :style="{
           width: props.width,
+          height: props.height,
           backgroundImage: `url(${alert_bg})`,
           transformOrigin: props.open ? 'top' : 'bottom',
         }"
@@ -45,56 +46,30 @@
           v-show="props.open"
           ref="buttonsRef"
         >
-          <button
-            @click="handleCancel"
+          <ZmdButton
             v-if="!props.hideCancel"
+            type="default"
+            :text="t(props.cancelText)"
+            :showIcon="props.showIcon"
             :disabled="isProcessing"
-            :class="{ 'is-disabled': isProcessing }"
+            @click="handleCancel"
           >
-            <slot name="cancel">
-              <div class="zmd-alert-close">
-                <div class="text">{{ t(props.cancelText) }}</div>
-                <div
-                  class="icon"
-                  v-if="props.showIcon"
-                >
-                  <ZmdAlertCloseIcon />
-                </div>
-              </div>
-            </slot>
-          </button>
-          <button
+            <template #icon>
+              <ZmdAlertCloseIcon />
+            </template>
+          </ZmdButton>
+          <ZmdButton
+            type="primary"
+            :text="t(props.confirmText)"
+            :showIcon="props.showIcon"
+            :loading="isProcessing"
+            :disabled="isProcessing"
             @click="handleConfirm"
-            :disabled="isProcessing"
-            :class="{ 'is-disabled': isProcessing }"
           >
-            <slot name="confirm">
-              <div
-                class="zmd-alert-confirm"
-                ref="confirmRef"
-                @mouseenter="animateConfirmEnter"
-                @mouseleave="animateConfirmLeave"
-              >
-                <div class="text">{{ t(props.confirmText) }}</div>
-                <div
-                  class="icon"
-                  v-if="props.showIcon"
-                >
-                  <motion.div
-                    v-if="isProcessing"
-                    class="loading-spinner"
-                    :animate="{ rotate: 360 }"
-                    :transition="{
-                      duration: 1,
-                      ease: 'linear',
-                      repeat: Infinity,
-                    }"
-                  ></motion.div>
-                  <ZmdAlertTickIcon v-else />
-                </div>
-              </div>
-            </slot>
-          </button>
+            <template #icon>
+              <ZmdAlertTickIcon />
+            </template>
+          </ZmdButton>
         </div>
       </motion.div>
     </dialog>
@@ -111,6 +86,7 @@ import alert_banner_bg_right from '../../assets/images/bg/alert_banner_bg_right.
 import { motion, useAnimate } from 'motion-v';
 import { nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ZmdButton from '../ZmdButton/ZmdButton.vue';
 const dialog = ref<HTMLDialogElement | null>(null);
 const { t } = useI18n();
 export type ZmdAlertProps = {
@@ -122,6 +98,7 @@ export type ZmdAlertProps = {
   loading?: boolean;
   showIcon?: boolean;
   width?: string;
+  height?: string;
   onDismiss?: () => boolean | void | Promise<boolean | void>;
   onCancel?: () => boolean | void | Promise<boolean | void>;
   onClose?: () => boolean | void | Promise<boolean | void>;
@@ -133,6 +110,7 @@ const props = withDefaults(defineProps<ZmdAlertProps>(), {
   dismissible: true,
   hideCancel: false,
   width: '30em',
+  height: 'auto',
   loading: false,
   cancelText: 'cancel',
   confirmText: 'confirm',
@@ -151,7 +129,6 @@ const isProcessing = ref(false);
 const [alertRef, alertAnimate] = useAnimate();
 const [contentRef, contentAnimate] = useAnimate();
 const [buttonsRef] = useAnimate();
-const [confirmRef, confirmAnimate] = useAnimate();
 
 const handleDismiss = () => {
   if (props.dismissible && !isProcessing.value) {
@@ -236,38 +213,6 @@ const handleConfirm = () => {
     handleClose();
   }
 };
-
-async function animateConfirmEnter() {
-  await confirmAnimate(
-    confirmRef.value,
-    {
-      backgroundColor: ['#2a272877', '#2a2728b5', '#2a272877', '#2a2728b5'],
-      boxShadow: [
-        '0 0 0 0.1em #2a272877, 0 0 0 0.1em #81807f inset',
-        '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
-        '0 0 0 0.1em #2a272877, 0 0 0 0.1em #81807f inset',
-        '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
-      ],
-    },
-    { duration: 0.2 }
-  );
-}
-
-async function animateConfirmLeave() {
-  await confirmAnimate(
-    confirmRef.value,
-    {
-      backgroundColor: ['#2a2728b5', '#2a2728', '#2a2728b5', '#2a2728'],
-      boxShadow: [
-        '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
-        '0 0 0 0.1em #2a2728, 0 0 0 0.1em #81807f inset',
-        '0 0 0 0.1em #2a2728b5, 0 0 0 0.1em #81807f inset',
-        '0 0 0 0.1em #2a2728, 0 0 0 0.1em #81807f inset',
-      ],
-    },
-    { duration: 0.2 }
-  );
-}
 
 const shineAnimate = async (scope: typeof contentRef, show: boolean) => {
   if (show) {
@@ -454,14 +399,16 @@ $default-border-color: #a0a2a3;
       display: flex;
       flex-direction: column;
       min-height: 0;
-      max-height: calc(70vh - 6em);
       margin: 0 1em;
       z-index: 1;
+      position: relative;
     }
 
     .zmd-alert-content {
+      flex: 1;
       padding: 1em 0;
       color: $primary-color;
+      overflow: auto;
     }
 
     .zmd-alert-actions {
@@ -471,84 +418,9 @@ $default-border-color: #a0a2a3;
       padding: 0 1em;
       padding-top: 1em;
       z-index: 1;
+      position: relative;
       &.single {
         justify-content: center;
-      }
-      button {
-        all: unset;
-        flex: 1;
-        max-width: 50%;
-        .zmd-alert-confirm,
-        .zmd-alert-close {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 9999px;
-          .text {
-            flex: 1;
-            text-align: center;
-          }
-          .icon {
-            width: 1.3em;
-            height: 1.3em;
-            border-radius: 50%;
-            flex-grow: 0;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            .loading-spinner {
-              width: 1em;
-              height: 1em;
-              border: 2px solid rgb(255, 187, 0);
-              border-top: 2px solid #fff;
-              border-radius: 50%;
-            }
-          }
-        }
-        .zmd-alert-close {
-          background-color: $default-color;
-          color: $default-text-color;
-          padding: 0.3em 0.35em;
-          box-shadow: 0 0 0 0.1em $default-color,
-            0 0 0 0.1em $default-border-color inset;
-          .icon {
-            background-color: $default-text-color;
-            color: $default-color;
-            transition: color 0.3s;
-            svg {
-              font-size: 1em;
-            }
-          }
-          &:hover {
-            background-color: $default-hover-color;
-            box-shadow: 0 0 0 0.1em $default-hover-color,
-              0 0 0 0.1em $default-border-color inset;
-            .icon {
-              color: $default-hover-color;
-            }
-          }
-        }
-        .zmd-alert-confirm {
-          background-color: $primary-color;
-          color: $primary-text-color;
-          padding: 0.3em 0.35em;
-          box-shadow: 0 0 0 0.1em $primary-color,
-            0 0 0 0.1em $primary-border-color inset;
-          .icon {
-            background-color: $primary-text-color;
-            color: $primary-color;
-            transition: color 0.3s;
-            svg {
-              font-size: 1.3em;
-            }
-          }
-        }
-        &.is-disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
-          pointer-events: none;
-        }
       }
     }
   }

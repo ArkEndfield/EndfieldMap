@@ -270,5 +270,24 @@
     "eny_0069_aghornb2": "Rigid Horn Angel α",
     "eny_0070_agscorp2": "Heavy Spike Angel α",
     "unnamed": "Unnamed"
+  },
+  "custom_point": {
+    "title": "Custom Point",
+    "edit": "Edit",
+    "edit_title": "Edit Custom Point",
+    "type": "Point Type",
+    "type_custom": "Custom",
+    "type_custom1": "Custom 1",
+    "type_custom2": "Custom 2",
+    "content": "Point Content",
+    "add_text": "Add Text",
+    "add_image": "Add Image",
+    "text_placeholder": "Enter text content...",
+    "image_placeholder": "Enter image URL...",
+    "empty_content": "No content, please add text or image"
+  },
+  "image_uploader": {
+    "drag_drop": "Drag and drop image here",
+    "or_click": "or click to upload"
   }
 }

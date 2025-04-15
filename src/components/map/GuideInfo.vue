@@ -1,4 +1,13 @@
 <template>
+  <div>
+    {{
+      (entity && entityInfo[entity.entityDataIdKey]?.entityInfo.name) ||
+      t('popover.unknow_name')
+    }}
+  </div>
+  <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
+    <span class="ml-auto text-zinc-400">id: {{ entity?.levelLogicId }}</span>
+  </div>
   <div class="min-h-32">
     <GuideNode
       v-if="entity && guide?.nodes"
@@ -25,6 +34,7 @@ import { type GuideInfoDetail } from '@/types/guides';
 import { type PointData } from '@/types/points';
 import { getGuide } from '@/services/guides';
 import { useI18n } from 'vue-i18n';
+import { entityInfo } from '@/data/entity';
 
 const props = defineProps<{
   entity: PointData | null;

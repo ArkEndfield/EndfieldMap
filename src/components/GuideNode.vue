@@ -8,7 +8,12 @@
 </template>
 
 <script setup lang="ts">
-import { type NodeType } from '@/types/guides';
+import {
+  type NodeType,
+  type GuideImageNode,
+  type GuideNode,
+} from '@/types/guides';
+import { computed } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -19,11 +24,18 @@ const props = withDefaults(
   }
 );
 
-const images = props.nodes
-  .filter(item => item.type === 'node')
-  .flatMap(item =>
-    item.nodes.filter(node => node.type === 'image').map(node => node.src)
-  );
+const collectImages = (nodes: (NodeType | GuideNode)[]): string[] => {
+  return nodes.flatMap(node => {
+    if (node.type === 'node') {
+      return collectImages(node.nodes);
+    } else if (node.type === 'image') {
+      return [(node as GuideImageNode).src];
+    }
+    return [];
+  });
+};
+
+const images = computed(() => collectImages(props.nodes));
 </script>
 
 <style lang="scss" scoped></style>

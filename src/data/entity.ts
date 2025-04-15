@@ -23,7 +23,7 @@ export const customEntityInfo: EntityCategories = {
   custom1: {
     entityInfo: {
       name: '自定义点位1',
-      pic: 'default',
+      pic: 'default1',
       count: 0,
       show: true,
       point: 'custom1',
@@ -33,7 +33,7 @@ export const customEntityInfo: EntityCategories = {
   custom2: {
     entityInfo: {
       name: '自定义点位2',
-      pic: 'default',
+      pic: 'default2',
       count: 0,
       show: true,
       point: 'custom2',

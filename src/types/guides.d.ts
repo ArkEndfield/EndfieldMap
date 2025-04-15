@@ -6,10 +6,14 @@ export interface GuideTextNode {
   fontWeight?: number;
   fontFamily?: string;
 }
+
 export interface GuideImageNode {
   type: 'image';
   src: string;
 }
+
+export type GuideNode = GuideTextNode | GuideImageNode;
+
 export type NodeType = {
   type: 'node';
   nodes: (GuideTextNode | GuideImageNode | NodeType)[];

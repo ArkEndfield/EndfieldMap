@@ -42,17 +42,6 @@
       >
         <MapPopupDeco />
         <div class="p-4 pt-2 z-1 relative">
-          <div>
-            {{
-              (entity && entityInfo[entity.entityDataIdKey]?.entityInfo.name) ||
-              t('popover.unknow_name')
-            }}
-          </div>
-          <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
-            <span class="ml-auto text-zinc-400"
-              >id: {{ entity?.levelLogicId }}</span
-            >
-          </div>
           <CustomPointPopup
             :entity="entity"
             v-if="isCustomPoint"
@@ -89,7 +78,6 @@ import { inject } from 'vue';
 import { cn } from '@/utils/tailwind';
 import { PopupManager } from '@/services/PopupManager';
 import { marks } from '@/data/marks';
-import { entityInfo } from '@/data/entity';
 import { type PointData } from '@/types/points';
 import { motion, useAnimate } from 'motion-v';
 import { useI18n } from 'vue-i18n';
