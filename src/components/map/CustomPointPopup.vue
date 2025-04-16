@@ -15,14 +15,15 @@
           {{ t('custom_point.edit') }}
         </ZmdButtonRight>
       </div>
-      <div
+      <ScrollArea
         v-for="(node, index) in nodes"
         :key="index"
-        class="node-item mt-2 text-sm min-h-12"
+        class="node-item mt-2 text-sm min-h-28 max-h-52"
+        flex-container
         v-if="nodes && nodes.length > 0"
       >
         <GuideNodeNode :node="node" />
-      </div>
+      </ScrollArea>
       <div
         v-else
         class="text-center text-sm mt-4"

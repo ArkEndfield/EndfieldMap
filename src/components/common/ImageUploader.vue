@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -58,11 +58,20 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
+  (e: 'change', value: string): void;
 }>();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const isDragging = ref(false);
 const previewUrl = ref(props.modelValue || '');
+
+// 监听 modelValue 的变化
+watch(
+  () => props.modelValue,
+  newValue => {
+    previewUrl.value = newValue || '';
+  }
+);
 
 const handleDragEnter = () => {
   isDragging.value = true;
@@ -106,6 +115,7 @@ const handleFile = (file: File) => {
     const base64 = e.target?.result as string;
     previewUrl.value = base64;
     emit('update:modelValue', base64);
+    emit('change', base64);
   };
   reader.readAsDataURL(file);
 };
@@ -113,6 +123,7 @@ const handleFile = (file: File) => {
 const handleRemove = () => {
   previewUrl.value = '';
   emit('update:modelValue', '');
+  emit('change', '');
 };
 </script>
 

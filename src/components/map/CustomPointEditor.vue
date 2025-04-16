@@ -79,7 +79,10 @@
                 </template>
                 <template v-else-if="element.type === 'image'">
                   <div class="image-wrapper">
-                    <ImageUploader v-model="element.src" />
+                    <ImageUploader
+                      v-model="element.src"
+                      @change="handleUpdate"
+                    />
                   </div>
                 </template>
                 <template v-else-if="element.type === 'node'">
@@ -119,7 +122,10 @@
                             </template>
                             <template v-else-if="childElement.type === 'image'">
                               <div class="image-wrapper">
-                                <ImageUploader v-model="childElement.src" />
+                                <ImageUploader
+                                  v-model="childElement.src"
+                                  @change="handleUpdate"
+                                />
                               </div>
                             </template>
                           </div>

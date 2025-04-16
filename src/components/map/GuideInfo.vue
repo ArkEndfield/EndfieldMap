@@ -8,12 +8,15 @@
   <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
     <span class="ml-auto text-zinc-400">id: {{ entity?.levelLogicId }}</span>
   </div>
-  <div class="min-h-32">
+  <ScrollArea
+    class="!min-h-28 max-h-52"
+    flex-container
+  >
     <GuideNode
       v-if="entity && guide?.nodes"
       :nodes="guide.nodes"
     />
-  </div>
+  </ScrollArea>
   <div
     v-if="guide?.video?.link"
     class="mt-4"
