@@ -54,8 +54,8 @@
           chosen-class="chosen"
           drag-class="dragging"
           :animation="150"
-          :prevent-on-filter="false"
-          :filter="'.drag-handle'"
+          :prevent-on-filter="true"
+          :filter="'.text-input, .image-wrapper, .node-toolbar'"
           @update="handleUpdate"
           class="content"
         >
@@ -95,8 +95,8 @@
                       chosen-class="chosen"
                       drag-class="dragging"
                       :animation="150"
-                      :prevent-on-filter="false"
-                      :filter="'.drag-handle'"
+                      :prevent-on-filter="true"
+                      :filter="'.text-input, .image-wrapper'"
                       @update="handleUpdate"
                       class="node-content"
                     >
