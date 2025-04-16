@@ -282,6 +282,7 @@
     "content": "ポイント内容",
     "add_text": "テキストを追加",
     "add_image": "画像を追加",
+    "add_node": "ノードを追加",
     "text_placeholder": "テキスト内容を入力...",
     "image_placeholder": "画像URLを入力...",
     "empty_content": "内容がありません。テキストまたは画像を追加してください"

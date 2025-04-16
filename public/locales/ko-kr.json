@@ -282,6 +282,7 @@
     "content": "포인트 내용",
     "add_text": "텍스트 추가",
     "add_image": "이미지 추가",
+    "add_node": "노드 추가",
     "text_placeholder": "텍스트 내용을 입력하세요...",
     "image_placeholder": "이미지 URL을 입력하세요...",
     "empty_content": "내용이 없습니다. 텍스트 또는 이미지를 추가하세요"

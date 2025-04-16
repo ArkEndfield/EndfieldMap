@@ -224,13 +224,16 @@ export async function setItem<T>(
     // 确保数据库初始化
     await initDB();
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       try {
-        const transaction = await getTransaction(STORES[type], 'readwrite');
+        const transaction = dbInstance!.transaction(STORES[type], 'readwrite');
         const store = transaction.objectStore(STORES[type]);
 
+        // 确保数据是可序列化的
+        const serializedValue = JSON.parse(JSON.stringify(value));
+
         const item: StorageItem<T> = {
-          value,
+          value: serializedValue,
           timestamp: Date.now(),
           expiry: expiryDuration !== null ? Date.now() + expiryDuration : null,
         };
@@ -241,20 +244,35 @@ export async function setItem<T>(
           if (isDevelopment) {
             console.log(`[IndexedDB] 存储成功: ${key}`);
           }
-          resolve();
         };
 
         request.onerror = event => {
           console.error('存储数据失败:', event);
           reject(new Error('存储数据失败'));
         };
+
+        // 等待事务完成
+        transaction.oncomplete = () => {
+          resolve();
+        };
+
+        transaction.onerror = event => {
+          console.error('事务执行失败:', event);
+          reject(new Error('事务执行失败'));
+        };
+
+        // 确保事务不会自动关闭
+        transaction.onabort = event => {
+          console.error('事务被中止:', event);
+          reject(new Error('事务被中止'));
+        };
       } catch (error) {
-        console.error('获取事务失败:', error);
+        console.error('存储数据时发生错误:', error);
         reject(error);
       }
     });
   } catch (error) {
-    console.error('存储数据时出错:', error);
+    console.error('存储数据时发生错误:', error);
     throw error;
   }
 }
@@ -263,108 +281,70 @@ export async function setItem<T>(
  * 从IndexedDB获取数据
  * @param key 键名
  * @param type 存储类型（临时或永久）
- * @returns Promise<T | null> 返回数据，如果不存在或已过期则返回null
+ * @returns Promise<T | null>
  */
 export async function getItem<T>(
   key: string,
   type: StorageType = StorageType.TEMPORARY
 ): Promise<T | null> {
-  // if (isDevelopment) {
-  //   console.log(`[IndexedDB] 获取数据: ${key} (${type})`);
-  // }
-
-  // 最大重试次数
-  const MAX_RETRIES = 3;
-  let retryCount = 0;
-
-  while (retryCount < MAX_RETRIES) {
-    try {
-      // 确保数据库初始化
-      await initDB();
-
-      return await new Promise(async (resolve, reject) => {
-        try {
-          const transaction = await getTransaction(STORES[type], 'readonly');
-          const store = transaction.objectStore(STORES[type]);
-          const request = store.get(key);
-
-          request.onsuccess = async () => {
-            const item = request.result as StorageItem<T> | undefined;
-
-            // 检查数据是否存在
-            if (!item) {
-              if (isDevelopment) {
-                console.log(`[IndexedDB] 数据不存在: ${key}`);
-              }
-              resolve(null);
-              return;
-            }
-
-            // 检查数据是否过期（仅针对临时存储）
-            if (
-              type === StorageType.TEMPORARY &&
-              item.expiry !== null &&
-              item.expiry < Date.now()
-            ) {
-              // 数据已过期，在新的写入事务中删除，而不是在当前只读事务中
-              if (isDevelopment) {
-                console.log(`[IndexedDB] 数据已过期: ${key}，将删除过期数据`);
-              }
-
-              // 创建单独的删除操作，不阻塞当前的读取流程
-              rafTimeout(() => {
-                removeItem(key, type).catch(err => {
-                  console.error(`删除过期数据失败: ${key}`, err);
-                });
-              }, 0);
-
-              resolve(null);
-              return;
-            }
-
-            if (isDevelopment) {
-              console.log(`[IndexedDB] 获取成功: ${key}`);
-            }
-            resolve(item.value);
-          };
-
-          request.onerror = event => {
-            console.error('获取数据失败:', event);
-            reject(new Error('获取数据失败'));
-          };
-        } catch (error) {
-          console.error('获取事务失败:', error);
-          reject(error);
-        }
-      });
-    } catch (error) {
-      console.error(
-        `获取数据时出错 (尝试 ${retryCount + 1}/${MAX_RETRIES}):`,
-        error
-      );
-      retryCount++;
-
-      // 最后一次尝试失败，返回null
-      if (retryCount >= MAX_RETRIES) {
-        console.error(`达到最大重试次数，获取数据失败: ${key}`);
-        return null;
-      }
-
-      // 等待一段时间再重试
-      await new Promise<void>(resolve =>
-        rafTimeout(() => resolve(), 300 * retryCount)
-      );
-
-      // 重新初始化数据库
-      try {
-        await reinitializeDB();
-      } catch (dbError) {
-        console.error('重新初始化数据库失败:', dbError);
-      }
-    }
+  // 开发模式下打印提示
+  if (isDevelopment) {
+    console.log(`[IndexedDB] 获取数据: ${key} (${type})`);
   }
 
-  return null;
+  try {
+    // 确保数据库初始化
+    await initDB();
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const transaction = await getTransaction(STORES[type], 'readonly');
+        const store = transaction.objectStore(STORES[type]);
+
+        const request = store.get(key);
+
+        request.onsuccess = () => {
+          const result = request.result as StorageItem<T> | undefined;
+          if (!result) {
+            if (isDevelopment) {
+              console.log(`[IndexedDB] 数据不存在: ${key}`);
+            }
+            resolve(null);
+            return;
+          }
+
+          // 检查是否过期
+          if (result.expiry !== null && Date.now() > result.expiry) {
+            if (isDevelopment) {
+              console.log(`[IndexedDB] 数据已过期: ${key}`);
+            }
+            // 删除过期数据
+            removeItem(key, type).catch(error => {
+              console.error('删除过期数据失败:', error);
+            });
+            resolve(null);
+            return;
+          }
+
+          if (isDevelopment) {
+            console.log(`[IndexedDB] 获取成功: ${key}`);
+          }
+          resolve(result.value);
+        };
+
+        request.onerror = event => {
+          console.error('获取数据失败:', event);
+          reject(new Error('获取数据失败'));
+        };
+      } catch (error) {
+        console.error('获取数据时发生错误:', error);
+        reject(error);
+      }
+    });
+  } catch (error) {
+    console.error('获取数据时发生错误:', error);
+    throw error;
+  }
 }
 
 /**

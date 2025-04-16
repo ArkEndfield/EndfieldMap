@@ -45,6 +45,7 @@
         v-model:nodes="editingNodes"
         :initial-type="entity?.entityDataIdKey || 'custom'"
         :initial-nodes="editingNodes"
+        @update:nodes="handleNodesUpdate"
       />
     </ZmdAlert>
   </div>
@@ -75,24 +76,26 @@ const editingType = ref('custom');
 const editingNodes = ref<GuideNodeType[]>([]);
 const nodes = ref<NodeType[]>([]);
 
+// 处理节点更新
+const handleNodesUpdate = (newNodes: GuideNodeType[]) => {
+  // 只有在数据真正变化时才更新
+  if (JSON.stringify(newNodes) !== JSON.stringify(editingNodes.value)) {
+    editingNodes.value = JSON.parse(JSON.stringify(newNodes));
+  }
+};
+
 // 加载标点数据的函数
 const loadPointData = async () => {
   if (props.entity?.levelLogicId) {
     const data = await getCustomPointData(props.entity.levelLogicId.toString());
     console.log('Loaded point data:', data);
     if (data) {
-      nodes.value = data.nodes.map(node => ({
-        type: 'node' as const,
-        nodes: node.nodes.filter(
-          (n): n is GuideNodeType => n.type === 'text' || n.type === 'image'
-        ),
-      }));
-      editingNodes.value = nodes.value.flatMap(
-        node => node.nodes
+      nodes.value = data.nodes;
+      editingNodes.value = data.nodes.flatMap(node =>
+        node.type === 'node' ? node.nodes : []
       ) as GuideNodeType[];
       console.log('Set editing nodes:', editingNodes.value);
     } else {
-      // 如果没有数据，初始化为空数组
       nodes.value = [];
       editingNodes.value = [];
     }
@@ -102,8 +105,10 @@ const loadPointData = async () => {
 // 监听 entity 变化
 watch(
   () => props.entity?.levelLogicId,
-  () => {
-    loadPointData();
+  newId => {
+    if (newId) {
+      loadPointData();
+    }
   }
 );
 
@@ -118,27 +123,11 @@ const startEditing = () => {
 
 const handleSave = async () => {
   if (props.entity?.levelLogicId) {
-    // 确保数据可以被序列化
-    const serializedNodes = editingNodes.value.map(node => {
-      if (node.type === 'text') {
-        return {
-          type: 'text' as const,
-          text: node.text || '',
-        };
-      } else if (node.type === 'image') {
-        return {
-          type: 'image' as const,
-          src: node.src || '',
-        };
-      }
-      return node;
-    });
-
     const customPointData: CustomPointData = {
       nodes: [
         {
           type: 'node' as const,
-          nodes: serializedNodes,
+          nodes: editingNodes.value,
         },
       ],
     };
@@ -151,6 +140,7 @@ const handleSave = async () => {
       customPointData
     );
     nodes.value = customPointData.nodes;
+    isEditing.value = false;
   }
 };
 

@@ -41,6 +41,7 @@ declare module 'vue' {
     ExportIcon: typeof import('./src/components/icons/ExportIcon.vue')['default']
     FeedbackIcon: typeof import('./src/components/icons/FeedbackIcon.vue')['default']
     FeedbackMenu: typeof import('./src/components/Header/FeedbackMenu.vue')['default']
+    FolderIcon: typeof import('./src/components/icons/FolderIcon.vue')['default']
     ForwardLeftIcon: typeof import('./src/components/icons/ForwardLeftIcon.vue')['default']
     GuideImageNode: typeof import('./src/components/GuideNodes/GuideImageNode.vue')['default']
     GuideInfo: typeof import('./src/components/map/GuideInfo.vue')['default']

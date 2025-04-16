@@ -282,6 +282,7 @@
     "content": "Point Content",
     "add_text": "Add Text",
     "add_image": "Add Image",
+    "add_node": "Add Node",
     "text_placeholder": "Enter text content...",
     "image_placeholder": "Enter image URL...",
     "empty_content": "No content, please add text or image"

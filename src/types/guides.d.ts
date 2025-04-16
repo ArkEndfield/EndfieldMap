@@ -12,7 +12,12 @@ export interface GuideImageNode {
   src: string;
 }
 
-export type GuideNode = GuideTextNode | GuideImageNode;
+export interface GuideNodeNode {
+  type: 'node';
+  nodes: (GuideTextNode | GuideImageNode)[];
+}
+
+export type GuideNode = GuideTextNode | GuideImageNode | GuideNodeNode;
 
 export type NodeType = {
   type: 'node';

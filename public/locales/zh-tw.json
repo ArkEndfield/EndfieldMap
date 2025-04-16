@@ -269,7 +269,7 @@
   "custom_point": {
     "title": "自定義點位",
     "edit": "編輯",
-    "edit_title": "自定義點位編輯",
+    "edit_title": "編輯自定義點位",
     "type": "點位類型",
     "type_custom": "自定義",
     "type_custom1": "自定義1",
@@ -277,8 +277,9 @@
     "content": "點位內容",
     "add_text": "添加文字",
     "add_image": "添加圖片",
-    "text_placeholder": "輸入文字內容...",
-    "image_placeholder": "輸入圖片URL...",
+    "add_node": "添加節點",
+    "text_placeholder": "請輸入文字內容...",
+    "image_placeholder": "請輸入圖片URL...",
     "empty_content": "暫無內容，請添加文字或圖片"
   },
   "image_uploader": {

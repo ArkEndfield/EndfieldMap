@@ -282,6 +282,7 @@
     "content": "点位内容",
     "add_text": "添加文本",
     "add_image": "添加图片",
+    "add_node": "添加节点",
     "text_placeholder": "请输入文本内容...",
     "image_placeholder": "请输入图片URL...",
     "empty_content": "暂无内容，请添加文本或图片"
