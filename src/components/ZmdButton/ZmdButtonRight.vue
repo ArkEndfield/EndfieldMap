@@ -190,7 +190,6 @@ button {
 
   &.is-disabled {
     opacity: 0.7;
-    cursor: not-allowed;
     pointer-events: none;
   }
 }

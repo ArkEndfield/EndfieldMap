@@ -90,12 +90,7 @@ defineEmits(['click']);
 
 .square-button.is-disabled {
   opacity: 0.6;
-  cursor: not-allowed;
   background-color: #222;
-}
-
-.square-button.is-loading {
-  cursor: wait;
 }
 
 /* 加载动画 */

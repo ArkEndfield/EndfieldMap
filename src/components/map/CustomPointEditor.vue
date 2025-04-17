@@ -443,7 +443,6 @@ const handleUpdate = () => {
   padding: 0.5rem;
   color: #666666;
   user-select: none;
-  cursor: move;
 
   &:hover {
     color: #ece065;
@@ -466,7 +465,6 @@ const handleUpdate = () => {
   border: 1px solid #404040;
   border-radius: 0.375rem;
   resize: none;
-  cursor: text;
   pointer-events: auto;
   user-select: text;
 
