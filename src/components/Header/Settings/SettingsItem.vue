@@ -39,7 +39,7 @@
       </slot>
       <slot
         name="after"
-        v-if="!props.loading && !props.error"
+        v-if="!props.loading"
       ></slot>
     </div>
   </div>
