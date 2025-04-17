@@ -56,7 +56,7 @@
         fill="currentColor"
         aria-hidden="true"
       ></svg>
-      <span class="text-xs">{{ props.error?.message }}</span>
+      <span>{{ props.error?.message }}</span>
     </div>
   </ZmdAlertFull>
 </template>
