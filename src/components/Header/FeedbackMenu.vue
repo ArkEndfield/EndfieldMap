@@ -11,10 +11,13 @@
       {{ t('header.feedback') }}
     </h1>
     <div class="px-4">
-      <textarea
-        class="resize-none block w-full border-2 p-2 min-h-40 rounded-sm outline-none"
-        :placeholder="t('header.feedback')"
-      ></textarea>
+      <div class="w-full flex justify-center">
+        <img
+          src="/images/feedback/qq_group_qr_code.png"
+          alt="qq_group_qr_code"
+          class="w-32"
+        />
+      </div>
     </div>
   </ZmdAlert>
 </template>

@@ -8,6 +8,9 @@
       >
         <div class="bg-[#292728] text-white py-2 px-4 font-medium text-sm">
           {{ formatLocalizedDate(log.date) }}
+          <span v-if="log.endDate">
+            - {{ formatLocalizedDate(log.endDate) }}</span
+          >
         </div>
         <div class="p-4">
           <ul class="space-y-2">
