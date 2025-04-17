@@ -1,9 +1,28 @@
 <template>
-  <div>
-    {{
-      (entity && entityInfo[entity.entityDataIdKey]?.entityInfo.name) ||
-      t('popover.unknow_name')
-    }}
+  <div class="flex items-center gap-2">
+    <div class="shrink-0">
+      <img
+        :src="
+          props.entity
+            ? `/assets/${entityInfo[props.entity.entityDataIdKey].category}/${
+                entityInfo[props.entity.entityDataIdKey].entityInfo.pic
+              }.png`
+            : ''
+        "
+        class="w-6 h-6 rounded-full"
+      />
+    </div>
+    <div class="truncate overflow-hidden">
+      {{
+        props.entity
+          ? t(
+              `sidebar.filter.category.${
+                entityInfo[props.entity.entityDataIdKey].category
+              }`
+            )
+          : t('popover.unknow_name')
+      }}
+    </div>
   </div>
   <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
     <span class="ml-auto text-zinc-400">id: {{ entity?.levelLogicId }}</span>
