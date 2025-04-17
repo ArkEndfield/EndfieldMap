@@ -20,7 +20,7 @@
       <AppHeaderLeft v-show="appLoaded" />
       <AppHeaderRight v-show="appLoaded" />
       <ZmdSidebar v-if="appLoaded" />
-      <OpenLayersComponent v-show="appLoaded" />
+      <OpenLayersComponent />
     </template>
   </div>
 </template>
@@ -57,6 +57,15 @@ async function loadAllData() {
   try {
     isLoading.value = true;
     loadError.value = null;
+
+    // 预加载地图背景图片
+    const mapBg = new Image();
+    mapBg.src = '/assets/map_bg.png';
+    await new Promise(resolve => {
+      mapBg.onload = resolve;
+      mapBg.onerror = resolve;
+    });
+    console.log('地图背景图片预加载完成');
 
     console.log('开始加载所有数据...');
     const mapID = getCurrentMapId();
