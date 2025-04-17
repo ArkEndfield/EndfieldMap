@@ -4,9 +4,7 @@
       <img
         :src="
           props.entity
-            ? `/assets/${entityInfo[props.entity.entityDataIdKey].category}/${
-                entityInfo[props.entity.entityDataIdKey].entityInfo.pic
-              }.png`
+            ? `/assets/${entityInfo.category}/${entityInfo.entityInfo.pic}.png`
             : ''
         "
         class="w-6 h-6 rounded-full"
@@ -15,22 +13,21 @@
     <div class="truncate overflow-hidden">
       {{
         props.entity
-          ? t(
-              `sidebar.filter.category.${
-                entityInfo[props.entity.entityDataIdKey].category
-              }`
-            )
+          ? t(`entities.${entityInfo.entityInfo.point}`)
           : t('popover.unknow_name')
       }}
     </div>
   </div>
   <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
-    <span class="ml-auto text-zinc-400">id: {{ entity?.levelLogicId }}</span>
+    <span class="ml-auto text-zinc-400">id: {{ entity.levelLogicId }}</span>
   </div>
   <ScrollArea
     class="!min-h-28 max-h-52"
     flex-container
   >
+    <div v-if="entityInfo.category === 'dungeon'">
+      {{ t(`dungeon.${entityInfo.entityInfo.point}.desc`) }}
+    </div>
     <GuideNode
       v-if="entity && guide?.nodes"
       :nodes="guide.nodes"
@@ -56,14 +53,19 @@ import { type GuideInfoDetail } from '@/types/guides';
 import { type PointData } from '@/types/points';
 import { getGuide } from '@/services/guides';
 import { useI18n } from 'vue-i18n';
-import { entityInfo } from '@/data/entity';
+import { entityInfo as entityInfoData } from '@/data/entity';
+import { computed } from 'vue';
 
 const props = defineProps<{
-  entity: PointData | null;
+  entity: PointData;
 }>();
 
 const guide = ref<GuideInfoDetail | null>(null);
 const { t } = useI18n();
+
+const entityInfo = computed(() => {
+  return entityInfoData[props.entity.entityDataIdKey];
+});
 
 // 监听 entity 变化以异步加载攻略数据
 watch(

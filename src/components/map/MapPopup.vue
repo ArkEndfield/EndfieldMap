@@ -48,7 +48,7 @@
           />
           <GuideInfo
             :entity="entity"
-            v-else
+            v-else-if="!!entity"
           />
           <div class="flex items-center justify-end gap-2 mt-4">
             <div class="flex items-center justify-end gap-2 ml-auto">

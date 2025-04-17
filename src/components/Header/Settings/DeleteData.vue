@@ -14,20 +14,8 @@
       <div><TrashIcon /></div>
     </template>
     <template #after>
-      <div v-if="!loading && !error && !success">
+      <div>
         {{ t('settings.delete_data.title') }}
-      </div>
-      <div
-        v-else-if="success"
-        class="text-xs"
-      >
-        {{ t('settings.delete_data.success_tips') }}
-        <button
-          class="bg-[#272727] text-white rounded px-1 py-0.5 ml-0.5"
-          @click="refreshPage"
-        >
-          {{ t('refresh') }}
-        </button>
       </div>
     </template>
   </SettingsItem>
@@ -39,6 +27,15 @@
       {{ t('settings.delete_data.tips') }}
     </div>
   </ZmdAlert>
+  <ZmdAlertFull
+    :open="success"
+    @confirm="refreshPage"
+    @cancel="reset"
+  >
+    <div>
+      {{ t('settings.delete_data.success_tips') }}
+    </div>
+  </ZmdAlertFull>
 </template>
 
 <script setup lang="ts">
@@ -49,7 +46,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const open = ref(false);
-const { loading, error, success, execute } = useStateOperate(
+const { loading, error, success, execute, reset } = useStateOperate(
   async () => {
     await clearStore(StorageType.PERMANENT);
     const keys = Object.keys(localStorage);
@@ -57,9 +54,6 @@ const { loading, error, success, execute } = useStateOperate(
       localStorage.removeItem(key);
     }
     resetSettings();
-  },
-  {
-    resetTime: 5000,
   }
 );
 

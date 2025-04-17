@@ -13,23 +13,21 @@
       <div><ExportIcon /></div>
     </template>
     <template #after>
-      <div v-if="!loading && !error && !success">
+      <div>
         {{ t('settings.export_data.title') }}
-      </div>
-      <div
-        v-else-if="success"
-        class="text-xs"
-      >
-        {{ t('settings.export_data.success_tips') }}
-        <button
-          class="bg-[#272727] text-white rounded px-1 py-0.5 ml-0.5"
-          @click="openDownloadLink"
-        >
-          {{ t('download') }}
-        </button>
       </div>
     </template>
   </SettingsItem>
+  <ZmdAlertFull
+    :open="success"
+    @confirm="openDownloadLink"
+    @cancel="reset"
+    confirm-text="download"
+  >
+    <div>
+      {{ t('settings.export_data.success_tips') }}
+    </div>
+  </ZmdAlertFull>
 </template>
 
 <script setup lang="ts">
@@ -37,15 +35,12 @@ import { backupData } from '@/services/data';
 import useStateOperate from '@/hooks/useStateOperate';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
-const { loading, error, data, success, execute } = useStateOperate(
+const { loading, error, data, success, execute, reset } = useStateOperate(
   async () => {
     const data = await backupData();
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     return url;
-  },
-  {
-    resetTime: 5000,
   }
 );
 

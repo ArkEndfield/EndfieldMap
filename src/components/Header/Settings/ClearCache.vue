@@ -13,23 +13,21 @@
       <div><ClearIcon /></div>
     </template>
     <template #after>
-      <div v-if="!loading && !error && !success">
+      <div>
         {{ t('settings.clear_cache.title') }}
-      </div>
-      <div
-        v-else-if="success"
-        class="text-xs"
-      >
-        {{ t('settings.clear_cache.success_tips') }}
-        <button
-          class="bg-[#272727] text-white rounded px-1 py-0.5 ml-0.5"
-          @click="refreshPage"
-        >
-          {{ t('refresh') }}
-        </button>
       </div>
     </template>
   </SettingsItem>
+  <ZmdAlertFull
+    :open="success"
+    @cancel="reset"
+    @confirm="refreshPage"
+    confirm-text="refresh"
+  >
+    <div>
+      {{ t('settings.clear_cache.success_tips') }}
+    </div>
+  </ZmdAlertFull>
 </template>
 
 <script setup lang="ts">
@@ -37,9 +35,8 @@ import useStateOperate from '@/hooks/useStateOperate';
 import { clearJSONCache } from '@/utils/jsonLoader';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
-const { loading, error, success, execute } = useStateOperate(clearJSONCache, {
-  resetTime: 5000,
-});
+const { loading, error, success, execute, reset } =
+  useStateOperate(clearJSONCache);
 
 const refreshPage = () => {
   window.location.reload();

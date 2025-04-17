@@ -1,7 +1,7 @@
 <template>
   <SettingsItem
     :loading="loading"
-    :error="error"
+    :error="error || mergeError || coverError"
     @end-click="execute"
   >
     {{ t('settings.import_data.title') }}
@@ -21,6 +21,7 @@
     v-model:open="open"
     hide-cancel
     confirm-text="close"
+    @confirm="reset"
   >
     <div class="text-center mb-4">
       {{ t('settings.import_data.type_tips') }}
@@ -39,31 +40,16 @@
         {{ t('cover') }}
       </SquareButton>
     </div>
-    <div
-      v-if="mergeError || coverError"
-      class="text-red-500 text-center mt-4"
-    >
-      {{ t('settings.import_data_failed_tips') }}
-    </div>
-    <div
-      v-if="mergeError"
-      class="text-red-500 text-center"
-    >
-      {{ mergeError }}
-    </div>
-    <div
-      v-if="coverError"
-      class="text-red-500 text-center"
-    >
-      {{ coverError }}
-    </div>
-    <div
-      v-if="mergeSuccess || coverSuccess"
-      class="text-green-500 text-center mt-4"
-    >
+  </ZmdAlert>
+  <ZmdAlertFull
+    :open="mergeSuccess || coverSuccess"
+    @confirm="resetAll"
+    hide-cancel
+  >
+    <div>
       {{ t('settings.import_data.success_tips') }}
     </div>
-  </ZmdAlert>
+  </ZmdAlertFull>
 </template>
 
 <script setup lang="ts">
@@ -71,7 +57,6 @@ import useStateOperate from '@/hooks/useStateOperate';
 import { isBackupDataValid, mergeData, coverData } from '@/services/data';
 import { ref } from 'vue';
 import { watch } from 'vue';
-import { rafTimeout } from '@/utils/animationTimer';
 import type { BackupData } from '@/types/data';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
@@ -129,17 +114,21 @@ const {
   error: mergeError,
   execute: mergeExecute,
   success: mergeSuccess,
-} = useStateOperate(mergeDataFunc, {
-  resetTime: 5000,
-});
+  reset: mergeReset,
+} = useStateOperate(mergeDataFunc);
 const {
   loading: coverLoading,
   error: coverError,
   execute: coverExecute,
   success: coverSuccess,
-} = useStateOperate(coverDataFunc, {
-  resetTime: 5000,
-});
+  reset: coverReset,
+} = useStateOperate(coverDataFunc);
+const resetAll = () => {
+  reset();
+  mergeReset();
+  coverReset();
+  open.value = false;
+};
 watch(success, () => {
   if (success.value) open.value = true;
 });
@@ -148,23 +137,6 @@ watch(open, () => {
     reset();
   }
 });
-watch(error, () => {
-  if (error.value) {
-    rafTimeout(() => {
-      reset();
-    }, 3000);
-  }
-});
-watch(
-  () => mergeSuccess.value || coverSuccess.value,
-  () => {
-    if (mergeSuccess.value || coverSuccess.value) {
-      rafTimeout(() => {
-        open.value = false;
-      }, 1000);
-    }
-  }
-);
 </script>
 
 <style scoped></style>

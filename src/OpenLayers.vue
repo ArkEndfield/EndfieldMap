@@ -23,17 +23,23 @@
     >
       <ContextMenuItem
         label="创建标点"
-        icon="📍"
-        :onClick="() => handleAction('create')"
+        @click="() => handleAction('create')"
         :disabled="!!rightClickPoint || !rightClickCoordinates"
-      />
+      >
+        <template #icon>
+          <LocationClusterIcon />
+        </template>
+      </ContextMenuItem>
       <ContextMenuItem
         label="删除标点"
-        icon="🗑️"
         v-show="!!rightClickPoint"
-        :onClick="() => handleAction('delete')"
+        @click="() => handleAction('delete')"
         className="text-red-500"
-      />
+      >
+        <template #icon>
+          <TrashIcon />
+        </template>
+      </ContextMenuItem>
     </ContextMenu>
   </div>
 </template>

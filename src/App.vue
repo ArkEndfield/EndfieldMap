@@ -4,8 +4,7 @@
       v-if="isLoading"
       class="loading-overlay"
     >
-      <div class="loading-spinner"></div>
-      <div class="loading-text">加载中...</div>
+      <div class="loading-logo"></div>
     </div>
     <div
       v-else-if="loadError"
@@ -40,6 +39,7 @@ import { loadGuidesData } from './services/guides';
 import { initMarksData } from './services/marks';
 import { loadMaterialData } from './services/material';
 import { initializeSettings } from './services/settings';
+import { rafTimeout } from './utils/animationTimer';
 // const isDev = import.meta.env.MODE === 'development';
 // const getQueryParam = (param: string): string | null => {
 //   const urlParams = new URLSearchParams(window.location.search);
@@ -105,7 +105,9 @@ async function loadAllData() {
     console.log('设置初始化完成');
 
     console.log('所有数据加载完成');
-    isLoading.value = false;
+    rafTimeout(() => {
+      isLoading.value = false;
+    }, 1000);
   } catch (error) {
     console.error('加载数据失败:', error);
     loadError.value = error as Error;
@@ -159,19 +161,14 @@ onBeforeUnmount(() => {
   color: white;
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 3px solid transparent;
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-.loading-text {
-  font-size: 1.2rem;
-  font-weight: 500;
+.loading-logo {
+  width: 400px;
+  padding-top: 100%;
+  max-width: 100%;
+  background-image: url('/images/loading_logo.png');
+  background-size: 100% auto;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .error-message {

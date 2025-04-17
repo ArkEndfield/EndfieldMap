@@ -38,37 +38,34 @@
         </div>
       </slot>
       <slot
-        name="error"
-        v-if="props.error"
-      >
-        <div class="text-red-500 flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 shrink-0"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v4a1 1 0 002 0V5zm-1 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span class="text-xs">{{ props.error.message }}</span>
-        </div>
-      </slot>
-      <slot
         name="after"
         v-if="!props.loading && !props.error"
       ></slot>
     </div>
   </div>
+  <ZmdAlertFull
+    :open="showError"
+    hide-cancel
+    @confirm="closeError"
+  >
+    <div class="text-red-500 flex items-center gap-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 shrink-0"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        aria-hidden="true"
+      ></svg>
+      <span class="text-xs">{{ props.error?.message }}</span>
+    </div>
+  </ZmdAlertFull>
 </template>
 
 <script setup lang="ts">
 import { cn } from '@/utils/tailwind';
-
+import { watch } from 'vue';
+import { ref } from 'vue';
+const showError = ref(false);
 const props = withDefaults(
   defineProps<{
     danger?: boolean;
@@ -91,6 +88,17 @@ const emit = defineEmits<{
 const endClick = () => {
   if (!props.loading && !props.disabled) emit('endClick');
 };
+
+const closeError = () => {
+  showError.value = false;
+};
+
+watch(
+  () => props.error,
+  newVal => {
+    showError.value = !!newVal;
+  }
+);
 </script>
 
 <style lang="scss" scoped></style>

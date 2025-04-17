@@ -3,6 +3,8 @@ import { loadJSON } from '@/utils/jsonLoader';
 import zhCN from './locales/zh-cn.json';
 import rewardZhCN from './locales/item_i18n_cn.json';
 import characterZhCN from './locales/character_i18n_cn.json';
+import dungeonZhCN from './locales/dungeon_series_i18n_cn.json';
+import enemyZhCN from './locales/enemy_template_i18n_cn.json';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { refreshMap } from '@/services/MapCore';
 import { rafTimeout } from '@/utils/animationTimer';
@@ -11,6 +13,8 @@ const zhCNLang = {
   ...zhCN,
   item: rewardZhCN,
   character: characterZhCN,
+  dungeon: dungeonZhCN,
+  enemy: enemyZhCN,
 };
 
 const KEY = LOCAL_STORAGE_KEY.LANGUAGE;
@@ -199,16 +203,26 @@ export async function loadLanguage(lang: Language) {
     const loadLangCharacter = loadJSON<MessageSchema>(
       `/locales/character_i18n_${rewardLang}.json`
     );
+    const loadLangDungeon = loadJSON<MessageSchema>(
+      `/locales/dungeon_series_i18n_${rewardLang}.json`
+    );
+    const loadLangEnemy = loadJSON<MessageSchema>(
+      `/locales/enemy_template_i18n_${rewardLang}.json`
+    );
 
     const messages = await Promise.all([
       loadLangBase,
       loadLangItem,
       loadLangCharacter,
-    ]).then(([base, item, character]) => {
+      loadLangDungeon,
+      loadLangEnemy,
+    ]).then(([base, item, character, dungeon, enemy]) => {
       return {
         ...base,
         item,
         character,
+        dungeon,
+        enemy,
       } as unknown as MessageSchema;
     });
     if (i18n.global.availableLocales.includes(lang)) {
