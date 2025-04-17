@@ -742,7 +742,7 @@ const moveEndChange = debounce(() => {
   // 确保最终值是准确的
   if (Math.abs(zoomLevel.value - zoom) >= 0.01) {
     const currentMapID = getCurrentMapId();
-    loadTextPoints(true, currentMapID, zoom);
+    loadTextPoints(false, currentMapID, zoom);
     updateZoomValue(zoom);
   }
   const currentMapID = getCurrentMapId();
@@ -831,7 +831,7 @@ export const refreshMap = () => {
   }
 
   loadTextPoints(
-    true,
+    false,
     cacheMapId.value === 'map002' ? 'map02' : 'map01',
     zoomLevel.value
   );
@@ -894,7 +894,7 @@ export const refreshPoints = async () => {
 
   // 重新加载地名标注
   loadTextPoints(
-    true,
+    false,
     cacheMapId.value === 'map002' ? 'map02' : 'map01',
     zoomLevel.value
   );
