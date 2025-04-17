@@ -6,6 +6,7 @@ export interface PointData {
   position: { x: number; y: number; z: number };
   entityDataIdKey: string;
   reward_id?: string;
+  dungeion_series_id?: string;
 }
 
 export interface CustomPointData {

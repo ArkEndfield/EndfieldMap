@@ -25,8 +25,17 @@
     class="!min-h-28 max-h-52"
     flex-container
   >
-    <div v-if="entityInfo.category === 'dungeon'">
-      {{ t(`dungeon.${entityInfo.entityInfo.point}.desc`) }}
+    <div
+      v-if="entityInfo.category === 'dungeon' && entity.dungeion_series_id"
+      class="game-description dungeon-description"
+    >
+      {{ t(`dungeon.${entity.dungeion_series_id}.desc`) }}
+    </div>
+    <div
+      v-else-if="entityInfo.category === 'enemy'"
+      class="game-description enemy-description"
+    >
+      {{ t(`enemy.${entity.entityDataIdKey}.description`) }}
     </div>
     <GuideNode
       v-if="entity && guide?.nodes"
@@ -86,3 +95,39 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style scoped>
+.game-description {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.dungeon-description {
+  color: #8ab4f8;
+  background: linear-gradient(
+    90deg,
+    rgba(138, 180, 248, 0.1),
+    rgba(0, 0, 0, 0.3)
+  );
+}
+
+.enemy-description {
+  color: #f8b88b;
+  background: linear-gradient(
+    90deg,
+    rgba(248, 184, 139, 0.1),
+    rgba(0, 0, 0, 0.3)
+  );
+}
+
+.game-description:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+</style>

@@ -11,6 +11,7 @@
       type: 'spring',
     }"
     @transitionend="onTransitionEnd"
+    @contextmenu.stop
   >
     <!-- 背面的弹出框 - 奖励信息 -->
     <RewardInfo :entity="entity" />
