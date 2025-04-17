@@ -16,13 +16,11 @@
         </ZmdButtonRight>
       </div>
       <ScrollArea
-        v-for="(node, index) in nodes"
-        :key="index"
         class="node-item mt-2 text-sm min-h-28 max-h-52"
         flex-container
         v-if="nodes && nodes.length > 0"
       >
-        <GuideNodeNode :node="node" />
+        <GuideNode :nodes="nodes" />
       </ScrollArea>
       <div
         v-else
@@ -56,7 +54,6 @@
 import { ref, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CustomPointEditor from './CustomPointEditor.vue';
-import GuideNodeNode from '@/components/GuideNodes/GuideNodeNode.vue';
 import {
   updateCustomPoint,
   getCustomPointData,

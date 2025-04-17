@@ -3,7 +3,6 @@
     :src="isBase64 ? props.node.src : `/guides${props.node.src}`"
     :alt="props.node.type"
     class="max-w-full h-auto max-h-32 rounded-lg place-self-center"
-    v-viewer
   />
 </template>
 
