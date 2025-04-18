@@ -374,21 +374,8 @@ export class PopupManager {
     // 将实体原始位置转换为地图坐标
     const targetFeaturePosition = xyz2crd(this.entity.value.position);
 
-    // 获取当前地图分辨率
-    const resolution = currentMap.getView().getResolution() || 1;
-
-    // 获取弹窗的实际尺寸
-    const popupRect = this.popupContainer.getBoundingClientRect();
-    const mapRect = currentMap.getTargetElement().getBoundingClientRect();
-
-    // 计算弹窗在地图坐标中的尺寸
-    const popupHeightInMapUnits = popupRect.height * resolution;
-
-    // 计算新的位置
-    const newPosition = [
-      targetFeaturePosition[0],
-      targetFeaturePosition[1] + popupHeightInMapUnits * 0.6, // 调整偏移量，使弹窗显示在标记下方
-    ];
+    // 计算新位置，保持固定像素距离
+    const newPosition = [targetFeaturePosition[0], targetFeaturePosition[1]];
 
     // 更新内部状态和弹窗位置
     this.currentPosition = [...targetFeaturePosition];
@@ -396,6 +383,7 @@ export class PopupManager {
 
     // 检查弹窗是否超出视口边界
     const popupPixelPosition = currentMap.getPixelFromCoordinate(newPosition);
+    const mapRect = currentMap.getTargetElement().getBoundingClientRect();
     const isOutOfBounds =
       popupPixelPosition[0] < 0 ||
       popupPixelPosition[0] > mapRect.width ||

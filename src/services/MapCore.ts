@@ -437,8 +437,8 @@ export async function createMap(
   overlay = new Overlay({
     element: overlayElement,
     autoPan: false,
-    offset: [0, 10],
-    positioning: 'bottom-center',
+    offset: [0, -10],
+    positioning: 'top-center',
   });
 
   console.log('正在创建地图，正在从IndexedDB恢复视图状态...');
@@ -666,7 +666,10 @@ const handleZoomChange = function () {
 
   // 如果弹窗是打开的，则在缩放时重新定位弹窗
   if (popupManager.value && popupManager.value.isPopupVisible.value) {
-    popupManager.value.repositionPopup();
+    // 使用 requestAnimationFrame 确保在下一帧调整位置
+    requestAnimationFrame(() => {
+      popupManager.value?.repositionPopup();
+    });
   }
 
   refreshMap();
