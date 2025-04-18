@@ -5,7 +5,7 @@
       <div>{{ t('settings.show_tour.tips') }}</div>
     </template>
     <template #before>
-      <div><ClearIcon /></div>
+      <div><BookIcon /></div>
     </template>
     <template #after>
       <div>
