@@ -299,62 +299,35 @@
     "or_click": "or click to upload"
   },
   "tour": {
-    "prev": "Previous",
-    "next": "Next",
-    "close": "Close",
-    "done": "Done",
-    "show_tip": "This is your first time using the Endfield Interactive Map. Would you like to see the operation guide? You can always show it again later in the settings.",
-    "sidebar": {
-      "title": "Sidebar",
-      "description": "This is the sidebar where you can switch maps and filter markers."
+    "title": "Welcome to Endfield Map",
+    "description": "This tour will introduce you to the main features of the Endfield Map.",
+    "map": {
+      "title": "Map",
+      "description": "Displays the map of Endfield. You can click on the map to move to specific locations."
     },
-    "select_item": {
-      "title": "Select Item",
-      "description": "Click here to select the item you want to view."
+    "search": {
+      "title": "Search",
+      "description": "You can search for locations or items. Search results will be displayed on the map."
     },
-    "select_item_title": {
-      "title": "Item Title",
-      "description": "Shows the name of the currently selected item."
+    "filter": {
+      "title": "Filter",
+      "description": "You can filter which items to display on the map."
     },
-    "select_item_icon_button": {
-      "title": "Item Icon Button",
-      "description": "Click here to view detailed information about the item."
+    "legend": {
+      "title": "Legend",
+      "description": "You can check what the icons on the map represent."
     },
-    "sidebar_operate_buttons": {
-      "title": "Operation Buttons",
-      "description": "Here are some commonly used operation buttons."
+    "settings": {
+      "title": "Settings",
+      "description": "You can change the display settings of the map."
     },
-    "character_filter": {
-      "title": "Character Filter",
-      "description": "You can filter markers for specific characters here."
+    "help": {
+      "title": "Help",
+      "description": "You can check how to use the Endfield Map."
     },
-    "mark_filter": {
-      "title": "Marker Filter",
-      "description": "You can filter different types of markers here."
-    },
-    "folder_button": {
-      "title": "Fold Button",
-      "description": "Click here to fold/unfold the sidebar."
-    },
-    "change_map": {
-      "title": "Change Map",
-      "description": "Click here to switch to different maps."
-    },
-    "popup": {
-      "title": "Popup",
-      "description": "Click on a marker on the map to open a popup and view detailed information."
-    },
-    "popup_content": {
-      "title": "Popup Content",
-      "description": "This shows detailed information about the marker, including name, description, etc."
-    },
-    "mark_obtained": {
-      "title": "Mark Obtained",
-      "description": "Use this switch to mark whether the item has been obtained."
-    },
-    "sub_popup": {
-      "title": "Sub Popup",
-      "description": "Some points like chests have rewards, and a sub popup will appear. Click the switch to open the sub popup and view the reward content."
+    "close": {
+      "title": "End Tour",
+      "description": "End the tour and start using the Endfield Map."
     }
   }
 }

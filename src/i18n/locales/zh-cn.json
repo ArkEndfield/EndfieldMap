@@ -306,51 +306,51 @@
     "show_tip": "这是您第一次使用终末地互动地图，请问您需要进行操作引导吗？稍后您可以随时在设置中重新展示操作引导。",
     "sidebar": {
       "title": "侧边栏",
-      "description": "这里是侧边栏，可以切换地图和筛选标记。"
+      "description": "这里是侧边栏，可以筛选展示地图标点。"
     },
     "select_item": {
-      "title": "选择物品",
-      "description": "点击这里可以选择要查看的物品。"
+      "title": "标点分类",
+      "description": "每个分类下可以选择展示的标点。"
     },
     "select_item_title": {
-      "title": "物品标题",
-      "description": "显示当前选中物品的名称。"
+      "title": "分类标题",
+      "description": "点击可以折叠/展开分类。"
     },
     "select_item_icon_button": {
-      "title": "物品图标按钮",
-      "description": "点击这里可以查看物品的详细信息。"
+      "title": "分类图标",
+      "description": "点击可以快速全选/取消全选该分类下的所有标点。"
     },
     "sidebar_operate_buttons": {
       "title": "操作按钮",
-      "description": "这里包含了一些常用的操作按钮。"
+      "description": "可以进行快速取消选择、全选和取消全选。"
     },
     "character_filter": {
-      "title": "角色筛选",
-      "description": "可以在这里筛选特定角色的标记。"
+      "title": "培养素材",
+      "description": "可以通过选择角色或者武器快速筛选培养角色或武器需要的培养素材。"
     },
     "mark_filter": {
       "title": "标记筛选",
-      "description": "可以在这里筛选不同类型的标记。"
+      "description": "可以筛选标记为已获取的标点或者反选等。"
     },
     "folder_button": {
-      "title": "折叠按钮",
-      "description": "点击这里可以折叠/展开侧边栏。"
+      "title": "展开/折叠按钮",
+      "description": "点击这里可以展开/折叠侧边栏，小屏幕（手机）下需要通过折叠侧边栏后左下角按钮展开侧边栏。"
     },
     "change_map": {
       "title": "切换地图",
-      "description": "点击这里可以切换到不同的地图。"
+      "description": "点击这里可以切换到其他地图。"
     },
     "popup": {
-      "title": "弹出框",
+      "title": "标点弹出框",
       "description": "点击地图上的标记可以打开弹出框，查看详细信息。"
     },
     "popup_content": {
       "title": "弹出框内容",
-      "description": "这里显示了标记的详细信息，包括名称、描述等。"
+      "description": "这里显示了标记的详细信息，包括名称、描述、视频链接、获取方式等。"
     },
     "mark_obtained": {
       "title": "标记已获取",
-      "description": "使用这个开关可以标记该物品是否已经获取。"
+      "description": "使用这个开关可以标记该物品是否已经获取，方便在侧边栏中筛选。"
     },
     "sub_popup": {
       "title": "副弹窗",

@@ -294,62 +294,35 @@
     "or_click": "或點擊上傳"
   },
   "tour": {
-    "prev": "上一步",
-    "next": "下一步",
-    "close": "關閉",
-    "done": "完成",
-    "show_tip": "這是您第一次使用終末地互動地圖，請問您需要進行操作引導嗎？稍後您可以隨時在設置中重新展示操作引導。",
-    "sidebar": {
-      "title": "側邊欄",
-      "description": "這裡是側邊欄，可以切換地圖和篩選標記。"
+    "title": "歡迎來到終末地地圖",
+    "description": "本導覽將為您介紹終末地地圖的主要功能。",
+    "map": {
+      "title": "地圖",
+      "description": "顯示終末地的地圖。您可以點擊地圖移動到特定位置。"
     },
-    "select_item": {
-      "title": "選擇物品",
-      "description": "點擊這裡可以選擇要查看的物品。"
+    "search": {
+      "title": "搜尋",
+      "description": "您可以搜尋地點或物品。搜尋結果會顯示在地圖上。"
     },
-    "select_item_title": {
-      "title": "物品標題",
-      "description": "顯示當前選中物品的名稱。"
+    "filter": {
+      "title": "篩選",
+      "description": "您可以篩選要在地圖上顯示的物品。"
     },
-    "select_item_icon_button": {
-      "title": "物品圖標按鈕",
-      "description": "點擊這裡可以查看物品的詳細信息。"
+    "legend": {
+      "title": "圖例",
+      "description": "您可以查看地圖上圖示代表的含義。"
     },
-    "sidebar_operate_buttons": {
-      "title": "操作按鈕",
-      "description": "這裡包含了一些常用的操作按鈕。"
+    "settings": {
+      "title": "設定",
+      "description": "您可以更改地圖的顯示設定。"
     },
-    "character_filter": {
-      "title": "角色篩選",
-      "description": "可以在這裡篩選特定角色的標記。"
+    "help": {
+      "title": "幫助",
+      "description": "您可以查看終末地地圖的使用方法。"
     },
-    "mark_filter": {
-      "title": "標記篩選",
-      "description": "可以在這裡篩選不同類型的標記。"
-    },
-    "folder_button": {
-      "title": "折疊按鈕",
-      "description": "點擊這裡可以折疊/展開側邊欄。"
-    },
-    "change_map": {
-      "title": "切換地圖",
-      "description": "點擊這裡可以切換到不同的地圖。"
-    },
-    "popup": {
-      "title": "彈出框",
-      "description": "點擊地圖上的標記可以打開彈出框，查看詳細信息。"
-    },
-    "popup_content": {
-      "title": "彈出框內容",
-      "description": "這裡顯示了標記的詳細信息，包括名稱、描述等。"
-    },
-    "mark_obtained": {
-      "title": "標記已獲取",
-      "description": "使用這個開關可以標記該物品是否已經獲取。"
-    },
-    "sub_popup": {
-      "title": "副彈窗",
-      "description": "部分點位如寶箱存在獎勵，此時會存在副彈窗，點擊開關可以打開副彈窗，查看獎勵內容。"
+    "close": {
+      "title": "結束導覽",
+      "description": "結束導覽並開始使用終末地地圖。"
     }
   }
 }
