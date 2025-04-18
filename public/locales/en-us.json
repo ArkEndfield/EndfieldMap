@@ -328,6 +328,10 @@
     "close": {
       "title": "End Tour",
       "description": "End the tour and start using the Endfield Map."
+    },
+    "custom_point": {
+      "title": "Custom Point",
+      "description": "Right-click on the map (long press on mobile) to add/delete custom points."
     }
   }
 }

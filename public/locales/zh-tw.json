@@ -323,6 +323,10 @@
     "close": {
       "title": "結束導覽",
       "description": "結束導覽並開始使用終末地地圖。"
+    },
+    "custom_point": {
+      "title": "自定義點位",
+      "description": "右鍵地圖（移動端長按）可以添加/刪除自定義點位。"
     }
   }
 }

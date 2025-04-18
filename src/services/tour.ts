@@ -174,6 +174,15 @@ export const tour = driver({
         }
       },
     },
+    {
+      element: '#map',
+      popover: {
+        title: i18n.global.t('tour.custom_point.title'),
+        description: i18n.global.t('tour.custom_point.description'),
+        side: 'over',
+        align: 'center',
+      },
+    },
   ],
 });
 
