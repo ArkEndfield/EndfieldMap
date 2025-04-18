@@ -11,7 +11,7 @@
   >
     <h1 class="text-lg font-bold text-center">{{ t('header.settings') }}</h1>
     <div class="flex flex-col gap-4 mt-4 w-full md:px-16">
-      <Settings />
+      <Settings v-model:open="openAlert" />
     </div>
   </ZmdAlert>
 </template>

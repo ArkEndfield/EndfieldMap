@@ -3,9 +3,11 @@
     v-if="showRewards"
     class="pop-drop absolute -top-3 w-full -right-4 -z-0 h-full flex flex-col"
     :class="{ unfold: popupManager?.openSubPopup.value }"
+    style="overflow: visible !important"
   >
     <button
-      class="absolute -right-6 top-0 bottom-0 flex flex-col w-6"
+      id="sub-popup-button"
+      class="absolute -right-6 top-0 bottom-0 flex flex-col w-6 z-10"
       @click="popupManager?.toggleSubPopup"
     >
       <div class="w-full flex-shrink-0 flex-grow-0 bg-[#3E3E3E] top-bar"></div>

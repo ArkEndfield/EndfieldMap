@@ -1,0 +1,103 @@
+.arknights-tour {
+  background-color: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  color: #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  .driver-popover-title {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    border-bottom: 1px solid #3a3a3a;
+    padding-bottom: 8px;
+  }
+
+  .driver-popover-description {
+    color: #b0b0b0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .driver-popover-footer {
+    border-top: 1px solid #3a3a3a;
+    padding-top: 8px;
+  }
+
+  .driver-popover-progress-text {
+    color: #808080;
+    font-size: 12px;
+  }
+
+  .driver-popover-prev-btn,
+  .driver-popover-next-btn {
+    background: #2a2a2a !important;
+    color: #e0e0e0;
+    border: 1px solid #3a3a3a;
+    border-radius: 2px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: normal;
+    margin: 0 4px;
+    text-shadow: none;
+    -webkit-font-smoothing: antialiased;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: #3a3a3a !important;
+      color: #ffffff;
+      border-color: #4a4a4a;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background-color: #1a1a1a !important;
+      color: #666666 !important;
+      border-color: #2a2a2a !important;
+      cursor: not-allowed;
+      opacity: 1;
+    }
+  }
+
+  .driver-popover-close-btn {
+    color: #808080;
+    font-size: 16px;
+    opacity: 0.8;
+    text-shadow: none;
+    -webkit-font-smoothing: antialiased;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
+  .driver-popover-arrow {
+    border-color: transparent;
+    border-style: solid;
+    border-width: 8px;
+    position: absolute;
+  }
+
+  .driver-popover-arrow-side-left {
+    border-left-color: #1a1a1a;
+    right: -16px;
+  }
+
+  .driver-popover-arrow-side-right {
+    border-right-color: #1a1a1a;
+    left: -16px;
+  }
+
+  .driver-popover-arrow-side-top {
+    border-bottom-color: #1a1a1a;
+    bottom: -16px;
+  }
+
+  .driver-popover-arrow-side-bottom {
+    border-top-color: #1a1a1a;
+    top: -16px;
+  }
+}

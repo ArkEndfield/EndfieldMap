@@ -41,6 +41,7 @@
         </template>
       </ContextMenuItem>
     </ContextMenu>
+    <TourAlert />
   </div>
 </template>
 

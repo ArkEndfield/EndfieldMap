@@ -1,12 +1,17 @@
 <template>
-  <div class="zmd-sidebar-item">
+  <div
+    class="zmd-sidebar-item"
+    :id="showId ? 'select-item' : ''"
+  >
     <div
       class="header"
       @click="toggleContent"
+      :id="showId ? 'select-item-title' : ''"
     >
       <div
         class="icon"
         @click.stop="handleIconClick"
+        :id="showId ? 'select-item-icon' : ''"
       >
         <ZmdSidebarLocation :icon-color="props.iconColor" />
       </div>
@@ -45,11 +50,13 @@ import { watch } from 'vue';
 interface Props {
   iconColor?: string;
   defaultOpen?: boolean;
+  showId?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   iconColor: '#FDFB55',
   defaultOpen: true,
+  showId: false,
 });
 
 const emit = defineEmits(['toggle', 'iconClick']);

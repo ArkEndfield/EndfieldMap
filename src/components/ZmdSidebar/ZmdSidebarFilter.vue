@@ -13,7 +13,10 @@
       bounce: 0.25,
     }"
   >
-    <div class="zmd-sidebar-operate-buttons grid grid-cols-3">
+    <div
+      class="zmd-sidebar-operate-buttons grid grid-cols-3"
+      id="sidebar-operate-buttons"
+    >
       <ZmdSidebarOperateButton @click="handleClear">
         <template #icon>
           <ZmdSidebarDeleteIcon />
@@ -30,7 +33,10 @@
           isSelectAll ? 'UNSELECT ALL' : 'SELECT ALL'
         }}</template>
       </ZmdSidebarOperateButton>
-      <ZmdSidebarOperateButton @click="toggleCultivationMaterial">
+      <ZmdSidebarOperateButton
+        @click="toggleCultivationMaterial"
+        id="character-filter"
+      >
         <template #icon>
           <img
             src="/images/icon_character.png"
@@ -43,7 +49,10 @@
       </ZmdSidebarOperateButton>
     </div>
 
-    <div class="zmd-sidebar-filter-collect-filter">
+    <div
+      class="zmd-sidebar-filter-collect-filter"
+      id="mark-filter-buttons"
+    >
       <div class="title">{{ t('sidebar.marker_point_filter') }}</div>
       <div class="list">
         <ZmdSidebarFilterToggle
@@ -67,7 +76,7 @@
       </div>
     </div>
   </motion.div>
-  <CultivationMaterial v-model:open="showCultivationMaterial" />
+  <CultivationMaterial />
 </template>
 
 <script setup lang="ts">
@@ -75,16 +84,14 @@ import ZmdSidebarOperateButton from './ZmdSidebarOperateButton.vue';
 import ZmdSidebarDeleteIcon from './icons/ZmdSidebarDeleteIcon.vue';
 import ZmdSidebarCheckboxCheckedIcon from './icons/ZmdSidebarCheckboxCheckedIcon.vue';
 import ZmdSidebarFilterToggle from './ZmdSidebarFilterToggle.vue';
-import { isSelectAll } from '@/data/entity';
+import { isSelectAll, showCultivationMaterial } from '@/data/entity';
 import { selectAll, clear } from '@/services/entity';
 import { currentMarkFilter } from '@/data/marks';
 import { setMarkFilter } from '@/services/marks';
 import { motion } from 'motion-v';
-import { ref } from 'vue';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
-const showCultivationMaterial = ref(false);
 const props = withDefaults(
   defineProps<{
     open?: boolean;

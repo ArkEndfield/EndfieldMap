@@ -13,6 +13,7 @@
   </div>
   <motion.div
     class="zmd-sidebar"
+    id="sidebar"
     :initial="{
       x: '-130%',
     }"

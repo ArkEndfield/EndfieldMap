@@ -5,6 +5,9 @@ import type { PointData } from '@/types/points';
 import { xyz2crd } from '@/utils/common';
 import { shouldShowRewards } from '@/services/reward';
 import { rafTimeout } from '@/utils/animationTimer';
+import { Feature } from 'ol';
+import { Point } from 'ol/geom';
+import { MarkerManager } from './markerManager';
 
 export class PopupManager {
   private map: Map;
@@ -366,7 +369,6 @@ export class PopupManager {
     const currentMap = this.map;
     if (!currentMap) return;
 
-    // 注意：我们需要从实体的原始位置计算，而不是使用可能已经修改过的currentPosition
     if (!this.entity.value.position) return;
 
     // 将实体原始位置转换为地图坐标
@@ -375,17 +377,91 @@ export class PopupManager {
     // 获取当前地图分辨率
     const resolution = currentMap.getView().getResolution() || 1;
 
-    // 计算固定像素偏移量对应的地图单位
-    const yOffset = 20 * resolution;
+    // 获取弹窗的实际尺寸
+    const popupRect = this.popupContainer.getBoundingClientRect();
+    const mapRect = currentMap.getTargetElement().getBoundingClientRect();
 
-    // 计算新位置，保持固定像素距离
+    // 计算弹窗在地图坐标中的尺寸
+    const popupHeightInMapUnits = popupRect.height * resolution;
+
+    // 计算新的位置
     const newPosition = [
       targetFeaturePosition[0],
-      targetFeaturePosition[1] + yOffset,
+      targetFeaturePosition[1] + popupHeightInMapUnits * 0.6, // 调整偏移量，使弹窗显示在标记下方
     ];
 
     // 更新内部状态和弹窗位置
-    this.currentPosition = [...targetFeaturePosition]; // 更新基础位置（不含偏移）
-    this.overlay.setPosition(newPosition); // 设置带偏移的实际位置
+    this.currentPosition = [...targetFeaturePosition];
+    this.overlay.setPosition(newPosition);
+
+    // 检查弹窗是否超出视口边界
+    const popupPixelPosition = currentMap.getPixelFromCoordinate(newPosition);
+    const isOutOfBounds =
+      popupPixelPosition[0] < 0 ||
+      popupPixelPosition[0] > mapRect.width ||
+      popupPixelPosition[1] < 0 ||
+      popupPixelPosition[1] > mapRect.height;
+
+    // 如果弹窗超出视口，调整地图视图
+    if (isOutOfBounds) {
+      const view = currentMap.getView();
+      const currentCenter = view.getCenter();
+      if (currentCenter) {
+        const dx = (newPosition[0] - currentCenter[0]) * 0.3;
+        const dy = (newPosition[1] - currentCenter[1]) * 0.3;
+
+        view.animate({
+          center: [currentCenter[0] + dx, currentCenter[1] + dy],
+          duration: 250,
+        });
+      }
+    }
+  }
+
+  /**
+   * 打开指定标记的弹窗
+   * @param feature 标记
+   * @returns Promise<void>
+   */
+  async openPopupForMarker(feature: Feature<Point>): Promise<void> {
+    if (!this.map) return;
+
+    const data = feature.get('payload');
+    if (!data) return;
+
+    // 设置 entity 和弹窗状态
+    this.entity.value = data;
+    const position = MarkerManager.getMarkerPosition(feature);
+    if (!position) return;
+
+    // 调整地图视图
+    MarkerManager.moveToMarker(position);
+
+    // 设置弹窗状态
+    this.setCurrentPosition(position);
+    this.toggleVideoInfo(false);
+
+    // 选择标点
+    const selectInteraction = this.map
+      .getInteractions()
+      .getArray()
+      .find(i => i.get('name') === 'select') as any;
+    if (selectInteraction) {
+      selectInteraction.getFeatures().clear();
+      selectInteraction.getFeatures().push(feature);
+    }
+
+    // 设置 overlay 位置
+    const overlay = this.map.getOverlays().getArray()[0];
+    if (overlay) {
+      overlay.setPosition(position);
+    }
+
+    await new Promise(resolve => rafTimeout(resolve, 300));
+
+    // 确保弹窗可见
+    this.isPopupVisible.value = true;
+    // 打开弹窗并等待动画完成
+    await this.openToast();
   }
 }

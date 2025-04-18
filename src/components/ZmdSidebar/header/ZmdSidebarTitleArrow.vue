@@ -1,6 +1,9 @@
 <template>
   <motion.div
     class="zmd-sidebar-title-arrow"
+    :initial="{
+      x: open ? 'var(--collapsed-x)' : 0,
+    }"
     :animate="{
       x: open ? 0 : 'var(--collapsed-x)',
     }"
@@ -42,6 +45,7 @@
     <div
       class="zmd-sidebar-title-arrow-arrow-part"
       @click="toggleOpen"
+      id="fold-arrow"
     ></div>
     <div
       class="zmd-sidebar-title-arrow-arrow-line"

@@ -14,6 +14,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      driver.js:
+        specifier: ^1.3.5
+        version: 1.3.5
       motion-v:
         specifier: 1.0.0-beta.1
         version: 1.0.0-beta.1(vue@3.5.13(typescript@5.7.3))
@@ -719,6 +722,9 @@ packages:
     resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
     engines: {node: '>=0.10'}
     hasBin: true
+
+  driver.js@1.3.5:
+    resolution: {integrity: sha512-exkp49hXuujvTOZ3zYgySWRlEAa8/3nA8glYjtuZjmkTdsQITXivBsW1ytyhKQx3WkeYaovlnvVcLbtTaN86kA==}
 
   earcut@3.0.1:
     resolution: {integrity: sha512-0l1/0gOjESMeQyYaK5IDiPNvFeu93Z/cO0TjZh9eZ1vyCtZnA7KMZ8rQggpsJHIbGSdrqYq9OhuveadOVHCshw==}
@@ -1723,6 +1729,8 @@ snapshots:
       ms: 2.1.3
 
   detect-libc@1.0.3: {}
+
+  driver.js@1.3.5: {}
 
   earcut@3.0.1: {}
 

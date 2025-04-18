@@ -19,14 +19,17 @@
         <CloseIcon />
       </div>
     </div>
-    <template v-for="(k, i) in filteredCategoryInfo">
+    <template v-for="(k, i, j) in filteredCategoryInfo">
       <ZmdSidebarItem
         @icon-click="() => toggleSelectAllByCategory(i)"
         :icon-color="getIconColor(i)"
         :open="props.open"
         v-if="k.reduce((sum, item) => sum + item.count, 0) > 0"
+        :show-id="j === 1"
       >
-        <template #title> {{ t(`sidebar.filter.category.${i}`) }} </template>
+        <template #title>
+          {{ t(`sidebar.filter.category.${i}`) }}
+        </template>
         <template #subtitle> {{ i }} </template>
         <div class="objecg-list">
           <ZmdSidebarObject

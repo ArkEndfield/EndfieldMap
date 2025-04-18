@@ -2,6 +2,7 @@
   <motion.div
     class="ol-popup absolute bottom-4 -left-[50px] will-change-transform will-change-opacity text-white origin-bottom w-[300px]"
     ref="popupContainer"
+    id="popup-container"
     :animate="{
       opacity: popupManager?.isPopupVisible.value ? 1 : 0,
       transform: popupManager?.isPopupVisible.value ? 'scaleY(1)' : 'scaleY(0)',
@@ -18,6 +19,7 @@
 
     <!-- 前面的弹出框 -->
     <div
+      id="popup-main"
       :class="
         cn(
           'pop-content',
@@ -27,6 +29,7 @@
       "
     >
       <button
+        id="popup-close-button"
         class="no-underline absolute top-3 right-5 text-3xl text-[#ece065] z-2"
         @click="popupManager?.closeToast"
       >
@@ -34,6 +37,7 @@
       </button>
       <div class="w-full flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"></div>
       <div
+        id="popup-content"
         :class="
           cn(
             'bg-[#272727] popup-content-container overflow-hidden',
@@ -62,7 +66,7 @@
               </label>
               <ZmdSwitch
                 v-if="entity"
-                :id="`get-${entity?.entityDataIdKey}`"
+                id="mark-obtained-switch"
                 v-model:checked="marks[entity.levelLogicId].finish"
                 border-style="shadow"
               />

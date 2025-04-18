@@ -6,9 +6,11 @@
     <motion.div
       class="cultivation-material-panel fixed left-0 bottom-0 bg-[#272727] z-[53] text-white"
       :animate="{
-        opacity: open ? 1 : 0,
-        width: open ? 'var(--cultivation-material-panel-width)' : 0,
-        overflow: open ? 'visible' : 'hidden',
+        opacity: showCultivationMaterial ? 1 : 0,
+        width: showCultivationMaterial
+          ? 'var(--cultivation-material-panel-width)'
+          : 0,
+        overflow: showCultivationMaterial ? 'visible' : 'hidden',
       }"
       :initial="{
         opacity: 0,
@@ -27,7 +29,7 @@
       >
         <CloseIcon
           class="w-4 h-4 group-hover:rotate-180 transition-transform duration-200 ease-in-out"
-          :class="cn(open ? 'rotate-0' : 'rotate-180')"
+          :class="cn(showCultivationMaterial ? 'rotate-0' : 'rotate-180')"
         />
       </button>
       <div class="w-1 h-6"></div>
@@ -102,6 +104,7 @@
 </template>
 
 <script setup lang="ts">
+import { showCultivationMaterial } from '@/data/entity';
 import {
   getAllMaterialCharIDs,
   getAllMaterialWeaponIDs,
@@ -113,9 +116,6 @@ import { useI18n } from 'vue-i18n';
 
 const chooseCharacters = ref<string[]>([]);
 const chooseWeapons = ref<string[]>([]);
-const open = defineModel<boolean>('open', {
-  default: false,
-});
 const allCharIDs = ref<string[]>([]);
 const allWeaponIDs = ref<string[]>([]);
 const { t } = useI18n();
@@ -150,7 +150,7 @@ const deleteWeapon = (id: string) => {
 };
 
 const close = () => {
-  open.value = false;
+  showCultivationMaterial.value = false;
 };
 
 onMounted(() => {

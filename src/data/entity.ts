@@ -1,9 +1,12 @@
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import type {
   EntityCategories,
   EntityCategory,
   EntityInfo,
 } from '@/types/entity';
+
+// 显示培养素材快速筛选
+export const showCultivationMaterial = ref(false);
 
 // 实体信息
 export const entityInfo: EntityCategories = reactive({});

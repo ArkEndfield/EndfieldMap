@@ -166,7 +166,7 @@ export const entity = ref<PointData | null>(null);
 
 // 全局变量
 let overlay: Overlay;
-let selectInteraction: Select = new Select({
+export const selectInteraction: Select = new Select({
   condition: click,
   style: null,
   layers: () => true,
@@ -541,7 +541,8 @@ export async function createMap(
   console.log('地图创建完成');
 }
 
-const pointSelectHandler = async function (event: SelectEvent) {
+// 导出 pointSelectHandler
+export const pointSelectHandler = async function (event: SelectEvent) {
   const currentMap = map.value;
   if (!currentMap) return;
 
@@ -601,7 +602,9 @@ const pointSelectHandler = async function (event: SelectEvent) {
       currentPosition: currentPosition,
       newPosition: newPosition,
       positionChanged: positionChanged,
-    }); // 如果位置改变或弹出框当前不可见
+    });
+
+    // 如果位置改变或弹出框当前不可见
     if (positionChanged || !popupManager.value?.isPopupVisible.value) {
       // 立即清除旧的指示器
       clearSelectionIndicator();

@@ -47,6 +47,9 @@
   "copy": "복사",
   "cut": "잘라내기",
   "paste": "붙여넣기",
+  "show": "표시",
+  "hide": "숨김",
+  "start": "시작",
   "header": {
     "menu": "메뉴",
     "about": "정보",
@@ -91,6 +94,10 @@
     "clustering_enable": {
       "title": "마커 포인트 클러스터링",
       "tips": "마커 포인트 클러스터링 기능은 지도 줌 레벨에 따라 자동으로 마커 포인트를 결합하여 지도 성능을 향상시킵니다"
+    },
+    "show_tour": {
+      "title": "작업 가이드",
+      "tips": "작업 가이드 다시 표시"
     }
   },
   "sidebar": {
@@ -290,5 +297,64 @@
   "image_uploader": {
     "drag_drop": "이미지를 여기에 끌어다 놓으세요",
     "or_click": "또는 클릭하여 업로드"
+  },
+  "tour": {
+    "prev": "이전",
+    "next": "다음",
+    "close": "닫기",
+    "done": "완료",
+    "show_tip": "엔드필드 인터랙티브 지도를 처음 사용하시나요? 작업 가이드를 보시겠습니까? 나중에 설정에서 언제든지 다시 표시할 수 있습니다.",
+    "sidebar": {
+      "title": "사이드바",
+      "description": "여기는 사이드바로, 지도 전환과 마커 필터링을 할 수 있습니다."
+    },
+    "select_item": {
+      "title": "아이템 선택",
+      "description": "여기를 클릭하여 보고 싶은 아이템을 선택할 수 있습니다."
+    },
+    "select_item_title": {
+      "title": "아이템 제목",
+      "description": "현재 선택된 아이템의 이름을 표시합니다."
+    },
+    "select_item_icon_button": {
+      "title": "아이템 아이콘 버튼",
+      "description": "여기를 클릭하여 아이템의 상세 정보를 볼 수 있습니다."
+    },
+    "sidebar_operate_buttons": {
+      "title": "작업 버튼",
+      "description": "여기에는 자주 사용하는 작업 버튼이 있습니다."
+    },
+    "character_filter": {
+      "title": "캐릭터 필터",
+      "description": "여기서 특정 캐릭터의 마커를 필터링할 수 있습니다."
+    },
+    "mark_filter": {
+      "title": "마커 필터",
+      "description": "여기서 다른 유형의 마커를 필터링할 수 있습니다."
+    },
+    "folder_button": {
+      "title": "접기 버튼",
+      "description": "여기를 클릭하여 사이드바를 접기/펼치기할 수 있습니다."
+    },
+    "change_map": {
+      "title": "지도 변경",
+      "description": "여기를 클릭하여 다른 지도로 전환할 수 있습니다."
+    },
+    "popup": {
+      "title": "팝업",
+      "description": "지도上的 마커를 클릭하면 팝업이 열리고 상세 정보를 볼 수 있습니다."
+    },
+    "popup_content": {
+      "title": "팝업 내용",
+      "description": "여기에는 마커의 상세 정보(이름, 설명 등)가 표시됩니다."
+    },
+    "mark_obtained": {
+      "title": "획득 마크",
+      "description": "이 스위치를 사용하여 아이템이 획득되었는지 여부를 표시할 수 있습니다."
+    },
+    "sub_popup": {
+      "title": "서브 팝업",
+      "description": "보물상자와 같은 일부 포인트에는 보상이 있으며 서브 팝업이 표시됩니다. 스위치를 클릭하여 서브 팝업을 열고 보상 내용을 확인할 수 있습니다."
+    }
   }
 }

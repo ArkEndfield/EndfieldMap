@@ -21,4 +21,5 @@ export const LOCAL_STORAGE_KEY = {
   MAP: 'map',
   ZOOM: 'zoom',
   LANGUAGE: 'userLanguage',
+  SHOW_TOUR_ALERT: 'showTourAlert',
 } as const;

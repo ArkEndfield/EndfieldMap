@@ -47,6 +47,9 @@
   "copy": "Copy",
   "cut": "Cut",
   "paste": "Paste",
+  "show": "Show",
+  "hide": "Hide",
+  "start": "Start",
   "header": {
     "menu": "Menu",
     "about": "About",
@@ -91,6 +94,10 @@
     "clustering_enable": {
       "title": "Clustering Enable",
       "tips": "Clustering function will automatically merge marker points based on the map zoom level, improving map performance"
+    },
+    "show_tour": {
+      "title": "Operation Guide",
+      "tips": "Show operation guide again"
     }
   },
   "sidebar": {
@@ -290,5 +297,64 @@
   "image_uploader": {
     "drag_drop": "Drag and drop image here",
     "or_click": "or click to upload"
+  },
+  "tour": {
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "done": "Done",
+    "show_tip": "This is your first time using the Endfield Interactive Map. Would you like to see the operation guide? You can always show it again later in the settings.",
+    "sidebar": {
+      "title": "Sidebar",
+      "description": "This is the sidebar where you can switch maps and filter markers."
+    },
+    "select_item": {
+      "title": "Select Item",
+      "description": "Click here to select the item you want to view."
+    },
+    "select_item_title": {
+      "title": "Item Title",
+      "description": "Shows the name of the currently selected item."
+    },
+    "select_item_icon_button": {
+      "title": "Item Icon Button",
+      "description": "Click here to view detailed information about the item."
+    },
+    "sidebar_operate_buttons": {
+      "title": "Operation Buttons",
+      "description": "Here are some commonly used operation buttons."
+    },
+    "character_filter": {
+      "title": "Character Filter",
+      "description": "You can filter markers for specific characters here."
+    },
+    "mark_filter": {
+      "title": "Marker Filter",
+      "description": "You can filter different types of markers here."
+    },
+    "folder_button": {
+      "title": "Fold Button",
+      "description": "Click here to fold/unfold the sidebar."
+    },
+    "change_map": {
+      "title": "Change Map",
+      "description": "Click here to switch to different maps."
+    },
+    "popup": {
+      "title": "Popup",
+      "description": "Click on a marker on the map to open a popup and view detailed information."
+    },
+    "popup_content": {
+      "title": "Popup Content",
+      "description": "This shows detailed information about the marker, including name, description, etc."
+    },
+    "mark_obtained": {
+      "title": "Mark Obtained",
+      "description": "Use this switch to mark whether the item has been obtained."
+    },
+    "sub_popup": {
+      "title": "Sub Popup",
+      "description": "Some points like chests have rewards, and a sub popup will appear. Click the switch to open the sub popup and view the reward content."
+    }
   }
 }

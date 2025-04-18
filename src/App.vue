@@ -129,7 +129,7 @@ const handleAppLoadingComplete = () => {
   appLoaded.value = true;
 };
 
-onMounted(() => {
+onMounted(async () => {
   // const version = getQueryParam('version');
   // currentMapComponent.value =
   //   version === '1' ? LeafletComponent : OpenLayersComponent;

@@ -47,6 +47,9 @@
   "copy": "复制",
   "cut": "剪切",
   "paste": "粘贴",
+  "show": "展示",
+  "hide": "隐藏",
+  "start": "开始",
   "header": {
     "menu": "菜单",
     "about": "关于",
@@ -91,6 +94,10 @@
     "clustering_enable": {
       "title": "标点聚合",
       "tips": "标点聚合功能会根据地图缩放级别自动合并标点，提高地图性能"
+    },
+    "show_tour": {
+      "title": "操作引导",
+      "tips": "重新展示操作引导"
     }
   },
   "sidebar": {
@@ -290,5 +297,64 @@
   "image_uploader": {
     "drag_drop": "拖拽图片到此处",
     "or_click": "或点击上传"
+  },
+  "tour": {
+    "prev": "上一步",
+    "next": "下一步",
+    "close": "关闭",
+    "done": "完成",
+    "show_tip": "这是您第一次使用终末地互动地图，请问您需要进行操作引导吗？稍后您可以随时在设置中重新展示操作引导。",
+    "sidebar": {
+      "title": "侧边栏",
+      "description": "这里是侧边栏，可以切换地图和筛选标记。"
+    },
+    "select_item": {
+      "title": "选择物品",
+      "description": "点击这里可以选择要查看的物品。"
+    },
+    "select_item_title": {
+      "title": "物品标题",
+      "description": "显示当前选中物品的名称。"
+    },
+    "select_item_icon_button": {
+      "title": "物品图标按钮",
+      "description": "点击这里可以查看物品的详细信息。"
+    },
+    "sidebar_operate_buttons": {
+      "title": "操作按钮",
+      "description": "这里包含了一些常用的操作按钮。"
+    },
+    "character_filter": {
+      "title": "角色筛选",
+      "description": "可以在这里筛选特定角色的标记。"
+    },
+    "mark_filter": {
+      "title": "标记筛选",
+      "description": "可以在这里筛选不同类型的标记。"
+    },
+    "folder_button": {
+      "title": "折叠按钮",
+      "description": "点击这里可以折叠/展开侧边栏。"
+    },
+    "change_map": {
+      "title": "切换地图",
+      "description": "点击这里可以切换到不同的地图。"
+    },
+    "popup": {
+      "title": "弹出框",
+      "description": "点击地图上的标记可以打开弹出框，查看详细信息。"
+    },
+    "popup_content": {
+      "title": "弹出框内容",
+      "description": "这里显示了标记的详细信息，包括名称、描述等。"
+    },
+    "mark_obtained": {
+      "title": "标记已获取",
+      "description": "使用这个开关可以标记该物品是否已经获取。"
+    },
+    "sub_popup": {
+      "title": "副弹窗",
+      "description": "部分点位如宝箱存在奖励，此时会存在副弹窗，点击开关可以打开副弹窗，查看奖励内容。"
+    }
   }
 }

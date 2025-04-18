@@ -4,6 +4,7 @@
       <div
         ref="triggerRef"
         class="flex flex-col items-end pb-1 pt-4 md:pt-1 px-4"
+        id="change-map"
       >
         <button
           class="text-xs group"
