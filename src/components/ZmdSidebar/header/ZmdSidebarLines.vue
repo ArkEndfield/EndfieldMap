@@ -72,7 +72,9 @@ const props = withDefaults(
       height: 1.5px;
       background-color: #737474;
       border-radius: 1.5px;
-      animation: shin 1.5s infinite;
+      @media screen and (min-width: zmd.$phone-width) {
+        animation: shin 1.5s infinite;
+      }
     }
     &:nth-child(1) {
       span:nth-child(1) {

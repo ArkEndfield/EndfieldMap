@@ -40,6 +40,7 @@ const markerStyle = computed(() => ({
 </script>
 
 <style lang="scss" scoped>
+@use '../../styles/zmd.scss' as zmd;
 .zmd-sidebar-location {
   &-container {
     display: block;
@@ -69,8 +70,10 @@ const markerStyle = computed(() => ({
     transform-style: preserve-3d;
     position: relative;
 
-    &.rotate-animation {
-      animation: rotate3d 4s linear infinite;
+    @media screen and (min-width: zmd.$phone-width) {
+      &.rotate-animation {
+        animation: rotate3d 4s linear infinite;
+      }
     }
   }
 
