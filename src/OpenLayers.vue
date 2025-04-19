@@ -1,41 +1,20 @@
 <template>
   <div class="map-container">
-    <div
-      id="map"
-      class="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center"
-      @contextmenu="onContextMenu"
-    ></div>
+    <div id="map" class="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center" @contextmenu="onContextMenu"></div>
 
-    <MapControls
-      :map="map as Map"
-      v-model:zoomLevel="zoomLevel"
-      ref="mapControlsRef"
-    />
+    <MapControls :map="map as Map" v-model:zoomLevel="zoomLevel" ref="mapControlsRef" />
 
-    <MapPopup
-      :entity="entity"
-      ref="mapPopupRef"
-    />
+    <MapPopup :entity="entity" ref="mapPopupRef" />
 
-    <ContextMenu
-      v-model="menuVisible"
-      ref="contextMenuRef"
-    >
-      <ContextMenuItem
-        label="创建标点"
-        @click="() => handleAction('create')"
-        :disabled="!!rightClickPoint || !rightClickCoordinates"
-      >
+    <ContextMenu v-model="menuVisible" ref="contextMenuRef">
+      <ContextMenuItem label="创建标点" @click="() => handleAction('create')"
+        :disabled="!!rightClickPoint || !rightClickCoordinates">
         <template #icon>
           <LocationClusterIcon />
         </template>
       </ContextMenuItem>
-      <ContextMenuItem
-        label="删除标点"
-        v-show="!!rightClickPoint"
-        @click="() => handleAction('delete')"
-        className="text-red-500"
-      >
+      <ContextMenuItem label="删除标点" v-show="!!rightClickPoint" @click="() => handleAction('delete')"
+        className="text-red-500">
         <template #icon>
           <TrashIcon />
         </template>
@@ -77,7 +56,6 @@ const mapControlsRef = ref();
 const mapPopupRef = ref<MapPopupRef>();
 const rightClickCoordinates = ref<Coordinate>([0, 0]);
 const rightClickPoint = ref<PointData | null>(null);
-
 // 提供弹出层管理器给子组件 - 在setup顶层调用provide
 provide('popupManager', popupManager);
 
@@ -134,7 +112,8 @@ onBeforeUnmount(() => {
   bottom: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* 防止内容溢出 */
+  overflow: hidden;
+  /* 防止内容溢出 */
 }
 
 #map {

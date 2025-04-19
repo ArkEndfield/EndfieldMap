@@ -1,15 +1,9 @@
 <template>
   <div class="app-container">
-    <div
-      v-if="isLoading"
-      class="loading-overlay"
-    >
+    <div v-if="isLoading" class="loading-overlay">
       <div class="loading-logo"></div>
     </div>
-    <div
-      v-else-if="loadError"
-      class="error-overlay"
-    >
+    <div v-else-if="loadError" class="error-overlay">
       <div class="error-message">
         加载失败，请刷新页面重试
         <div class="error-details">{{ loadError.message }}</div>
@@ -40,6 +34,7 @@ import { initMarksData } from './services/marks';
 import { loadMaterialData } from './services/material';
 import { initializeSettings } from './services/settings';
 import { rafTimeout } from './utils/animationTimer';
+import { useI18n } from 'vue-i18n';
 // const isDev = import.meta.env.MODE === 'development';
 // const getQueryParam = (param: string): string | null => {
 //   const urlParams = new URLSearchParams(window.location.search);
@@ -51,7 +46,8 @@ const appLoaded = ref(false);
 // 在 setup 中添加数据加载逻辑
 const isLoading = ref(true);
 const loadError = ref<Error | null>(null);
-
+const { t } = useI18n()
+document.title = t('title') || '终末地地图资源查询'
 // 加载所有必要的数据
 async function loadAllData() {
   try {
@@ -196,6 +192,7 @@ onBeforeUnmount(() => {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

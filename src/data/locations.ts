@@ -21,8 +21,10 @@ export const areaNameLayer = new VectorLayer({
 
 const selectLang = {
   'zh-CN': 0,
-  'zh-TW': 4,
   'en-US': 1,
+  'ja-JP': 2,
+  'ko-KR': 3,
+  'zh-TW': 4,
 };
 
 export const loadTextPoints = (
@@ -64,7 +66,8 @@ export const loadTextPoints = (
     // 最后确保源是空的
     vectorSource.clear();
   }
-
+  const lang = getLanguage()
+  console.log('select lang', lang)
   for (const k of Object.keys(locations).filter(
     key => locations[key].priority == (detail ? 'Override' : 'Base')
   )) {
@@ -74,7 +77,7 @@ export const loadTextPoints = (
     cacheKey[loc.key] = true;
 
     if (!loc?.position || !locations[k].map?.includes(scene)) continue;
-    const text = loc.langs[selectLang[getLanguage()]];
+    const text = loc.langs[selectLang[lang]];
 
     const feature = new Feature({ geometry: new Point(xyz2crd(loc.position)) });
     feature.setStyle(styleFn(text));

@@ -1,4 +1,5 @@
 {
+  "title": "Arknights:EndField Map",
   "delete": "Delete",
   "select": "Select",
   "select_all": "Select All",
@@ -147,7 +148,7 @@
       "thousand": "K",
       "million": "M",
       "man": "K",
-      "oku": "M", 
+      "oku": "M",
       "eok": "M"
     },
     "certification": {

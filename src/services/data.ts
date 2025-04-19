@@ -12,6 +12,7 @@ import {
   restorePointsMerge,
   restorePointsReplace,
 } from './customPoints';
+import { useI18n } from 'vue-i18n';
 
 // 检查数据格式是否合法
 export const isBackupDataValid = (data: BackupData) => {
@@ -35,6 +36,8 @@ export const coverData = async (data: BackupData | null) => {
   // 设置语言
   if (data?.storage?.userLanguage) {
     setLanguage(data.storage.userLanguage);
+    const { t } = useI18n();
+    document.title = t('title') || '终末地地图资源查询'
   }
   // 设置设置
   if (data?.db?.settings) {
@@ -64,6 +67,8 @@ export const mergeData = async (data: BackupData | null) => {
   // 设置语言
   if (data?.storage?.userLanguage) {
     setLanguage(data.storage.userLanguage);
+    const { t } = useI18n();
+    document.title = t('title') || '终末地地图资源查询'
   }
   // 设置设置
   if (data?.db?.settings) {
