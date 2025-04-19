@@ -889,6 +889,49 @@ export const refreshMap = () => {
   }
 };
 
+// 将地图视图移动到当前地图的默认中心点
+// @param animate 是否使用动画过渡，默认为true
+export const moveToCenter = (animate: boolean = true): void => {
+  const currentMap = map.value;
+  if (!currentMap) {
+    console.warn('地图实例不存在，无法居中地图');
+    return;
+  }
+
+  const currentMapID = getCurrentMapId();
+  const defaultCenter =
+    DEFAULT_MAP_CENTERS[currentMapID] || DEFAULT_MAP_CENTERS['map001'];
+
+  const view = currentMap.getView();
+
+  // 如果正在显示弹窗，先关闭它
+  if (popupManager.value?.isPopupVisible.value) {
+    popupManager.value.closeToast();
+  }
+
+  console.log(
+    `正在将地图重置到默认中心点 [${defaultCenter[0]}, ${defaultCenter[1]}], 缩放级别: ${DEFAULT_ZOOM}`
+  );
+
+  // 如果开启动画，使用平滑过渡
+  if (animate) {
+    view.animate({
+      center: defaultCenter,
+      duration: 500, // 500毫秒的动画时间
+      zoom: DEFAULT_ZOOM,
+    });
+  } else {
+    // 立即设置视图中心点和缩放级别
+    view.setCenter(defaultCenter);
+    view.setZoom(DEFAULT_ZOOM);
+  }
+
+  // 保存视图状态到IndexedDB
+  saveMapViewState(currentMapID).catch(error => {
+    console.error('保存视图状态时出错:', error);
+  });
+};
+
 export const refreshPoints = async () => {
   // 重新加载数据
   await updatePoints(cacheMapId.value);
