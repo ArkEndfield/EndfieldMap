@@ -1,3 +1,4 @@
+// filepath: /Volumes/bietiaop/git/EndfieldMap/src/components/ZmdSwitch.vue
 <template>
   <div class="zmd-switch-container">
     <span
@@ -36,7 +37,6 @@ interface Props {
   circleBorder?: string; // 圆点边框颜色
   width?: number; // 开关宽度
   height?: number; // 开关高度
-  borderStyle?: 'shadow' | 'border'; // 边框样式：投影或描边
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -44,10 +44,8 @@ const props = withDefaults(defineProps<Props>(), {
   activeColor: '#FDFB55',
   inactiveColor: '#C0CCDA',
   circleColor: '#303030',
-  circleBorder: '#0C0D2D',
   width: 36,
   height: 16,
-  borderStyle: 'border',
 });
 
 const checked = defineModel<boolean>('checked', { default: false });
@@ -76,7 +74,6 @@ const switchStyle = computed(() => {
 const circleStyle = computed(() => {
   return {
     backgroundColor: props.circleColor,
-    borderColor: props.circleBorder,
   };
 });
 </script>
@@ -96,9 +93,6 @@ const circleStyle = computed(() => {
   display: block;
   position: relative;
   user-select: none;
-  filter: v-bind(
-    'props.borderStyle === "shadow" ? "drop-shadow(0 0 2px rgba(0, 0, 0, 0.3))" : "none"'
-  );
 
   &.is-disabled {
     opacity: 0.6;
@@ -114,31 +108,11 @@ const circleStyle = computed(() => {
     background-color: v-bind(
       'checked ? props.activeColor : props.inactiveColor'
     );
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    box-shadow: v-bind(
-      'props.borderStyle === "shadow" ? "inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1)" : "none"'
-    );
-    border: v-bind(
-      'props.borderStyle === "border" ? "1px solid rgba(0, 0, 0, 0.2)" : "none"'
-    );
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      border-radius: inherit;
-    }
+    border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   &__circle {
@@ -148,47 +122,14 @@ const circleStyle = computed(() => {
     height: v-bind('(props.height - 4) + "px"');
     left: 2px;
     top: 50%;
-    border: 1px solid v-bind('props.circleBorder');
     transform: translateY(-50%);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s;
     background-color: v-bind('props.circleColor');
-    box-shadow: v-bind(
-      'props.borderStyle === "shadow" ? "0 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1)" : "none"'
-    );
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(
-        circle at 30% 30%,
-        rgba(255, 255, 255, 0.8) 0%,
-        rgba(255, 255, 255, 0) 70%
-      );
-      border-radius: inherit;
-    }
   }
 
   &.is-checked {
     .zmd-switch__circle {
-      left: v-bind(
-        'props.borderStyle === "border" ? (props.width - props.height + 1) + "px" : (props.width - props.height + 2) + "px"'
-      );
-      box-shadow: v-bind(
-        'props.borderStyle === "shadow" ? "0 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1), 0 0 8px props.activeColor" : "none"'
-      );
-    }
-
-    .zmd-switch__core {
-      box-shadow: v-bind(
-        'props.borderStyle === "shadow" ? "inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1), 0 0 8px props.activeColor" : "none"'
-      );
-      border-color: v-bind(
-        'props.borderStyle === "border" ? "rgba(0, 0, 0, 0.3)" : "none"'
-      );
+      left: v-bind('(props.width - props.height + 1) + "px"');
     }
   }
 }
@@ -198,6 +139,5 @@ const circleStyle = computed(() => {
   display: inline-block;
   font-family: 'Press Start 2P', monospace;
   font-size: 12px;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
 }
 </style>

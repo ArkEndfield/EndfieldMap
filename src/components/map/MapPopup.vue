@@ -68,7 +68,6 @@
                 v-if="entity"
                 id="mark-obtained-switch"
                 v-model:checked="marks[entity.levelLogicId].finish"
-                border-style="shadow"
               />
             </div>
           </div>
