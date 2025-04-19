@@ -188,6 +188,8 @@ export const tour = driver({
 
 export async function showTour() {
   if (!settings.value.sidebarExpanded) settings.value.sidebarExpanded = true;
+  // 关闭手机弹窗
+  settings.value.showMenuMenu = false
   await new Promise(resolve => rafTimeout(resolve, 300));
   tour.drive();
 }

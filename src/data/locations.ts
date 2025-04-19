@@ -50,21 +50,7 @@ export const loadTextPoints = (
 
   if (reset) {
     // 增强清理过程
-    const features = vectorSource.getFeatures();
-
-    // 确保从源中移除所有特征，同时清理引用
-    if (features.length > 0) {
-      // 手动移除每个特征，确保完全清理
-      features.forEach(feature => {
-        // 从源中移除
-        vectorSource.removeFeature(feature);
-      });
-
-      // console.log(`已清理 ${features.length} 个地名标签`);
-    }
-
-    // 最后确保源是空的
-    vectorSource.clear();
+    vectorSource.clear()
   }
   const lang = getLanguage()
   console.log('select lang', lang)

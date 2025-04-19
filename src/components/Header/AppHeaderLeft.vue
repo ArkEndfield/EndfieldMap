@@ -38,7 +38,7 @@
       :class="
         cn(
           'fixed right-0 bottom-0 h-0 bg-black/50 w-full overflow-hidden transition-all duration-300 backdrop-blur-md',
-          isShow && 'h-full p-2 pt-10',
+          settings.showMenuMenu && 'h-full p-2 pt-10',
           'md:relative md:flex md:gap-10 md:items-center md:!h-auto md:w-auto md:bg-transparent md:z-0 md:backdrop-blur-none md:transition-none md:duration-0 md:!p-0 md:!pb-1 md:!pl-4 md:overflow-visible'
         )
       "
@@ -52,7 +52,7 @@
         :class="
           cn(
             'md:hidden text-3xl fixed bottom-3.5 right-3.5 p-2 transition-all duration-300',
-            isShow && 'text-5xl'
+            settings.showMenuMenu && 'text-5xl'
           )
         "
       >
@@ -66,11 +66,10 @@
 </template>
 
 <script setup lang="ts">
+import settings from '@/data/settings';
 import { cn } from '@/utils/tailwind';
-import { ref } from 'vue';
-const isShow = ref(false);
-const open = () => (isShow.value = true);
-const close = () => (isShow.value = false);
+const open = () => (settings.value.showMenuMenu = true);
+const close = () => (settings.value.showMenuMenu = false);
 </script>
 
 <style lang="scss" scoped>
