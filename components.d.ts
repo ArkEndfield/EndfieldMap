@@ -12,6 +12,7 @@ declare module 'vue' {
     AppHeaderRight: typeof import('./src/components/Header/AppHeaderRight.vue')['default']
     BilibiliCard: typeof import('./src/components/BilibiliCard.vue')['default']
     BookIcon: typeof import('./src/components/icons/BookIcon.vue')['default']
+    CenterIcon: typeof import('./src/components/icons/CenterIcon.vue')['default']
     ChangeLog: typeof import('./src/components/ChangeLog.vue')['default']
     ChangeLogIcon: typeof import('./src/components/icons/ChangeLogIcon.vue')['default']
     ChangelogMenu: typeof import('./src/components/Header/ChangelogMenu.vue')['default']

@@ -6,7 +6,7 @@
     </template>
     <template #before>
       <div>
-        <TrashIcon />
+        <CenterIcon />
       </div>
     </template>
     <template #after>
