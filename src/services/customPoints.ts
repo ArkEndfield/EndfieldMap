@@ -17,6 +17,7 @@ import { marker } from './render';
 import { marks } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
 import { select } from './entity';
+import VectorSource from 'ol/source/Vector';
 
 const DB_ALL_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;
 const DB_ALL_POINTS_DATA_KEY = DATA_DB_KEY.CUSTOM_POINTS_DATA;
@@ -111,7 +112,13 @@ export async function createCustomPoint(
   if (feature) {
     features.push(feature);
     itemMap[newPoint.levelLogicId] = feature;
-    source.addFeature(feature);
+    // 获取source的VectorSource对象，然后调用addFeature
+    const vectorSource = source.getSource();
+    if (vectorSource && vectorSource instanceof VectorSource) {
+      vectorSource.addFeature(feature);
+    } else {
+      console.error('source.getSource() is not an instance of VectorSource');
+    }
   }
 
   marks[newPoint.levelLogicId] = {
@@ -161,7 +168,12 @@ export async function deleteCustomPoint(
   // 从地图中移除该标记
   const feature = itemMap[levelLogicId];
   if (feature) {
-    source.removeFeature(feature);
+    const vectorSource = source.getSource();
+    if (vectorSource && vectorSource instanceof VectorSource) {
+      vectorSource.removeFeature(feature);
+    } else {
+      console.error('source.getSource() is not an instance of VectorSource');
+    }
     delete itemMap[levelLogicId];
 
     // 从features数组中移除
@@ -245,7 +257,12 @@ export async function updateCustomPoint(
     // 从地图中删除旧标记
     const feature = itemMap[levelLogicId];
     if (feature) {
-      source.removeFeature(feature);
+      const vectorSource = source.getSource();
+      if (vectorSource && vectorSource instanceof VectorSource) {
+        vectorSource.removeFeature(feature);
+      } else {
+        console.error('source.getSource() is not an instance of VectorSource');
+      }
 
       // 从features数组中移除
       const index = features.findIndex(f => f === feature);
@@ -262,7 +279,12 @@ export async function updateCustomPoint(
     if (newFeature) {
       features.push(newFeature);
       itemMap[levelLogicId] = newFeature;
-      source.addFeature(newFeature);
+      const vectorSource = source.getSource();
+      if (vectorSource && vectorSource instanceof VectorSource) {
+        vectorSource.addFeature(newFeature);
+      } else {
+        console.error('source.getSource() is not an instance of VectorSource');
+      }
     }
 
     // 确保该类型实体处于选中状态
@@ -366,7 +388,12 @@ export async function refreshPointsDisplay(): Promise<void> {
   console.log('开始刷新标点显示...');
 
   // 清除现有的标记
-  source.clear();
+  const vectorSource = source.getSource();
+  if (vectorSource && vectorSource instanceof VectorSource) {
+    vectorSource.clear();
+  } else {
+    console.error('source.getSource() is not an instance of VectorSource');
+  }
   features.length = 0;
   Object.keys(itemMap).forEach(key => {
     delete itemMap[key];
@@ -392,7 +419,12 @@ export async function refreshPointsDisplay(): Promise<void> {
     if (feature) {
       features.push(feature);
       itemMap[point.levelLogicId] = feature;
-      source.addFeature(feature);
+      const vectorSource = source.getSource();
+      if (vectorSource && vectorSource instanceof VectorSource) {
+        vectorSource.addFeature(feature);
+      } else {
+        console.error('source.getSource() is not an instance of VectorSource');
+      }
 
       // 更新计数
       if (
