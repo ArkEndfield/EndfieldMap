@@ -75,9 +75,15 @@
     },
     "delete_data": {
       "title": "删除数据",
-      "tips": "删除当前所有数据，这个操作不可逆",
+      "tips": "这个操作不可逆",
       "success_tips": "数据删除成功，需要刷新页面",
       "failed_tips": "数据删除失败"
+    },
+    "tp_center": {
+      "title": "脱离卡死",
+      "tips": "回到地图中心",
+      "success_tips": "传送成功",
+      "failed_tips": "传送失败"
     },
     "import_data": {
       "title": "导入数据",

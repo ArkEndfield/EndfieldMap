@@ -2,7 +2,6 @@
  * IndexedDB 存储工具
  * 提供临时缓存和永久存储能力
  */
-import { rafTimeout } from './animationTimer';
 
 // 存储类型枚举
 export enum StorageType {

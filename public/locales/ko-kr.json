@@ -75,7 +75,7 @@
     },
     "delete_data": {
       "title": "데이터 삭제",
-      "tips": "현재 모든 데이터를 삭제합니다. 이 작업은 되돌릴 수 없습니다",
+      "tips": "이 작업은 되돌릴 수 없습니다",
       "success_tips": "데이터 삭제에 성공했습니다. 페이지를 새로 고침하세요",
       "failed_tips": "데이터 삭제에 실패했습니다"
     },
@@ -85,6 +85,12 @@
       "type_tips": "가져오기 방법을 선택하세요",
       "success_tips": "데이터 가져오기에 성공했습니다",
       "failed_tips": "데이터 가져오기에 실패했습니다"
+    },
+    "tp_center": {
+      "title": "갇힘 해제",
+      "tips": "지도 중심으로 이동",
+      "success_tips": "텔레포트 성공",
+      "failed_tips": "텔레포트 실패"
     },
     "clear_cache": {
       "title": "캐시 지우기",

@@ -75,7 +75,7 @@
     },
     "delete_data": {
       "title": "Delete Data",
-      "tips": "Delete all current data, this operation is irreversible",
+      "tips": "This operation is irreversible",
       "success_tips": "Data deleted successfully, please refresh the page",
       "failed_tips": "Data deletion failed"
     },
@@ -85,6 +85,12 @@
       "type_tips": "Please select import method",
       "success_tips": "Data imported successfully",
       "failed_tips": "Data import failed"
+    },
+    "tp_center": {
+      "title": "Unstuck",
+      "tips": "Return to map center",
+      "success_tips": "Teleport successful",
+      "failed_tips": "Teleport failed"
     },
     "clear_cache": {
       "title": "Clear Cache",

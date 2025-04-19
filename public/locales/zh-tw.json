@@ -75,7 +75,7 @@
     },
     "delete_data": {
       "title": "刪除數據",
-      "tips": "刪除當前所有數據，這個操作不可逆",
+      "tips": "這個操作不可逆",
       "success_tips": "數據刪除成功，需要重新加載頁面",
       "failed_tips": "數據刪除失敗"
     },
@@ -85,6 +85,12 @@
       "success_tips": "數據導入成功",
       "failed_tips": "數據導入失敗，請檢查數據格式",
       "type_tips": "請選擇導入方式"
+    },
+    "tp_center": {
+      "title": "脫離卡死",
+      "tips": "回到地圖中心",
+      "success_tips": "傳送成功",
+      "failed_tips": "傳送失敗"
     },
     "clear_cache": {
       "title": "清除緩存",

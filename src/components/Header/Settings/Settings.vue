@@ -5,7 +5,10 @@
     <ClearCache />
     <ExportData />
     <ImportData />
-    <DeleteData />
+    <div class="grid grid-cols-2 gap-4">
+      <TpCenter />
+      <DeleteData />
+    </div>
   </div>
 </template>
 
