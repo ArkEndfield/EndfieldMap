@@ -50,10 +50,10 @@ export const loadTextPoints = (
 
   if (reset) {
     // 增强清理过程
-    vectorSource.clear()
+    vectorSource.clear();
   }
-  const lang = getLanguage()
-  console.log('select lang', lang)
+  const lang = getLanguage();
+  // console.log('select lang', lang)
   for (const k of Object.keys(locations).filter(
     key => locations[key].priority == (detail ? 'Override' : 'Base')
   )) {

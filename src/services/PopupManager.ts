@@ -19,6 +19,7 @@ export class PopupManager {
   public showVideoInfo: Ref<boolean> = ref(false);
   public openSubPopup: Ref<boolean> = ref(false);
   private isMapZooming = false; // 添加地图缩放状态标记
+  public isMobileDevice: Ref<boolean> = ref(false); // 添加设备类型标记
 
   constructor(
     map: Map,
@@ -30,6 +31,36 @@ export class PopupManager {
     this.overlay = overlay;
     this.popupContainer = popupContainer;
     this.entity = entity;
+
+    // 初始检测设备类型
+    this.initDeviceDetection();
+  }
+
+  // 初始化设备类型检测
+  private initDeviceDetection() {
+    if (typeof window !== 'undefined') {
+      // 检测初始设备类型
+      this.updateDeviceType();
+
+      // 监听窗口大小变化
+      window.addEventListener('resize', this.updateDeviceType.bind(this));
+    }
+  }
+
+  // 更新设备类型
+  private updateDeviceType() {
+    const userAgent =
+      navigator.userAgent || navigator.vendor || (window as any).opera;
+    const mobileRegex =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+    const isMobileWidth = window.innerWidth < 768;
+
+    this.isMobileDevice.value = mobileRegex.test(userAgent) || isMobileWidth;
+  }
+
+  // 获取设备类型
+  public getDeviceType(): boolean {
+    return this.isMobileDevice.value;
   }
 
   // 关闭弹出层
@@ -301,8 +332,19 @@ export class PopupManager {
       const safeMargin = 30;
       const headerOffset = 50;
 
-      // 如果子弹窗展开，增加右侧检查的边界
-      const extraRightMargin = this.openSubPopup.value ? 320 : 0; // 调整副弹窗宽度估计
+      // 根据设备类型和弹窗展开状态计算边界
+      let extraRightMargin = 0;
+      let extraTopMargin = 0;
+
+      if (this.openSubPopup.value) {
+        if (this.isMobileDevice.value) {
+          // 移动设备上向上展开，增加顶部检查的边界
+          extraTopMargin = 300; // 预估副弹窗高度
+        } else {
+          // 电脑上向右展开，增加右侧检查的边界
+          extraRightMargin = 320; // 预估副弹窗宽度
+        }
+      }
 
       // 检查是否超出边界
       if (popupRect.left < mapRect.left + safeMargin) {
@@ -316,11 +358,20 @@ export class PopupManager {
           mapRect.right - safeMargin - (popupRect.right + extraRightMargin);
       }
 
-      if (popupRect.top < mapRect.top + safeMargin + headerOffset) {
-        // 添加顶部Header偏移量
+      if (
+        popupRect.top - extraTopMargin <
+        mapRect.top + safeMargin + headerOffset
+      ) {
+        // 添加顶部Header偏移量和展开的副弹窗高度
         needAdjust = true;
-        adjustY = mapRect.top + safeMargin + headerOffset - popupRect.top;
+        adjustY =
+          mapRect.top +
+          safeMargin +
+          headerOffset +
+          extraTopMargin -
+          popupRect.top;
       }
+
       if (popupRect.bottom > mapRect.bottom - safeMargin) {
         needAdjust = true;
         adjustY = mapRect.bottom - safeMargin - popupRect.bottom;
@@ -337,9 +388,25 @@ export class PopupManager {
         const extraX =
           adjustX !== 0
             ? Math.sign(adjustX) *
-              (extraOffset + (this.openSubPopup.value && adjustX < 0 ? 40 : 0))
+              (extraOffset +
+                (this.openSubPopup.value &&
+                !this.isMobileDevice.value &&
+                adjustX < 0
+                  ? 40
+                  : 0))
             : 0;
-        const extraY = adjustY !== 0 ? Math.sign(adjustY) * extraOffset : 0;
+
+        // 为移动设备向上展开时提供额外的垂直空间
+        const extraY =
+          adjustY !== 0
+            ? Math.sign(adjustY) *
+              (extraOffset +
+                (this.openSubPopup.value &&
+                this.isMobileDevice.value &&
+                adjustY > 0
+                  ? 40
+                  : 0))
+            : 0;
 
         // 平滑动画
         view.animate({

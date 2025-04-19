@@ -143,15 +143,25 @@ const isCustomPoint = computed(() => {
 
   // 子弹窗过渡效果
   .pop-drop {
-    transition: top 0.3s ease, right 0.3s ease, width 0.3s ease;
-    will-change: top, right, width;
+    transition: top 0.3s ease, right 0.3s ease, width 0.3s ease,
+      height 0.3s ease, bottom 0.3s ease;
+    will-change: top, right, width, height, bottom;
     transform-style: preserve-3d;
     backface-visibility: hidden;
 
-    &.unfold {
+    // 电脑端向右展开
+    &.unfold-right {
       width: 80%;
       top: 0;
       right: calc(-80% - 0.5em);
+    }
+
+    // 手机端向上展开
+    &.unfold-up {
+      width: 100%;
+      top: calc(-100% - 0.5em);
+      right: 0;
+      border-bottom: 0.2em solid #515151;
     }
   }
 

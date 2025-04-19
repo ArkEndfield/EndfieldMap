@@ -1,22 +1,33 @@
 <template>
   <MapIconButton @click="open" />
 
-  <div class="zmd-sidebar-collapse-arrows" v-if="isPC || (!isPC && settings.sidebarExpanded)" :style="{
-    zIndex: settings.sidebarExpanded ? 53 : 2,
-  }">
+  <div
+    class="zmd-sidebar-collapse-arrows"
+    v-if="isPC || (!isPC && settings.sidebarExpanded)"
+    :style="{
+      zIndex: settings.sidebarExpanded ? 53 : 2,
+      position: settings.sidebarExpanded ? 'fixed' : 'absolute',
+    }"
+  >
     <ZmdSidebarHeader :open="settings.sidebarExpanded" />
 
     <ZmdSidebarTitleArrow v-model:open="settings.sidebarExpanded" />
   </div>
-  <motion.div class="zmd-sidebar" id="sidebar" :initial="{
-    x: '-130%',
-  }" :animate="{
-    x: settings.sidebarExpanded ? '-4%' : '-130%',
-  }" :transition="{
-    duration: 0.5,
-    type: 'spring',
-    bounce: 0.25,
-  }">
+  <motion.div
+    class="zmd-sidebar"
+    id="sidebar"
+    :initial="{
+      x: '-130%',
+    }"
+    :animate="{
+      x: settings.sidebarExpanded ? '-4%' : '-130%',
+    }"
+    :transition="{
+      duration: 0.5,
+      type: 'spring',
+      bounce: 0.25,
+    }"
+  >
     <div class="zmd-sidebar-bg-start zmd-sidebar-top"></div>
     <div class="zmd-sidebar-bg zmd-sidebar-main">
       <div class="header-container"></div>
@@ -25,7 +36,11 @@
         <ZmdSidebarItemList :open="settings.sidebarExpanded" />
       </div>
       <div class="zmd-sidebar-copyright">
-        <a href="https://beian.miit.gov.cn/" target="_blank">黑ICP备2025036958号-1</a>
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          >黑ICP备2025036958号-1</a
+        >
       </div>
     </div>
     <div class="zmd-sidebar-right-bar"></div>
@@ -38,11 +53,26 @@ import ZmdSidebarItemList from './ZmdSidebarItemList.vue';
 import ZmdSidebarTitleArrow from './header/ZmdSidebarTitleArrow.vue';
 import { motion } from 'motion-v';
 import settings from '@/data/settings';
-
+import { onMounted } from 'vue';
+import { onUnmounted } from 'vue';
+import { debounce } from '@/utils/common';
+import { ref } from 'vue';
+import { isMobileDevice } from '@/utils/deviceDetection';
+const isPC = ref(isMobileDevice() === false);
 const open = () => {
   settings.value.sidebarExpanded = true;
 };
-const isPC = window.screen.width > 500
+
+const isPCListen = debounce(() => {
+  isPC.value = isMobileDevice() === false;
+}, 100);
+onMounted(() => {
+  isPCListen();
+  window.addEventListener('resize', isPCListen);
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', isPCListen);
+});
 </script>
 <style lang="scss" scoped>
 @use '../../styles/zmd.scss' as zmd;
@@ -122,21 +152,26 @@ const isPC = window.screen.width > 500
   }
 
   .zmd-sidebar-bg {
-    background: linear-gradient(to bottom,
-        zmd.$side-bg-color-start,
-        zmd.$side-bg-color-end );
+    background: linear-gradient(
+      to bottom,
+      zmd.$side-bg-color-start,
+      zmd.$side-bg-color-end
+    );
   }
 
   .zmd-sidebar-top {
-    $clip: polygon(0% 0%,
-        calc(100% - zmd.$side-top-height) 0%,
-        100% 100%,
-        0% 100%);
+    $clip: polygon(
+      0% 0%,
+      calc(100% - zmd.$side-top-height) 0%,
+      100% 100%,
+      0% 100%
+    );
     width: 100%;
     height: zmd.$side-top-height;
     flex-shrink: 0;
     flex-grow: 0;
-    border-right: zmd.$side-right-border-size solid zmd.$side-right-border-start-color;
+    border-right: zmd.$side-right-border-size solid
+      zmd.$side-right-border-start-color;
     -webkit-clip-path: $clip;
     clip-path: $clip;
   }
@@ -187,9 +222,11 @@ const isPC = window.screen.width > 500
     top: zmd.$side-top-height;
     bottom: 0;
     width: zmd.$side-right-border-size;
-    background: linear-gradient(to bottom,
-        zmd.$side-right-border-start-color,
-        zmd.$side-right-border-end-color );
+    background: linear-gradient(
+      to bottom,
+      zmd.$side-right-border-start-color,
+      zmd.$side-right-border-end-color
+    );
   }
 }
 </style>
