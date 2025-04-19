@@ -1,6 +1,7 @@
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
+import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import VectorLayer from 'ol/layer/Vector';
 import Cluster from 'ol/source/Cluster';
 import {
@@ -39,8 +40,16 @@ export const entityGroup: Record<
 > = {};
 
 // 源数据管理
-export const source = new VectorSource<Feature<Point>>({
-  features: [],
+export const source = new WebGLVectorLayer({
+  source: new VectorSource<Feature<Point>>({
+    features: [],
+  }),
+  style: {
+    'circle-radius': 6,
+    'circle-fill-color': '#3399CC',
+    'circle-stroke-color': '#fff',
+    'circle-stroke-width': 2,
+  }
 });
 
 // 样式缓存和图层容器

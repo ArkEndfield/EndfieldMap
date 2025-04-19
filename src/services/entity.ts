@@ -92,7 +92,10 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
     });
 
     // 清空source中的features
-    source.clear();
+    const vectorSource = source.getSource();
+    if (vectorSource) {
+      vectorSource.clear();
+    }
 
     // 处理每个点位
     for (const point of pointsData) {
@@ -110,7 +113,9 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
     }
 
     // 将features添加到source中
-    source.addFeatures(features);
+    if (vectorSource) {
+      vectorSource.addFeatures(features);
+    }
 
     console.log(`成功初始化 ${features.length} 个实体特征`);
 
