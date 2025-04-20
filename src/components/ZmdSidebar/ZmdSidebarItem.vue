@@ -2,6 +2,9 @@
   <div
     class="zmd-sidebar-item"
     :id="showId ? 'select-item' : ''"
+    :style="{
+      opacity: isOpen ? 1 : 0.4,
+    }"
   >
     <div
       class="header"
@@ -23,20 +26,17 @@
       </div>
     </div>
     <div class="content-container">
-      <Transition
-        @enter="onEnter"
-        @leave="onLeave"
+      <motion.div
+        class="content"
+        :animate="{
+          height: isOpen ? 'auto' : 0,
+        }"
       >
-        <div
-          class="content"
-          ref="contentRef"
-        >
-          <div class="placeholder"></div>
-          <slot>
-            <div class="empty">内容为空</div>
-          </slot>
-        </div>
-      </Transition>
+        <div class="placeholder"></div>
+        <slot>
+          <div class="empty">内容为空</div>
+        </slot>
+      </motion.div>
     </div>
   </div>
 </template>
@@ -44,8 +44,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import ZmdSidebarLocation from './ZmdSidebarLocation.vue';
-import { useAnimate } from 'motion-v';
-import { watch } from 'vue';
+import { motion } from 'motion-v';
 
 interface Props {
   iconColor?: string;
@@ -61,27 +60,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['toggle', 'iconClick']);
 const isOpen = ref(props.defaultOpen);
-const [contentRef, contentAnimate] = useAnimate();
-
-async function onEnter() {
-  await contentAnimate(
-    contentRef.value,
-    {
-      height: `auto`,
-    },
-    { duration: 0.3 }
-  );
-}
-
-async function onLeave() {
-  await contentAnimate(
-    contentRef.value,
-    {
-      height: 0,
-    },
-    { duration: 0.3 }
-  );
-}
 
 const toggleContent = () => {
   isOpen.value = !isOpen.value;
@@ -91,14 +69,6 @@ const toggleContent = () => {
 const handleIconClick = () => {
   emit('iconClick');
 };
-
-watch(isOpen, newVal => {
-  if (newVal) {
-    onEnter();
-  } else {
-    onLeave();
-  }
-});
 </script>
 
 <style lang="scss" scoped>
@@ -111,6 +81,7 @@ $content-bg: #1d1d1d;
 $gap: 0.7em;
 .zmd-sidebar-item {
   margin-top: calc(0px - $gap);
+  transition: opacity 0.3s ease-in-out;
   &:first-child {
     margin-top: 0;
   }
