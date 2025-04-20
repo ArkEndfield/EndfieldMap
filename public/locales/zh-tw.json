@@ -301,35 +301,62 @@
     "or_click": "或點擊上傳"
   },
   "tour": {
-    "title": "歡迎來到終末地地圖",
-    "description": "本導覽將為您介紹終末地地圖的主要功能。",
-    "map": {
-      "title": "地圖",
-      "description": "顯示終末地的地圖。您可以點擊地圖移動到特定位置。"
+    "prev": "上一步",
+    "next": "下一步",
+    "close": "關閉",
+    "done": "完成",
+    "show_tip": "這是您第一次使用終末地互動地圖，請問您需要進行操作引導嗎？稍後您可以隨時在設置中重新展示操作引導。",
+    "sidebar": {
+      "title": "側邊欄",
+      "description": "這裡是側邊欄，可以篩選展示地圖標點。"
     },
-    "search": {
-      "title": "搜尋",
-      "description": "您可以搜尋地點或物品。搜尋結果會顯示在地圖上。"
+    "select_item": {
+      "title": "標點分類",
+      "description": "每個分類下可以選擇展示的標點。"
     },
-    "filter": {
-      "title": "篩選",
-      "description": "您可以篩選要在地圖上顯示的物品。"
+    "select_item_title": {
+      "title": "分類標題",
+      "description": "點擊可以折疊/展開分類。"
     },
-    "legend": {
-      "title": "圖例",
-      "description": "您可以查看地圖上圖示代表的含義。"
+    "select_item_icon_button": {
+      "title": "分類圖標",
+      "description": "點擊可以快速全選/取消全選該分類下的所有標點。"
     },
-    "settings": {
-      "title": "設定",
-      "description": "您可以更改地圖的顯示設定。"
+    "sidebar_operate_buttons": {
+      "title": "操作按鈕",
+      "description": "可以進行快速取消選擇、全選和取消全選。"
     },
-    "help": {
-      "title": "幫助",
-      "description": "您可以查看終末地地圖的使用方法。"
+    "character_filter": {
+      "title": "培養素材",
+      "description": "可以通過選擇角色或者武器快速篩選培養角色或武器需要的培養素材。"
     },
-    "close": {
-      "title": "結束導覽",
-      "description": "結束導覽並開始使用終末地地圖。"
+    "mark_filter": {
+      "title": "標記篩選",
+      "description": "可以篩選標記為已獲取的標點或者反選等。"
+    },
+    "folder_button": {
+      "title": "展開/折疊按鈕",
+      "description": "點擊這裡可以展開/折疊側邊欄，小屏幕（手機）下可以點擊右側空白處收起，再次展開需要通過折疊側邊欄後左下角按鈕展開側邊欄。"
+    },
+    "change_map": {
+      "title": "切換地圖",
+      "description": "點擊這裡可以切換到其他地圖。"
+    },
+    "popup": {
+      "title": "標點彈出框",
+      "description": "點擊地圖上的標記可以打開彈出框，查看詳細信息。"
+    },
+    "popup_content": {
+      "title": "彈出框內容",
+      "description": "這裡顯示了標記的詳細信息，包括名稱、描述、視頻鏈接、獲取方式等。"
+    },
+    "mark_obtained": {
+      "title": "標記已獲取",
+      "description": "使用這個開關可以標記該物品是否已經獲取，方便在側邊欄中篩選。"
+    },
+    "sub_popup": {
+      "title": "副彈窗",
+      "description": "部分點位如寶箱存在獎勵，此時會存在副彈窗，點擊開關可以打開副彈窗，查看獎勵內容。"
     },
     "custom_point": {
       "title": "自定義點位",

@@ -306,35 +306,62 @@
     "or_click": "or click to upload"
   },
   "tour": {
-    "title": "Welcome to Endfield Map",
-    "description": "This tour will introduce you to the main features of the Endfield Map.",
-    "map": {
-      "title": "Map",
-      "description": "Displays the map of Endfield. You can click on the map to move to specific locations."
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "done": "Done",
+    "show_tip": "This is your first time using the Endfield Interactive Map. Would you like to see the operation guide? You can always show it again later in the settings.",
+    "sidebar": {
+      "title": "Sidebar",
+      "description": "This is the sidebar where you can filter and display map markers."
     },
-    "search": {
-      "title": "Search",
-      "description": "You can search for locations or items. Search results will be displayed on the map."
+    "select_item": {
+      "title": "Marker Categories",
+      "description": "You can select which markers to display under each category."
     },
-    "filter": {
-      "title": "Filter",
-      "description": "You can filter which items to display on the map."
+    "select_item_title": {
+      "title": "Category Title",
+      "description": "Click to collapse/expand the category."
     },
-    "legend": {
-      "title": "Legend",
-      "description": "You can check what the icons on the map represent."
+    "select_item_icon_button": {
+      "title": "Category Icon",
+      "description": "Click to quickly select/deselect all markers in this category."
     },
-    "settings": {
-      "title": "Settings",
-      "description": "You can change the display settings of the map."
+    "sidebar_operate_buttons": {
+      "title": "Operation Buttons",
+      "description": "You can quickly clear selection, select all, or deselect all."
     },
-    "help": {
-      "title": "Help",
-      "description": "You can check how to use the Endfield Map."
+    "character_filter": {
+      "title": "Cultivation Materials",
+      "description": "You can quickly filter cultivation materials needed for characters or weapons by selecting them."
     },
-    "close": {
-      "title": "End Tour",
-      "description": "End the tour and start using the Endfield Map."
+    "mark_filter": {
+      "title": "Mark Filter",
+      "description": "You can filter markers marked as obtained or invert the selection."
+    },
+    "folder_button": {
+      "title": "Expand/Collapse Button",
+      "description": "Click here to expand/collapse the sidebar. On small screens (mobile), you can click the blank area on the right to collapse it. To expand again, you need to collapse the sidebar first and then use the button in the bottom left corner."
+    },
+    "change_map": {
+      "title": "Change Map",
+      "description": "Click here to switch to other maps."
+    },
+    "popup": {
+      "title": "Marker Popup",
+      "description": "Click on a marker on the map to open the popup and view detailed information."
+    },
+    "popup_content": {
+      "title": "Popup Content",
+      "description": "This shows detailed information about the marker, including name, description, video link, and how to obtain it."
+    },
+    "mark_obtained": {
+      "title": "Mark as Obtained",
+      "description": "Use this switch to mark whether the item has been obtained, making it easier to filter in the sidebar."
+    },
+    "sub_popup": {
+      "title": "Sub Popup",
+      "description": "Some points like chests have rewards, which will show in a sub popup. Click the switch to open the sub popup and view the reward content."
     },
     "custom_point": {
       "title": "Custom Point",

@@ -45,6 +45,11 @@
     </div>
     <div class="zmd-sidebar-right-bar"></div>
   </motion.div>
+  <div
+    v-if="!isPC && settings.sidebarExpanded"
+    class="sidebar-mask"
+    @click="closeSidebar"
+  ></div>
 </template>
 <script setup lang="ts">
 import ZmdSidebarHeader from './ZmdSidebarHeader.vue';
@@ -73,6 +78,12 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', isPCListen);
 });
+
+const closeSidebar = () => {
+  if (!isPC.value) {
+    settings.value.sidebarExpanded = false;
+  }
+};
 </script>
 <style lang="scss" scoped>
 @use '../../styles/zmd.scss' as zmd;
@@ -103,6 +114,7 @@ onUnmounted(() => {
 
   @media screen and (max-width: zmd.$phone-width) {
     top: 1em;
+    z-index: 54;
   }
 
   .zmd-sidebar-title-arrow {
@@ -227,6 +239,21 @@ onUnmounted(() => {
       zmd.$side-right-border-start-color,
       zmd.$side-right-border-end-color
     );
+  }
+}
+
+.sidebar-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 51;
+  display: none;
+
+  @media screen and (max-width: zmd.$phone-width) {
+    display: block;
   }
 }
 </style>
