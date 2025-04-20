@@ -56,14 +56,14 @@
 
 <script setup lang="ts">
 import { getCharMaterial, getWeaponMaterial } from '@/services/material';
-import { select, unSelect } from '@/services/entity';
+import { select } from '@/services/entity';
 import type { Material } from '@/types/material';
 import { motion } from 'motion-v';
-import { onUnmounted } from 'vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { getEntityDataByPic } from '@/services/entity';
 import type { EntityCategories } from '@/types/entity';
 import { watch } from 'vue';
+
 const material = ref<Material>();
 const displayEntity = computed(() => {
   const data: EntityCategories['string'][] = [];
@@ -78,6 +78,7 @@ const displayEntity = computed(() => {
   }
   return data;
 });
+
 const props = defineProps<{
   id: string;
   name: string;
@@ -87,9 +88,25 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'delete', id: string): void;
 }>();
+
+// 添加一个标记来跟踪是否已经选中过材料
+const hasSelected = ref(false);
+
+watch(
+  () => displayEntity.value,
+  newVal => {
+    if (newVal.length > 0 && !hasSelected.value) {
+      select(...newVal.map(item => item.entityInfo.point));
+      hasSelected.value = true;
+    }
+  },
+  { immediate: true }
+);
+
 const deleteItem = () => {
   emit('delete', props.id);
 };
+
 const getEntityData = async () => {
   if (props.type === 'character') {
     const data = await getCharMaterial(props.id);
@@ -99,16 +116,6 @@ const getEntityData = async () => {
   return data || {};
 };
 
-watch(
-  () => displayEntity.value,
-  newVal => {
-    if (newVal.length > 0) {
-      select(...newVal.map(item => item.entityInfo.point));
-    }
-  },
-  { immediate: true }
-);
-
 onMounted(async () => {
   const idList = await getEntityData();
   if (idList) {
@@ -117,10 +124,8 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  if (displayEntity.value.length > 0) {
-    unSelect(...displayEntity.value.map(item => item.entityInfo.point));
-  }
-  material.value = {};
+  // 在组件卸载时，让父组件处理材料的取消选中
+  emit('delete', props.id);
 });
 </script>
 

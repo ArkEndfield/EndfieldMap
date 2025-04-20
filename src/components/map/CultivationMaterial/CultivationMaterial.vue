@@ -109,6 +109,9 @@ import {
   getAllMaterialCharIDs,
   getAllMaterialWeaponIDs,
 } from '@/services/material';
+import { getCharMaterial } from '@/services/material';
+import { getWeaponMaterial } from '@/services/material';
+import { unSelect, getEntityDataByPic } from '@/services/entity';
 import { cn } from '@/utils/tailwind';
 import { AnimatePresence, motion } from 'motion-v';
 import { onMounted, ref } from 'vue';
@@ -133,7 +136,50 @@ const toggleCharacter = (id: string) => {
   }
 };
 
-const deleteCharacter = (id: string) => {
+const deleteCharacter = async (id: string) => {
+  // 获取要删除角色的所有材料
+  const deletedCharMaterials = await getCharMaterial(id);
+  if (!deletedCharMaterials) return;
+
+  // 获取所有剩余角色和武器的材料
+  const remainingMaterials = new Set<string>();
+
+  // 获取所有剩余角色的材料
+  for (const charId of chooseCharacters.value) {
+    if (charId === id) continue;
+    const materials = await getCharMaterial(charId);
+    if (materials) {
+      Object.keys(materials).forEach(materialId => {
+        const entity = getEntityDataByPic(materialId);
+        if (entity) {
+          remainingMaterials.add(entity.entityInfo.point);
+        }
+      });
+    }
+  }
+
+  // 获取所有武器的材料
+  for (const weaponId of chooseWeapons.value) {
+    const materials = await getWeaponMaterial(weaponId);
+    if (materials) {
+      Object.keys(materials).forEach(materialId => {
+        const entity = getEntityDataByPic(materialId);
+        if (entity) {
+          remainingMaterials.add(entity.entityInfo.point);
+        }
+      });
+    }
+  }
+
+  // 取消选中不再被任何角色或武器使用的材料
+  Object.keys(deletedCharMaterials).forEach(materialId => {
+    const entity = getEntityDataByPic(materialId);
+    if (entity && !remainingMaterials.has(entity.entityInfo.point)) {
+      unSelect(entity.entityInfo.point);
+    }
+  });
+
+  // 最后从列表中移除该角色
   chooseCharacters.value = chooseCharacters.value.filter(item => item !== id);
 };
 
@@ -145,7 +191,50 @@ const toggleWeapon = (id: string) => {
   }
 };
 
-const deleteWeapon = (id: string) => {
+const deleteWeapon = async (id: string) => {
+  // 获取要删除武器的所有材料
+  const deletedWeaponMaterials = await getWeaponMaterial(id);
+  if (!deletedWeaponMaterials) return;
+
+  // 获取所有剩余武器和角色的材料
+  const remainingMaterials = new Set<string>();
+
+  // 获取所有剩余武器的材料
+  for (const weaponId of chooseWeapons.value) {
+    if (weaponId === id) continue;
+    const materials = await getWeaponMaterial(weaponId);
+    if (materials) {
+      Object.keys(materials).forEach(materialId => {
+        const entity = getEntityDataByPic(materialId);
+        if (entity) {
+          remainingMaterials.add(entity.entityInfo.point);
+        }
+      });
+    }
+  }
+
+  // 获取所有角色的材料
+  for (const charId of chooseCharacters.value) {
+    const materials = await getCharMaterial(charId);
+    if (materials) {
+      Object.keys(materials).forEach(materialId => {
+        const entity = getEntityDataByPic(materialId);
+        if (entity) {
+          remainingMaterials.add(entity.entityInfo.point);
+        }
+      });
+    }
+  }
+
+  // 取消选中不再被任何武器或角色使用的材料
+  Object.keys(deletedWeaponMaterials).forEach(materialId => {
+    const entity = getEntityDataByPic(materialId);
+    if (entity && !remainingMaterials.has(entity.entityInfo.point)) {
+      unSelect(entity.entityInfo.point);
+    }
+  });
+
+  // 最后从列表中移除该武器
   chooseWeapons.value = chooseWeapons.value.filter(item => item !== id);
 };
 
