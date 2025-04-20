@@ -6,11 +6,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000149,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -34,11 +29,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300001877,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "采石区角落铁丝网旁"
@@ -66,11 +56,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000155,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -94,11 +79,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300001878,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "黑色平台上"
@@ -126,11 +106,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000156,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -154,11 +129,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300001891,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "上台阶屋内"
@@ -186,11 +156,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000163,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -214,11 +179,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300001984,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "左侧棚屋靠墙"
@@ -246,11 +206,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000183,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -274,11 +229,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002200,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "巨型石堆角落"
@@ -306,11 +256,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000184,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -334,11 +279,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002216,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "绿色箱子旁"
@@ -366,11 +306,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000194,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -394,11 +329,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002223,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "故障机器人右边"
@@ -426,11 +356,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000201,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -454,11 +379,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002224,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "洞口内架子下方"
@@ -486,11 +406,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000225,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -514,11 +429,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002231,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "箱子右侧"
@@ -546,11 +456,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000226,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -574,11 +479,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002234,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "小型洞穴内"
@@ -606,11 +506,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000481,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -634,11 +529,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002235,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "叉车抬起后空间内部"
@@ -666,11 +556,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000533,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -694,11 +579,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002334,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "集装箱中间"
@@ -726,11 +606,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800000654,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -754,11 +629,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002336,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "石柱上方"
@@ -786,11 +656,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001109,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -814,11 +679,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002340,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "上台阶平台上"
@@ -846,11 +706,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001175,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -874,11 +729,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002341,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "上台阶平台上"
@@ -906,11 +756,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001182,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -934,11 +779,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002342,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "上台阶平台上"
@@ -966,11 +806,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001183,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -994,11 +829,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002347,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "墙边箱子上"
@@ -1026,11 +856,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001191,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1054,11 +879,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002383,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "柜子下方"
@@ -1086,11 +906,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001196,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1114,11 +929,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002545,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "绿色箱子上方"
@@ -1146,11 +956,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001199,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1174,11 +979,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002560,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "绿色箱子旁"
@@ -1206,11 +1006,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001200,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1234,11 +1029,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002564,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "集装箱旁"
@@ -1266,11 +1056,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001201,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1294,11 +1079,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002566,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "柜子旁边"
@@ -1326,11 +1106,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001204,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1354,11 +1129,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002599,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "架子下墙边"
@@ -1386,11 +1156,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800001243,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1414,11 +1179,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002601,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "集装箱内"
@@ -1446,11 +1206,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800020010,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1474,11 +1229,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002603,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "绿色箱子旁"
@@ -1506,11 +1256,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800200006,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1534,11 +1279,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002604,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "机器左侧"
@@ -1566,11 +1306,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2800200036,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -1594,11 +1329,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 300002605,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "机器右侧"
@@ -1626,11 +1356,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 300002606,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "石块上方油桶旁边"
           }
         ]
@@ -1654,11 +1379,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021869,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -1686,11 +1406,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 300002608,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "存料处下方草地中间"
           }
         ]
@@ -1714,11 +1429,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021871,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -1746,11 +1456,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 300002639,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "下台阶平台处"
           }
         ]
@@ -1774,11 +1479,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021873,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -1806,11 +1506,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001194,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "柜子旁靠墙"
           }
         ]
@@ -1834,11 +1529,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021878,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -1866,11 +1556,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001312,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "小屋内"
           }
         ]
@@ -1894,11 +1579,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021879,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -1926,11 +1606,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001313,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "上楼梯最上面平台处"
           }
         ]
@@ -1954,11 +1629,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021880,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -1986,11 +1656,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001333,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "下台阶墙边"
           }
         ]
@@ -2014,11 +1679,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021881,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2046,11 +1706,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001409,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "山洞内小房间"
           }
         ]
@@ -2074,11 +1729,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021887,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2106,11 +1756,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001479,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "军械库山洞里"
           }
         ]
@@ -2134,11 +1779,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021888,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2166,11 +1806,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001480,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "风扇管道内洞穴"
           }
         ]
@@ -2194,11 +1829,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021889,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2226,11 +1856,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001481,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "山脚下"
           }
         ]
@@ -2254,11 +1879,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021890,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2286,11 +1906,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001482,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "一大堆轮胎旁"
           }
         ]
@@ -2314,11 +1929,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021891,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2346,11 +1956,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001483,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "集装箱小屋内"
           }
         ]
@@ -2374,11 +1979,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021892,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2406,11 +2006,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 200001484,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "大卡车后方屋内"
           }
         ]
@@ -2434,11 +2029,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500021941,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2466,11 +2056,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100000097,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "拖箱子跳到上方平台"
           }
         ]
@@ -2494,11 +2079,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3400160022,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2526,11 +2106,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100000149,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "源石副产物中心大楼一层右前方的房间"
           }
         ]
@@ -2554,11 +2129,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500022181,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2586,11 +2156,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100000152,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "源石副产物中心左手边围栏区域内"
           }
         ]
@@ -2614,11 +2179,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500022204,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2646,11 +2206,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100000154,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "大门旁边跟着醚质跳下来的角落"
           }
         ]
@@ -2674,11 +2229,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500022205,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2706,11 +2256,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100000157,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "源石副产物中心右手边叉车旁角落里"
           }
         ]
@@ -2734,11 +2279,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500022206,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2766,11 +2306,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100000180,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "旧工厂区绿色箱子上方"
           }
         ]
@@ -2794,11 +2329,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030704,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2826,11 +2356,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100000186,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "研究所内悬吊平台下"
           }
         ]
@@ -2854,11 +2379,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500022208,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2886,11 +2406,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010036,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "塔吊拉到操作台边头顶上平台"
           }
         ]
@@ -2914,11 +2429,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500022216,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -2946,11 +2456,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010037,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "塔吊旁边跳上来平台另一侧"
           }
         ]
@@ -2974,11 +2479,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030643,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3006,11 +2506,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010079,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "跳绿箱子上房顶"
           }
         ]
@@ -3034,11 +2529,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030645,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3066,11 +2556,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010182,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "崖边小屋两把椅子中间"
           }
         ]
@@ -3094,11 +2579,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030672,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3126,11 +2606,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010263,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "小皮卡旁边"
           }
         ]
@@ -3154,11 +2629,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030705,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3186,11 +2656,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010264,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "研究所右下前两辆车中间"
           }
         ]
@@ -3214,11 +2679,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030709,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3246,11 +2706,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010265,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "研究所右上方上台阶左前"
           }
         ]
@@ -3274,11 +2729,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030719,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3306,11 +2756,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010320,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "拖箱子上平台再拖箱子跳白色箱子上"
           }
         ]
@@ -3334,11 +2779,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030727,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3366,11 +2806,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010418,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "机械臂下方"
           }
         ]
@@ -3394,11 +2829,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030728,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3426,11 +2856,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010419,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "绿色箱子旁"
           }
         ]
@@ -3454,11 +2879,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030734,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3486,11 +2906,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100010420,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "台阶旁边转角处"
           }
         ]
@@ -3514,11 +2929,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030735,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3546,11 +2956,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020059,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "山脚下"
           }
         ]
@@ -3574,11 +2979,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030744,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3606,11 +3006,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020337,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "终末地闪送后方货物存储处"
           }
         ]
@@ -3634,11 +3029,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030754,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3666,11 +3056,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020338,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "杂物堆中间"
           }
         ]
@@ -3694,11 +3079,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030760,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3726,11 +3106,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020339,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "黄白广告牌下"
           }
         ]
@@ -3754,11 +3129,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030779,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3786,11 +3156,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020340,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "两个连续悬吊平台跳到平台上"
           }
         ]
@@ -3814,11 +3179,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030818,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3846,11 +3206,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020343,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "旧工厂区右下基地区走廊墙边"
           }
         ]
@@ -3874,11 +3229,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030845,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3906,11 +3256,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020361,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "山洞内"
           }
         ]
@@ -3934,11 +3279,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030849,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -3966,11 +3306,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020362,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "无色印记任务"
           }
         ]
@@ -3994,11 +3329,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030857,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4026,11 +3356,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020401,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "巨型源石晶簇下方战斗"
           }
         ]
@@ -4054,11 +3379,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030860,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4086,11 +3406,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020548,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "安德烈旁边的车头前面"
           }
         ]
@@ -4114,11 +3429,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030868,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4146,11 +3456,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020775,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "基地区二楼办公桌内侧"
           }
         ]
@@ -4174,11 +3479,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030873,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4206,11 +3506,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020776,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "咖啡右边角落"
           }
         ]
@@ -4234,11 +3529,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030877,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4266,11 +3556,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100020796,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "墙边"
           }
         ]
@@ -4294,11 +3579,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030878,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4326,11 +3606,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390144,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "关闭供电终端右手边"
           }
         ]
@@ -4354,11 +3629,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030879,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4386,11 +3656,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390175,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "基电站跳上去左边箱子上"
           }
         ]
@@ -4414,11 +3679,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030936,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4446,11 +3706,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390250,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "关掉供电终端左前方解锁"
           }
         ]
@@ -4474,11 +3729,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031030,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4506,11 +3756,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390254,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "基电站停车位中间"
           }
         ]
@@ -4534,11 +3779,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031049,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4566,11 +3806,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390272,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "传送点右前方沟里"
           }
         ]
@@ -4594,11 +3829,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031050,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4626,11 +3856,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390315,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "源石副产物中心左手边围栏区域内绿色货物旁"
           }
         ]
@@ -4654,11 +3879,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031064,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4686,11 +3906,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390344,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "挑战次级能量淤积点后显示"
           }
         ]
@@ -4714,11 +3929,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031110,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4746,11 +3956,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390413,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "传送点下方下台阶斜坡车上"
           }
         ]
@@ -4774,11 +3979,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031181,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4806,11 +4006,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100390438,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "崖边草地上"
           }
         ]
@@ -4834,11 +4029,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031182,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4866,11 +4056,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100420138,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "河边击败精英怪三个宝箱"
           }
         ]
@@ -4894,11 +4079,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031184,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4926,11 +4106,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100420139,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "河边击败精英怪三个宝箱"
           }
         ]
@@ -4954,11 +4129,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031185,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -4986,11 +4156,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100420140,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "河边击败精英怪三个宝箱"
           }
         ]
@@ -5014,11 +4179,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031187,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -5046,11 +4206,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100420143,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "山洞里往上走"
           }
         ]
@@ -5074,11 +4229,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031189,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -5106,11 +4256,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100420144,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "右边管道内爆炸物炸开"
           }
         ]
@@ -5134,11 +4279,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500031191,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -5166,11 +4306,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100420165,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "铁箱子上"
           }
         ]
@@ -5194,11 +4329,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 3500030761,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": null
@@ -5226,11 +4356,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100420188,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "传动点边皮卡上"
           }
         ]
@@ -5254,11 +4379,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420193,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "小屋的顶部"
@@ -5286,11 +4406,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400010137,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5314,11 +4429,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420197,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "左下角悬崖边"
@@ -5346,11 +4456,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400010143,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5374,11 +4479,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420220,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "集装箱内"
@@ -5406,11 +4506,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400010187,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5434,11 +4529,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420234,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "出山洞柱子下方"
@@ -5466,11 +4556,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400010191,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5494,11 +4579,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420252,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "集装箱内"
@@ -5526,11 +4606,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400010213,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5554,11 +4629,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420259,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "传送锚点左边大石头上收集碎片解锁"
@@ -5586,11 +4656,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400010232,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5614,11 +4679,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420301,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "爆炸物炸开进去左拐"
@@ -5646,11 +4706,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400010235,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5674,11 +4729,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420303,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "碎片前绿色椅子里面"
@@ -5706,11 +4756,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020018,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5734,11 +4779,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420315,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "收集碎片解锁"
@@ -5766,11 +4806,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020028,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5794,11 +4829,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420351,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "基电站左下箱子堆中间"
@@ -5826,11 +4856,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020085,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5854,11 +4879,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420362,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "出山洞柱子下方另一侧"
@@ -5886,11 +4906,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020119,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5914,11 +4929,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420363,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "河边"
@@ -5946,11 +4956,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020604,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -5974,11 +4979,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420376,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "爆炸物炸开进去左拐"
@@ -6006,11 +5006,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020637,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6034,11 +5029,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420382,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "集装箱中间"
@@ -6066,11 +5056,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020638,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6094,11 +5079,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420386,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "铁架下方挑战次级能量淤积点"
@@ -6126,11 +5106,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020639,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6154,11 +5129,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100420388,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "挑战次级能量淤积点后显示"
@@ -6186,11 +5156,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400020691,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6214,11 +5179,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430034,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "集齐四只兔子显示"
@@ -6246,11 +5206,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021022,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6274,11 +5229,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430057,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "踩喷气收集碎片解锁车旁箱子"
@@ -6306,11 +5256,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021032,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6334,11 +5279,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430066,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "醚质右侧围栏边绿箱子上"
@@ -6366,11 +5306,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021043,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6394,11 +5329,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430083,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "平台下左转左边角落里"
@@ -6426,11 +5356,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021054,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6454,11 +5379,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430088,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "收集碎片解锁"
@@ -6486,11 +5406,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021071,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6514,11 +5429,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430122,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "爆炸物炸开山洞内"
@@ -6546,11 +5456,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021078,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6574,11 +5479,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430130,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "箱子旁边"
@@ -6606,11 +5506,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021096,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6634,11 +5529,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430180,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "杂物堆"
@@ -6666,11 +5556,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021170,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6694,11 +5579,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430181,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "山脚下帐篷左边"
@@ -6726,11 +5606,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021214,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6754,11 +5629,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430189,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "小山坡上"
@@ -6786,11 +5656,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400021220,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6814,11 +5679,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430200,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "再上台阶绿色椅子旁"
@@ -6846,11 +5706,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400090174,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6874,11 +5729,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430213,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "台阶旁边"
@@ -6906,11 +5756,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400090436,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6934,11 +5779,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430226,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "挑战次级能量淤积点后显示"
@@ -6966,11 +5806,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400090460,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -6994,11 +5829,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430233,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "林中小屋顶部"
@@ -7026,11 +5856,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400090491,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -7054,11 +5879,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430234,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "上台阶角落里"
@@ -7086,11 +5906,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 3400090571,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": null
           }
         ]
@@ -7114,11 +5929,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100430244,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "大型源石晶簇下方"
@@ -7146,11 +5956,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": 2100430251,
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "巨型源石晶簇下方"
           }
         ]
@@ -7174,11 +5979,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": 2100040029,
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "入口处走廊中间"
@@ -7206,11 +6006,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030712",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "山脚下"
           }
         ]
@@ -7234,11 +6029,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100050626",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "平台中间"
@@ -7266,11 +6056,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100050660",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "中间台子上集齐碎片解锁"
           }
         ]
@@ -7294,11 +6079,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100020298",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "空地中间"
@@ -7326,11 +6106,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030723",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "岸边大石头旁"
           }
         ]
@@ -7354,11 +6129,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100100004",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "树下"
@@ -7386,11 +6156,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100020126",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "小石柱旁边"
           }
         ]
@@ -7414,11 +6179,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100020108",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "高处的石头上"
@@ -7446,11 +6206,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100020125",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "最高的平台上"
           }
         ]
@@ -7474,11 +6229,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100050492",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "屋子里墙边"
@@ -7506,11 +6256,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100050628",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "水池里荷叶上"
           }
         ]
@@ -7534,11 +6279,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100050619",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "墙角"
@@ -7566,11 +6306,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100060084",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "小石柱旁石板上"
           }
         ]
@@ -7594,11 +6329,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100020269",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "岸边"
@@ -7626,11 +6356,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100020274",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "小石柱旁边"
           }
         ]
@@ -7654,11 +6379,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100040253",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "上台子最高的平台上"
@@ -7686,11 +6406,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030279",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "墙边一堆小箱子旁"
           }
         ]
@@ -7714,11 +6429,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100030746",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "发电站里"
@@ -7746,11 +6456,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030750",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "瀑布旁"
           }
         ]
@@ -7774,11 +6479,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100030747",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "墙边大石头中间"
@@ -7806,11 +6506,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030753",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "岸边竹子底下"
           }
         ]
@@ -7834,11 +6529,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100050632",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "山洞里瀑布下面"
@@ -7866,11 +6556,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100050494",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "楼上窗边"
           }
         ]
@@ -7894,11 +6579,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100050491",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "水池里"
@@ -7926,11 +6606,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100050576",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "山洞深处角落里"
           }
         ]
@@ -7954,11 +6629,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100050657",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "台阶下面的角落里"
@@ -7986,11 +6656,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030748",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "亭子角"
           }
         ]
@@ -8014,11 +6679,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100060142",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "栅栏旁白箱子旁边"
@@ -8046,11 +6706,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100060081",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "洞内墙边"
           }
         ]
@@ -8074,11 +6729,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100040503",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "山脚下"
@@ -8106,11 +6756,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100040500",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "大石头旁"
           }
         ]
@@ -8134,11 +6779,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100040250",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "竹子旁边草地上"
@@ -8166,11 +6806,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030745",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "环境监测站内墙边"
           }
         ]
@@ -8194,11 +6829,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100010025",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "桥旁边悬崖边上"
@@ -8226,11 +6856,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030713",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "崖边草地上"
           }
         ]
@@ -8254,11 +6879,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100030751",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "山脚下"
@@ -8286,11 +6906,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100050630",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "荷叶上"
           }
         ]
@@ -8314,11 +6929,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100050638",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "岸边"
@@ -8346,11 +6956,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100030749",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "路边的竹子中间"
           }
         ]
@@ -8374,11 +6979,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100040249",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "石头旁边"
@@ -8406,11 +7006,6 @@
         "nodes": [
           {
             "type": "text",
-            "text": "10100040243",
-            "color": "#ff0"
-          },
-          {
-            "type": "text",
             "text": "石头旁边"
           }
         ]
@@ -8434,11 +7029,6 @@
       {
         "type": "node",
         "nodes": [
-          {
-            "type": "text",
-            "text": "10100040537",
-            "color": "#ff0"
-          },
           {
             "type": "text",
             "text": "集齐碎片获取"
