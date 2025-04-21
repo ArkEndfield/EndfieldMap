@@ -24,6 +24,8 @@ import {
   getColorForEntity,
   getImageSize,
 } from '@/utils/render';
+import { currentMarkFilter } from '@/data/marks';
+import { shouldShowByMarkStatus } from './marks';
 
 // 样式缓存类型
 interface StyleCacheEntry {
@@ -357,3 +359,120 @@ export const updateClusterDistance = debounce(
   100,
   { leading: false, trailing: true }
 );
+
+/**
+ * 创建自定义标点标记
+ * @param point 点位数据
+ * @returns 创建的标记特征
+ */
+export function createCustomPointMarker(
+  point: PointData
+): Feature<Point> | null {
+  const feature = marker(point);
+  if (feature) {
+    features.push(feature);
+    itemMap[point.levelLogicId] = feature;
+    const vectorSource = source.getSource();
+    if (vectorSource && vectorSource instanceof VectorSource) {
+      vectorSource.addFeature(feature);
+    } else {
+      console.error('source.getSource() is not an instance of VectorSource');
+    }
+    return feature;
+  }
+  return null;
+}
+
+/**
+ * 删除自定义标点标记
+ * @param levelLogicId 标点ID
+ */
+export function removeCustomPointMarker(levelLogicId: string | number): void {
+  const feature = itemMap[levelLogicId];
+  if (feature) {
+    const vectorSource = source.getSource();
+    if (vectorSource && vectorSource instanceof VectorSource) {
+      vectorSource.removeFeature(feature);
+    } else {
+      console.error('source.getSource() is not an instance of VectorSource');
+    }
+    delete itemMap[levelLogicId];
+
+    // 从features数组中移除
+    const index = features.findIndex(f => f === feature);
+    if (index !== -1) {
+      features.splice(index, 1);
+    }
+  }
+}
+
+/**
+ * 更新自定义标点标记
+ * @param levelLogicId 标点ID
+ * @param point 新的点位数据
+ */
+export function updateCustomPointMarker(
+  levelLogicId: string | number,
+  point: PointData
+): void {
+  // 先删除旧标记
+  removeCustomPointMarker(levelLogicId);
+  // 创建新标记
+  createCustomPointMarker(point);
+}
+
+/**
+ * 刷新地图渲染
+ */
+export function refreshMap(): void {
+  // 确保所有源都被正确初始化
+  if (Object.keys(entityClusterSources).length === 0) {
+    createEntityClusterLayers();
+  }
+
+  // 不再清理所有源，而是控制图层可见性
+  for (const key in entityInfo) {
+    const source = entityClusterSources[key];
+    if (!source) continue;
+
+    // 查找对应的图层
+    const layer = entityClusterLayers.find(l => l.getSource() === source);
+
+    if (!layer) continue;
+
+    // 检查是否需要显示该类型的实体
+    const shouldShowEntityType = entityInfo[key].entityInfo.show;
+
+    // 通过设置图层可见性来控制标点显示/隐藏，而不是重新添加/删除特征
+    layer.setVisible(shouldShowEntityType);
+
+    // 如果需要显示，则根据标记状态更新特征集合
+    if (shouldShowEntityType) {
+      // 获取原始的矢量源
+      const vectorSource = source.getSource();
+      if (!vectorSource) continue;
+
+      // 在执行过滤前清空源
+      vectorSource.clear();
+
+      // 找出属于这个类型的所有特征
+      let typeFeatures = features.filter(f => {
+        const payload = f.get('payload');
+        return payload?.entityDataIdKey === key;
+      });
+
+      // 如果不是"全部"筛选状态，则根据标记状态进行过滤
+      if (currentMarkFilter.value !== 'all') {
+        typeFeatures = typeFeatures.filter(f => {
+          const payload = f.get('payload');
+          return shouldShowByMarkStatus(payload?.levelLogicId);
+        });
+      }
+
+      // 如果有特征要显示，添加到对应的源
+      if (typeFeatures.length > 0) {
+        vectorSource.addFeatures(typeFeatures);
+      }
+    }
+  }
+}

@@ -39,7 +39,7 @@ import { ref, computed } from 'vue';
 import { categoryInfo, entityInfo } from '@/data/entity';
 import { useI18n } from 'vue-i18n';
 import { toggleSelect, isCustomEntity } from '@/services/entity';
-import { refreshMap } from '@/services/MapCore';
+import { refreshMap } from '@/services/render';
 import type { EntityInfo } from '@/types/entity';
 
 interface Props {

@@ -6,7 +6,7 @@ import characterZhCN from './locales/character_i18n_cn.json';
 import dungeonZhCN from './locales/dungeon_series_i18n_cn.json';
 import enemyZhCN from './locales/enemy_template_i18n_cn.json';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
-import { refreshMap } from '@/services/MapCore';
+import { refreshMap } from '@/services/render';
 import { rafTimeout } from '@/utils/animationTimer';
 
 const zhCNLang = {

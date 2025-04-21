@@ -3,3 +3,5 @@ export interface Settings {
   sidebarExpanded: boolean;
   showMenuMenu: boolean;
 }
+
+export type SettingsChangeCallback = (settings: Settings) => void;

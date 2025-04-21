@@ -4,20 +4,19 @@ import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
 import type { Coordinate } from 'ol/coordinate';
 import { generateUUID, crd2xyz, xyz2crd } from '@/utils/common';
-import {
-  refreshMap,
-  getCurrentMapId,
-  closePopup,
-  entity,
-  popupManager,
-} from './MapCore';
+import { getCurrentMapId, closePopup, entity, popupManager } from './MapCore';
 import { filterAndUpdatePoints, getCurrentPoints } from './points';
-import { itemMap, features, source } from './render';
+import { itemMap, features, source, refreshMap } from './render';
 import { marker } from './render';
 import { marks } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
 import { select } from './entity';
 import VectorSource from 'ol/source/Vector';
+import {
+  createCustomPointMarker,
+  removeCustomPointMarker,
+  updateCustomPointMarker,
+} from './render';
 
 const DB_ALL_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;
 const DB_ALL_POINTS_DATA_KEY = DATA_DB_KEY.CUSTOM_POINTS_DATA;
@@ -108,28 +107,14 @@ export async function createCustomPoint(
   await filterAndUpdatePoints(getCurrentMapId());
 
   // 创建新的标记并添加到地图
-  const feature = marker(newPoint);
-  if (feature) {
-    features.push(feature);
-    itemMap[newPoint.levelLogicId] = feature;
-    // 获取source的VectorSource对象，然后调用addFeature
-    const vectorSource = source.getSource();
-    if (vectorSource && vectorSource instanceof VectorSource) {
-      vectorSource.addFeature(feature);
-    } else {
-      console.error('source.getSource() is not an instance of VectorSource');
-    }
-  }
+  createCustomPointMarker(newPoint);
 
   marks[newPoint.levelLogicId] = {
     finish: false,
   };
 
-  // 更新entityInfo中的计数
-
   // 从entityInfo中更新计数
   if (entityInfo['custom'] && entityInfo['custom'].entityInfo) {
-    // 增加计数，不需要检查是否大于0，因为是新增
     entityInfo['custom'].entityInfo.count++;
   }
 
@@ -166,22 +151,7 @@ export async function deleteCustomPoint(
   await filterAndUpdatePoints(getCurrentMapId());
 
   // 从地图中移除该标记
-  const feature = itemMap[levelLogicId];
-  if (feature) {
-    const vectorSource = source.getSource();
-    if (vectorSource && vectorSource instanceof VectorSource) {
-      vectorSource.removeFeature(feature);
-    } else {
-      console.error('source.getSource() is not an instance of VectorSource');
-    }
-    delete itemMap[levelLogicId];
-
-    // 从features数组中移除
-    const index = features.findIndex(f => f === feature);
-    if (index !== -1) {
-      features.splice(index, 1);
-    }
-  }
+  removeCustomPointMarker(levelLogicId);
 
   // 从marks中删除
   if (marks[levelLogicId]) {
@@ -190,7 +160,6 @@ export async function deleteCustomPoint(
 
   // 从entityInfo中更新计数
   if (entityInfo[entityType] && entityInfo[entityType].entityInfo) {
-    // 确保不会出现负数
     if (entityInfo[entityType].entityInfo.count > 0) {
       entityInfo[entityType].entityInfo.count--;
     }
@@ -254,39 +223,7 @@ export async function updateCustomPoint(
 
   // 更新地图上对应的标记Feature
   if (updatedPoint && data.entityDataIdKey && previousType !== newType) {
-    // 从地图中删除旧标记
-    const feature = itemMap[levelLogicId];
-    if (feature) {
-      const vectorSource = source.getSource();
-      if (vectorSource && vectorSource instanceof VectorSource) {
-        vectorSource.removeFeature(feature);
-      } else {
-        console.error('source.getSource() is not an instance of VectorSource');
-      }
-
-      // 从features数组中移除
-      const index = features.findIndex(f => f === feature);
-      if (index !== -1) {
-        features.splice(index, 1);
-      }
-
-      // 删除旧的映射关系
-      delete itemMap[levelLogicId];
-    }
-
-    // 创建新的标记并添加到地图
-    const newFeature = marker(updatedPoint);
-    if (newFeature) {
-      features.push(newFeature);
-      itemMap[levelLogicId] = newFeature;
-      const vectorSource = source.getSource();
-      if (vectorSource && vectorSource instanceof VectorSource) {
-        vectorSource.addFeature(newFeature);
-      } else {
-        console.error('source.getSource() is not an instance of VectorSource');
-      }
-    }
-
+    updateCustomPointMarker(levelLogicId, updatedPoint);
     // 确保该类型实体处于选中状态
     select(newType);
   } else if (updatedPoint) {

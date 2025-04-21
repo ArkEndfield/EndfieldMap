@@ -6,11 +6,9 @@ import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
 import { areaNameLayer, loadTextPoints } from '@/data/locations';
 import {
-  createEntityClusterLayers,
   entityClusterLayers,
-  entityClusterSources,
-  features,
   updateClusterDistance,
+  refreshMap,
 } from '@/services/render';
 import { ref, shallowRef } from 'vue';
 import { Layer } from 'ol/layer';
@@ -33,9 +31,7 @@ import {
   onSelectChange,
   initializeEntityLayers,
 } from './entity';
-import { entityInfo } from '@/data/entity';
-import { currentMarkFilter } from '@/data/marks';
-import { offMarkChange, onMarkChange, shouldShowByMarkStatus } from './marks';
+import { offMarkChange, onMarkChange } from './marks';
 import type { MapViewState } from '@/types/map';
 import { removeAllLines, setMapForLines } from './lineConnector';
 import {
@@ -44,6 +40,7 @@ import {
   clearSelectionIndicator,
 } from './selectionIndicator';
 import type { Coordinate } from 'ol/coordinate';
+import { offSettingsChange, onSettingsChange } from './settings';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -375,6 +372,7 @@ export function cleanupMap() {
 
   offMarkChange(refreshMap);
   offSelectChange(refreshMap);
+  offSettingsChange(handleSettingsChange);
 
   // 清除选择交互
   if (selectInteraction) {
@@ -532,6 +530,7 @@ export async function createMap(
 
   onMarkChange(refreshMap);
   onSelectChange(refreshMap);
+  onSettingsChange(handleSettingsChange);
 
   // 地图创建完成后，主动调用refreshMap显示标点
   refreshMap();
@@ -647,12 +646,11 @@ export const getZoom = () => {
   return zoom || 0;
 };
 
-const handleZoomChange = function () {
+const handleZoomChange = debounce(function () {
   const currentMap = map.value;
   if (!currentMap) return;
   // 标记地图正在缩放中
   if (popupManager.value) {
-    console.log('设置缩放状态标志');
     popupManager.value.setMapZooming(true);
   }
 
@@ -662,7 +660,7 @@ const handleZoomChange = function () {
 
   updateZoomValue(zoom);
 
-  updateClusterDistance(zoomLevel.value);
+  updateClusterDistance(zoom);
 
   // 如果弹窗是打开的，则在缩放时重新定位弹窗
   if (popupManager.value && popupManager.value.isPopupVisible.value) {
@@ -673,7 +671,12 @@ const handleZoomChange = function () {
   }
 
   refreshMap();
-};
+}, 500);
+
+const handleSettingsChange = debounce(() => {
+  const zoom = getZoom() || 0;
+  updateClusterDistance(zoom);
+}, 200);
 
 export const addMapContextMenuListener = (
   listener: (
@@ -731,11 +734,6 @@ const handleContextMenu = (event: MouseEvent) => {
 export const updateZoomValue = (zoom: number) => {
   zoomLevel.value = zoom;
   localStorage.setItem(ZOOM_KEY, zoom.toString());
-};
-
-export const recalculateCluster = () => {
-  const zoom = getZoom();
-  updateClusterDistance(zoom);
 };
 
 const moveEndChange = debounce(() => {
@@ -827,65 +825,6 @@ export const closePopup = () => {
     popupManager.value.setCurrentPosition(undefined);
     popupManager.value.setMapZooming(false);
     entity.value = null;
-  }
-};
-
-export const refreshMap = () => {
-  // 确保所有源都被正确初始化
-  if (Object.keys(entityClusterSources).length === 0) {
-    createEntityClusterLayers();
-  }
-
-  loadTextPoints(
-    false,
-    cacheMapId.value === 'map002' ? 'map02' : 'map01',
-    zoomLevel.value
-  );
-
-  // 不再清理所有源，而是控制图层可见性
-  for (const key in entityInfo) {
-    const source = entityClusterSources[key];
-    if (!source) continue;
-
-    // 查找对应的图层
-    const layer = entityClusterLayers.find(l => l.getSource() === source);
-
-    if (!layer) continue;
-
-    // 检查是否需要显示该类型的实体
-    const shouldShowEntityType = entityInfo[key].entityInfo.show;
-
-    // 通过设置图层可见性来控制标点显示/隐藏，而不是重新添加/删除特征
-    layer.setVisible(shouldShowEntityType);
-
-    // 如果需要显示，则根据标记状态更新特征集合
-    if (shouldShowEntityType) {
-      // 获取原始的矢量源
-      const vectorSource = source.getSource();
-      if (!vectorSource) continue;
-
-      // 在执行过滤前清空源
-      vectorSource.clear();
-
-      // 找出属于这个类型的所有特征
-      let typeFeatures = features.filter(f => {
-        const payload = f.get('payload');
-        return payload?.entityDataIdKey === key;
-      });
-
-      // 如果不是"全部"筛选状态，则根据标记状态进行过滤
-      if (currentMarkFilter.value !== 'all') {
-        typeFeatures = typeFeatures.filter(f => {
-          const payload = f.get('payload');
-          return shouldShowByMarkStatus(payload?.levelLogicId);
-        });
-      }
-
-      // 如果有特征要显示，添加到对应的源
-      if (typeFeatures.length > 0) {
-        vectorSource.addFeatures(typeFeatures);
-      }
-    }
   }
 };
 

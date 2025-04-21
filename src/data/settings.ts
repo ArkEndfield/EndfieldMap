@@ -1,4 +1,4 @@
-import type { Settings } from '@/types/settings';
+import type { Settings, SettingsChangeCallback } from '@/types/settings';
 import { ref } from 'vue';
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -6,6 +6,8 @@ export const DEFAULT_SETTINGS: Settings = {
   showMenuMenu: false,
   sidebarExpanded: true,
 };
+
+export const settingsChangeCallbacks: SettingsChangeCallback[] = [];
 
 const settings = ref<Settings>(DEFAULT_SETTINGS);
 
