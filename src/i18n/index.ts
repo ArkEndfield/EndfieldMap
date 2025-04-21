@@ -23,6 +23,52 @@ export type MessageSchema = typeof zhCNLang;
 
 export type Language = 'zh-CN' | 'zh-TW' | 'en-US' | 'ja-JP' | 'ko-KR';
 
+// 支持的语言映射
+const SUPPORTED_LANGUAGES: Record<string, Language> = {
+  'zh-CN': 'zh-CN',
+  'zh-TW': 'zh-TW',
+  'zh-HK': 'zh-TW',
+  zh: 'zh-CN',
+  'en-US': 'en-US',
+  'en-GB': 'en-US',
+  en: 'en-US',
+  'ja-JP': 'ja-JP',
+  ja: 'ja-JP',
+  'ko-KR': 'ko-KR',
+  ko: 'ko-KR',
+} as const;
+
+// 语言文件映射
+const REWARD_LANG_MAP = {
+  'zh-CN': 'cn',
+  'zh-TW': 'tc',
+  'zh-HK': 'tc',
+  'en-US': 'en',
+  'en-GB': 'en',
+  'ja-JP': 'jp',
+  'ko-KR': 'kr',
+} as const;
+
+export const normalizeLanguage = (lang: string): Language => {
+  // 首先检查是否完全匹配
+  if (SUPPORTED_LANGUAGES[lang as keyof typeof SUPPORTED_LANGUAGES]) {
+    return SUPPORTED_LANGUAGES[
+      lang as keyof typeof SUPPORTED_LANGUAGES
+    ] as Language;
+  }
+
+  // 检查语言代码前缀
+  const langPrefix = lang.split('-')[0].toLowerCase();
+  for (const [key, value] of Object.entries(SUPPORTED_LANGUAGES)) {
+    if (key.toLowerCase().startsWith(langPrefix)) {
+      return value as Language;
+    }
+  }
+
+  // 默认返回中文
+  return 'zh-CN';
+};
+
 const storagedLocale = localStorage.getItem(KEY);
 
 export const setLanguage = (lang: Language) => {
@@ -42,9 +88,9 @@ export const resetLanguage = () => {
 export const getLanguage = () => {
   const lang = localStorage.getItem(KEY);
   if (lang) {
-    return lang;
+    return normalizeLanguage(lang);
   }
-  return 'zh-CN';
+  return normalizeLanguage(window.navigator.language);
 };
 
 const i18n = createI18n({
@@ -180,22 +226,11 @@ export async function loadLanguage(lang: Language) {
       return true;
     }
 
-    let rewardLang = 'cn';
-
-    if (lang === 'zh-TW') {
-      rewardLang = 'tc';
-    } else if (lang === 'en-US') {
-      rewardLang = 'en';
-    } else if (lang === 'ja-JP') {
-      rewardLang = 'jp';
-    } else if (lang === 'ko-KR') {
-      rewardLang = 'kr';
-    } else if (lang === 'ko-KR') {
-      rewardLang = 'kr';
-    }
+    const normalizedLang = normalizeLanguage(lang);
+    const rewardLang = REWARD_LANG_MAP[normalizedLang] || 'en';
 
     const loadLangBase = loadJSON<MessageSchema>(
-      `/locales/${lang.toLowerCase()}.json`
+      `/locales/${normalizedLang.toLowerCase()}.json`
     );
     const loadLangItem = loadJSON<MessageSchema>(
       `/locales/item_i18n_${rewardLang}.json`
@@ -237,8 +272,9 @@ export async function loadLanguage(lang: Language) {
   }
 }
 
-const currentLocale =
-  (storagedLocale as Language) || (window.navigator.language as Language);
+const currentLocale = normalizeLanguage(
+  (storagedLocale as Language) || window.navigator.language
+);
 if (currentLocale !== 'zh-CN') {
   loadLanguage(currentLocale).catch(console.error);
 }
