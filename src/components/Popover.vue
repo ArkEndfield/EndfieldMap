@@ -1,63 +1,131 @@
 <template>
-  <div
-    @mouseenter="showPopover = true"
-    @mouseleave="showPopover = false"
-  >
-    <div ref="triggerRef"><slot></slot></div>
-    <AnimatePresence :initial="false">
-      <motion.div
-        ref="popoverRef"
-        v-if="showPopover"
-        :class="[
-          'arknights-popover absolute py-3 px-5 shadow-lg w-max max-w-64 text-sm',
-        ]"
-        :initial="{
-          opacity: 0,
-          y: -10,
-        }"
-        :animate="{
-          opacity: showPopover ? 1 : 0,
-          y: showPopover ? 0 : -10,
-        }"
-        :style="{
-          left: position.left + 'px',
-          top: position.top + 'px',
-        }"
-        :exit="{
-          opacity: 0,
-          y: -10,
-        }"
-        :transition="{
-          duration: 0.1,
-        }"
-      >
-        <div class="scanline-container">
-          <div class="scanline"></div>
-        </div>
-        <div class="popover-corner popover-corner-tl"></div>
-        <div class="popover-corner popover-corner-tr"></div>
-        <div class="popover-corner popover-corner-bl"></div>
-        <div class="popover-corner popover-corner-br"></div>
-        <slot name="popover"></slot>
-      </motion.div>
-    </AnimatePresence>
+  <div>
+    <div
+      @mouseenter="showPopover = true"
+      @mouseleave="showPopover = false"
+      ref="triggerRef"
+    >
+      <slot></slot>
+    </div>
+    <Teleport to="body">
+      <AnimatePresence :initial="false">
+        <motion.div
+          ref="popoverRef"
+          v-if="showPopover"
+          :class="[
+            'arknights-popover absolute shadow-lg w-max z-[57]',
+            sizeClass,
+          ]"
+          :initial="getInitialAnimation"
+          :animate="getAnimateAnimation"
+          :style="{
+            left: position.left + 'px',
+            top: position.top + 'px',
+          }"
+          :exit="getExitAnimation"
+          :transition="{
+            duration: 0.1,
+          }"
+        >
+          <div class="scanline-container">
+            <div class="scanline"></div>
+          </div>
+          <div class="popover-corner popover-corner-tl"></div>
+          <div class="popover-corner popover-corner-tr"></div>
+          <div class="popover-corner popover-corner-bl"></div>
+          <div class="popover-corner popover-corner-br"></div>
+          <slot name="popover"></slot>
+        </motion.div>
+      </AnimatePresence>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { motion, AnimatePresence, useAnimate } from 'motion-v';
-import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted, watch, computed } from 'vue';
 const [popoverRef] = useAnimate();
 const props = withDefaults(
-  defineProps<{ placement?: 'top' | 'bottom' | 'left' | 'right' }>(),
+  defineProps<{
+    placement?: 'top' | 'bottom' | 'left' | 'right';
+    size?: 'sm' | 'md' | 'lg' | 'xl';
+  }>(),
   {
     placement: 'bottom',
+    size: 'md',
   }
 );
 
 const showPopover = ref(false);
 const triggerRef = ref<HTMLElement | null>(null);
 const position = ref({ left: 0, top: 0 });
+
+// 计算尺寸类名
+const sizeClass = computed(() => {
+  switch (props.size) {
+    case 'sm':
+      return 'max-w-[12rem] text-xs py-2 px-3';
+    case 'md':
+      return 'max-w-[16rem] text-sm py-3 px-4';
+    case 'lg':
+      return 'max-w-[20rem] text-base py-4 px-5';
+    case 'xl':
+      return 'max-w-[24rem] text-lg py-5 px-6';
+    default:
+      return 'max-w-[16rem] text-sm py-3 px-4';
+  }
+});
+
+// 根据 placement 获取初始动画状态
+const getInitialAnimation = computed(() => {
+  const base = { opacity: 0 };
+  switch (props.placement) {
+    case 'top':
+      return { ...base, y: 10 };
+    case 'bottom':
+      return { ...base, y: -10 };
+    case 'left':
+      return { ...base, x: 10 };
+    case 'right':
+      return { ...base, x: -10 };
+    default:
+      return { ...base, y: -10 };
+  }
+});
+
+// 根据 placement 获取动画状态
+const getAnimateAnimation = computed(() => {
+  const base = { opacity: showPopover.value ? 1 : 0 };
+  switch (props.placement) {
+    case 'top':
+      return { ...base, y: showPopover.value ? 0 : 10 };
+    case 'bottom':
+      return { ...base, y: showPopover.value ? 0 : -10 };
+    case 'left':
+      return { ...base, x: showPopover.value ? 0 : 10 };
+    case 'right':
+      return { ...base, x: showPopover.value ? 0 : -10 };
+    default:
+      return { ...base, y: showPopover.value ? 0 : -10 };
+  }
+});
+
+// 根据 placement 获取退出动画状态
+const getExitAnimation = computed(() => {
+  const base = { opacity: 0 };
+  switch (props.placement) {
+    case 'top':
+      return { ...base, y: 10 };
+    case 'bottom':
+      return { ...base, y: -10 };
+    case 'left':
+      return { ...base, x: 10 };
+    case 'right':
+      return { ...base, x: -10 };
+    default:
+      return { ...base, y: -10 };
+  }
+});
 
 function recalcPosition() {
   if (!triggerRef.value || !popoverRef.value) {

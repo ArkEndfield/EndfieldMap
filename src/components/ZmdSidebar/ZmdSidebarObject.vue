@@ -1,37 +1,46 @@
 <template>
-  <div
-    class="zmd-sidebar-object"
-    :class="{ active: isActive }"
-    @click="toggle"
+  <Popover
+    placement="right"
+    size="sm"
+    class="overflow-hidden"
   >
-    <div class="icon">
-      <div class="icon-inner">
-        <slot>
-          <!-- 如果提供了entity和category，生成默认图标 -->
-          <img
-            v-if="props.entity && props.category"
-            :src="`/assets/${props.category}/${entity?.pic}.png`"
-          />
-        </slot>
-      </div>
-      <div class="icon-decoration"></div>
-    </div>
-    <div class="detail">
-      <div class="detail-inner">
-        <div class="name">
-          {{ displayName }}
+    <div
+      class="zmd-sidebar-object"
+      :class="{ active: isActive }"
+      @click="toggle"
+    >
+      <div class="icon">
+        <div class="icon-inner">
+          <slot>
+            <!-- 如果提供了entity和category，生成默认图标 -->
+            <img
+              v-if="props.entity && props.category"
+              :src="`/assets/${props.category}/${entity?.pic}.png`"
+            />
+          </slot>
         </div>
-        <div
-          class="count"
-          v-if="!props.hideCount"
-        >
-          <div class="text">{{ markCount }}/{{ props.entity?.count }}</div>
-        </div>
+        <div class="icon-decoration"></div>
       </div>
-      <div class="corner-decoration top-right"></div>
-      <div class="corner-decoration bottom-left"></div>
+      <div class="detail">
+        <div class="detail-inner">
+          <div class="name">
+            {{ displayName }}
+          </div>
+          <div
+            class="count"
+            v-if="!props.hideCount"
+          >
+            <div class="text">{{ markCount }}/{{ props.entity?.count }}</div>
+          </div>
+        </div>
+        <div class="corner-decoration top-right"></div>
+        <div class="corner-decoration bottom-left"></div>
+      </div>
     </div>
-  </div>
+    <template #popover>
+      <div class="text-sm text-white">{{ displayName }}</div>
+    </template>
+  </Popover>
 </template>
 
 <script setup lang="ts">
@@ -41,6 +50,7 @@ import { useI18n } from 'vue-i18n';
 import { toggleSelect, isCustomEntity } from '@/services/entity';
 import { refreshMap } from '@/services/render';
 import type { EntityInfo } from '@/types/entity';
+import Popover from '../Popover.vue';
 
 interface Props {
   hideCount?: boolean;
