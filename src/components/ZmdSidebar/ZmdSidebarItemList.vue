@@ -52,13 +52,13 @@ import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import { categoryInfo, isSelectAllByCategory } from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
 import { marks } from '@/data/marks';
-import { onMarkChange, offMarkChange } from '@/services/marks';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
 import { selectAllByCategory, unSelectByCategory } from '@/services/entity';
 import { getCurrentMapId } from '@/services/MapCore';
 import type { EntityInfo } from '@/types/entity';
 import { useI18n } from 'vue-i18n';
+import { pubsub, EVENTS } from '@/services/pubsub';
 
 const props = withDefaults(
   defineProps<{
@@ -142,13 +142,13 @@ onMounted(async () => {
   // 初始计算标记数量
   await calculateEntityMarkCounts();
 
-  // 使用onMarkChange注册标记变更回调
-  onMarkChange(calculateEntityMarkCounts);
+  // 使用发布订阅服务注册标记变更回调
+  pubsub.subscribe(EVENTS.MARK_CHANGE, calculateEntityMarkCounts);
 });
 
 onUnmounted(() => {
   // 清除标记变更回调
-  offMarkChange(calculateEntityMarkCounts);
+  pubsub.unsubscribe(EVENTS.MARK_CHANGE, calculateEntityMarkCounts);
 });
 
 // 获取图标颜色的计算属性函数

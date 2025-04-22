@@ -4,7 +4,6 @@ import {
   customEntityInfo,
   entityInfo,
   entityShowStates,
-  selectCallbacks,
   initializeEntityShowStates,
 } from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
@@ -25,6 +24,7 @@ import {
 } from '@/services/render';
 import type { EntityCategories } from '@/types/entity';
 import { currentMarkFilter } from '@/data/marks';
+import { pubsub, EVENTS } from './pubsub';
 
 // 获取entity数据
 export const getEntityDataByKey = (key: string) => {
@@ -339,40 +339,7 @@ export const toggleSelectByName = (name: string) => {
   notifySelectChange();
 };
 
-export const onSelectChange = (callback: () => void) => {
-  if (typeof callback === 'function') {
-    selectCallbacks.push(callback);
-  } else {
-    console.error('回调函数无效:', callback);
-  }
-};
-
-export const offSelectChange = (callback: () => void) => {
-  const index = selectCallbacks.indexOf(callback);
-  if (index !== -1) {
-    selectCallbacks.splice(index, 1);
-  } else {
-    console.error('未找到回调函数:', callback);
-  }
-};
-
-// 判断 id 是否在当前 entityInfo 中（pic属性等于id）
-export const isIdInEntityInfoByPic = (id: string) => {
-  const result = Object.keys(entityInfo).some(key => {
-    const entity = entityInfo[key];
-    return entity.entityInfo.pic === id;
-  });
-  return result;
-};
-
+// 通知选择变更
 const notifySelectChange = () => {
-  selectCallbacks.forEach(callback => {
-    if (typeof callback === 'function') {
-      try {
-        callback();
-      } catch (error) {
-        console.error('执行选择状态回调时发生错误:', error);
-      }
-    }
-  });
+  pubsub.publish(EVENTS.SELECT_CHANGE);
 };

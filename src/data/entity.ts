@@ -49,9 +49,6 @@ export const customEntityInfo: EntityCategories = {
   },
 };
 
-// 选择 callbacks
-export const selectCallbacks: (() => void)[] = [];
-
 export const isSelectAll = computed(() => {
   return Object.keys(entityInfo).every(key => entityShowStates[key]);
 });

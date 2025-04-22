@@ -2,82 +2,31 @@ import { watch } from 'vue';
 import { getAllPoints } from './points';
 import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
-import { MarkChangeCallback, MarkFilterType, MarkInfo } from '@/types/marks';
+import { MarkFilterType, MarkInfo } from '@/types/marks';
 import {
   currentMarkFilter,
   isMultiSelecting,
-  markChangeCallbacks,
   marks,
-  multiSelectChangeCallbacks,
   multiSelectMarks,
-  multiSelectStateChangeCallbacks,
 } from '@/data/marks';
 import { getCustomPoints } from './customPoints';
+import { pubsub, EVENTS } from './pubsub';
 
 const STORAGE_KEY = DATA_DB_KEY.MARKS;
 
-export const onMarkChange = (callback: MarkChangeCallback) => {
-  markChangeCallbacks.push(callback);
-};
-
-export const onMultiSelectStateChange = (callback: MarkChangeCallback) => {
-  multiSelectStateChangeCallbacks.push(callback);
-};
-
-export const onMultiSelectChange = (callback: MarkChangeCallback) => {
-  multiSelectChangeCallbacks.push(callback);
-};
-
-export const offMarkChange = (callback: MarkChangeCallback) => {
-  const index = markChangeCallbacks.indexOf(callback);
-  if (index !== -1) {
-    markChangeCallbacks.splice(index, 1);
-  }
-};
-
-export const offMultiSelectStateChange = (callback: MarkChangeCallback) => {
-  const index = multiSelectStateChangeCallbacks.indexOf(callback);
-  if (index !== -1) {
-    multiSelectStateChangeCallbacks.splice(index, 1);
-  }
-};
-
-export const offMultiSelectChange = (callback: MarkChangeCallback) => {
-  const index = multiSelectChangeCallbacks.indexOf(callback);
-  if (index !== -1) {
-    multiSelectChangeCallbacks.splice(index, 1);
-  }
-};
-
-// 添加触发回调的函数
+// 通知标记变更
 export const notifyMarkChange = () => {
-  markChangeCallbacks.forEach(callback => {
-    try {
-      callback();
-    } catch (e) {
-      console.error('执行标记变更回调时出错:', e);
-    }
-  });
+  pubsub.publish(EVENTS.MARK_CHANGE);
 };
 
+// 通知多选状态变更
 export const notifyMultiSelectStateChange = () => {
-  multiSelectStateChangeCallbacks.forEach(callback => {
-    try {
-      callback();
-    } catch (e) {
-      console.error('执行多选状态变更回调时出错:', e);
-    }
-  });
+  pubsub.publish(EVENTS.MULTI_SELECT_STATE_CHANGE);
 };
 
+// 通知多选变更
 export const notifyMultiSelectChange = () => {
-  multiSelectChangeCallbacks.forEach(callback => {
-    try {
-      callback();
-    } catch (e) {
-      console.error('执行多选标记变更回调时出错:', e);
-    }
-  });
+  pubsub.publish(EVENTS.MULTI_SELECT_CHANGE);
 };
 
 // 修改为异步初始化函数

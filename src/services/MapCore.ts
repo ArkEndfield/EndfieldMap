@@ -26,20 +26,9 @@ import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 import { RenderOptimizer } from '@/utils/renderOptimizer';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { updatePoints } from './points';
-import {
-  offSelectChange,
-  onSelectChange,
-  initializeEntityLayers,
-} from './entity';
-import {
-  offMarkChange,
-  onMarkChange,
-  toggleMultiSelect,
-  onMultiSelectStateChange,
-  onMultiSelectChange,
-  offMultiSelectStateChange,
-  offMultiSelectChange,
-} from './marks';
+import { initializeEntityLayers } from './entity';
+import { isMultiSelecting } from '@/data/marks';
+import { pubsub, EVENTS } from './pubsub';
 import type { MapViewState } from '@/types/map';
 import { removeAllLines, setMapForLines } from './lineConnector';
 import {
@@ -48,8 +37,7 @@ import {
   clearSelectionIndicator,
 } from './selectionIndicator';
 import type { Coordinate } from 'ol/coordinate';
-import { offSettingsChange, onSettingsChange } from './settings';
-import { isMultiSelecting } from '@/data/marks';
+import { toggleMultiSelect } from './marks';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -386,11 +374,11 @@ export function cleanupMap() {
   map.value.getView().un('change:resolution', handleZoomChange);
   map.value.getViewport().removeEventListener('contextmenu', handleContextMenu);
 
-  offMarkChange(refreshMap);
-  offSelectChange(refreshMap);
-  offSettingsChange(handleSettingsChange);
-  offMultiSelectStateChange(refreshMap);
-  offMultiSelectChange(refreshMap);
+  pubsub.unsubscribe(EVENTS.MARK_CHANGE, refreshMap);
+  pubsub.unsubscribe(EVENTS.SELECT_CHANGE, refreshMap);
+  pubsub.unsubscribe(EVENTS.SETTINGS_CHANGE, handleSettingsChange);
+  pubsub.unsubscribe(EVENTS.MULTI_SELECT_STATE_CHANGE, refreshMap);
+  pubsub.unsubscribe(EVENTS.MULTI_SELECT_CHANGE, refreshMap);
 
   // 清除选择交互
   if (selectInteraction) {
@@ -546,12 +534,11 @@ export async function createMap(
   // 设置窗口大小变化监听器
   window.addEventListener('resize', windowResizeHandler);
 
-  onMarkChange(refreshMap);
-  onSelectChange(refreshMap);
-  onSettingsChange(handleSettingsChange);
-
-  onMultiSelectStateChange(refreshMap);
-  onMultiSelectChange(refreshMap);
+  pubsub.subscribe(EVENTS.MARK_CHANGE, refreshMap);
+  pubsub.subscribe(EVENTS.SELECT_CHANGE, refreshMap);
+  pubsub.subscribe(EVENTS.SETTINGS_CHANGE, handleSettingsChange);
+  pubsub.subscribe(EVENTS.MULTI_SELECT_STATE_CHANGE, refreshMap);
+  pubsub.subscribe(EVENTS.MULTI_SELECT_CHANGE, refreshMap);
 
   // 地图创建完成后，主动调用refreshMap显示标点
   refreshMap();
