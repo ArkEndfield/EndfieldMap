@@ -54,6 +54,18 @@ const selectionStyle = new Style({
   zIndex: 1,
 });
 
+// 部分选中样式
+const partialSelectionStyle = new Style({
+  image: new CircleStyle({
+    radius: DEFAULT_RADIUS + 6,
+    stroke: new Stroke({
+      color: 'rgba(255, 255, 0, 0.4)',
+      width: 4,
+    }),
+  }),
+  zIndex: 1,
+});
+
 // 这些变量从data/entity.ts中提取
 const features: Feature<Point>[] = [];
 const itemMap: Record<number, Feature<Point>> = {};
@@ -347,15 +359,31 @@ function createClusterLayerForType(
 function createClusterStyleFunction(entityType: string) {
   return (feature: Feature): Style | Style[] | undefined => {
     const featuresArray = feature.get('features');
-    const size = featuresArray?.length;
+    const size = featuresArray?.length || 0;
     const styleKey = `${entityType}-${size}`;
 
-    let isSelected = false;
-    if (size === 1 && featuresArray?.[0]) {
-      const singleFeature = featuresArray[0];
-      const payload = singleFeature.get('payload');
-      if (payload?.levelLogicId && isMultiSelecting.value) {
-        isSelected = multiSelectMarks.value.includes(payload.levelLogicId);
+    let selectionStatus: 'none' | 'partial' | 'all' = 'none';
+
+    if (
+      size > 0 &&
+      isMultiSelecting.value &&
+      multiSelectMarks.value.length > 0
+    ) {
+      const selectedCount = featuresArray.reduce((count, f) => {
+        const payload = f.get('payload');
+        if (
+          payload?.levelLogicId &&
+          multiSelectMarks.value.includes(payload.levelLogicId)
+        ) {
+          return count + 1;
+        }
+        return count;
+      }, 0);
+
+      if (selectedCount === size) {
+        selectionStatus = 'all';
+      } else if (selectedCount > 0) {
+        selectionStatus = 'partial';
       }
     }
 
@@ -364,16 +392,20 @@ function createClusterStyleFunction(entityType: string) {
     if (!cachedBaseStyleEntry) {
       createCircleIconStyle(entityType, size).then(baseStyle => {
         styleCache[styleKey] = { style: baseStyle };
-        feature.changed();
+        feature.changed(); // 请求重绘以应用新加载的样式
       });
+      // 返回一个临时的空样式，或者你可以提供一个默认的基础样式
       return new Style({});
     } else {
       const baseStyle = cachedBaseStyleEntry.style;
-      if (isSelected) {
-        const styles = Array.isArray(baseStyle) ? baseStyle : [baseStyle];
+      const styles = Array.isArray(baseStyle) ? [...baseStyle] : [baseStyle];
+
+      if (selectionStatus === 'all') {
         return [...styles, selectionStyle];
+      } else if (selectionStatus === 'partial') {
+        return [...styles, partialSelectionStyle];
       } else {
-        return baseStyle;
+        return baseStyle; // 或者 styles 如果你总是想返回数组
       }
     }
   };
