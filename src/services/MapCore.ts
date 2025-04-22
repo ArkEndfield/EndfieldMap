@@ -540,6 +540,9 @@ export async function createMap(
   pubsub.subscribe(EVENTS.MULTI_SELECT_STATE_CHANGE, refreshMap);
   pubsub.subscribe(EVENTS.MULTI_SELECT_CHANGE, refreshMap);
 
+  // Initial load of text points for the starting map and zoom
+  loadTextPoints(true, mapIndex === 'map002' ? 'map02' : 'map01', initialZoom);
+
   // 地图创建完成后，主动调用refreshMap显示标点
   refreshMap();
 
@@ -657,7 +660,8 @@ const handleZoomChange = debounce(function () {
 
   const zoom = getZoom() || 0;
   const currentMapID = getCurrentMapId();
-  loadTextPoints(true, currentMapID, zoom);
+  // 使用转换后的场景 ID
+  loadTextPoints(true, currentMapID === 'map002' ? 'map02' : 'map01', zoom);
 
   updateZoomValue(zoom);
 
@@ -744,13 +748,14 @@ const moveEndChange = debounce(() => {
   const zoom = getZoom();
   // 四舍五入到最接近的0.5，保持与handleZoomChange相同的舍入策略
   const position = currentMap.getView().getCenter();
+  const currentMapID = getCurrentMapId(); // 获取一次即可
+
   // 确保最终值是准确的
   if (Math.abs(zoomLevel.value - zoom) >= 0.01) {
-    const currentMapID = getCurrentMapId();
-    loadTextPoints(false, currentMapID, zoom);
+    // 使用转换后的场景 ID
+    loadTextPoints(false, currentMapID === 'map002' ? 'map02' : 'map01', zoom);
     updateZoomValue(zoom);
   }
-  const currentMapID = getCurrentMapId();
   // 保存当前视图状态到 IndexedDB (永久存储)
   if (position && currentMapID) {
     console.log(

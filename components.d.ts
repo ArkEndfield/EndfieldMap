@@ -26,7 +26,6 @@ declare module 'vue' {
     CogIcon: typeof import('./src/components/icons/CogIcon.vue')['default']
     ContextMenu: typeof import('./src/components/ContextMenu/ContextMenu.vue')['default']
     ContextMenuItem: typeof import('./src/components/ContextMenu/ContextMenuItem.vue')['default']
-    copy: typeof import('./src/components/Header/Settings/DeleteData copy.vue')['default']
     CultivationAddItem: typeof import('./src/components/map/CultivationMaterial/CultivationAddItem.vue')['default']
     CultivationEntityItem: typeof import('./src/components/map/CultivationMaterial/CultivationEntityItem.vue')['default']
     CultivationMaterial: typeof import('./src/components/map/CultivationMaterial/CultivationMaterial.vue')['default']
