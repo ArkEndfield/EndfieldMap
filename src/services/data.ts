@@ -13,6 +13,7 @@ import {
   restorePointsReplace,
 } from './customPoints';
 import { useI18n } from 'vue-i18n';
+import { entityShowStates } from '@/data/entity';
 
 // 检查数据格式是否合法
 export const isBackupDataValid = (data: BackupData) => {
@@ -37,7 +38,7 @@ export const coverData = async (data: BackupData | null) => {
   if (data?.storage?.userLanguage) {
     setLanguage(data.storage.userLanguage);
     const { t } = useI18n();
-    document.title = t('title') || '终末地地图资源查询'
+    document.title = t('title') || '终末地地图资源查询';
   }
   // 设置设置
   if (data?.db?.settings) {
@@ -51,6 +52,12 @@ export const coverData = async (data: BackupData | null) => {
     });
   } else if (data?.db?.customPoints) {
     restorePointsReplace(data.db.customPoints);
+  }
+  // 设置实体显示状态
+  if (data?.db?.entityShowStates) {
+    Object.keys(data.db.entityShowStates).forEach(key => {
+      entityShowStates[key] = data.db.entityShowStates[key];
+    });
   }
 };
 
@@ -68,7 +75,7 @@ export const mergeData = async (data: BackupData | null) => {
   if (data?.storage?.userLanguage) {
     setLanguage(data.storage.userLanguage);
     const { t } = useI18n();
-    document.title = t('title') || '终末地地图资源查询'
+    document.title = t('title') || '终末地地图资源查询';
   }
   // 设置设置
   if (data?.db?.settings) {
@@ -83,6 +90,12 @@ export const mergeData = async (data: BackupData | null) => {
   } else if (data?.db?.customPoints) {
     restorePointsMerge(data.db.customPoints);
   }
+  // 设置实体显示状态
+  if (data?.db?.entityShowStates) {
+    Object.keys(data.db.entityShowStates).forEach(key => {
+      entityShowStates[key] = data.db.entityShowStates[key];
+    });
+  }
 };
 
 // 备份数据
@@ -95,6 +108,7 @@ export const backupData = async () => {
       settings: settings.value,
       customPoints,
       customPointsData,
+      entityShowStates: { ...entityShowStates },
     },
     storage: {
       [LOCAL_STORAGE_KEY.MAP]:

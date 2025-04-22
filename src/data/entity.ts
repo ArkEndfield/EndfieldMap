@@ -1,10 +1,13 @@
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import type {
   EntityCategories,
   EntityCategory,
   EntityInfo,
   EntityShowStates,
 } from '@/types/entity';
+import { DATA_DB_KEY } from '@/constants/db_key';
+import { getItem, setItem } from '@/utils/indexedDBStorage';
+import { debounce } from '@/utils/common';
 
 // 显示培养素材快速筛选
 export const showCultivationMaterial = ref(false);
@@ -108,4 +111,31 @@ export const isSelectAllByCategory = (category: string) => {
     }
     return true;
   });
+};
+
+// 保存实体显示状态到数据库
+const saveEntityShowStates = debounce(async () => {
+  const plainStates = { ...entityShowStates };
+  await setItem(DATA_DB_KEY.ENTITY_SHOW_STATES, plainStates);
+}, 500);
+
+// 监听实体显示状态变化并保存到数据库
+watch(
+  entityShowStates,
+  () => {
+    saveEntityShowStates();
+  },
+  { deep: true }
+);
+
+// 初始化实体显示状态
+export const initializeEntityShowStates = async () => {
+  const savedStates = await getItem<EntityShowStates>(
+    DATA_DB_KEY.ENTITY_SHOW_STATES
+  );
+  if (savedStates) {
+    Object.keys(savedStates).forEach(key => {
+      entityShowStates[key] = savedStates[key];
+    });
+  }
 };

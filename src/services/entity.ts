@@ -5,6 +5,7 @@ import {
   entityInfo,
   entityShowStates,
   selectCallbacks,
+  initializeEntityShowStates,
 } from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
 import type { PointData } from '@/types/points';
@@ -52,6 +53,7 @@ export async function initializeEntity() {
     await loadEntityData(); // 先加载实体数据
     const currentPoints = await getCurrentPoints(); // 使用导入的获取当前点位的函数
     await initializeEntityInfo(currentPoints); // 使用当前点位数组
+    await initializeEntityShowStates(); // 初始化实体显示状态
     createEntityClusterLayers(); // 最后创建图层
   } catch (error) {
     console.error('初始化地图失败:', error);
