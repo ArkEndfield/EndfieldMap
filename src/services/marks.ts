@@ -210,6 +210,16 @@ export const shouldShowByMarkStatus = (seq: number): boolean => {
   return true;
 };
 
+// 判断指定序号的点位是否完成
+export const isMarked = (seq: number): boolean => {
+  return marks[seq].finish === true;
+};
+
+// 判断指定序号的点位是否未完成
+export const isUnmarked = (seq: number): boolean => {
+  return marks[seq].finish === false;
+};
+
 // 开始批量选择
 export const startMultiSelect = () => {
   isMultiSelecting.value = true;

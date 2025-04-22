@@ -1,6 +1,11 @@
 import { watch } from 'vue';
 import { loadJSON } from '@/utils/jsonLoader';
-import { customEntityInfo, entityInfo, selectCallbacks } from '@/data/entity';
+import {
+  customEntityInfo,
+  entityInfo,
+  entityShowStates,
+  selectCallbacks,
+} from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
 import type { PointData } from '@/types/points';
 import {
@@ -115,21 +120,13 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
 
     // 默认隐藏所有实体
     Object.keys(entityInfo).forEach(key => {
-      if (entityInfo[key]) {
-        entityInfo[key].entityInfo.show = false;
-      }
+      entityShowStates[key] = false;
     });
 
     // 特殊处理：确保自定义标点类型默认为显示状态
-    if (entityInfo['custom']) {
-      entityInfo['custom'].entityInfo.show = true;
-    }
-    if (entityInfo['custom1']) {
-      entityInfo['custom1'].entityInfo.show = true;
-    }
-    if (entityInfo['custom2']) {
-      entityInfo['custom2'].entityInfo.show = true;
-    }
+    entityShowStates['custom'] = true;
+    entityShowStates['custom1'] = true;
+    entityShowStates['custom2'] = true;
   } catch (error) {
     console.error('初始化实体信息时发生错误:', error);
     throw error;
@@ -164,7 +161,7 @@ export async function loadEntityData() {
 export const initializeEntityLayers = async () => {
   // 保存原有的显示状态
   const showStates = Object.fromEntries(
-    Object.entries(entityInfo).map(([key, info]) => [key, info.entityInfo.show])
+    Object.entries(entityInfo).map(([key]) => [key, entityShowStates[key]])
   );
 
   // 清空现有图层和源 - 增强清理过程以防止内存泄漏
@@ -224,7 +221,7 @@ export const initializeEntityLayers = async () => {
     // 恢复显示状态（只针对新地图中存在的实体）
     for (const key in entityInfo) {
       if (entityInfo[key].entityInfo && showStates[key] !== undefined) {
-        entityInfo[key].entityInfo.show = showStates[key];
+        entityShowStates[key] = showStates[key];
       }
     }
 
@@ -242,24 +239,24 @@ export const isCustomEntity = (key: string) => {
 
 // 选择所有实体
 export const selectAll = () => {
-  for (const key in entityInfo) {
-    entityInfo[key].entityInfo.show = true;
-  }
+  Object.keys(entityInfo).forEach(key => {
+    entityShowStates[key] = true;
+  });
   notifySelectChange();
 };
 
 // 清除所有选择
 export const clear = () => {
-  for (const key in entityInfo) {
-    entityInfo[key].entityInfo.show = false;
-  }
+  Object.keys(entityInfo).forEach(key => {
+    entityShowStates[key] = false;
+  });
   notifySelectChange();
 };
 
 export const select = (...keys: string[]) => {
   keys.forEach(key => {
     if (entityInfo[key]) {
-      entityInfo[key].entityInfo.show = true;
+      entityShowStates[key] = true;
     }
   });
   notifySelectChange();
@@ -268,7 +265,7 @@ export const select = (...keys: string[]) => {
 export const unSelect = (...keys: string[]) => {
   keys.forEach(key => {
     if (entityInfo[key]) {
-      entityInfo[key].entityInfo.show = false;
+      entityShowStates[key] = false;
     }
   });
   notifySelectChange();
@@ -277,7 +274,7 @@ export const unSelect = (...keys: string[]) => {
 export const toggleSelect = (...keys: string[]) => {
   keys.forEach(key => {
     if (entityInfo[key]) {
-      entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
+      entityShowStates[key] = !entityShowStates[key];
     }
   });
   notifySelectChange();
@@ -285,58 +282,58 @@ export const toggleSelect = (...keys: string[]) => {
 
 // 选择一大类的实体
 export const selectByCategory = (category: string) => {
-  for (const key in entityInfo) {
+  Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key].category === category) {
-      entityInfo[key].entityInfo.show = true;
+      entityShowStates[key] = true;
     }
-  }
+  });
   notifySelectChange();
 };
 
 // 取消选择一大类的实体
 export const unSelectByCategory = (category: string) => {
-  for (const key in entityInfo) {
+  Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key].category === category) {
-      entityInfo[key].entityInfo.show = false;
+      entityShowStates[key] = false;
     }
-  }
+  });
   notifySelectChange();
 };
 
 export const selectAllByCategory = (category: string) => {
-  for (const key in entityInfo) {
+  Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key].category === category) {
-      entityInfo[key].entityInfo.show = true;
+      entityShowStates[key] = true;
     }
-  }
+  });
   notifySelectChange();
 };
 
 export const unSelectAllByCategory = (category: string) => {
-  for (const key in entityInfo) {
+  Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key].category === category) {
-      entityInfo[key].entityInfo.show = false;
+      entityShowStates[key] = false;
     }
-  }
+  });
   notifySelectChange();
 };
 
 // 切换选择一大类的实体
 export const toggleSelectByCategory = (category: string) => {
-  for (const key in entityInfo) {
+  Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key].category === category) {
-      entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
+      entityShowStates[key] = !entityShowStates[key];
     }
-  }
+  });
   notifySelectChange();
 };
 
 export const toggleSelectByName = (name: string) => {
-  for (const key in entityInfo) {
+  Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key].entityInfo.name === name) {
-      entityInfo[key].entityInfo.show = !entityInfo[key].entityInfo.show;
+      entityShowStates[key] = !entityShowStates[key];
     }
-  }
+  });
   notifySelectChange();
 };
 

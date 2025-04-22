@@ -2,7 +2,6 @@ export interface EntityInfo {
   name: string;
   point: string;
   pic: string;
-  show: boolean;
   count: number;
   scale?: number;
 }
@@ -27,3 +26,6 @@ export type EntityCategories = Record<
     entityInfo: EntityInfo;
   }
 >;
+
+// 实体显示状态
+export type EntityShowStates = Record<string, boolean>;

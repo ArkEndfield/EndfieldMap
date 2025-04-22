@@ -14,9 +14,8 @@ import {
   RegularShape,
 } from 'ol/style';
 
-import { rafTimeout } from '@/utils/animationTimer';
 import { debounce, xyz2crd } from '@/utils/common';
-import { entityInfo } from '@/data/entity';
+import { entityInfo, entityShowStates } from '@/data/entity';
 import { PointData } from '@/types/points';
 import settings from '@/data/settings';
 import {
@@ -25,7 +24,7 @@ import {
   getImageSize,
 } from '@/utils/render';
 import { currentMarkFilter } from '@/data/marks';
-import { shouldShowByMarkStatus } from './marks';
+import { shouldShowByMarkStatus, isMarked } from './marks';
 
 // 样式缓存类型
 interface StyleCacheEntry {
@@ -64,6 +63,7 @@ const source = new WebGLVectorLayer({
     'circle-stroke-color': '#fff',
     'circle-stroke-width': 2,
   },
+  disableHitDetection: false,
 });
 
 // 样式缓存和图层容器
@@ -74,6 +74,7 @@ const entityClusterSources: { [key: string]: Cluster } = {};
 // 样式创建函数缓存
 const iconStyleCache: { [key: string]: Promise<Style[] | Style> | undefined } =
   {};
+const styleCacheCleanupTimers: { [key: string]: number } = {};
 
 // 优化样式创建函数
 async function createCircleIconStyle(
@@ -83,6 +84,10 @@ async function createCircleIconStyle(
   const cacheKey = `${entityType}-${size}`;
 
   if (iconStyleCache[cacheKey] !== undefined) {
+    // 清除之前的清理定时器
+    if (styleCacheCleanupTimers[cacheKey]) {
+      clearTimeout(styleCacheCleanupTimers[cacheKey]);
+    }
     return iconStyleCache[cacheKey] as Promise<Style[]>;
   }
 
@@ -211,8 +216,15 @@ function createClusterStyle(radius: number, size: number): Style {
 
 function setupCacheCleanup(promise: Promise<any>, cacheKey: string): void {
   promise.finally(() => {
-    rafTimeout(() => {
+    // 清除之前的清理定时器
+    if (styleCacheCleanupTimers[cacheKey]) {
+      clearTimeout(styleCacheCleanupTimers[cacheKey]);
+    }
+
+    // 设置新的清理定时器
+    styleCacheCleanupTimers[cacheKey] = window.setTimeout(() => {
       delete iconStyleCache[cacheKey];
+      delete styleCacheCleanupTimers[cacheKey];
     }, CACHE_CLEANUP_TIMEOUT);
   });
 }
@@ -292,7 +304,17 @@ function createClusterLayerForType(
   typeFeatures: Feature<Point>[]
 ): void {
   const typeSource = new VectorSource({ features: typeFeatures });
-  const clusterSource = new Cluster({ distance: 20, source: typeSource });
+  const clusterSource = new Cluster({
+    distance: 20,
+    source: typeSource,
+    geometryFunction: feature => {
+      const geometry = feature.getGeometry();
+      if (geometry instanceof Point) {
+        return geometry;
+      }
+      return null;
+    },
+  });
 
   entityClusterSources[entityType] = clusterSource;
 
@@ -301,6 +323,8 @@ function createClusterLayerForType(
     style: createClusterStyleFunction(entityType),
     zIndex: 10,
     visible: false,
+    updateWhileAnimating: true,
+    updateWhileInteracting: true,
   });
 
   entityClusterLayers.push(layer);
@@ -353,10 +377,10 @@ export const updateClusterDistance = debounce(
   { leading: false, trailing: true }
 );
 
-// 辅助函数：更新所有聚合距离
 function updateAllClusterDistances(distance: number): void {
   Object.values(entityClusterSources).forEach(source => {
     source.setDistance(distance);
+    source.refresh();
   });
 }
 
@@ -419,14 +443,14 @@ export function refreshMap(): void {
     createEntityClusterLayers();
   }
 
-  Object.entries(entityInfo).forEach(([key, info]) => {
+  Object.entries(entityInfo).forEach(([key]) => {
     const source = entityClusterSources[key];
     if (!source) return;
 
     const layer = entityClusterLayers.find(l => l.getSource() === source);
     if (!layer) return;
 
-    const shouldShowEntityType = info.entityInfo.show;
+    const shouldShowEntityType = entityShowStates[key];
     layer.setVisible(shouldShowEntityType);
 
     if (shouldShowEntityType) {
@@ -435,7 +459,6 @@ export function refreshMap(): void {
   });
 }
 
-// 辅助函数：更新源特征
 function updateSourceFeatures(source: Cluster, entityType: string): void {
   const vectorSource = source.getSource();
   if (!vectorSource) return;
@@ -447,7 +470,16 @@ function updateSourceFeatures(source: Cluster, entityType: string): void {
     return payload?.entityDataIdKey === entityType;
   });
 
-  if (currentMarkFilter.value !== 'all') {
+  if (currentMarkFilter.value === 'all') {
+    typeFeatures.forEach(f => {
+      const payload = f.get('payload');
+      if (payload?.levelLogicId) {
+        const marked = isMarked(payload.levelLogicId);
+        // 设置透明度
+        console.log(marked);
+      }
+    });
+  } else {
     typeFeatures = typeFeatures.filter(f => {
       const payload = f.get('payload');
       return shouldShowByMarkStatus(payload?.levelLogicId);
@@ -456,6 +488,7 @@ function updateSourceFeatures(source: Cluster, entityType: string): void {
 
   if (typeFeatures.length > 0) {
     vectorSource.addFeatures(typeFeatures);
+    source.refresh();
   }
 }
 
@@ -543,16 +576,38 @@ export const removeEntityClusterSource = (key: string) => {
   delete entityClusterSources[key];
 };
 
-// 清空所有数据
+// 优化清空所有数据函数
 export const clearAllData = () => {
+  // 清除所有定时器
+  Object.values(styleCacheCleanupTimers).forEach(timer => {
+    clearTimeout(timer);
+  });
+
+  // 清空所有缓存
+  Object.keys(iconStyleCache).forEach(key => {
+    delete iconStyleCache[key];
+  });
+  Object.keys(styleCacheCleanupTimers).forEach(key => {
+    delete styleCacheCleanupTimers[key];
+  });
+  Object.keys(styleCache).forEach(key => {
+    delete styleCache[key];
+  });
+
+  // 清空特征和映射
   features.length = 0;
   Object.keys(itemMap).forEach(key => delete itemMap[key]);
   Object.keys(entityGroup).forEach(key => delete entityGroup[key]);
-  Object.keys(styleCache).forEach(key => delete styleCache[key]);
+
+  // 清空图层和源
   entityClusterLayers.length = 0;
-  Object.keys(entityClusterSources).forEach(
-    key => delete entityClusterSources[key]
-  );
+  Object.keys(entityClusterSources).forEach(key => {
+    const source = entityClusterSources[key];
+    source.getSource()?.clear();
+    delete entityClusterSources[key];
+  });
+
+  // 清空主源
   const vectorSource = source.getSource();
   if (vectorSource) {
     vectorSource.clear();

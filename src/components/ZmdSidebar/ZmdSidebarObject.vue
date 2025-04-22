@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { categoryInfo, entityInfo } from '@/data/entity';
+import { categoryInfo, entityInfo, entityShowStates } from '@/data/entity';
 import { useI18n } from 'vue-i18n';
 import { toggleSelect, isCustomEntity } from '@/services/entity';
 import { refreshMap } from '@/services/render';
@@ -88,7 +88,12 @@ const isActive = computed(() => {
         item => item.point === props.entity?.point
       );
       if (entityData) {
-        return entityData.show;
+        const entityKey = Object.keys(entityInfo).find(
+          key =>
+            entityInfo[key].category === props.category &&
+            entityInfo[key].entityInfo.point === props.entity?.point
+        );
+        return entityKey ? entityShowStates[entityKey] : false;
       }
     }
 
@@ -100,7 +105,7 @@ const isActive = computed(() => {
     );
 
     if (entityKey) {
-      return entityInfo[entityKey].entityInfo.show;
+      return entityShowStates[entityKey];
     }
   }
 

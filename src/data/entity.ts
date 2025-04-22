@@ -3,6 +3,7 @@ import type {
   EntityCategories,
   EntityCategory,
   EntityInfo,
+  EntityShowStates,
 } from '@/types/entity';
 
 // 显示培养素材快速筛选
@@ -11,6 +12,9 @@ export const showCultivationMaterial = ref(false);
 // 实体信息
 export const entityInfo: EntityCategories = reactive({});
 
+// 实体显示状态
+export const entityShowStates: EntityShowStates = reactive({});
+
 // 自定义实体
 export const customEntityInfo: EntityCategories = {
   custom: {
@@ -18,7 +22,6 @@ export const customEntityInfo: EntityCategories = {
       name: '自定义点位',
       pic: 'default',
       count: 0,
-      show: true,
       point: 'custom',
     },
     category: 'custom',
@@ -28,7 +31,6 @@ export const customEntityInfo: EntityCategories = {
       name: '自定义点位1',
       pic: 'default1',
       count: 0,
-      show: true,
       point: 'custom1',
     },
     category: 'custom',
@@ -38,7 +40,6 @@ export const customEntityInfo: EntityCategories = {
       name: '自定义点位2',
       pic: 'default2',
       count: 0,
-      show: true,
       point: 'custom2',
     },
     category: 'custom',
@@ -49,7 +50,7 @@ export const customEntityInfo: EntityCategories = {
 export const selectCallbacks: (() => void)[] = [];
 
 export const isSelectAll = computed(() => {
-  return Object.keys(entityInfo).every(key => entityInfo[key].entityInfo.show);
+  return Object.keys(entityInfo).every(key => entityShowStates[key]);
 });
 
 // 计算属性：获取分类信息
@@ -79,14 +80,10 @@ export const categoryInfo = computed(() => {
   // 将实体信息填充到对应分类中，只包含 count > 0 的实体
   for (const key in entityInfo) {
     const entity = entityInfo[key];
-    // if (entity.entityInfo.count > 0) {
-    // 并非处理
-    // 只处理 count > 0 的实体
     const category = entity.category;
     if (categories[category]) {
       categories[category].push(entity.entityInfo);
     }
-    // }
   }
 
   // 过滤掉空的分类
@@ -107,7 +104,7 @@ export const isSelectAllByCategory = (category: string) => {
       entityInfo[key].category === category &&
       entityInfo[key].entityInfo.count > 0
     ) {
-      return entityInfo[key].entityInfo.show;
+      return entityShowStates[key];
     }
     return true;
   });
