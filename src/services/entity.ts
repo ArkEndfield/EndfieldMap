@@ -4,14 +4,19 @@ import { customEntityInfo, entityInfo, selectCallbacks } from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
 import type { PointData } from '@/types/points';
 import {
-  features,
-  itemMap,
-  entityGroup,
-  source,
-  entityClusterSources,
-  entityClusterLayers,
+  getFeatures,
+  getItemMap,
+  getEntityGroup,
+  getSource,
+  getEntityClusterSources,
+  getEntityClusterLayers,
+  addFeature,
+  addFeatureToItemMap,
+  addFeatureToEntityGroup,
+  clearAllData,
+  marker,
+  createEntityClusterLayers,
 } from '@/services/render';
-import { marker, createEntityClusterLayers } from '@/services/render';
 import type { EntityCategories } from '@/types/entity';
 import { currentMarkFilter } from '@/data/marks';
 
@@ -75,14 +80,7 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
     console.log('开始初始化实体信息，点位数量:', pointsData.length);
 
     // 清空现有数据
-    features.length = 0;
-    Object.keys(itemMap).forEach(key => delete itemMap[key]);
-    Object.keys(entityGroup).forEach(key => {
-      if (entityGroup[key] && entityGroup[key].points) {
-        entityGroup[key].points.length = 0;
-      }
-      delete entityGroup[key];
-    });
+    clearAllData();
 
     // 重置所有实体的计数
     Object.keys(entityInfo).forEach(key => {
@@ -90,12 +88,6 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
         entityInfo[key].entityInfo.count = 0;
       }
     });
-
-    // 清空source中的features
-    const vectorSource = source.getSource();
-    if (vectorSource) {
-      vectorSource.clear();
-    }
 
     // 处理每个点位
     for (const point of pointsData) {
@@ -107,17 +99,19 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
       // 创建并添加feature
       const feature = marker(point);
       if (feature) {
-        features.push(feature);
-        itemMap[point.levelLogicId] = feature;
+        addFeature(feature);
+        addFeatureToItemMap(Number(point.levelLogicId), feature);
+        addFeatureToEntityGroup(point.entityDataIdKey, feature);
       }
     }
 
     // 将features添加到source中
+    const vectorSource = getSource().getSource();
     if (vectorSource) {
-      vectorSource.addFeatures(features);
+      vectorSource.addFeatures(getFeatures());
     }
 
-    console.log(`成功初始化 ${features.length} 个实体特征`);
+    console.log(`成功初始化 ${getFeatures().length} 个实体特征`);
 
     // 默认隐藏所有实体
     Object.keys(entityInfo).forEach(key => {
@@ -174,7 +168,7 @@ export const initializeEntityLayers = async () => {
   );
 
   // 清空现有图层和源 - 增强清理过程以防止内存泄漏
-  entityClusterLayers.forEach(layer => {
+  getEntityClusterLayers().forEach(layer => {
     if (layer.getSource()) {
       const source = layer.getSource();
       // 清理聚合源
@@ -192,11 +186,11 @@ export const initializeEntityLayers = async () => {
   });
 
   // 清空数组
-  entityClusterLayers.length = 0;
+  getEntityClusterLayers().length = 0;
 
   // 明确清理聚合源对象
-  Object.keys(entityClusterSources).forEach(key => {
-    const source = entityClusterSources[key];
+  Object.keys(getEntityClusterSources()).forEach(key => {
+    const source = getEntityClusterSources()[key];
     if (source) {
       // 清理内部向量源
       const innerSource = source.getSource();
@@ -205,22 +199,22 @@ export const initializeEntityLayers = async () => {
       }
       source.setSource(null);
     }
-    delete entityClusterSources[key];
+    delete getEntityClusterSources()[key];
   });
 
   // 清理特征数组
-  features.length = 0;
+  getFeatures().length = 0;
 
   // 清理实体分组数据
-  Object.keys(entityGroup).forEach(key => {
-    if (entityGroup[key] && entityGroup[key].points) {
-      entityGroup[key].points.length = 0;
+  Object.keys(getEntityGroup()).forEach(key => {
+    if (getEntityGroup()[key] && getEntityGroup()[key].points) {
+      getEntityGroup()[key].points.length = 0;
     }
-    delete entityGroup[key];
+    delete getEntityGroup()[key];
   });
 
   // 清理项目映射
-  Object.keys(itemMap).forEach(key => delete itemMap[key]);
+  Object.keys(getItemMap()).forEach(key => delete getItemMap()[key]);
 
   try {
     // 重新初始化实体信息

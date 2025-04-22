@@ -1,6 +1,6 @@
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
-import { features } from './render';
+import { getFeatures } from './render';
 import { entityInfo as entityInfoData } from '@/data/entity';
 import { map } from './MapCore';
 import { xyz2crd } from '@/utils/common';
@@ -12,7 +12,7 @@ export class MarkerManager {
    * @returns 匹配的标记数组
    */
   static getMarkersByCategory(category: string): Feature<Point>[] {
-    return features.filter(feature => {
+    return getFeatures().filter(feature => {
       const data = feature.get('payload');
       const entityInfo = entityInfoData[data?.entityDataIdKey];
       return entityInfo?.category === category;

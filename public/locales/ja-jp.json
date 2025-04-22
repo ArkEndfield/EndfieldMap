@@ -120,6 +120,8 @@
     },
     "filter": {
       "cultivation_material": "育成素材",
+      "multi_operate": "複数操作",
+      "cancel_multi_operate": "操作解除",
       "category": {
         "ether": "エーテル",
         "chest": "チェスト",

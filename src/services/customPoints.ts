@@ -6,17 +6,23 @@ import type { Coordinate } from 'ol/coordinate';
 import { generateUUID, crd2xyz, xyz2crd } from '@/utils/common';
 import { getCurrentMapId, closePopup, entity, popupManager } from './MapCore';
 import { filterAndUpdatePoints, getCurrentPoints } from './points';
-import { itemMap, features, source, refreshMap } from './render';
-import { marker } from './render';
-import { marks } from '@/data/marks';
-import { entityInfo } from '@/data/entity';
-import { select } from './entity';
-import VectorSource from 'ol/source/Vector';
 import {
+  getItemMap,
+  getFeatures,
+  getSource,
+  refreshMap,
+  marker,
+  addFeature,
+  addFeatureToItemMap,
+  removeFeatureFromItemMap,
   createCustomPointMarker,
   removeCustomPointMarker,
   updateCustomPointMarker,
 } from './render';
+import { marks } from '@/data/marks';
+import { entityInfo } from '@/data/entity';
+import { select } from './entity';
+import VectorSource from 'ol/source/Vector';
 
 const DB_ALL_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;
 const DB_ALL_POINTS_DATA_KEY = DATA_DB_KEY.CUSTOM_POINTS_DATA;
@@ -228,7 +234,7 @@ export async function updateCustomPoint(
     select(newType);
   } else if (updatedPoint) {
     // 如果类型没有改变但其他属性改变了，更新已有feature的payload
-    const feature = itemMap[levelLogicId];
+    const feature = getItemMap()[levelLogicId];
     if (feature) {
       feature.set('payload', updatedPoint);
     }
@@ -325,15 +331,15 @@ export async function refreshPointsDisplay(): Promise<void> {
   console.log('开始刷新标点显示...');
 
   // 清除现有的标记
-  const vectorSource = source.getSource();
+  const vectorSource = getSource().getSource();
   if (vectorSource && vectorSource instanceof VectorSource) {
     vectorSource.clear();
   } else {
     console.error('source.getSource() is not an instance of VectorSource');
   }
-  features.length = 0;
-  Object.keys(itemMap).forEach(key => {
-    delete itemMap[key];
+  getFeatures().length = 0;
+  Object.keys(getItemMap()).forEach(key => {
+    removeFeatureFromItemMap(Number(key));
   });
 
   // 更新当前显示的点位集合
@@ -354,9 +360,9 @@ export async function refreshPointsDisplay(): Promise<void> {
   currentPoints.forEach(point => {
     const feature = marker(point);
     if (feature) {
-      features.push(feature);
-      itemMap[point.levelLogicId] = feature;
-      const vectorSource = source.getSource();
+      addFeature(feature);
+      addFeatureToItemMap(Number(point.levelLogicId), feature);
+      const vectorSource = getSource().getSource();
       if (vectorSource && vectorSource instanceof VectorSource) {
         vectorSource.addFeature(feature);
       } else {

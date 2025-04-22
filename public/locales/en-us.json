@@ -120,6 +120,8 @@
     },
     "filter": {
       "cultivation_material": "Cultivation Material",
+      "multi_operate": "Multi Operate",
+      "cancel_multi_operate": "Cancel Operate",
       "category": {
         "ether": "Ether",
         "chest": "Chest",

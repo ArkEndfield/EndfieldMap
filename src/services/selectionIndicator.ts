@@ -4,7 +4,7 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { Style, Stroke } from 'ol/style';
 import { Map } from 'ol';
-import { itemMap } from '@/services/render';
+import { getItemMap } from '@/services/render';
 
 // 当前地图实例引用
 let mapInstance: Map | null = null;
@@ -79,7 +79,7 @@ export const showSelectionIndicator = (
   clearSelectionIndicator();
 
   // 查找对应的Feature
-  const feature = itemMap[pointId];
+  const feature = getItemMap()[pointId];
   if (!feature) {
     console.warn(`未找到ID为${pointId}的点位`);
     return;

@@ -24,13 +24,17 @@
         {{ t('clear_select') }}
         <template #subtitle>CLEAR SELECT</template>
       </ZmdSidebarOperateButton>
-      <ZmdSidebarOperateButton @click="handleSelectAll">
+      <ZmdSidebarOperateButton @click="toggleMultiSelectState">
         <template #icon>
           <ZmdSidebarCheckboxCheckedIcon />
         </template>
-        {{ isSelectAll ? t('unselect_all') : t('select_all') }}
+        {{
+          isMultiSelecting
+            ? t('sidebar.filter.cancel_multi_operate')
+            : t('sidebar.filter.multi_operate')
+        }}
         <template #subtitle>{{
-          isSelectAll ? 'UNSELECT ALL' : 'SELECT ALL'
+          isMultiSelecting ? 'CANCEL OPERATE' : 'MULTI OPERATE'
         }}</template>
       </ZmdSidebarOperateButton>
       <ZmdSidebarOperateButton
@@ -84,10 +88,10 @@ import ZmdSidebarOperateButton from './ZmdSidebarOperateButton.vue';
 import ZmdSidebarDeleteIcon from './icons/ZmdSidebarDeleteIcon.vue';
 import ZmdSidebarCheckboxCheckedIcon from './icons/ZmdSidebarCheckboxCheckedIcon.vue';
 import ZmdSidebarFilterToggle from './ZmdSidebarFilterToggle.vue';
-import { isSelectAll, showCultivationMaterial } from '@/data/entity';
-import { selectAll, clear } from '@/services/entity';
-import { currentMarkFilter } from '@/data/marks';
-import { setMarkFilter } from '@/services/marks';
+import { showCultivationMaterial } from '@/data/entity';
+import { clear } from '@/services/entity';
+import { currentMarkFilter, isMultiSelecting } from '@/data/marks';
+import { setMarkFilter, toggleMultiSelectState } from '@/services/marks';
 import { motion } from 'motion-v';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -103,15 +107,6 @@ const props = withDefaults(
 
 const toggleCultivationMaterial = () => {
   showCultivationMaterial.value = !showCultivationMaterial.value;
-};
-
-// 处理全选按钮点击
-const handleSelectAll = () => {
-  if (isSelectAll.value) {
-    clear();
-  } else {
-    selectAll();
-  }
 };
 
 watch(

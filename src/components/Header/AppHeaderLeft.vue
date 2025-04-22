@@ -53,7 +53,7 @@
       <AboutMenu />
       <AnimatePresence>
         <motion.div
-          :class="cn('md:hidden fixed bottom-3.5 right-3.5 p-2')"
+          class="md:hidden fixed bottom-3.5 right-3.5 p-2"
           :initial="{
             fontSize: '1.875rem',
             opacity: 0,

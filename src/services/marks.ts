@@ -3,7 +3,13 @@ import { getAllPoints } from './points';
 import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { MarkChangeCallback, MarkFilterType, MarkInfo } from '@/types/marks';
-import { currentMarkFilter, markChangeCallbacks, marks } from '@/data/marks';
+import {
+  currentMarkFilter,
+  isMultiSelecting,
+  markChangeCallbacks,
+  marks,
+  multiSelectMarks,
+} from '@/data/marks';
 import { getCustomPoints } from './customPoints';
 
 const STORAGE_KEY = DATA_DB_KEY.MARKS;
@@ -89,6 +95,30 @@ export const markPoint = (seq: number) => {
     return marks[seq].finish;
   }
   return false;
+};
+
+export const markPointsAsFinished = (...ids: number[]) => {
+  ids.forEach(id => {
+    if (marks[id]) {
+      marks[id].finish = true;
+    } else {
+      marks[id] = {
+        finish: true,
+      };
+    }
+  });
+};
+
+export const markPointsAsUnfinished = (...ids: number[]) => {
+  ids.forEach(id => {
+    if (marks[id]) {
+      marks[id].finish = false;
+    } else {
+      marks[id] = {
+        finish: false,
+      };
+    }
+  });
 };
 
 // 修改为明确的异步函数
@@ -178,6 +208,68 @@ export const shouldShowByMarkStatus = (seq: number): boolean => {
   }
 
   return true;
+};
+
+// 开始批量选择
+export const startMultiSelect = () => {
+  isMultiSelecting.value = true;
+};
+
+// 取消批量选择
+export const cancelMultiSelect = () => {
+  isMultiSelecting.value = false;
+  multiSelectMarks.value = [];
+};
+
+// toggle 批量选择
+export const toggleMultiSelectState = () => {
+  if (isMultiSelecting.value) {
+    cancelMultiSelect();
+  } else {
+    startMultiSelect();
+  }
+};
+
+// 添加到批量选择
+export const addToMultiSelect = (...ids: number[]) => {
+  multiSelectMarks.value.push(...ids);
+};
+
+// 移除批量选择
+export const removeFromMultiSelect = (...ids: number[]) => {
+  multiSelectMarks.value = multiSelectMarks.value.filter(
+    id => !ids.includes(id)
+  );
+};
+
+// toggle 批量选择
+export const toggleMultiSelect = (id: number) => {
+  if (multiSelectMarks.value.includes(id)) {
+    removeFromMultiSelect(id);
+  } else {
+    addToMultiSelect(id);
+  }
+};
+
+// 清空批量选择
+export const clearMultiSelect = () => {
+  multiSelectMarks.value = [];
+};
+
+// 将当前批量选择标记为完成
+export const finishMultiSelect = () => {
+  multiSelectMarks.value.forEach(id => {
+    markPointsAsFinished(id);
+  });
+  clearMultiSelect();
+};
+
+// 将当前批量选择标记为未完成
+export const unfinishMultiSelect = () => {
+  multiSelectMarks.value.forEach(id => {
+    markPointsAsUnfinished(id);
+  });
+  clearMultiSelect();
 };
 
 // 获取当前标点数据（indexedDB）

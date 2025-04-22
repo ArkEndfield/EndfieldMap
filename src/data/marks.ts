@@ -9,3 +9,7 @@ export const currentMarkFilter = ref<MarkFilterType>('all');
 export const markChangeCallbacks: MarkChangeCallback[] = [];
 
 export const marks: MarkInfo = reactive({});
+
+export const isMultiSelecting = ref(false);
+
+export const multiSelectMarks = ref<number[]>([]);

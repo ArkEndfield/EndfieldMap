@@ -120,6 +120,8 @@
     },
     "filter": {
       "cultivation_material": "培养素材",
+      "multi_operate": "批量操作",
+      "cancel_multi_operate": "取消操作",
       "category": {
         "ether": "醚质",
         "chest": "宝箱",

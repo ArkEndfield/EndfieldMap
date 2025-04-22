@@ -120,6 +120,8 @@
     },
     "filter": {
       "cultivation_material": "재배 재료",
+      "multi_operate": "다중 작업",
+      "cancel_multi_operate": "작업 취소",
       "category": {
         "ether": "에테르",
         "chest": "상자",

@@ -68,6 +68,7 @@ declare module 'vue' {
     MenuIcon: typeof import('./src/components/icons/MenuIcon.vue')['default']
     MenuMenu: typeof import('./src/components/Header/MenuMenu.vue')['default']
     MinusIcon: typeof import('./src/components/icons/MinusIcon.vue')['default']
+    MultiOperateMenus: typeof import('./src/components/MultiOperateMenus.vue')['default']
     NotificationIcon: typeof import('./src/components/icons/NotificationIcon.vue')['default']
     PlusIcon: typeof import('./src/components/icons/PlusIcon.vue')['default']
     PopContentItem: typeof import('./src/components/PopContentItem.vue')['default']

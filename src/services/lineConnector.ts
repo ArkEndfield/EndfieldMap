@@ -5,7 +5,7 @@ import VectorLayer from 'ol/layer/Vector';
 import { Style, Stroke } from 'ol/style';
 import { Map } from 'ol';
 import { generateUUID } from '@/utils/common';
-import { features, itemMap } from '@/services/render';
+import { getFeatures, getItemMap } from '@/services/render';
 
 // 连线管理器
 interface LineGroup {
@@ -79,7 +79,7 @@ export const connectPoints = (
 
   // 对每个点位ID查找对应的Feature
   for (const pointId of pointIds) {
-    const feature = itemMap[pointId];
+    const feature = getItemMap()[pointId];
     if (feature) {
       const geometry = feature.getGeometry();
       if (geometry) {
@@ -206,7 +206,7 @@ export const connectPointsByEntityId = (
   const pointIds: number[] = [];
 
   for (const entityId of entityIds) {
-    const matchedFeatures = features.filter(
+    const matchedFeatures = getFeatures().filter(
       feature => feature.get('payload')?.entityDataIdKey === entityId
     );
 

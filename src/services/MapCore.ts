@@ -6,7 +6,7 @@ import { defaults as interactionDefaults } from 'ol/interaction';
 import Control from 'ol/control/Control';
 import { areaNameLayer, loadTextPoints } from '@/data/locations';
 import {
-  entityClusterLayers,
+  getEntityClusterLayers,
   updateClusterDistance,
   refreshMap,
 } from '@/services/render';
@@ -31,7 +31,7 @@ import {
   onSelectChange,
   initializeEntityLayers,
 } from './entity';
-import { offMarkChange, onMarkChange } from './marks';
+import { offMarkChange, onMarkChange, toggleMultiSelect } from './marks';
 import type { MapViewState } from '@/types/map';
 import { removeAllLines, setMapForLines } from './lineConnector';
 import {
@@ -41,6 +41,7 @@ import {
 } from './selectionIndicator';
 import type { Coordinate } from 'ol/coordinate';
 import { offSettingsChange, onSettingsChange } from './settings';
+import { isMultiSelecting } from '@/data/marks';
 
 // 地图视图状态存储键前缀
 const MAP_VIEW_STATE_KEY_PREFIX = 'mapViewState_';
@@ -164,7 +165,13 @@ export const entity = ref<PointData | null>(null);
 // 全局变量
 let overlay: Overlay;
 export const selectInteraction: Select = new Select({
-  condition: click,
+  condition: event => {
+    // 如果处于多选状态，阻止选择
+    if (isMultiSelecting.value) {
+      return false;
+    }
+    return click(event);
+  },
   style: null,
   layers: () => true,
 });
@@ -196,18 +203,19 @@ function addEntityLayersToMap(currentRetry = 0) {
     return;
   }
 
-  if (entityClusterLayers.length > 0) {
-    console.log(`添加 ${entityClusterLayers.length} 个实体图层到地图`);
+  const layers = getEntityClusterLayers();
+  if (layers.length > 0) {
+    console.log(`添加 ${layers.length} 个实体图层到地图`);
 
     // 重要：确保图层添加过程不会导致闪烁
     requestAnimationFrame(() => {
       // 首先预先设置所有图层为不可见
-      entityClusterLayers.forEach(layer => {
+      layers.forEach(layer => {
         layer.setVisible(false);
       });
 
       // 添加所有图层（不可见状态）
-      entityClusterLayers.forEach(layer => {
+      layers.forEach(layer => {
         map.value?.addLayer(layer);
       });
 
@@ -547,7 +555,6 @@ export const pointSelectHandler = async function (event: SelectEvent) {
 
   const target = event.selected[0];
   if (target) {
-    console.log('选中目标:', target);
     // 检查是否是聚合点
     const features = target.get('features');
     if (features && features.length > 1) {
@@ -596,12 +603,12 @@ export const pointSelectHandler = async function (event: SelectEvent) {
       return;
     }
 
-    console.log('弹窗管理器状态:', {
-      isPopupVisible: popupManager.value.isPopupVisible.value,
-      currentPosition: currentPosition,
-      newPosition: newPosition,
-      positionChanged: positionChanged,
-    });
+    // console.log('弹窗管理器状态:', {
+    //   isPopupVisible: popupManager.value.isPopupVisible.value,
+    //   currentPosition: currentPosition,
+    //   newPosition: newPosition,
+    //   positionChanged: positionChanged,
+    // });
 
     // 如果位置改变或弹出框当前不可见
     if (positionChanged || !popupManager.value?.isPopupVisible.value) {
@@ -782,6 +789,27 @@ function mapClickHandler(event: MapBrowserEvent<any>) {
   // 如果没有Feature被点击，并且弹窗正在显示，则关闭弹窗
   if (!feature && popupManager.value) {
     popupManager.value.closeToast();
+  }
+
+  // 如果有并且有Feature被点击，则关闭弹窗
+  if (feature && isMultiSelecting.value) {
+    popupManager.value?.closeToast();
+
+    // 检查是否是聚合点
+    const features = feature.get('features');
+    let payload: PointData | undefined;
+
+    if (features && features.length > 0) {
+      // 如果是聚合点，获取第一个点的payload
+      payload = features[0].get('payload');
+    } else {
+      // 如果不是聚合点，直接获取payload
+      payload = feature.get('payload') as PointData;
+    }
+
+    if (payload?.levelLogicId) {
+      toggleMultiSelect(payload.levelLogicId as number);
+    }
   }
 }
 
