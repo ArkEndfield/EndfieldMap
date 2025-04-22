@@ -35,7 +35,7 @@
     </div>
     <MenuMenu
       v-on:click="open"
-      class="z-1"
+      class="z-1 md:hidden"
     />
     <div
       :class="
