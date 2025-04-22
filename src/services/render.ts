@@ -25,6 +25,7 @@ import {
 } from '@/utils/render';
 import { currentMarkFilter } from '@/data/marks';
 import { shouldShowByMarkStatus } from './marks';
+import { isMultiSelecting, multiSelectMarks } from '@/data/marks';
 
 // 样式缓存类型
 interface StyleCacheEntry {
@@ -40,6 +41,18 @@ const DEFAULT_BACKGROUND_COLOR = '#525152';
 const DEFAULT_STROKE_COLOR = '#2E2F2E';
 
 let isCluster = true;
+
+// 选中样式
+const selectionStyle = new Style({
+  image: new CircleStyle({
+    radius: DEFAULT_RADIUS + 6,
+    stroke: new Stroke({
+      color: 'rgba(255, 255, 0, 0.8)',
+      width: 4,
+    }),
+  }),
+  zIndex: 1,
+});
 
 // 这些变量从data/entity.ts中提取
 const features: Feature<Point>[] = [];
@@ -332,21 +345,37 @@ function createClusterLayerForType(
 
 // 辅助函数：创建聚合样式函数
 function createClusterStyleFunction(entityType: string) {
-  return (feature: Feature) => {
-    const size = feature.get('features')?.length;
+  return (feature: Feature): Style | Style[] | undefined => {
+    const featuresArray = feature.get('features');
+    const size = featuresArray?.length;
     const styleKey = `${entityType}-${size}`;
 
-    if (!styleCache[styleKey]) {
-      styleCache[styleKey] = { style: new Style({}) };
-      createCircleIconStyle(entityType, size).then(finalStyle => {
-        if (styleCache[styleKey]) {
-          styleCache[styleKey].style = finalStyle;
-          feature.changed();
-        }
-      });
+    let isSelected = false;
+    if (size === 1 && featuresArray?.[0]) {
+      const singleFeature = featuresArray[0];
+      const payload = singleFeature.get('payload');
+      if (payload?.levelLogicId && isMultiSelecting.value) {
+        isSelected = multiSelectMarks.value.includes(payload.levelLogicId);
+      }
     }
 
-    return styleCache[styleKey].style;
+    const cachedBaseStyleEntry = styleCache[styleKey];
+
+    if (!cachedBaseStyleEntry) {
+      createCircleIconStyle(entityType, size).then(baseStyle => {
+        styleCache[styleKey] = { style: baseStyle };
+        feature.changed();
+      });
+      return new Style({});
+    } else {
+      const baseStyle = cachedBaseStyleEntry.style;
+      if (isSelected) {
+        const styles = Array.isArray(baseStyle) ? baseStyle : [baseStyle];
+        return [...styles, selectionStyle];
+      } else {
+        return baseStyle;
+      }
+    }
   };
 }
 
@@ -380,6 +409,12 @@ export const updateClusterDistance = debounce(
 function updateAllClusterDistances(distance: number): void {
   Object.values(entityClusterSources).forEach(source => {
     source.setDistance(distance);
+    source.refresh();
+  });
+}
+
+function refreshCluster(): void {
+  Object.values(entityClusterSources).forEach(source => {
     source.refresh();
   });
 }
@@ -457,6 +492,8 @@ export function refreshMap(): void {
       updateSourceFeatures(source, key);
     }
   });
+
+  refreshCluster();
 }
 
 function updateSourceFeatures(source: Cluster, entityType: string): void {

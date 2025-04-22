@@ -793,9 +793,18 @@ function mapClickHandler(event: MapBrowserEvent<any>) {
     const features = feature.get('features');
     let payload: PointData | undefined;
 
-    if (features && features.length > 0) {
-      // 如果是聚合点，获取第一个点的payload
-      payload = features[0].get('payload');
+    if (features && features.length === 1) {
+      payload = features[0].get('payload') as PointData;
+    } else if (features && features.length > 1) {
+      // 如果是聚合点, 展开视图
+      const extent = feature.getGeometry()?.getExtent();
+      if (extent) {
+        map.value?.getView().fit(extent, {
+          duration: 500,
+          padding: [50, 50, 50, 50],
+          maxZoom: 5,
+        });
+      }
     } else {
       // 如果不是聚合点，直接获取payload
       payload = feature.get('payload') as PointData;

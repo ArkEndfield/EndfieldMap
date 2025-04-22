@@ -71,9 +71,13 @@ export const initMarksData = async () => {
     notifyMultiSelectStateChange();
   });
 
-  watch(multiSelectMarks, () => {
-    notifyMultiSelectChange();
-  });
+  watch(
+    multiSelectMarks,
+    () => {
+      notifyMultiSelectChange();
+    },
+    { deep: true }
+  );
 
   return marks;
 };
