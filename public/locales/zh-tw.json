@@ -105,6 +105,10 @@
     "show_tour": {
       "title": "操作引導",
       "tips": "重新展示操作引導"
+    },
+    "adjust_position": {
+      "title": "彈窗調整位置",
+      "tips": "當彈窗展開時，調整視圖位置"
     }
   },
   "sidebar": {

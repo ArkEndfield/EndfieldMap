@@ -5,6 +5,7 @@ export const DEFAULT_SETTINGS: Settings = {
   isClusteringEnabled: true,
   showMenuMenu: false,
   sidebarExpanded: true,
+  adjustPopupPosition: true,
 };
 
 export const settingsChangeCallbacks: SettingsChangeCallback[] = [];

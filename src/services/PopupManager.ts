@@ -3,11 +3,11 @@ import Map from 'ol/Map';
 import Overlay from 'ol/Overlay';
 import type { PointData } from '@/types/points';
 import { xyz2crd } from '@/utils/common';
-import { shouldShowRewards } from '@/services/reward';
 import { rafTimeout } from '@/utils/animationTimer';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
 import { MarkerManager } from './markerManager';
+import settings from '@/data/settings';
 
 export class PopupManager {
   private map: Map;
@@ -230,56 +230,6 @@ export class PopupManager {
     }
   }
 
-  // 处理弹出层的关闭和重新打开
-  async closeAndReopenPopup(data: PointData, newPosition: number[]) {
-    // 保存新数据，以便在动画完成后使用
-    const newData = data;
-    const popupPosition = [...newPosition];
-    const wasExpanded = this.openSubPopup.value; // 记录当前弹窗是否展开
-
-    try {
-      console.log('开始关闭和重新打开弹窗');
-      // 1. 先关闭副弹窗
-      this.openSubPopup.value = false;
-
-      // 2. 开始关闭当前弹窗
-      await this.closeToast();
-
-      // 等待弹窗完全关闭
-      await new Promise<void>(resolve => rafTimeout(resolve, 200));
-
-      // 3. 更新数据和位置
-      this.entity.value = newData;
-      this.showVideoInfo.value = false;
-      this.currentPosition = popupPosition;
-      this.overlay.setPosition(popupPosition);
-
-      // 4. 展开新弹窗
-      await this.openToast();
-
-      // 5. 如果之前是展开状态，检查新标点是否有奖励，只有有奖励时才展开副弹窗
-      if (wasExpanded) {
-        const hasRewards = shouldShowRewards(newData);
-
-        if (hasRewards) {
-          // 等待主弹窗完全展开后再展开副弹窗
-          await new Promise<void>(resolve => rafTimeout(resolve, 300));
-
-          this.openSubPopup.value = true;
-
-          // 等待副弹窗展开动画完成
-          await new Promise<void>(resolve => rafTimeout(resolve, 300));
-
-          // 展开后再次检查位置
-          this.adjustPopupPosition();
-        }
-      }
-    } catch (error) {
-      console.error('Popup transition error:', error);
-      this.openSubPopup.value = false;
-    }
-  }
-
   // 设置地图缩放状态
   setMapZooming(isZooming: boolean) {
     this.isMapZooming = isZooming;
@@ -292,7 +242,12 @@ export class PopupManager {
 
   // 调整弹窗位置函数 - 添加防止缩放冲突的逻辑
   adjustPopupPosition() {
-    console.log('触发调整弹窗位置');
+    if (
+      !this.isPopupVisible.value ||
+      !this.entity.value ||
+      !settings.value.adjustPopupPosition
+    )
+      return;
     if (
       !this.currentPosition ||
       !this.popupContainer ||
@@ -342,7 +297,7 @@ export class PopupManager {
           extraTopMargin = 300; // 预估副弹窗高度
         } else {
           // 电脑上向右展开，增加右侧检查的边界
-          extraRightMargin = 320; // 预估副弹窗宽度
+          extraRightMargin = 250; // 预估副弹窗宽度
         }
       }
 
@@ -447,30 +402,6 @@ export class PopupManager {
     // 更新内部状态和弹窗位置
     this.currentPosition = [...targetFeaturePosition];
     this.overlay.setPosition(newPosition);
-
-    // 检查弹窗是否超出视口边界
-    const popupPixelPosition = currentMap.getPixelFromCoordinate(newPosition);
-    const mapRect = currentMap.getTargetElement().getBoundingClientRect();
-    const isOutOfBounds =
-      popupPixelPosition[0] < 0 ||
-      popupPixelPosition[0] > mapRect.width ||
-      popupPixelPosition[1] < 0 ||
-      popupPixelPosition[1] > mapRect.height;
-
-    // 如果弹窗超出视口，调整地图视图
-    if (isOutOfBounds) {
-      const view = currentMap.getView();
-      const currentCenter = view.getCenter();
-      if (currentCenter) {
-        const dx = (newPosition[0] - currentCenter[0]) * 0.3;
-        const dy = (newPosition[1] - currentCenter[1]) * 0.3;
-
-        view.animate({
-          center: [currentCenter[0] + dx, currentCenter[1] + dy],
-          duration: 250,
-        });
-      }
-    }
   }
 
   /**

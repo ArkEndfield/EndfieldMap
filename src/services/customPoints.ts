@@ -250,7 +250,7 @@ export async function updateCustomPoint(
       // 设置当前位置，以便PopupManager可以正确重新定位弹窗
       popupManager.value.setCurrentPosition(xyz2crd(updatedPoint.position));
       // 重新定位弹窗
-      popupManager.value.repositionPopup();
+      popupManager.value.adjustPopupPosition();
     }
   }
 

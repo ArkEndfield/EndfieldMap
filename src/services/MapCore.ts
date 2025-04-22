@@ -31,7 +31,15 @@ import {
   onSelectChange,
   initializeEntityLayers,
 } from './entity';
-import { offMarkChange, onMarkChange, toggleMultiSelect } from './marks';
+import {
+  offMarkChange,
+  onMarkChange,
+  toggleMultiSelect,
+  onMultiSelectStateChange,
+  onMultiSelectChange,
+  offMultiSelectStateChange,
+  offMultiSelectChange,
+} from './marks';
 import type { MapViewState } from '@/types/map';
 import { removeAllLines, setMapForLines } from './lineConnector';
 import {
@@ -381,6 +389,8 @@ export function cleanupMap() {
   offMarkChange(refreshMap);
   offSelectChange(refreshMap);
   offSettingsChange(handleSettingsChange);
+  offMultiSelectStateChange(refreshMap);
+  offMultiSelectChange(refreshMap);
 
   // 清除选择交互
   if (selectInteraction) {
@@ -540,6 +550,9 @@ export async function createMap(
   onSelectChange(refreshMap);
   onSettingsChange(handleSettingsChange);
 
+  onMultiSelectStateChange(refreshMap);
+  onMultiSelectChange(refreshMap);
+
   // 地图创建完成后，主动调用refreshMap显示标点
   refreshMap();
 
@@ -603,37 +616,31 @@ export const pointSelectHandler = async function (event: SelectEvent) {
       return;
     }
 
-    // console.log('弹窗管理器状态:', {
-    //   isPopupVisible: popupManager.value.isPopupVisible.value,
-    //   currentPosition: currentPosition,
-    //   newPosition: newPosition,
-    //   positionChanged: positionChanged,
-    // });
+    if (data.levelLogicId) {
+      showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
+    }
 
     // 如果位置改变或弹出框当前不可见
     if (positionChanged || !popupManager.value?.isPopupVisible.value) {
-      // 立即清除旧的指示器
-      clearSelectionIndicator();
-
       if (popupManager.value.isPopupVisible.value) {
-        console.log('重新打开弹窗 - 位置已改变');
-        // 如果弹窗已经显示，使用PopupManager处理关闭和重新打开
-        await popupManager.value.closeAndReopenPopup(data, newPosition);
+        // 如果弹窗已经显示，先关闭弹窗
+        await popupManager.value.closeToast();
+        // 显示指示器
+        if (data.levelLogicId) {
+          showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
+        }
+        // 重新打开弹窗
+        entity.value = data;
+        popupManager.value.setCurrentPosition([...newPosition]);
+        popupManager.value.openToast();
       } else {
-        console.log('首次打开弹窗');
         // 首次显示弹窗
         entity.value = data;
         popupManager.value.toggleVideoInfo(false);
         popupManager.value.setCurrentPosition([...newPosition]);
         popupManager.value.openToast();
       }
-
-      // 立即显示新的指示器，不要等待弹窗动画完成
-      if (data.levelLogicId) {
-        showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
-      }
     } else {
-      console.log('更新弹窗内容 - 相同位置');
       // 如果是同一位置的点击，只更新弹窗内容，不关闭再打开
       entity.value = data;
     }

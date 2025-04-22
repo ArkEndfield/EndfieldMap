@@ -105,6 +105,10 @@
     "show_tour": {
       "title": "작업 가이드",
       "tips": "작업 가이드 다시 표시"
+    },
+    "adjust_position": {
+      "title": "팝업 위치 조정",
+      "tips": "팝업이 펼쳐질 때 뷰의 위치를 조정"
     }
   },
   "sidebar": {

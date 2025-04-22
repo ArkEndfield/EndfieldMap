@@ -8,7 +8,9 @@ import {
   isMultiSelecting,
   markChangeCallbacks,
   marks,
+  multiSelectChangeCallbacks,
   multiSelectMarks,
+  multiSelectStateChangeCallbacks,
 } from '@/data/marks';
 import { getCustomPoints } from './customPoints';
 
@@ -18,10 +20,32 @@ export const onMarkChange = (callback: MarkChangeCallback) => {
   markChangeCallbacks.push(callback);
 };
 
+export const onMultiSelectStateChange = (callback: MarkChangeCallback) => {
+  multiSelectStateChangeCallbacks.push(callback);
+};
+
+export const onMultiSelectChange = (callback: MarkChangeCallback) => {
+  multiSelectChangeCallbacks.push(callback);
+};
+
 export const offMarkChange = (callback: MarkChangeCallback) => {
   const index = markChangeCallbacks.indexOf(callback);
   if (index !== -1) {
     markChangeCallbacks.splice(index, 1);
+  }
+};
+
+export const offMultiSelectStateChange = (callback: MarkChangeCallback) => {
+  const index = multiSelectStateChangeCallbacks.indexOf(callback);
+  if (index !== -1) {
+    multiSelectStateChangeCallbacks.splice(index, 1);
+  }
+};
+
+export const offMultiSelectChange = (callback: MarkChangeCallback) => {
+  const index = multiSelectChangeCallbacks.indexOf(callback);
+  if (index !== -1) {
+    multiSelectChangeCallbacks.splice(index, 1);
   }
 };
 
@@ -32,6 +56,26 @@ export const notifyMarkChange = () => {
       callback();
     } catch (e) {
       console.error('执行标记变更回调时出错:', e);
+    }
+  });
+};
+
+export const notifyMultiSelectStateChange = () => {
+  multiSelectStateChangeCallbacks.forEach(callback => {
+    try {
+      callback();
+    } catch (e) {
+      console.error('执行多选状态变更回调时出错:', e);
+    }
+  });
+};
+
+export const notifyMultiSelectChange = () => {
+  multiSelectChangeCallbacks.forEach(callback => {
+    try {
+      callback();
+    } catch (e) {
+      console.error('执行多选标记变更回调时出错:', e);
     }
   });
 };
@@ -72,6 +116,14 @@ export const initMarksData = async () => {
     // 同时仍然调用现有的回调机制
     notifyMarkChange();
     saveMarksToStorage();
+  });
+
+  watch(isMultiSelecting, () => {
+    notifyMultiSelectStateChange();
+  });
+
+  watch(multiSelectMarks, () => {
+    notifyMultiSelectChange();
   });
 
   return marks;
@@ -351,3 +403,6 @@ export const mergeMarks = async (newMarks?: MarkInfo | null) => {
   // 刷新状态
   notifyMarkChange();
 };
+
+// 导出multiSelectMarks
+export { multiSelectMarks };

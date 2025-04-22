@@ -24,7 +24,7 @@ import {
   getImageSize,
 } from '@/utils/render';
 import { currentMarkFilter } from '@/data/marks';
-import { shouldShowByMarkStatus, isMarked } from './marks';
+import { shouldShowByMarkStatus } from './marks';
 
 // 样式缓存类型
 interface StyleCacheEntry {
@@ -474,9 +474,9 @@ function updateSourceFeatures(source: Cluster, entityType: string): void {
     typeFeatures.forEach(f => {
       const payload = f.get('payload');
       if (payload?.levelLogicId) {
-        const marked = isMarked(payload.levelLogicId);
+        // const marked = isMarked(payload.levelLogicId);
         // 设置透明度
-        console.log(marked);
+        // console.log(marked);
       }
     });
   } else {

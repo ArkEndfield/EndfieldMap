@@ -105,6 +105,10 @@
     "show_tour": {
       "title": "Operation Guide",
       "tips": "Show operation guide again"
+    },
+    "adjust_position": {
+      "title": "Adjust Popup Position",
+      "tips": "Adjust the position of view when popup is expanded"
     }
   },
   "sidebar": {

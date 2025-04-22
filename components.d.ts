@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AboutMenu: typeof import('./src/components/Header/AboutMenu.vue')['default']
+    AdjustPosition: typeof import('./src/components/Header/Settings/AdjustPosition.vue')['default']
     AppHeaderLeft: typeof import('./src/components/Header/AppHeaderLeft.vue')['default']
     AppHeaderRight: typeof import('./src/components/Header/AppHeaderRight.vue')['default']
     BilibiliCard: typeof import('./src/components/BilibiliCard.vue')['default']
@@ -91,6 +92,7 @@ declare module 'vue' {
     TranslateIcon: typeof import('./src/components/icons/TranslateIcon.vue')['default']
     TrashIcon: typeof import('./src/components/icons/TrashIcon.vue')['default']
     UserIcon: typeof import('./src/components/icons/UserIcon.vue')['default']
+    ViewAltIcon: typeof import('./src/components/icons/ViewAltIcon.vue')['default']
     ZmdAlert: typeof import('./src/components/ZmdAlert/ZmdAlert.vue')['default']
     ZmdAlertCloseIcon: typeof import('./src/components/ZmdAlert/icons/ZmdAlertCloseIcon.vue')['default']
     ZmdAlertFull: typeof import('./src/components/ZmdAlert/ZmdAlertFull.vue')['default']

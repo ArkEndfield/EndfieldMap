@@ -2,6 +2,7 @@
   <div class="space-y-2">
     <ShowTour v-model:open="open" />
     <ClusteringEnable />
+    <AdjustPosition />
     <ClearCache />
     <ExportData />
     <ImportData />
