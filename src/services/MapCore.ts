@@ -203,26 +203,41 @@ function addEntityLayersToMap(currentRetry = 0) {
   if (layers.length > 0) {
     console.log(`添加 ${layers.length} 个实体图层到地图`);
 
-    // 重要：确保图层添加过程不会导致闪烁
-    requestAnimationFrame(() => {
-      // 首先预先设置所有图层为不可见
-      layers.forEach(layer => {
+    // 分批添加图层，避免长时间阻塞主线程
+    const batchSize = 5; // 每批添加5个图层
+    const addLayersBatch = (startIndex: number) => {
+      const endIndex = Math.min(startIndex + batchSize, layers.length);
+      const currentBatch = layers.slice(startIndex, endIndex);
+
+      // 首先预先设置当前批次所有图层为不可见
+      currentBatch.forEach(layer => {
         layer.setVisible(false);
       });
 
-      // 添加所有图层（不可见状态）
-      layers.forEach(layer => {
+      // 添加当前批次所有图层（不可见状态）
+      currentBatch.forEach(layer => {
         map.value?.addLayer(layer);
       });
 
-      // 记录加载成功
-      entityLayersLoaded.value = true;
-      console.log('实体图层加载成功');
+      // 如果还有剩余图层，继续添加下一批
+      if (endIndex < layers.length) {
+        setTimeout(() => {
+          addLayersBatch(endIndex);
+        }, 0);
+      } else {
+        // 所有图层添加完成
+        entityLayersLoaded.value = true;
+        console.log('实体图层加载成功');
 
-      // 在实体图层成功添加到地图后，主动调用refreshMap显示标点
-      refreshMap();
-    });
+        // 在实体图层成功添加到地图后，主动调用refreshMap显示标点
+        setTimeout(() => {
+          refreshMap();
+        }, 10);
+      }
+    };
 
+    // 开始分批添加
+    addLayersBatch(0);
     return;
   }
 
@@ -270,8 +285,10 @@ export async function updateMap(mapIndex: string) {
   map.value.addLayer(tileLayer);
   map.value.addLayer(areaNameLayer);
 
-  // 使用改进的方法添加实体图层
-  addEntityLayersToMap();
+  // 分批异步添加实体图层，避免长时间阻塞主线程
+  setTimeout(() => {
+    addEntityLayersToMap();
+  }, 10);
 
   // 更新视图中心点和缩放级别
   const view = map.value.getView();
@@ -821,9 +838,21 @@ function mapClickHandler(event: MapBrowserEvent<any>) {
   }
 }
 
+// 辅助函数，发送地图加载进度事件
+function dispatchMapLoadProgress(stage: string, progress: number = 0) {
+  window.dispatchEvent(
+    new CustomEvent('map-load-progress', {
+      detail: { stage, progress },
+    })
+  );
+}
+
 // 选择地图
 export const selectMap = async (id: string) => {
   if (getCurrentMapId() === id) return;
+
+  // 发送开始加载事件
+  dispatchMapLoadProgress('map_loading_start');
 
   // 关闭可能打开的弹窗
   if (popupManager.value) {
@@ -839,18 +868,44 @@ export const selectMap = async (id: string) => {
   localStorage.setItem(MAP_ID_KEY, id);
 
   removeAllLines();
-  // 更新地图
-  // 重新加载数据
-  await updatePoints(id);
-  // console.log(`地图切换，加载了 ${points.length} 个点位`);
-  // 初始化实体图层
+
+  console.log(`开始切换到地图: ${id}`);
+
+  // 分步执行以允许UI更新
+
+  // 第1步：更新点位数据
+  dispatchMapLoadProgress('loading_map_data', 10);
+  console.log('步骤1: 更新点位数据');
+  // 让浏览器有机会更新UI
+  await new Promise(resolve => requestAnimationFrame(resolve));
+  const points = await updatePoints(id);
+  dispatchMapLoadProgress('points_data_loaded', 40);
+  console.log(`加载了 ${points.length} 个点位`);
+
+  // 让浏览器有机会更新UI
+  await new Promise(resolve => requestAnimationFrame(resolve));
+
+  // 第2步：初始化实体图层
+  dispatchMapLoadProgress('initializing_entity_layers', 60);
+  console.log('步骤2: 初始化实体图层');
   await initializeEntityLayers();
 
-  // 更新地图图层
+  // 让浏览器有机会更新UI
+  await new Promise(resolve => requestAnimationFrame(resolve));
+
+  // 第3步：更新地图图层
+  dispatchMapLoadProgress('updating_map_layers', 80);
+  console.log('步骤3: 更新地图图层');
   updateMap(id);
 
   // 重新加载地名标注
+  dispatchMapLoadProgress('loading_location_names', 90);
+  console.log('步骤4: 加载地名标注');
   loadTextPoints(true, id === 'map002' ? 'map02' : 'map01', zoomLevel.value);
+
+  // 发送加载完成事件
+  dispatchMapLoadProgress('map_loaded', 100);
+  console.log(`地图切换完成: ${id}`);
 };
 
 export const closePopup = () => {

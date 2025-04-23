@@ -64,7 +64,15 @@
     "up": "煮啵",
     "community_not_constructed": "点击输入标题",
     "map_change": "地图切换",
-    "settings": "设置"
+    "settings": "设置",
+    "loading_map_data": "正在加载地图数据...",
+    "points_data_loaded": "点位数据已加载",
+    "initializing_entity_layers": "正在初始化图层...",
+    "updating_map_layers": "正在更新地图...",
+    "loading_location_names": "正在加载地点名称...",
+    "map_loaded": "地图加载完成",
+    "map_loading_start": "开始加载地图",
+    "map_load_failed": "地图加载失败"
   },
   "settings": {
     "export_data": {

@@ -7,7 +7,11 @@ export interface Changelog {
 const changelog: Changelog[] = [
   {
     date: '2025-04-23',
-    changes: ['增加聚合标点多选操作时显示样式', '修复菜单栏按钮显示问题'],
+    changes: [
+      '优化地图加载动画展示',
+      '增加聚合标点多选操作时显示样式',
+      '修复菜单栏按钮显示问题',
+    ],
   },
   {
     date: '2025-04-22',
