@@ -10,11 +10,7 @@ import { getCurrentPoints } from '@/services/points';
 import type { PointData } from '@/types/points';
 import {
   getFeatures,
-  getItemMap,
-  getEntityGroup,
   getSource,
-  getEntityClusterSources,
-  getEntityClusterLayers,
   addFeature,
   addFeatureToItemMap,
   addFeatureToEntityGroup,
@@ -166,54 +162,8 @@ export const initializeEntityLayers = async () => {
     Object.entries(entityInfo).map(([key]) => [key, entityShowStates[key]])
   );
 
-  // 清空现有图层和源 - 增强清理过程以防止内存泄漏
-  getEntityClusterLayers().forEach(layer => {
-    if (layer.getSource()) {
-      const source = layer.getSource();
-      // 清理聚合源
-      if (source && 'getSource' in source) {
-        const vectorSource = source.getSource();
-        if (vectorSource) {
-          vectorSource.clear();
-        }
-        // 移除聚合关联
-        source.setSource(null);
-      }
-    }
-    // 确保图层从所有可能的集合中移除
-    layer.setSource(null);
-  });
-
-  // 清空数组
-  getEntityClusterLayers().length = 0;
-
-  // 明确清理聚合源对象
-  Object.keys(getEntityClusterSources()).forEach(key => {
-    const source = getEntityClusterSources()[key];
-    if (source) {
-      // 清理内部向量源
-      const innerSource = source.getSource();
-      if (innerSource) {
-        innerSource.clear();
-      }
-      source.setSource(null);
-    }
-    delete getEntityClusterSources()[key];
-  });
-
-  // 清理特征数组
-  getFeatures().length = 0;
-
-  // 清理实体分组数据
-  Object.keys(getEntityGroup()).forEach(key => {
-    if (getEntityGroup()[key] && getEntityGroup()[key].points) {
-      getEntityGroup()[key].points.length = 0;
-    }
-    delete getEntityGroup()[key];
-  });
-
-  // 清理项目映射
-  Object.keys(getItemMap()).forEach(key => delete getItemMap()[key]);
+  // 使用clearAllData函数替代多个循环清理
+  clearAllData();
 
   try {
     // 重新初始化实体信息
