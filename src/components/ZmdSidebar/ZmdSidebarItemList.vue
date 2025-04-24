@@ -1,5 +1,5 @@
 <template>
-  <div
+  <ScrollArea
     class="zmd-sidebar-scroll-list"
     ref="scrollListRef"
   >
@@ -44,7 +44,7 @@
         </div>
       </ZmdSidebarItem>
     </template>
-  </div>
+  </ScrollArea>
 </template>
 
 <script setup lang="ts">
@@ -167,7 +167,6 @@ watch(
 <style lang="scss" scoped>
 .zmd-sidebar-scroll-list {
   margin-top: 0.8em;
-  overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: relative;

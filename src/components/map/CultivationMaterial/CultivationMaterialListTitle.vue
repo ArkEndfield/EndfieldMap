@@ -29,16 +29,14 @@
     </div>
     <motion.div
       ref="scope"
-      class="relative top-0 left-0 right-0 bg-[#464646] text-[#272727] shadow-md z-10"
+      class="relative top-0 left-0 right-0 bg-[#464646] text-[#272727] shadow-md overflow-hidden z-10"
       :animate="{
         opacity: showContent ? 1 : 0,
         height: showContent ? '15em' : 0,
-        overflow: showContent ? 'visible' : 'hidden',
       }"
       :initial="{
         opacity: 0,
         height: 0,
-        overflow: 'hidden',
       }"
       :transition="{
         duration: 0.5,
@@ -46,7 +44,10 @@
         bounce: 0.25,
       }"
     >
-      <ScrollArea class="p-1">
+      <ScrollArea
+        class="p-1"
+        flex-container
+      >
         <slot name="content"> {{ t('none') }} </slot>
       </ScrollArea>
     </motion.div>
