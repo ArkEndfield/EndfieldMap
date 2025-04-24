@@ -2,10 +2,11 @@ import Feature from 'ol/Feature';
 import LineString from 'ol/geom/LineString';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
-import { Style, Stroke } from 'ol/style';
+import { Style, Stroke, Fill } from 'ol/style';
 import { Map } from 'ol';
 import { generateUUID } from '@/utils/common';
 import { getFeatures, getItemMap } from '@/services/render';
+import Polygon from 'ol/geom/Polygon';
 
 // 连线管理器
 interface LineGroup {
@@ -69,7 +70,21 @@ export const connectPoints = (
   const lineSource = new VectorSource();
   const lineLayer = new VectorLayer({
     source: lineSource,
-    style: lineStyle,
+    style: function (feature) {
+      // 使用类型断言，确保 feature 是 Feature 类型
+      const olFeature = feature as Feature;
+
+      // 获取特征类型标记
+      const featureType = olFeature.get('featureType');
+
+      if (featureType === 'arrow') {
+        // 返回箭头样式
+        return olFeature.get('arrowStyle');
+      } else {
+        // 默认为线条样式
+        return lineStyle;
+      }
+    },
     zIndex: 5, // 设置适当的zIndex，确保线条在点位下方但在地图上方
   });
 
@@ -105,8 +120,78 @@ export const connectPoints = (
     geometry: new LineString(coordinates),
   });
 
+  // 标记为线条类型
+  lineFeature.set('featureType', 'line');
+
   // 添加到源中
   lineSource.addFeature(lineFeature);
+
+  // 添加方向箭头（如果至少有两个点）
+  if (coordinates.length >= 2) {
+    // 遍历连线的每个段
+    for (let i = 0; i < coordinates.length - 1; i++) {
+      // 计算箭头位置和方向
+      const start = coordinates[i];
+      const end = coordinates[i + 1];
+      const midPoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+      const angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
+
+      // 创建箭头几何形状
+      const arrowSize = width * 0.5;
+
+      // 箭头的三个点
+      const arrowTip = [
+        midPoint[0] + Math.cos(angle) * arrowSize,
+        midPoint[1] + Math.sin(angle) * arrowSize,
+      ];
+      const arrowLeft = [
+        midPoint[0] -
+          (Math.cos(angle) * arrowSize) / 3 +
+          (Math.cos(angle + Math.PI / 2) * arrowSize) / 3,
+        midPoint[1] -
+          (Math.sin(angle) * arrowSize) / 3 +
+          (Math.sin(angle + Math.PI / 2) * arrowSize) / 3,
+      ];
+      const arrowRight = [
+        midPoint[0] -
+          (Math.cos(angle) * arrowSize) / 3 +
+          (Math.cos(angle - Math.PI / 2) * arrowSize) / 3,
+        midPoint[1] -
+          (Math.sin(angle) * arrowSize) / 3 +
+          (Math.sin(angle - Math.PI / 2) * arrowSize) / 3,
+      ];
+
+      // 创建三角形几何
+      const arrowGeom = new Polygon([
+        [arrowTip, arrowLeft, arrowRight, arrowTip],
+      ]);
+
+      // 创建箭头特征
+      const arrowFeature = new Feature({
+        geometry: arrowGeom,
+      });
+
+      // 标记为箭头类型
+      arrowFeature.set('featureType', 'arrow');
+
+      // 创建箭头样式
+      const arrowStyle = new Style({
+        fill: new Fill({
+          color: color,
+        }),
+        stroke: new Stroke({
+          color: color,
+          width: 1,
+        }),
+      });
+
+      // 存储箭头样式为特征属性
+      arrowFeature.set('arrowStyle', arrowStyle);
+
+      // 添加箭头特征到源
+      lineSource.addFeature(arrowFeature);
+    }
+  }
 
   // 添加到地图
   mapInstance.addLayer(lineLayer);
