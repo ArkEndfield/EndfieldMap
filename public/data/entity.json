@@ -738,5 +738,235 @@
       "show": true,
       "count": 1
     }
+  },
+  "int_narrative_common_audiotape": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "通用音频记录",
+      "point": "int_narrative_common_audiotape",
+      "pic": "item_read_chip",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_book": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "通用书籍档案",
+      "point": "int_narrative_common_book",
+      "pic": "item_read_oldBook",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_chip": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "通用数据芯片",
+      "point": "int_narrative_common_chip",
+      "pic": "item_read_chip",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_drone_ld": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "无人机日志",
+      "point": "int_narrative_common_drone_ld",
+      "pic": "item_read_note",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_empty": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "虚位叙事载体",
+      "point": "int_narrative_common_empty",
+      "pic": "item_read_file",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_empty_withoutVfx": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "静默叙事载体",
+      "point": "int_narrative_common_empty_withoutVfx",
+      "pic": "item_read_file",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_FisrtAid": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "急救箱文档",
+      "point": "int_narrative_common_FisrtAid",
+      "pic": "item_read_file",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_lbbox": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "物资箱标签",
+      "point": "int_narrative_common_lbbox",
+      "pic": "item_read_file",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_news": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "新闻剪报",
+      "point": "int_narrative_common_news",
+      "pic": "item_read_news",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_common_pad": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "电子平板记录",
+      "point": "int_narrative_common_pad",
+      "pic": "item_read_pad",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_narrative_spl_lbsmokerock": {
+    "category": "narrative",
+    "entityInfo": {
+      "name": "特殊：烟熏岩石标记",
+      "point": "int_narrative_spl_lbsmokerock",
+      "pic": "item_read_file",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_appliance": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-家用电器",
+      "point": "int_trigger_dnarrative_appliance",
+      "pic": "item_read_appliance",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_bag": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-遗失背包",
+      "point": "int_trigger_dnarrative_bag",
+      "pic": "item_read_bag",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_billboard": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-广告牌",
+      "point": "int_trigger_dnarrative_billboard",
+      "pic": "item_read_billborad",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_document": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-机密文件",
+      "point": "int_trigger_dnarrative_document",
+      "pic": "item_read_document",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_electronicscreen_postmodel": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-电子屏",
+      "point": "int_trigger_dnarrative_electronicscreen_postmodel",
+      "pic": "item_read_electronicscreen",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_expensivebook": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-珍贵典籍",
+      "point": "int_trigger_dnarrative_expensivebook",
+      "pic": "item_read_expensivebook",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_gm01m16_bottle": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-GM01M16号瓶子",
+      "point": "int_trigger_dnarrative_gm01m16_bottle",
+      "pic": "gm01m16_bottle",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_letter": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-信件",
+      "point": "int_trigger_dnarrative_letter",
+      "pic": "item_read_letter",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_notebook": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-笔记簿",
+      "point": "int_trigger_dnarrative_notebook",
+      "pic": "item_read_notebook",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_signage": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-指示牌",
+      "point": "int_trigger_dnarrative_signage",
+      "pic": "item_read_signage",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_sm1l1m4_arrow": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-SM1L1M4号箭头标记",
+      "point": "int_trigger_dnarrative_sm1l1m4_arrow",
+      "pic": "collection_sm1l1m4_arrowrelic",
+      "show": true,
+      "count": 1
+    }
+  },
+  "int_trigger_dnarrative_sm1l1m6_winebottle": {
+    "category": "dnarrative",
+    "entityInfo": {
+      "name": "触发叙事-SM1L1M6号酒瓶",
+      "point": "int_trigger_dnarrative_sm1l1m6_winebottle",
+      "pic": "item_mission_sm1l1m6_emptybottle",
+      "show": true,
+      "count": 1
+    }
   }
 }

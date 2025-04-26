@@ -1,0 +1,375 @@
+[
+    {
+        "levelLogicId": 2100050153,
+        "entityDataIdKey": "int_trigger_dnarrative_appliance",
+        "position": {
+            "x": 116.3481,
+            "y": 101.10495,
+            "z": -332.548676
+        },
+        "is_hide_after_mission": "e1m1",
+        "max_count": 1,
+        "type": 2,
+        "type_id": "radio_e1m1_2d7"
+    },
+    {
+        "levelLogicId": 2100130053,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -538.059,
+            "y": 94.559,
+            "z": -551.031
+        },
+        "max_count": 1,
+        "type": 0,
+        "type_id": "text_e1m3_1",
+        "used_for_quest": true,
+        "state": 0
+    },
+    {
+        "levelLogicId": 2100130054,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -533.907,
+            "y": 94.298,
+            "z": -545.525
+        },
+        "max_count": 1,
+        "type": 0,
+        "type_id": "text_e1m3_2",
+        "used_for_quest": true,
+        "state": 0
+    },
+    {
+        "levelLogicId": 2100130055,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -527.992,
+            "y": 95.0562,
+            "z": -547.405
+        },
+        "max_count": 1,
+        "type": 0,
+        "type_id": "text_e1m3_3",
+        "used_for_quest": true,
+        "state": 0
+    },
+    {
+        "levelLogicId": 2100330002,
+        "entityDataIdKey": "int_trigger_dnarrative_notebook",
+        "position": {
+            "x": -31.5782166,
+            "y": 94.25157,
+            "z": -553.5186
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_col_lv001_38",
+        "type": 0,
+        "type_id": "text_map01_lv001_38"
+    },
+    {
+        "levelLogicId": 2100330003,
+        "entityDataIdKey": "int_trigger_dnarrative_letter",
+        "position": {
+            "x": -19.3012085,
+            "y": 91.67057,
+            "z": -518.2866
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": -1,
+        "type": 0,
+        "type_id": "text_map01_lv001_41"
+    },
+    {
+        "levelLogicId": 2100330016,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": 43.66977,
+            "y": 96.2745743,
+            "z": -325.226624
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": -1,
+        "type": 0,
+        "type_id": "text_map01_lv001_26"
+    },
+    {
+        "levelLogicId": 2100330017,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": 54.658783,
+            "y": 109.058571,
+            "z": -386.5176
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": -1,
+        "type": 0,
+        "type_id": "text_map01_lv001_24"
+    },
+    {
+        "levelLogicId": 2100330040,
+        "entityDataIdKey": "int_trigger_dnarrative_billboard",
+        "position": {
+            "x": -215.231216,
+            "y": 145.653564,
+            "z": -8.730621
+        },
+        "is_hide_before_mission": "",
+        "max_count": -1,
+        "type": 0,
+        "type_id": "text_map01_lv001_71"
+    },
+    {
+        "levelLogicId": 2100330042,
+        "entityDataIdKey": "int_trigger_dnarrative_billboard",
+        "position": {
+            "x": -237.953217,
+            "y": 116.339569,
+            "z": -197.438629
+        },
+        "is_hide_after_mission": "e2m5",
+        "is_hide_before_mission": "e1m2",
+        "max_count": -1,
+        "type": 0,
+        "type_id": "text_map01_lv001_44"
+    },
+    {
+        "levelLogicId": 2100330065,
+        "entityDataIdKey": "int_trigger_dnarrative_notebook",
+        "position": {
+            "x": -382.683228,
+            "y": 110.079575,
+            "z": -271.6386
+        },
+        "max_count": -1,
+        "type": 2,
+        "type_id": "radio_map01_lv001_64"
+    },
+    {
+        "levelLogicId": 2100330083,
+        "entityDataIdKey": "int_trigger_dnarrative_notebook",
+        "position": {
+            "x": -488.9222,
+            "y": 94.86157,
+            "z": -584.3176
+        },
+        "max_count": 1,
+        "prts_id": "nar_col_lv001_52",
+        "type": 0,
+        "type_id": "text_map01_lv001_52"
+    },
+    {
+        "levelLogicId": 2100330133,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -7.2765274,
+            "y": 107.501839,
+            "z": -364.620819
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_col_lv001_2",
+        "type_id": "text_map01_lv001_2"
+    },
+    {
+        "levelLogicId": 2100330134,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": 2.717476,
+            "y": 99.34684,
+            "z": -358.639832
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_col_lv001_4",
+        "type_id": "text_map01_lv001_4"
+    },
+    {
+        "levelLogicId": 2100330136,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -6.28644562,
+            "y": 107.552254,
+            "z": -390.539063
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_col_lv001_7",
+        "type_id": "text_map01_lv001_7"
+    },
+    {
+        "levelLogicId": 2100330152,
+        "entityDataIdKey": "int_trigger_dnarrative_notebook",
+        "position": {
+            "x": -90.78953,
+            "y": 95.0328445,
+            "z": -226.063828
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_col_lv001_20",
+        "type_id": "text_map01_lv001_20"
+    },
+    {
+        "levelLogicId": 2100330168,
+        "entityDataIdKey": "int_trigger_dnarrative_expensivebook",
+        "position": {
+            "x": -37.8569946,
+            "y": 96.43976,
+            "z": -463.749634
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_res_angle_2",
+        "type": 0,
+        "type_id": "text_map01_lv002_29"
+    },
+    {
+        "levelLogicId": 2100330169,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -169.518524,
+            "y": 147.922836,
+            "z": -34.2008362
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_res_angle_1",
+        "type_id": "text_map01_lv002_28"
+    },
+    {
+        "levelLogicId": 2100330171,
+        "entityDataIdKey": "int_trigger_dnarrative_notebook",
+        "position": {
+            "x": -0.9462204,
+            "y": 98.4778442,
+            "z": -218.762833
+        },
+        "max_count": 1,
+        "reward_id": "reward_f1m4_1",
+        "type_id": "text_f1m4_1",
+        "used_for_quest": true
+    },
+    {
+        "levelLogicId": 2100330180,
+        "entityDataIdKey": "int_trigger_dnarrative_letter",
+        "position": {
+            "x": -8.096834,
+            "y": 100.79,
+            "z": -357.895538
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_col_lv001_18",
+        "type": 0,
+        "type_id": "text_map01_lv001_18"
+    },
+    {
+        "levelLogicId": 2100330185,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -528.013,
+            "y": 93.262,
+            "z": -577.9235
+        },
+        "is_hide_before_mission": "e1m2",
+        "max_count": 1,
+        "prts_id": "nar_res_threat_3",
+        "type_id": "text_map01_lv001_47"
+    },
+    {
+        "levelLogicId": 2100110007,
+        "entityDataIdKey": "int_trigger_dnarrative_billboard",
+        "position": {
+            "x": -290.088,
+            "y": 94.838,
+            "z": -585.635
+        },
+        "max_count": -1,
+        "type": 0,
+        "type_id": "text_gm01m12_2"
+    },
+    {
+        "levelLogicId": 2100110052,
+        "entityDataIdKey": "int_trigger_dnarrative_letter",
+        "position": {
+            "x": -40.164,
+            "y": 93.269,
+            "z": -536.06
+        },
+        "max_count": -1,
+        "type": 0,
+        "type_id": "text_gm01m27_11"
+    },
+    {
+        "levelLogicId": 2100110053,
+        "entityDataIdKey": "int_trigger_dnarrative_notebook",
+        "position": {
+            "x": -42.06001,
+            "y": 93.367,
+            "z": -534.493652
+        },
+        "max_count": -1,
+        "type": 0,
+        "type_id": "text_gm01m27_10"
+    },
+    {
+        "levelLogicId": 2100220013,
+        "entityDataIdKey": "int_trigger_dnarrative_sm1l1m4_arrow",
+        "position": {
+            "x": -395.383453,
+            "y": 108.958794,
+            "z": -312.297241
+        },
+        "max_count": 1,
+        "prts_id": "nar_sm1l1m4_1",
+        "type": 0,
+        "type_id": "text_map01_lv001_sm1l1m4_1",
+        "used_for_quest": true,
+        "state": 0
+    },
+    {
+        "levelLogicId": 2100230004,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -397.4677,
+            "y": 108.162849,
+            "z": -261.208252
+        },
+        "max_count": 1,
+        "option_interact": {
+            "LangKey": "lang_int_lv006_headdress_option"
+        },
+        "reward_id": "reward_mission_sm1l1m5_filebag",
+        "type": -1,
+        "used_for_quest": true,
+        "state": 0
+    },
+    {
+        "levelLogicId": 2100240004,
+        "entityDataIdKey": "int_trigger_dnarrative_document",
+        "position": {
+            "x": -507.501282,
+            "y": 99.88148,
+            "z": -294.08374
+        },
+        "max_count": 1,
+        "type_id": "text_map01_lv001_sm1l1m6_1",
+        "used_for_quest": true,
+        "state": 0
+    },
+    {
+        "levelLogicId": 2100240023,
+        "entityDataIdKey": "int_trigger_dnarrative_sm1l1m6_winebottle",
+        "position": {
+            "x": -505.685,
+            "y": 99.545,
+            "z": -296.081
+        },
+        "max_count": 1,
+        "type": 0,
+        "type_id": "text_map01_lv001_sm1l1m6_7",
+        "state": 0
+    }
+]

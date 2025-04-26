@@ -63,6 +63,8 @@ export const categoryInfo = computed(() => {
     'settlement', // 定居点
     'spcstone', // 稀有矿物
     'plant', // 植物类素材
+    'narrative', // 世界叙事碎片
+    'dnarrative', // 世界叙事回响
     'special', // 特殊点位
     'dungeon', // 副本点位
     'mineral', // 矿物

@@ -6,7 +6,6 @@ export interface EntityInfo {
   scale?: number;
 }
 
-// 副本点位
 export type EntityCategory =
   | 'ether'
   | 'chest'
@@ -15,6 +14,8 @@ export type EntityCategory =
   | 'mineral'
   | 'plant'
   | 'spcstone'
+  | 'narrative'
+  | 'dnarrative'
   | 'settlement'
   | 'enemy'
   | 'custom';
