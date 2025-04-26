@@ -157,7 +157,12 @@
     "unobtained": "未获取",
     "video_info": "视频信息",
     "bv": "BV号",
-    "unknown_bv": "未知BV号"
+    "unknown_bv": "未知BV号",
+    "reward": {
+      "chest": {
+        "title": "宝箱内容"
+      }
+    }
   },
   "bilibili_card": {
     "follow": "关注",

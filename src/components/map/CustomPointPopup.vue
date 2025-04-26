@@ -1,7 +1,7 @@
 <template>
   <div class="custom-point-popup">
     <div class="content">
-      <div class="-mt-1">
+      <div class="-mt-1 px-4">
         <ZmdButtonRight
           @click="startEditing"
           size="small"
@@ -16,7 +16,7 @@
         </ZmdButtonRight>
       </div>
       <ScrollArea
-        class="node-item mt-2 text-sm min-h-28 max-h-52"
+        class="node-item mt-2 text-sm min-h-28 max-h-52 px-4"
         flex-container
         v-if="nodes && nodes.length > 0"
       >
@@ -24,7 +24,7 @@
       </ScrollArea>
       <div
         v-else
-        class="text-center text-sm mt-4"
+        class="text-center text-sm mt-4 px-4"
       >
         {{ t('no_data') }}
       </div>

@@ -3,6 +3,7 @@ import { type PointData } from '@/types/points';
 import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
 import { CACHE_DB_KEY } from '@/constants/db_key';
 import {
+  DungeonSeriesData,
   ReturnRewardItem,
   RewardItem,
   RewardItemData,
@@ -13,14 +14,29 @@ import {
 // IndexedDB 存储键名
 const DB_ALL_REWARDS_KEY = CACHE_DB_KEY.REWARDS;
 const DB_ALL_REWARD_DATA_KEY = CACHE_DB_KEY.REWARDS_DATA;
-
+const DB_DUNGEON_SERIES_DATA_KEY = CACHE_DB_KEY.DUNGEON_SERIES_DATA;
 // 从 IndexedDB 获取所有奖励数据
 export async function getAllRewards(): Promise<RewardType> {
   const rewards = await getItem<RewardType>(
     DB_ALL_REWARDS_KEY,
     StorageType.PERMANENT
   );
+  if (!rewards) {
+    await loadRewardData();
+    return await getAllRewards();
+  }
   return rewards || {};
+}
+
+// 从 IndexedDB 获取所有副本系列数据
+export async function getAllDungeonSeriesData(): Promise<
+  Record<string, DungeonSeriesData>
+> {
+  const dungeonSeriesData = await getItem<Record<string, DungeonSeriesData>>(
+    DB_DUNGEON_SERIES_DATA_KEY,
+    StorageType.PERMANENT
+  );
+  return dungeonSeriesData || {};
 }
 
 // 从 IndexedDB 获取所有奖励物品数据
@@ -41,18 +57,25 @@ export async function loadRewardData() {
     const rewardDataRaw = loadJSON<Record<string, RewardItemData>>(
       '/data/item_data.json'
     );
-    const [data, rewardsDataData] = await Promise.all([
+    const dungeonSeriesRaw = loadJSON<Record<string, DungeonSeriesData>>(
+      '/data/dungeon_series_data.json'
+    );
+    const [data, rewardsDataData, dungeonSeriesData] = await Promise.all([
       rewardRawData,
       rewardDataRaw,
+      dungeonSeriesRaw,
     ]);
 
     // 存储到 IndexedDB
-    await setItem(DB_ALL_REWARDS_KEY, data, StorageType.PERMANENT);
-    await setItem(
-      DB_ALL_REWARD_DATA_KEY,
-      rewardsDataData,
-      StorageType.PERMANENT
-    );
+    await Promise.all([
+      setItem(DB_ALL_REWARDS_KEY, data, StorageType.PERMANENT),
+      setItem(DB_ALL_REWARD_DATA_KEY, rewardsDataData, StorageType.PERMANENT),
+      setItem(
+        DB_DUNGEON_SERIES_DATA_KEY,
+        dungeonSeriesData,
+        StorageType.PERMANENT
+      ),
+    ]);
 
     console.log('奖励列表加载完成，总数:', Object.keys(data).length);
     console.log(
@@ -73,17 +96,18 @@ export function isRewardWithCountType(
   return (item as RewardItemWithCount)?.itemBundles !== undefined;
 }
 
-export async function isRewardWithCount(
-  name?: keyof RewardType
-): Promise<boolean> {
-  if (!name) return false;
-  const rewards = await getAllRewards();
-  return rewards[name] && 'itemBundles' in rewards[name];
+export function isChestReward(point: PointData | null): boolean {
+  if (!point) return false;
+  return !!point.reward_id;
+}
+
+export function isDungeonReward(point: PointData | null): boolean {
+  if (!point) return false;
+  return !!point.dungeion_series_id;
 }
 
 export function shouldShowRewards(point: PointData | null): boolean {
-  if (!point) return false;
-  return !!point.reward_id;
+  return isChestReward(point) || isDungeonReward(point);
 }
 
 export async function getRewardIcon(
@@ -98,14 +122,12 @@ export async function getRewardIcon(
 }
 
 export async function getRewards(
-  point: PointData | null
+  reward_id?: string
 ): Promise<ReturnRewardItem[]> {
-  if (!point) return [];
-  const rewardId = point.reward_id;
-  if (!rewardId) return [];
+  if (!reward_id) return [];
 
   const allRewards = await getAllRewards();
-  const rewardItem = allRewards[rewardId];
+  const rewardItem = allRewards[reward_id];
 
   if (!rewardItem) return [];
 
@@ -133,4 +155,36 @@ export async function getRewards(
   }
 
   return rwds;
+}
+
+export async function getDungeonRewards(
+  point: PointData | null
+): Promise<Record<string, ReturnRewardItem[]>> {
+  if (!point || !point.dungeion_series_id) return {};
+  const dungeonSeriesData = await getAllDungeonSeriesData();
+  const dungeonSeries = dungeonSeriesData[point.dungeion_series_id];
+  if (!dungeonSeries) return {};
+  const includeDungeon = dungeonSeries.includeDungeon;
+  const rewards: Record<string, ReturnRewardItem[]> = {};
+  for (const dungeon of includeDungeon) {
+    if (!dungeon.rewardId && !dungeon.firstPassRewardId) continue;
+    let rewardId = dungeon.rewardId;
+    if (!rewardId && dungeon.firstPassRewardId) {
+      rewardId = dungeon.firstPassRewardId;
+    }
+    if (!rewardId) continue;
+    const reward = await getRewards(rewardId);
+    rewards[dungeon.dungeonId] = reward;
+  }
+  return rewards;
+}
+
+export async function getIncludeDungeonCount(
+  point: PointData | null
+): Promise<number> {
+  if (!point || !point.dungeion_series_id) return 0;
+  const dungeonSeriesData = await getAllDungeonSeriesData();
+  const dungeonSeries = dungeonSeriesData[point.dungeion_series_id];
+  if (!dungeonSeries || !dungeonSeries.includeDungeon) return 0;
+  return dungeonSeries.includeDungeon.length;
 }

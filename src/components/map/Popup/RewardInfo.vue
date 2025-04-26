@@ -11,7 +11,7 @@
     <!-- 桌面端右侧展开按钮 -->
     <button
       v-if="!isMobile"
-      id="sub-popup-button-desktop"
+      id="sub-popup-button"
       class="absolute -right-6 top-0 bottom-0 flex flex-col w-6 z-10"
       @click="popupManager?.toggleSubPopup"
     >
@@ -32,7 +32,7 @@
     <!-- 移动端顶部展开按钮 -->
     <button
       v-if="isMobile"
-      id="sub-popup-button-mobile"
+      id="sub-popup-button"
       class="absolute top-[-1.5rem] left-0 right-0 flex flex-row h-6 z-10"
       @click="toggleMobileSubPopup"
     >
@@ -52,35 +52,9 @@
     <div
       class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
     >
-      <ScrollArea
-        content-class="grid grid-cols-2 gap-x-4 gap-y-8 px-6 pt-4 pb-8 w-full h-full"
-      >
-        <template v-if="rewards && rewards.length > 0">
-          <PopContentItem
-            v-for="rwd in rewards"
-            :key="rwd.id"
-          >
-            <template #icon>
-              <img
-                :src="rwd.icon"
-                :alt="t(`item.${rwd.id}.name`)"
-                class="w-full h-full object-contain"
-              />
-            </template>
-            <template
-              #count
-              v-if="rwd.count"
-              >{{ rwd.count }}</template
-            >
-            {{ t(`item.${rwd.id}.name`) }}
-          </PopContentItem>
-        </template>
-        <div
-          v-else
-          class="col-span-2 text-center text-gray-400 py-4"
-        >
-          暂无奖励信息
-        </div>
+      <ScrollArea content-class="px-4 pt-4 pb-8 w-full h-full">
+        <ChestReward :entity="entity" />
+        <DungeonReward :entity="entity" />
       </ScrollArea>
     </div>
   </div>
@@ -90,9 +64,7 @@
 import { ref, inject, watch, onMounted, computed, onUnmounted } from 'vue';
 import { PopupManager } from '@/services/PopupManager';
 import { type PointData } from '@/types/points';
-import { getRewards, shouldShowRewards } from '@/services/reward';
-import { type ReturnRewardItem } from '@/types/reward';
-import { useI18n } from 'vue-i18n';
+import { shouldShowRewards } from '@/services/reward';
 import { isMobileDevice, watchDeviceType } from '@/utils/deviceDetection';
 import { Ref } from 'vue';
 
@@ -105,8 +77,6 @@ const showRewards = computed(() => {
   return shouldShowRewards(props.entity);
 });
 
-const rewards = ref<ReturnRewardItem[]>([]);
-const { t } = useI18n();
 const isMobile = ref(false);
 
 // 处理移动端子弹窗展开/收起
@@ -114,14 +84,6 @@ const toggleMobileSubPopup = () => {
   if (popupManager?.value) {
     // 切换子弹窗状态，正确调用方法
     popupManager?.value.toggleSubPopup();
-
-    // 确保在移动设备上子弹窗能正确折叠
-    // if (isMobile.value) {
-    //   // 在状态改变后添加适当的延迟，确保位置调整正确进行
-    //   setTimeout(() => {
-    //     popupManager.adjustPopupPosition();
-    //   }, 300);
-    // }
   }
 };
 
@@ -140,18 +102,6 @@ onMounted(() => {
     unwatchDevice();
   });
 });
-
-// 监听 entity 变化以异步加载奖励数据
-watch(
-  () => props.entity,
-  async newEntity => {
-    if (newEntity && shouldShowRewards(newEntity)) {
-      rewards.value = await getRewards(newEntity);
-    } else {
-      rewards.value = [];
-    }
-  }
-);
 
 // 当 entity 变化时，如果没有奖励，则关闭背面弹窗
 watch(
@@ -172,13 +122,6 @@ watch(
       popupManager?.value.closeSub();
     }
   },
-  { immediate: false } // 避免在 popupManager 初始化前执行
+  { immediate: false }
 );
-
-// 初始加载
-onMounted(async () => {
-  if (props.entity && shouldShowRewards(props.entity)) {
-    rewards.value = await getRewards(props.entity);
-  }
-});
 </script>

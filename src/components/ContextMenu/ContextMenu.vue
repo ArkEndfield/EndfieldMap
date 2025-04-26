@@ -189,12 +189,4 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.menu-item {
-  @apply flex items-center px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700;
-}
-
-.menu-divider {
-  @apply my-1 border-t border-gray-200 dark:border-gray-700;
-}
-</style>
+<style lang="scss" scoped></style>

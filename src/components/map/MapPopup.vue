@@ -46,7 +46,7 @@
         "
       >
         <MapPopupDeco />
-        <div class="p-4 pt-2 z-1 relative">
+        <div class="py-4 pt-2 z-1 relative">
           <CustomPointPopup
             :entity="entity"
             v-if="isCustomPoint"
@@ -55,7 +55,7 @@
             :entity="entity"
             v-else-if="!!entity"
           />
-          <div class="flex items-center justify-end gap-2 mt-4">
+          <div class="flex items-center justify-end gap-2 mt-4 px-4">
             <div class="flex items-center justify-end gap-2 ml-auto">
               <label
                 v-if="entity"
@@ -85,8 +85,8 @@ import { marks } from '@/data/marks';
 import { type PointData } from '@/types/points';
 import { motion, useAnimate } from 'motion-v';
 import { useI18n } from 'vue-i18n';
-import GuideInfo from './GuideInfo.vue';
-import RewardInfo from './RewardInfo.vue';
+import GuideInfo from './Popup/GuideInfo.vue';
+import RewardInfo from './Popup/RewardInfo.vue';
 import { isCustomEntity } from '@/services/entity';
 import { computed } from 'vue';
 

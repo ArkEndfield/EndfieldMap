@@ -16,6 +16,7 @@ export const CACHE_DB_KEY = {
   CHARACTER_ENTITY: 'characterEntity',
   WEAPON: 'weapon',
   WEAPON_ENTITY: 'weaponEntity',
+  DUNGEON_SERIES_DATA: 'dungeonSeriesData',
 } as const;
 
 export const LOCAL_STORAGE_KEY = {

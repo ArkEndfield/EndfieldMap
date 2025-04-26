@@ -155,7 +155,12 @@
     "unobtained": "Unobtained",
     "video_info": "Video Info",
     "bv": "BV",
-    "unknown_bv": "Unknown BV"
+    "unknown_bv": "Unknown BV",
+    "reward": {
+      "chest": {
+        "title": "Chest Content"
+      }
+    }
   },
   "bilibili_card": {
     "follow": "Follow",

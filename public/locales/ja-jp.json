@@ -155,7 +155,12 @@
     "unobtained": "未獲得",
     "video_info": "動画情報",
     "bv": "BV",
-    "unknown_bv": "不明なBV"
+    "unknown_bv": "不明なBV",
+    "reward": {
+      "chest": {
+        "title": "宝箱内容"
+      }
+    }
   },
   "bilibili_card": {
     "follow": "フォロー",

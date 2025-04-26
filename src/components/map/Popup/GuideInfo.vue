@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-2 px-4">
     <div class="shrink-0">
       <img
         :src="
@@ -18,22 +18,20 @@
       }}
     </div>
   </div>
-  <div class="!my-2 !text-sm flex flex-wrap items-center gap-2">
+  <div class="!my-2 !text-sm flex flex-wrap items-center gap-2 px-4">
     <span class="ml-auto text-zinc-400">id: {{ entity.levelLogicId }}</span>
   </div>
   <ScrollArea
-    class="!min-h-28 max-h-52"
+    class="!min-h-28 max-h-52 px-4"
     flex-container
   >
-    <div
+    <DungeonDesc
       v-if="entityInfo.category === 'dungeon' && entity.dungeion_series_id"
-      class="game-description dungeon-description"
-    >
-      {{ t(`dungeon.${entity.dungeion_series_id}.desc`) }}
-    </div>
+      :entity="entity"
+    />
     <div
       v-else-if="entityInfo.category === 'enemy'"
-      class="game-description enemy-description"
+      class="enemy-description"
     >
       {{ t(`enemy.${entity.entityDataIdKey}.description`) }}
     </div>
@@ -44,7 +42,7 @@
   </ScrollArea>
   <div
     v-if="guide?.video?.link"
-    class="mt-4"
+    class="mt-4 px-4"
   >
     <a
       :href="guide.video.link"
@@ -96,38 +94,24 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
-.game-description {
+<style lang="scss" scoped>
+.enemy-description {
   padding: 1rem;
   border-radius: 0.5rem;
   font-size: 0.875rem;
   line-height: 1.625;
-  background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(4px);
   transition: all 0.3s ease;
-}
-
-.dungeon-description {
-  color: #8ab4f8;
-  background: linear-gradient(
-    90deg,
-    rgba(138, 180, 248, 0.1),
-    rgba(0, 0, 0, 0.3)
-  );
-}
-
-.enemy-description {
   color: #f8b88b;
   background: linear-gradient(
     90deg,
     rgba(248, 184, 139, 0.1),
     rgba(0, 0, 0, 0.3)
   );
-}
-
-.game-description:hover {
-  background: rgba(0, 0, 0, 0.4);
+  &:hover {
+    background: rgba(0, 0, 0, 0.4);
+  }
 }
 </style>
