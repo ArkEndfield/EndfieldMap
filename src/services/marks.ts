@@ -317,11 +317,10 @@ export const coverMarks = async (newMarks?: MarkInfo | null) => {
   }
   // 清空现有数据
   Object.keys(marks).forEach(key => {
-    delete marks[key];
+    marks[key] = {
+      finish: false,
+    };
   });
-
-  // 重新初始化标记数据
-  await initMarks();
 
   // 导入新数据
   Object.keys(newMarks).forEach(key => {
