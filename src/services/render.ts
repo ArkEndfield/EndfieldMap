@@ -13,6 +13,7 @@ import {
   Text,
   RegularShape,
 } from 'ol/style';
+import { asArray } from 'ol/color';
 
 import { debounce, xyz2crd } from '@/utils/common';
 import { entityInfo, entityShowStates } from '@/data/entity';
@@ -24,7 +25,7 @@ import {
   getImageSize,
 } from '@/utils/render';
 import { currentMarkFilter } from '@/data/marks';
-import { shouldShowByMarkStatus } from './marks';
+import { shouldShowByMarkStatus, isMarked } from './marks';
 import { isMultiSelecting, multiSelectMarks } from '@/data/marks';
 
 // 样式缓存类型
@@ -39,6 +40,7 @@ const DEFAULT_RADIUS = 15;
 const DEFAULT_STROKE_WIDTH = 2;
 const DEFAULT_BACKGROUND_COLOR = '#525152';
 const DEFAULT_STROKE_COLOR = '#2E2F2E';
+const FINISHED_OPACITY = 0.5;
 
 let isCluster = true;
 
@@ -358,7 +360,7 @@ function createClusterLayerForType(
 // 辅助函数：创建聚合样式函数
 function createClusterStyleFunction(entityType: string) {
   return (feature: Feature): Style | Style[] | undefined => {
-    const featuresArray = feature.get('features');
+    const featuresArray = feature.get('features') as Feature<Point>[];
     const size = featuresArray?.length || 0;
     const styleKey = `${entityType}-${size}`;
 
@@ -398,14 +400,130 @@ function createClusterStyleFunction(entityType: string) {
       return new Style({});
     } else {
       const baseStyle = cachedBaseStyleEntry.style;
-      const styles = Array.isArray(baseStyle) ? [...baseStyle] : [baseStyle];
+      // Always work with an array, potentially adding selection styles later
+      let finalStyles = Array.isArray(baseStyle) ? [...baseStyle] : [baseStyle];
 
+      // --- Start: Apply Opacity for Finished Items in 'all' filter mode ---
+      if (currentMarkFilter.value === 'all') {
+        // 检查是否应用透明度
+        let shouldApplyOpacity = false;
+
+        if (size === 1) {
+          // 单个标点的情况，直接检查其标记状态
+          const singleFeature = featuresArray[0];
+          const payload = singleFeature.get('payload');
+          shouldApplyOpacity = payload?.levelLogicId
+            ? isMarked(payload.levelLogicId)
+            : false;
+        } else if (size > 1) {
+          // 聚合标点的情况，检查所有内部标点的标记状态
+          // 只有当全部标点都已标记完成时，聚合标点才应用透明度
+          shouldApplyOpacity = featuresArray.every(feature => {
+            const payload = feature.get('payload');
+            return payload?.levelLogicId
+              ? isMarked(payload.levelLogicId)
+              : false;
+          });
+        }
+
+        if (shouldApplyOpacity) {
+          // Apply opacity to a *copy* of the styles to avoid modifying the cache
+          finalStyles = finalStyles.map(style => {
+            const clonedStyle = style.clone(); // Clone the style
+
+            // Apply opacity to image (icon and shapes)
+            const image = clonedStyle.getImage();
+            if (image) {
+              // 直接对所有图像类型设置整体透明度
+              image.setOpacity(FINISHED_OPACITY);
+
+              // 对于圆形和规则形状，还需要设置填充和描边的透明度
+              if (
+                image instanceof CircleStyle ||
+                image instanceof RegularShape
+              ) {
+                const fill = image.getFill();
+                if (fill) {
+                  const color = fill.getColor();
+                  // Check if color is string or array before processing
+                  if (typeof color === 'string' || Array.isArray(color)) {
+                    const rgbaColor = asArray(color).slice(); // Use slice to copy
+                    rgbaColor[3] = (rgbaColor[3] ?? 1) * FINISHED_OPACITY;
+                    fill.setColor(rgbaColor); // This should now be type-safe
+                  } else if (color) {
+                    // Handle unexpected color types (Pattern/Gradient) if necessary, or log a warning
+                    console.warn(
+                      'Unexpected fill color type for shape:',
+                      color
+                    );
+                  }
+                }
+                const stroke = image.getStroke();
+                if (stroke) {
+                  const color = stroke.getColor();
+                  // Check if color is string or array before processing
+                  if (typeof color === 'string' || Array.isArray(color)) {
+                    const rgbaColor = asArray(color).slice(); // Use slice to copy
+                    rgbaColor[3] = (rgbaColor[3] ?? 1) * FINISHED_OPACITY;
+                    stroke.setColor(rgbaColor); // This should now be type-safe
+                  } else if (color) {
+                    // Handle unexpected color types (Pattern/Gradient) if necessary, or log a warning
+                    console.warn(
+                      'Unexpected stroke color type for shape:',
+                      color
+                    );
+                  }
+                }
+              }
+            }
+
+            // Apply opacity to text (though unlikely for size === 1)
+            const text = clonedStyle.getText();
+            if (text) {
+              // Text 类型没有 setOpacity 方法，只能通过修改填充和描边颜色来应用透明度
+
+              const fill = text.getFill();
+              if (fill) {
+                const color = fill.getColor();
+                // Check if color is string or array before processing
+                if (typeof color === 'string' || Array.isArray(color)) {
+                  const rgbaColor = asArray(color).slice(); // Use slice to copy
+                  rgbaColor[3] = (rgbaColor[3] ?? 1) * FINISHED_OPACITY;
+                  fill.setColor(rgbaColor); // This should now be type-safe
+                } else if (color) {
+                  // Handle unexpected color types (Pattern/Gradient) if necessary, or log a warning
+                  console.warn('Unexpected fill color type for text:', color);
+                }
+              }
+              const stroke = text.getStroke();
+              if (stroke) {
+                const color = stroke.getColor();
+                // Check if color is string or array before processing
+                if (typeof color === 'string' || Array.isArray(color)) {
+                  const rgbaColor = asArray(color).slice(); // Use slice to copy
+                  rgbaColor[3] = (rgbaColor[3] ?? 1) * FINISHED_OPACITY;
+                  stroke.setColor(rgbaColor); // This should now be type-safe
+                } else if (color) {
+                  // Handle unexpected color types (Pattern/Gradient) if necessary, or log a warning
+                  console.warn('Unexpected stroke color type for text:', color);
+                }
+              }
+            }
+            return clonedStyle;
+          });
+        }
+      }
+      // --- End: Apply Opacity ---
+
+      // Apply selection styling *after* potential opacity modification
       if (selectionStatus === 'all') {
-        return [...styles, selectionStyle];
+        // Ensure selectionStyle is distinct from potentially modified base styles
+        return [...finalStyles, selectionStyle];
       } else if (selectionStatus === 'partial') {
-        return [...styles, partialSelectionStyle];
+        // Ensure partialSelectionStyle is distinct
+        return [...finalStyles, partialSelectionStyle];
       } else {
-        return baseStyle; // 或者 styles 如果你总是想返回数组
+        return finalStyles; // Return potentially opacity-modified styles
       }
     }
   };
