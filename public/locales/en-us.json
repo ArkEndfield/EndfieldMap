@@ -64,7 +64,15 @@
     "up": "Up",
     "community_not_constructed": "Click to enter a title",
     "map_change": "Map Change",
-    "settings": "Settings"
+    "settings": "Settings",
+    "loading_map_data": "Loading map data...",
+    "points_data_loaded": "Point data loaded",
+    "initializing_entity_layers": "Initializing entity layers...",
+    "updating_map_layers": "Updating map layers...",
+    "loading_location_names": "Loading location names...",
+    "map_loaded": "Map loaded successfully",
+    "map_loading_start": "Starting map loading",
+    "map_load_failed": "Map loading failed"
   },
   "settings": {
     "export_data": {

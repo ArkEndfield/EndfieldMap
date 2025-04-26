@@ -35,6 +35,37 @@ export async function getCurrentPoints(): Promise<PointData[]> {
   return points || [];
 }
 
+// 让出主线程的辅助函数
+const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
+
+// 分批处理数组的辅助函数
+async function processBatch<T, U>(
+  items: T[],
+  batchSize: number,
+  processFn: (item: T) => U,
+  progressCallback?: (processedCount: number, total: number) => void
+): Promise<U[]> {
+  const results: U[] = [];
+  const total = items.length;
+
+  for (let i = 0; i < total; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    const batchResults = batch.map(processFn);
+    results.push(...batchResults);
+
+    if (progressCallback) {
+      progressCallback(Math.min(i + batchSize, total), total);
+    }
+
+    // 每处理完一批数据，让出主线程
+    if (i + batchSize < total) {
+      await yieldToMain();
+    }
+  }
+
+  return results;
+}
+
 // 筛选并更新点位数据的通用函数
 export async function filterAndUpdatePoints(
   mapId: string
@@ -50,14 +81,32 @@ export async function filterAndUpdatePoints(
   const mergedPoints = [...allPoints, ...customPoints];
   console.log('合并后的点位数量:', mergedPoints.length);
 
-  // 根据地图ID筛选点位
-  const filteredPoints = mergedPoints.filter(point => {
+  // 让出主线程
+  await yieldToMain();
+
+  // 根据地图ID创建筛选函数
+  const filterFn = (point: PointData) => {
     const isMap2 = mapId === 'map002';
     return isMap2
       ? point.sceneId.includes('map02')
       : point.sceneId.includes('map01');
-  });
+  };
+
+  // 分批处理筛选，每次处理5000个点位
+  const batchSize = 5000;
+  const filteredPoints = await processBatch(
+    mergedPoints,
+    batchSize,
+    point => (filterFn(point) ? point : null),
+    (processed, total) => {
+      console.log(`筛选进度: ${processed}/${total}`);
+    }
+  ).then(results => results.filter(Boolean) as PointData[]);
+
   console.log('筛选后的点位数量:', filteredPoints.length);
+
+  // 让出主线程
+  await yieldToMain();
 
   // 更新过滤后的点位到 IndexedDB
   await setItem(DB_CURRENT_POINTS_KEY, filteredPoints, StorageType.PERMANENT);

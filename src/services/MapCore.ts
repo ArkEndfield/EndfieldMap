@@ -203,26 +203,41 @@ function addEntityLayersToMap(currentRetry = 0) {
   if (layers.length > 0) {
     console.log(`添加 ${layers.length} 个实体图层到地图`);
 
-    // 重要：确保图层添加过程不会导致闪烁
-    requestAnimationFrame(() => {
-      // 首先预先设置所有图层为不可见
-      layers.forEach(layer => {
+    // 分批添加图层，避免长时间阻塞主线程
+    const batchSize = 5; // 每批添加5个图层
+    const addLayersBatch = (startIndex: number) => {
+      const endIndex = Math.min(startIndex + batchSize, layers.length);
+      const currentBatch = layers.slice(startIndex, endIndex);
+
+      // 首先预先设置当前批次所有图层为不可见
+      currentBatch.forEach(layer => {
         layer.setVisible(false);
       });
 
-      // 添加所有图层（不可见状态）
-      layers.forEach(layer => {
+      // 添加当前批次所有图层（不可见状态）
+      currentBatch.forEach(layer => {
         map.value?.addLayer(layer);
       });
 
-      // 记录加载成功
-      entityLayersLoaded.value = true;
-      console.log('实体图层加载成功');
+      // 如果还有剩余图层，继续添加下一批
+      if (endIndex < layers.length) {
+        setTimeout(() => {
+          addLayersBatch(endIndex);
+        }, 0);
+      } else {
+        // 所有图层添加完成
+        entityLayersLoaded.value = true;
+        console.log('实体图层加载成功');
 
-      // 在实体图层成功添加到地图后，主动调用refreshMap显示标点
-      refreshMap();
-    });
+        // 在实体图层成功添加到地图后，主动调用refreshMap显示标点
+        setTimeout(() => {
+          refreshMap();
+        }, 10);
+      }
+    };
 
+    // 开始分批添加
+    addLayersBatch(0);
     return;
   }
 
@@ -270,8 +285,10 @@ export async function updateMap(mapIndex: string) {
   map.value.addLayer(tileLayer);
   map.value.addLayer(areaNameLayer);
 
-  // 使用改进的方法添加实体图层
-  addEntityLayersToMap();
+  // 分批异步添加实体图层，避免长时间阻塞主线程
+  setTimeout(() => {
+    addEntityLayersToMap();
+  }, 10);
 
   // 更新视图中心点和缩放级别
   const view = map.value.getView();
@@ -839,18 +856,34 @@ export const selectMap = async (id: string) => {
   localStorage.setItem(MAP_ID_KEY, id);
 
   removeAllLines();
-  // 更新地图
-  // 重新加载数据
-  await updatePoints(id);
-  // console.log(`地图切换，加载了 ${points.length} 个点位`);
+
+  console.log(`开始切换到地图: ${id}`);
+  console.time('加载点位');
+
+  // 更新点位数据
+  const points = await updatePoints(id);
+  console.log(`加载了 ${points.length} 个点位`);
+  console.timeEnd('加载点位');
+
+  console.time('初始化实体图层');
   // 初始化实体图层
   await initializeEntityLayers();
+  console.timeEnd('初始化实体图层');
 
   // 更新地图图层
+  console.time('更新地图图层');
   updateMap(id);
+  console.timeEnd('更新地图图层');
 
   // 重新加载地名标注
+  console.time('重新加载地名标注');
   loadTextPoints(true, id === 'map002' ? 'map02' : 'map01', zoomLevel.value);
+  console.timeEnd('重新加载地名标注');
+
+  // 发送加载完成事件
+  console.log(`地图切换完成: ${id}`);
+
+  return points;
 };
 
 export const closePopup = () => {

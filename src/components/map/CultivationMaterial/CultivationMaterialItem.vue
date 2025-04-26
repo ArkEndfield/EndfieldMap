@@ -23,7 +23,7 @@
     class="text-white overflow-hidden"
   >
     <div class="top-bar bg-[#464646]"></div>
-    <div class="bg-[#464646] p-2">
+    <div class="bg-[#464646] p-2 relative z-10">
       <div class="flex items-center gap-1 -mt-3">
         <div>
           <img

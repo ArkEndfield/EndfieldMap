@@ -4,7 +4,7 @@
     defer
   >
     <motion.div
-      class="cultivation-material-panel fixed left-0 bottom-0 bg-[#272727] z-[53] text-white"
+      class="cultivation-material-panel fixed left-0 bottom-0 bg-[#272727] z-[53] text-white overflow-hidden pt-4"
       :animate="{
         opacity: showCultivationMaterial ? 1 : 0,
         width: showCultivationMaterial
@@ -25,14 +25,13 @@
     >
       <button
         @click="close"
-        class="absolute -top-2 right-2 bg-[#272727] text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-[#3a3a3a] active:bg-[#4a4a4a] transition-all duration-200 group"
+        class="absolute -top-2 right-2 bg-[#272727] text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-[#3a3a3a] active:bg-[#4a4a4a] transition-all duration-200 group z-20"
       >
         <CloseIcon
           class="w-4 h-4 group-hover:rotate-180 transition-transform duration-200 ease-in-out"
           :class="cn(showCultivationMaterial ? 'rotate-0' : 'rotate-180')"
         />
       </button>
-      <div class="w-1 h-6"></div>
       <ScrollArea
         class="px-4"
         flex-container

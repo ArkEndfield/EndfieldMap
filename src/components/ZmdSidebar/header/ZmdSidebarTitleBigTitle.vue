@@ -30,7 +30,7 @@ $square-color2: zmd.$side-bg-color-start;
   font-family: 'Outfit', sans-serif;
   color: #fdfb55;
   font-weight: 700;
-  font-size: 2.85rem;
+  font-size: 2.85em;
   display: flex;
   flex-direction: column;
   align-items: flex-end;

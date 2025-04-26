@@ -510,22 +510,47 @@ export function refreshMap(): void {
     createEntityClusterLayers();
   }
 
-  Object.entries(entityInfo).forEach(([key]) => {
-    const source = entityClusterSources[key];
-    if (!source) return;
+  const entityTypes = Object.keys(entityInfo);
 
-    const layer = entityClusterLayers.find(l => l.getSource() === source);
-    if (!layer) return;
+  // 使用分批处理来更新图层可见性
+  const batchSize = 5; // 每批处理5个实体类型
+  const totalEntities = entityTypes.length;
 
-    const shouldShowEntityType = entityShowStates[key];
-    layer.setVisible(shouldShowEntityType);
+  const processBatch = (startIndex: number) => {
+    const endIndex = Math.min(startIndex + batchSize, totalEntities);
+    const currentBatch = entityTypes.slice(startIndex, endIndex);
 
-    if (shouldShowEntityType) {
-      updateSourceFeatures(source, key);
+    // 处理当前批次的实体类型
+    currentBatch.forEach(key => {
+      const source = entityClusterSources[key];
+      if (!source) return;
+
+      const layer = entityClusterLayers.find(l => l.getSource() === source);
+      if (!layer) return;
+
+      const shouldShowEntityType = entityShowStates[key];
+      layer.setVisible(shouldShowEntityType);
+
+      if (shouldShowEntityType) {
+        updateSourceFeatures(source, key);
+      }
+    });
+
+    // 如果还有剩余实体类型，继续处理下一批
+    if (endIndex < totalEntities) {
+      setTimeout(() => {
+        processBatch(endIndex);
+      }, 0);
+    } else {
+      // 所有实体类型处理完成，刷新聚合
+      setTimeout(() => {
+        refreshCluster();
+      }, 0);
     }
-  });
+  };
 
-  refreshCluster();
+  // 开始分批处理
+  processBatch(0);
 }
 
 function updateSourceFeatures(source: Cluster, entityType: string): void {

@@ -111,7 +111,7 @@ const closeSidebar = () => {
   top: 4.5em;
   z-index: 53;
   position: fixed;
-
+  max-width: calc(100% - 2.5em);
   @media screen and (max-width: zmd.$phone-width) {
     top: 1em;
     z-index: 54;
@@ -121,6 +121,9 @@ const closeSidebar = () => {
     position: absolute;
     top: 2.5em;
     z-index: 1;
+    @media screen and (max-width: zmd.$phone-width) {
+      font-size: 0.8em;
+    }
   }
 
   .zmd-sidebar-header {
@@ -128,6 +131,9 @@ const closeSidebar = () => {
     flex-grow: 0;
     z-index: 2;
     position: relative;
+    @media screen and (max-width: zmd.$phone-width) {
+      font-size: 0.9em;
+    }
   }
 }
 
@@ -136,7 +142,7 @@ const closeSidebar = () => {
   left: 0;
   transform: translateX(-4%);
   width: zmd.$side-width;
-  max-width: 100%;
+  max-width: calc(100% - 2em);
   top: zmd.$side-margin-y;
   bottom: 0;
   color: #ececec;

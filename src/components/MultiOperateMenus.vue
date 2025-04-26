@@ -3,7 +3,7 @@
     <AnimatePresence>
       <motion.div
         v-if="isMultiSelecting"
-        class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-white rounded-full z-[53] overflow-hidden"
+        class="fixed bottom-20 md:bottom-5 left-1/2 -translate-x-1/2 bg-white rounded-full z-[53] overflow-hidden"
         :animate="{
           width: 'auto',
         }"

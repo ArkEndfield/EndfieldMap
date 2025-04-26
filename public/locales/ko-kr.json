@@ -64,7 +64,15 @@
     "up": "위로",
     "community_not_constructed": "제목을 입력하려면 클릭하세요",
     "map_change": "지도 변경",
-    "settings": "설정"
+    "settings": "설정",
+    "loading_map_data": "지도 데이터 로딩 중...",
+    "points_data_loaded": "포인트 데이터 로드 완료",
+    "initializing_entity_layers": "엔티티 레이어 초기화 중...",
+    "updating_map_layers": "지도 레이어 업데이트 중...",
+    "loading_location_names": "위치 이름 로딩 중...",
+    "map_loaded": "지도 로딩 완료",
+    "map_loading_start": "지도 로딩 시작",
+    "map_load_failed": "지도 로딩 실패"
   },
   "settings": {
     "export_data": {
