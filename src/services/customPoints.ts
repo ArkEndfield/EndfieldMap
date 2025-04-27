@@ -18,6 +18,7 @@ import {
   createCustomPointMarker,
   removeCustomPointMarker,
   updateCustomPointMarker,
+  getEntityGroup,
 } from './render';
 import { marks } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
@@ -291,36 +292,58 @@ export async function restoreBackupData(data: {
   customPointsData: CustomPointDataType;
   customPoints: PointData[];
 }): Promise<void> {
-  // 验证数据
-  const customPointsIds = new Set(
-    data.customPoints.map(point => point.levelLogicId)
-  );
-  const invalidIds = Object.keys(data.customPointsData).filter(
-    id => !customPointsIds.has(id)
-  );
+  // 1. 图层处理，清理自定义标点相关内容（同 restoreBackupDataReplace）
+  ['custom', 'custom1', 'custom2'].forEach(type => {
+    // 移除 features
+    getFeatures()
+      .filter(f => f.get('payload')?.entityDataIdKey === type)
+      .forEach(f => removeCustomPointMarker(f.get('payload').levelLogicId));
+    // 清空 entityGroup
+    const group = getEntityGroup();
+    if (group[type]) {
+      group[type].points = [];
+    }
+    // 清空 itemMap
+    const itemMap = getItemMap();
+    Object.keys(itemMap).forEach(key => {
+      const f = itemMap[key];
+      if (f.get('payload')?.entityDataIdKey === type) {
+        removeFeatureFromItemMap(Number(key));
+      }
+    });
+  });
 
-  if (invalidIds.length > 0) {
-    throw new Error(
-      '以下ID在customPointsData中存在但在customPoints中不存在:' +
-        invalidIds.join(',')
-    );
-  }
+  // 2. 合并数据，遇到冲突以本地为主
+  const localCustomPointsData = await getAllCustomPointsData();
+  const localCustomPoints = await getCustomPoints();
+  const localPointIds = new Set(localCustomPoints.map(p => p.levelLogicId));
 
-  const customPointsData = await getAllCustomPointsData();
-  const customPoints = await getCustomPoints();
-  // 根据 id 合并 data，直接合并 points
+  // 合并 customPoints：本地为主，导入数据只添加本地没有的点
+  const mergedCustomPoints = [
+    ...localCustomPoints,
+    ...data.customPoints.filter(p => !localPointIds.has(p.levelLogicId)),
+  ];
+
+  // 合并 customPointsData：本地为主，导入数据只添加本地没有的id
+  const mergedCustomPointsData: CustomPointDataType = {
+    ...localCustomPointsData,
+  };
   Object.keys(data.customPointsData).forEach(id => {
-    customPointsData[id] = data.customPointsData[id];
+    if (!(id in mergedCustomPointsData)) {
+      mergedCustomPointsData[id] = data.customPointsData[id];
+    }
   });
-  data.customPoints.forEach(point => {
-    customPoints.push(point);
-  });
+
+  // 3. 存储合并后的数据
   await setItem(
     DB_ALL_POINTS_DATA_KEY,
-    customPointsData,
+    mergedCustomPointsData,
     StorageType.PERMANENT
   );
-  await setItem(DB_ALL_POINTS_KEY, customPoints, StorageType.PERMANENT);
+  await setItem(DB_ALL_POINTS_KEY, mergedCustomPoints, StorageType.PERMANENT);
+
+  // 4. 刷新标点显示
+  await refreshPointsDisplay();
 }
 
 /**
@@ -409,6 +432,28 @@ export async function restoreBackupDataReplace(data: {
         invalidIds.join(',')
     );
   }
+
+  // 1. 清空所有自定义标点（features、itemMap、entityGroup、地图上的相关 feature）
+  // 只清理自定义标点相关内容
+  ['custom', 'custom1', 'custom2'].forEach(type => {
+    // 移除 features
+    getFeatures()
+      .filter(f => f.get('payload')?.entityDataIdKey === type)
+      .forEach(f => removeCustomPointMarker(f.get('payload').levelLogicId));
+    // 清空 entityGroup
+    const group = getEntityGroup();
+    if (group[type]) {
+      group[type].points = [];
+    }
+    // 清空 itemMap
+    const itemMap = getItemMap();
+    Object.keys(itemMap).forEach(key => {
+      const f = itemMap[key];
+      if (f.get('payload')?.entityDataIdKey === type) {
+        removeFeatureFromItemMap(Number(key));
+      }
+    });
+  });
 
   // 序列化数据以移除循环引用
   const serializedCustomPointsData = JSON.parse(
