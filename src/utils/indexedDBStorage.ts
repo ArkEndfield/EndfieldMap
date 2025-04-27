@@ -219,6 +219,11 @@ export async function setItem<T>(
     console.log(`[IndexedDB] 存储数据: ${key} (${type})`);
   }
 
+  // 修复：permanentStore 永不过期
+  if (type === StorageType.PERMANENT) {
+    expiryDuration = null;
+  }
+
   try {
     // 确保数据库初始化
     await initDB();
