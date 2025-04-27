@@ -29,7 +29,8 @@ const collectImages = (nodes: (NodeType | GuideNode)[]): string[] => {
     if (node.type === 'node') {
       return collectImages(node.nodes);
     } else if (node.type === 'image') {
-      return [(node as GuideImageNode).src];
+      // return [(node as GuideImageNode).src];
+      return ["/images/e0m2_3_flashback_008.png"]
     }
     return [];
   });

@@ -1,6 +1,6 @@
 <template>
   <img
-    :src="isBase64 ? props.node.src : `/guides${props.node.src}`"
+    :src="isBase64 ? props.node.src : `/guides/images/e0m2_3_flashback_008.png`"
     :alt="props.node.type"
     class="max-w-full h-auto max-h-32 rounded-lg place-self-center"
   />
