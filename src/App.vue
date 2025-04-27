@@ -39,7 +39,6 @@ import { loadGuidesData } from './services/guides';
 import { initMarksData } from './services/marks';
 import { loadMaterialData } from './services/material';
 import { initializeSettings } from './services/settings';
-import { rafTimeout } from './utils/animationTimer';
 import { useI18n } from 'vue-i18n';
 // const isDev = import.meta.env.MODE === 'development';
 // const getQueryParam = (param: string): string | null => {
@@ -116,9 +115,7 @@ async function loadAllData() {
     console.log('设置初始化完成');
 
     console.log('所有数据加载完成');
-    rafTimeout(() => {
-      isLoading.value = false;
-    }, 1000);
+    isLoading.value = false;
   } catch (error) {
     console.error('加载数据失败:', error);
     loadError.value = error as Error;

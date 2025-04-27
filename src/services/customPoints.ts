@@ -18,7 +18,9 @@ import {
   createCustomPointMarker,
   removeCustomPointMarker,
   updateCustomPointMarker,
-  getEntityGroup,
+  clearCustomPointsOnMap,
+  resetEntityInfoCount,
+  updateEntityInfoCount,
 } from './render';
 import { marks } from '@/data/marks';
 import { entityInfo } from '@/data/entity';
@@ -292,57 +294,28 @@ export async function restoreBackupData(data: {
   customPointsData: CustomPointDataType;
   customPoints: PointData[];
 }): Promise<void> {
-  // 1. 图层处理，清理自定义标点相关内容（同 restoreBackupDataReplace）
-  ['custom', 'custom1', 'custom2'].forEach(type => {
-    // 移除 features
-    getFeatures()
-      .filter(f => f.get('payload')?.entityDataIdKey === type)
-      .forEach(f => removeCustomPointMarker(f.get('payload').levelLogicId));
-    // 清空 entityGroup
-    const group = getEntityGroup();
-    if (group[type]) {
-      group[type].points = [];
-    }
-    // 清空 itemMap
-    const itemMap = getItemMap();
-    Object.keys(itemMap).forEach(key => {
-      const f = itemMap[key];
-      if (f.get('payload')?.entityDataIdKey === type) {
-        removeFeatureFromItemMap(Number(key));
-      }
-    });
-  });
-
-  // 2. 合并数据，遇到冲突以本地为主
+  clearCustomPointsOnMap();
+  // 合并数据，遇到冲突以本地为主
   const localCustomPointsData = await getAllCustomPointsData();
   const localCustomPoints = await getCustomPoints();
   const localPointIds = new Set(localCustomPoints.map(p => p.levelLogicId));
-
-  // 合并 customPoints：本地为主，导入数据只添加本地没有的点
   const mergedCustomPoints = [
     ...localCustomPoints,
     ...data.customPoints.filter(p => !localPointIds.has(p.levelLogicId)),
   ];
-
-  // 合并 customPointsData：本地为主，导入数据只添加本地没有的id
   const mergedCustomPointsData: CustomPointDataType = {
     ...localCustomPointsData,
   };
   Object.keys(data.customPointsData).forEach(id => {
-    if (!(id in mergedCustomPointsData)) {
+    if (!(id in mergedCustomPointsData))
       mergedCustomPointsData[id] = data.customPointsData[id];
-    }
   });
-
-  // 3. 存储合并后的数据
   await setItem(
     DB_ALL_POINTS_DATA_KEY,
     mergedCustomPointsData,
     StorageType.PERMANENT
   );
   await setItem(DB_ALL_POINTS_KEY, mergedCustomPoints, StorageType.PERMANENT);
-
-  // 4. 刷新标点显示
   await refreshPointsDisplay();
 }
 
@@ -352,57 +325,32 @@ export async function restoreBackupData(data: {
  */
 export async function refreshPointsDisplay(): Promise<void> {
   console.log('开始刷新标点显示...');
-
-  // 清除现有的标记
   const vectorSource = getSource().getSource();
-  if (vectorSource && vectorSource instanceof VectorSource) {
+  if (vectorSource && vectorSource instanceof VectorSource)
     vectorSource.clear();
-  } else {
-    console.error('source.getSource() is not an instance of VectorSource');
-  }
+  else console.error('source.getSource() is not an instance of VectorSource');
   getFeatures().length = 0;
-  Object.keys(getItemMap()).forEach(key => {
-    removeFeatureFromItemMap(Number(key));
-  });
-
-  // 更新当前显示的点位集合
+  Object.keys(getItemMap()).forEach(key =>
+    removeFeatureFromItemMap(Number(key))
+  );
   await filterAndUpdatePoints(getCurrentMapId());
-
-  // 重新加载所有标记
   const currentPoints = await getCurrentPoints();
   console.log('当前点位数量:', currentPoints.length);
-
-  // 重置所有实体类型的计数
-  Object.keys(entityInfo).forEach(key => {
-    if (entityInfo[key] && entityInfo[key].entityInfo) {
-      entityInfo[key].entityInfo.count = 0;
-    }
-  });
-
-  // 更新实体类型的计数
+  resetEntityInfoCount();
+  // 重新加载所有标记并计数
   currentPoints.forEach(point => {
     const feature = marker(point);
     if (feature) {
       addFeature(feature);
       addFeatureToItemMap(Number(point.levelLogicId), feature);
       const vectorSource = getSource().getSource();
-      if (vectorSource && vectorSource instanceof VectorSource) {
+      if (vectorSource && vectorSource instanceof VectorSource)
         vectorSource.addFeature(feature);
-      } else {
+      else
         console.error('source.getSource() is not an instance of VectorSource');
-      }
-
-      // 更新计数
-      if (
-        entityInfo[point.entityDataIdKey] &&
-        entityInfo[point.entityDataIdKey].entityInfo
-      ) {
-        entityInfo[point.entityDataIdKey].entityInfo.count++;
-      }
     }
   });
-
-  // 刷新地图渲染
+  updateEntityInfoCount(currentPoints);
   refreshMap();
   console.log('标点显示刷新完成');
 }
@@ -417,51 +365,23 @@ export async function restoreBackupDataReplace(data: {
 }): Promise<void> {
   console.log('开始恢复备份数据...');
   console.log('备份数据中的点位数量:', data.customPoints.length);
-
-  // 验证数据
   const customPointsIds = new Set(
     data.customPoints.map(point => point.levelLogicId)
   );
   const invalidIds = Object.keys(data.customPointsData).filter(
     id => !customPointsIds.has(id)
   );
-
   if (invalidIds.length > 0) {
     throw new Error(
       '以下ID在customPointsData中存在但在customPoints中不存在:' +
         invalidIds.join(',')
     );
   }
-
-  // 1. 清空所有自定义标点（features、itemMap、entityGroup、地图上的相关 feature）
-  // 只清理自定义标点相关内容
-  ['custom', 'custom1', 'custom2'].forEach(type => {
-    // 移除 features
-    getFeatures()
-      .filter(f => f.get('payload')?.entityDataIdKey === type)
-      .forEach(f => removeCustomPointMarker(f.get('payload').levelLogicId));
-    // 清空 entityGroup
-    const group = getEntityGroup();
-    if (group[type]) {
-      group[type].points = [];
-    }
-    // 清空 itemMap
-    const itemMap = getItemMap();
-    Object.keys(itemMap).forEach(key => {
-      const f = itemMap[key];
-      if (f.get('payload')?.entityDataIdKey === type) {
-        removeFeatureFromItemMap(Number(key));
-      }
-    });
-  });
-
-  // 序列化数据以移除循环引用
+  clearCustomPointsOnMap();
   const serializedCustomPointsData = JSON.parse(
     JSON.stringify(data.customPointsData)
   );
   const serializedCustomPoints = JSON.parse(JSON.stringify(data.customPoints));
-
-  // 存储数据
   await setItem(
     DB_ALL_POINTS_DATA_KEY,
     serializedCustomPointsData,
@@ -472,14 +392,9 @@ export async function restoreBackupDataReplace(data: {
     serializedCustomPoints,
     StorageType.PERMANENT
   );
-
   console.log('数据已存储到 IndexedDB');
-
-  // 验证数据是否存储成功
   const storedPoints = await getCustomPoints();
   console.log('从 IndexedDB 读取的点位数量:', storedPoints.length);
-
-  // 刷新标点显示
   await refreshPointsDisplay();
   console.log('备份数据恢复完成');
 }

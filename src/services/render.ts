@@ -702,6 +702,41 @@ function updateSourceFeatures(source: Cluster, entityType: string): void {
   }
 }
 
+// 清理自定义标点相关内容
+export function clearCustomPointsOnMap(
+  types = ['custom', 'custom1', 'custom2']
+) {
+  types.forEach(type => {
+    getFeatures()
+      .filter(f => f.get('payload')?.entityDataIdKey === type)
+      .forEach(f => removeCustomPointMarker(f.get('payload').levelLogicId));
+    const group = getEntityGroup();
+    if (group[type]) group[type].points = [];
+    const itemMap = getItemMap();
+    Object.keys(itemMap).forEach(key => {
+      const f = itemMap[key];
+      if (f.get('payload')?.entityDataIdKey === type)
+        removeFeatureFromItemMap(Number(key));
+    });
+  });
+}
+
+// 重置所有实体类型的计数
+export function resetEntityInfoCount() {
+  Object.keys(entityInfo).forEach(key => {
+    if (entityInfo[key]?.entityInfo) entityInfo[key].entityInfo.count = 0;
+  });
+}
+
+// 根据点位更新实体类型计数
+export function updateEntityInfoCount(points: PointData[]) {
+  points.forEach(point => {
+    if (entityInfo[point.entityDataIdKey]?.entityInfo) {
+      entityInfo[point.entityDataIdKey].entityInfo.count++;
+    }
+  });
+}
+
 // 导出操作函数
 export const getFeatures = () => [...features];
 export const getItemMap = () => ({ ...itemMap });
