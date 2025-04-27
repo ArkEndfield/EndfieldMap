@@ -591,26 +591,24 @@ export function createCustomPointMarker(
 
 // 优化删除自定义标点标记函数
 export function removeCustomPointMarker(levelLogicId: string | number): void {
-  const feature = itemMap[levelLogicId];
-  if (!feature) return;
+  // 找出所有匹配的 feature
+  const toRemove: Feature<Point>[] = features.filter(
+    f => f.get('payload')?.levelLogicId === levelLogicId
+  );
+  if (toRemove.length === 0) return;
 
   const vectorSource = source.getSource();
-  if (vectorSource && vectorSource instanceof VectorSource) {
-    vectorSource.removeFeature(feature);
-  } else {
-    console.error('source.getSource() is not an instance of VectorSource');
-  }
-
+  toRemove.forEach(feature => {
+    // 从 features 数组移除
+    const idx = features.indexOf(feature);
+    if (idx !== -1) features.splice(idx, 1);
+    // 从 VectorSource 移除
+    if (vectorSource && vectorSource instanceof VectorSource) {
+      vectorSource.removeFeature(feature);
+    }
+  });
+  // 从 itemMap 移除
   delete itemMap[levelLogicId];
-  removeFeatureFromArray(feature);
-}
-
-// 辅助函数：从数组中移除特征
-function removeFeatureFromArray(feature: Feature<Point>): void {
-  const index = features.findIndex(f => f === feature);
-  if (index !== -1) {
-    features.splice(index, 1);
-  }
 }
 
 // 优化更新自定义标点标记函数
