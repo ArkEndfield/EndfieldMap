@@ -3,7 +3,7 @@
     <div class="shrink-0">
       <img
         :src="
-          props.entity
+          props.point
             ? `/assets/${entityInfo.category}/${entityInfo.entityInfo.pic}.png`
             : ''
         "
@@ -12,31 +12,31 @@
     </div>
     <div class="truncate overflow-hidden">
       {{
-        props.entity
+        props.point
           ? t(`entities.${entityInfo.entityInfo.point}`)
           : t('popover.unknow_name')
       }}
     </div>
   </div>
   <div class="!my-2 !text-sm flex flex-wrap items-center gap-2 px-4">
-    <span class="ml-auto text-zinc-400">id: {{ entity.levelLogicId }}</span>
+    <span class="ml-auto text-zinc-400">id: {{ point.levelLogicId }}</span>
   </div>
   <ScrollArea
     class="!min-h-28 max-h-52 px-4"
     flex-container
   >
     <DungeonDesc
-      v-if="entityInfo.category === 'dungeon' && entity.dungeion_series_id"
-      :entity="entity"
+      v-if="entityInfo.category === 'dungeon' && point.dungeion_series_id"
+      :point="point"
     />
     <div
       v-else-if="entityInfo.category === 'enemy'"
       class="enemy-description"
     >
-      {{ t(`enemy.${entity.entityDataIdKey}.description`) }}
+      {{ t(`enemy.${point.entityDataIdKey}.description`) }}
     </div>
     <GuideNode
-      v-if="entity && guide?.nodes"
+      v-if="point && guide?.nodes"
       :nodes="guide.nodes"
     />
   </ScrollArea>
@@ -64,22 +64,22 @@ import { entityInfo as entityInfoData } from '@/data/entity';
 import { computed } from 'vue';
 
 const props = defineProps<{
-  entity: PointData;
+  point: PointData;
 }>();
 
 const guide = ref<GuideInfoDetail | null>(null);
 const { t } = useI18n();
 
 const entityInfo = computed(() => {
-  return entityInfoData[props.entity.entityDataIdKey];
+  return entityInfoData[props.point.entityDataIdKey];
 });
 
-// 监听 entity 变化以异步加载攻略数据
+// 监听 point 变化以异步加载攻略数据
 watch(
-  () => props.entity,
-  async newEntity => {
-    if (newEntity) {
-      guide.value = await getGuide(newEntity.levelLogicId);
+  () => props.point,
+  async newPoint => {
+    if (newPoint) {
+      guide.value = await getGuide(newPoint.levelLogicId);
     } else {
       guide.value = null;
     }
@@ -88,8 +88,8 @@ watch(
 
 // 初始加载
 onMounted(async () => {
-  if (props.entity) {
-    guide.value = await getGuide(props.entity.levelLogicId);
+  if (props.point) {
+    guide.value = await getGuide(props.point.levelLogicId);
   }
 });
 </script>

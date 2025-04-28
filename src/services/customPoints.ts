@@ -4,7 +4,7 @@ import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
 import type { Coordinate } from 'ol/coordinate';
 import { generateUUID, crd2xyz, xyz2crd } from '@/utils/common';
-import { getCurrentMapId, closePopup, entity, popupManager } from './MapCore';
+import { getCurrentMapId, closePopup, point, popupManager } from './MapCore';
 import { filterAndUpdatePoints, getCurrentPoints } from './points';
 import {
   getItemMap,
@@ -23,9 +23,10 @@ import {
   updateEntityInfoCount,
 } from './render';
 import { marks } from '@/data/marks';
-import { entityInfo } from '@/data/entity';
+import { customPointTypes, entityInfo } from '@/data/entity';
 import { select } from './entity';
 import VectorSource from 'ol/source/Vector';
+import type { CustomPointKey } from '@/types/customPoints';
 
 const DB_ALL_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;
 const DB_ALL_POINTS_DATA_KEY = DATA_DB_KEY.CUSTOM_POINTS_DATA;
@@ -106,7 +107,7 @@ export async function createCustomPoint(
     levelLogicId: generateUUID(),
     sceneId: finalMapId,
     position: crd2xyz(coordinate),
-    entityDataIdKey: 'custom',
+    entityDataIdKey: customPointTypes[0],
   };
 
   // 保存到数据库
@@ -123,8 +124,11 @@ export async function createCustomPoint(
   };
 
   // 从entityInfo中更新计数
-  if (entityInfo['custom'] && entityInfo['custom'].entityInfo) {
-    entityInfo['custom'].entityInfo.count++;
+  if (
+    entityInfo[customPointTypes[0]] &&
+    entityInfo[customPointTypes[0]].entityInfo
+  ) {
+    entityInfo[customPointTypes[0]].entityInfo.count++;
   }
 
   // 激活自定义实体的显示
@@ -149,7 +153,7 @@ export async function deleteCustomPoint(
   const pointToDelete = customPoints.find(
     point => point.levelLogicId === levelLogicId
   );
-  const entityType = pointToDelete?.entityDataIdKey || 'custom';
+  const entityType = pointToDelete?.entityDataIdKey || customPointTypes[0];
 
   const updatedPoints = customPoints.filter(
     point => point.levelLogicId !== levelLogicId
@@ -190,8 +194,8 @@ export async function updateCustomPoint(
   // 更新数据库中的点位
   const customPoints = await getCustomPoints();
   let updated = false;
-  let previousType = 'custom';
-  const newType = data.entityDataIdKey || 'custom';
+  let previousType = customPointTypes[0];
+  const newType = data.entityDataIdKey || customPointTypes[0];
 
   // 保存更新后的点位数据，用于后续更新地图标记
   let updatedPoint: PointData | null = null;
@@ -203,7 +207,7 @@ export async function updateCustomPoint(
   for (let i = 0; i < updatedPoints.length; i++) {
     if (updatedPoints[i].levelLogicId === levelLogicId) {
       updated = true;
-      previousType = updatedPoints[i].entityDataIdKey;
+      previousType = updatedPoints[i].entityDataIdKey as CustomPointKey;
       const newPoint = {
         ...updatedPoints[i],
         ...data,
@@ -244,9 +248,9 @@ export async function updateCustomPoint(
   }
 
   // 更新弹窗内容（如果当前显示的就是这个点位）
-  if (updatedPoint && entity.value?.levelLogicId === levelLogicId) {
+  if (updatedPoint && point.value?.levelLogicId === levelLogicId) {
     // 更新entity引用，这样弹窗会显示新的数据
-    entity.value = updatedPoint;
+    point.value = updatedPoint;
 
     // 如果弹窗管理器存在且当前正在显示弹窗，确保弹窗位置正确
     if (popupManager.value && popupManager.value.isPopupVisible.value) {
@@ -267,7 +271,16 @@ export async function updateCustomPoint(
  * @returns 是否为自定义标点
  */
 export const isCustomPoint = (point: PointData): boolean => {
-  return ['custom', 'custom1', 'custom2'].includes(point.entityDataIdKey);
+  return customPointTypes.includes(point.entityDataIdKey as CustomPointKey);
+};
+
+/**
+ * 判断是否为自定义标点类型
+ * @param type 类型
+ * @returns 是否为自定义标点类型
+ */
+export const isCustomPointType = (type: string): boolean => {
+  return customPointTypes.includes(type as CustomPointKey);
 };
 
 /**

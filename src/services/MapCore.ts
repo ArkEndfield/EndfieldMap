@@ -156,7 +156,7 @@ export const cacheMapId = ref<string>(
 export const zoomLevel = ref(Number(localStorage.getItem(ZOOM_KEY)));
 
 // 弹出层相关状态
-export const entity = ref<PointData | null>(null);
+export const point = ref<PointData | null>(null);
 
 // 全局变量
 let overlay: Overlay;
@@ -425,7 +425,7 @@ export function initPopupManager(popupElement?: HTMLElement) {
     map.value as Map,
     overlay,
     popupElement,
-    entity
+    point
   );
 
   // 设置全局引用
@@ -637,19 +637,19 @@ export const pointSelectHandler = async function (event: SelectEvent) {
           showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
         }
         // 重新打开弹窗
-        entity.value = data;
+        point.value = data;
         popupManager.value.setCurrentPosition([...newPosition]);
         popupManager.value.openToast();
       } else {
         // 首次显示弹窗
-        entity.value = data;
+        point.value = data;
         popupManager.value.toggleVideoInfo(false);
         popupManager.value.setCurrentPosition([...newPosition]);
         popupManager.value.openToast();
       }
     } else {
       // 如果是同一位置的点击，只更新弹窗内容，不关闭再打开
-      entity.value = data;
+      point.value = data;
     }
   } else {
     console.log('未选中目标，关闭弹窗');
@@ -893,7 +893,7 @@ export const closePopup = () => {
     popupManager.value.closeSub();
     popupManager.value.setCurrentPosition(undefined);
     popupManager.value.setMapZooming(false);
-    entity.value = null;
+    point.value = null;
   }
 };
 

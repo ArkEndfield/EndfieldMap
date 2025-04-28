@@ -8,6 +8,7 @@ import type {
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { getItem, setItem } from '@/utils/indexedDBStorage';
 import { debounce } from '@/utils/common';
+import type { CustomPointKey } from '@/types/customPoints';
 
 // 显示培养素材快速筛选
 export const showCultivationMaterial = ref(false);
@@ -18,36 +19,36 @@ export const entityInfo: EntityCategories = reactive({});
 // 实体显示状态
 export const entityShowStates: EntityShowStates = reactive({});
 
+// 所有自定义标点类型
+export const customPointTypes: CustomPointKey[] = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+];
+
 // 自定义实体
-export const customEntityInfo: EntityCategories = {
-  custom: {
+export const customEntityInfo = customPointTypes.reduce((acc, type) => {
+  acc[type] = {
     entityInfo: {
-      name: '自定义点位',
-      pic: 'default',
+      name: `zone_${type}`,
+      pic: `camp_zone_${type}`,
       count: 0,
-      point: 'custom',
+      point: type,
     },
     category: 'custom',
-  },
-  custom1: {
-    entityInfo: {
-      name: '自定义点位1',
-      pic: 'default1',
-      count: 0,
-      point: 'custom1',
-    },
-    category: 'custom',
-  },
-  custom2: {
-    entityInfo: {
-      name: '自定义点位2',
-      pic: 'default2',
-      count: 0,
-      point: 'custom2',
-    },
-    category: 'custom',
-  },
-};
+  };
+  return acc;
+}, {} as EntityCategories);
 
 export const isSelectAll = computed(() => {
   return Object.keys(entityInfo).every(key => entityShowStates[key]);

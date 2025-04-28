@@ -1,11 +1,17 @@
 <template>
   <div class="custom-point-popup">
     <div class="content">
-      <div class="-mt-1 px-4">
+      <div class="-mt-1 px-4 flex gap-2">
+        <div class="w-8 h-8">
+          <img
+            :src="`/assets/custom/${entityInfo.entityInfo.pic}.png`"
+            class="w-full h-full object-contain"
+          />
+        </div>
         <ZmdButtonRight
           @click="startEditing"
           size="small"
-          class-name="!w-28"
+          class-name="!w-28 shrink-0"
           reverse
           type="primary"
         >
@@ -42,7 +48,7 @@
       <CustomPointEditor
         v-model:type="editingType"
         v-model:nodes="editingNodes"
-        :initial-type="entity?.entityDataIdKey || 'custom'"
+        :initial-type="point?.entityDataIdKey || 'custom'"
         :initial-nodes="editingNodes"
         @update:nodes="handleNodesUpdate"
       />
@@ -61,18 +67,23 @@ import {
 } from '@/services/customPoints';
 import type { PointData, CustomPointData } from '@/types/points';
 import type { GuideNode as GuideNodeType, NodeType } from '@/types/guides';
-
+import { customPointTypes, entityInfo as entityInfoData } from '@/data/entity';
+import { computed } from 'vue';
+import { CustomPointKey } from '@/types/customPoints';
 const { t } = useI18n();
 
 const props = defineProps<{
-  entity: PointData | null;
+  point: PointData | null;
 }>();
 
 const isEditing = ref(false);
-const editingType = ref('custom');
+const editingType = ref(customPointTypes[0]);
 const editingNodes = ref<GuideNodeType[]>([]);
 const nodes = ref<NodeType[]>([]);
 
+const entityInfo = computed(() => {
+  return entityInfoData[props.point?.entityDataIdKey || customPointTypes[0]];
+});
 // 处理节点更新
 const handleNodesUpdate = (newNodes: GuideNodeType[]) => {
   // 只有在数据真正变化时才更新
@@ -83,8 +94,8 @@ const handleNodesUpdate = (newNodes: GuideNodeType[]) => {
 
 // 加载标点数据的函数
 const loadPointData = async () => {
-  if (props.entity?.levelLogicId) {
-    const data = await getCustomPointData(props.entity.levelLogicId.toString());
+  if (props.point?.levelLogicId) {
+    const data = await getCustomPointData(props.point.levelLogicId.toString());
     console.log('Loaded point data:', data);
     if (data) {
       nodes.value = data.nodes;
@@ -99,9 +110,9 @@ const loadPointData = async () => {
   }
 };
 
-// 监听 entity 变化
+// 监听 point 变化
 watch(
-  () => props.entity?.levelLogicId,
+  () => props.point?.levelLogicId,
   newId => {
     if (newId) {
       loadPointData();
@@ -114,12 +125,13 @@ onMounted(() => {
 });
 
 const startEditing = () => {
-  editingType.value = props.entity?.entityDataIdKey || 'custom';
+  editingType.value = (props.point?.entityDataIdKey ||
+    customPointTypes[0]) as CustomPointKey;
   isEditing.value = true;
 };
 
 const handleSave = async () => {
-  if (props.entity?.levelLogicId) {
+  if (props.point?.levelLogicId) {
     const customPointData: CustomPointData = {
       nodes: [
         {
@@ -129,11 +141,11 @@ const handleSave = async () => {
       ],
     };
 
-    await updateCustomPoint(props.entity.levelLogicId.toString(), {
+    await updateCustomPoint(props.point.levelLogicId.toString(), {
       entityDataIdKey: editingType.value,
     });
     await saveCustomPointData(
-      props.entity.levelLogicId.toString(),
+      props.point.levelLogicId.toString(),
       customPointData
     );
     nodes.value = customPointData.nodes;
@@ -144,7 +156,7 @@ const handleSave = async () => {
 const handleClose = () => {
   isEditing.value = false;
   // 重置编辑状态
-  if (props.entity?.levelLogicId) {
+  if (props.point?.levelLogicId) {
     loadPointData();
   }
 };

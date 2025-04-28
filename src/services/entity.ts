@@ -2,6 +2,7 @@ import { watch } from 'vue';
 import { loadJSON } from '@/utils/jsonLoader';
 import {
   customEntityInfo,
+  customPointTypes,
   entityInfo,
   entityShowStates,
   initializeEntityShowStates,
@@ -122,9 +123,9 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
     });
 
     // 特殊处理：确保自定义标点类型默认为显示状态
-    entityShowStates['custom'] = true;
-    entityShowStates['custom1'] = true;
-    entityShowStates['custom2'] = true;
+    customPointTypes.forEach(type => {
+      entityShowStates[type] = true;
+    });
   } catch (error) {
     console.error('初始化实体信息时发生错误:', error);
     throw error;

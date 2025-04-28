@@ -47,21 +47,21 @@ import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-  entity: PointData | null;
+  point: PointData | null;
 }>();
 const { t } = useI18n();
 
 const rewards = ref<Record<string, ReturnRewardItem[]>>({});
 const showRewards = computed(() => {
-  return isDungeonReward(props.entity);
+  return isDungeonReward(props.point);
 });
 
-// 监听 entity 变化以异步加载奖励数据
+// 监听 point 变化以异步加载奖励数据
 watch(
-  () => props.entity,
-  async newEntity => {
-    if (newEntity && isDungeonReward(newEntity)) {
-      rewards.value = await getDungeonRewards(newEntity);
+  () => props.point,
+  async newPoint => {
+    if (newPoint && isDungeonReward(newPoint)) {
+      rewards.value = await getDungeonRewards(newPoint);
     } else {
       rewards.value = {};
     }

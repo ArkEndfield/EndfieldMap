@@ -16,7 +16,7 @@ import {
 import { asArray } from 'ol/color';
 
 import { debounce, xyz2crd } from '@/utils/common';
-import { entityInfo, entityShowStates } from '@/data/entity';
+import { customPointTypes, entityInfo, entityShowStates } from '@/data/entity';
 import { PointData } from '@/types/points';
 import settings from '@/data/settings';
 import {
@@ -27,6 +27,7 @@ import {
 import { currentMarkFilter } from '@/data/marks';
 import { shouldShowByMarkStatus, isMarked } from './marks';
 import { isMultiSelecting, multiSelectMarks } from '@/data/marks';
+import { isCustomPointType } from './customPoints';
 
 // 样式缓存类型
 interface StyleCacheEntry {
@@ -299,10 +300,10 @@ function groupFeaturesByType(): Record<string, Feature<Point>[]> {
   const featuresByType: Record<string, Feature<Point>[]> = {};
 
   features.forEach(feature => {
-    const entityType = feature.get('payload')?.entityDataIdKey;
+    const entityType = feature.get('payload')?.entityDataIdKey as string;
     if (!entityType) return;
 
-    const isCustomType = ['custom', 'custom1', 'custom2'].includes(entityType);
+    const isCustomType = isCustomPointType(entityType);
     if (isCustomType || entityInfo[entityType]?.entityInfo.count > 0) {
       if (!featuresByType[entityType]) {
         featuresByType[entityType] = [];
@@ -318,7 +319,7 @@ function groupFeaturesByType(): Record<string, Feature<Point>[]> {
 function ensureCustomPointLayers(
   featuresByType: Record<string, Feature<Point>[]>
 ): void {
-  ['custom', 'custom1', 'custom2'].forEach(customType => {
+  customPointTypes.forEach(customType => {
     if (!featuresByType[customType] && entityInfo[customType]) {
       featuresByType[customType] = [];
     }
@@ -703,9 +704,7 @@ function updateSourceFeatures(source: Cluster, entityType: string): void {
 }
 
 // 清理自定义标点相关内容
-export function clearCustomPointsOnMap(
-  types = ['custom', 'custom1', 'custom2']
-) {
+export function clearCustomPointsOnMap(types = customPointTypes) {
   types.forEach(type => {
     getFeatures()
       .filter(f => f.get('payload')?.entityDataIdKey === type)

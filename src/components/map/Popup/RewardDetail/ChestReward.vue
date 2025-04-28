@@ -42,20 +42,20 @@ import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-  entity: PointData | null;
+  point: PointData | null;
 }>();
 const { t } = useI18n();
 
 const rewards = ref<ReturnRewardItem[]>([]);
 const showRewards = computed(() => {
-  return isChestReward(props.entity);
+  return isChestReward(props.point);
 });
 
 watch(
-  () => props.entity,
-  async newEntity => {
-    if (newEntity && isChestReward(newEntity)) {
-      rewards.value = await getRewards(newEntity.reward_id);
+  () => props.point,
+  async newPoint => {
+    if (newPoint && isChestReward(newPoint)) {
+      rewards.value = await getRewards(newPoint.reward_id);
     } else {
       rewards.value = [];
     }

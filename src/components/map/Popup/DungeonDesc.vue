@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-2">
     <div class="dungeon-description">
-      {{ t(`dungeon.${entity.dungeion_series_id}.desc`) }}
+      {{ t(`dungeon.${point.dungeion_series_id}.desc`) }}
     </div>
     <div
       v-for="i in includeDungeonCount"
@@ -10,7 +10,7 @@
     >
       {{
         t(
-          `dungeon.${entity.dungeion_series_id}.includeDungeon.${
+          `dungeon.${point.dungeion_series_id}.includeDungeon.${
             i - 1
           }.dungeonDesc`
         )
@@ -27,7 +27,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-  entity: PointData;
+  point: PointData;
 }>();
 
 const { t } = useI18n();
@@ -35,9 +35,9 @@ const { t } = useI18n();
 const includeDungeonCount = ref(0);
 
 watch(
-  () => props.entity,
-  async newEntity => {
-    includeDungeonCount.value = await getIncludeDungeonCount(newEntity);
+  () => props.point,
+  async newPoint => {
+    includeDungeonCount.value = await getIncludeDungeonCount(newPoint);
   },
   { immediate: true }
 );

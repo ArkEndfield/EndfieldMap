@@ -53,8 +53,8 @@
       class="flex-1 bg-[#272727] flex justify-stretch items-stretch relative overflow-hidden"
     >
       <ScrollArea content-class="px-4 pt-4 pb-8 w-full h-full">
-        <ChestReward :entity="entity" />
-        <DungeonReward :entity="entity" />
+        <ChestReward :point="point" />
+        <DungeonReward :point="point" />
       </ScrollArea>
     </div>
   </div>
@@ -69,12 +69,12 @@ import { isMobileDevice, watchDeviceType } from '@/utils/deviceDetection';
 import { Ref } from 'vue';
 
 const props = defineProps<{
-  entity: PointData | null;
+  point: PointData | null;
 }>();
 
 const popupManager = inject<Ref<PopupManager> | null>('popupManager');
 const showRewards = computed(() => {
-  return shouldShowRewards(props.entity);
+  return shouldShowRewards(props.point);
 });
 
 const isMobile = ref(false);
@@ -103,15 +103,15 @@ onMounted(() => {
   });
 });
 
-// 当 entity 变化时，如果没有奖励，则关闭背面弹窗
+// 当 point 变化时，如果没有奖励，则关闭背面弹窗
 watch(
-  () => props.entity,
-  newEntity => {
-    if (!newEntity || !popupManager) {
+  () => props.point,
+  newPoint => {
+    if (!newPoint || !popupManager) {
       return;
     }
 
-    const hasRewards = shouldShowRewards(newEntity);
+    const hasRewards = shouldShowRewards(newPoint);
     // 确保 popupManager 和 openSubPopup 都存在，并且检查 openSubPopup.value
     if (
       !hasRewards &&

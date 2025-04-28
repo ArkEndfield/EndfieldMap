@@ -15,7 +15,7 @@
     @contextmenu.stop
   >
     <!-- 背面的弹出框 - 奖励信息 -->
-    <RewardInfo :entity="entity" />
+    <RewardInfo :point="point" />
 
     <!-- 前面的弹出框 -->
     <div
@@ -35,7 +35,9 @@
       >
         <PowerIcon />
       </button>
-      <div class="w-full flex-shrink-0 flex-grow-0 bg-[#272727] top-bar"></div>
+      <div
+        class="w-full flex-shrink-0 flex-grow-0 !-mb-[0.5px] bg-[#272727] top-bar"
+      ></div>
       <div
         id="popup-content"
         :class="
@@ -48,26 +50,26 @@
         <MapPopupDeco />
         <div class="py-4 pt-2 z-1 relative">
           <CustomPointPopup
-            :entity="entity"
+            :point="point"
             v-if="isCustomPoint"
           />
           <GuideInfo
-            :entity="entity"
-            v-else-if="!!entity"
+            :point="point"
+            v-else-if="!!point"
           />
           <div class="flex items-center justify-end gap-2 mt-4 px-4">
             <div class="flex items-center justify-end gap-2 ml-auto">
               <label
-                v-if="entity"
-                :for="`get-${entity.entityDataIdKey}`"
+                v-if="point"
+                :for="`get-${point.entityDataIdKey}`"
                 class="text-xs"
               >
                 {{ t('popover.obtained') }}
               </label>
               <ZmdSwitch
-                v-if="entity"
+                v-if="point"
                 id="mark-obtained-switch"
-                v-model:checked="marks[entity.levelLogicId].finish"
+                v-model:checked="marks[point.levelLogicId].finish"
               />
             </div>
           </div>
@@ -91,7 +93,7 @@ import { isCustomEntity } from '@/services/entity';
 import { computed } from 'vue';
 
 const props = defineProps<{
-  entity: PointData | null;
+  point: PointData | null;
 }>();
 
 const popupManager = inject<PopupManager | null>('popupManager');
@@ -119,8 +121,7 @@ const onTransitionEnd = (event: TransitionEvent) => {
 
 const isCustomPoint = computed(() => {
   return (
-    props.entity?.entityDataIdKey &&
-    isCustomEntity(props.entity.entityDataIdKey)
+    props.point?.entityDataIdKey && isCustomEntity(props.point.entityDataIdKey)
   );
 });
 </script>

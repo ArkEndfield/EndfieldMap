@@ -162,13 +162,14 @@
               </button>
             </div>
           </template>
+
+          <div
+            v-if="nodes.length === 0"
+            class="empty"
+          >
+            {{ t('custom_point.empty_content') }}
+          </div>
         </VueDraggable>
-        <div
-          v-if="nodes.length === 0"
-          class="empty"
-        >
-          {{ t('custom_point.empty_content') }}
-        </div>
       </div>
     </div>
   </div>

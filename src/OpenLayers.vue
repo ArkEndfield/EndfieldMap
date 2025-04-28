@@ -13,7 +13,7 @@
     />
 
     <MapPopup
-      :entity="entity"
+      :point="point"
       ref="mapPopupRef"
     />
 
@@ -54,7 +54,7 @@ import {
   createMap,
   map,
   cleanupMap,
-  entity,
+  point,
   zoomLevel,
   popupManager,
   getCurrentMapId,

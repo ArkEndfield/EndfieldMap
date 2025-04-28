@@ -15,7 +15,7 @@ export class PopupManager {
   private popupContainer: HTMLElement;
   public isPopupVisible: Ref<boolean> = ref(false);
   private currentPosition: number[] | undefined;
-  private entity: Ref<PointData | null>;
+  private point: Ref<PointData | null>;
   public showVideoInfo: Ref<boolean> = ref(false);
   public openSubPopup: Ref<boolean> = ref(false);
   private isMapZooming = false; // 添加地图缩放状态标记
@@ -25,12 +25,12 @@ export class PopupManager {
     map: Map,
     overlay: Overlay,
     popupContainer: HTMLElement,
-    entity: Ref<PointData | null>
+    point: Ref<PointData | null>
   ) {
     this.map = map;
     this.overlay = overlay;
     this.popupContainer = popupContainer;
-    this.entity = entity;
+    this.point = point;
 
     // 初始检测设备类型
     this.initDeviceDetection();
@@ -244,7 +244,7 @@ export class PopupManager {
   adjustPopupPosition() {
     if (
       !this.isPopupVisible.value ||
-      !this.entity.value ||
+      !this.point.value ||
       !settings.value.adjustPopupPosition
     )
       return;
@@ -386,15 +386,15 @@ export class PopupManager {
 
   // 重新计算弹窗的位置，基于当前标点坐标和分辨率
   public repositionPopup() {
-    if (!this.isPopupVisible.value || !this.entity.value) return;
+    if (!this.isPopupVisible.value || !this.point.value) return;
 
     const currentMap = this.map;
     if (!currentMap) return;
 
-    if (!this.entity.value.position) return;
+    if (!this.point.value.position) return;
 
     // 将实体原始位置转换为地图坐标
-    const targetFeaturePosition = xyz2crd(this.entity.value.position);
+    const targetFeaturePosition = xyz2crd(this.point.value.position);
 
     // 计算新位置，保持固定像素距离
     const newPosition = [targetFeaturePosition[0], targetFeaturePosition[1]];
@@ -415,8 +415,8 @@ export class PopupManager {
     const data = feature.get('payload');
     if (!data) return;
 
-    // 设置 entity 和弹窗状态
-    this.entity.value = data;
+    // 设置 point 和弹窗状态
+    this.point.value = data;
     const position = MarkerManager.getMarkerPosition(feature);
     if (!position) return;
 
