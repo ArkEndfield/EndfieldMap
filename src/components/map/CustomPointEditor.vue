@@ -363,7 +363,12 @@ const handleUpdate = () => {
     };
     return node;
   });
+  // 确保即使节点为空也触发更新
   emit('update:nodes', nodesWithoutId as GuideNode[]);
+  // 如果节点为空，也触发一次更新
+  if (nodes.value.length === 0) {
+    emit('update:nodes', [] as GuideNode[]);
+  }
 };
 </script>
 

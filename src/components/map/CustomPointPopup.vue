@@ -133,12 +133,15 @@ const startEditing = () => {
 const handleSave = async () => {
   if (props.point?.levelLogicId) {
     const customPointData: CustomPointData = {
-      nodes: [
-        {
-          type: 'node' as const,
-          nodes: editingNodes.value,
-        },
-      ],
+      nodes:
+        editingNodes.value.length > 0
+          ? [
+              {
+                type: 'node' as const,
+                nodes: editingNodes.value,
+              },
+            ]
+          : [],
     };
 
     await updateCustomPoint(props.point.levelLogicId.toString(), {

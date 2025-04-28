@@ -8,11 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  type NodeType,
-  type GuideImageNode,
-  type GuideNode,
-} from '@/types/guides';
+import { type NodeType, type GuideNode } from '@/types/guides';
 import { computed } from 'vue';
 
 const props = withDefaults(
@@ -30,7 +26,7 @@ const collectImages = (nodes: (NodeType | GuideNode)[]): string[] => {
       return collectImages(node.nodes);
     } else if (node.type === 'image') {
       // return [(node as GuideImageNode).src];
-      return ["/images/e0m2_3_flashback_008.png"]
+      return ['/images/e0m2_3_flashback_008.png'];
     }
     return [];
   });
