@@ -54,22 +54,17 @@ export async function getAllRewardData(): Promise<
 export async function loadRewardData() {
   try {
     const rewardRawData = loadJSON<RewardType>('/data/reward.json');
-    const rewardDataRaw = loadJSON<Record<string, RewardItemData>>(
-      '/data/item_data.json'
-    );
     const dungeonSeriesRaw = loadJSON<Record<string, DungeonSeriesData>>(
       '/data/dungeon_series_data.json'
     );
-    const [data, rewardsDataData, dungeonSeriesData] = await Promise.all([
+    const [data, dungeonSeriesData] = await Promise.all([
       rewardRawData,
-      rewardDataRaw,
       dungeonSeriesRaw,
     ]);
 
     // 存储到 IndexedDB
     await Promise.all([
       setItem(DB_ALL_REWARDS_KEY, data, StorageType.PERMANENT),
-      setItem(DB_ALL_REWARD_DATA_KEY, rewardsDataData, StorageType.PERMANENT),
       setItem(
         DB_DUNGEON_SERIES_DATA_KEY,
         dungeonSeriesData,
@@ -78,12 +73,8 @@ export async function loadRewardData() {
     ]);
 
     console.log('奖励列表加载完成，总数:', Object.keys(data).length);
-    console.log(
-      '奖励数据数据加载完成，总数:',
-      Object.keys(rewardsDataData).length
-    );
 
-    return { rewards: data, rewardData: rewardsDataData };
+    return { rewards: data };
   } catch (error) {
     console.error('加载奖励数据失败:', error);
     throw error;
