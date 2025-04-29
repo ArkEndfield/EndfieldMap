@@ -143,6 +143,8 @@
         "spcstone": "희귀 광물",
         "special": "특수 포인트",
         "plant": "식물 재료",
+        "narrative": "세계 이야기 조각",
+        "dnarrative": "세계 이야기 회화",
         "dungeon": "던전 포인트",
         "custom": "사용자 지정 포인트"
       }

@@ -143,6 +143,8 @@
         "spcstone": "Rare Mineral",
         "special": "Special Point",
         "plant": "Plant Material",
+        "narrative": "World Narrative Piece",
+        "dnarrative": "World Narrative Echo",
         "dungeon": "Dungeon Point",
         "custom": "Custom Point"
       }

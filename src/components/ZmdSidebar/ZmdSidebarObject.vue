@@ -30,6 +30,10 @@
             class="count"
             v-if="!props.hideCount"
           >
+            <div
+              class="progress"
+              :style="{ width: progressWidth }"
+            ></div>
             <div class="text">{{ markCount }}/{{ props.entity?.count }}</div>
           </div>
         </div>
@@ -63,6 +67,7 @@ const props = withDefaults(defineProps<Props>(), {
   hideCount: false,
   entity: undefined,
   category: undefined,
+  markCount: 0,
 });
 
 const { t } = useI18n();
@@ -135,6 +140,14 @@ const toggle = () => {
     internalActive.value = newValue;
   }
 };
+
+const progressWidth = computed(() => {
+  if (props.entity && props.category) {
+    const percentage = (props.markCount / props.entity.count) * 100;
+    return `${percentage}%`;
+  }
+  return '0%';
+});
 </script>
 
 <style lang="scss" scoped>
@@ -280,8 +293,22 @@ const toggle = () => {
       justify-content: center;
       line-height: 1;
       margin-left: 0.1em;
+      position: relative;
+      overflow: hidden;
+
+      .progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background-color: rgba(253, 251, 85, 0.2);
+        transition: width 0.3s ease;
+      }
+
       .text {
         transform: scale(0.6);
+        position: relative;
+        z-index: 1;
       }
     }
 
@@ -318,7 +345,7 @@ const toggle = () => {
     .icon {
       .icon-inner {
         box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.3), 0 0 0 0.15em #313131 inset,
-          0 0 0 0.25em #fdfb55 inset;
+          0 0 0 0.25em #313131 inset, 0 0 0 0.25em #fdfb55 inset;
 
         &::after {
           box-shadow: inset 0 0 0.5em rgba(253, 251, 85, 0.5);

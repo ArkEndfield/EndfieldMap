@@ -142,6 +142,8 @@ const props = withDefaults(
       border-bottom: 0.2em solid #393939;
       color: #dadada;
       position: relative;
+      white-space: nowrap;
+      max-width: 9em;
       .triangle {
         position: absolute;
         width: 0;

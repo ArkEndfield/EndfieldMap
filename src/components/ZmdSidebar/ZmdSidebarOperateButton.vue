@@ -238,6 +238,11 @@ $border-glow: rgba(224, 224, 224, 0.3); // 增强发光效果
       height: 1em;
       color: $small-color;
     }
+    &__text {
+      flex-grow: 1;
+      text-align: center;
+      white-space: nowrap;
+    }
   }
 
   &:hover &__title,

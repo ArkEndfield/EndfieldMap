@@ -143,6 +143,8 @@
         "spcstone": "レア鉱物",
         "special": "特殊ポイント",
         "plant": "植物素材",
+        "narrative": "世界叙事ピース",
+        "dnarrative": "世界叙事回響",
         "dungeon": "ダンジョンポイント",
         "custom": "カスタムポイント"
       }
