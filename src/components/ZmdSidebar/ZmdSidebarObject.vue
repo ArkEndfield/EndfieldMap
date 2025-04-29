@@ -412,6 +412,4 @@ const progressWidth = computed(() => {
     }
   }
 }
-
-// 已删除所有动画关键帧
 </style>

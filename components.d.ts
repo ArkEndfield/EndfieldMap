@@ -68,6 +68,7 @@ declare module 'vue' {
     MapIconButton: typeof import('./src/components/MapIconButton.vue')['default']
     MapPopup: typeof import('./src/components/map/MapPopup.vue')['default']
     MapPopupDeco: typeof import('./src/components/map/Popup/MapPopupDeco.vue')['default']
+    MapTip: typeof import('./src/components/MapTip.vue')['default']
     MenuIcon: typeof import('./src/components/icons/MenuIcon.vue')['default']
     MenuMenu: typeof import('./src/components/Header/MenuMenu.vue')['default']
     MinusIcon: typeof import('./src/components/icons/MinusIcon.vue')['default']

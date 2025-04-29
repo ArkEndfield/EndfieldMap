@@ -22,7 +22,13 @@
       >
         <slot name="icon" />
       </div>
-      <div class="zmd-sidebar-operate-button__title__text">
+      <div
+        class="zmd-sidebar-operate-button__title__text"
+        :style="{
+          whiteSpace:
+            locale.toLocaleLowerCase() !== 'en-us' ? 'nowrap' : 'normal',
+        }"
+      >
         <slot />
       </div>
     </div>
@@ -34,6 +40,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+// 获取当前语言（zh-cn, en-us, ja-jp, ko-kr, zh-tw）类型
+const { locale } = useI18n();
 const isHovered = ref(false);
 </script>
 
@@ -241,7 +250,7 @@ $border-glow: rgba(224, 224, 224, 0.3); // 增强发光效果
     &__text {
       flex-grow: 1;
       text-align: center;
-      white-space: nowrap;
+      // white-space: nowrap;
     }
   }
 

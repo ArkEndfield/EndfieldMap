@@ -51,6 +51,7 @@
   "show": "Show",
   "hide": "Hide",
   "start": "Start",
+  "dev_tip": "Development version, actual content please refer to the game",
   "header": {
     "menu": "Menu",
     "about": "About",

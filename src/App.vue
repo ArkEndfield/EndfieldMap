@@ -21,6 +21,7 @@
       <AppHeaderRight v-show="appLoaded" />
       <ZmdSidebar v-if="appLoaded" />
       <OpenLayersComponent />
+      <MapTip v-if="appLoaded" />
     </template>
   </div>
 </template>
