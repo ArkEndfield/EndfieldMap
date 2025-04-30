@@ -31,7 +31,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { updatePoints, getCurrentPoints } from './services/points';
 import { loadEntityData, initializeEntity } from './services/entity';
 import { loadRewardData } from './services/reward';
-import { getCurrentMapId } from './services/MapCore';
+import { getCurrentMapId } from './services/map';
 import OpenLayersComponent from './OpenLayers.vue';
 import AppHeaderLeft from './components/Header/AppHeaderLeft.vue';
 import AppHeaderRight from './components/Header/AppHeaderRight.vue';

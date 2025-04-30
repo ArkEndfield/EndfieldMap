@@ -38,7 +38,7 @@ const initIndicatorLayer = () => {
   indicatorSource = new VectorSource();
   indicatorLayer = new VectorLayer({
     source: indicatorSource,
-    zIndex: 20, // 设置较高的zIndex确保在点位上方显示
+    zIndex: 20,
   });
 
   // 添加到地图
@@ -75,27 +75,36 @@ export const showSelectionIndicator = (
   if (!mapInstance || !indicatorSource) {
     console.error('地图实例或指示器未初始化，无法显示选中指示器');
     return;
-  } // 清除现有指示器
+  }
   clearSelectionIndicator();
 
+  const idAsString = pointId.toString(); // 确保使用字符串比较和查找
+
+  // --- 添加日志 ---
+  const currentItemMap = getItemMap();
+  // ---------------
+
   // 查找对应的Feature
-  const feature = getItemMap()[pointId];
+  const feature = currentItemMap[idAsString]; // 使用字符串 ID 查找
   if (!feature) {
-    console.warn(`未找到ID为${pointId}的点位`);
+    // 修改警告信息，使其更清晰
+    console.warn(
+      `[showSelectionIndicator] Feature not found in itemMap for ID: '${idAsString}'`
+    );
     return;
   }
 
   // 获取点位坐标
   const geometry = feature.getGeometry();
   if (!geometry) {
-    console.warn(`点位${pointId}没有有效的几何信息`);
+    console.warn(`点位${idAsString}没有有效的几何信息`);
     return;
   }
 
   const coordinates = geometry.getCoordinates();
 
-  // 设置当前选中的点位ID
-  currentSelectedPointId = pointId;
+  // 设置当前选中的点位ID (使用字符串)
+  currentSelectedPointId = idAsString;
 
   // 创建四个角落线条
   createCornerLines(coordinates, color);
@@ -116,9 +125,9 @@ const createCornerLines = (coordinates: number[], color: string): void => {
   const lineWidth = 2;
 
   // 使用固定像素偏移创建线条
-  // 这些是我们期望的像素偏移，而不是地图单位
   const pixelDistance = 20;
   const pixelLength = 12;
+  const pixelOffsetY = -17; // 向上偏移的像素量
 
   // 创建不随缩放变化的线条样式
   const lineStyle = new Style({
@@ -126,7 +135,6 @@ const createCornerLines = (coordinates: number[], color: string): void => {
       color: color,
       width: lineWidth,
     }),
-    // 使用 imageSize 保持大小不变，始终以像素为单位渲染
   });
 
   // 创建一个更新线条位置的函数
@@ -142,65 +150,66 @@ const createCornerLines = (coordinates: number[], color: string): void => {
     // 将像素偏移转换为地图单位
     const mapDistance = pixelDistance * resolution;
     const mapLength = pixelLength * resolution;
+    const mapOffsetY = pixelOffsetY * resolution; // 计算地图单位的Y轴偏移
 
-    // 创建四个角落的线条
+    // 创建四个角落的线条 (应用Y轴偏移)
     // 左上角
     const topLeftH = new Feature({
       geometry: new LineString([
-        [x - mapDistance, y - mapDistance],
-        [x - mapDistance + mapLength, y - mapDistance],
+        [x - mapDistance, y - mapDistance - mapOffsetY],
+        [x - mapDistance + mapLength, y - mapDistance - mapOffsetY],
       ]),
     });
 
     const topLeftV = new Feature({
       geometry: new LineString([
-        [x - mapDistance, y - mapDistance],
-        [x - mapDistance, y - mapDistance + mapLength],
+        [x - mapDistance, y - mapDistance - mapOffsetY],
+        [x - mapDistance, y - mapDistance + mapLength - mapOffsetY],
       ]),
     });
 
     // 右上角
     const topRightH = new Feature({
       geometry: new LineString([
-        [x + mapDistance, y - mapDistance],
-        [x + mapDistance - mapLength, y - mapDistance],
+        [x + mapDistance, y - mapDistance - mapOffsetY],
+        [x + mapDistance - mapLength, y - mapDistance - mapOffsetY],
       ]),
     });
 
     const topRightV = new Feature({
       geometry: new LineString([
-        [x + mapDistance, y - mapDistance],
-        [x + mapDistance, y - mapDistance + mapLength],
+        [x + mapDistance, y - mapDistance - mapOffsetY],
+        [x + mapDistance, y - mapDistance + mapLength - mapOffsetY],
       ]),
     });
 
     // 左下角
     const bottomLeftH = new Feature({
       geometry: new LineString([
-        [x - mapDistance, y + mapDistance],
-        [x - mapDistance + mapLength, y + mapDistance],
+        [x - mapDistance, y + mapDistance - mapOffsetY],
+        [x - mapDistance + mapLength, y + mapDistance - mapOffsetY],
       ]),
     });
 
     const bottomLeftV = new Feature({
       geometry: new LineString([
-        [x - mapDistance, y + mapDistance],
-        [x - mapDistance, y + mapDistance - mapLength],
+        [x - mapDistance, y + mapDistance - mapOffsetY],
+        [x - mapDistance, y + mapDistance - mapLength - mapOffsetY],
       ]),
     });
 
     // 右下角
     const bottomRightH = new Feature({
       geometry: new LineString([
-        [x + mapDistance, y + mapDistance],
-        [x + mapDistance - mapLength, y + mapDistance],
+        [x + mapDistance, y + mapDistance - mapOffsetY],
+        [x + mapDistance - mapLength, y + mapDistance - mapOffsetY],
       ]),
     });
 
     const bottomRightV = new Feature({
       geometry: new LineString([
-        [x + mapDistance, y + mapDistance],
-        [x + mapDistance, y + mapDistance - mapLength],
+        [x + mapDistance, y + mapDistance - mapOffsetY],
+        [x + mapDistance, y + mapDistance - mapLength - mapOffsetY],
       ]),
     });
 

@@ -399,6 +399,10 @@ export class PopupManager {
     // 计算新位置，保持固定像素距离
     const newPosition = [targetFeaturePosition[0], targetFeaturePosition[1]];
 
+    // 设置偏移量
+    const desiredPixelOffsetY = -30;
+    this.overlay.setOffset([0, desiredPixelOffsetY]);
+
     // 更新内部状态和弹窗位置
     this.currentPosition = [...targetFeaturePosition];
     this.overlay.setPosition(newPosition);
@@ -440,6 +444,9 @@ export class PopupManager {
     // 设置 overlay 位置
     const overlay = this.map.getOverlays().getArray()[0];
     if (overlay) {
+      // 设置偏移量
+      const desiredPixelOffsetY = -15; // 负值表示向上移动
+      overlay.setOffset([0, desiredPixelOffsetY]);
       overlay.setPosition(position);
     }
 

@@ -55,7 +55,7 @@ import { marks } from '@/data/marks';
 import ZmdSidebarItem from './ZmdSidebarItem.vue';
 import ZmdSidebarObject from './ZmdSidebarObject.vue';
 import { selectAllByCategory, unSelectByCategory } from '@/services/entity';
-import { getCurrentMapId } from '@/services/MapCore';
+import { getCurrentMapId } from '@/services/map';
 import type { EntityInfo } from '@/types/entity';
 import { useI18n } from 'vue-i18n';
 import { pubsub, EVENTS } from '@/services/pubsub';

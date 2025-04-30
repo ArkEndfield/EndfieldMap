@@ -4,7 +4,7 @@ import i18n from '@/i18n';
 import { showCultivationMaterial } from '@/data/entity';
 import settings from '@/data/settings';
 import { MarkerManager } from './markerManager';
-import { popupManager } from './MapCore';
+import { popupManager } from './map';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { rafTimeout } from '@/utils/animationTimer';
 import '@/styles/tour.scss';
@@ -189,7 +189,7 @@ export const tour = driver({
 export async function showTour() {
   if (!settings.value.sidebarExpanded) settings.value.sidebarExpanded = true;
   // 关闭手机弹窗
-  settings.value.showMenuMenu = false
+  settings.value.showMenuMenu = false;
   await new Promise(resolve => rafTimeout(resolve, 300));
   tour.drive();
 }

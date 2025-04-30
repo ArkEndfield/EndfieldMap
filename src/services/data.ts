@@ -2,7 +2,7 @@ import { BackupData } from '@/types/data';
 import { coverMarks, getMarks, isMarkDataValid, mergeMarks } from './marks';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { Language, setLanguage } from '@/i18n';
-import { selectMap } from './MapCore';
+import { selectMap } from './map';
 import settings from '@/data/settings';
 import { mergeSettings } from './settings';
 import {

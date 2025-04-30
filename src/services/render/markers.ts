@@ -11,10 +11,41 @@ import {
   addFeatureToItemMap,
   getFeatures,
   getItemMap,
+  removeFeature,
   source,
   removeFeatureFromItemMap as removeFeatureFromItemMapStore,
   getEntityGroup,
+  getStore,
 } from './store';
+
+/**
+ * 重置所有实体类型的计数
+ */
+export function resetEntityInfoCount() {
+  Object.keys(entityInfo).forEach(key => {
+    if (entityInfo[key]?.entityInfo) entityInfo[key].entityInfo.count = 0;
+  });
+}
+
+/**
+ * 根据点位更新实体类型计数
+ * @param points 点位
+ */
+export function updateEntityInfoCount(points: PointData[]) {
+  const countMap: Record<string, number> = {};
+  for (let i = 0; i < points.length; i++) {
+    const point = points[i];
+    const type = point.entityDataIdKey;
+    if (entityInfo[type]?.entityInfo) {
+      countMap[type] = (countMap[type] || 0) + 1;
+    }
+  }
+  Object.entries(countMap).forEach(([type, count]) => {
+    if (entityInfo[type]?.entityInfo) {
+      entityInfo[type].entityInfo.count += count;
+    }
+  });
+}
 
 /**
  * 创建标记
@@ -48,7 +79,7 @@ export function createCustomPointMarker(
   if (!feature) return null;
 
   addFeature(feature);
-  addFeatureToItemMap(Number(point.levelLogicId), feature);
+  addFeatureToItemMap(point.levelLogicId.toString(), feature);
 
   const vectorSource = source.getSource();
   if (vectorSource && vectorSource instanceof VectorSource) {
@@ -65,55 +96,47 @@ export function createCustomPointMarker(
  * @param levelLogicId 逻辑ID
  */
 export function removeCustomPointMarker(levelLogicId: string | number): void {
-  const features = getFeatures();
-  // 如果itemMap已经有对应的feature，直接使用
-  const featureFromMap = getFeatureFromItemMap(levelLogicId);
+  const idAsString = levelLogicId.toString();
+  const itemMap = getItemMap();
+  const featureFromMap = itemMap[idAsString];
   const toRemove: Feature<Point>[] = [];
 
   if (featureFromMap) {
-    // 已有缓存，直接使用
     toRemove.push(featureFromMap);
   } else {
-    // 没有缓存，需要查找
-    toRemove.push(
-      ...features.filter(f => f.get('payload')?.levelLogicId === levelLogicId)
+    const storeFeatures = getFeatures();
+    const foundFeature = storeFeatures.find(
+      f => f.get('payload')?.levelLogicId?.toString() === idAsString
     );
+    if (foundFeature) {
+      toRemove.push(foundFeature);
+    }
   }
 
-  if (toRemove.length === 0) return;
+  if (toRemove.length === 0) {
+    console.warn(`No feature found to remove for ID: ${idAsString}`);
+    return;
+  }
 
   const vectorSource = source.getSource();
   toRemove.forEach(feature => {
-    // 从 features 数组移除
-    const idx = features.indexOf(feature);
-    if (idx !== -1) features.splice(idx, 1);
-    // 从 VectorSource 移除
+    removeFeature(feature);
+
     if (vectorSource && vectorSource instanceof VectorSource) {
-      vectorSource.removeFeature(feature);
+      try {
+        vectorSource.removeFeature(feature);
+        console.log('Feature removed from vectorSource');
+      } catch (e) {
+        console.warn(
+          'Error removing feature from vectorSource (might be already removed): ',
+          e
+        );
+      }
     }
   });
 
-  // 从 itemMap 移除
-  removeFeatureFromItemMap(levelLogicId);
-}
-
-/**
- * 获取指定ID的特征
- * @private
- */
-function getFeatureFromItemMap(
-  levelLogicId: string | number
-): Feature<Point> | undefined {
-  const itemMap = getItemMap();
-  return itemMap[Number(levelLogicId)];
-}
-
-/**
- * 从itemMap移除特征
- * @private
- */
-function removeFeatureFromItemMap(levelLogicId: string | number): void {
-  removeFeatureFromItemMapStore(Number(levelLogicId));
+  removeFeatureFromItemMapStore(idAsString);
+  console.log(`Feature removed from itemMap for ID: ${idAsString}`);
 }
 
 /**
@@ -125,8 +148,31 @@ export function updateCustomPointMarker(
   levelLogicId: string | number,
   point: PointData
 ): void {
-  removeCustomPointMarker(levelLogicId);
-  createCustomPointMarker(point);
+  const idAsString = levelLogicId.toString();
+  const currentFeature = getItemMap()[idAsString];
+
+  if (
+    currentFeature &&
+    currentFeature.get('payload')?.entityDataIdKey === point.entityDataIdKey
+  ) {
+    currentFeature.set('payload', point);
+    console.log(`Updated payload for feature ID: ${idAsString}`);
+    currentFeature.changed();
+
+    const statePoint = require('../map/state').point;
+    if (statePoint.value?.levelLogicId?.toString() === idAsString) {
+      statePoint.value = point;
+      const popupMgr = require('../map/state').popupManager.value;
+      if (popupMgr?.isPopupVisible.value) {
+        popupMgr.setCurrentPosition(xyz2crd(point.position));
+        popupMgr.adjustPopupPosition();
+      }
+    }
+  } else {
+    removeCustomPointMarker(idAsString);
+    createCustomPointMarker(point);
+    console.log(`Recreated feature ID: ${idAsString}`);
+  }
 }
 
 /**
@@ -135,33 +181,22 @@ export function updateCustomPointMarker(
  */
 export function clearCustomPointsOnMap(types = customPointTypes) {
   const features = getFeatures();
-  // 使用一个Set来存储类型以便快速查找
   const typeSet = new Set(types);
-
-  // 收集要删除的features
   const featuresToRemove: Feature<Point>[] = [];
-  const logicIdsToRemove: (string | number)[] = [];
 
-  // 按类型筛选要删除的特征
   for (let i = 0; i < features.length; i++) {
     const feature = features[i];
     const payload = feature.get('payload');
     const entityType = payload?.entityDataIdKey;
-
     if (entityType && typeSet.has(entityType)) {
       featuresToRemove.push(feature);
-      if (payload.levelLogicId) {
-        logicIdsToRemove.push(payload.levelLogicId);
-      }
     }
   }
 
-  // 批量删除特征
   featuresToRemove.forEach(feature => {
     removeCustomPointMarker(feature.get('payload').levelLogicId);
   });
 
-  // 清理entityGroup
   const entityGroup = getEntityGroup();
   types.forEach(type => {
     if (entityGroup[type]) entityGroup[type].points = [];
@@ -169,36 +204,49 @@ export function clearCustomPointsOnMap(types = customPointTypes) {
 }
 
 /**
- * 重置所有实体类型的计数
+ * @description 根据点位数据填充 features 数组和 itemMap
+ * @param points 要处理的点位数据数组
  */
-export function resetEntityInfoCount() {
-  Object.keys(entityInfo).forEach(key => {
-    if (entityInfo[key]?.entityInfo) entityInfo[key].entityInfo.count = 0;
-  });
-}
+export function populateFeaturesFromPoints(points: PointData[]): void {
+  const store = getStore();
+  store.features.length = 0;
+  Object.keys(store.itemMap).forEach(key => delete store.itemMap[key]);
 
-/**
- * 根据点位更新实体类型计数
- * @param points 点位
- */
-export function updateEntityInfoCount(points: PointData[]) {
-  // 创建临时计数对象，避免频繁更新entityInfo
-  const countMap: Record<string, number> = {};
+  const vectorSource = source.getSource();
 
-  // 统计每种类型的数量
-  for (let i = 0; i < points.length; i++) {
-    const point = points[i];
-    const type = point.entityDataIdKey;
-
-    if (entityInfo[type]?.entityInfo) {
-      countMap[type] = (countMap[type] || 0) + 1;
-    }
+  if (vectorSource && vectorSource instanceof VectorSource) {
+    vectorSource.clear();
+  } else {
+    console.error(
+      'populateFeaturesFromPoints: Failed to get VectorSource from WebGLVectorLayer'
+    );
+    return;
   }
 
-  // 一次性更新entityInfo
-  Object.entries(countMap).forEach(([type, count]) => {
-    if (entityInfo[type]?.entityInfo) {
-      entityInfo[type].entityInfo.count += count;
+  resetEntityInfoCount();
+
+  console.log(`Populating features for ${points.length} points...`);
+
+  let skippedCount = 0; // 记录跳过的点位数量
+  points.forEach(point => {
+    const feature = marker(point);
+    if (feature) {
+      addFeature(feature);
+      addFeatureToItemMap(point.levelLogicId.toString(), feature);
+      vectorSource.addFeature(feature);
+    } else {
+      // 修改点：仅记录警告，然后继续处理下一个点
+      console.warn(`Skipping point due to missing entityInfo:`, point);
+      skippedCount++;
     }
   });
+
+  updateEntityInfoCount(points.filter(p => !!entityInfo[p.entityDataIdKey])); // 只计算有效的点位
+  console.log(
+    `Features populated. Processed: ${points.length}, Added: ${
+      getFeatures().length
+    }, Skipped: ${skippedCount}, itemMap size: ${
+      Object.keys(getItemMap()).length
+    }`
+  );
 }

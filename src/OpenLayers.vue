@@ -58,14 +58,14 @@ import {
   zoomLevel,
   popupManager,
   getCurrentMapId,
-} from './services/MapCore';
+  addMapContextMenuListener,
+} from './services/map';
 import { Map } from 'ol';
 import MapControls from './components/map/MapControls.vue';
 import MapPopup, { MapPopupRef } from './components/map/MapPopup.vue';
 import { ref } from 'vue';
 import { ContextMenuRef } from './components/ContextMenu/type';
 import type { Coordinate } from 'ol/coordinate';
-import { addMapContextMenuListener } from './services/MapCore';
 import {
   createCustomPoint,
   deleteCustomPoint,
@@ -108,7 +108,7 @@ onMounted(async () => {
     mapPopupRef.value?.getPopupContainer()
   );
   addMapContextMenuListener((_, coordinate, point) => {
-    rightClickCoordinates.value = coordinate;
+    rightClickCoordinates.value = coordinate as Coordinate;
     if (point && isCustomPoint(point)) {
       rightClickPoint.value = point;
     } else {

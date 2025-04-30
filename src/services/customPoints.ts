@@ -4,28 +4,20 @@ import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
 import type { Coordinate } from 'ol/coordinate';
 import { generateUUID, crd2xyz, xyz2crd } from '@/utils/common';
-import { getCurrentMapId, closePopup, point, popupManager } from './MapCore';
+import { getCurrentMapId, closePopup, point, popupManager } from './map';
 import { filterAndUpdatePoints, getCurrentPoints } from './points';
 import {
   getItemMap,
-  getFeatures,
-  getSource,
   refreshMap,
-  marker,
-  addFeature,
-  addFeatureToItemMap,
-  removeFeatureFromItemMap,
   createCustomPointMarker,
   removeCustomPointMarker,
   updateCustomPointMarker,
   clearCustomPointsOnMap,
-  resetEntityInfoCount,
-  updateEntityInfoCount,
+  populateFeaturesFromPoints,
 } from './render';
 import { marks } from '@/data/marks';
 import { customPointTypes, entityInfo } from '@/data/entity';
 import { select } from './entity';
-import VectorSource from 'ol/source/Vector';
 import type { CustomPointKey } from '@/types/customPoints';
 
 const DB_ALL_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;
@@ -338,32 +330,16 @@ export async function restoreBackupData(data: {
  */
 export async function refreshPointsDisplay(): Promise<void> {
   console.log('开始刷新标点显示...');
-  const vectorSource = getSource().getSource();
-  if (vectorSource && vectorSource instanceof VectorSource)
-    vectorSource.clear();
-  else console.error('source.getSource() is not an instance of VectorSource');
-  getFeatures().length = 0;
-  Object.keys(getItemMap()).forEach(key =>
-    removeFeatureFromItemMap(Number(key))
-  );
-  await filterAndUpdatePoints(getCurrentMapId());
+
+  // 1. 获取过滤后的当前地图点位 (包括从DB加载的自定义点位)
+  await filterAndUpdatePoints(getCurrentMapId()); // 确保 currentPoints 更新
   const currentPoints = await getCurrentPoints();
   console.log('当前点位数量:', currentPoints.length);
-  resetEntityInfoCount();
-  // 重新加载所有标记并计数
-  currentPoints.forEach(point => {
-    const feature = marker(point);
-    if (feature) {
-      addFeature(feature);
-      addFeatureToItemMap(Number(point.levelLogicId), feature);
-      const vectorSource = getSource().getSource();
-      if (vectorSource && vectorSource instanceof VectorSource)
-        vectorSource.addFeature(feature);
-      else
-        console.error('source.getSource() is not an instance of VectorSource');
-    }
-  });
-  updateEntityInfoCount(currentPoints);
+
+  // 2. 使用这些点位数据填充渲染存储 (features, itemMap, map source)
+  populateFeaturesFromPoints(currentPoints);
+
+  // 3. 刷新地图渲染以显示聚合等效果
   refreshMap();
   console.log('标点显示刷新完成');
 }

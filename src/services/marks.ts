@@ -217,12 +217,14 @@ export const shouldShowByMarkStatus = (seq: number): boolean => {
 
 // 判断指定序号的点位是否完成
 export const isMarked = (seq: number): boolean => {
-  return marks[seq].finish === true;
+  // 增加检查，确保 marks[seq] 存在
+  return marks[seq] ? marks[seq].finish === true : false;
 };
 
 // 判断指定序号的点位是否未完成
 export const isUnmarked = (seq: number): boolean => {
-  return marks[seq].finish === false;
+  // 同样增加检查
+  return marks[seq] ? marks[seq].finish === false : true; // 如果不存在，视为未完成
 };
 
 // 开始批量选择

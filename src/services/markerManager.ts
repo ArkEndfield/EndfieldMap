@@ -2,7 +2,7 @@ import { Feature } from 'ol';
 import { Point } from 'ol/geom';
 import { getFeatures } from './render';
 import { entityInfo as entityInfoData } from '@/data/entity';
-import { map } from './MapCore';
+import { map } from './map';
 import { xyz2crd } from '@/utils/common';
 
 export class MarkerManager {

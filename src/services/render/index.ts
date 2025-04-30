@@ -68,4 +68,5 @@ export {
   clearCustomPointsOnMap,
   resetEntityInfoCount,
   updateEntityInfoCount,
+  populateFeaturesFromPoints,
 } from './markers';

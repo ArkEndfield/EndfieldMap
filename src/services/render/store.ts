@@ -72,14 +72,14 @@ export const addFeature = (feature: Feature<Point>) => {
 /**
  * 添加特征到itemMap
  */
-export const addFeatureToItemMap = (id: number, feature: Feature<Point>) => {
+export const addFeatureToItemMap = (id: string, feature: Feature<Point>) => {
   store.itemMap[id] = feature;
 };
 
 /**
  * 从itemMap中移除特征
  */
-export const removeFeatureFromItemMap = (id: number) => {
+export const removeFeatureFromItemMap = (id: string) => {
   delete store.itemMap[id];
 };
 
@@ -165,6 +165,20 @@ export const removeEntityClusterSource = (key: string) => {
  * @internal
  */
 export const getStore = () => store;
+
+/**
+ * 从全局 features 数组中移除特征
+ */
+export const removeFeature = (featureToRemove: Feature<Point>) => {
+  const store = getStore(); // 获取 store 引用
+  const index = store.features.indexOf(featureToRemove);
+  if (index !== -1) {
+    store.features.splice(index, 1);
+    console.log('Feature removed from store.features'); // 调试信息
+  } else {
+    console.warn('Feature to remove not found in store.features'); // 调试信息
+  }
+};
 
 /**
  * 优化清空所有数据函数
