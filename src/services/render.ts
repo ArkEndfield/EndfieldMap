@@ -36,16 +36,22 @@ interface StyleCacheEntry {
 }
 
 // 常量定义
-const CACHE_CLEANUP_TIMEOUT = 300000; // 5分钟
+// 样式缓存清理时间
+const CACHE_CLEANUP_TIMEOUT = 5 * 60 * 1000; // 5分钟
+// 默认圆形标点半径
 const DEFAULT_RADIUS = 15;
+// 默认描边宽度
 const DEFAULT_STROKE_WIDTH = 2;
+// 默认背景颜色
 const DEFAULT_BACKGROUND_COLOR = '#525152';
+// 默认描边颜色
 const DEFAULT_STROKE_COLOR = '#2E2F2E';
+// 完成状态透明度
 const FINISHED_OPACITY = 0.5;
-
+// 记录是否聚合状态（后续用于对比是否刷新）
 let isCluster = true;
 
-// 选中样式
+// 选中样式，当开启批量操作时，选中标点的描边（当为聚合时，聚合标点(内全选)的描边）
 const selectionStyle = new Style({
   image: new CircleStyle({
     radius: DEFAULT_RADIUS + 6,
@@ -57,7 +63,7 @@ const selectionStyle = new Style({
   zIndex: 1,
 });
 
-// 部分选中样式
+// 部分选中样式（聚合时，聚合标点(内非全选)的描边）
 const partialSelectionStyle = new Style({
   image: new CircleStyle({
     radius: DEFAULT_RADIUS + 6,
@@ -69,9 +75,11 @@ const partialSelectionStyle = new Style({
   zIndex: 1,
 });
 
-// 这些变量从data/entity.ts中提取
+// 特征数据
 const features: Feature<Point>[] = [];
+// 特征数据Map
 const itemMap: Record<number, Feature<Point>> = {};
+// 实体组
 const entityGroup: Record<
   string,
   {
@@ -104,7 +112,13 @@ const iconStyleCache: { [key: string]: Promise<Style[] | Style> | undefined } =
   {};
 const styleCacheCleanupTimers: { [key: string]: number } = {};
 
-// 优化样式创建函数
+/**
+ * 创建圆形标点样式
+ * @param entityType 实体类型
+ * @param size 标点数量
+ * @returns 样式数组
+ * @description 创建圆形标点样式
+ */
 async function createCircleIconStyle(
   entityType: string,
   size: number = 1
@@ -150,7 +164,14 @@ async function createCircleIconStyle(
   return stylePromise;
 }
 
-// 提取样式创建辅助函数
+/**
+ * 创建基础样式
+ * @param radius 半径
+ * @param color 颜色
+ * @param imagePath 图片路径
+ * @param optimalScale 最佳缩放比例
+ * @description 创建基础样式，用于创建圆形标点样式
+ */
 function createBaseStyles(
   radius: number,
   color: string,
@@ -162,20 +183,33 @@ function createBaseStyles(
     createInnerCircleStyle(radius),
     createLeftDecoration(radius),
     createRightDecoration(radius),
-    createIconStyle(imagePath, optimalScale),
+    createBottomTriangleIndicator(color),
+    createIconStyle(imagePath, radius, optimalScale),
   ];
 }
 
+/**
+ * 创建外层圆形样式
+ * @param radius 半径
+ * @param color 颜色
+ * @description 创建外层圆形样式
+ */
 function createOuterCircleStyle(radius: number, color: string): Style {
   return new Style({
     image: new CircleStyle({
       radius: radius + 2,
       fill: new Fill({ color: 'transparent' }),
       stroke: new Stroke({ color, width: DEFAULT_STROKE_WIDTH }),
+      displacement: [0, radius + 6],
     }),
   });
 }
 
+/**
+ * 创建内层圆形样式
+ * @param radius 半径
+ * @description 创建内层圆形样式
+ */
 function createInnerCircleStyle(radius: number): Style {
   return new Style({
     image: new CircleStyle({
@@ -185,10 +219,16 @@ function createInnerCircleStyle(radius: number): Style {
         color: DEFAULT_STROKE_COLOR,
         width: DEFAULT_STROKE_WIDTH + 0.5,
       }),
+      displacement: [0, radius + 6],
     }),
   });
 }
 
+/**
+ * 创建左侧装饰样式
+ * @param radius 半径
+ * @description 创建左侧装饰样式（三角形）
+ */
 function createLeftDecoration(radius: number): Style {
   return new Style({
     image: new RegularShape({
@@ -196,12 +236,17 @@ function createLeftDecoration(radius: number): Style {
       radius: radius * 0.35,
       angle: 0.5 * Math.PI,
       fill: new Fill({ color: DEFAULT_STROKE_COLOR }),
-      displacement: [-radius + radius * 0.2, 0],
+      displacement: [-radius + radius * 0.2, radius + 6],
       rotation: 0,
     }),
   });
 }
 
+/**
+ * 创建右侧装饰样式
+ * @param radius 半径
+ * @description 创建右侧装饰样式（三角形）
+ */
 function createRightDecoration(radius: number): Style {
   return new Style({
     image: new RegularShape({
@@ -209,39 +254,81 @@ function createRightDecoration(radius: number): Style {
       radius: radius * 0.35,
       angle: -0.5 * Math.PI,
       fill: new Fill({ color: DEFAULT_STROKE_COLOR }),
-      displacement: [radius - radius * 0.2, 0],
+      displacement: [radius - radius * 0.2, radius + 6],
       rotation: 0,
     }),
   });
 }
 
-function createIconStyle(imagePath: string, optimalScale: number): Style {
+/**
+ *
+ * @param color
+ * @returns
+ */
+function createBottomTriangleIndicator(color: string): Style {
+  return new Style({
+    image: new RegularShape({
+      points: 3,
+      radius: 4,
+      angle: 0,
+      fill: new Fill({ color }),
+      displacement: [0, -1.5],
+      rotation: Math.PI,
+    }),
+  });
+}
+
+/**
+ * 创建图标样式
+ * @param imagePath 图片路径
+ * @param radius 半径
+ * @param optimalScale 最佳缩放比例
+ * @description 创建图标样式
+ */
+function createIconStyle(
+  imagePath: string,
+  radius: number,
+  optimalScale: number
+): Style {
   return new Style({
     image: new Icon({
       src: imagePath,
       scale: optimalScale,
       anchor: [0.5, 0.5],
+      displacement: [0, radius + 6],
     }),
   });
 }
 
+/**
+ * 创建聚合样式
+ * @param radius 半径
+ * @param size 数量
+ * @description 创建聚合样式
+ */
 function createClusterStyle(radius: number, size: number): Style {
   return new Style({
     image: new CircleStyle({
       radius: radius * 0.4,
       fill: new Fill({ color: DEFAULT_STROKE_COLOR }),
-      displacement: [0, -radius + 5],
+      displacement: [0, radius / 2 + 3],
     }),
     text: new Text({
       text: size.toString(),
       fill: new Fill({ color: '#fff' }),
       font: '8px "Noto Sans SC"',
-      offsetY: radius - 5,
+      offsetY: -11,
       stroke: new Stroke({ color: '#000', width: 2 }),
     }),
   });
 }
 
+/**
+ * 设置样式缓存清理
+ * @param promise 承诺
+ * @param cacheKey 缓存键
+ * @description 设置样式缓存清理
+ */
 function setupCacheCleanup(promise: Promise<any>, cacheKey: string): void {
   promise.finally(() => {
     // 清除之前的清理定时器
@@ -257,7 +344,12 @@ function setupCacheCleanup(promise: Promise<any>, cacheKey: string): void {
   });
 }
 
-// 优化标记创建函数
+/**
+ * 创建标记
+ * @param entry 点数据
+ * @returns 特征点
+ * @description 创建标记
+ */
 export const marker = (entry: PointData): Feature<Point> | undefined => {
   const info = entityInfo[entry.entityDataIdKey];
   if (!info) return undefined;
@@ -279,7 +371,11 @@ export const marker = (entry: PointData): Feature<Point> | undefined => {
   return feature;
 };
 
-// 优化聚合图层创建函数
+/**
+ * 创建聚合图层
+ * @returns 聚合图层
+ * @description 创建聚合图层
+ */
 export const createEntityClusterLayers = (): VectorLayer<any>[] => {
   entityClusterLayers.length = 0;
   const featuresByType = groupFeaturesByType();
@@ -295,7 +391,11 @@ export const createEntityClusterLayers = (): VectorLayer<any>[] => {
   return entityClusterLayers;
 };
 
-// 辅助函数：按类型分组特征
+/**
+ * 按类型分组特征
+ * @returns 按类型分组特征
+ * @description 按类型分组特征
+ */
 function groupFeaturesByType(): Record<string, Feature<Point>[]> {
   const featuresByType: Record<string, Feature<Point>[]> = {};
 
@@ -320,7 +420,11 @@ function groupFeaturesByType(): Record<string, Feature<Point>[]> {
   return featuresByType;
 }
 
-// 辅助函数：确保自定义标点类型有图层
+/**
+ * 确保自定义标点类型总是有图层
+ * @param featuresByType 按类型分组特征
+ * @description 确保自定义标点类型总是有图层
+ */
 function ensureCustomPointLayers(
   featuresByType: Record<string, Feature<Point>[]>
 ): void {
@@ -331,7 +435,12 @@ function ensureCustomPointLayers(
   });
 }
 
-// 辅助函数：为特定类型创建聚合图层
+/**
+ * 为特定类型创建聚合图层
+ * @param entityType 实体类型
+ * @param typeFeatures 类型特征
+ * @description 为特定类型创建聚合图层
+ */
 function createClusterLayerForType(
   entityType: string,
   typeFeatures: Feature<Point>[]
@@ -363,7 +472,12 @@ function createClusterLayerForType(
   entityClusterLayers.push(layer);
 }
 
-// 辅助函数：创建聚合样式函数
+/**
+ * 创建聚合样式函数
+ * @param entityType 实体类型
+ * @returns 聚合样式函数
+ * @description 创建聚合样式函数
+ */
 function createClusterStyleFunction(entityType: string) {
   return (feature: Feature): Style | Style[] | undefined => {
     const featuresArray = feature.get('features') as Feature<Point>[];
@@ -477,7 +591,12 @@ function createClusterStyleFunction(entityType: string) {
   };
 }
 
-// 辅助函数：应用不透明度到样式（避免重复代码）
+/**
+ * 应用不透明度到样式（避免重复代码）
+ * @param styles 样式
+ * @returns 样式数组
+ * @description 应用不透明度到样式（避免重复代码）
+ */
 function applyOpacityToStyles(styles: Style | Style[]): Style[] {
   const styleArray = Array.isArray(styles) ? styles : [styles];
   return styleArray.map(style => {
@@ -504,7 +623,12 @@ function applyOpacityToStyles(styles: Style | Style[]): Style[] {
   });
 }
 
-// 辅助函数：应用不透明度到填充和描边
+/**
+ * 应用不透明度到填充和描边
+ * @param fill 填充
+ * @param stroke 描边
+ * @description 应用不透明度到填充和描边
+ */
 function applyOpacityToFillAndStroke(
   fill: Fill | null,
   stroke: Stroke | null
@@ -528,7 +652,11 @@ function applyOpacityToFillAndStroke(
   }
 }
 
-// 优化聚合距离更新函数
+/**
+ * 优化聚合距离更新函数
+ * @param zoom 缩放
+ * @description 优化聚合距离更新函数
+ */
 export const updateClusterDistance = debounce(
   (zoom: number): void => {
     const shouldCluster = settings.value.isClusteringEnabled && zoom < 4;
@@ -555,6 +683,11 @@ export const updateClusterDistance = debounce(
   { leading: false, trailing: true }
 );
 
+/**
+ * 更新所有聚合距离
+ * @param distance 距离
+ * @description 更新所有聚合距离
+ */
 function updateAllClusterDistances(distance: number): void {
   Object.values(entityClusterSources).forEach(source => {
     source.setDistance(distance);
@@ -562,13 +695,22 @@ function updateAllClusterDistances(distance: number): void {
   });
 }
 
+/**
+ * 刷新聚合
+ * @description 刷新聚合
+ */
 function refreshCluster(): void {
   Object.values(entityClusterSources).forEach(source => {
     source.refresh();
   });
 }
 
-// 优化自定义标点标记函数
+/**
+ * 创建自定义标点标记
+ * @param point 点数据
+ * @returns 特征点
+ * @description 创建自定义标点标记
+ */
 export function createCustomPointMarker(
   point: PointData
 ): Feature<Point> | null {
@@ -588,7 +730,11 @@ export function createCustomPointMarker(
   return feature;
 }
 
-// 优化删除自定义标点标记函数
+/**
+ * 删除自定义标点标记
+ * @param levelLogicId 逻辑ID
+ * @description 删除自定义标点标记
+ */
 export function removeCustomPointMarker(levelLogicId: string | number): void {
   // 如果itemMap已经有对应的feature，直接使用
   const featureFromMap = itemMap[levelLogicId];
@@ -621,7 +767,12 @@ export function removeCustomPointMarker(levelLogicId: string | number): void {
   delete itemMap[levelLogicId];
 }
 
-// 优化更新自定义标点标记函数
+/**
+ * 更新自定义标点标记
+ * @param levelLogicId 逻辑ID
+ * @param point 点数据
+ * @description 更新自定义标点标记
+ */
 export function updateCustomPointMarker(
   levelLogicId: string | number,
   point: PointData
@@ -630,7 +781,10 @@ export function updateCustomPointMarker(
   createCustomPointMarker(point);
 }
 
-// 优化地图刷新函数
+/**
+ * 刷新地图
+ * @description 刷新地图
+ */
 export function refreshMap(): void {
   if (Object.keys(entityClusterSources).length === 0) {
     createEntityClusterLayers();
@@ -690,6 +844,12 @@ export function refreshMap(): void {
   processBatch(0);
 }
 
+/**
+ * 更新源特征
+ * @param source 源
+ * @param entityType 实体类型
+ * @description 更新源特征
+ */
 function updateSourceFeatures(source: Cluster, entityType: string): void {
   const vectorSource = source.getSource();
   if (!vectorSource) return;
@@ -726,7 +886,11 @@ function updateSourceFeatures(source: Cluster, entityType: string): void {
   }
 }
 
-// 清理自定义标点相关内容
+/**
+ * 清理自定义标点相关内容
+ * @param types 类型
+ * @description 清理自定义标点相关内容
+ */
 export function clearCustomPointsOnMap(types = customPointTypes) {
   // 使用一个Set来存储类型以便快速查找
   const typeSet = new Set(types);
@@ -760,14 +924,21 @@ export function clearCustomPointsOnMap(types = customPointTypes) {
   });
 }
 
-// 重置所有实体类型的计数
+/**
+ * 重置所有实体类型的计数
+ * @description 重置所有实体类型的计数
+ */
 export function resetEntityInfoCount() {
   Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key]?.entityInfo) entityInfo[key].entityInfo.count = 0;
   });
 }
 
-// 根据点位更新实体类型计数
+/**
+ * 根据点位更新实体类型计数
+ * @param points 点位
+ * @description 根据点位更新实体类型计数
+ */
 export function updateEntityInfoCount(points: PointData[]) {
   // 创建临时计数对象，避免频繁更新entityInfo
   const countMap: Record<string, number> = {};
@@ -790,7 +961,10 @@ export function updateEntityInfoCount(points: PointData[]) {
   });
 }
 
-// 导出操作函数
+/**
+ * 导出操作函数
+ * @description 导出操作函数
+ */
 export const getFeatures = () => [...features];
 export const getItemMap = () => ({ ...itemMap });
 export const getEntityGroup = () => ({ ...entityGroup });
@@ -799,22 +973,40 @@ export const getStyleCache = () => ({ ...styleCache });
 export const getEntityClusterLayers = () => [...entityClusterLayers];
 export const getEntityClusterSources = () => ({ ...entityClusterSources });
 
-// 添加特征
+/**
+ * 添加特征
+ * @param feature 特征
+ * @description 添加特征
+ */
 export const addFeature = (feature: Feature<Point>) => {
   features.push(feature);
 };
 
-// 添加特征到itemMap
+/**
+ * 添加特征到itemMap
+ * @param id 逻辑ID
+ * @param feature 特征
+ * @description 添加特征到itemMap
+ */
 export const addFeatureToItemMap = (id: number, feature: Feature<Point>) => {
   itemMap[id] = feature;
 };
 
-// 从itemMap中移除特征
+/**
+ * 从itemMap中移除特征
+ * @param id 逻辑ID
+ * @description 从itemMap中移除特征
+ */
 export const removeFeatureFromItemMap = (id: number) => {
   delete itemMap[id];
 };
 
-// 添加特征到实体组
+/**
+ * 添加特征到实体组
+ * @param entityType 实体类型
+ * @param feature 特征
+ * @description 添加特征到实体组
+ */
 export const addFeatureToEntityGroup = (
   entityType: string,
   feature: Feature<Point>
@@ -828,7 +1020,12 @@ export const addFeatureToEntityGroup = (
   entityGroup[entityType].points.push(feature);
 };
 
-// 从实体组中移除特征
+/**
+ * 从实体组中移除特征
+ * @param entityType 实体类型
+ * @param feature 特征
+ * @description 从实体组中移除特征
+ */
 export const removeFeatureFromEntityGroup = (
   entityType: string,
   feature: Feature<Point>
@@ -841,22 +1038,39 @@ export const removeFeatureFromEntityGroup = (
   }
 };
 
-// 添加样式到缓存
+/**
+ * 添加样式到缓存
+ * @param key 键
+ * @param style 样式
+ * @description 添加样式到缓存
+ */
 export const addStyleToCache = (key: string, style: StyleCacheEntry) => {
   styleCache[key] = style;
 };
 
-// 从缓存中移除样式
+/**
+ * 从缓存中移除样式
+ * @param key 键
+ * @description 从缓存中移除样式
+ */
 export const removeStyleFromCache = (key: string) => {
   delete styleCache[key];
 };
 
-// 添加图层
+/**
+ * 添加图层
+ * @param layer 图层
+ * @description 添加图层
+ */
 export const addEntityClusterLayer = (layer: VectorLayer<any>) => {
   entityClusterLayers.push(layer);
 };
 
-// 移除图层
+/**
+ * 移除图层
+ * @param layer 图层
+ * @description 移除图层
+ */
 export const removeEntityClusterLayer = (layer: VectorLayer<any>) => {
   const index = entityClusterLayers.indexOf(layer);
   if (index !== -1) {
@@ -864,17 +1078,29 @@ export const removeEntityClusterLayer = (layer: VectorLayer<any>) => {
   }
 };
 
-// 添加聚合源
+/**
+ * 添加聚合源
+ * @param key 键
+ * @param source 源
+ * @description 添加聚合源
+ */
 export const addEntityClusterSource = (key: string, source: Cluster) => {
   entityClusterSources[key] = source;
 };
 
-// 移除聚合源
+/**
+ * 移除聚合源
+ * @param key 键
+ * @description 移除聚合源
+ */
 export const removeEntityClusterSource = (key: string) => {
   delete entityClusterSources[key];
 };
 
-// 优化清空所有数据函数
+/**
+ * 优化清空所有数据函数
+ * @description 优化清空所有数据函数
+ */
 export const clearAllData = () => {
   // 清除所有定时器
   Object.values(styleCacheCleanupTimers).forEach(clearTimeout);
