@@ -1,0 +1,201 @@
+import { SelectEvent } from 'ol/interaction/Select';
+import type { PointData } from '@/types/points';
+import { xyz2crd } from '@/utils/common';
+import {
+  map,
+  popupManager,
+  setCurrentPoint,
+  mapContextMenuListeners,
+} from './state';
+import {
+  showSelectionIndicator,
+  clearSelectionIndicator,
+} from '../selectionIndicator';
+import { toggleMultiSelect } from '../marks';
+import { isMultiSelecting } from '@/data/marks';
+import type { Coordinate } from 'ol/coordinate';
+
+/**
+ * 点位选择处理函数
+ */
+export const pointSelectHandler = async function (event: SelectEvent) {
+  const currentMap = map.value;
+  if (!currentMap) return;
+
+  const target = event.selected[0];
+  if (!target) {
+    // 只有当没有选中新Feature时才关闭弹窗
+    popupManager.value?.closeToast();
+    // 清除选中指示器
+    clearSelectionIndicator();
+    return;
+  }
+
+  // 检查是否是聚合点
+  const features = target.get('features');
+  if (features && features.length > 1) {
+    // 聚合点点击处理
+    // 如果有弹窗正在显示，先关闭它
+    if (popupManager.value?.isPopupVisible.value) {
+      await popupManager.value.closeToast();
+    }
+
+    const extent = target.getGeometry()?.getExtent();
+    if (extent && currentMap) {
+      // 放大到聚合范围
+      currentMap.getView().fit(extent, {
+        duration: 500,
+        padding: [50, 50, 50, 50],
+        maxZoom: 5,
+      });
+    }
+    return;
+  }
+
+  // 获取单个点的数据
+  let data = target.get('payload') as PointData | undefined;
+  // 如果是聚合中的单个点，需要从features中获取
+  if (features && features.length === 1) {
+    data = features[0].get('payload');
+  }
+
+  if (!data) {
+    return;
+  }
+
+  // 如果弹窗管理器不存在，提前返回
+  if (!popupManager.value) {
+    return;
+  }
+
+  const targetFeaturePosition = xyz2crd(data.position);
+  const newPosition = targetFeaturePosition;
+  const currentPosition = popupManager.value.getCurrentPosition();
+  const positionChanged =
+    !currentPosition ||
+    newPosition[0] !== currentPosition[0] ||
+    newPosition[1] !== currentPosition[1];
+
+  // --- 添加日志 ---
+  console.log('[pointSelectHandler] Point data found:', JSON.stringify(data));
+  console.log(
+    '[pointSelectHandler] Calling showSelectionIndicator with ID:',
+    data.levelLogicId
+  );
+  // ---------------
+
+  // 显示选择指示器
+  if (data.levelLogicId) {
+    showSelectionIndicator(
+      data.levelLogicId.toString(),
+      'rgba(253, 251, 84, 0.8)'
+    );
+  }
+
+  // 设置点位数据，减少对point.value的重复赋值
+  setCurrentPoint(data);
+
+  // 如果位置改变或弹出框当前不可见
+  if (positionChanged || !popupManager.value.isPopupVisible.value) {
+    if (popupManager.value.isPopupVisible.value) {
+      // 如果弹窗已经显示，先关闭弹窗
+      await popupManager.value.closeToast();
+      // 重新显示指示器
+      if (data.levelLogicId) {
+        showSelectionIndicator(
+          data.levelLogicId.toString(),
+          'rgba(253, 251, 84, 0.8)'
+        );
+      }
+      // 设置新位置并打开弹窗
+      popupManager.value.setCurrentPosition([...newPosition]);
+      popupManager.value.openToast();
+    } else {
+      // 首次显示弹窗
+      popupManager.value.toggleVideoInfo(false);
+      popupManager.value.setCurrentPosition([...newPosition]);
+      popupManager.value.openToast();
+    }
+  }
+};
+
+/**
+ * 添加右键菜单监听器
+ */
+export const addMapContextMenuListener = (
+  listener: (
+    event: MouseEvent,
+    coordinate?: Coordinate,
+    pointData?: PointData
+  ) => void
+) => {
+  if (mapContextMenuListeners.has(listener)) {
+    console.warn('该右键菜单监听器已存在');
+    return;
+  }
+  mapContextMenuListeners.add(listener);
+};
+
+/**
+ * 移除右键菜单监听器
+ */
+export const removeMapContextMenuListener = (
+  listener: (
+    event: MouseEvent,
+    coordinate?: Coordinate,
+    pointData?: PointData
+  ) => void
+) => {
+  if (!mapContextMenuListeners.has(listener)) {
+    console.warn('该右键菜单监听器不存在');
+    return;
+  }
+  mapContextMenuListeners.delete(listener);
+};
+
+/**
+ * 地图点击处理
+ */
+export function mapClickHandler(event: any) {
+  // 使用 any 避免 MapBrowserEvent 导入
+  // 首先检查是否有Feature被点击
+  const feature = map.value?.forEachFeatureAtPixel(
+    event.pixel,
+    feature => feature
+  );
+
+  // 如果没有Feature被点击，并且弹窗正在显示，则关闭弹窗
+  if (!feature && popupManager.value) {
+    popupManager.value.closeToast();
+  }
+
+  // 如果有并且有Feature被点击，则关闭弹窗 (多选模式下)
+  if (feature && isMultiSelecting.value) {
+    popupManager.value?.closeToast();
+
+    // 检查是否是聚合点
+    const features = feature.get('features');
+    let payload: PointData | undefined;
+
+    if (features && features.length === 1) {
+      payload = features[0].get('payload') as PointData;
+    } else if (features && features.length > 1) {
+      // 如果是聚合点, 展开视图
+      const extent = feature.getGeometry()?.getExtent();
+      if (extent) {
+        map.value?.getView().fit(extent, {
+          duration: 500,
+          padding: [50, 50, 50, 50],
+          maxZoom: 5,
+        });
+      }
+    } else {
+      // 如果不是聚合点，直接获取payload
+      payload = feature.get('payload') as PointData;
+    }
+
+    if (payload?.levelLogicId) {
+      toggleMultiSelect(payload.levelLogicId as number);
+    }
+  }
+}
