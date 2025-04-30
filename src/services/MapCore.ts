@@ -53,6 +53,11 @@ const mapContextMenuListeners = new Set<
   (event: MouseEvent, coordinate?: Coordinate, pointData?: PointData) => void
 >();
 
+// 修改图像池的定义，使用普通JavaScript对象替代Map
+// 添加图像池，减少内存分配和回收
+const imagePool: Record<string, HTMLImageElement> = {};
+const MAX_POOLED_IMAGES = 100;
+
 /**
  * 保存地图视图状态到IndexedDB
  * @param mapId 地图ID
@@ -76,7 +81,10 @@ async function saveMapViewState(mapId: string): Promise<void> {
   try {
     const key = `${MAP_VIEW_STATE_KEY_PREFIX}${mapId}`;
     await setItem(key, viewState, StorageType.PERMANENT, null);
-    console.log(`已保存地图 ${mapId} 的视图状态:`, viewState);
+    // 只在开发环境记录详细日志
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`已保存地图 ${mapId} 的视图状态`);
+    }
   } catch (error) {
     console.error(`保存地图 ${mapId} 视图状态失败:`, error);
   }
@@ -89,23 +97,20 @@ async function saveMapViewState(mapId: string): Promise<void> {
 async function restoreMapViewState(
   mapId: string
 ): Promise<MapViewState | null> {
-  // 移除对 map.value 的依赖检查，让函数在地图初始化之前也能工作
   try {
     const key = `${MAP_VIEW_STATE_KEY_PREFIX}${mapId}`;
     const viewState = await getItem<MapViewState>(key, StorageType.PERMANENT);
-    console.log(`恢复地图 ${mapId} 的视图状态:`, viewState);
 
-    if (viewState) {
-      console.log(`已恢复地图 ${mapId} 的视图状态:`, viewState);
-      return viewState;
-    } else {
-      console.log(`未找到地图 ${mapId} 的视图状态，将使用默认位置`);
+    // 只在开发环境记录详细日志
+    if (process.env.NODE_ENV === 'development' && viewState) {
+      console.log(`已恢复地图 ${mapId} 的视图状态`);
     }
+
+    return viewState || null;
   } catch (error) {
     console.error(`恢复地图 ${mapId} 视图状态失败:`, error);
+    return null;
   }
-
-  return null;
 }
 
 // 创建简单投影
@@ -126,15 +131,41 @@ let entityLayerTimerId: number | null = null;
 // 最大重试次数
 const MAX_RETRIES = 5;
 
-// 瓦片加载函数
+// 优化的瓦片加载函数，使用图像池
 export const tileLoad = (imageTile: any, src: string) => {
-  const img = new Image();
+  // 尝试从图像池获取图像
+  let img = imagePool[src];
+
+  if (!img) {
+    img = new Image();
+
+    // 计算当前池大小
+    const poolSize = Object.keys(imagePool).length;
+    if (poolSize < MAX_POOLED_IMAGES) {
+      // 添加到图像池
+      imagePool[src] = img;
+    }
+  }
+
+  // 重置事件处理程序
   img.onload = () => {
     imageTile.getImage().src = src;
+    // 完成后移除监听器以避免内存泄漏
+    img.onload = null;
+    img.onerror = null;
   };
+
   img.onerror = () => {
     imageTile.getImage().src = transparentBase64;
+    // 完成后移除监听器以避免内存泄漏
+    img.onload = null;
+    img.onerror = null;
+
+    // 错误时从池中删除
+    delete imagePool[src];
   };
+
+  // 设置图像源（这将触发加载）
   img.src = src;
 };
 
@@ -169,7 +200,10 @@ export const selectInteraction: Select = new Select({
     return click(event);
   },
   style: null,
-  layers: () => true,
+  layers: layer => {
+    // 优化图层过滤，只选择可见的图层
+    return layer.getVisible();
+  },
 });
 
 export const popupManager = shallowRef<PopupManager | null>(null);
@@ -201,36 +235,48 @@ function addEntityLayersToMap(currentRetry = 0) {
 
   const layers = getEntityClusterLayers();
   if (layers.length > 0) {
-    console.log(`添加 ${layers.length} 个实体图层到地图`);
+    // 只在开发环境记录详细日志
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`添加 ${layers.length} 个实体图层到地图`);
+    }
 
     // 分批添加图层，避免长时间阻塞主线程
-    const batchSize = 5; // 每批添加5个图层
+    const batchSize = 10; // 增加每批处理量以减少批次
     const addLayersBatch = (startIndex: number) => {
       const endIndex = Math.min(startIndex + batchSize, layers.length);
       const currentBatch = layers.slice(startIndex, endIndex);
 
-      // 首先预先设置当前批次所有图层为不可见
-      currentBatch.forEach(layer => {
-        layer.setVisible(false);
-      });
+      // 预先分配数组
+      const layersToAdd = new Array(currentBatch.length);
 
-      // 添加当前批次所有图层（不可见状态）
-      currentBatch.forEach(layer => {
-        map.value?.addLayer(layer);
-      });
+      // 首先设置所有图层为不可见
+      for (let i = 0; i < currentBatch.length; i++) {
+        const layer = currentBatch[i];
+        layer.setVisible(false);
+        layersToAdd[i] = layer;
+      }
+
+      // 使用一次调用添加所有图层
+      if (map.value && layersToAdd.length > 0) {
+        map.value.getLayers().extend(layersToAdd);
+      }
 
       // 如果还有剩余图层，继续添加下一批
       if (endIndex < layers.length) {
-        setTimeout(() => {
+        rafTimeout(() => {
           addLayersBatch(endIndex);
         }, 0);
       } else {
         // 所有图层添加完成
         entityLayersLoaded.value = true;
-        console.log('实体图层加载成功');
+
+        // 在开发环境下打印加载成功信息
+        if (process.env.NODE_ENV === 'development') {
+          console.log('实体图层加载成功');
+        }
 
         // 在实体图层成功添加到地图后，主动调用refreshMap显示标点
-        setTimeout(() => {
+        rafTimeout(() => {
           refreshMap();
         }, 10);
       }
@@ -243,9 +289,12 @@ function addEntityLayersToMap(currentRetry = 0) {
 
   // 如果还没有实体图层数据，但未超过最大重试次数，则继续尝试
   if (currentRetry < MAX_RETRIES) {
-    console.log(
-      `实体图层数据尚未准备好，${currentRetry + 1}/${MAX_RETRIES} 次重试中...`
-    );
+    // 只在开发环境记录详细日志
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        `实体图层数据尚未准备好，${currentRetry + 1}/${MAX_RETRIES} 次重试中...`
+      );
+    }
 
     // 递增重试间隔（指数退避）
     const delay = Math.min(500 * Math.pow(1.5, currentRetry), 5000);
@@ -260,7 +309,11 @@ function addEntityLayersToMap(currentRetry = 0) {
 
 // 更新地图视图和图层
 export async function updateMap(mapIndex: string) {
-  console.log('更新地图', mapIndex);
+  // 只在开发环境记录详细日志
+  if (process.env.NODE_ENV === 'development') {
+    console.log('更新地图', mapIndex);
+  }
+
   if (!map.value) return;
 
   // 重置实体图层加载状态
@@ -275,18 +328,41 @@ export async function updateMap(mapIndex: string) {
       projection: simpleProjection,
       url: `/map/${mapIndex}/{z}/{y}/{x}.png`,
       tileLoadFunction: tileLoad,
+      // 添加瓦片缓存策略
+      cacheSize: 500, // 增加缓存大小
     }),
+    // 添加过渡效果减少视觉卡顿
+    opacity: 1,
+    visible: true,
   });
 
-  // 移除所有现有图层
+  // 移除所有现有图层前，先获取当前图层数组
+  const existingLayers = map.value.getLayers().getArray().slice();
+
+  // 清除所有图层
   map.value.getLayers().clear();
 
   // 重新添加基础图层
   map.value.addLayer(tileLayer);
   map.value.addLayer(areaNameLayer);
 
+  // 断开非基础图层的源连接，以便垃圾回收
+  for (let i = 0; i < existingLayers.length; i++) {
+    const layer = existingLayers[i];
+    if (
+      layer !== tileLayer &&
+      layer !== areaNameLayer &&
+      'getSource' in layer
+    ) {
+      (layer as Layer).setSource(null);
+    }
+  }
+
+  // 主动触发垃圾回收
+  existingLayers.length = 0;
+
   // 分批异步添加实体图层，避免长时间阻塞主线程
-  setTimeout(() => {
+  rafTimeout(() => {
     addEntityLayersToMap();
   }, 10);
 
@@ -297,22 +373,26 @@ export async function updateMap(mapIndex: string) {
     restoredViewState.center &&
     restoredViewState.zoom !== undefined
   ) {
-    console.log(
-      `正在应用已恢复的视图状态，中心点: [${restoredViewState.center[0]}, ${restoredViewState.center[1]}], 缩放级别: ${restoredViewState.zoom}`
-    );
+    // 只在开发环境记录详细日志
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        `正在应用已恢复的视图状态，中心点: [${restoredViewState.center[0]}, ${restoredViewState.center[1]}], 缩放级别: ${restoredViewState.zoom}`
+      );
+    }
     view.setCenter(restoredViewState.center);
     view.setZoom(restoredViewState.zoom);
   } else {
     const defaultCenter =
       DEFAULT_MAP_CENTERS[mapIndex] || DEFAULT_MAP_CENTERS['map001'];
-    console.log(
-      `使用默认视图设置，中心点: [${defaultCenter[0]}, ${defaultCenter[1]}], 缩放级别: ${DEFAULT_ZOOM}`
-    );
+    // 只在开发环境记录详细日志
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        `使用默认视图设置，中心点: [${defaultCenter[0]}, ${defaultCenter[1]}], 缩放级别: ${DEFAULT_ZOOM}`
+      );
+    }
     view.setCenter(defaultCenter);
     view.setZoom(DEFAULT_ZOOM);
   }
-
-  console.log(`已更新地图到 ${mapIndex}`);
 }
 
 // 获取当前地图的ID
@@ -574,89 +654,85 @@ export const pointSelectHandler = async function (event: SelectEvent) {
   if (!currentMap) return;
 
   const target = event.selected[0];
-  if (target) {
-    // 检查是否是聚合点
-    const features = target.get('features');
-    if (features && features.length > 1) {
-      console.log('选中了聚合点, 包含特征数量:', features.length);
-      // 聚合点点击处理
-      // 如果有弹窗正在显示，先关闭它
-      if (popupManager.value?.isPopupVisible.value) {
-        await popupManager.value.closeToast();
-      }
-
-      const extent = target.getGeometry()?.getExtent();
-      if (extent && currentMap) {
-        // 放大到聚合范围
-        currentMap.getView().fit(extent, {
-          duration: 500,
-          padding: [50, 50, 50, 50],
-          maxZoom: 5,
-        });
-      }
-      return;
-    }
-
-    // 获取单个点的数据
-    let data = target.get('payload') as PointData | undefined;
-    // 如果是聚合中的单个点，需要从features中获取
-    if (features && features.length === 1) {
-      data = features[0].get('payload');
-    }
-
-    if (!data) {
-      console.warn('未找到点位数据');
-      return;
-    }
-
-    const targetFeaturePosition = xyz2crd(data.position);
-
-    const newPosition = targetFeaturePosition;
-    const currentPosition = popupManager.value?.getCurrentPosition();
-    const positionChanged =
-      !currentPosition ||
-      newPosition[0] !== currentPosition[0] ||
-      newPosition[1] !== currentPosition[1];
-
-    if (!popupManager.value) {
-      console.error('弹窗管理器不存在');
-      return;
-    }
-
-    if (data.levelLogicId) {
-      showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
-    }
-
-    // 如果位置改变或弹出框当前不可见
-    if (positionChanged || !popupManager.value?.isPopupVisible.value) {
-      if (popupManager.value.isPopupVisible.value) {
-        // 如果弹窗已经显示，先关闭弹窗
-        await popupManager.value.closeToast();
-        // 显示指示器
-        if (data.levelLogicId) {
-          showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
-        }
-        // 重新打开弹窗
-        point.value = data;
-        popupManager.value.setCurrentPosition([...newPosition]);
-        popupManager.value.openToast();
-      } else {
-        // 首次显示弹窗
-        point.value = data;
-        popupManager.value.toggleVideoInfo(false);
-        popupManager.value.setCurrentPosition([...newPosition]);
-        popupManager.value.openToast();
-      }
-    } else {
-      // 如果是同一位置的点击，只更新弹窗内容，不关闭再打开
-      point.value = data;
-    }
-  } else {
-    console.log('未选中目标，关闭弹窗');
+  if (!target) {
     // 只有当没有选中新Feature时才关闭弹窗
     popupManager.value?.closeToast();
     // 清除选中指示器
     clearSelectionIndicator();
+    return;
+  }
+
+  // 检查是否是聚合点
+  const features = target.get('features');
+  if (features && features.length > 1) {
+    // 聚合点点击处理
+    // 如果有弹窗正在显示，先关闭它
+    if (popupManager.value?.isPopupVisible.value) {
+      await popupManager.value.closeToast();
+    }
+
+    const extent = target.getGeometry()?.getExtent();
+    if (extent && currentMap) {
+      // 放大到聚合范围
+      currentMap.getView().fit(extent, {
+        duration: 500,
+        padding: [50, 50, 50, 50],
+        maxZoom: 5,
+      });
+    }
+    return;
+  }
+
+  // 获取单个点的数据
+  let data = target.get('payload') as PointData | undefined;
+  // 如果是聚合中的单个点，需要从features中获取
+  if (features && features.length === 1) {
+    data = features[0].get('payload');
+  }
+
+  if (!data) {
+    return;
+  }
+
+  // 如果弹窗管理器不存在，提前返回
+  if (!popupManager.value) {
+    return;
+  }
+
+  const targetFeaturePosition = xyz2crd(data.position);
+  const newPosition = targetFeaturePosition;
+  const currentPosition = popupManager.value.getCurrentPosition();
+  const positionChanged =
+    !currentPosition ||
+    newPosition[0] !== currentPosition[0] ||
+    newPosition[1] !== currentPosition[1];
+
+  // 显示选择指示器
+  if (data.levelLogicId) {
+    showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
+  }
+
+  // 设置点位数据，减少对point.value的重复赋值
+  point.value = data;
+
+  // 如果位置改变或弹出框当前不可见
+  if (positionChanged || !popupManager.value.isPopupVisible.value) {
+    if (popupManager.value.isPopupVisible.value) {
+      // 如果弹窗已经显示，先关闭弹窗
+      await popupManager.value.closeToast();
+      // 重新显示指示器
+      if (data.levelLogicId) {
+        showSelectionIndicator(data.levelLogicId, 'rgba(253, 251, 84, 0.8)');
+      }
+      // 设置新位置并打开弹窗
+      popupManager.value.setCurrentPosition([...newPosition]);
+      popupManager.value.openToast();
+    } else {
+      // 首次显示弹窗
+      popupManager.value.toggleVideoInfo(false);
+      popupManager.value.setCurrentPosition([...newPosition]);
+      popupManager.value.openToast();
+    }
   }
 };
 
