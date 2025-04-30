@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
     ],
     build: {
       target: 'es2015',
-      minify: 'esbuild',
+      minify: 'terser',
       sourcemap: false,
       cssTarget: 'chrome80',
       reportCompressedSize: false,
@@ -41,12 +41,8 @@ export default defineConfig(({ mode }) => {
           assetFileNames: '[ext]/[name]-[hash].[ext]', // 资源文件像 字体，图片等
           experimentalMinChunkSize: 20 * 1024, // 提高到20KB，更积极地合并小模块
           manualChunks(id) {
-            if (id.includes('/lodash')) {
-              return 'lodash';
-            } else if (id.includes('/@vue')) {
+            if (id.includes('/@vue')) {
               return 'vue-core';
-            } else if (id.includes('/leaflet/')) {
-              return 'leaflet-vendor';
             } else if (id.includes('/ol/')) {
               return 'ol-core'; // 改名以避免与变量同名
             } else if (id.includes('/node_modules/')) {
@@ -57,6 +53,11 @@ export default defineConfig(({ mode }) => {
               return 'vendor';
             }
           },
+        },
+      },
+      terserOptions: {
+        compress: {
+          drop_console: true,
         },
       },
     },
@@ -79,7 +80,7 @@ export default defineConfig(({ mode }) => {
     },
     // 优化依赖预构建
     optimizeDeps: {
-      include: ['vue', 'ol', 'leaflet'],
+      include: ['vue', 'ol'],
     },
   };
 });
