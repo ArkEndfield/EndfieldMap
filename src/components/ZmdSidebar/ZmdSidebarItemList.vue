@@ -92,9 +92,25 @@ const filteredCategoryInfo = computed(() => {
   const result: Record<string, EntityInfo[]> = {};
 
   for (const [category, items] of Object.entries(categoryInfo.value)) {
-    const filteredItems = items.filter(item =>
-      item.name.toLowerCase().includes(query)
-    );
+    const filteredItems = items.filter(item => {
+      // 使用 item.point 作为原始标识符
+      const originalIdentifier =
+        item.point && typeof item.point === 'string'
+          ? item.point.toLowerCase()
+          : '';
+      // 使用 item.point 作为翻译键
+      const translationKey = `entities.${item.point}`;
+      const translatedName = t(translationKey);
+      const translatedNameLower =
+        translatedName && typeof translatedName === 'string'
+          ? translatedName.toLowerCase()
+          : '';
+
+      return (
+        originalIdentifier.includes(query) ||
+        translatedNameLower.includes(query)
+      );
+    });
 
     if (filteredItems.length > 0) {
       result[category] = filteredItems;

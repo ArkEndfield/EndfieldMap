@@ -15,6 +15,9 @@
           :class="[
             'arknights-popover absolute shadow-lg w-max z-[57]',
             sizeClass,
+            {
+              'pointer-events-none': props.noEvent,
+            },
           ]"
           :initial="getInitialAnimation"
           :animate="getAnimateAnimation"
@@ -49,10 +52,12 @@ const props = withDefaults(
   defineProps<{
     placement?: 'top' | 'bottom' | 'left' | 'right';
     size?: 'sm' | 'md' | 'lg' | 'xl';
+    noEvent?: boolean;
   }>(),
   {
     placement: 'bottom',
     size: 'md',
+    noEvent: false,
   }
 );
 

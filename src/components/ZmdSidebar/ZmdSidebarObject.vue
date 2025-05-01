@@ -3,6 +3,7 @@
     placement="right"
     size="sm"
     class="overflow-hidden"
+    :noEvent="true"
   >
     <div
       class="zmd-sidebar-object"
@@ -81,7 +82,7 @@ const displayName = computed(() => {
   if (props.entity && props.category && !isCustomEntity(props.entity.point)) {
     return t(`entities.${props.entity.point}`);
   }
-  return props.entity ? props.entity?.name : '未命名';
+  return props.entity ? props.entity?.point : '未命名';
 });
 
 const isActive = computed(() => {

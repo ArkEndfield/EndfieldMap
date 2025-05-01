@@ -1,5 +1,4 @@
 export interface EntityInfo {
-  name: string;
   point: string;
   pic: string;
   count: number;
