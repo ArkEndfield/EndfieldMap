@@ -62,7 +62,7 @@ export const marker = (entry: PointData): Feature<Point> | undefined => {
   });
 
   const entityType = entry.entityDataIdKey;
-  addFeatureToEntityGroup(entityType, feature, info.entityInfo.name);
+  addFeatureToEntityGroup(entityType, feature, info.entityInfo.point);
 
   return feature;
 };

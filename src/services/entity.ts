@@ -105,7 +105,11 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
       if (feature) {
         addFeature(feature);
         addFeatureToItemMap(point.levelLogicId, feature);
-        addFeatureToEntityGroup(point.entityDataIdKey, feature);
+        addFeatureToEntityGroup(
+          point.entityDataIdKey,
+          feature,
+          point.entityDataIdKey
+        );
       }
     }
 
@@ -275,15 +279,6 @@ export const unSelectAllByCategory = (category: string) => {
 export const toggleSelectByCategory = (category: string) => {
   Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key].category === category) {
-      entityShowStates[key] = !entityShowStates[key];
-    }
-  });
-  notifySelectChange();
-};
-
-export const toggleSelectByName = (name: string) => {
-  Object.keys(entityInfo).forEach(key => {
-    if (entityInfo[key].entityInfo.name === name) {
       entityShowStates[key] = !entityShowStates[key];
     }
   });

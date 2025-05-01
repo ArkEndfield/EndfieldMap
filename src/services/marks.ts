@@ -216,13 +216,13 @@ export const shouldShowByMarkStatus = (seq: number): boolean => {
 };
 
 // 判断指定序号的点位是否完成
-export const isMarked = (seq: number): boolean => {
+export const isMarked = (seq: number | string): boolean => {
   // 增加检查，确保 marks[seq] 存在
   return marks[seq] ? marks[seq].finish === true : false;
 };
 
 // 判断指定序号的点位是否未完成
-export const isUnmarked = (seq: number): boolean => {
+export const isUnmarked = (seq: number | string): boolean => {
   // 同样增加检查
   return marks[seq] ? marks[seq].finish === false : true; // 如果不存在，视为未完成
 };
