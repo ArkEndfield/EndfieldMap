@@ -40,6 +40,7 @@ export const selectionStyle = new Style({
       color: 'rgba(255, 255, 0, 0.8)',
       width: 4,
     }),
+    displacement: [0, DEFAULT_RADIUS + 6],
   }),
   zIndex: 1,
 });
@@ -54,6 +55,7 @@ export const partialSelectionStyle = new Style({
       color: 'rgba(255, 255, 0, 0.4)',
       width: 4,
     }),
+    displacement: [0, DEFAULT_RADIUS + 6],
   }),
   zIndex: 1,
 });

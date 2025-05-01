@@ -72,7 +72,10 @@ export const addFeature = (feature: Feature<Point>) => {
 /**
  * 添加特征到itemMap
  */
-export const addFeatureToItemMap = (id: string, feature: Feature<Point>) => {
+export const addFeatureToItemMap = (
+  id: string | number,
+  feature: Feature<Point>
+) => {
   store.itemMap[id] = feature;
 };
 

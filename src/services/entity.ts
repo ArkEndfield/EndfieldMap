@@ -104,7 +104,7 @@ export async function initializeEntityInfo(pointsData: PointData[]) {
       const feature = marker(point);
       if (feature) {
         addFeature(feature);
-        addFeatureToItemMap(Number(point.levelLogicId), feature);
+        addFeatureToItemMap(point.levelLogicId, feature);
         addFeatureToEntityGroup(point.entityDataIdKey, feature);
       }
     }

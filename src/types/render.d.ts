@@ -30,7 +30,7 @@ export type SelectionStatus = 'none' | 'partial' | 'all';
  */
 export interface LayerStore {
   features: Feature<Point>[];
-  itemMap: Record<string, Feature<Point>>;
+  itemMap: Record<string | number, Feature<Point>>;
   entityGroup: Record<string, EntityGroup>;
   entityClusterLayers: VectorLayer<any>[];
   entityClusterSources: Record<string, Cluster>;
