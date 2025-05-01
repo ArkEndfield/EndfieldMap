@@ -45,7 +45,6 @@ const props = defineProps<{
   point: PointData | null;
 }>();
 const { t } = useI18n();
-
 const rewards = ref<ReturnRewardItem[]>([]);
 const showRewards = computed(() => {
   return isChestReward(props.point);

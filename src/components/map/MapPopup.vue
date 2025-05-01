@@ -148,7 +148,11 @@ const isCustomPoint = computed(() => {
     will-change: top, right, width, height, bottom;
     transform-style: preserve-3d;
     backface-visibility: hidden;
-
+    filter: drop-shadow(0 $border-size 0 $border-color)
+      drop-shadow(0 calc(0px - $border-size) 0 $border-color)
+      drop-shadow($border-size 0 0 $border-color)
+      drop-shadow(calc(0px - $border-size) 0 0 $border-color)
+      drop-shadow(0 0 0.4em rgba(0, 0, 0, 0.5));
     // 电脑端向右展开
     &.unfold-right {
       width: 80%;
