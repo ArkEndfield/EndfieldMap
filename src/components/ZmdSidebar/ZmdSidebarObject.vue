@@ -53,7 +53,6 @@ import { ref, computed } from 'vue';
 import { categoryInfo, entityInfo, entityShowStates } from '@/data/entity';
 import { useI18n } from 'vue-i18n';
 import { toggleSelect, isCustomEntity } from '@/services/entity';
-import { refreshMap } from '@/services/render';
 import type { EntityInfo } from '@/types/entity';
 import Popover from '../Popover.vue';
 
@@ -130,8 +129,6 @@ const toggle = () => {
   if (props.entity && props.category) {
     // 直接调用toggleSelect函数切换实体显示状态
     toggleSelect(props.entity.point);
-    // 刷新地图
-    refreshMap();
     return;
   }
 

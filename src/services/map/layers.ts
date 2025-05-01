@@ -83,9 +83,7 @@ export function addEntityLayersToMap(currentRetry = 0): void {
         }
 
         // 在实体图层成功添加到地图后，主动调用refreshMap显示标点
-        rafTimeout(() => {
-          refreshMap();
-        }, 10);
+        refreshMap();
       }
     };
 
