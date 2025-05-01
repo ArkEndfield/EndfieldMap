@@ -9,7 +9,11 @@ import { initializeEntityLayers } from '../entity';
 import { updatePoints, getCurrentPoints } from '../points';
 import { removeAllLines, setMapForLines } from '../lineConnector';
 import { setMapForIndicator } from '../selectionIndicator';
-import { refreshMap, populateFeaturesFromPoints } from '../render';
+import {
+  refreshMap,
+  populateFeaturesFromPoints,
+  updateClusterDistance,
+} from '../render';
 
 import {
   map,
@@ -21,15 +25,17 @@ import {
   setRenderOptimizer,
   setOverlay,
   setCurrentMapId,
-  setEntityLayersLoaded,
   setEntityLayerTimerId,
-  entityLayersLoaded,
 } from './state';
 import { restoreMapViewState, saveMapViewState } from './viewState';
 import { simpleProjection, tileLoad } from './projection';
 import { DEFAULT_MAP_CENTERS, DEFAULT_ZOOM } from './constants';
 import { createZoomControl } from './controls';
-import { pointSelectHandler, mapClickHandler } from './interactions';
+import {
+  pointSelectHandler,
+  mapClickHandler,
+  pointerMoveHandler,
+} from './interactions';
 import {
   registerMapEventListeners,
   unregisterMapEventListeners,
@@ -42,6 +48,60 @@ import {
 } from './layers';
 import { cancelRafTimeout } from '@/utils/animationTimer';
 import { getCurrentMapId } from './utils';
+
+/**
+ * 创建地图瓦片图层的源
+ * @param mapIndex 地图索引
+ * @returns XYZ source instance
+ */
+function _createBaseTileSource(mapIndex: string): XYZ {
+  return new XYZ({
+    projection: simpleProjection,
+    url: `/map/${mapIndex}/{z}/{y}/{x}.png`,
+    tileLoadFunction: tileLoad,
+    cacheSize: 500,
+  });
+}
+
+/**
+ * 更新地图视图（中心点和缩放）
+ * @param mapInstance 地图实例
+ * @param mapIndex 地图索引
+ */
+async function _updateMapView(
+  mapInstance: Map,
+  mapIndex: string
+): Promise<void> {
+  const restoredViewState = await restoreMapViewState(mapIndex);
+  const view = mapInstance.getView();
+
+  if (
+    restoredViewState &&
+    restoredViewState.center &&
+    restoredViewState.zoom !== undefined
+  ) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        `应用已恢复的视图状态: 中心点=[${restoredViewState.center[0]}, ${restoredViewState.center[1]}], 缩放级别=${restoredViewState.zoom}`
+      );
+    }
+    view.setCenter(restoredViewState.center);
+    view.setZoom(restoredViewState.zoom);
+  } else {
+    const defaultCenter =
+      DEFAULT_MAP_CENTERS[mapIndex] || DEFAULT_MAP_CENTERS['map001'];
+    const defaultZoom = DEFAULT_ZOOM; // 使用常量
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        `使用默认视图设置: 中心点=[${defaultCenter[0]}, ${defaultCenter[1]}], 缩放级别=${defaultZoom}`
+      );
+    }
+    view.setCenter(defaultCenter);
+    view.setZoom(defaultZoom);
+  }
+
+  addEntityLayersToMap(mapInstance);
+}
 
 /**
  * 创建地图实例
@@ -87,12 +147,7 @@ export async function createMap(
   // 基础图层 - 只包含底图和地名标注
   const baseLayers = [
     new TileLayer({
-      source: new XYZ({
-        projection: simpleProjection,
-        url: `/map/${mapIndex}/{z}/{y}/{x}.png`,
-        tileLoadFunction: tileLoad,
-        cacheSize: 500,
-      }),
+      source: _createBaseTileSource(mapIndex),
       opacity: 1,
       visible: true,
     }),
@@ -144,15 +199,10 @@ export async function createMap(
   // -------------------------------------------
 
   // 添加实体图层
-  addEntityLayersToMap();
+  addEntityLayersToMap(newMap);
 
-  // 监听地图渲染完成事件，如果实体图层还没加载成功，再次尝试
-  newMap.once('rendercomplete', () => {
-    if (!entityLayersLoaded.value) {
-      console.log('地图渲染完成但实体图层未加载，重新尝试添加');
-      addEntityLayersToMap();
-    }
-  });
+  // updateClusterDistance
+  updateClusterDistance(initialZoom);
 
   // 初始化弹窗管理器
   initPopupManager(overlayElement);
@@ -161,6 +211,7 @@ export async function createMap(
   newMap.addInteraction(selectInteraction);
   selectInteraction.on('select', pointSelectHandler);
   newMap.on('click', mapClickHandler);
+  newMap.on('pointermove', pointerMoveHandler);
   registerMapEventListeners();
 
   // 加载初始文本点位
@@ -184,76 +235,31 @@ export async function updateMap(mapIndex: string): Promise<void> {
   if (!map.value) return;
 
   if (process.env.NODE_ENV === 'development') {
-    console.log('更新地图', mapIndex);
+    console.log('开始更新地图:', mapIndex);
   }
 
-  // 重置实体图层加载状态
-  setEntityLayersLoaded(false);
-
-  // 从IndexedDB恢复地图视图状态
-  const restoredViewState = await restoreMapViewState(mapIndex);
-
-  // 创建新的瓦片图层
-  const tileLayer = new TileLayer({
-    source: new XYZ({
-      projection: simpleProjection,
-      url: `/map/${mapIndex}/{z}/{y}/{x}.png`,
-      tileLoadFunction: tileLoad,
-      cacheSize: 500,
-    }),
-    opacity: 1,
-    visible: true,
-  });
-
-  // 移除所有现有图层前，先获取当前图层数组
-  const existingLayers = map.value.getLayers().getArray().slice();
-
-  // 清除所有图层
-  map.value.getLayers().clear();
-
-  // 重新添加基础图层
-  map.value.addLayer(tileLayer);
-  map.value.addLayer(areaNameLayer);
-
-  // 断开非基础图层的源连接，以便垃圾回收
-  existingLayers.forEach(layer => {
-    if (
-      layer !== tileLayer &&
-      layer !== areaNameLayer &&
-      'getSource' in layer
-    ) {
-      (layer as any).setSource(null); // 使用 any 避免类型问题
-    }
-  });
-  // 理论上不需要手动触发 GC
-
-  // 添加实体图层
-  addEntityLayersToMap();
-
-  // 更新视图中心点和缩放级别
-  const view = map.value.getView();
-  if (
-    restoredViewState &&
-    restoredViewState.center &&
-    restoredViewState.zoom !== undefined
-  ) {
+  // 更新底图瓦片图层的源
+  const layers = map.value.getLayers().getArray();
+  if (layers.length > 0 && layers[0] instanceof TileLayer) {
+    const tileLayer = layers[0] as TileLayer<XYZ>;
+    const newSource = _createBaseTileSource(mapIndex); // <-- 使用辅助函数
+    tileLayer.setSource(newSource);
     if (process.env.NODE_ENV === 'development') {
-      console.log(
-        `正在应用已恢复的视图状态，中心点: [${restoredViewState.center[0]}, ${restoredViewState.center[1]}], 缩放级别: ${restoredViewState.zoom}`
-      );
+      console.log('底图瓦片图层源已更新。');
     }
-    view.setCenter(restoredViewState.center);
-    view.setZoom(restoredViewState.zoom);
   } else {
-    const defaultCenter =
-      DEFAULT_MAP_CENTERS[mapIndex] || DEFAULT_MAP_CENTERS['map001'];
-    if (process.env.NODE_ENV === 'development') {
-      console.log(
-        `使用默认视图设置，中心点: [${defaultCenter[0]}, ${defaultCenter[1]}], 缩放级别: ${DEFAULT_ZOOM}`
-      );
-    }
-    view.setCenter(defaultCenter);
-    view.setZoom(DEFAULT_ZOOM);
+    console.error('未能找到要更新的底图瓦片图层。');
+    // 可以在这里考虑如果找不到图层则重新创建的逻辑，但暂时只记录错误
+  }
+
+  // 更新地图视图（中心点和缩放级别）
+  await _updateMapView(map.value, mapIndex);
+
+  // 不再需要清理/重新添加图层或再次添加实体图层
+  // 不再需要手动断开旧源的连接
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('地图更新完成:', mapIndex);
   }
 }
 
@@ -352,38 +358,6 @@ export const moveToCenter = (animate: boolean = true): void => {
 };
 
 /**
- * 刷新当前地图的点位数据和图层
- */
-export const refreshPoints = async () => {
-  const currentMapId = getCurrentMapId();
-  console.log(`Refreshing points for map: ${currentMapId}`);
-  try {
-    // 1. 重新获取并过滤点位数据
-    await updatePoints(currentMapId);
-    const currentPoints = await getCurrentPoints();
-
-    // 2. 重新填充渲染存储 (包括 features, itemMap, map source)
-    populateFeaturesFromPoints(currentPoints);
-
-    // 3. 重新初始化/更新实体图层（如果需要，但通常 populateFeatures 足够）
-    // await initializeEntityLayers(); // 可能不再需要，因为 populate 已更新 source
-
-    // 4. 刷新地图渲染
-    refreshMap();
-
-    // 5. 加载文本点位 (如果需要刷新)
-    loadTextPoints(
-      false,
-      currentMapId === 'map002' ? 'map02' : 'map01',
-      zoomLevel.value
-    );
-    console.log(`Points refreshed for map: ${currentMapId}`);
-  } catch (error) {
-    console.error(`Error refreshing points for map ${currentMapId}:`, error);
-  }
-};
-
-/**
  * 清理地图资源
  */
 export function cleanupMap(): void {
@@ -449,8 +423,6 @@ export function cleanupMap(): void {
   // 分离目标元素
   map.value.setTarget(undefined);
   setMapInstance(null);
-  // 重置状态
-  setEntityLayersLoaded(false);
 
   // 清理其他服务引用
   setMapForLines(map.value);

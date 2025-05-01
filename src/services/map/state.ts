@@ -41,8 +41,6 @@ export const selectInteraction: Select = new Select({
   },
 });
 
-// 图层加载状态
-export const entityLayersLoaded = ref(false);
 export let entityLayerTimerId: number | null = null; // 用于取消延迟加载的计时器ID
 
 // 右键菜单监听器集合
@@ -88,10 +86,6 @@ export function setCurrentPoint(data: PointData | null): void {
 
 export function setOverlay(instance: Overlay | null): void {
   overlay = instance;
-}
-
-export function setEntityLayersLoaded(loaded: boolean): void {
-  entityLayersLoaded.value = loaded;
 }
 
 export function setEntityLayerTimerId(id: number | null): void {

@@ -15,7 +15,6 @@ export {
   point,
   overlay,
   selectInteraction,
-  entityLayersLoaded,
   mapZooming,
 } from './state';
 
@@ -25,7 +24,6 @@ export {
   updateMap,
   selectMap,
   moveToCenter,
-  refreshPoints,
   cleanupMap,
 } from './core';
 

@@ -14,6 +14,7 @@ import {
 import { toggleMultiSelect } from '../marks';
 import { isMultiSelecting } from '@/data/marks';
 import type { Coordinate } from 'ol/coordinate';
+import { MapBrowserEvent } from 'ol';
 
 /**
  * 点位选择处理函数
@@ -156,7 +157,7 @@ export const removeMapContextMenuListener = (
 /**
  * 地图点击处理
  */
-export function mapClickHandler(event: any) {
+export function mapClickHandler(event: MapBrowserEvent<MouseEvent>) {
   // 使用 any 避免 MapBrowserEvent 导入
   // 首先检查是否有Feature被点击
   const feature = map.value?.forEachFeatureAtPixel(
@@ -197,5 +198,20 @@ export function mapClickHandler(event: any) {
     if (payload?.levelLogicId) {
       toggleMultiSelect(payload.levelLogicId as number);
     }
+  }
+}
+
+export function pointerMoveHandler(event: MapBrowserEvent<PointerEvent>) {
+  // 如果鼠标移动的点不是实体点，则不进行任何操作
+  const feature = map.value?.forEachFeatureAtPixel(
+    event.pixel,
+    feature => feature
+  );
+  if (!feature) return;
+  const features = feature.get('features');
+  if (features && features.length > 1) {
+    console.log('聚合点');
+  } else if (features && features.length === 1) {
+    console.log('单个点');
   }
 }

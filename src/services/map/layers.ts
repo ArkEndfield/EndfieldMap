@@ -1,14 +1,10 @@
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
-import {
-  map,
-  entityLayerTimerId,
-  setEntityLayersLoaded,
-  setEntityLayerTimerId,
-} from './state';
+import { entityLayerTimerId, setEntityLayerTimerId } from './state';
 import { getEntityClusterLayers, refreshMap } from '../render';
 import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 import { MAX_RETRIES } from './constants';
+import { Map } from 'ol';
 
 /**
  * 类型保护函数：判断是否为 VectorSource
@@ -28,14 +24,14 @@ export function isClusterSource(source: any): source is Cluster {
  * 添加实体图层到地图，支持重试逻辑
  * @param currentRetry 当前重试次数
  */
-export function addEntityLayersToMap(currentRetry = 0): void {
+export function addEntityLayersToMap(map: Map, currentRetry = 0): void {
   // 清除之前的计时器
   if (entityLayerTimerId !== null) {
     cancelRafTimeout(entityLayerTimerId);
     setEntityLayerTimerId(null);
   }
 
-  if (!map.value) {
+  if (!map) {
     console.warn('地图实例不存在，无法添加实体图层');
     return;
   }
@@ -64,8 +60,8 @@ export function addEntityLayersToMap(currentRetry = 0): void {
       }
 
       // 使用一次调用添加所有图层
-      if (map.value && layersToAdd.length > 0) {
-        map.value.getLayers().extend(layersToAdd);
+      if (map && layersToAdd.length > 0) {
+        map.getLayers().extend(layersToAdd);
       }
 
       // 如果还有剩余图层，继续添加下一批
@@ -74,9 +70,6 @@ export function addEntityLayersToMap(currentRetry = 0): void {
           addLayersBatch(endIndex);
         }, 0);
       } else {
-        // 所有图层添加完成
-        setEntityLayersLoaded(true);
-
         // 在开发环境下打印加载成功信息
         if (process.env.NODE_ENV === 'development') {
           console.log('实体图层加载成功');
@@ -105,7 +98,7 @@ export function addEntityLayersToMap(currentRetry = 0): void {
     const delay = Math.min(500 * Math.pow(1.5, currentRetry), 5000);
 
     const timerId = rafTimeout(() => {
-      addEntityLayersToMap(currentRetry + 1);
+      addEntityLayersToMap(map, currentRetry + 1);
     }, delay);
     setEntityLayerTimerId(timerId);
   } else {
