@@ -18,7 +18,9 @@ let currentSelectedPointId: number | string | null = null;
 
 // 动画相关
 let animationFrameId: number | null = null;
+let pulseAnimationFrameId: number | null = null;
 const animationDuration = 200; // ms
+const pulseDuration = 1500; // ms
 
 /**
  * 设置地图实例
@@ -53,10 +55,8 @@ const initIndicatorLayer = () => {
  * 移除指示器图层
  */
 const removeIndicatorLayer = () => {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
-  }
+  stopAllAnimations();
+
   if (indicatorLayer && mapInstance) {
     mapInstance.removeLayer(indicatorLayer);
 
@@ -72,17 +72,36 @@ const removeIndicatorLayer = () => {
 };
 
 /**
+ * 停止所有动画
+ */
+const stopAllAnimations = () => {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+
+  if (pulseAnimationFrameId) {
+    cancelAnimationFrame(pulseAnimationFrameId);
+    pulseAnimationFrameId = null;
+  }
+};
+
+/**
  * 显示标点选中指示器 (圆形扩展动画)
  * @param pointId 选中的点位ID
  * @param color 指示器颜色，默认为 'rgba(253, 251, 84, 0.8)'
  * @param radius 指示器最终半径（像素），默认为 15
  * @param strokeWidth 指示器边框宽度，默认为 3
+ * @param pulseRingsCount 脉冲环数量，默认为 2
+ * @param maxPulseScale 脉冲最大缩放比例，默认为 2.0
  */
 export const showSelectionIndicator = (
   pointId: number | string,
   color: string = 'rgba(253, 251, 84, 0.8)',
   radius: number = 15,
-  strokeWidth: number = 3
+  strokeWidth: number = 3,
+  pulseRingsCount: number = 2,
+  maxPulseScale: number = 2.0
 ): void => {
   if (!mapInstance || !indicatorSource) {
     console.error('地图实例或指示器未初始化，无法显示选中指示器');
@@ -120,10 +139,20 @@ export const showSelectionIndicator = (
   // 设置当前选中的点位ID
   currentSelectedPointId = idAsString;
 
-  // 创建指示器 Feature (一个点)
-  const indicatorFeature = new Feature({
+  // 创建主指示器 Feature (一个空心圆)
+  const mainFeature = new Feature({
     geometry: new Point(coordinates),
   });
+
+  // 创建脉冲环 Features
+  const pulseRingFeatures: Feature[] = [];
+  for (let i = 0; i < pulseRingsCount; i++) {
+    const pulseFeature = new Feature({
+      geometry: new Point(coordinates),
+    });
+    pulseRingFeatures.push(pulseFeature);
+    indicatorSource.addFeature(pulseFeature);
+  }
 
   // 定义初始和最终半径
   const initialRadius = 0;
@@ -132,6 +161,7 @@ export const showSelectionIndicator = (
   const initialDisplacementY =
     finalDisplacementY + (initialRadius / 2) * (1 - 0);
   const initialDisplacement = [0, initialDisplacementY];
+
   // 创建初始样式 (半径为0)
   const initialStyle = new Style({
     image: new CircleStyle({
@@ -143,12 +173,28 @@ export const showSelectionIndicator = (
       displacement: initialDisplacement,
     }),
   });
-  indicatorFeature.setStyle(initialStyle);
+  mainFeature.setStyle(initialStyle);
 
-  // 添加 Feature 到图层源
-  indicatorSource.addFeature(indicatorFeature);
+  // 初始化脉冲环为不可见
+  pulseRingFeatures.forEach(feature => {
+    feature.setStyle(
+      new Style({
+        image: new CircleStyle({
+          radius: 0,
+          stroke: new Stroke({
+            color: 'rgba(0, 0, 0, 0)', // 完全透明
+            width: 0,
+          }),
+          displacement: initialDisplacement,
+        }),
+      })
+    );
+  });
 
-  // 启动动画
+  // 添加主 Feature 到图层源
+  indicatorSource.addFeature(mainFeature);
+
+  // 启动初始展开动画
   const startTime = performance.now();
   const animate = (currentTime: number) => {
     const elapsed = currentTime - startTime;
@@ -174,18 +220,29 @@ export const showSelectionIndicator = (
           color: color,
           width: strokeWidth,
         }),
+        fill: undefined, // 确保中间是空心的
         displacement: currentDisplacement,
       }),
     });
 
     // 应用样式
-    indicatorFeature.setStyle(currentStyle);
+    mainFeature.setStyle(currentStyle);
 
     // 继续动画或结束
     if (progress < 1) {
       animationFrameId = requestAnimationFrame(animate);
     } else {
       animationFrameId = null;
+
+      // 初始动画完成后，启动脉冲动画
+      startPulseAnimation(
+        finalRadius,
+        strokeWidth,
+        color,
+        [0, targetDisplacementY],
+        pulseRingFeatures,
+        maxPulseScale
+      );
     }
   };
 
@@ -194,13 +251,75 @@ export const showSelectionIndicator = (
 };
 
 /**
+ * 启动脉冲/波纹动画效果
+ */
+const startPulseAnimation = (
+  baseRadius: number,
+  strokeWidth: number,
+  baseColor: string,
+  displacement: number[],
+  pulseFeatures: Feature[],
+  maxScale: number
+) => {
+  if (!pulseFeatures.length) return;
+
+  const pulseCount = pulseFeatures.length;
+  const pulseTotalDuration = pulseDuration;
+  const pulseDelayPerRing = pulseTotalDuration / pulseCount;
+  const startTimes = pulseFeatures.map(
+    (_, i) => performance.now() + i * pulseDelayPerRing
+  );
+
+  const animatePulse = (currentTime: number) => {
+    for (let i = 0; i < pulseCount; i++) {
+      const elapsed = currentTime - startTimes[i];
+      const ringProgress = (elapsed % pulseTotalDuration) / pulseTotalDuration;
+
+      if (ringProgress >= 0) {
+        // 计算当前尺寸和透明度
+        const scale = 1 + (maxScale - 1) * ringProgress; // 从1倍大小到最大倍数
+        const currentRadius = baseRadius * scale;
+
+        // 透明度从0.7到0
+        const alpha = Math.max(0, 0.7 * (1 - ringProgress));
+        const currentColor = baseColor.replace(/[\d.]+\)$/, `${alpha})`);
+
+        // 为每个脉冲环设置样式
+        pulseFeatures[i].setStyle(
+          new Style({
+            image: new CircleStyle({
+              radius: currentRadius,
+              stroke: new Stroke({
+                color: currentColor,
+                width: Math.max(1, strokeWidth * (1 - ringProgress * 0.7)), // 线宽随进度减小
+              }),
+              fill: undefined, // 确保中间是空心的
+              displacement: displacement,
+            }),
+          })
+        );
+
+        // 当一个环完成一个周期，重置其开始时间
+        if (ringProgress >= 0.99) {
+          startTimes[i] = currentTime;
+        }
+      }
+    }
+
+    // 继续动画循环
+    pulseAnimationFrameId = requestAnimationFrame(animatePulse);
+  };
+
+  // 开始脉冲动画
+  pulseAnimationFrameId = requestAnimationFrame(animatePulse);
+};
+
+/**
  * 清除选中指示器
  */
 export const clearSelectionIndicator = (): void => {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
-  }
+  stopAllAnimations();
+
   if (indicatorSource) {
     indicatorSource.clear();
     currentSelectedPointId = null;
