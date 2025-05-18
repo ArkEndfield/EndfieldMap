@@ -128,7 +128,10 @@ export const showSelectionIndicator = (
   // 定义初始和最终半径
   const initialRadius = 0;
   const finalRadius = radius;
-
+  const finalDisplacementY = finalRadius + 6;
+  const initialDisplacementY =
+    finalDisplacementY + (initialRadius / 2) * (1 - 0);
+  const initialDisplacement = [0, initialDisplacementY];
   // 创建初始样式 (半径为0)
   const initialStyle = new Style({
     image: new CircleStyle({
@@ -137,6 +140,7 @@ export const showSelectionIndicator = (
         color: color,
         width: strokeWidth,
       }),
+      displacement: initialDisplacement,
     }),
   });
   indicatorFeature.setStyle(initialStyle);
