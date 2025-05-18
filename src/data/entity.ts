@@ -40,7 +40,6 @@ export const customPointTypes: CustomPointKey[] = [
 export const customEntityInfo = customPointTypes.reduce((acc, type) => {
   acc[type] = {
     entityInfo: {
-      name: `zone_${type}`,
       pic: `camp_zone_${type}`,
       count: 0,
       point: type,

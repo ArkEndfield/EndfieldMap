@@ -268,7 +268,7 @@ watch(type, newValue => {
 
 const typeOptions = Object.entries(customEntityInfo).map(([key, value]) => ({
   value: key,
-  label: value.entityInfo.name,
+  label: value.entityInfo.point,
   icon: `/assets/${value.category}/${value.entityInfo.pic}.png`,
 }));
 
