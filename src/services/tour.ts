@@ -16,8 +16,8 @@ export const tour = driver({
   nextBtnText: i18n.global.t('tour.next'),
   prevBtnText: i18n.global.t('tour.prev'),
   doneBtnText: i18n.global.t('tour.done'),
-  allowClose: false,
   showButtons: ['next', 'previous', 'close'],
+  allowClose: true,
   popoverClass: 'arknights-tour',
   animate: true,
   onNextClick() {
@@ -26,6 +26,7 @@ export const tour = driver({
   },
   onCloseClick() {
     localStorage.setItem(KEY, 'true');
+    tour.destroy();
   },
   steps: [
     {
@@ -115,6 +116,7 @@ export const tour = driver({
         side: 'left',
         align: 'center',
       },
+      disableActiveInteraction: true,
       onHighlightStarted() {
         console.log('开始处理弹窗展示');
         const chestFeatures = MarkerManager.getMarkersByCategory('chest');
@@ -135,6 +137,7 @@ export const tour = driver({
     },
     {
       element: '#popup-content',
+      disableActiveInteraction: true,
       popover: {
         title: i18n.global.t('tour.popup_content.title'),
         description: i18n.global.t('tour.popup_content.description'),
