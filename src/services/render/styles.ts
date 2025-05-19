@@ -99,6 +99,7 @@ export function createBaseStyles(
   optimalScale: number
 ): Style[] {
   return [
+    ...createBlurredShadowStyles(radius),
     createOuterCircleStyle(radius, color),
     createInnerCircleStyle(radius),
     createLeftDecoration(radius),
@@ -191,6 +192,58 @@ export function createBottomTriangleIndicator(color: string): Style {
       rotation: Math.PI,
     }),
   });
+}
+
+/**
+ * 创建模糊阴影的SVG字符串
+ * @param radius 半径
+ * @param blurAmount 模糊程度
+ * @param color 阴影颜色
+ * @returns SVG字符串
+ */
+function createShadowSVG(
+  radius: number,
+  blurAmount: number = 3,
+  color: string = 'rgba(0,0,0,0.5)'
+): string {
+  // 计算SVG尺寸，需要足够大以容纳模糊扩散
+  const size = (radius + blurAmount * 2) * 2;
+  const center = size / 2;
+
+  // 创建带有唯一ID的滤镜
+  const filterId = `shadow-blur-${radius}-${blurAmount}`;
+
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+      <defs>
+        <filter id="${filterId}" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="${blurAmount}" />
+        </filter>
+      </defs>
+      <circle cx="${center}" cy="${center}" r="${radius}" fill="${color}" filter="url(#${filterId})" />
+    </svg>
+  `;
+}
+
+/**
+ * 创建模糊的阴影样式
+ * @param radius 半径
+ * @returns 阴影样式
+ */
+export function createBlurredShadowStyles(radius: number): Style[] {
+  const shadowSVG = createShadowSVG(radius, 2, 'rgba(0,0,0,0.4)');
+  const svgUrl =
+    'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(shadowSVG);
+
+  return [
+    new Style({
+      image: new Icon({
+        src: svgUrl,
+        scale: 1,
+        displacement: [0, radius],
+      }),
+    }),
+  ];
 }
 
 /**
