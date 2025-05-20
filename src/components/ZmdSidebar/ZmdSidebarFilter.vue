@@ -128,6 +128,7 @@ const handleClear = () => {
 .zmd-sidebar-filter {
   margin: 0 1em;
   z-index: 2;
+  user-select: none;
   .zmd-sidebar-filter-display-name {
     display: flex;
     align-items: center;

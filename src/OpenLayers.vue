@@ -24,17 +24,30 @@
       ref="contextMenuRef"
     >
       <ContextMenuItem
-        label="创建标点"
+        :label="
+          isPointMarked
+            ? t('context_menu.mark_unobtained')
+            : t('context_menu.mark_obtained')
+        "
+        v-show="!!rightClickPoint"
+        @click="mark"
+      >
+        <template #icon>
+          <CheckCircleIcon />
+        </template>
+      </ContextMenuItem>
+      <ContextMenuItem
+        :label="t('context_menu.create_point')"
         @click="() => handleAction('create')"
-        :disabled="!!rightClickPoint || !rightClickCoordinates"
+        :disabled="!!rightClickCustomPoint || !rightClickCoordinates"
       >
         <template #icon>
           <LocationClusterIcon />
         </template>
       </ContextMenuItem>
       <ContextMenuItem
-        label="删除标点"
-        v-show="!!rightClickPoint"
+        :label="t('context_menu.delete_point')"
+        v-show="!!rightClickCustomPoint"
         @click="() => handleAction('delete')"
         className="text-red-500"
       >
@@ -72,15 +85,27 @@ import {
   isCustomPoint,
 } from './services/customPoints';
 import type { PointData } from './types/points';
+import { computed } from 'vue';
+import { isMarked, markPoint } from './services/marks';
+import { useI18n } from 'vue-i18n';
 const menuVisible = ref(false);
 const contextMenuRef = ref<ContextMenuRef>();
 // 引用DOM元素
 const mapControlsRef = ref();
 const mapPopupRef = ref<MapPopupRef>();
 const rightClickCoordinates = ref<Coordinate>([0, 0]);
+const rightClickCustomPoint = ref<PointData | null>(null);
 const rightClickPoint = ref<PointData | null>(null);
+const { t } = useI18n();
 // 提供弹出层管理器给子组件 - 在setup顶层调用provide
 provide('popupManager', popupManager);
+
+const isPointMarked = computed(() => {
+  if (rightClickPoint.value) {
+    return isMarked(rightClickPoint.value.levelLogicId);
+  }
+  return false;
+});
 
 const onContextMenu = (event: MouseEvent) => {
   if (contextMenuRef.value) {
@@ -96,8 +121,14 @@ const handleAction = (action: string) => {
     createCustomPoint(rightClickCoordinates.value, currentMap);
   } else if (action === 'delete') {
     // 处理删除坐标的逻辑
-    if (rightClickPoint.value?.levelLogicId)
-      deleteCustomPoint(rightClickPoint.value.levelLogicId);
+    if (rightClickCustomPoint.value?.levelLogicId)
+      deleteCustomPoint(rightClickCustomPoint.value.levelLogicId);
+  }
+};
+
+const mark = () => {
+  if (rightClickPoint.value) {
+    markPoint(rightClickPoint.value.levelLogicId);
   }
 };
 
@@ -110,8 +141,11 @@ onMounted(async () => {
   addMapContextMenuListener((_, coordinate, point) => {
     rightClickCoordinates.value = coordinate as Coordinate;
     if (point && isCustomPoint(point)) {
+      rightClickCustomPoint.value = point;
+    } else if (point) {
       rightClickPoint.value = point;
     } else {
+      rightClickCustomPoint.value = null;
       rightClickPoint.value = null;
     }
   });

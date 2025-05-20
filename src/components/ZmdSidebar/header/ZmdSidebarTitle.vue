@@ -96,6 +96,7 @@ const props = withDefaults(
 <style lang="scss" scoped>
 .zmd-sidebar-title {
   position: relative;
+  user-select: none;
   .zmd-sidebar-title-title {
     position: relative;
     display: flex;

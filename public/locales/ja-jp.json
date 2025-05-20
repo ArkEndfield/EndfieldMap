@@ -52,6 +52,12 @@
   "hide": "非表示",
   "start": "開始",
   "dev_tip": "開発中バージョン、実際の内容はゲーム内を参照してください",
+  "context_menu": {
+    "mark_obtained": "マーク取得",
+    "mark_unobtained": "マーク取得解除",
+    "create_point": "ポイント作成",
+    "delete_point": "ポイント削除"
+  },
   "header": {
     "menu": "メニュー",
     "about": "について",

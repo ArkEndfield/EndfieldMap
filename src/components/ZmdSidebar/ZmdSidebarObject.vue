@@ -156,6 +156,7 @@ const progressWidth = computed(() => {
   padding: 0.5em 0.3em;
   position: relative;
   overflow: hidden;
+  user-select: none;
   &::before {
     content: '';
     position: absolute;

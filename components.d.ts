@@ -18,6 +18,7 @@ declare module 'vue' {
     ChangeLogIcon: typeof import('./src/components/icons/ChangeLogIcon.vue')['default']
     ChangelogMenu: typeof import('./src/components/Header/ChangelogMenu.vue')['default']
     ChatIcon: typeof import('./src/components/icons/ChatIcon.vue')['default']
+    CheckCircleIcon: typeof import('./src/components/icons/CheckCircleIcon.vue')['default']
     ChestReward: typeof import('./src/components/map/Popup/RewardDetail/ChestReward.vue')['default']
     ClearCache: typeof import('./src/components/Header/Settings/ClearCache.vue')['default']
     ClearIcon: typeof import('./src/components/icons/ClearIcon.vue')['default']

@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'flex items-center px-2 py-2 gap-1 text-sm rounded-md',
+      'flex items-center px-2 py-2 gap-1 text-sm rounded-md select-none',
       {
         'opacity-50': disabled,
         'hover:bg-[#FDFB72]/10': !disabled,

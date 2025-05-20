@@ -52,6 +52,12 @@
   "hide": "隐藏",
   "start": "开始",
   "dev_tip": "开发中版本，实际内容请以游戏内为准",
+  "context_menu": {
+    "mark_obtained": "标记获取",
+    "mark_unobtained": "取消标记获取",
+    "create_point": "创建标点",
+    "delete_point": "删除标点"
+  },
   "header": {
     "menu": "菜单",
     "about": "关于",

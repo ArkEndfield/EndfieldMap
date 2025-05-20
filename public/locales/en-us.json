@@ -52,6 +52,12 @@
   "hide": "Hide",
   "start": "Start",
   "dev_tip": "Development version, actual content please refer to the game",
+  "context_menu": {
+    "mark_obtained": "Mark Obtained",
+    "mark_unobtained": "Mark Unobtained",
+    "create_point": "Create Point",
+    "delete_point": "Delete Point"
+  },
   "header": {
     "menu": "Menu",
     "about": "About",

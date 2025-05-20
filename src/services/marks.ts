@@ -82,7 +82,7 @@ export const initMarksData = async () => {
   return marks;
 };
 
-export const markPoint = (seq: number) => {
+export const markPoint = (seq: number | string) => {
   if (marks[seq]) {
     // 直接修改值而不是使用Object.assign，简化操作
     marks[seq].finish = !marks[seq].finish;
@@ -102,7 +102,7 @@ export const markPoint = (seq: number) => {
   return false;
 };
 
-export const markPointsAsFinished = (...ids: number[]) => {
+export const markPointsAsFinished = (...ids: (number | string)[]) => {
   ids.forEach(id => {
     if (marks[id]) {
       marks[id].finish = true;
@@ -114,7 +114,7 @@ export const markPointsAsFinished = (...ids: number[]) => {
   });
 };
 
-export const markPointsAsUnfinished = (...ids: number[]) => {
+export const markPointsAsUnfinished = (...ids: (number | string)[]) => {
   ids.forEach(id => {
     if (marks[id]) {
       marks[id].finish = false;

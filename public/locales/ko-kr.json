@@ -52,6 +52,12 @@
   "hide": "숨김",
   "start": "시작",
   "dev_tip": "개발 중 버전, 실제 내용은 게임 내를 참조하세요",
+  "context_menu": {
+    "mark_obtained": "표시 완료",
+    "mark_unobtained": "표시 취소",
+    "create_point": "포인트 생성",
+    "delete_point": "포인트 삭제"
+  },
   "header": {
     "menu": "메뉴",
     "about": "정보",

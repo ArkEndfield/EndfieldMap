@@ -184,6 +184,7 @@ watch(
 .zmd-sidebar-scroll-list {
   margin-top: 0.8em;
   scrollbar-width: none;
+  user-select: none;
   -ms-overflow-style: none;
   position: relative;
   &::-webkit-scrollbar {

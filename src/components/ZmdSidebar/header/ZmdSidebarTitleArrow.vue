@@ -83,6 +83,7 @@ $arrow-height: 5em;
   transition: filter 0.3s;
   position: relative;
   overflow: visible;
+  user-select: none;
   filter: drop-shadow(0.1em 0.1em 0em rgba(255, 255, 255, 0.2));
   --arrow-font-size: 1em;
 
