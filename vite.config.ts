@@ -25,10 +25,9 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     build: {
-      target: 'es2015',
+      target: ['chrome111', 'firefox127', 'safari16.2'],
       minify: 'terser',
       sourcemap: false,
-      cssTarget: 'chrome80',
       reportCompressedSize: false,
       chunkSizeWarningLimit: 2000,
       // 提高构建性能配置
