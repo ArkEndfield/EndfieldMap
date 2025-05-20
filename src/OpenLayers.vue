@@ -121,8 +121,11 @@ const handleAction = (action: string) => {
     createCustomPoint(rightClickCoordinates.value, currentMap);
   } else if (action === 'delete') {
     // 处理删除坐标的逻辑
-    if (rightClickCustomPoint.value?.levelLogicId)
+    if (rightClickCustomPoint.value?.levelLogicId) {
       deleteCustomPoint(rightClickCustomPoint.value.levelLogicId);
+      rightClickCustomPoint.value = null;
+      rightClickPoint.value = null;
+    }
   }
 };
 
