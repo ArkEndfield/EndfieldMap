@@ -62,7 +62,7 @@ export function supportsHueInterpolation(): boolean {
   const testElement = document.createElement('div');
 
   // 设置测试渐变
-  testElement.style.backgroundImage = 'linear-gradient(in hue, red, blue)';
+  testElement.style.backgroundImage = 'linear-gradient(in hsl longer hue, red, blue)';
 
   // 获取计算样式并检查是否包含"hue"
   const computedStyle = window.getComputedStyle(testElement).backgroundImage;
@@ -81,7 +81,7 @@ export function supportsHueInterpolationCSS(): boolean {
     try {
       return CSS.supports(
         'background-image',
-        'linear-gradient(in hue, red, blue)'
+        'linear-gradient(in hsl longer hue, red, blue)'
       );
     } catch (e) {
       return false;
@@ -99,7 +99,7 @@ export function meetsVersionRequirements(): boolean {
   const ua = navigator.userAgent;
 
   // 检测Chrome/Edge (Chromium)
-  const chromeMatch = ua.match(/(?:Chrome|Chromium|Edg(?:e|A|iOS))\/(\d+)/i);
+  const chromeMatch = ua.match(/(?:Chrome|Chromium|Edg(?:e?|A|iOS))\/(\d+)/i);
   if (chromeMatch && parseInt(chromeMatch[1]) >= 111) {
     return true;
   }
@@ -157,7 +157,7 @@ export function getBrowserInfo(): { browserName: string; version: string } {
   // Edge
   else if (ua.match(/Edg/i)) {
     browserName = 'Edge';
-    const match = ua.match(/Edg(?:e|A|iOS)\/(\d+\.\d+)/i);
+    const match = ua.match(/Edg(?:e?|A|iOS)\/(\d+\.\d+)/i);
     if (match) version = match[1];
   }
   // Firefox
