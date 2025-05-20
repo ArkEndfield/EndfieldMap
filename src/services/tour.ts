@@ -11,188 +11,203 @@ import '@/styles/tour.scss';
 
 const KEY = LOCAL_STORAGE_KEY.SHOW_TOUR_ALERT;
 
-export const tour = driver({
-  showProgress: true,
-  nextBtnText: i18n.global.t('tour.next'),
-  prevBtnText: i18n.global.t('tour.prev'),
-  doneBtnText: i18n.global.t('tour.done'),
-  showButtons: ['next', 'previous', 'close'],
-  allowClose: true,
-  popoverClass: 'arknights-tour',
-  animate: true,
-  onNextClick() {
-    if (showCultivationMaterial.value) showCultivationMaterial.value = false;
-    tour.moveNext();
-  },
-  onCloseClick() {
-    localStorage.setItem(KEY, 'true');
-    tour.destroy();
-  },
-  steps: [
-    {
-      element: '#sidebar',
-      popover: {
-        title: i18n.global.t('tour.sidebar.title'),
-        description: i18n.global.t('tour.sidebar.description'),
-        side: 'right',
-        align: 'center',
-      },
-      onHighlightStarted() {
-        if (!settings.value.sidebarExpanded)
-          settings.value.sidebarExpanded = true;
-      },
+// 创建导览配置的函数，将在每次显示导览时调用，确保使用最新翻译
+function createTour() {
+  const driverInstance = driver({
+    showProgress: true,
+    nextBtnText: i18n.global.t('tour.next'),
+    prevBtnText: i18n.global.t('tour.prev'),
+    doneBtnText: i18n.global.t('tour.done'),
+    showButtons: ['next', 'previous', 'close'],
+    allowClose: true,
+    popoverClass: 'arknights-tour',
+    animate: true,
+    onNextClick() {
+      if (showCultivationMaterial.value) showCultivationMaterial.value = false;
+      driverInstance.moveNext();
     },
-    {
-      element: '#select-item',
-      popover: {
-        title: i18n.global.t('tour.select_item.title'),
-        description: i18n.global.t('tour.select_item.description'),
-      },
+    onCloseClick() {
+      localStorage.setItem(KEY, 'true');
+      driverInstance.destroy();
     },
-    {
-      element: '#select-item-title',
-      popover: {
-        title: i18n.global.t('tour.select_item_title.title'),
-        description: i18n.global.t('tour.select_item_title.description'),
-      },
-    },
-    {
-      element: '#select-item-icon',
-      popover: {
-        title: i18n.global.t('tour.select_item_icon_button.title'),
-        description: i18n.global.t('tour.select_item_icon_button.description'),
-      },
-    },
-    {
-      element: '#sidebar-operate-buttons',
-      popover: {
-        title: i18n.global.t('tour.sidebar_operate_buttons.title'),
-        description: i18n.global.t('tour.sidebar_operate_buttons.description'),
-      },
-    },
-    {
-      element: '#character-filter',
-      popover: {
-        title: i18n.global.t('tour.character_filter.title'),
-        description: i18n.global.t('tour.character_filter.description'),
-      },
-    },
-    {
-      element: '#mark-filter-buttons',
-      popover: {
-        title: i18n.global.t('tour.mark_filter.title'),
-        description: i18n.global.t('tour.mark_filter.description'),
-      },
-    },
-    {
-      element: '#fold-arrow',
-      popover: {
-        title: i18n.global.t('tour.folder_button.title'),
-        description: i18n.global.t('tour.folder_button.description'),
-        onNextClick() {
-          if (settings.value.sidebarExpanded)
-            settings.value.sidebarExpanded = false;
-          tour.moveNext();
+    steps: [
+      {
+        element: '#sidebar',
+        popover: {
+          title: i18n.global.t('tour.sidebar.title'),
+          description: i18n.global.t('tour.sidebar.description'),
+          side: 'right',
+          align: 'center',
         },
-        onPrevClick() {
+        onHighlightStarted() {
           if (!settings.value.sidebarExpanded)
             settings.value.sidebarExpanded = true;
-          tour.movePrevious();
         },
       },
-    },
-    {
-      element: '#change-map',
-      popover: {
-        title: i18n.global.t('tour.change_map.title'),
-        description: i18n.global.t('tour.change_map.description'),
-      },
-    },
-    {
-      element: '#map',
-      popover: {
-        title: i18n.global.t('tour.popup.title'),
-        description: i18n.global.t('tour.popup.description'),
-        side: 'left',
-        align: 'center',
-      },
-      disableActiveInteraction: true,
-      onHighlightStarted() {
-        console.log('开始处理弹窗展示');
-        const chestFeatures = MarkerManager.getMarkersByCategory('chest');
-        console.log('找到的宝箱标点数量:', chestFeatures.length);
-
-        if (chestFeatures.length === 0) {
-          console.warn('未找到任何宝箱标点');
-          return;
-        }
-
-        const chestFeature = chestFeatures[0]; // 使用第一个宝箱标点
-        if (chestFeature && popupManager.value) {
-          popupManager.value.openPopupForMarker(chestFeature);
-        } else {
-          console.log('没有找到宝箱标点或弹窗管理器未初始化');
-        }
-      },
-    },
-    {
-      element: '#popup-content',
-      disableActiveInteraction: true,
-      popover: {
-        title: i18n.global.t('tour.popup_content.title'),
-        description: i18n.global.t('tour.popup_content.description'),
-        side: 'left',
-        align: 'center',
-      },
-    },
-    {
-      element: '#mark-obtained-switch',
-      popover: {
-        title: i18n.global.t('tour.mark_obtained.title'),
-        description: i18n.global.t('tour.mark_obtained.description'),
-        side: 'left',
-        align: 'center',
-      },
-    },
-    {
-      element: '#sub-popup-button',
-      popover: {
-        title: i18n.global.t('tour.sub_popup.title'),
-        description: i18n.global.t('tour.sub_popup.description'),
-        side: 'left',
-        align: 'center',
-        onNextClick() {
-          popupManager.value?.toggleSubPopup();
-          localStorage.setItem(KEY, 'true');
-          tour.moveNext();
+      {
+        element: '#select-item',
+        popover: {
+          title: i18n.global.t('tour.select_item.title'),
+          description: i18n.global.t('tour.select_item.description'),
         },
       },
-      onHighlightStarted() {
-        // 确保主弹窗已经打开
-        if (popupManager.value && !popupManager.value.isPopupVisible.value) {
+      {
+        element: '#select-item-title',
+        popover: {
+          title: i18n.global.t('tour.select_item_title.title'),
+          description: i18n.global.t('tour.select_item_title.description'),
+        },
+      },
+      {
+        element: '#select-item-icon',
+        popover: {
+          title: i18n.global.t('tour.select_item_icon_button.title'),
+          description: i18n.global.t(
+            'tour.select_item_icon_button.description'
+          ),
+        },
+      },
+      {
+        element: '#sidebar-operate-buttons',
+        popover: {
+          title: i18n.global.t('tour.sidebar_operate_buttons.title'),
+          description: i18n.global.t(
+            'tour.sidebar_operate_buttons.description'
+          ),
+        },
+      },
+      {
+        element: '#character-filter',
+        popover: {
+          title: i18n.global.t('tour.character_filter.title'),
+          description: i18n.global.t('tour.character_filter.description'),
+        },
+      },
+      {
+        element: '#mark-filter-buttons',
+        popover: {
+          title: i18n.global.t('tour.mark_filter.title'),
+          description: i18n.global.t('tour.mark_filter.description'),
+        },
+      },
+      {
+        element: '#fold-arrow',
+        popover: {
+          title: i18n.global.t('tour.folder_button.title'),
+          description: i18n.global.t('tour.folder_button.description'),
+          onNextClick() {
+            if (settings.value.sidebarExpanded)
+              settings.value.sidebarExpanded = false;
+            driverInstance.moveNext();
+          },
+          onPrevClick() {
+            if (!settings.value.sidebarExpanded)
+              settings.value.sidebarExpanded = true;
+            driverInstance.movePrevious();
+          },
+        },
+      },
+      {
+        element: '#change-map',
+        popover: {
+          title: i18n.global.t('tour.change_map.title'),
+          description: i18n.global.t('tour.change_map.description'),
+        },
+      },
+      {
+        element: '#map',
+        popover: {
+          title: i18n.global.t('tour.popup.title'),
+          description: i18n.global.t('tour.popup.description'),
+          side: 'left',
+          align: 'center',
+        },
+        disableActiveInteraction: true,
+        onHighlightStarted() {
+          console.log('开始处理弹窗展示');
           const chestFeatures = MarkerManager.getMarkersByCategory('chest');
-          if (chestFeatures.length > 0) {
-            popupManager.value.openPopupForMarker(chestFeatures[0]);
+          console.log('找到的宝箱标点数量:', chestFeatures.length);
+
+          if (chestFeatures.length === 0) {
+            console.warn('未找到任何宝箱标点');
+            return;
           }
-        }
+
+          const chestFeature = chestFeatures[0]; // 使用第一个宝箱标点
+          if (chestFeature && popupManager.value) {
+            popupManager.value.openPopupForMarker(chestFeature);
+          } else {
+            console.log('没有找到宝箱标点或弹窗管理器未初始化');
+          }
+        },
       },
-    },
-    {
-      element: '#map',
-      popover: {
-        title: i18n.global.t('tour.custom_point.title'),
-        description: i18n.global.t('tour.custom_point.description'),
-        side: 'over',
-        align: 'center',
+      {
+        element: '#popup-content',
+        disableActiveInteraction: true,
+        popover: {
+          title: i18n.global.t('tour.popup_content.title'),
+          description: i18n.global.t('tour.popup_content.description'),
+          side: 'left',
+          align: 'center',
+        },
       },
-    },
-  ],
-});
+      {
+        element: '#mark-obtained-switch',
+        popover: {
+          title: i18n.global.t('tour.mark_obtained.title'),
+          description: i18n.global.t('tour.mark_obtained.description'),
+          side: 'left',
+          align: 'center',
+        },
+      },
+      {
+        element: '#sub-popup-button',
+        popover: {
+          title: i18n.global.t('tour.sub_popup.title'),
+          description: i18n.global.t('tour.sub_popup.description'),
+          side: 'left',
+          align: 'center',
+          onNextClick() {
+            popupManager.value?.toggleSubPopup();
+            localStorage.setItem(KEY, 'true');
+            driverInstance.moveNext();
+          },
+        },
+        onHighlightStarted() {
+          // 确保主弹窗已经打开
+          if (popupManager.value && !popupManager.value.isPopupVisible.value) {
+            const chestFeatures = MarkerManager.getMarkersByCategory('chest');
+            if (chestFeatures.length > 0) {
+              popupManager.value.openPopupForMarker(chestFeatures[0]);
+            }
+          }
+        },
+      },
+      {
+        element: '#map',
+        popover: {
+          title: i18n.global.t('tour.custom_point.title'),
+          description: i18n.global.t('tour.custom_point.description'),
+          side: 'over',
+          align: 'center',
+        },
+      },
+    ],
+  });
+  return driverInstance;
+}
+
+// 旧的导览实例，保留用于类型提示和向后兼容
+let tourInstance = createTour();
 
 export async function showTour() {
   if (!settings.value.sidebarExpanded) settings.value.sidebarExpanded = true;
   // 关闭手机弹窗
   settings.value.showMenuMenu = false;
   await new Promise(resolve => rafTimeout(resolve, 300));
-  tour.drive();
+  tourInstance = createTour(); // 每次显示导览前重新创建以获取最新翻译
+  tourInstance.drive();
 }
+
+// 为了保持向后兼容性，导出当前的导览实例
+export const tour = tourInstance;

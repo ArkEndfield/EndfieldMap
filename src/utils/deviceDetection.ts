@@ -57,7 +57,7 @@ export function watchDeviceType(
  * 检测浏览器对 linear-gradient 的 Hue 插值方法支持
  * @returns {boolean} 是否支持该特性
  */
-export function supportsHueInterpolation() {
+export function supportsHueInterpolation(): boolean {
   // 创建一个用于测试的元素
   const testElement = document.createElement('div');
 
@@ -95,7 +95,7 @@ export function supportsHueInterpolationCSS(): boolean {
  * 针对各主要浏览器设置对应最低版本
  * @returns {boolean} 是否满足版本要求
  */
-export function meetsVersionRequirements() {
+export function meetsVersionRequirements(): boolean {
   const ua = navigator.userAgent;
 
   // 检测Chrome/Edge (Chromium)
