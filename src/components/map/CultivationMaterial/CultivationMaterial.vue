@@ -252,10 +252,10 @@ onMounted(() => {
   --cultivation-material-panel-width: calc(#{zmd.$side-width} - 1.3em);
   width: var(--cultivation-material-panel-width);
   top: calc(#{zmd.$side-margin-y} + 1.1em);
-  @media screen and (max-width: zmd.$phone-width) {
+  @media screen and (width < zmd.$phone-width) {
     top: 1.1em;
   }
-  @media screen and (min-width: zmd.$large-screen-width) {
+  @media screen and (width >= zmd.$large-screen-width) {
     --cultivation-material-panel-width: calc(#{zmd.$side-large-width} - 1.5em);
   }
 }

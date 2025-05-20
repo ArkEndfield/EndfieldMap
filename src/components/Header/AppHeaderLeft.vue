@@ -89,7 +89,7 @@ const close = () => (settings.value.showMenuMenu = false);
 <style lang="scss" scoped>
 @use '../../styles/zmd.scss' as zmd;
 .app-header-left {
-  @media screen and (min-width: zmd.$phone-width) {
+  @media screen and (width >= zmd.$phone-width) {
     height: calc(zmd.$side-margin-y);
   }
 }

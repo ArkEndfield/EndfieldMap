@@ -70,7 +70,7 @@ const markerStyle = computed(() => ({
     transform-style: preserve-3d;
     position: relative;
 
-    @media screen and (min-width: zmd.$phone-width) {
+    @media screen and (width >= zmd.$phone-width) {
       &.rotate-animation {
         animation: rotate3d 4s linear infinite;
       }

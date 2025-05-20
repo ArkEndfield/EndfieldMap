@@ -288,7 +288,7 @@ $default-border-color: #a0a2a3;
     padding-top: 1.7em;
     transform-origin: center right;
     position: relative;
-    @media screen and (max-width: zmd.$phone-width) {
+    @media screen and (width < zmd.$phone-width) {
       padding-top: 1.7em;
     }
     &::before {
@@ -394,7 +394,7 @@ $default-border-color: #a0a2a3;
       padding-top: 1em;
       z-index: 1;
       position: relative;
-      @media screen and (max-width: zmd.$phone-width) {
+      @media screen and (width < zmd.$phone-width) {
         width: 25em;
         gap: 1em;
       }

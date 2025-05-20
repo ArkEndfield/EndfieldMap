@@ -112,7 +112,7 @@ const closeSidebar = () => {
   z-index: 53;
   position: fixed;
   max-width: calc(100% - 2.5em);
-  @media screen and (max-width: zmd.$phone-width) {
+  @media screen and (width < zmd.$phone-width) {
     top: 1em;
     z-index: 54;
   }
@@ -121,7 +121,7 @@ const closeSidebar = () => {
     position: absolute;
     top: 2.5em;
     z-index: 1;
-    @media screen and (max-width: zmd.$phone-width) {
+    @media screen and (width < zmd.$phone-width) {
       font-size: 0.8em;
     }
   }
@@ -131,7 +131,7 @@ const closeSidebar = () => {
     flex-grow: 0;
     z-index: 2;
     position: relative;
-    @media screen and (max-width: zmd.$phone-width) {
+    @media screen and (width < zmd.$phone-width) {
       font-size: 0.9em;
     }
   }
@@ -152,12 +152,12 @@ const closeSidebar = () => {
   flex-direction: column;
   height: auto !important;
 
-  @media screen and (max-width: zmd.$phone-width) {
+  @media screen and (width < zmd.$phone-width) {
     top: 0;
     bottom: 0 !important;
   }
 
-  @media (min-width: zmd.$large-screen-width) {
+  @media screen and (width >= zmd.$large-screen-width) {
     width: zmd.$side-large-width;
   }
 
@@ -258,7 +258,7 @@ const closeSidebar = () => {
   z-index: 51;
   display: none;
 
-  @media screen and (max-width: zmd.$phone-width) {
+  @media screen and (width < zmd.$phone-width) {
     display: block;
   }
 }

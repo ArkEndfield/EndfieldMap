@@ -87,14 +87,14 @@ $arrow-height: 5em;
   filter: drop-shadow(0.1em 0.1em 0em rgba(255, 255, 255, 0.2));
   --arrow-font-size: 1em;
 
-  @media screen and (max-width: zmd.$phone-width) {
+  @media screen and (width < zmd.$phone-width) {
     & {
       --collapsed-x: -100%;
       --arrow-font-size: 0.8em;
     }
   }
 
-  @media (min-width: zmd.$large-screen-width) {
+  @media screen and (width >= zmd.$large-screen-width) {
     width: calc(100% + $arrow-size * 2 + 7em);
   }
 

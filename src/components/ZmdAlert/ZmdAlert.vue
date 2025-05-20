@@ -354,7 +354,7 @@ $default-border-color: #a0a2a3;
     background-position: bottom right;
     background-repeat: no-repeat;
     position: relative;
-    @media screen and (max-width: zmd.$phone-width) {
+    @media screen and (width < zmd.$phone-width) {
       max-width: calc(100vw - 0.2em);
       padding-top: 1.7em;
       margin: 0.5em;

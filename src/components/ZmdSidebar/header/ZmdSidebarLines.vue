@@ -72,7 +72,7 @@ const props = withDefaults(
       height: 1.5px;
       background-color: #737474;
       border-radius: 1.5px;
-      @media screen and (min-width: zmd.$phone-width) {
+      @media screen and (width >= zmd.$phone-width) {
         animation: shin 1.5s infinite;
       }
     }
