@@ -48,20 +48,6 @@ async function initializeApp() {
 
     // 启动检查，使用requestAnimationFrame
     requestAnimationFrame(checkAppReady);
-
-    // 开发环境下的性能监控
-    if (process.env.NODE_ENV === 'development') {
-      try {
-        // 添加性能监控模块
-        const { monitorMemory, monitorCPU } = await import(
-          './utils/performance'
-        );
-        monitorMemory();
-        monitorCPU();
-      } catch (error) {
-        console.warn('无法初始化性能监控:', error);
-      }
-    }
   } catch (error) {
     console.error('❌ 应用初始化失败:', error);
     loadErrorTip(error as Error);

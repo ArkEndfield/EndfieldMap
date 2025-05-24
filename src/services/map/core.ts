@@ -34,7 +34,6 @@ import { createZoomControl } from './controls';
 import {
   pointSelectHandler,
   mapClickHandler,
-  pointerMoveHandler,
 } from './interactions';
 import {
   registerMapEventListeners,
@@ -211,7 +210,6 @@ export async function createMap(
   newMap.addInteraction(selectInteraction);
   selectInteraction.on('select', pointSelectHandler);
   newMap.on('click', mapClickHandler);
-  newMap.on('pointermove', pointerMoveHandler);
   registerMapEventListeners();
 
   // 加载初始文本点位

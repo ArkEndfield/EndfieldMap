@@ -46,20 +46,9 @@ const showMenuAnimate = async () => {
   }
 };
 
-const hideMenuAnimate = () => {
+const hideMenuAnimate = async () => {
   const el = scope.value as HTMLDivElement;
   if (el) {
-    el.style.display = 'none';
-    animate(
-      el,
-      {
-        opacity: 0,
-        scale: 0.6,
-      },
-      {
-        duration: 0.001,
-      },
-    );
     const fel = fakeEl.value;
     if (fel) {
       fakeEl.value = null;
@@ -76,6 +65,17 @@ const hideMenuAnimate = () => {
         fel.remove();
       };
     }
+    el.style.display = 'none';
+    await animate(
+      el,
+      {
+        opacity: 0,
+        scale: 0.6,
+      },
+      {
+        duration: 0.001,
+      },
+    );
   }
 };
 
@@ -88,7 +88,7 @@ const showMenu = async (event?: MouseEvent) => {
   }
 
   if (modelValue.value) {
-    hideMenuAnimate();
+    await hideMenuAnimate();
   }
 
   modelValue.value = true;
