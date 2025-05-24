@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { useAnimate } from 'motion-v';
-import { watch, nextTick } from 'vue';
+import { watch } from 'vue';
 import { ref, onMounted, onUnmounted } from 'vue';
 
 const modelValue = defineModel('modelValue', {
@@ -25,82 +25,102 @@ const emit = defineEmits(['close']);
 const x = ref(0);
 const y = ref(0);
 const [scope, animate] = useAnimate();
+const fakeEl = ref<HTMLDivElement | null>(null);
 
 const showMenuAnimate = async () => {
-  const el = scope.value;
+  const el = scope.value as HTMLDivElement;
   if (el) {
-    await animate(
-      el,
-      {
-        x: x.value,
-        y: y.value,
-      },
-      {
-        duration: 0,
-      }
-    );
+    el.style.translate = `${x.value}px ${y.value}px`;
+    el.style.display = 'block';
     await animate(
       el,
       {
         opacity: 1,
         scale: 1,
-        display: 'block',
       },
       {
         duration: 0.2,
         type: 'spring',
-      }
+      },
     );
   }
 };
 
-const hideMenuAnimate = async () => {
-  const el = scope.value;
+const hideMenuAnimate = () => {
+  const el = scope.value as HTMLDivElement;
   if (el) {
-    await animate(
+    el.style.display = 'none';
+    animate(
       el,
       {
         opacity: 0,
         scale: 0.6,
-        display: 'none',
       },
       {
-        duration: 0.3,
-        type: 'spring',
-      }
+        duration: 0.001,
+      },
     );
+    const fel = fakeEl.value;
+    if (fel) {
+      fakeEl.value = null;
+      document.body.append(fel);
+      const anim = fel.animate([
+        {
+          transform: 'scale(0.6)',
+          easing: 'ease-out',
+        },
+      ], {
+        duration: 80,
+      });
+      anim.onfinish = () => {
+        fel.remove();
+      };
+    }
   }
 };
 
 // 显示菜单
-const showMenu = async (event: MouseEvent) => {
-  event.preventDefault();
-  x.value = event.clientX;
-  y.value = event.clientY;
+const showMenu = async (event?: MouseEvent) => {
+  if (event) {
+    event.preventDefault();
+    x.value = event.clientX;
+    y.value = event.clientY;
+  }
 
   if (modelValue.value) {
-    await hideMenuAnimate();
+    hideMenuAnimate();
   }
 
   modelValue.value = true;
-  await showMenuAnimate();
+  const el = scope.value as HTMLDivElement;
 
-  // 等待菜单显示后再进行边界检查
-  await nextTick();
-  const el = scope.value;
+  // 预渲染用于边界检查，此node也用于关闭动画
+  const fel = el.cloneNode(true) as HTMLDivElement;
+  fakeEl.value = fel;
+  fel.style.display = 'block';
+  fel.style.transform = 'none';
+  fel.style.opacity = '1';
+  fel.style.translate = `${x.value}px ${y.value}px`;
+  document.body.append(fel);
+  const rect = fel.getBoundingClientRect();
+  fel.remove();
+
+  // 边界检查
   if (el) {
-    const rect = el.getBoundingClientRect();
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
 
+    const transformOrigin = ['top', 'left'];
     // 检查是否超出右边界
     if (x.value + rect.width > windowWidth) {
-      x.value = windowWidth - rect.width;
+      x.value = x.value - rect.width;
+      transformOrigin[1] = 'right';
     }
 
     // 检查是否超出下边界
     if (y.value + rect.height > windowHeight) {
-      y.value = windowHeight - rect.height;
+      y.value = y.value - rect.height;
+      transformOrigin[0] = 'bottom';
     }
 
     // 检查是否超出左边界
@@ -114,17 +134,10 @@ const showMenu = async (event: MouseEvent) => {
     }
 
     // 应用新的位置
-    await animate(
-      el,
-      {
-        x: x.value,
-        y: y.value,
-      },
-      {
-        duration: 0.1,
-      }
-    );
+    el.style.translate = fel.style.translate = `${x.value}px ${y.value}px`;
+    el.style.transformOrigin = fel.style.transformOrigin = transformOrigin.join(' ');
   }
+  showMenuAnimate();
 };
 
 // 关闭菜单
@@ -136,9 +149,14 @@ const closeMenu = () => {
 watch(
   modelValue,
   newValue => {
+    const el = scope.value as HTMLDivElement;
+    const isShow = el?.style.display !== 'none';
+
     if (newValue) {
-      showMenuAnimate();
-    } else {
+      if (!isShow) {
+        showMenu();
+      }
+    } else if (isShow) {
       hideMenuAnimate();
     }
   },
