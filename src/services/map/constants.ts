@@ -29,12 +29,6 @@ export const MAP_ID_KEY = LOCAL_STORAGE_KEY.MAP;
 export const ZOOM_KEY = LOCAL_STORAGE_KEY.ZOOM;
 
 /**
- * 透明图像，用于无法加载的瓦片
- */
-export const transparentBase64 =
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/2+L6n0AAAAASUVORK5CYII=';
-
-/**
  * 图像池最大数量
  */
 export const MAX_POOLED_IMAGES = 100;

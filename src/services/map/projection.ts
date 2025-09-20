@@ -1,5 +1,5 @@
 import { Projection } from 'ol/proj';
-import { transparentBase64, MAX_POOLED_IMAGES } from './constants';
+import { MAX_POOLED_IMAGES } from './constants';
 import {
   imagePool,
   addImageToPool,
@@ -30,23 +30,21 @@ export const tileLoad = (imageTile: any, src: string) => {
     }
   }
 
+  const listenerAC = new AbortController()
   // 重置事件处理程序
-  img.onload = () => {
+  img.addEventListener('load', () => {
     imageTile.getImage().src = src;
     // 完成后移除监听器以避免内存泄漏
-    img.onload = null;
-    img.onerror = null;
-  };
+    listenerAC.abort();
+  }, { signal: listenerAC.signal });
 
-  img.onerror = () => {
-    imageTile.getImage().src = transparentBase64;
+  img.addEventListener('error',() => {
     // 完成后移除监听器以避免内存泄漏
-    img.onload = null;
-    img.onerror = null;
+    listenerAC.abort();
 
     // 错误时从池中删除
     removeImageFromPool(src);
-  };
+  }, { signal: listenerAC.signal });
 
   // 设置图像源（这将触发加载）
   img.src = src;
