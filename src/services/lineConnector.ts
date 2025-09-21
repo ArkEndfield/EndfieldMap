@@ -42,7 +42,8 @@ export const connectPoints = (
   pointIds: (number | string)[],
   color: string = '#FFFFFF',
   width: number = 2,
-  dashed: boolean = false
+  dashed: boolean = false,
+  showArrow: boolean = true
 ): string => {
   if (!mapInstance) {
     console.error('地图实例未设置，无法创建连线');
@@ -130,8 +131,8 @@ export const connectPoints = (
   // 添加到源中
   lineSource.addFeature(lineFeature);
 
-  // 添加方向箭头（如果至少有两个点）
-  if (coordinates.length >= 2) {
+  // 添加方向箭头（如果至少有两个点且需要显示箭头）
+  if (showArrow && coordinates.length >= 2) {
     // 遍历连线的每个段
     for (let i = 0; i < coordinates.length - 1; i++) {
       // 计算箭头位置和方向
@@ -289,7 +290,8 @@ export const connectPointsByEntityId = (
   entityIds: string[],
   color: string = '#FFFFFF',
   width: number = 2,
-  dashed: boolean = false
+  dashed: boolean = false,
+  showArrow: boolean = true
 ): string => {
   // 从features中找出对应entityDataIdKey的所有点位的levelLogicId
   const pointIds: number[] = [];
@@ -312,5 +314,5 @@ export const connectPointsByEntityId = (
     return '';
   }
 
-  return connectPoints(pointIds, color, width, dashed);
+  return connectPoints(pointIds, color, width, dashed, showArrow);
 };

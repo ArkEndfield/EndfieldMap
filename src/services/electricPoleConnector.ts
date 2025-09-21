@@ -110,6 +110,7 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
     [currentConnectionPole.value.levelLogicId, targetPole.levelLogicId],
     '#FFFF00',
     2,
+    false,
     false
   );
 
@@ -396,7 +397,8 @@ export const restoreConnectionsFromStorage = async (): Promise<void> => {
         connection.poles,
         color,
         width,
-        dashed
+        dashed,
+        false
       );
 
       if (lineGroupId) {
