@@ -6,7 +6,7 @@ import { getItem, setItem } from '@/utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
 import { ELECTRIC_POLE_RANGE_RADIUS } from './render/constants';
-import { pubsub } from './pubsub';
+import { EVENTS, pubsub } from './pubsub';
 
 // 连线状态管理
 const isConnectionMode = ref(false);
@@ -41,29 +41,42 @@ export const endConnectionMode = () => {
 /**
  * 连接到目标电线杆
  * @param targetPole 目标电线杆
+ * @param showRangeAlert 是否显示距离超出提示（默认为false）
  */
-export const connectToPole = async (targetPole: PointData): Promise<boolean> => {
+export const connectToPole = async (targetPole: PointData, showRangeAlert: boolean = false): Promise<{ success: boolean; reason?: string }> => {
   if (!isConnectionMode.value || !currentConnectionPole.value) {
-    return false;
+    console.log('连接模式未激活或没有起始电线杆');
+    return { success: false };
+  }
+
+  // 开始新的连接尝试时，先清除之前的失败状态
+  if (showRangeAlert) {
+    pubsub.publish('connection_attempt_start');
   }
 
   // 检查是否为电线杆
   if (targetPole.entityDataIdKey !== 'electric_pole') {
-    console.log('只能连接到电线杆');
-    return false;
+    if (showRangeAlert) {
+      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'not_electric_pole' });
+    }
+    return { success: false };
   }
 
   // 检查是否连接到自己
   if (targetPole.levelLogicId === currentConnectionPole.value.levelLogicId) {
-    console.log('不能连接到自己');
-    return false;
+    if (showRangeAlert) {
+      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'connect_to_self' });
+    }
+    return { success: false };
   }
 
   // 检查是否已经连接
   const connectionKey = getConnectionKey(currentConnectionPole.value, targetPole);
   if (connectionLines.value.has(connectionKey)) {
-    console.log('已经存在连接');
-    return false;
+    if (showRangeAlert) {
+      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'already_connected' });
+    }
+    return { success: false };
   }
 
   // 检查连接数量限制
@@ -71,19 +84,25 @@ export const connectToPole = async (targetPole: PointData): Promise<boolean> => 
   const targetConnections = getPoleConnections(targetPole);
 
   if (currentConnections >= MAX_CONNECTIONS_PER_POLE) {
-    console.log('起始电线杆已达到最大连接数');
-    return false;
+    if (showRangeAlert) {
+      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'max_connections_source' });
+    }
+    return { success: false };
   }
 
   if (targetConnections >= MAX_CONNECTIONS_PER_POLE) {
-    console.log('目标电线杆已达到最大连接数');
-    return false;
+    if (showRangeAlert) {
+      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'max_connections_target' });
+    }
+    return { success: false };
   }
 
   // 检查距离
   if (!checkConnectionDistance(currentConnectionPole.value, targetPole)) {
-    console.log('距离太远，无法连接');
-    return false;
+    if (showRangeAlert) {
+      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'range_exceeded' });
+    }
+    return { success: false };
   }
 
   // 创建连线
@@ -107,15 +126,16 @@ export const connectToPole = async (targetPole: PointData): Promise<boolean> => 
     // 保存到存储
     await saveConnectionsToStorage();
 
-    console.log('成功连接电线杆:', startPoleId, '->', endPoleId);
-
     // 发布连接变更事件
-    pubsub.publish('pole-connection-changed', [startPoleId, endPoleId]);
+    pubsub.publish(EVENTS.POLE_CONNECTION_CHANGED, [startPoleId, endPoleId]);
 
-    return true;
+    // 连接成功后，隐藏任何显示的失败弹窗
+    pubsub.publish('connection_success');
+
+    return { success: true };
   }
 
-  return false;
+  return { success: false };
 };
 
 /**
@@ -286,7 +306,7 @@ export const removeConnection = async (lineGroupId: string): Promise<boolean> =>
     await saveConnectionsToStorage();
 
     // 发布连接变更事件
-    pubsub.publish('pole-connection-changed', poleIds);
+    pubsub.publish(EVENTS.POLE_CONNECTION_CHANGED, poleIds);
   }
 
   return removeLineGroup(lineGroupId);
@@ -391,7 +411,7 @@ export const restoreConnectionsFromStorage = async (): Promise<void> => {
     storedConnections.forEach(conn => {
       conn.poles.forEach(id => allPoleIds.add(id));
     });
-    pubsub.publish('pole-connection-changed', Array.from(allPoleIds));
+    pubsub.publish(EVENTS.POLE_CONNECTION_CHANGED, Array.from(allPoleIds));
     console.log('从存储中恢复了电线杆连接，并发布了更新事件', Array.from(allPoleIds));
   }
 };
@@ -418,7 +438,7 @@ export const clearAllConnections = async (): Promise<void> => {
 
   // 发布连接变更事件
   if (allPoleIds.size > 0) {
-    pubsub.publish('pole-connection-changed', Array.from(allPoleIds));
+    pubsub.publish(EVENTS.POLE_CONNECTION_CHANGED, Array.from(allPoleIds));
     console.log('清空了所有电线杆连接，并发布了更新事件', Array.from(allPoleIds));
   }
 };

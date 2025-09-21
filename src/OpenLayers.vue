@@ -38,7 +38,7 @@
       </ContextMenuItem>
       <ContextMenuItem
         :label="t('context_menu.create_point')"
-        @click="() => handleAction('create')"
+        @click="() => handleAction(ACTION.CREATE)"
         :disabled="!!rightClickCustomPoint || !rightClickCoordinates"
       >
         <template #icon>
@@ -47,7 +47,7 @@
       </ContextMenuItem>
       <ContextMenuItem
         :label="t('context_menu.create_electric_pole')"
-        @click="() => handleAction('create_electric_pole')"
+        @click="() => handleAction(ACTION.CREATE_ELECTRIC_POLE)"
         :disabled="!!rightClickCustomPoint || !rightClickCoordinates"
       >
         <template #icon>
@@ -57,7 +57,7 @@
       <ContextMenuItem
         :label="t('context_menu.connect_poles')"
         v-show="canConnectPole"
-        @click="() => handleAction('connect_poles')"
+        @click="() => handleAction(ACTION.CONNECT_POLES)"
       >
         <template #icon>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +68,7 @@
       <ContextMenuItem
         :label="t('context_menu.delete_connection')"
         v-show="!!rightClickLineGroupId"
-        @click="() => handleAction('delete_connection')"
+        @click="() => handleAction(ACTION.DELETE_CONNECTION)"
         className="text-red-500"
       >
         <template #icon>
@@ -78,7 +78,7 @@
       <ContextMenuItem
         :label="t('context_menu.delete_point')"
         v-show="!!rightClickCustomPoint"
-        @click="() => handleAction('delete')"
+        @click="() => handleAction(ACTION.DELETE)"
         className="text-red-500"
       >
         <template #icon>
@@ -87,6 +87,15 @@
       </ContextMenuItem>
     </ContextMenu>
     <TourAlert />
+
+    <ZmdAlert
+      v-model:open="connectionRangeAlertVisible"
+      hide-cancel
+    >
+      <div class="text-center" v-if="connectionFailureReason">
+        {{ $t('electric_pole_connector.connection_failed.' + connectionFailureReason) }}
+      </div>
+    </ZmdAlert>
   </div>
 </template>
 
@@ -118,8 +127,12 @@ import type { PointData } from './types/points';
 import { computed } from 'vue';
 import { isMarked, markPoint } from './services/marks';
 import { useI18n } from 'vue-i18n';
-import { removeConnection, startConnectionMode, getPoleConnections, MAX_CONNECTIONS_PER_POLE } from './services/electricPoleConnector';
+import { removeConnection, startConnectionMode, getPoleConnections, MAX_CONNECTIONS_PER_POLE } from './services/electricPoleConnector'; // connectToPole 用于未来可能的直接调用
+import ZmdAlert from './components/ZmdAlert/ZmdAlert.vue';
+import { EVENTS, pubsub } from './services/pubsub';
 const menuVisible = ref(false);
+const connectionRangeAlertVisible = ref(false);
+const connectionFailureReason = ref<string>('');
 const contextMenuRef = ref<ContextMenuRef>();
 // 引用DOM元素
 const mapControlsRef = ref();
@@ -131,6 +144,14 @@ const rightClickLineGroupId = ref<string | null>(null);
 const { t } = useI18n();
 // 提供弹出层管理器给子组件 - 在setup顶层调用provide
 provide('popupManager', popupManager);
+
+enum ACTION {
+  CREATE = 'create',
+  CREATE_ELECTRIC_POLE = 'create_electric_pole',
+  CONNECT_POLES = 'connect_poles',
+  DELETE_CONNECTION = 'delete_connection',
+  DELETE = 'delete',
+}
 
 const isPointMarked = computed(() => {
   if (rightClickPoint.value) {
@@ -163,17 +184,17 @@ const handleAction = (action: string) => {
   console.log(`执行操作: ${action}`);
   menuVisible.value = false;
   const currentMap = getCurrentMapId();
-  if (action === 'create') {
+  if (action === ACTION.CREATE) {
     createCustomPoint(rightClickCoordinates.value, currentMap);
-  } else if (action === 'create_electric_pole') {
+  } else if (action === ACTION.CREATE_ELECTRIC_POLE) {
     createCustomPoint(rightClickCoordinates.value, currentMap, 'electric_pole');
-  } else if (action === 'connect_poles') {
+  } else if (action === ACTION.CONNECT_POLES) {
     // 处理连接电线杆的逻辑
     if (rightClickCustomPoint.value) {
       startConnectionMode(rightClickCustomPoint.value);
       console.log('开始连接电线杆模式:', rightClickCustomPoint.value.levelLogicId);
     }
-  } else if (action === 'delete_connection') {
+  } else if (action === ACTION.DELETE_CONNECTION) {
     // 处理删除连线的逻辑
     if (rightClickLineGroupId.value) {
       removeConnection(rightClickLineGroupId.value).then(success => {
@@ -185,7 +206,7 @@ const handleAction = (action: string) => {
       });
       rightClickLineGroupId.value = null;
     }
-  } else if (action === 'delete') {
+  } else if (action === ACTION.DELETE) {
     // 处理删除坐标的逻辑
     if (rightClickCustomPoint.value?.levelLogicId) {
       deleteCustomPoint(rightClickCustomPoint.value.levelLogicId);
@@ -219,6 +240,26 @@ onMounted(async () => {
       rightClickCustomPoint.value = null;
       rightClickPoint.value = null;
     }
+  });
+
+  // 监听连接尝试开始事件
+  pubsub.subscribe('connection_attempt_start', () => {
+    // 开始新的连接尝试时，隐藏之前的失败弹窗
+    connectionRangeAlertVisible.value = false;
+    connectionFailureReason.value = '';
+  });
+
+  // 监听连接失败事件
+  pubsub.subscribe(EVENTS.CONNECTION_FAILED, (data: { reason: string }) => {
+    connectionFailureReason.value = data.reason;
+    connectionRangeAlertVisible.value = true;
+  });
+
+  // 监听连接成功事件
+  pubsub.subscribe('connection_success', () => {
+    // 连接成功时立即隐藏失败弹窗，并清除失败状态
+    connectionRangeAlertVisible.value = false;
+    connectionFailureReason.value = '';
   });
 });
 

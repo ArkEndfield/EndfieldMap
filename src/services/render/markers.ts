@@ -19,7 +19,7 @@ import {
   electricPoleRangeLayer,
 } from './store';
 import settings from '@/data/settings';
-import { pubsub } from '../pubsub';
+import { EVENTS, pubsub } from '../pubsub';
 import {
   getPoleMaxConnectionDistance,
   getAllConnections,
@@ -271,8 +271,8 @@ export function updateCustomPointMarker(
  * @param point 电线杆点数据
  */
 // 订阅电线杆连接变更事件
-pubsub.subscribe('pole-connection-changed', (poleIds: (string | number)[]) => {
-  console.log('接收到 pole-connection-changed 事件, poleIds:', poleIds);
+pubsub.subscribe(EVENTS.POLE_CONNECTION_CHANGED, (poleIds: (string | number)[]) => {
+  // console.log('接收到 pole-connection-changed 事件, poleIds:', poleIds);
   const uniqueIds = [...new Set(poleIds)]; // 去重
   const itemMap = getItemMap();
   uniqueIds.forEach(id => {

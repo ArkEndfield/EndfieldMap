@@ -402,5 +402,15 @@
       "title": "Custom Point",
       "description": "Right-click on the map (long press on mobile) to add/delete custom points."
     }
+  },
+  "electric_pole_connector": {
+    "connection_failed": {
+      "range_exceeded": "Range exceeded, cannot connect",
+      "not_electric_pole": "Can only connect to electric poles",
+      "connect_to_self": "Cannot connect to self",
+      "already_connected": "Already connected",
+      "max_connections_source": "Source electric pole has reached the maximum number of connections",
+      "max_connections_target": "Target electric pole has reached the maximum number of connections"
+    }
   }
 }

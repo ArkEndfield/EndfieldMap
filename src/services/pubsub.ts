@@ -226,4 +226,7 @@ export const EVENTS = {
   MULTI_SELECT_CHANGE: 'multi_select_change',
   SELECT_CHANGE: 'select_change',
   SETTINGS_CHANGE: 'settings_change',
+  CONNECTION_FAILED: 'connection_failed',
+  CONNECTION_SUCCESS: 'connection_success',
+  POLE_CONNECTION_CHANGED: 'pole_connection_changed',
 } as const;

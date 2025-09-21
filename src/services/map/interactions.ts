@@ -59,14 +59,8 @@ export const pointSelectHandler = async function (event: SelectEvent) {
       return;
     }
 
-    if (data && data.entityDataIdKey === 'electric_pole') {
-      connectToPole(data).then(success => {
-        if (success) {
-          // 连接成功，刷新地图
-          event.target.getFeatures().clear();
-        }
-      });
-    }
+    // 注意：电线杆的连接逻辑在mapClickHandler中处理，这里不再重复调用
+    // 这样避免了在连线模式下重复调用connectToPole导致的弹窗闪烁问题
     // 在连线模式下，无论是否成功连接，都不允许展开弹窗
     return;
   }
@@ -267,8 +261,8 @@ export function mapClickHandler(event: MapBrowserEvent<MouseEvent>) {
     // 在连线模式下，只处理电线杆连接，不进行多选操作
     if (isInConnectionMode.value) {
       if (payload && payload.entityDataIdKey === 'electric_pole') {
-        connectToPole(payload).then(success => {
-          if (success) {
+        connectToPole(payload, true).then(result => {
+          if (result.success) {
             // 连接成功，不需要额外操作，连线模式会自动处理
           }
         });

@@ -397,5 +397,15 @@
       "title": "自定義點位",
       "description": "右鍵地圖（移動端長按）可以添加/刪除自定義點位。"
     }
+  },
+  "electric_pole_connector": {
+    "connection_failed": {
+      "range_exceeded": "超出連線範圍，無法連線",
+      "not_electric_pole": "只能連線到電線杆",
+      "connect_to_self": "不能連線到自己",
+      "already_connected": "已經存在連線",
+      "max_connections_source": "起始電線杆已達到最大連線數",
+      "max_connections_target": "目標電線杆已達到最大連線數"
+    }
   }
 }

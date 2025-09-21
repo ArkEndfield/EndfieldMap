@@ -402,5 +402,15 @@
       "title": "カスタムポイント",
       "description": "マップを右クリック（モバイルでは長押し）してカスタムポイントを追加/削除します。"
     }
+  },
+  "electric_pole_connector": {
+    "connection_failed": {
+      "range_exceeded": "連線範囲を超えています。連線できません",
+      "not_electric_pole": "電線杆にのみ連線できます",
+      "connect_to_self": "自分自身には連線できません",
+      "already_connected": "すでに連線されています",
+      "max_connections_source": "連線元の電線杆が最大連線数に達しました",
+      "max_connections_target": "連線先の電線杆が最大連線数に達しました"
+    }
   }
 }
