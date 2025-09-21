@@ -5,7 +5,6 @@ import { getItemMap } from './render';
 import { getItem, setItem } from '@/utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
-import { ELECTRIC_POLE_RANGE_RADIUS } from './render/constants';
 import { EVENTS, pubsub } from './pubsub';
 import { entityShowStates } from '@/data/entity';
 
@@ -16,7 +15,7 @@ const connectionHistory = ref<PointData[]>([]);
 const connectionLines = ref<Map<string, string>>(new Map()); // lineId -> lineGroupId
 
 // 连线配置
-export const MAX_CONNECTION_DISTANCE = ELECTRIC_POLE_RANGE_RADIUS * 2; // 最大连线距离（米），两个半径相加
+export const MAX_CONNECTION_DISTANCE = 40; // 最大连线距离
 export const MAX_CONNECTIONS_PER_POLE = 2; // 每个电线杆最多连接数
 
 /**
