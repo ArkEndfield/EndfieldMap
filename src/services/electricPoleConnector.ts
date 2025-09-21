@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue';
 import type { PointData } from '@/types/points';
 import { connectPoints, removeLineGroup, lineGroups } from '@/services/lineConnector';
-import { getItemMap } from '@/services/render';
+import { ELECTRIC_POLE_RANGE_RADIUS, getItemMap } from '@/services/render';
 import { getItem, setItem } from '@/utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
@@ -15,7 +15,7 @@ const connectionHistory = ref<PointData[]>([]);
 const connectionLines = ref<Map<string, string>>(new Map()); // lineId -> lineGroupId
 
 // 连线配置
-export const MAX_CONNECTION_DISTANCE = 40; // 最大连线距离
+export const MAX_CONNECTION_DISTANCE = ELECTRIC_POLE_RANGE_RADIUS; // 最大连线距离
 export const MAX_CONNECTIONS_PER_POLE = 2; // 每个电线杆最多连接数
 
 /**
@@ -168,33 +168,6 @@ const checkConnectionDistance = (pole1: PointData, pole2: PointData): boolean =>
 };
 
 /**
- * 计算两个电线杆之间的距离
- * @param pole1 电线杆1
- * @param pole2 电线杆2
- * @returns 距离（米），如果无法计算则返回 0
- */
-const getDistanceBetweenPoles = (pole1: PointData, pole2: PointData): number => {
-  const feature1 = getItemMap()[pole1.levelLogicId];
-  const feature2 = getItemMap()[pole2.levelLogicId];
-
-  if (!feature1 || !feature2) {
-    return 0;
-  }
-
-  const coord1 = feature1.getGeometry()?.getCoordinates();
-  const coord2 = feature2.getGeometry()?.getCoordinates();
-
-  if (!coord1 || !coord2) {
-    return 0;
-  }
-
-  return Math.sqrt(
-    Math.pow(coord1[0] - coord2[0], 2) + Math.pow(coord1[1] - coord2[1], 2)
-  );
-};
-
-
-/**
  * 获取电线杆的连接数量
  * @param pole 电线杆
  */
@@ -209,47 +182,12 @@ export const getPoleConnections = (pole: PointData): number => {
 };
 
 /**
- * 获取电线杆的最大连接距离
- * @param pole 电线杆
- * @returns 最大连接距离，如果没有连接则返回 0
+ * 获取电线杆的范围半径
+ * @param _pole 电线杆
+ * @returns 电线杆的范围半径
  */
-export const getPoleMaxConnectionDistance = (pole: PointData): number => {
-  console.log('------------------------------------');
-  console.log(`开始为电线杆 ${pole.levelLogicId} 计算最大连接距离`);
-  console.log('当前所有连接:', connectionLines.value);
-
-  let maxDistance = 0;
-  const poleId = pole.levelLogicId.toString();
-
-  for (const [key] of connectionLines.value) {
-    console.log(`检查连接key: "${key}" 是否包含 poleId: "${poleId}"`);
-    if (key.includes(poleId)) {
-      console.log(`  -> 包含!`);
-      const poleIds = key.split('___');
-      const otherPoleId = poleIds[0] === poleId ? poleIds[1] : poleIds[0];
-      console.log(`  -> 另一个电线杆ID是: ${otherPoleId}`);
-
-      const itemMap = getItemMap();
-      const otherPoleFeature = itemMap[otherPoleId];
-
-      if (otherPoleFeature) {
-        console.log(`  -> 在 itemMap 中找到了另一个电线杆的Feature`);
-        const otherPoleData = otherPoleFeature.get('payload') as PointData;
-        const distance = getDistanceBetweenPoles(pole, otherPoleData);
-        console.log(`  -> 计算出的距离是: ${distance}`);
-        if (distance > maxDistance) {
-          maxDistance = distance;
-        }
-      } else {
-        console.warn(`  -> 在 itemMap 中未找到ID为 ${otherPoleId} 的电线杆Feature!`);
-      }
-    } else {
-      console.log(`  -> 不包含。`);
-    }
-  }
-  console.log(`电线杆 ${poleId} 的最终最大连接距离: ${maxDistance}`);
-  console.log('------------------------------------');
-  return maxDistance;
+export const getPoleRangeRadius = (_pole: PointData): number => {
+  return ELECTRIC_POLE_RANGE_RADIUS;
 };
 
 

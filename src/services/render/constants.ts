@@ -31,6 +31,11 @@ export const DEFAULT_STROKE_COLOR = '#2E2F2E';
 export const FINISHED_OPACITY = 0.5;
 
 /**
+ * 电线杆范围半径
+ */
+export const ELECTRIC_POLE_RANGE_RADIUS = 20;
+
+/**
  * 电线杆范围颜色
  */
 export const ELECTRIC_POLE_RANGE_COLOR = 'rgba(255, 255, 0, 0.3)';

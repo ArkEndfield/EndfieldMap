@@ -21,8 +21,7 @@ import {
 import settings from '@/data/settings';
 import { EVENTS, pubsub } from '@/services/pubsub';
 import {
-  getPoleMaxConnectionDistance,
-  getAllConnections,
+  getPoleRangeRadius,
 } from '@/services/electricPoleConnector';
 import { watch } from 'vue';
 import { entityShowStates } from '@/data/entity';
@@ -94,7 +93,11 @@ export function createCustomPointMarker(
     console.error('source.getSource() is not an instance of VectorSource');
   }
 
-  // 范围的创建现在由 pole-connection-changed 事件驱动
+  // 如果是电线杆，则创建其范围
+  if (point.entityDataIdKey === 'electric_pole') {
+    updateElectricPoleRange(point);
+  }
+
   return feature;
 }
 
@@ -104,8 +107,7 @@ export function createCustomPointMarker(
  */
 export function updateElectricPoleRange(point: PointData): void {
   const poleId = point.levelLogicId;
-  const maxDistance = getPoleMaxConnectionDistance(point);
-  console.log(`更新电线杆 ${poleId} 的范围，最大距离: ${maxDistance}`);
+  const radius = getPoleRangeRadius(point);
 
   const rangeSource = electricPoleRangeLayer.getSource() as VectorSource<Feature<Point>> | null;
   if (!rangeSource) {
@@ -115,28 +117,28 @@ export function updateElectricPoleRange(point: PointData): void {
 
   const existingFeature = findRangeFeatureByPoleId(poleId);
 
-  if (maxDistance > 0) {
+  if (radius > 0) {
     if (existingFeature) {
       // 更新现有Feature
       const payload = existingFeature.get('payload');
-      if (payload.radius !== maxDistance) {
-        existingFeature.set('payload', { ...payload, radius: maxDistance });
-        console.log(`更新电线杆 ${poleId} 的范围半径为 ${maxDistance}`);
+      if (payload.radius !== radius) {
+        existingFeature.set('payload', { ...payload, radius });
+        // console.log(`更新电线杆 ${poleId} 的范围半径为 ${radius}`);
       }
     } else {
       // 创建新的Feature
       const rangeFeature = new Feature({
         geometry: new Point(xyz2crd(point.position)),
-        payload: { ...point, isRange: true, radius: maxDistance },
+        payload: { ...point, isRange: true, radius },
       });
       rangeSource.addFeature(rangeFeature);
-      console.log(`为电线杆 ${poleId} 创建了新的范围，半径为 ${maxDistance}`);
+      // console.log(`为电线杆 ${poleId} 创建了新的范围，半径为 ${radius}`);
     }
   } else {
-    // 如果最大距离为0，则移除范围
+    // 如果半径为0，则移除范围
     if (existingFeature) {
       rangeSource.removeFeature(existingFeature);
-      console.log(`移除了电线杆 ${poleId} 的范围`);
+      // console.log(`移除了电线杆 ${poleId} 的范围`);
     }
   }
 }
@@ -295,24 +297,16 @@ watch(
     electricPoleRangeLayer.setVisible(isVisible);
 
     if (isVisible) {
-      // 当开启显示时，强制刷新所有范围
-      console.log('范围显示已开启，强制刷新所有现有连接的范围');
-      const connections = getAllConnections();
-      const allConnectedPoleIds = new Set<string | number>();
-      connections.forEach((conn) => {
-        conn.poles.forEach((id) => allConnectedPoleIds.add(id));
-      });
-
+      // 当开启显示时，强制刷新所有电线杆的范围
+      console.log('范围显示已开启，强制刷新所有电线杆的范围');
       const itemMap = getItemMap();
-      allConnectedPoleIds.forEach((id) => {
+      for (const id in itemMap) {
         const feature = itemMap[id];
-        if (feature) {
-          const point = feature.get('payload') as PointData;
-          if (point && point.entityDataIdKey === 'electric_pole') {
-            updateElectricPoleRange(point);
-          }
+        const point = feature.get('payload') as PointData;
+        if (point && point.entityDataIdKey === 'electric_pole') {
+          updateElectricPoleRange(point);
         }
-      });
+      }
     } else {
       // 当关闭显示时，清空范围图层的源，以节省资源
       const rangeSource = electricPoleRangeLayer.getSource() as VectorSource<Feature<Point>> | null;
