@@ -5,6 +5,9 @@ import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import VectorLayer from 'ol/layer/Vector';
 import Cluster from 'ol/source/Cluster';
 import { LayerStore, StyleCacheEntry } from '@/types/render';
+import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
+import settings from '@/data/settings';
+import { ELECTRIC_POLE_RANGE_COLOR } from './constants';
 
 /**
  * 全局状态 - 是否聚合
@@ -34,6 +37,40 @@ const store: LayerStore = {
   iconStyleCache: {},
   styleCacheCleanupTimers: {},
 };
+
+/**
+ * 电线杆范围层
+ */
+export const electricPoleRangeLayer = new VectorLayer({
+  source: new VectorSource(),
+  style: (feature, resolution) => {
+    const payload = feature.get('payload');
+    const radiusInMeters = payload?.radius || 0;
+
+    if (radiusInMeters === 0) {
+      return undefined; // 如果没有半径，不渲染任何东西
+    }
+
+    // 根据地图分辨率动态计算半径
+    // resolution 是每像素代表的地图单位数（米）
+    const radiusInPixels = radiusInMeters / resolution;
+    
+    return new Style({
+      image: new CircleStyle({
+        radius: radiusInPixels,
+        fill: new Fill({ color: ELECTRIC_POLE_RANGE_COLOR }),
+        stroke: new Stroke({
+          color: 'rgba(255, 255, 0, 0.6)',
+          width: 1,
+        }),
+      }),
+    });
+  },
+  updateWhileAnimating: true, // 在动画过程中更新样式
+  updateWhileInteracting: true, // 在交互过程中更新样式
+  zIndex: 1, // 在标点层下方
+  visible: settings.value.showElectricPoleRange, // 根据设置决定初始可见性
+});
 
 /**
  * 源数据管理

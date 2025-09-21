@@ -110,33 +110,74 @@ const windowResizeHandlerInternal = debounce(() => {
  */
 const handleContextMenuInternal = (event: MouseEvent) => {
   event.preventDefault();
-  const coordinate = map.value?.getEventCoordinate(event);
-  // 获取右键点击的点位数据
-  const feature = map.value?.forEachFeatureAtPixel(
-    map.value.getEventPixel(event),
-    feature => feature
-  );
+  let coordinate = map.value?.getEventCoordinate(event);
+
+  // 获取右键点击的特征
+  if (!map.value) return;
+
+  const pixel = map.value.getEventPixel(event);
+
   let pointData: PointData | undefined;
-  if (feature) {
-    // 检查是否是聚合点
-    const features = feature.get('features');
-    if (features && features.length > 0) {
-      // 从聚合中获取第一个点的数据
-      pointData = features[0].get('payload');
-    } else {
-      // 非聚合点，直接获取payload
-      pointData = feature.get('payload') as PointData;
+  let lineGroupId: string | undefined;
+  let hasTextLabel = false;
+
+  // 同时检测连线和标点特征
+  map.value.forEachFeatureAtPixel(pixel, (feature) => {
+    // 检查是否是文本标签
+    if (feature.get('isTextLabel')) {
+      hasTextLabel = true;
+      return true;
     }
-  }
+
+    const featureType = feature.get('featureType');
+
+    // 如果是连线，记录连线ID
+    if (featureType === 'line') {
+      lineGroupId = feature.get('lineGroupId');
+    }
+
+    // 如果是标点或聚合点，记录标点数据
+    if (!pointData) {
+      const features = feature.get('features');
+      if (features && features.length > 0) {
+        // 从聚合中获取第一个点的数据
+        const featurePointData = features[0].get('payload') as PointData;
+        if (featurePointData && !(featurePointData as any).isRange) {
+          pointData = featurePointData;
+        }
+      } else {
+        // 非聚合点，直接获取payload
+        const featurePointData = feature.get('payload') as PointData;
+        if (featurePointData && !(featurePointData as any).isRange) {
+          pointData = featurePointData;
+        }
+      }
+    }
+
+    // 如果同时找到了连线和标点，或者找到了文本标签，就停止遍历
+    if ((lineGroupId && pointData) || hasTextLabel) {
+      return true;
+    }
+  }, {
+    hitTolerance: 10 // 扩大点击容差到10像素
+  });
+
+  // 如果点击的是文本标签，不处理
+  // if (hasTextLabel) {
+  //   return;
+  // }
+
   if (process.env.NODE_ENV === 'development') {
     console.log('右键菜单事件:', {
       coordinate: coordinate,
       pointData: pointData,
+      lineGroupId: lineGroupId,
     });
   }
+
   mapContextMenuListeners.forEach(listener => {
     if (coordinate) {
-      listener(event, coordinate, pointData);
+      listener(event, coordinate, pointData, lineGroupId);
     }
   });
 };

@@ -13,6 +13,7 @@ import {
 } from '../selectionIndicator';
 import { toggleMultiSelect } from '../marks';
 import { isMultiSelecting } from '@/data/marks';
+import { isInConnectionMode, connectToPole } from '../electricPoleConnector';
 import type { Coordinate } from 'ol/coordinate';
 import { MapBrowserEvent } from 'ol';
 
@@ -29,6 +30,44 @@ export const pointSelectHandler = async function (event: SelectEvent) {
     popupManager.value?.closeToast();
     // 清除选中指示器
     clearSelectionIndicator();
+    return;
+  }
+
+  // 处理连线模式
+  if (isInConnectionMode.value) {
+    // 检查是否是聚合点
+    const features = target.get('features');
+    let data: PointData | undefined;
+
+    if (features && features.length === 1) {
+      data = features[0].get('payload');
+    } else if (!features) {
+      data = target.get('payload') as PointData;
+    }
+
+    // 检查是否是电线杆范围Feature，如果是则关闭弹窗并返回
+    if (data && (data as any).isRange) {
+      // 关闭弹窗
+      popupManager.value?.closeToast();
+      // 清除选中指示器
+      clearSelectionIndicator();
+      return;
+    }
+
+    // 检查是否是区域文本标签Feature，如果是则不处理
+    if (target.get('isTextLabel')) {
+      return;
+    }
+
+    if (data && data.entityDataIdKey === 'electric_pole') {
+      connectToPole(data).then(success => {
+        if (success) {
+          // 连接成功，刷新地图
+          event.target.getFeatures().clear();
+        }
+      });
+    }
+    // 在连线模式下，无论是否成功连接，都不允许展开弹窗
     return;
   }
 
@@ -58,6 +97,20 @@ export const pointSelectHandler = async function (event: SelectEvent) {
   // 如果是聚合中的单个点，需要从features中获取
   if (features && features.length === 1) {
     data = features[0].get('payload');
+  }
+
+  // 检查是否是电线杆范围Feature，如果是则关闭弹窗并返回
+  if (data && (data as any).isRange) {
+    // 关闭弹窗
+    popupManager.value?.closeToast();
+    // 清除选中指示器
+    clearSelectionIndicator();
+    return;
+  }
+
+  // 检查是否是区域文本标签Feature，如果是则不处理
+  if (target.get('isTextLabel')) {
+    return;
   }
 
   if (!data) {
@@ -127,7 +180,8 @@ export const addMapContextMenuListener = (
   listener: (
     event: MouseEvent,
     coordinate?: Coordinate,
-    pointData?: PointData
+    pointData?: PointData,
+    lineGroupId?: string
   ) => void
 ) => {
   if (mapContextMenuListeners.has(listener)) {
@@ -144,7 +198,8 @@ export const removeMapContextMenuListener = (
   listener: (
     event: MouseEvent,
     coordinate?: Coordinate,
-    pointData?: PointData
+    pointData?: PointData,
+    lineGroupId?: string
   ) => void
 ) => {
   if (!mapContextMenuListeners.has(listener)) {
@@ -170,8 +225,8 @@ export function mapClickHandler(event: MapBrowserEvent<MouseEvent>) {
     popupManager.value.closeToast();
   }
 
-  // 如果有并且有Feature被点击，则关闭弹窗 (多选模式下)
-  if (feature && isMultiSelecting.value) {
+  // 如果有并且有Feature被点击，则关闭弹窗 (多选模式或连线模式下)
+  if (feature && (isMultiSelecting.value || isInConnectionMode.value)) {
     popupManager.value?.closeToast();
 
     // 检查是否是聚合点
@@ -195,7 +250,34 @@ export function mapClickHandler(event: MapBrowserEvent<MouseEvent>) {
       payload = feature.get('payload') as PointData;
     }
 
-    if (payload?.levelLogicId) {
+    // 检查是否是电线杆范围Feature，如果是则关闭弹窗并返回
+    if (payload && (payload as any).isRange) {
+      // 关闭弹窗
+      popupManager.value?.closeToast();
+      // 清除选中指示器
+      clearSelectionIndicator();
+      return;
+    }
+
+    // 检查是否是区域文本标签Feature，如果是则不处理
+    if (feature.get('isTextLabel')) {
+      return;
+    }
+
+    // 在连线模式下，只处理电线杆连接，不进行多选操作
+    if (isInConnectionMode.value) {
+      if (payload && payload.entityDataIdKey === 'electric_pole') {
+        connectToPole(payload).then(success => {
+          if (success) {
+            // 连接成功，不需要额外操作，连线模式会自动处理
+          }
+        });
+      }
+      return;
+    }
+
+    // 多选模式下的处理
+    if (isMultiSelecting.value && payload?.levelLogicId) {
       toggleMultiSelect(payload.levelLogicId as number);
     }
   }

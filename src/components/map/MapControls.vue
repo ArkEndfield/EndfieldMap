@@ -50,6 +50,8 @@ const inputDirection = ref<'vertical' | 'horizontal'>('vertical');
 
 // 媒体查询匹配器
 let mediaQueryList: MediaQueryList | null = null;
+// 地图视图监听器
+let viewChangeListener: (() => void) | null = null;
 
 // 媒体查询回调函数
 const handleMediaQueryChange = (e: MediaQueryListEvent | MediaQueryList) => {
@@ -77,6 +79,33 @@ onMounted(() => {
     },
     { immediate: true }
   );
+
+  // 监听地图变化，重新设置视图监听器
+  watch(
+    () => props.map,
+    (newMap) => {
+      // 先移除旧的监听器
+      if (props.map && viewChangeListener) {
+        const oldView = props.map.getView();
+        oldView.un('change:resolution', viewChangeListener);
+      }
+      
+      // 设置新的监听器
+      if (newMap) {
+        const view = newMap.getView();
+        viewChangeListener = () => {
+          const currentZoom = view.getZoom();
+          if (currentZoom !== undefined && currentZoom !== zoomLevel.value) {
+            zoomLevel.value = currentZoom;
+            emit('update:zoomLevel', currentZoom);
+          }
+        };
+        view.on('change:resolution', viewChangeListener);
+      }
+    },
+    { immediate: true }
+  );
+
 
   // 添加控件点击事件监听
   if (controls.value) {
@@ -118,6 +147,12 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (mediaQueryList) {
     mediaQueryList.removeEventListener('change', handleMediaQueryChange);
+  }
+  
+  // 移除地图视图监听器
+  if (props.map && viewChangeListener) {
+    const view = props.map.getView();
+    view.un('change:resolution', viewChangeListener);
   }
 });
 

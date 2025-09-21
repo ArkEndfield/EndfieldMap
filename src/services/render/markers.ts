@@ -16,7 +16,15 @@ import {
   removeFeatureFromItemMap as removeFeatureFromItemMapStore,
   getEntityGroup,
   getStore,
+  electricPoleRangeLayer,
 } from './store';
+import settings from '@/data/settings';
+import { pubsub } from '../pubsub';
+import {
+  getPoleMaxConnectionDistance,
+  getAllConnections,
+} from '../electricPoleConnector';
+import { watch } from 'vue';
 
 /**
  * 重置所有实体类型的计数
@@ -88,7 +96,82 @@ export function createCustomPointMarker(
     console.error('source.getSource() is not an instance of VectorSource');
   }
 
+  // 范围的创建现在由 pole-connection-changed 事件驱动
   return feature;
+}
+
+/**
+ * 创建电线杆范围Feature
+ * @param point 电线杆点数据
+ */
+export function updateElectricPoleRange(point: PointData): void {
+  const poleId = point.levelLogicId;
+  const maxDistance = getPoleMaxConnectionDistance(point);
+  console.log(`更新电线杆 ${poleId} 的范围，最大距离: ${maxDistance}`);
+
+  const rangeSource = electricPoleRangeLayer.getSource() as VectorSource<Feature<Point>> | null;
+  if (!rangeSource) {
+    console.warn('无法获取电线杆范围层的VectorSource');
+    return;
+  }
+
+  const existingFeature = findRangeFeatureByPoleId(poleId);
+
+  if (maxDistance > 0) {
+    if (existingFeature) {
+      // 更新现有Feature
+      const payload = existingFeature.get('payload');
+      if (payload.radius !== maxDistance) {
+        existingFeature.set('payload', { ...payload, radius: maxDistance });
+        console.log(`更新电线杆 ${poleId} 的范围半径为 ${maxDistance}`);
+      }
+    } else {
+      // 创建新的Feature
+      const rangeFeature = new Feature({
+        geometry: new Point(xyz2crd(point.position)),
+        payload: { ...point, isRange: true, radius: maxDistance },
+      });
+      rangeSource.addFeature(rangeFeature);
+      console.log(`为电线杆 ${poleId} 创建了新的范围，半径为 ${maxDistance}`);
+    }
+  } else {
+    // 如果最大距离为0，则移除范围
+    if (existingFeature) {
+      rangeSource.removeFeature(existingFeature);
+      console.log(`移除了电线杆 ${poleId} 的范围`);
+    }
+  }
+}
+
+/**
+ * 根据电线杆ID查找范围Feature
+ * @param poleId 电线杆ID
+ */
+function findRangeFeatureByPoleId(poleId: string | number): Feature<Point> | undefined {
+  const rangeSource = electricPoleRangeLayer.getSource() as VectorSource<Feature<Point>> | null;
+  if (!rangeSource) return undefined;
+
+  const features = rangeSource.getFeatures();
+  return features.find(f => f.get('payload')?.levelLogicId === poleId);
+}
+
+/**
+ * 删除电线杆范围Feature
+ * @param levelLogicId 电线杆ID
+ */
+function removeElectricPoleRangeFeature(levelLogicId: string | number): void {
+  const rangeSource = electricPoleRangeLayer.getSource() as VectorSource<Feature<Point>> | null;
+  if (rangeSource) {
+    const rangeFeature = findRangeFeatureByPoleId(levelLogicId);
+    if (rangeFeature) {
+      try {
+        rangeSource.removeFeature(rangeFeature);
+        console.log(`移除了电线杆 ${levelLogicId} 的范围Feature`);
+      } catch (e) {
+        console.warn(`移除范围Feature ${levelLogicId} 时出错:`, e);
+      }
+    }
+  }
 }
 
 /**
@@ -137,6 +220,9 @@ export function removeCustomPointMarker(levelLogicId: string | number): void {
 
   removeFeatureFromItemMapStore(idAsString);
   console.log(`Feature removed from itemMap for ID: ${idAsString}`);
+
+  // 删除对应的范围Feature
+  removeElectricPoleRangeFeature(idAsString);
 }
 
 /**
@@ -173,7 +259,72 @@ export function updateCustomPointMarker(
     createCustomPointMarker(point);
     console.log(`Recreated feature ID: ${idAsString}`);
   }
+
+  // 如果是电线杆，触发一次范围更新检查
+  if (point.entityDataIdKey === 'electric_pole') {
+    updateElectricPoleRange(point);
+  }
 }
+
+/**
+ * 更新电线杆范围Feature
+ * @param point 电线杆点数据
+ */
+// 订阅电线杆连接变更事件
+pubsub.subscribe('pole-connection-changed', (poleIds: (string | number)[]) => {
+  console.log('接收到 pole-connection-changed 事件, poleIds:', poleIds);
+  const uniqueIds = [...new Set(poleIds)]; // 去重
+  const itemMap = getItemMap();
+  uniqueIds.forEach(id => {
+    const feature = itemMap[id];
+    if (feature) {
+      const point = feature.get('payload') as PointData;
+      if (point && point.entityDataIdKey === 'electric_pole') {
+        updateElectricPoleRange(point);
+      }
+    } else {
+      // 如果点在itemMap中不存在（可能已被删除），确保其范围也被删除
+      removeElectricPoleRangeFeature(id);
+    }
+  });
+});
+
+// 监听范围显示设置的变化
+watch(
+  () => settings.value.showElectricPoleRange,
+  (isVisible) => {
+    console.log(`电线杆范围可见性设置更改为: ${isVisible}`);
+    electricPoleRangeLayer.setVisible(isVisible);
+
+    if (isVisible) {
+      // 当开启显示时，强制刷新所有范围
+      console.log('范围显示已开启，强制刷新所有现有连接的范围');
+      const connections = getAllConnections();
+      const allConnectedPoleIds = new Set<string | number>();
+      connections.forEach((conn) => {
+        conn.poles.forEach((id) => allConnectedPoleIds.add(id));
+      });
+
+      const itemMap = getItemMap();
+      allConnectedPoleIds.forEach((id) => {
+        const feature = itemMap[id];
+        if (feature) {
+          const point = feature.get('payload') as PointData;
+          if (point && point.entityDataIdKey === 'electric_pole') {
+            updateElectricPoleRange(point);
+          }
+        }
+      });
+    } else {
+      // 当关闭显示时，清空范围图层的源，以节省资源
+      const rangeSource = electricPoleRangeLayer.getSource() as VectorSource<Feature<Point>> | null;
+      if (rangeSource) {
+        rangeSource.clear();
+        console.log('范围显示已关闭，已清空范围图层');
+      }
+    }
+  }
+);
 
 /**
  * 清理自定义标点相关内容

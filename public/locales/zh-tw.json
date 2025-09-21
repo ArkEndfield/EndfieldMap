@@ -56,7 +56,8 @@
     "mark_obtained": "標記獲取",
     "mark_unobtained": "取消標記獲取",
     "create_point": "創建標點",
-    "delete_point": "刪除標點"
+    "delete_point": "刪除標點",
+    "create_electric_pole": "創建電線杆"
   },
   "header": {
     "menu": "菜單",
@@ -124,6 +125,10 @@
     "adjust_position": {
       "title": "彈窗調整位置",
       "tips": "當彈窗展開時，調整視圖位置"
+    },
+    "show_electric_pole_range": {
+      "title": "顯示電線杆範圍",
+      "tips": "顯示電線杆的連接範圍"
     }
   },
   "sidebar": {
@@ -141,6 +146,7 @@
       "cultivation_material": "培養素材",
       "multi_operate": "批量操作",
       "cancel_multi_operate": "取消操作",
+      "electric_pole_range": "電線杆範圍",
       "category": {
         "ether": "醚質",
         "chest": "寶箱",
@@ -322,7 +328,8 @@
     "add_node": "添加節點",
     "text_placeholder": "請輸入文字內容...",
     "image_placeholder": "請輸入圖片URL...",
-    "empty_content": "暫無內容，請添加文字或圖片"
+    "empty_content": "暫無內容，請添加文字或圖片",
+    "electric_pole": "電線杆"
   },
   "image_uploader": {
     "drag_drop": "拖拽圖片至此",

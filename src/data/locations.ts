@@ -12,7 +12,7 @@ const vectorSource = new VectorSource();
 
 export const areaNameLayer = new VectorLayer({
   source: vectorSource,
-  zIndex: 9,
+  zIndex: 4,
   // 添加以下属性以确保移动时标签不会消失
   renderBuffer: 200,
   updateWhileAnimating: true,

@@ -45,7 +45,7 @@ export let entityLayerTimerId: number | null = null; // 用于取消延迟加载
 
 // 右键菜单监听器集合
 export const mapContextMenuListeners = new Set<
-  (event: MouseEvent, coordinate?: Coordinate, pointData?: PointData) => void
+  (event: MouseEvent, coordinate?: Coordinate, pointData?: PointData, lineGroupId?: string) => void
 >();
 
 // 图像池

@@ -56,7 +56,8 @@
     "mark_obtained": "표시 완료",
     "mark_unobtained": "표시 취소",
     "create_point": "포인트 생성",
-    "delete_point": "포인트 삭제"
+    "delete_point": "포인트 삭제",
+    "create_electric_pole": "전선 생성"
   },
   "header": {
     "menu": "메뉴",
@@ -124,6 +125,10 @@
     "adjust_position": {
       "title": "팝업 위치 조정",
       "tips": "팝업이 펼쳐질 때 뷰의 위치를 조정"
+    },
+    "show_electric_pole_range": {
+      "title": "전선 영역 표시",
+      "tips": "전선 영역을 표시"
     }
   },
   "sidebar": {
@@ -141,6 +146,7 @@
       "cultivation_material": "재배 재료",
       "multi_operate": "다중 작업",
       "cancel_multi_operate": "작업 취소",
+      "electric_pole_range": "전선 영역",
       "category": {
         "ether": "에테르",
         "chest": "상자",
@@ -327,7 +333,8 @@
     "add_node": "노드 추가",
     "text_placeholder": "텍스트 내용을 입력하세요...",
     "image_placeholder": "이미지 URL을 입력하세요...",
-    "empty_content": "내용이 없습니다. 텍스트 또는 이미지를 추가하세요"
+    "empty_content": "내용이 없습니다. 텍스트 또는 이미지를 추가하세요",
+    "electric_pole": "전선"
   },
   "image_uploader": {
     "drag_drop": "이미지를 여기에 끌어다 놓으세요",

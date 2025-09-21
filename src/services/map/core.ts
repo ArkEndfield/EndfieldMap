@@ -14,6 +14,10 @@ import {
   populateFeaturesFromPoints,
   updateClusterDistance,
 } from '../render';
+import { electricPoleRangeLayer } from '../render/store';
+import settings from '@/data/settings';
+import { restoreConnectionsFromStorage } from '../electricPoleConnector';
+import { watch } from 'vue';
 
 import {
   map,
@@ -182,6 +186,15 @@ export async function createMap(
     console.log('渲染优化器已初始化');
   }
 
+  // 添加实体图层
+  addEntityLayersToMap(newMap);
+
+  // 添加电线杆范围层
+  newMap.addLayer(electricPoleRangeLayer);
+
+  // 确保电线杆范围层可见性与设置同步
+  electricPoleRangeLayer.setVisible(settings.value.showElectricPoleRange);
+
   // --- 关键修改：加载点位数据并填充渲染存储 ---
   console.time('Initial Point Load and Populate');
   try {
@@ -196,9 +209,6 @@ export async function createMap(
   }
   console.timeEnd('Initial Point Load and Populate');
   // -------------------------------------------
-
-  // 添加实体图层
-  addEntityLayersToMap(newMap);
 
   // updateClusterDistance
   updateClusterDistance(initialZoom);
@@ -218,6 +228,11 @@ export async function createMap(
   // 设置其他服务的地图实例
   setMapForLines(newMap);
   setMapForIndicator(newMap);
+
+  // 恢复电线杆连接（必须在所有依赖都设置好之后）
+  console.time('Restore Electric Pole Connections');
+  await restoreConnectionsFromStorage();
+  console.timeEnd('Restore Electric Pole Connections');
 
   // 刷新地图以显示初始标点
   refreshMap();
@@ -252,6 +267,9 @@ export async function updateMap(mapIndex: string): Promise<void> {
 
   // 更新地图视图（中心点和缩放级别）
   await _updateMapView(map.value, mapIndex);
+
+  // 确保电线杆范围层可见性与设置同步
+  electricPoleRangeLayer.setVisible(settings.value.showElectricPoleRange);
 
   // 不再需要清理/重新添加图层或再次添加实体图层
   // 不再需要手动断开旧源的连接

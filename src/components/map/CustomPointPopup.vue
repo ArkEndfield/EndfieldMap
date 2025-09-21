@@ -1,7 +1,7 @@
 <template>
   <div class="custom-point-popup">
     <div class="content">
-      <div class="-mt-1 px-4 flex gap-2">
+      <div class="-mt-1 px-4 flex gap-2 pr-14">
         <div class="w-8 h-8">
           <img
             :src="`/assets/custom/${entityInfo.entityInfo.pic}.png`"
@@ -11,7 +11,7 @@
         <ZmdButtonRight
           @click="startEditing"
           size="small"
-          class-name="!w-28 shrink-0"
+          class-name="shrink-0"
           reverse
           type="primary"
         >
@@ -19,6 +19,23 @@
             <EditIcon />
           </template>
           {{ t('custom_point.edit') }}
+        </ZmdButtonRight>
+        <ZmdButtonRight
+          v-if="canConnectPole"
+          @click="startConnectionMode"
+          size="small"
+          class-name="shrink-0"
+          reverse
+          type="primary"
+        >
+          <template #icon>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z" fill="currentColor"/>
+              <path d="M19 15L17.5 16.5L15 14L19 15Z" fill="currentColor"/>
+              <path d="M5 15L6.5 16.5L9 14L5 15Z" fill="currentColor"/>
+            </svg>
+          </template>
+          {{ t('custom_point.connect') }}
         </ZmdButtonRight>
       </div>
       <ScrollArea
@@ -70,6 +87,8 @@ import type { GuideNode as GuideNodeType, NodeType } from '@/types/guides';
 import { customPointTypes, entityInfo as entityInfoData } from '@/data/entity';
 import { computed } from 'vue';
 import { CustomPointKey } from '@/types/customPoints';
+import { closePopup } from '@/services/map';
+import { startConnectionMode as startPoleConnectionMode, getPoleConnections, MAX_CONNECTIONS_PER_POLE } from '@/services/electricPoleConnector';
 const { t } = useI18n();
 
 const props = defineProps<{
@@ -83,6 +102,20 @@ const nodes = ref<NodeType[]>([]);
 
 const entityInfo = computed(() => {
   return entityInfoData[props.point?.entityDataIdKey || customPointTypes[0]];
+});
+
+const isElectricPole = computed(() => {
+  return props.point?.entityDataIdKey === 'electric_pole';
+});
+
+const canConnectPole = computed(() => {
+  if (!isElectricPole.value || !props.point) {
+    return false;
+  }
+
+  // 检查连接数量是否未达到上限
+  const connectionCount = getPoleConnections(props.point);
+  return connectionCount < MAX_CONNECTIONS_PER_POLE;
 });
 // 处理节点更新
 const handleNodesUpdate = (newNodes: GuideNodeType[]) => {
@@ -161,6 +194,14 @@ const handleClose = () => {
   // 重置编辑状态
   if (props.point?.levelLogicId) {
     loadPointData();
+  }
+};
+
+const startConnectionMode = () => {
+  // 关闭弹窗并开始连线模式
+  closePopup();
+  if (props.point) {
+    startPoleConnectionMode(props.point);
   }
 };
 </script>

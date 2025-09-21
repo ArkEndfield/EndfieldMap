@@ -13,11 +13,11 @@ interface LineGroup {
   id: string;
   layer: VectorLayer<VectorSource>;
   source: VectorSource;
-  pointIds: number[]; // 存储连接的点位ID
+  pointIds: (number | string)[]; // 存储连接的点位ID
 }
 
 // 存储所有连线图层
-const lineGroups: Record<string, LineGroup> = {};
+export const lineGroups: Record<string, LineGroup> = {};
 
 // 当前地图实例引用
 let mapInstance: Map | null = null;
@@ -39,7 +39,7 @@ export const setMapForLines = (map: Map) => {
  * @returns 连线组的唯一ID，用于后续管理
  */
 export const connectPoints = (
-  pointIds: number[],
+  pointIds: (number | string)[],
   color: string = '#FFFFFF',
   width: number = 2,
   dashed: boolean = false
@@ -90,28 +90,31 @@ export const connectPoints = (
 
   // 收集点位坐标
   const coordinates: number[][] = [];
-  let allPointsFound = true;
+  const validPointIds: (string | number)[] = [];
 
   // 对每个点位ID查找对应的Feature
   for (const pointId of pointIds) {
+    if (pointId === null || pointId === undefined) {
+      console.warn('尝试连接一个 null 或 undefined 的点位ID，已跳过');
+      continue;
+    }
     const feature = getItemMap()[pointId];
     if (feature) {
       const geometry = feature.getGeometry();
       if (geometry) {
         coordinates.push(geometry.getCoordinates());
+        validPointIds.push(pointId);
       } else {
-        console.warn(`点位 ${pointId} 没有有效的几何信息`);
-        allPointsFound = false;
+        console.warn(`点位 ${pointId} 没有有效的几何信息，已跳过`);
       }
     } else {
-      console.warn(`未找到ID为 ${pointId} 的点位`);
-      allPointsFound = false;
+      console.warn(`未找到ID为 ${pointId} 的点位，已跳过`);
     }
   }
 
-  // 如果有点位未找到，则放弃创建
-  if (!allPointsFound || coordinates.length < 2) {
-    console.error('无法连接所有指定的点位');
+  // 如果有效点位不足两个，则放弃创建
+  if (coordinates.length < 2) {
+    console.error('有效的点位不足两个，无法创建连线');
     return '';
   }
 
@@ -122,6 +125,7 @@ export const connectPoints = (
 
   // 标记为线条类型
   lineFeature.set('featureType', 'line');
+  lineFeature.set('lineGroupId', lineGroupId);
 
   // 添加到源中
   lineSource.addFeature(lineFeature);
@@ -201,7 +205,7 @@ export const connectPoints = (
     id: lineGroupId,
     layer: lineLayer,
     source: lineSource,
-    pointIds: [...pointIds],
+    pointIds: validPointIds,
   };
 
   return lineGroupId;

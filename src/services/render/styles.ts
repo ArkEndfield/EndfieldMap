@@ -91,14 +91,15 @@ export async function createCircleIconStyle(
  * @param color 颜色
  * @param imagePath 图片路径
  * @param optimalScale 最佳缩放比例
+ * @param isElectricPole 是否为电线杆
  */
 export function createBaseStyles(
   radius: number,
   color: string,
   imagePath: string,
-  optimalScale: number
+  optimalScale: number,
 ): Style[] {
-  return [
+  const styles = [
     ...createBlurredShadowStyles(radius),
     createOuterCircleStyle(radius, color),
     createInnerCircleStyle(radius),
@@ -107,6 +108,9 @@ export function createBaseStyles(
     createBottomTriangleIndicator(color),
     createIconStyle(imagePath, radius, optimalScale),
   ];
+
+  // 电线杆范围现在使用独立的层，不再在标点样式中添加
+  return styles;
 }
 
 /**
@@ -294,7 +298,7 @@ export function createClusterStyle(radius: number, size: number): Style {
  * @param entityType 实体类型
  * @returns 聚合样式函数
  */
-export function createClusterStyleFunction(entityType: string) {
+export function createClusterStyleFunction(entityType: string): (feature: Feature) => Style | Style[] | undefined {
   return (feature: Feature): Style | Style[] | undefined => {
     const store = getStore();
     const featuresArray = feature.get('features') as Feature[];

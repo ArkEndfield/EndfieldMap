@@ -56,7 +56,8 @@
     "mark_obtained": "マーク取得",
     "mark_unobtained": "マーク取得解除",
     "create_point": "ポイント作成",
-    "delete_point": "ポイント削除"
+    "delete_point": "ポイント削除",
+    "create_electric_pole": "電線杆作成"
   },
   "header": {
     "menu": "メニュー",
@@ -124,6 +125,10 @@
     "adjust_position": {
       "title": "ポップアップ位置の調整",
       "tips": "ポップアップが展開されたときにビューの位置を調整"
+    },
+    "show_electric_pole_range": {
+      "title": "電線杆範囲の表示",
+      "tips": "電線杆の接続範囲を表示"
     }
   },
   "sidebar": {
@@ -141,6 +146,7 @@
       "cultivation_material": "育成素材",
       "multi_operate": "複数操作",
       "cancel_multi_operate": "操作解除",
+      "electric_pole_range": "電線杆範囲",
       "category": {
         "ether": "エーテル",
         "chest": "チェスト",
@@ -327,7 +333,8 @@
     "add_node": "ノードを追加",
     "text_placeholder": "テキスト内容を入力...",
     "image_placeholder": "画像URLを入力...",
-    "empty_content": "内容がありません。テキストまたは画像を追加してください"
+    "empty_content": "内容がありません。テキストまたは画像を追加してください",
+    "electric_pole": "電線杆"
   },
   "image_uploader": {
     "drag_drop": "画像をここにドラッグ&ドロップ",

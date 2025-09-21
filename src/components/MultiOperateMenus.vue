@@ -47,6 +47,34 @@
         </div>
       </motion.div>
     </AnimatePresence>
+
+    <AnimatePresence>
+      <motion.div
+        v-if="isInConnectionMode"
+        class="fixed bottom-20 md:bottom-5 left-1/2 -translate-x-1/2 bg-yellow-400 rounded-full z-[53] overflow-hidden"
+        :animate="{
+          width: 'auto',
+        }"
+        :initial="{
+          width: 0,
+        }"
+        :exit="{
+          width: 0,
+        }"
+      >
+        <div class="whitespace-nowrap px-2 py-1 flex items-center gap-2 text-black">
+          <div>电线杆连线模式</div>
+          <motion.div class="flex items-center gap-2 overflow-hidden">
+            <button
+              class="shrink-0 bg-yellow-500 hover:bg-yellow-600 px-2 py-1 rounded text-xs"
+              @click="cancelConnectionMode"
+            >
+              退出连线
+            </button>
+          </motion.div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   </Teleport>
   <ZmdAlertFull
     v-model:open="isAlertOpen"
@@ -63,6 +91,7 @@ import {
   finishMultiSelect,
   unfinishMultiSelect,
 } from '@/services/marks';
+import { isInConnectionMode, endConnectionMode } from '@/services/electricPoleConnector';
 import { AnimatePresence, motion } from 'motion-v';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -75,6 +104,10 @@ const markAsFinished = () => {
 const markAsUnfinished = () => {
   unfinishMultiSelect();
   isAlertOpen.value = true;
+};
+
+const cancelConnectionMode = () => {
+  endConnectionMode();
 };
 </script>
 

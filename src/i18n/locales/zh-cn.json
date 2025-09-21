@@ -56,7 +56,10 @@
     "mark_obtained": "标记获取",
     "mark_unobtained": "取消标记获取",
     "create_point": "创建标点",
-    "delete_point": "删除标点"
+    "create_electric_pole": "创建电线杆",
+    "connect_poles": "连接电线杆",
+    "delete_point": "删除标点",
+    "delete_connection": "删除连线"
   },
   "header": {
     "menu": "菜单",
@@ -124,6 +127,10 @@
     "adjust_position": {
       "title": "弹窗调整位置",
       "tips": "当弹窗展开时，调整视图位置"
+    },
+    "show_electric_pole_range": {
+      "title": "显示电线杆范围",
+      "tips": "开启后显示电线杆的连接范围"
     }
   },
   "sidebar": {
@@ -141,6 +148,7 @@
       "cultivation_material": "培养素材",
       "multi_operate": "批量操作",
       "cancel_multi_operate": "取消操作",
+      "electric_pole_range": "电线杆范围",
       "category": {
         "ether": "醚质",
         "chest": "宝箱",
@@ -340,6 +348,7 @@
     "title": "自定义点位",
     "edit": "编辑",
     "edit_title": "编辑自定义点位",
+    "connect": "连接",
     "type": "点位类型",
     "type_custom": "自定义",
     "type_custom1": "自定义1",
@@ -350,7 +359,8 @@
     "add_node": "添加节点",
     "text_placeholder": "请输入文本内容...",
     "image_placeholder": "请输入图片URL...",
-    "empty_content": "暂无内容，请添加文本或图片"
+    "empty_content": "暂无内容，请添加文本或图片",
+    "electric_pole": "电线杆"
   },
   "image_uploader": {
     "drag_drop": "拖拽图片到此处",

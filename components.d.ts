@@ -43,6 +43,7 @@ declare module 'vue' {
     DungeonDesc: typeof import('./src/components/map/Popup/DungeonDesc.vue')['default']
     DungeonReward: typeof import('./src/components/map/Popup/RewardDetail/DungeonReward.vue')['default']
     EditIcon: typeof import('./src/components/icons/EditIcon.vue')['default']
+    ElectricPoleRange: typeof import('./src/components/Header/Settings/ElectricPoleRange.vue')['default']
     ExportData: typeof import('./src/components/Header/Settings/ExportData.vue')['default']
     ExportIcon: typeof import('./src/components/icons/ExportIcon.vue')['default']
     FeedbackIcon: typeof import('./src/components/icons/FeedbackIcon.vue')['default']

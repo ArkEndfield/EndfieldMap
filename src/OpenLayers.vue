@@ -46,6 +46,36 @@
         </template>
       </ContextMenuItem>
       <ContextMenuItem
+        :label="t('context_menu.create_electric_pole')"
+        @click="() => handleAction('create_electric_pole')"
+        :disabled="!!rightClickCustomPoint || !rightClickCoordinates"
+      >
+        <template #icon>
+          <LocationClusterIcon />
+        </template>
+      </ContextMenuItem>
+      <ContextMenuItem
+        :label="t('context_menu.connect_poles')"
+        v-show="canConnectPole"
+        @click="() => handleAction('connect_poles')"
+      >
+        <template #icon>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </template>
+      </ContextMenuItem>
+      <ContextMenuItem
+        :label="t('context_menu.delete_connection')"
+        v-show="!!rightClickLineGroupId"
+        @click="() => handleAction('delete_connection')"
+        className="text-red-500"
+      >
+        <template #icon>
+          <TrashIcon />
+        </template>
+      </ContextMenuItem>
+      <ContextMenuItem
         :label="t('context_menu.delete_point')"
         v-show="!!rightClickCustomPoint"
         @click="() => handleAction('delete')"
@@ -88,6 +118,7 @@ import type { PointData } from './types/points';
 import { computed } from 'vue';
 import { isMarked, markPoint } from './services/marks';
 import { useI18n } from 'vue-i18n';
+import { removeConnection, startConnectionMode, getPoleConnections, MAX_CONNECTIONS_PER_POLE } from './services/electricPoleConnector';
 const menuVisible = ref(false);
 const contextMenuRef = ref<ContextMenuRef>();
 // 引用DOM元素
@@ -96,6 +127,7 @@ const mapPopupRef = ref<MapPopupRef>();
 const rightClickCoordinates = ref<Coordinate>([0, 0]);
 const rightClickCustomPoint = ref<PointData | null>(null);
 const rightClickPoint = ref<PointData | null>(null);
+const rightClickLineGroupId = ref<string | null>(null);
 const { t } = useI18n();
 // 提供弹出层管理器给子组件 - 在setup顶层调用provide
 provide('popupManager', popupManager);
@@ -105,6 +137,20 @@ const isPointMarked = computed(() => {
     return isMarked(rightClickPoint.value.levelLogicId);
   }
   return false;
+});
+
+const isElectricPole = computed(() => {
+  return rightClickCustomPoint.value?.entityDataIdKey === 'electric_pole';
+});
+
+const canConnectPole = computed(() => {
+  if (!isElectricPole.value || !rightClickCustomPoint.value) {
+    return false;
+  }
+
+  // 检查连接数量是否未达到上限
+  const connectionCount = getPoleConnections(rightClickCustomPoint.value);
+  return connectionCount < MAX_CONNECTIONS_PER_POLE;
 });
 
 const onContextMenu = (event: MouseEvent) => {
@@ -119,6 +165,26 @@ const handleAction = (action: string) => {
   const currentMap = getCurrentMapId();
   if (action === 'create') {
     createCustomPoint(rightClickCoordinates.value, currentMap);
+  } else if (action === 'create_electric_pole') {
+    createCustomPoint(rightClickCoordinates.value, currentMap, 'electric_pole');
+  } else if (action === 'connect_poles') {
+    // 处理连接电线杆的逻辑
+    if (rightClickCustomPoint.value) {
+      startConnectionMode(rightClickCustomPoint.value);
+      console.log('开始连接电线杆模式:', rightClickCustomPoint.value.levelLogicId);
+    }
+  } else if (action === 'delete_connection') {
+    // 处理删除连线的逻辑
+    if (rightClickLineGroupId.value) {
+      removeConnection(rightClickLineGroupId.value).then(success => {
+        if (success) {
+          console.log('成功删除连线:', rightClickLineGroupId.value);
+        } else {
+          console.log('删除连线失败:', rightClickLineGroupId.value);
+        }
+      });
+      rightClickLineGroupId.value = null;
+    }
   } else if (action === 'delete') {
     // 处理删除坐标的逻辑
     if (rightClickCustomPoint.value?.levelLogicId) {
@@ -141,8 +207,10 @@ onMounted(async () => {
     mapControlsRef.value.controls,
     mapPopupRef.value?.getPopupContainer()
   );
-  addMapContextMenuListener((_, coordinate, point) => {
+  addMapContextMenuListener((_event: MouseEvent, coordinate?: Coordinate, point?: PointData, lineGroupId?: string) => {
     rightClickCoordinates.value = coordinate as Coordinate;
+    rightClickLineGroupId.value = lineGroupId || null;
+
     if (point && isCustomPoint(point)) {
       rightClickCustomPoint.value = point;
     } else if (point) {

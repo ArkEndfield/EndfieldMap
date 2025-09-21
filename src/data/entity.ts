@@ -21,6 +21,7 @@ export const entityShowStates: EntityShowStates = reactive({});
 
 // 所有自定义标点类型
 export const customPointTypes: CustomPointKey[] = [
+  'electric_pole',
   '1',
   '2',
   '3',
@@ -40,7 +41,7 @@ export const customPointTypes: CustomPointKey[] = [
 export const customEntityInfo = customPointTypes.reduce((acc, type) => {
   acc[type] = {
     entityInfo: {
-      pic: `camp_zone_${type}`,
+      pic: type === 'electric_pole' ? 'electric_pole' : `camp_zone_${type}`,
       count: 0,
       point: type,
     },

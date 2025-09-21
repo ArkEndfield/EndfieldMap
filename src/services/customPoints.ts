@@ -18,6 +18,7 @@ import {
 import { marks } from '@/data/marks';
 import { customPointTypes, entityInfo } from '@/data/entity';
 import { select } from './entity';
+import { removeConnectionsForPoint } from './electricPoleConnector';
 import type { CustomPointKey } from '@/types/customPoints';
 
 const DB_ALL_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;
@@ -89,17 +90,53 @@ export async function saveCustomPoints(...points: PointData[]): Promise<void> {
  * 创建自定义标点
  * @param coordinate 坐标
  * @param mapId 地图ID
+ * @param type 标点类型，默认为普通自定义标点
  */
 export async function createCustomPoint(
   coordinate: Coordinate,
-  mapId: string
+  mapId: string,
+  type: CustomPointKey = '1'
 ): Promise<void> {
+  // 检查电线杆数量限制
+  if (type === 'electric_pole') {
+    const existingPoints = await getCustomPoints();
+    const electricPoleCount = existingPoints.filter(p => p.entityDataIdKey === 'electric_pole').length;
+    if (electricPoleCount >= 10) {
+      console.warn('电线杆数量已达到上限（10个）');
+      return;
+    }
+  }
+
+  // 检查坐标是否重复（避免在同一位置创建重复的标点）
+  // 注意：这里只检查主标点，不包括范围Feature
+  const existingPoints = await getCustomPoints();
+  const newPosition = crd2xyz(coordinate);
+  const isDuplicate = existingPoints.some(point => {
+    // 只检查主标点，不包括范围Feature
+    if ((point as any).isRange) {
+      return false;
+    }
+    // 使用小的容差范围来避免浮点数精度问题
+    const tolerance = 0.1;
+    const xDiff = Math.abs(point.position.x - newPosition.x);
+    const zDiff = Math.abs(point.position.z - newPosition.z);
+    if (xDiff < tolerance && zDiff < tolerance) {
+      console.warn('该位置已存在标点，无法重复创建');
+      return true;
+    }
+    return false;
+  });
+
+  if (isDuplicate) {
+    return;
+  }
+
   const finalMapId = mapId === 'map002' ? 'map02' : 'map01';
   const newPoint: PointData = {
     levelLogicId: generateUUID(),
     sceneId: finalMapId,
     position: crd2xyz(coordinate),
-    entityDataIdKey: customPointTypes[0],
+    entityDataIdKey: type,
   };
 
   // 保存到数据库
@@ -117,10 +154,10 @@ export async function createCustomPoint(
 
   // 从entityInfo中更新计数
   if (
-    entityInfo[customPointTypes[0]] &&
-    entityInfo[customPointTypes[0]].entityInfo
+    entityInfo[type] &&
+    entityInfo[type].entityInfo
   ) {
-    entityInfo[customPointTypes[0]].entityInfo.count++;
+    entityInfo[type].entityInfo.count++;
   }
 
   // 激活自定义实体的显示
@@ -161,6 +198,11 @@ export async function deleteCustomPoint(
   // 从marks中删除
   if (marks[levelLogicId]) {
     delete marks[levelLogicId];
+  }
+
+  // 如果删除的是电线杆，删除所有相关的连线
+  if (entityType === 'electric_pole') {
+    await removeConnectionsForPoint(levelLogicId);
   }
 
   // 从entityInfo中更新计数

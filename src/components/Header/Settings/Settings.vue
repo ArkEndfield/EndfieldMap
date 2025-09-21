@@ -2,6 +2,7 @@
   <div class="space-y-2">
     <ShowTour v-model:open="open" />
     <ClusteringEnable />
+    <ElectricPoleRange />
     <AdjustPosition />
     <ClearCache />
     <ExportData />
@@ -14,6 +15,8 @@
 </template>
 
 <script setup lang="ts">
+import ElectricPoleRange from './ElectricPoleRange.vue';
+
 const open = defineModel<boolean>('open', {
   required: true,
 });

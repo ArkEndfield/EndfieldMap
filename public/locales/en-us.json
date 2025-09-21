@@ -56,7 +56,8 @@
     "mark_obtained": "Mark Obtained",
     "mark_unobtained": "Mark Unobtained",
     "create_point": "Create Point",
-    "delete_point": "Delete Point"
+    "delete_point": "Delete Point",
+    "create_electric_pole": "Create Electric Pole"
   },
   "header": {
     "menu": "Menu",
@@ -124,6 +125,10 @@
     "adjust_position": {
       "title": "Adjust Popup Position",
       "tips": "Adjust the position of view when popup is expanded"
+    },
+    "show_electric_pole_range": {
+      "title": "Show Electric Pole Range",
+      "tips": "Show the connection range of electric poles"
     }
   },
   "sidebar": {
@@ -141,6 +146,7 @@
       "cultivation_material": "Cultivation Material",
       "multi_operate": "Multi Operate",
       "cancel_multi_operate": "Cancel Operate",
+      "electric_pole_range": "Electric Pole Range",
       "category": {
         "ether": "Ether",
         "chest": "Chest",
@@ -327,7 +333,8 @@
     "add_node": "Add Node",
     "text_placeholder": "Enter text content...",
     "image_placeholder": "Enter image URL...",
-    "empty_content": "No content, please add text or image"
+    "empty_content": "No content, please add text or image",
+    "electric_pole": "Electric Pole"
   },
   "image_uploader": {
     "drag_drop": "Drag and drop image here",

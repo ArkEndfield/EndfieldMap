@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS: Settings = {
   showMenuMenu: false,
   sidebarExpanded: true,
   adjustPopupPosition: true,
+  showElectricPoleRange: false,
 };
 
 const settings = ref<Settings>(DEFAULT_SETTINGS);

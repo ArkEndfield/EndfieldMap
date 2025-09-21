@@ -79,6 +79,20 @@
         </ZmdSidebarFilterToggle>
       </div>
     </div>
+
+    <!-- 电线杆范围显示开关 -->
+    <div
+      class="zmd-sidebar-filter-collect-filter flex flex-row items-center gap-2"
+      id="electric-pole-range-toggle"
+    >
+      <div class="title !mb-0">{{ t('sidebar.filter.electric_pole_range') }}</div>
+      <div class="list">
+        <ZmdSwitch
+          :checked="showElectricPoleRange"
+          @change="toggleElectricPoleRange"
+        />
+      </div>
+    </div>
   </motion.div>
   <CultivationMaterial />
 </template>
@@ -92,9 +106,13 @@ import { showCultivationMaterial } from '@/data/entity';
 import { clear } from '@/services/entity';
 import { currentMarkFilter, isMultiSelecting } from '@/data/marks';
 import { setMarkFilter, toggleMultiSelectState } from '@/services/marks';
+import settings from '@/data/settings';
+import { electricPoleRangeLayer } from '@/services/render/store';
 import { motion } from 'motion-v';
-import { watch } from 'vue';
+import { watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getCurrentPoints } from '@/services/points';
+import { populateFeaturesFromPoints } from '@/services/render/markers';
 const { t } = useI18n();
 const props = withDefaults(
   defineProps<{
@@ -121,6 +139,28 @@ watch(
 // 处理清除按钮点击
 const handleClear = () => {
   clear();
+};
+
+// 电线杆范围显示开关
+const showElectricPoleRange = computed({
+  get: () => settings.value.showElectricPoleRange,
+  set: (value: boolean) => {
+    settings.value.showElectricPoleRange = value;
+  },
+});
+
+const toggleElectricPoleRange = () => {
+  showElectricPoleRange.value = !showElectricPoleRange.value;
+
+  // 切换电线杆范围层的可见性
+  if (electricPoleRangeLayer) {
+    electricPoleRangeLayer.setVisible(showElectricPoleRange.value);
+
+    // 重新填充所有Feature，确保范围Feature被正确创建或删除
+    getCurrentPoints().then(points => {
+      populateFeaturesFromPoints(points);
+    });
+  }
 };
 </script>
 
@@ -168,6 +208,12 @@ const handleClear = () => {
       font-size: 0.8em;
       .zmd-sidebar-filter-toggle {
         flex: 1;
+
+        &.single-toggle {
+          flex: none;
+          width: 100%;
+          max-width: 200px;
+        }
       }
     }
   }

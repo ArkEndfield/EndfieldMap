@@ -1,4 +1,5 @@
 export type CustomPointKey =
+  | 'electric_pole'
   | '1'
   | '2'
   | '3'
