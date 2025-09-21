@@ -268,7 +268,7 @@ watch(type, newValue => {
 
 const typeOptions = Object.entries(customEntityInfo).map(([key, value]) => ({
   value: key,
-  label: value.entityInfo.point,
+  label: value.entityInfo.point === 'electric_pole' ? t('custom_point.electric_pole') : value.entityInfo.point,
   icon: `/assets/${value.category}/${value.entityInfo.pic}.png`,
 }));
 

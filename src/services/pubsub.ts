@@ -1,16 +1,48 @@
 import { throttle, debounce } from '@/utils/common';
 import { frameThrottle } from '@/utils/animationTimer';
+import { PointData } from '@/types/points';
+import { Settings } from '@/types/settings';
 
-type Callback = (...args: any[]) => void;
+// 定义事件名称常量
+export const EVENTS = {
+  MARK_CHANGE: 'mark_change',
+  MULTI_SELECT_STATE_CHANGE: 'multi_select_state_change',
+  MULTI_SELECT_CHANGE: 'multi_select_change',
+  SELECT_CHANGE: 'select_change',
+  SETTINGS_CHANGE: 'settings_change',
+  CONNECTION_FAILED: 'connection_failed',
+  CONNECTION_SUCCESS: 'connection_success',
+  POLE_CONNECTION_CHANGED: 'pole_connection_changed',
+  CONNECTION_ATTEMPT_START: 'connection_attempt_start',
+  SHOW_ALERT: 'show_alert',
+} as const;
+
+export type EventKey = typeof EVENTS[keyof typeof EVENTS];
+
+// 定义事件负载类型
+interface EventPayloads {
+  [EVENTS.MARK_CHANGE]: void;
+  [EVENTS.MULTI_SELECT_STATE_CHANGE]: void;
+  [EVENTS.MULTI_SELECT_CHANGE]: void;
+  [EVENTS.SELECT_CHANGE]: PointData | null | undefined;
+  [EVENTS.SETTINGS_CHANGE]: Settings;
+  [EVENTS.CONNECTION_FAILED]: void;
+  [EVENTS.CONNECTION_SUCCESS]: void;
+  [EVENTS.POLE_CONNECTION_CHANGED]: (string | number)[];
+  [EVENTS.CONNECTION_ATTEMPT_START]: void;
+  [EVENTS.SHOW_ALERT]: { content: string; useI18n?: boolean };
+}
+
+type Callback<T = void> = T extends void ? () => void : (payload: T) => void;
 type Unsubscribe = () => void;
 type ThrottleOptions = { delay: number; leading?: boolean; trailing?: boolean };
 type DebounceOptions = { delay: number; leading?: boolean; trailing?: boolean };
 
 class PubSub {
-  private events: Map<string, Set<Callback>> = new Map();
-  private throttledEvents: Map<string, Map<Callback, Callback>> = new Map();
-  private debouncedEvents: Map<string, Map<Callback, Callback>> = new Map();
-  private queuedEvents: Map<string, any[][]> = new Map();
+  private events: Map<string, Set<Callback<unknown>>> = new Map();
+  private throttledEvents: Map<string, Map<Callback<unknown>, Callback<unknown>>> = new Map();
+  private debouncedEvents: Map<string, Map<Callback<unknown>, Callback<unknown>>> = new Map();
+  private queuedEvents: Map<string, unknown[]> = new Map();
   private isPublishing = false;
   private static instance: PubSub;
 
@@ -29,7 +61,9 @@ class PubSub {
    * @param callback 回调函数
    * @returns 取消订阅函数
    */
-  public subscribe(event: string, callback: Callback): Unsubscribe {
+  public subscribe<K extends EventKey>(event: K, callback: Callback<EventPayloads[K]>): Unsubscribe;
+  public subscribe<T>(event: string, callback: Callback<T>): Unsubscribe;
+  public subscribe(event: string, callback: Callback<unknown>): Unsubscribe {
     if (!this.events.has(event)) {
       this.events.set(event, new Set());
     }
@@ -47,11 +81,9 @@ class PubSub {
    * @param options 节流选项
    * @returns 取消订阅函数
    */
-  public throttledSubscribe(
-    event: string,
-    callback: Callback,
-    options: ThrottleOptions
-  ): Unsubscribe {
+  public throttledSubscribe<K extends EventKey>(event: K, callback: Callback<EventPayloads[K]>, options: ThrottleOptions): Unsubscribe;
+  public throttledSubscribe<T>(event: string, callback: Callback<T>, options: ThrottleOptions): Unsubscribe;
+  public throttledSubscribe(event: string, callback: Callback<unknown>, options: ThrottleOptions): Unsubscribe {
     if (!this.throttledEvents.has(event)) {
       this.throttledEvents.set(event, new Map());
     }
@@ -72,11 +104,9 @@ class PubSub {
    * @param frameCount 帧数
    * @returns 取消订阅函数
    */
-  public frameThrottledSubscribe(
-    event: string,
-    callback: Callback,
-    frameCount: number = 1
-  ): Unsubscribe {
+  public frameThrottledSubscribe<K extends EventKey>(event: K, callback: Callback<EventPayloads[K]>, frameCount?: number): Unsubscribe;
+  public frameThrottledSubscribe<T>(event: string, callback: Callback<T>, frameCount?: number): Unsubscribe;
+  public frameThrottledSubscribe(event: string, callback: Callback<unknown>, frameCount: number = 1): Unsubscribe {
     if (!this.throttledEvents.has(event)) {
       this.throttledEvents.set(event, new Map());
     }
@@ -93,11 +123,9 @@ class PubSub {
    * @param options 防抖选项
    * @returns 取消订阅函数
    */
-  public debouncedSubscribe(
-    event: string,
-    callback: Callback,
-    options: DebounceOptions
-  ): Unsubscribe {
+  public debouncedSubscribe<K extends EventKey>(event: K, callback: Callback<EventPayloads[K]>, options: DebounceOptions): Unsubscribe;
+  public debouncedSubscribe<T>(event: string, callback: Callback<T>, options: DebounceOptions): Unsubscribe;
+  public debouncedSubscribe(event: string, callback: Callback<unknown>, options: DebounceOptions): Unsubscribe {
     if (!this.debouncedEvents.has(event)) {
       this.debouncedEvents.set(event, new Map());
     }
@@ -107,10 +135,8 @@ class PubSub {
       trailing: options.trailing,
     });
 
-    this.debouncedEvents
-      .get(event)
-      ?.set(callback, debouncedCallback as Callback);
-    return this.subscribe(event, debouncedCallback as Callback);
+    this.debouncedEvents.get(event)?.set(callback, debouncedCallback);
+    return this.subscribe(event, debouncedCallback);
   }
 
   /**
@@ -118,7 +144,9 @@ class PubSub {
    * @param event 事件名
    * @param callback 原始回调函数
    */
-  public unsubscribe(event: string, callback: Callback): void {
+  public unsubscribe<K extends EventKey>(event: K, callback: Callback<EventPayloads[K]>): void;
+  public unsubscribe<T>(event: string, callback: Callback<T>): void;
+  public unsubscribe(event: string, callback: Callback<unknown>): void {
     // 处理常规订阅
     this.events.get(event)?.delete(callback);
 
@@ -144,15 +172,26 @@ class PubSub {
   /**
    * 发布事件
    * @param event 事件名
-   * @param args 参数
+   * @param payload 参数
    */
-  public publish(event: string, ...args: any[]): void {
+  public publish<K extends EventKey>(
+    ...args: K extends typeof EVENTS.SELECT_CHANGE
+      ? [K, (PointData | null)?]
+      : EventPayloads[K] extends void
+      ? [K]
+      : [K, EventPayloads[K]]
+  ): void;
+  public publish(event: string, ...args: unknown[]): void {
     const callbacks = this.events.get(event);
     if (!callbacks || callbacks.size === 0) return;
 
     callbacks.forEach(callback => {
       try {
-        callback(...args);
+        if (args.length > 0) {
+          callback(args[0]);
+        } else {
+          (callback as () => void)();
+        }
       } catch (error) {
         console.error(`Error in ${event} callback:`, error);
       }
@@ -163,9 +202,11 @@ class PubSub {
    * 启用批量发布模式
    * 将事件放入队列，在下一个微任务批量处理
    * @param event 事件名
-   * @param args 参数
+   * @param payload 参数
    */
-  public queuePublish(event: string, ...args: any[]): void {
+  public queuePublish<K extends EventKey>(...args: EventPayloads[K] extends void ? [K] : [K, EventPayloads[K]]): void;
+  public queuePublish<T>(event: string, payload: T): void;
+  public queuePublish(event: string, ...args: unknown[]): void {
     if (!this.queuedEvents.has(event)) {
       this.queuedEvents.set(event, []);
     }
@@ -184,8 +225,12 @@ class PubSub {
         callbacks.forEach(callback => {
           try {
             // 对每个回调只执行最后一个事件（减少不必要的执行）
-            const lastArgs = argsArray[argsArray.length - 1];
-            callback(...lastArgs);
+            const lastArgs = argsArray[argsArray.length - 1] as unknown[];
+            if (lastArgs.length > 0) {
+              callback(lastArgs[0]);
+            } else {
+              (callback as () => void)();
+            }
           } catch (error) {
             console.error(`Error in queued ${event} callback:`, error);
           }
@@ -219,14 +264,3 @@ class PubSub {
 
 export const pubsub = PubSub.getInstance();
 
-// 定义事件名称常量
-export const EVENTS = {
-  MARK_CHANGE: 'mark_change',
-  MULTI_SELECT_STATE_CHANGE: 'multi_select_state_change',
-  MULTI_SELECT_CHANGE: 'multi_select_change',
-  SELECT_CHANGE: 'select_change',
-  SETTINGS_CHANGE: 'settings_change',
-  CONNECTION_FAILED: 'connection_failed',
-  CONNECTION_SUCCESS: 'connection_success',
-  POLE_CONNECTION_CHANGED: 'pole_connection_changed',
-} as const;

@@ -287,5 +287,5 @@ export const toggleSelectByCategory = (category: string) => {
 
 // 通知选择变更
 const notifySelectChange = () => {
-  pubsub.publish(EVENTS.SELECT_CHANGE);
+  pubsub.publish(EVENTS.SELECT_CHANGE, null);
 };

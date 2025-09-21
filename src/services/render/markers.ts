@@ -271,7 +271,7 @@ export function updateCustomPointMarker(
  * @param point 电线杆点数据
  */
 // 订阅电线杆连接变更事件
-pubsub.subscribe(EVENTS.POLE_CONNECTION_CHANGED, (poleIds: (string | number)[]) => {
+pubsub.subscribe(EVENTS.POLE_CONNECTION_CHANGED, (poleIds) => {
   // console.log('接收到 pole-connection-changed 事件, poleIds:', poleIds);
   const uniqueIds = [...new Set(poleIds)]; // 去重
   const itemMap = getItemMap();

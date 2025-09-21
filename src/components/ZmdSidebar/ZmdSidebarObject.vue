@@ -81,6 +81,10 @@ const displayName = computed(() => {
   if (props.entity && props.category && !isCustomEntity(props.entity.point)) {
     return t(`entities.${props.entity.point}`);
   }
+  // 如果是电线杆
+  if (props.entity && props.entity.point === 'electric_pole') {
+    return t('custom_point.electric_pole');
+  }
   return props.entity ? props.entity?.point : '未命名';
 });
 

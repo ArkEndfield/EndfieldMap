@@ -412,5 +412,8 @@
       "max_connections_source": "Source electric pole has reached the maximum number of connections",
       "max_connections_target": "Target electric pole has reached the maximum number of connections"
     }
+  },
+  "multi_operate": {
+    "no_electric_pole_connector": "Cannot multi-select in electric pole connection mode"
   }
 }

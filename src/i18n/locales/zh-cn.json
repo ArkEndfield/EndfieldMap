@@ -438,5 +438,8 @@
       "max_connections_source": "起始电线杆已达到最大连接数",
       "max_connections_target": "目标电线杆已达到最大连接数"
     }
+  },
+  "multi_operate": {
+    "no_electric_pole_connector": "无法在连接模式下进行批量选择"
   }
 }

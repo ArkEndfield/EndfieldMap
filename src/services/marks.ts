@@ -1,4 +1,5 @@
 import { watch } from 'vue';
+import { isInConnectionMode } from './electricPoleConnector';
 import { getAllPoints } from './points';
 import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
@@ -229,6 +230,13 @@ export const isUnmarked = (seq: number | string): boolean => {
 
 // 开始批量选择
 export const startMultiSelect = () => {
+  if (isInConnectionMode.value) {
+    pubsub.publish(EVENTS.SHOW_ALERT, {
+      content: 'multi_operate.no_electric_pole_connector',
+      useI18n: true,
+    });
+    return;
+  }
   isMultiSelecting.value = true;
 };
 

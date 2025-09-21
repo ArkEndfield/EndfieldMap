@@ -51,13 +51,13 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
 
   // 开始新的连接尝试时，先清除之前的失败状态
   if (showRangeAlert) {
-    pubsub.publish('connection_attempt_start');
+    pubsub.publish(EVENTS.CONNECTION_ATTEMPT_START);
   }
 
   // 检查是否为电线杆
   if (targetPole.entityDataIdKey !== 'electric_pole') {
     if (showRangeAlert) {
-      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'not_electric_pole' });
+      pubsub.publish(EVENTS.SHOW_ALERT, { content: 'electric_pole_connector.connection_failed.not_electric_pole', useI18n: true });
     }
     return { success: false };
   }
@@ -65,7 +65,7 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
   // 检查是否连接到自己
   if (targetPole.levelLogicId === currentConnectionPole.value.levelLogicId) {
     if (showRangeAlert) {
-      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'connect_to_self' });
+      pubsub.publish(EVENTS.SHOW_ALERT, { content: 'electric_pole_connector.connection_failed.connect_to_self', useI18n: true });
     }
     return { success: false };
   }
@@ -74,7 +74,7 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
   const connectionKey = getConnectionKey(currentConnectionPole.value, targetPole);
   if (connectionLines.value.has(connectionKey)) {
     if (showRangeAlert) {
-      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'already_connected' });
+      pubsub.publish(EVENTS.SHOW_ALERT, { content: 'electric_pole_connector.connection_failed.already_connected', useI18n: true });
     }
     return { success: false };
   }
@@ -85,14 +85,14 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
 
   if (currentConnections >= MAX_CONNECTIONS_PER_POLE) {
     if (showRangeAlert) {
-      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'max_connections_source' });
+      pubsub.publish(EVENTS.SHOW_ALERT, { content: 'electric_pole_connector.connection_failed.max_connections_source', useI18n: true });
     }
     return { success: false };
   }
 
   if (targetConnections >= MAX_CONNECTIONS_PER_POLE) {
     if (showRangeAlert) {
-      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'max_connections_target' });
+      pubsub.publish(EVENTS.SHOW_ALERT, { content: 'electric_pole_connector.connection_failed.max_connections_target', useI18n: true });
     }
     return { success: false };
   }
@@ -100,7 +100,7 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
   // 检查距离
   if (!checkConnectionDistance(currentConnectionPole.value, targetPole)) {
     if (showRangeAlert) {
-      pubsub.publish(EVENTS.CONNECTION_FAILED, { reason: 'range_exceeded' });
+      pubsub.publish(EVENTS.SHOW_ALERT, { content: 'electric_pole_connector.connection_failed.range_exceeded', useI18n: true });
     }
     return { success: false };
   }
@@ -131,7 +131,7 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
     pubsub.publish(EVENTS.POLE_CONNECTION_CHANGED, [startPoleId, endPoleId]);
 
     // 连接成功后，隐藏任何显示的失败弹窗
-    pubsub.publish('connection_success');
+    pubsub.publish(EVENTS.CONNECTION_SUCCESS);
 
     return { success: true };
   }

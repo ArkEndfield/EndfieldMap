@@ -412,5 +412,8 @@
       "max_connections_source": "連線元の電線杆が最大連線数に達しました",
       "max_connections_target": "連線先の電線杆が最大連線数に達しました"
     }
+  },
+  "multi_operate": {
+    "no_electric_pole_connector": "電線杆連線モードでは複数選択できません"
   }
 }

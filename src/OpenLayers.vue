@@ -89,11 +89,11 @@
     <TourAlert />
 
     <ZmdAlert
-      v-model:open="connectionRangeAlertVisible"
+      v-model:open="alertConfig.show"
       hide-cancel
     >
-      <div class="text-center" v-if="connectionFailureReason">
-        {{ $t('electric_pole_connector.connection_failed.' + connectionFailureReason) }}
+      <div class="text-center" v-if="alertConfig.content">
+        {{ alertConfig.useI18n ? t(alertConfig.content) : alertConfig.content }}
       </div>
     </ZmdAlert>
   </div>
@@ -131,8 +131,11 @@ import { removeConnection, startConnectionMode, getPoleConnections, MAX_CONNECTI
 import ZmdAlert from './components/ZmdAlert/ZmdAlert.vue';
 import { EVENTS, pubsub } from './services/pubsub';
 const menuVisible = ref(false);
-const connectionRangeAlertVisible = ref(false);
-const connectionFailureReason = ref<string>('');
+const alertConfig = ref({
+  show: false,
+  useI18n: false,
+  content: '',
+});
 const contextMenuRef = ref<ContextMenuRef>();
 // 引用DOM元素
 const mapControlsRef = ref();
@@ -243,23 +246,24 @@ onMounted(async () => {
   });
 
   // 监听连接尝试开始事件
-  pubsub.subscribe('connection_attempt_start', () => {
+  pubsub.subscribe(EVENTS.CONNECTION_ATTEMPT_START, () => {
     // 开始新的连接尝试时，隐藏之前的失败弹窗
-    connectionRangeAlertVisible.value = false;
-    connectionFailureReason.value = '';
+    alertConfig.value.show = false;
+    alertConfig.value.content = '';
   });
 
   // 监听连接失败事件
-  pubsub.subscribe(EVENTS.CONNECTION_FAILED, (data: { reason: string }) => {
-    connectionFailureReason.value = data.reason;
-    connectionRangeAlertVisible.value = true;
+  pubsub.subscribe(EVENTS.SHOW_ALERT, (data) => {
+    alertConfig.value.content = data.content;
+    alertConfig.value.useI18n = !!data.useI18n;
+    alertConfig.value.show = true;
   });
 
   // 监听连接成功事件
-  pubsub.subscribe('connection_success', () => {
+  pubsub.subscribe(EVENTS.CONNECTION_SUCCESS, () => {
     // 连接成功时立即隐藏失败弹窗，并清除失败状态
-    connectionRangeAlertVisible.value = false;
-    connectionFailureReason.value = '';
+    alertConfig.value.show = false;
+    alertConfig.value.content = '';
   });
 });
 
