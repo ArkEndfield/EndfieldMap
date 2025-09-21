@@ -7,6 +7,7 @@ import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
 import { ELECTRIC_POLE_RANGE_RADIUS } from './render/constants';
 import { EVENTS, pubsub } from './pubsub';
+import { entityShowStates } from '@/data/entity';
 
 // 连线状态管理
 const isConnectionMode = ref(false);
@@ -417,6 +418,17 @@ export const restoreConnectionsFromStorage = async (): Promise<void> => {
     console.log('从存储中恢复了电线杆连接，并发布了更新事件', Array.from(allPoleIds));
   }
 };
+
+// 订阅选择变更事件，以控制连线可见性
+pubsub.subscribe(EVENTS.SELECT_CHANGE, () => {
+  const electricPoleVisible = entityShowStates['electric_pole'];
+  for (const lineGroupId in lineGroups) {
+    const lineGroup = lineGroups[lineGroupId];
+    if (lineGroup) {
+      lineGroup.layer.setVisible(electricPoleVisible);
+    }
+  }
+});
 
 /**
  * 清空所有连线数据

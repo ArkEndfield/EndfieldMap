@@ -25,10 +25,7 @@ import {
   getAllConnections,
 } from '../electricPoleConnector';
 import { watch } from 'vue';
-
-/**
- * 重置所有实体类型的计数
- */
+import { entityShowStates } from '@/data/entity';
 export function resetEntityInfoCount() {
   Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key]?.entityInfo) entityInfo[key].entityInfo.count = 0;
@@ -291,8 +288,9 @@ pubsub.subscribe(EVENTS.POLE_CONNECTION_CHANGED, (poleIds) => {
 
 // 监听范围显示设置的变化
 watch(
-  () => settings.value.showElectricPoleRange,
-  (isVisible) => {
+  [() => settings.value.showElectricPoleRange, () => entityShowStates['electric_pole']],
+  ([showRange, showPole]) => {
+    const isVisible = showRange && showPole;
     console.log(`电线杆范围可见性设置更改为: ${isVisible}`);
     electricPoleRangeLayer.setVisible(isVisible);
 
