@@ -4,6 +4,11 @@ import type { Language } from '@/i18n';
 import type { PointData, CustomPointDataType } from './customPoints';
 import type { EntityShowStates } from './entity';
 
+export interface ElectricPoleConnection {
+  poles: (string | number)[];
+  lineGroupId: string;
+}
+
 export interface BackupData {
   version: string;
   db: {
@@ -12,6 +17,7 @@ export interface BackupData {
     customPoints: PointData[];
     customPointsData?: CustomPointDataType;
     entityShowStates: EntityShowStates;
+    electricPoleConnections?: ElectricPoleConnection[];
   };
   storage: {
     [LOCAL_STORAGE_KEY.MAP]: string;

@@ -367,11 +367,16 @@ export const restoreConnectionsFromStorage = async (): Promise<void> => {
 
   if (storedConnections && storedConnections.length > 0) {
     for (const connection of storedConnections) {
+      // 使用默认值处理缺失的属性（向后兼容）
+      const color = (connection as any).color || '#FFFF00';
+      const width = (connection as any).width || 2;
+      const dashed = (connection as any).dashed || false;
+
       const lineGroupId = connectPoints(
         connection.poles,
-        connection.color,
-        connection.width,
-        connection.dashed
+        color,
+        width,
+        dashed
       );
 
       if (lineGroupId) {

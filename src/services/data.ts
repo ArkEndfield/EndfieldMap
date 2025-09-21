@@ -13,7 +13,16 @@ import {
   restorePointsReplace,
 } from './customPoints';
 import { useI18n } from 'vue-i18n';
+import { nextTick } from 'vue';
 import { entityShowStates } from '@/data/entity';
+import {
+  clearAllConnections,
+  getAllConnections,
+  restoreConnectionsFromStorage,
+} from './electricPoleConnector';
+import { setItem } from '@/utils/indexedDBStorage';
+import { DATA_DB_KEY } from '@/constants/db_key';
+import { StorageType } from '@/utils/indexedDBStorage';
 
 // 检查数据格式是否合法
 export const isBackupDataValid = (data: BackupData) => {
@@ -59,6 +68,20 @@ export const coverData = async (data: BackupData | null) => {
       entityShowStates[key] = data.db.entityShowStates[key];
     });
   }
+  // 恢复电线杆连接
+  if (data?.db?.electricPoleConnections) {
+    await clearAllConnections();
+    await setItem(
+      DATA_DB_KEY.ELECTRIC_POLE_CONNECTIONS,
+      data.db.electricPoleConnections,
+      StorageType.PERMANENT
+    );
+    // 等待地图数据完全加载后再恢复连线
+    await nextTick();
+    setTimeout(async () => {
+      await restoreConnectionsFromStorage();
+    }, 100);
+  }
 };
 
 // 合并恢复数据
@@ -96,6 +119,19 @@ export const mergeData = async (data: BackupData | null) => {
       entityShowStates[key] = data.db.entityShowStates[key];
     });
   }
+  // 合并电线杆连接（这里暂时用覆盖逻辑，因为合并逻辑复杂且需求不明确）
+  if (data?.db?.electricPoleConnections) {
+    await setItem(
+      DATA_DB_KEY.ELECTRIC_POLE_CONNECTIONS,
+      data.db.electricPoleConnections,
+      StorageType.PERMANENT
+    );
+    // 等待地图数据完全加载后再恢复连线
+    await nextTick();
+    setTimeout(async () => {
+      await restoreConnectionsFromStorage();
+    }, 100);
+  }
 };
 
 // 备份数据
@@ -109,6 +145,7 @@ export const backupData = async () => {
       customPoints,
       customPointsData,
       entityShowStates: { ...entityShowStates },
+      electricPoleConnections: getAllConnections(),
     },
     storage: {
       [LOCAL_STORAGE_KEY.MAP]:
