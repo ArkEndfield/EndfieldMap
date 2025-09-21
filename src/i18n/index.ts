@@ -1,10 +1,10 @@
 import { createI18n } from 'vue-i18n';
 import { loadJSON } from '@/utils/jsonLoader';
-import zhCN from './locales/zh-cn.json';
-import rewardZhCN from './locales/item_i18n_cn.json';
-import characterZhCN from './locales/character_i18n_cn.json';
-import dungeonZhCN from './locales/dungeon_series_i18n_cn.json';
-import enemyZhCN from './locales/enemy_template_i18n_cn.json';
+import zhCN from '@/i18n/locales/zh-cn.json';
+import rewardZhCN from '@/i18n/locales/item_i18n_cn.json';
+import characterZhCN from '@/i18n/locales/character_i18n_cn.json';
+import dungeonZhCN from '@/i18n/locales/dungeon_series_i18n_cn.json';
+import enemyZhCN from '@/i18n/locales/enemy_template_i18n_cn.json';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { refreshMap } from '@/services/render';
 import { rafTimeout } from '@/utils/animationTimer';

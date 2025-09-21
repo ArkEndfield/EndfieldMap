@@ -8,7 +8,7 @@
 <script setup lang="ts"></script>
 
 <style lang="scss" scoped>
-@use '../../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 $dot-line-color: #626262;
 $dot-line-size: 0.5em;
 $dot-line-border-size: 0.1em;

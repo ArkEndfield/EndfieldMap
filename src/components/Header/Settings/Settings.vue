@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import ElectricPoleRange from './ElectricPoleRange.vue';
+import ElectricPoleRange from '@/components/Header/Settings/ElectricPoleRange.vue';
 
 const open = defineModel<boolean>('open', {
   required: true,

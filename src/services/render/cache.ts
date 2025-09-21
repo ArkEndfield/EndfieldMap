@@ -1,5 +1,5 @@
-import { CACHE_CLEANUP_TIMEOUT } from './constants';
-import { getStore } from './store';
+import { CACHE_CLEANUP_TIMEOUT } from '@/services/render/constants';
+import { getStore } from '@/services/render/store';
 
 /**
  * 设置样式缓存清理

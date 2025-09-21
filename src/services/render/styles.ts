@@ -17,16 +17,16 @@ import {
   FINISHED_OPACITY,
   partialSelectionStyle,
   selectionStyle,
-} from './constants';
+} from '@/services/render/constants';
 import {
   calculateOptimalScale,
   getColorForEntity,
   getImageSize,
 } from '@/utils/render';
-import { addStyleToCache, getStore } from './store';
+import { addStyleToCache, getStore } from '@/services/render/store';
 import { entityInfo } from '@/data/entity';
-import { setupCacheCleanup } from './cache';
-import { isMarked } from '../marks';
+import { setupCacheCleanup } from '@/services/render/cache';
+import { isMarked } from '@/services/marks';
 import {
   currentMarkFilter,
   isMultiSelecting,

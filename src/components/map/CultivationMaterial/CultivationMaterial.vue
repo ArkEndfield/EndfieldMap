@@ -247,7 +247,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 .cultivation-material-panel {
   --cultivation-material-panel-width: calc(#{zmd.$side-width} - 1.3em);
   width: var(--cultivation-material-panel-width);

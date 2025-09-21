@@ -4,8 +4,8 @@ import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
 import type { Coordinate } from 'ol/coordinate';
 import { generateUUID, crd2xyz, xyz2crd } from '@/utils/common';
-import { getCurrentMapId, closePopup, point, popupManager } from './map';
-import { filterAndUpdatePoints, getCurrentPoints } from './points';
+import { getCurrentMapId, closePopup, point, popupManager } from '@/services/map';
+import { filterAndUpdatePoints, getCurrentPoints } from '@/services/points';
 import {
   getItemMap,
   refreshMap,
@@ -14,11 +14,11 @@ import {
   updateCustomPointMarker,
   clearCustomPointsOnMap,
   populateFeaturesFromPoints,
-} from './render';
+} from '@/services/render';
 import { marks } from '@/data/marks';
 import { customPointTypes, entityInfo } from '@/data/entity';
-import { select } from './entity';
-import { removeConnectionsForPoint } from './electricPoleConnector';
+import { select } from '@/services/entity';
+import { removeConnectionsForPoint } from '@/services/electricPoleConnector';
 import type { CustomPointKey } from '@/types/customPoints';
 
 const DB_ALL_POINTS_KEY = DATA_DB_KEY.CUSTOM_POINTS;

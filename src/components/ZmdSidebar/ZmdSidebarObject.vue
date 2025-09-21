@@ -54,7 +54,7 @@ import { categoryInfo, entityInfo, entityShowStates } from '@/data/entity';
 import { useI18n } from 'vue-i18n';
 import { toggleSelect, isCustomEntity } from '@/services/entity';
 import type { EntityInfo } from '@/types/entity';
-import Popover from '../Popover.vue';
+import Popover from '@/components/Popover.vue';
 
 interface Props {
   hideCount?: boolean;

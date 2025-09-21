@@ -17,15 +17,16 @@ import {
   getEntityGroup,
   getStore,
   electricPoleRangeLayer,
-} from './store';
+} from '@/services/render/store';
 import settings from '@/data/settings';
-import { EVENTS, pubsub } from '../pubsub';
+import { EVENTS, pubsub } from '@/services/pubsub';
 import {
   getPoleMaxConnectionDistance,
   getAllConnections,
-} from '../electricPoleConnector';
+} from '@/services/electricPoleConnector';
 import { watch } from 'vue';
 import { entityShowStates } from '@/data/entity';
+import { popupManager, point } from '@/services/map';
 export function resetEntityInfoCount() {
   Object.keys(entityInfo).forEach(key => {
     if (entityInfo[key]?.entityInfo) entityInfo[key].entityInfo.count = 0;
@@ -225,41 +226,40 @@ export function removeCustomPointMarker(levelLogicId: string | number): void {
 /**
  * 更新自定义标点标记
  * @param levelLogicId 逻辑ID
- * @param point 点数据
+ * @param pointData 点数据
  */
 export function updateCustomPointMarker(
   levelLogicId: string | number,
-  point: PointData
+  pointData: PointData
 ): void {
   const idAsString = levelLogicId.toString();
   const currentFeature = getItemMap()[idAsString];
 
   if (
     currentFeature &&
-    currentFeature.get('payload')?.entityDataIdKey === point.entityDataIdKey
+    currentFeature.get('payload')?.entityDataIdKey === pointData.entityDataIdKey
   ) {
     currentFeature.set('payload', point);
     console.log(`Updated payload for feature ID: ${idAsString}`);
     currentFeature.changed();
 
-    const statePoint = require('../map/state').point;
-    if (statePoint.value?.levelLogicId?.toString() === idAsString) {
-      statePoint.value = point;
-      const popupMgr = require('../map/state').popupManager.value;
+    if (point.value?.levelLogicId?.toString() === idAsString) {
+      point.value = pointData;
+      const popupMgr = popupManager.value;
       if (popupMgr?.isPopupVisible.value) {
-        popupMgr.setCurrentPosition(xyz2crd(point.position));
+        popupMgr.setCurrentPosition(xyz2crd(pointData.position));
         popupMgr.adjustPopupPosition();
       }
     }
   } else {
     removeCustomPointMarker(idAsString);
-    createCustomPointMarker(point);
+    createCustomPointMarker(pointData);
     console.log(`Recreated feature ID: ${idAsString}`);
   }
 
   // 如果是电线杆，触发一次范围更新检查
-  if (point.entityDataIdKey === 'electric_pole') {
-    updateElectricPoleRange(point);
+  if (pointData.entityDataIdKey === 'electric_pole') {
+    updateElectricPoleRange(pointData);
   }
 }
 

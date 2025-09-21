@@ -1,10 +1,10 @@
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
-import { entityLayerTimerId, setEntityLayerTimerId } from './state';
-import { getEntityClusterLayers, refreshMap } from '../render';
-import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
-import { MAX_RETRIES } from './constants';
 import { Map } from 'ol';
+import { entityLayerTimerId, setEntityLayerTimerId } from '@/services/map/state';
+import { getEntityClusterLayers, refreshMap } from '@/services/render';
+import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
+import { MAX_RETRIES } from '@/services/map/constants';
 
 /**
  * 类型保护函数：判断是否为 VectorSource

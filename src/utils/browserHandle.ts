@@ -1,4 +1,4 @@
-import { getBrowserInfo } from './deviceDetection';
+import { getBrowserInfo } from '@/utils/deviceDetection';
 
 export function browserTip() {
   // 隐藏加载界面

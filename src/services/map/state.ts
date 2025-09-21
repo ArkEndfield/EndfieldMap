@@ -3,12 +3,12 @@ import { Map } from 'ol';
 import Overlay from 'ol/Overlay';
 import { Select } from 'ol/interaction';
 import { click } from 'ol/events/condition';
+import type { Coordinate } from 'ol/coordinate';
 import type { PointData } from '@/types/points';
 import type { RenderOptimizer } from '@/utils/renderOptimizer';
-import type { PopupManager } from '../PopupManager';
-import { MAP_ID_KEY, ZOOM_KEY } from './constants';
+import type { PopupManager } from '@/services/PopupManager';
+import { MAP_ID_KEY, ZOOM_KEY } from '@/services/map/constants';
 import { isMultiSelecting } from '@/data/marks';
-import type { Coordinate } from 'ol/coordinate';
 
 // 核心状态
 export const map = shallowRef<Map | null>(null);

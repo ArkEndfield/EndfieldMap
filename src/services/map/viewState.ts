@@ -1,6 +1,6 @@
 import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
-import { MAP_VIEW_STATE_KEY_PREFIX } from './constants';
-import { map } from './state';
+import { MAP_VIEW_STATE_KEY_PREFIX } from '@/services/map/constants';
+import { map } from '@/services/map/state';
 import { MapViewState } from '@/types/map';
 
 /**

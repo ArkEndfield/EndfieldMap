@@ -80,7 +80,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import ZmdSidebarTitleBigTitle from './ZmdSidebarTitleBigTitle.vue';
+import ZmdSidebarTitleBigTitle from '@/components/ZmdSidebar/header/ZmdSidebarTitleBigTitle.vue';
 import { motion } from 'motion-v';
 const { t } = useI18n();
 const props = withDefaults(

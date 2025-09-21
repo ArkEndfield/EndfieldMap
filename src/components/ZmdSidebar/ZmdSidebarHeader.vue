@@ -23,11 +23,11 @@
 
 <script setup lang="ts">
 import { motion } from 'motion-v';
-import ZmdSideBarDotLine from './header/ZmdSidebarDotLine.vue';
 
-import ZmdSidebarLines from './header/ZmdSidebarLines.vue';
-import ZmdSidebarTitle from './header/ZmdSidebarTitle.vue';
-import ZmdSidebarLocation from './ZmdSidebarLocation.vue';
+import ZmdSideBarDotLine from '@/components/ZmdSidebar/header/ZmdSidebarDotLine.vue';
+import ZmdSidebarLines from '@/components/ZmdSidebar/header/ZmdSidebarLines.vue';
+import ZmdSidebarTitle from '@/components/ZmdSidebar/header/ZmdSidebarTitle.vue';
+import ZmdSidebarLocation from '@/components/ZmdSidebar/ZmdSidebarLocation.vue';
 
 const props = withDefaults(
   defineProps<{

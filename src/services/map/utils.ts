@@ -1,4 +1,4 @@
-import { cacheMapId, map } from './state';
+import { cacheMapId, map } from '@/services/map/state';
 
 export function getZoom(): number {
   const currentMap = map.value;

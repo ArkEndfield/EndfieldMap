@@ -4,7 +4,7 @@ import type { Settings } from '@/types/settings';
 import { debounce } from '@/utils/common';
 import { getItem, setItem } from '@/utils/indexedDBStorage';
 import { watchEffect } from 'vue';
-import { pubsub, EVENTS } from './pubsub';
+import { pubsub, EVENTS } from '@/services/pubsub';
 
 const DB_KEY = DATA_DB_KEY.SETTINGS;
 

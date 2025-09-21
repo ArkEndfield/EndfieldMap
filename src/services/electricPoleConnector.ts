@@ -1,11 +1,11 @@
 import { ref, computed } from 'vue';
 import type { PointData } from '@/types/points';
-import { connectPoints, removeLineGroup, lineGroups } from './lineConnector';
-import { getItemMap } from './render';
+import { connectPoints, removeLineGroup, lineGroups } from '@/services/lineConnector';
+import { getItemMap } from '@/services/render';
 import { getItem, setItem } from '@/utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
-import { EVENTS, pubsub } from './pubsub';
+import { EVENTS, pubsub } from '@/services/pubsub';
 import { entityShowStates } from '@/data/entity';
 
 // 连线状态管理

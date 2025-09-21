@@ -1,6 +1,6 @@
 import { debounce } from '@/utils/common';
 import { loadTextPoints } from '@/data/locations';
-import { refreshMap, updateClusterDistance } from '../render';
+import { refreshMap, updateClusterDistance } from '@/services/render';
 import {
   map,
   popupManager,
@@ -8,10 +8,10 @@ import {
   mapContextMenuListeners,
   setCurrentZoomLevel,
   setMapZooming,
-} from './state';
-import { saveMapViewState } from './viewState';
-import { getCurrentMapId, getZoom } from './utils';
-import { pubsub, EVENTS } from '../pubsub';
+} from '@/services/map/state';
+import { saveMapViewState } from '@/services/map/viewState';
+import { getCurrentMapId, getZoom } from '@/services/map/utils';
+import { pubsub, EVENTS } from '@/services/pubsub';
 import type { PointData } from '@/types/points';
 
 /**

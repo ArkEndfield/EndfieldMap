@@ -5,19 +5,18 @@ import { defaults as interactionDefaults } from 'ol/interaction';
 import Overlay from 'ol/Overlay';
 import { RenderOptimizer } from '@/utils/renderOptimizer';
 import { loadTextPoints, areaNameLayer } from '@/data/locations';
-import { initializeEntityLayers } from '../entity';
-import { updatePoints, getCurrentPoints } from '../points';
-import { removeAllLines, setMapForLines } from '../lineConnector';
-import { setMapForIndicator } from '../selectionIndicator';
+import { initializeEntityLayers } from '@/services/entity';
+import { updatePoints, getCurrentPoints } from '@/services/points';
+import { removeAllLines, setMapForLines } from '@/services/lineConnector';
+import { setMapForIndicator } from '@/services/selectionIndicator';
 import {
   refreshMap,
   populateFeaturesFromPoints,
   updateClusterDistance,
-} from '../render';
-import { electricPoleRangeLayer } from '../render/store';
+} from '@/services/render';
+import { electricPoleRangeLayer } from '@/services/render/store';
 import settings from '@/data/settings';
-import { restoreConnectionsFromStorage } from '../electricPoleConnector';
-import { watch } from 'vue';
+import { restoreConnectionsFromStorage } from '@/services/electricPoleConnector';
 
 import {
   map,
@@ -30,27 +29,27 @@ import {
   setOverlay,
   setCurrentMapId,
   setEntityLayerTimerId,
-} from './state';
-import { restoreMapViewState, saveMapViewState } from './viewState';
-import { simpleProjection, tileLoad } from './projection';
-import { DEFAULT_MAP_CENTERS, DEFAULT_ZOOM } from './constants';
-import { createZoomControl } from './controls';
+} from '@/services/map/state';
+import { restoreMapViewState, saveMapViewState } from '@/services/map/viewState';
+import { simpleProjection, tileLoad } from '@/services/map/projection';
+import { DEFAULT_MAP_CENTERS, DEFAULT_ZOOM } from '@/services/map/constants';
+import { createZoomControl } from '@/services/map/controls';
 import {
   pointSelectHandler,
   mapClickHandler,
-} from './interactions';
+} from '@/services/map/interactions';
 import {
   registerMapEventListeners,
   unregisterMapEventListeners,
-} from './events';
-import { initPopupManager, closePopup as closePopupInternal } from './popup';
+} from '@/services/map/events';
+import { initPopupManager, closePopup as closePopupInternal } from '@/services/map/popup';
 import {
   addEntityLayersToMap,
   isVectorSource,
   isClusterSource,
-} from './layers';
+} from '@/services/map/layers';
 import { cancelRafTimeout } from '@/utils/animationTimer';
-import { getCurrentMapId } from './utils';
+import { getCurrentMapId } from '@/services/map/utils';
 
 /**
  * 创建地图瓦片图层的源

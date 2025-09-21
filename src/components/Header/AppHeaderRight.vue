@@ -220,7 +220,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@use '../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 .with-clip-path {
   $height: 0.3rem;
   $clip: polygon(0% 0%, 100% 0%, 100% $height, $height 100%);

@@ -1,17 +1,17 @@
 import { BackupData } from '@/types/data';
-import { coverMarks, getMarks, isMarkDataValid, mergeMarks } from './marks';
+import { coverMarks, getMarks, isMarkDataValid, mergeMarks } from '@/services/marks';
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
 import { Language, setLanguage } from '@/i18n';
-import { selectMap } from './map';
+import { selectMap } from '@/services/map';
 import settings from '@/data/settings';
-import { mergeSettings } from './settings';
+import { mergeSettings } from '@/services/settings';
 import {
   getBackupData,
   restoreBackupData,
   restoreBackupDataReplace,
   restorePointsMerge,
   restorePointsReplace,
-} from './customPoints';
+} from '@/services/customPoints';
 import { useI18n } from 'vue-i18n';
 import { nextTick } from 'vue';
 import { entityShowStates } from '@/data/entity';
@@ -19,7 +19,7 @@ import {
   clearAllConnections,
   getAllConnections,
   restoreConnectionsFromStorage,
-} from './electricPoleConnector';
+} from '@/services/electricPoleConnector';
 import { setItem } from '@/utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';

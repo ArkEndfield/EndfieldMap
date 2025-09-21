@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { formatDate, formatRelativeTime } from '../../utils/dateFormatter';
+import { formatDate, formatRelativeTime } from '@/utils/dateFormatter';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const openAlert = ref(false);

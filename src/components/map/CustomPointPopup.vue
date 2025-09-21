@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import CustomPointEditor from './CustomPointEditor.vue';
+import CustomPointEditor from '@/components/map/CustomPointEditor.vue';
 import {
   updateCustomPoint,
   getCustomPointData,

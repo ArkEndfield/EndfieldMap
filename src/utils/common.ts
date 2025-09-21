@@ -1,6 +1,6 @@
-import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
-import { cancelRafTimeout, rafTimeout } from './animationTimer';
 import { Coordinate } from 'ol/coordinate';
+import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
+import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 
 export const xyz2crd = (pos: { x: number; y: number; z: number }) => {
   const coords =

@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SettingsItem from './SettingsItem.vue';
+import SettingsItem from '@/components/Header/Settings/SettingsItem.vue';
 import ZmdSwitch from '@/components/ZmdSwitch.vue';
 import settings from '@/data/settings';
 import { refreshMap } from '@/services/render';

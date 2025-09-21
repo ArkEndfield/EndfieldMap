@@ -1,4 +1,7 @@
 import { SelectEvent } from 'ol/interaction/Select';
+import type { Coordinate } from 'ol/coordinate';
+import { MapBrowserEvent } from 'ol';
+
 import type { PointData } from '@/types/points';
 import { xyz2crd } from '@/utils/common';
 import {
@@ -6,16 +9,14 @@ import {
   popupManager,
   setCurrentPoint,
   mapContextMenuListeners,
-} from './state';
+} from '@/services/map/state';
 import {
   showSelectionIndicator,
   clearSelectionIndicator,
-} from '../selectionIndicator';
-import { toggleMultiSelect } from '../marks';
+} from '@/services/selectionIndicator';
+import { toggleMultiSelect } from '@/services/marks';
 import { isMultiSelecting } from '@/data/marks';
-import { isInConnectionMode, connectToPole } from '../electricPoleConnector';
-import type { Coordinate } from 'ol/coordinate';
-import { MapBrowserEvent } from 'ol';
+import { isInConnectionMode, connectToPole } from '@/services/electricPoleConnector';
 
 /**
  * 点位选择处理函数

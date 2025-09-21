@@ -43,8 +43,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import ZmdSidebarLocation from './ZmdSidebarLocation.vue';
 import { motion } from 'motion-v';
+import ZmdSidebarLocation from '@/components/ZmdSidebar/ZmdSidebarLocation.vue';
 
 interface Props {
   iconColor?: string;

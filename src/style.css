@@ -17,7 +17,7 @@ body {
 #app {
   height: 100%;
   width: 100%;
-  overflow: auto; /* 允许滚动 */
+  overflow: auto;
 }
 
 #map {

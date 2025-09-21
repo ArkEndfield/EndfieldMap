@@ -1,12 +1,12 @@
 import { ref, Ref, watch } from 'vue';
+import { Feature } from 'ol';
+import { Point } from 'ol/geom';
 import Map from 'ol/Map';
 import Overlay from 'ol/Overlay';
 import type { PointData } from '@/types/points';
 import { xyz2crd } from '@/utils/common';
 import { rafTimeout } from '@/utils/animationTimer';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
-import { MarkerManager } from './markerManager';
+import { MarkerManager } from '@/services/markerManager';
 import settings from '@/data/settings';
 
 export class PopupManager {

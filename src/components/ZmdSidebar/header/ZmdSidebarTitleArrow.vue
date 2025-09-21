@@ -66,7 +66,7 @@ const toggleOpen = () => {
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 $color: #424241;
 $color1: #3a3a38;
 $border-color: #3a3a38;

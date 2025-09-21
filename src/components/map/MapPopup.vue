@@ -80,17 +80,17 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue';
+import { inject, computed } from 'vue';
+import { motion, useAnimate } from 'motion-v';
+import { useI18n } from 'vue-i18n';
+
 import { cn } from '@/utils/tailwind';
 import { PopupManager } from '@/services/PopupManager';
 import { marks } from '@/data/marks';
 import { type PointData } from '@/types/points';
-import { motion, useAnimate } from 'motion-v';
-import { useI18n } from 'vue-i18n';
-import GuideInfo from './Popup/GuideInfo.vue';
-import RewardInfo from './Popup/RewardInfo.vue';
+import GuideInfo from '@/components/map/Popup/GuideInfo.vue';
+import RewardInfo from '@/components/map/Popup/RewardInfo.vue';
 import { isCustomEntity } from '@/services/entity';
-import { computed } from 'vue';
 
 const props = defineProps<{
   point: PointData | null;

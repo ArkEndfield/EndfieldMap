@@ -5,7 +5,7 @@
 
 import getRequestAnimationFrame, {
   cancelRequestAnimationFrame,
-} from './getRequestAnimationFrame';
+} from '@/utils/getRequestAnimationFrame';
 
 /**
  * 封装的requestAnimationFrame版本的setTimeout

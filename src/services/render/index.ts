@@ -4,7 +4,7 @@
  */
 
 // 重新导出常量
-export * from './constants';
+export * from '@/services/render/constants';
 
 // 重新导出核心功能
 export {
@@ -30,7 +30,7 @@ export {
   clearAllData,
   isCluster,
   setIsCluster,
-} from './store';
+} from '@/services/render/store';
 
 // 重新导出样式相关功能
 export {
@@ -46,10 +46,10 @@ export {
   createClusterStyleFunction,
   applyOpacityToStyles,
   applyOpacityToFillAndStroke,
-} from './styles';
+} from '@/services/render/styles';
 
 // 重新导出缓存相关功能
-export { setupCacheCleanup } from './cache';
+export { setupCacheCleanup } from '@/services/render/cache';
 
 // 重新导出聚合相关功能
 export {
@@ -57,7 +57,7 @@ export {
   updateClusterDistance,
   refreshCluster,
   refreshMap,
-} from './cluster';
+} from '@/services/render/cluster';
 
 // 重新导出标记相关功能
 export {
@@ -69,4 +69,4 @@ export {
   resetEntityInfoCount,
   updateEntityInfoCount,
   populateFeaturesFromPoints,
-} from './markers';
+} from '@/services/render/markers';

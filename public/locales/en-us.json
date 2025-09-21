@@ -44,6 +44,7 @@
   "weapon": "Weapon",
   "add": "Add",
   "fold": "Fold",
+  "unfold": "Unfold",
   "remove": "Remove",
   "copy": "Copy",
   "cut": "Cut",

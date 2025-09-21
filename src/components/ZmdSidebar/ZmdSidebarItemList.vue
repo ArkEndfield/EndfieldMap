@@ -49,15 +49,16 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import { categoryInfo, isSelectAllByCategory } from '@/data/entity';
 import { getCurrentPoints } from '@/services/points';
 import { marks } from '@/data/marks';
-import ZmdSidebarItem from './ZmdSidebarItem.vue';
-import ZmdSidebarObject from './ZmdSidebarObject.vue';
+import ZmdSidebarItem from '@/components/ZmdSidebar/ZmdSidebarItem.vue';
+import ZmdSidebarObject from '@/components/ZmdSidebar/ZmdSidebarObject.vue';
 import { selectAllByCategory, unSelectByCategory } from '@/services/entity';
 import { getCurrentMapId } from '@/services/map';
 import type { EntityInfo } from '@/types/entity';
-import { useI18n } from 'vue-i18n';
 import { pubsub, EVENTS } from '@/services/pubsub';
 
 const props = withDefaults(

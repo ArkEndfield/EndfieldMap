@@ -1,4 +1,5 @@
-import { clearExpiredCache } from './indexedDBStorage';
+import { clearExpiredCache } from '@/utils/indexedDBStorage';
+import { rafInterval, RafIntervalResult } from '@/utils/animationTimer';
 
 /**
  * 初始化存储系统
@@ -18,7 +19,6 @@ export async function initStorageSystem() {
  * 定期清理过期缓存
  * @param interval 清理间隔（毫秒），默认1小时
  */
-import { rafInterval, RafIntervalResult } from './animationTimer';
 
 export function setupCacheCleanupScheduler(interval: number = 60 * 60 * 1000) {
   // 设置基于requestAnimationFrame的定时器，定期清理过期缓存

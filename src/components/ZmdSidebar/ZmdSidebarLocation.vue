@@ -40,7 +40,7 @@ const markerStyle = computed(() => ({
 </script>
 
 <style lang="scss" scoped>
-@use '../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 .zmd-sidebar-location {
   &-container {
     display: block;

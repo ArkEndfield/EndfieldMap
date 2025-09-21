@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, provide, ref } from 'vue';
+import { Map } from 'ol';
 import {
   cacheMapId,
   createMap,
@@ -43,14 +44,13 @@ import {
   point,
   zoomLevel,
   popupManager,
-} from './services/map';
-import { Map } from 'ol';
-import MapControls from './components/map/MapControls.vue';
-import MapPopup, { MapPopupRef } from './components/map/MapPopup.vue';
-import MapContextMenu from './components/map/MapContextMenu.vue';
+} from '@/services/map';
+import MapControls from '@/components/map/MapControls.vue';
+import MapPopup, { MapPopupRef } from '@/components/map/MapPopup.vue';
+import MapContextMenu from '@/components/map/MapContextMenu.vue';
 import { useI18n } from 'vue-i18n';
-import ZmdAlert from './components/ZmdAlert/ZmdAlert.vue';
-import { EVENTS, pubsub } from './services/pubsub';
+import ZmdAlert from '@/components/ZmdAlert/ZmdAlert.vue';
+import { EVENTS, pubsub } from '@/services/pubsub';
 
 const alertConfig = ref({
   show: false,

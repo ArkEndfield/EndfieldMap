@@ -1,11 +1,11 @@
 import { Projection } from 'ol/proj';
-import { MAX_POOLED_IMAGES } from './constants';
+import { MAX_POOLED_IMAGES } from '@/services/map/constants';
 import {
   imagePool,
   addImageToPool,
   removeImageFromPool,
   getImageFromPool,
-} from './state';
+} from '@/services/map/state';
 
 // 创建简单投影
 export const simpleProjection = new Projection({

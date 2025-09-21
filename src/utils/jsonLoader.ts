@@ -1,6 +1,6 @@
 import { ref } from 'vue';
-import { clearStore, getItem, setItem, StorageType } from './indexedDBStorage';
-import { rafTimeout } from './animationTimer';
+import { clearStore, getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
+import { rafTimeout } from '@/utils/animationTimer';
 
 // 定义加载状态类型
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';

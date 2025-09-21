@@ -1,5 +1,5 @@
 import { Map } from 'ol';
-import { cancelRafTimeout, rafTimeout } from './animationTimer';
+import { cancelRafTimeout, rafTimeout } from '@/utils/animationTimer';
 
 // 渲染状态类型
 type RenderState = {

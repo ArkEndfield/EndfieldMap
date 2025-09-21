@@ -1,21 +1,21 @@
 import { createApp } from 'vue';
-import './style.css';
-import App from './App.vue';
+import '@/style.css';
+import App from '@/App.vue';
 
 import VueViewer from 'v-viewer';
 import 'viewerjs/dist/viewer.css'; // 确保导入CSS
-import './types/global.d';
-import { checkAppReady } from './utils/check';
-import { disableContextMenu, disableZoom } from './utils/device';
-import { browserSupportsRequiredFeatures } from './utils/deviceDetection';
-import i18n from './i18n';
+import '@/types/global.d';
+import { checkAppReady } from '@/utils/check';
+import { disableContextMenu, disableZoom } from '@/utils/device';
+import { browserSupportsRequiredFeatures } from '@/utils/deviceDetection';
+import i18n from '@/i18n';
 import {
   initStorageSystem,
   setupCacheCleanupScheduler,
-} from './utils/storageInit';
-import { initDB } from './utils/indexedDBStorage';
-import { loadPoints } from './services/points';
-import { browserTip, loadErrorTip } from './utils/browserHandle';
+} from '@/utils/storageInit';
+import { initDB } from '@/utils/indexedDBStorage';
+import { loadPoints } from '@/services/points';
+import { browserTip, loadErrorTip } from '@/utils/browserHandle';
 
 // 应用启动序列 - 确保顺序执行所有初始化步骤
 async function initializeApp() {

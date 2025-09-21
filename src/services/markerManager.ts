@@ -1,8 +1,8 @@
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
-import { getFeatures } from './render';
+import { getFeatures } from '@/services/render';
 import { entityInfo as entityInfoData } from '@/data/entity';
-import { map } from './map';
+import { map } from '@/services/map';
 import { xyz2crd } from '@/utils/common';
 
 export class MarkerManager {

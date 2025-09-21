@@ -1,12 +1,12 @@
-import { xyz2crd } from '../utils/common';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Style, Text, Fill, Stroke } from 'ol/style';
 
-import locations from '../assets/result.json';
+import locations from '@/assets/result.json';
 import { getLanguage } from '@/i18n';
+import { xyz2crd } from '@/utils/common';
 
 const vectorSource = new VectorSource();
 

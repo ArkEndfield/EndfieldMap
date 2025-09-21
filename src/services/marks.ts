@@ -1,7 +1,7 @@
 import { watch } from 'vue';
-import { isInConnectionMode } from './electricPoleConnector';
-import { getAllPoints } from './points';
-import { getItem, setItem, StorageType } from '../utils/indexedDBStorage';
+import { isInConnectionMode } from '@/services/electricPoleConnector';
+import { getAllPoints } from '@/services/points';
+import { getItem, setItem, StorageType } from '@/utils/indexedDBStorage';
 import { DATA_DB_KEY } from '@/constants/db_key';
 import { MarkFilterType, MarkInfo } from '@/types/marks';
 import {
@@ -10,8 +10,8 @@ import {
   marks,
   multiSelectMarks,
 } from '@/data/marks';
-import { getCustomPoints } from './customPoints';
-import { pubsub, EVENTS } from './pubsub';
+import { getCustomPoints } from '@/services/customPoints';
+import { pubsub, EVENTS } from '@/services/pubsub';
 
 const STORAGE_KEY = DATA_DB_KEY.MARKS;
 

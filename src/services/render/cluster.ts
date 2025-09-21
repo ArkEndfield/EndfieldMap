@@ -5,7 +5,7 @@ import Cluster from 'ol/source/Cluster';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
 import { customPointTypes, entityInfo, entityShowStates } from '@/data/entity';
-import { isCustomPointType } from '../customPoints';
+import { isCustomPointType } from '@/services/customPoints';
 import {
   addEntityClusterLayer,
   addEntityClusterSource,
@@ -15,9 +15,9 @@ import {
   getStore,
   isCluster,
   setIsCluster,
-} from './store';
-import { createClusterStyleFunction } from './styles';
-import { shouldShowByMarkStatus } from '../marks';
+} from '@/services/render/store';
+import { createClusterStyleFunction } from '@/services/render/styles';
+import { shouldShowByMarkStatus } from '@/services/marks';
 import { currentMarkFilter } from '@/data/marks';
 import settings from '@/data/settings';
 

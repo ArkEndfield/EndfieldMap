@@ -7,7 +7,7 @@ import Cluster from 'ol/source/Cluster';
 import { LayerStore, StyleCacheEntry } from '@/types/render';
 import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 import settings from '@/data/settings';
-import { ELECTRIC_POLE_RANGE_COLOR } from './constants';
+import { ELECTRIC_POLE_RANGE_COLOR } from '@/services/render/constants';
 
 /**
  * 全局状态 - 是否聚合

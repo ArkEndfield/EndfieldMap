@@ -58,7 +58,7 @@ const props = withDefaults(
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 
 .zmd-sidebar-lines {
   width: 8.4em;

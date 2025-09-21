@@ -98,21 +98,23 @@
 </template>
 
 <script setup lang="ts">
-import ZmdSidebarOperateButton from './ZmdSidebarOperateButton.vue';
-import ZmdSidebarDeleteIcon from './icons/ZmdSidebarDeleteIcon.vue';
-import ZmdSidebarCheckboxCheckedIcon from './icons/ZmdSidebarCheckboxCheckedIcon.vue';
-import ZmdSidebarFilterToggle from './ZmdSidebarFilterToggle.vue';
+import { watch, computed } from 'vue';
+import { motion } from 'motion-v';
+import { useI18n } from 'vue-i18n';
+
+import ZmdSidebarOperateButton from '@/components/ZmdSidebar/ZmdSidebarOperateButton.vue';
+import ZmdSidebarDeleteIcon from '@/components/ZmdSidebar/icons/ZmdSidebarDeleteIcon.vue';
+import ZmdSidebarCheckboxCheckedIcon from '@/components/ZmdSidebar/icons/ZmdSidebarCheckboxCheckedIcon.vue';
+import ZmdSidebarFilterToggle from '@/components/ZmdSidebar/ZmdSidebarFilterToggle.vue';
 import { showCultivationMaterial } from '@/data/entity';
 import { clear } from '@/services/entity';
 import { currentMarkFilter, isMultiSelecting } from '@/data/marks';
 import { setMarkFilter, toggleMultiSelectState } from '@/services/marks';
 import settings from '@/data/settings';
 import { electricPoleRangeLayer } from '@/services/render/store';
-import { motion } from 'motion-v';
-import { watch, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { getCurrentPoints } from '@/services/points';
 import { populateFeaturesFromPoints } from '@/services/render/markers';
+
 const { t } = useI18n();
 const props = withDefaults(
   defineProps<{

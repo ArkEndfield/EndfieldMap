@@ -1,4 +1,4 @@
-import { NodeType } from './guides';
+import { NodeType } from '@/types/guides';
 
 export interface PointData {
   levelLogicId: number | string;

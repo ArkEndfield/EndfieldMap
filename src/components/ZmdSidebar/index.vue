@@ -52,17 +52,17 @@
   ></div>
 </template>
 <script setup lang="ts">
-import ZmdSidebarHeader from './ZmdSidebarHeader.vue';
-import ZmdSidebarFilter from './ZmdSidebarFilter.vue';
-import ZmdSidebarItemList from './ZmdSidebarItemList.vue';
-import ZmdSidebarTitleArrow from './header/ZmdSidebarTitleArrow.vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { motion } from 'motion-v';
+
+import ZmdSidebarHeader from '@/components/ZmdSidebar/ZmdSidebarHeader.vue';
+import ZmdSidebarFilter from '@/components/ZmdSidebar/ZmdSidebarFilter.vue';
+import ZmdSidebarItemList from '@/components/ZmdSidebar/ZmdSidebarItemList.vue';
+import ZmdSidebarTitleArrow from '@/components/ZmdSidebar/header/ZmdSidebarTitleArrow.vue';
 import settings from '@/data/settings';
-import { onMounted } from 'vue';
-import { onUnmounted } from 'vue';
 import { debounce } from '@/utils/common';
-import { ref } from 'vue';
 import { isMobileDevice } from '@/utils/deviceDetection';
+
 const isPC = ref(isMobileDevice() === false);
 const open = () => {
   settings.value.sidebarExpanded = true;
@@ -86,7 +86,7 @@ const closeSidebar = () => {
 };
 </script>
 <style lang="scss" scoped>
-@use '../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 
 .zmd-sidebar-map-icon {
   position: fixed;

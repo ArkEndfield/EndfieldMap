@@ -21,7 +21,7 @@ import {
 } from '@/services/render';
 import type { EntityCategories } from '@/types/entity';
 import { currentMarkFilter } from '@/data/marks';
-import { pubsub, EVENTS } from './pubsub';
+import { pubsub, EVENTS } from '@/services/pubsub';
 
 // 获取entity数据
 export const getEntityDataByKey = (key: string) => {

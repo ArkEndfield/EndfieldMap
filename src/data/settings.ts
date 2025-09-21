@@ -7,6 +7,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sidebarExpanded: true,
   adjustPopupPosition: true,
   showElectricPoleRange: false,
+  swiperExpanded: true,
 };
 
 const settings = ref<Settings>(DEFAULT_SETTINGS);

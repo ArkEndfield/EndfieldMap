@@ -21,7 +21,7 @@
 <script setup lang="ts"></script>
 
 <style lang="scss" scoped>
-@use '../../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 $square-size: 0.13em;
 $square-color: #f9f95759;
 $square-color2: zmd.$side-bg-color-start;

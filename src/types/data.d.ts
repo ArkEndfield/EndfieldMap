@@ -1,8 +1,8 @@
 import { LOCAL_STORAGE_KEY } from '@/constants/db_key';
-import type { MarkInfo } from './marks';
+import type { MarkInfo } from '@/types/marks';
 import type { Language } from '@/i18n';
-import type { PointData, CustomPointDataType } from './customPoints';
-import type { EntityShowStates } from './entity';
+import type { EntityShowStates } from '@/types/entity';
+import type { CustomPointDataType, PointData } from '@/types/points';
 
 export interface ElectricPoleConnection {
   poles: (string | number)[];

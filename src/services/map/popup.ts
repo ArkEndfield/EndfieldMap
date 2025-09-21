@@ -1,5 +1,5 @@
 import { Map } from 'ol';
-import { PopupManager } from '../PopupManager';
+import { PopupManager } from '@/services/PopupManager';
 import {
   map,
   overlay as overlayInstance,
@@ -9,8 +9,8 @@ import {
   setPopupManager,
   setCurrentPoint,
   setMapZooming,
-} from './state';
-import { clearSelectionIndicator } from '../selectionIndicator';
+} from '@/services/map/state';
+import { clearSelectionIndicator } from '@/services/selectionIndicator';
 
 /**
  * 初始化弹窗管理器

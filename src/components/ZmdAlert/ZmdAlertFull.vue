@@ -110,12 +110,14 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import ZmdAlertTickIcon from './icons/ZmdAlertTickIcon.vue';
-import ZmdAlertCloseIcon from './icons/ZmdAlertCloseIcon.vue';
-import alert_banner_bg_left from '../../assets/images/bg/alert_banner_bg_left.png';
-import alert_banner_bg_right from '../../assets/images/bg/alert_banner_bg_right.png';
 import { AnimatePresence, motion } from 'motion-v';
 import { useI18n } from 'vue-i18n';
+
+import ZmdAlertTickIcon from '@/components/ZmdAlert/icons/ZmdAlertTickIcon.vue';
+import ZmdAlertCloseIcon from '@/components/ZmdAlert/icons/ZmdAlertCloseIcon.vue';
+import alert_banner_bg_left from '@/assets/images/bg/alert_banner_bg_left.png';
+import alert_banner_bg_right from '@/assets/images/bg/alert_banner_bg_right.png';
+
 const { t } = useI18n();
 export type ZmdAlertProps = {
   open: boolean;
@@ -253,7 +255,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-@use '../../styles/zmd.scss' as zmd;
+@use '@/styles/zmd.scss' as zmd;
 $primary-color: #2a2728;
 $primary-text-color: #fefcfc;
 $primary-hover-color: #2a2728b5;
