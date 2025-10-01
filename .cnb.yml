@@ -54,6 +54,7 @@ main:
         - name: 上传附件
           image: cnbcool/attachments:latest
           settings:
+            tag: ${VERSION}
             attachments:
               - dist.zip
   web_trigger_deploy:
@@ -112,6 +113,7 @@ main:
         - name: 上传附件
           image: cnbcool/attachments:latest
           settings:
+            tag: ${VERSION}
             attachments:
               - dist.zip
         - name: 部署到服务器
