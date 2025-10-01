@@ -1,0 +1,43 @@
+environments:
+  - name: release
+    description: 只执行发版操作
+    label: 发版
+    env:
+      name: release
+      tag_name: $CNB_BRANCH
+    permissions:
+      roles:
+        - developer
+        - master
+    require:
+      - approver:
+          users:
+            - bietiaop
+  - name: deploy
+    description: 只执行部署操作
+    label: 部署
+    env:
+      name: deploy
+      tag_name: $CNB_BRANCH
+    permissions:
+      roles:
+        - developer
+        - master
+    require:
+      - approver:
+          users:
+            - bietiaop
+  - name: production
+    description: 执行发版和部署操作
+    label: 发版和部署
+    env:
+      name: production
+      tag_name: $CNB_BRANCH
+    permissions:
+      roles:
+        - developer
+        - master
+    require:
+      - approver:
+          users:
+            - bietiaop

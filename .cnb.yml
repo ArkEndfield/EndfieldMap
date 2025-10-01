@@ -8,21 +8,96 @@ $:
         - vscode
         - docker
       stages:
-        - name: Install PNPM
+        - name: 安装 PNPM
           script: npm install -g pnpm
-        - name: Install Dependencies
+        - name: 安装依赖
           script: pnpm install
-        - name: Build Package
-          script: pnpm build
 
 main:
   push:
-    - imports: https://cnb.cool/bietiaop/bietiaop-secret-env/-/blob/main/github-for-EndfieldMap.yml
+    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/tree/main/endfieldmap.yml
       stages:
-        - name: sync to github
+        - name: 同步到 GitHub
           image: tencentcom/git-sync
           settings:
-            target_url: https://github.com/bietiaop/EndfieldMap.git
+            target_url: https://github.com/ArkEndfield/EndfieldMap.git
             auth_type: https
             username: ${GIT_USERNAME}
             password: ${GIT_ACCESS_TOKEN}
+  tag_deploy.release:
+    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
+      docker:
+        image: node:22
+      stages:
+        - name: 读取版本号
+          type: cnb:read-file
+          options:
+            filePath: package.json
+          exports:
+            version: VERSION
+        - name: 安装 pnpm
+          script: npm install -g pnpm
+        - name: 安装依赖
+          script: pnpm install
+        - name: 构建包
+          script: pnpm build
+        - name: release
+          type: git:release
+          options:
+            title: Release ${VERSION}
+            description: Automated release for version ${VERSION}
+  tag_deploy.deploy:
+    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
+      docker:
+        image: node:22
+      stages:
+        - name: 读取版本号
+          type: cnb:read-file
+          options:
+            filePath: package.json
+          exports:
+            version: VERSION
+        - name: 安装 pnpm
+          script: npm install -g pnpm
+        - name: 安装依赖
+          script: pnpm install
+        - name: 构建包
+          script: pnpm build
+        - name: 部署到服务器
+          script: |
+            # 设置 SSH 密钥
+            mkdir -p ~/.ssh
+            echo "${SSH_KEY}" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            # 使用 rsync 清空并同步文件到服务器
+            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
+  tag_deploy.production:
+    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
+      docker:
+        image: node:22
+      stages:
+        - name: 读取版本号
+          type: cnb:read-file
+          options:
+            filePath: package.json
+          exports:
+            version: VERSION
+        - name: 安装 pnpm
+          script: npm install -g pnpm
+        - name: 安装依赖
+          script: pnpm install
+        - name: 构建包
+          script: pnpm build
+        - name: release
+          type: git:release
+          options:
+            title: Release ${VERSION}
+            description: Automated release for version ${VERSION}
+        - name: 部署到服务器
+          script: |
+            # 设置 SSH 密钥
+            mkdir -p ~/.ssh
+            echo "${SSH_KEY}" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            # 使用 rsync 清空并同步文件到服务器
+            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}

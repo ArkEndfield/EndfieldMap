@@ -9,12 +9,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Sync to CNB Repository
+      - name: 同步到 CNB 仓库
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:${{ github.workspace }} \
             -w ${{ github.workspace }} \
-            -e PLUGIN_TARGET_URL="https://cnb.cool/bietiaop/EndfieldMap.git" \
+            -e PLUGIN_TARGET_URL="https://cnb.cool/bietiaop/ArkEndfield/EndfieldMap.git" \
             -e PLUGIN_AUTH_TYPE="https" \
             -e PLUGIN_USERNAME="cnb" \
             -e PLUGIN_PASSWORD=${{ secrets.GIT_PASSWORD }} \
