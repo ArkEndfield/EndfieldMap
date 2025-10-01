@@ -13,6 +13,14 @@ environments:
       - approver:
           users:
             - bietiaop
+    button:
+      - name: 执行发版
+        event: web_trigger_release
+        description: 手动触发发版流程
+        permissions:
+          roles:
+            - developer
+            - master
   - name: deploy
     description: 只执行部署操作
     label: 部署
@@ -27,6 +35,14 @@ environments:
       - approver:
           users:
             - bietiaop
+    button:
+      - name: 执行部署
+        event: web_trigger_deploy
+        description: 手动触发部署流程
+        permissions:
+          roles:
+            - developer
+            - master
   - name: production
     description: 执行发版和部署操作
     label: 发版和部署
@@ -41,3 +57,11 @@ environments:
       - approver:
           users:
             - bietiaop
+    button:
+      - name: 执行发版和部署
+        event: web_trigger_production
+        description: 手动触发发版和部署流程
+        permissions:
+          roles:
+            - developer
+            - master

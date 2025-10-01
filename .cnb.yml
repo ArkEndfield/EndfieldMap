@@ -24,7 +24,7 @@ main:
             auth_type: https
             username: ${GIT_USERNAME}
             password: ${GIT_ACCESS_TOKEN}
-  tag_deploy.release:
+  web_trigger_release:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22
@@ -46,7 +46,7 @@ main:
           options:
             title: Release ${VERSION}
             description: Automated release for version ${VERSION}
-  tag_deploy.deploy:
+  web_trigger_deploy:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22
@@ -71,7 +71,7 @@ main:
             chmod 600 ~/.ssh/id_rsa
             # 使用 rsync 清空并同步文件到服务器
             rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
-  tag_deploy.production:
+  web_trigger_production:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22

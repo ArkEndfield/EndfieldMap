@@ -26,7 +26,6 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh \
   && code-server --install-extension Vue.volar \
   && code-server --install-extension NicholasHsiang.vscode-vue3-snippets \
   && code-server --install-extension eamodio.gitlens \
-  && code-server --install-extension bradlc.vscode-tailwindcss \
   && echo done
 
 # 安装 ssh 服务，用于支持 VSCode 等客户端通过 Remote-SSH 访问开发环境
