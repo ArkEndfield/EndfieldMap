@@ -15,7 +15,7 @@ $:
 
 main:
   push:
-    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/tree/main/endfieldmap.yml
+    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       stages:
         - name: 同步到 GitHub
           image: tencentcom/git-sync
