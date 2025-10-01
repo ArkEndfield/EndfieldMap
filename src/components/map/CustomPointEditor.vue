@@ -1,6 +1,6 @@
 <template>
   <div class="editor">
-    <div class="section">
+    <div class="section" v-if="type !== 'electric_pole'">
       <div class="title">
         <LocationClusterIcon />
         {{ t('custom_point.type') }}
@@ -266,9 +266,17 @@ watch(type, newValue => {
   emit('update:type', newValue);
 });
 
-const typeOptions = Object.entries(customEntityInfo).map(([key, value]) => ({
+// const typeOptions = Object.entries(customEntityInfo).map(([key, value]) => ({
+//   value: key,
+//   label: value.entityInfo.point === 'electric_pole' ? t('custom_point.electric_pole') : value.entityInfo.point,
+//   icon: `/assets/${value.category}/${value.entityInfo.pic}.png`,
+// }));
+
+const typeOptions = Object.entries(customEntityInfo).filter(([_, value]) => {
+  return value.entityInfo.point !== 'electric_pole';
+}).map(([key, value]) => ({
   value: key,
-  label: value.entityInfo.point === 'electric_pole' ? t('custom_point.electric_pole') : value.entityInfo.point,
+  label: value.entityInfo.point,
   icon: `/assets/${value.category}/${value.entityInfo.pic}.png`,
 }));
 
