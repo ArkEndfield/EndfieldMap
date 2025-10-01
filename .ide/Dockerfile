@@ -25,7 +25,10 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh \
   && code-server --install-extension Gruntfuggly.todo-tree \
   && code-server --install-extension Vue.volar \
   && code-server --install-extension NicholasHsiang.vscode-vue3-snippets \
-  && code-server --install-extension eamodio.gitlens \
+  && code-server --install-extension eamodio.gitlens \# 1. 为 root 用户创建 code-server 的用户配置目录
+  && mkdir -p /root/.local/share/code-server/User \
+  # 创建 locale.json 文件并指定语言为简体中文
+  && echo '{"locale":"zh-cn"}' > /root/.local/share/code-server/User/locale.json \
   && echo done
 
 # 安装 ssh 服务，用于支持 VSCode 等客户端通过 Remote-SSH 访问开发环境
