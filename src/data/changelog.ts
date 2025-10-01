@@ -6,6 +6,12 @@ export interface Changelog {
 
 const changelog: Changelog[] = [
   {
+    date: '2025-10-01',
+    changes: [
+      '修复电线杆bug',
+    ],
+  },
+  {
     date: '2025-09-21',
     changes: [
       '实现电线杆功能',

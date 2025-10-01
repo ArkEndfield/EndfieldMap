@@ -60,7 +60,7 @@ const alertConfig = ref({
 
 const mapControlsRef = ref();
 const mapPopupRef = ref<MapPopupRef>();
-const mapContextMenuRef = ref<{ onContextMenu: (event: MouseEvent) => void }>();
+const mapContextMenuRef = ref<{ onContextMenu: (event: MouseEvent) => void; closeMenu: () => void } | undefined>();
 const { t } = useI18n();
 
 provide('popupManager', popupManager);
@@ -77,6 +77,11 @@ onMounted(async () => {
     mapControlsRef.value.controls,
     mapPopupRef.value?.getPopupContainer()
   );
+
+  // 添加地图移动事件监听，关闭菜单
+  map.value?.on('movestart', () => {
+    mapContextMenuRef.value?.closeMenu();
+  });
 
   // 监听连接尝试开始事件
   pubsub.subscribe(EVENTS.CONNECTION_ATTEMPT_START, () => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed right-2 bottom-12 w-64">
+  <div class="fixed right-2 bottom-18 md:bottom-12 w-64">
     <ListTitle color="#1F1F20" :solid="false" titleFontSize="1rem" backTitleFontSize="1.25rem" bracket>
       BREAKING NEWS
       <template #backTitle>

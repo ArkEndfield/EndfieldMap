@@ -161,8 +161,13 @@ const onContextMenu = (event: MouseEvent) => {
   }
 };
 
+const closeMenu = () => {
+  menuVisible.value = false;
+};
+
 defineExpose({
   onContextMenu,
+  closeMenu,
 });
 
 onMounted(() => {

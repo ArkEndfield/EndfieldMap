@@ -49,11 +49,6 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
     return { success: false };
   }
 
-  // 开始新的连接尝试时，先清除之前的失败状态
-  if (showRangeAlert) {
-    pubsub.publish(EVENTS.CONNECTION_ATTEMPT_START);
-  }
-
   // 检查是否为电线杆
   if (targetPole.entityDataIdKey !== 'electric_pole') {
     if (showRangeAlert) {
