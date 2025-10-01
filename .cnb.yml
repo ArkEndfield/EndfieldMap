@@ -46,6 +46,7 @@ main:
           options:
             title: Release ${VERSION}
             description: Automated release for version ${VERSION}
+            tag: ${VERSION}
   web_trigger_deploy:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
@@ -93,6 +94,7 @@ main:
           options:
             title: Release ${VERSION}
             description: Automated release for version ${VERSION}
+            tag: ${VERSION}
         - name: 部署到服务器
           script: |
             # 设置 SSH 密钥
