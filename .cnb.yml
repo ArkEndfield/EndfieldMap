@@ -41,11 +41,15 @@ main:
           script: pnpm install
         - name: 构建包
           script: pnpm build
+        - name: 压缩包
+          script: |
+            apt-get update && apt-get install -y zip
+            zip -r dist.zip dist
         - name: 上传附件
           image: cnbcool/attachments:latest
           settings:
             attachments:
-              - dist/**
+              - dist.zip
         - name: 发布
           type: git:release
           options:
@@ -95,11 +99,15 @@ main:
           script: pnpm install
         - name: 构建包
           script: pnpm build
+        - name: 压缩包
+          script: |
+            apt-get update && apt-get install -y zip
+            zip -r dist.zip dist
         - name: 上传附件
           image: cnbcool/attachments:latest
           settings:
             attachments:
-              - dist/**
+              - dist.zip
         - name: 发布
           type: git:release
           options:
