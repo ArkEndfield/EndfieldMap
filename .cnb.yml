@@ -47,6 +47,10 @@ main:
             title: Release ${VERSION}
             description: Automated release for version ${VERSION}
             tag: ${VERSION}
+        - name: 上传附件
+          type: public/cnbcool/attachments
+          options:
+            files: dist/**
   web_trigger_deploy:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
@@ -96,6 +100,10 @@ main:
             title: Release ${VERSION}
             description: Automated release for version ${VERSION}
             tag: ${VERSION}
+        - name: 上传附件
+          type: public/cnbcool/attachments
+          options:
+            files: dist/**
         - name: 部署到服务器
           script: |
             apt-get update && apt-get install -y rsync
