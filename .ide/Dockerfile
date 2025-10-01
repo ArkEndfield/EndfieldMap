@@ -24,8 +24,7 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh \
   && code-server --install-extension wayou.vscode-todo-highlight \
   && code-server --install-extension Gruntfuggly.todo-tree \
   && code-server --install-extension Vue.volar \
-  && code-server --install-extension sdras.vue-vscode-snippets \
-  && code-server --install-extension hollowtree.vue-snippets \
+  && code-server --install-extension NicholasHsiang.vscode-vue3-snippets \
   && code-server --install-extension eamodio.gitlens \
   && code-server --install-extension bradlc.vscode-tailwindcss \
   && echo done
