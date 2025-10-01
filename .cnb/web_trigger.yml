@@ -1,0 +1,23 @@
+branch:
+  - buttons:
+      - name: 执行发版
+        description: 手动触发发版流程
+        event: web_trigger_release
+        permissions:
+          roles:
+            - developer
+            - master
+      - name: 执行部署
+        description: 手动触发部署流程
+        event: web_trigger_deploy
+        permissions:
+          roles:
+            - developer
+            - master
+      - name: 执行发版和部署
+        description: 手动触发发版和部署流程
+        event: web_trigger_production
+        permissions:
+          roles:
+            - developer
+            - master
