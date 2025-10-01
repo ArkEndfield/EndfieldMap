@@ -66,6 +66,7 @@ main:
           script: pnpm build
         - name: 部署到服务器
           script: |
+            apt-get update && apt-get install -y rsync
             # 设置 SSH 密钥
             mkdir -p ~/.ssh
             echo "${SSH_KEY}" > ~/.ssh/id_rsa
@@ -97,6 +98,7 @@ main:
             tag: ${VERSION}
         - name: 部署到服务器
           script: |
+            apt-get update && apt-get install -y rsync
             # 设置 SSH 密钥
             mkdir -p ~/.ssh
             echo "${SSH_KEY}" > ~/.ssh/id_rsa
