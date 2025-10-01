@@ -45,17 +45,17 @@ main:
           script: |
             apt-get update && apt-get install -y zip
             zip -r dist.zip dist
-        - name: 上传附件
-          image: cnbcool/attachments:latest
-          settings:
-            attachments:
-              - dist.zip
         - name: 发布
           type: git:release
           options:
             title: Release ${VERSION}
             description: Automated release for version ${VERSION}
             tag: ${VERSION}
+        - name: 上传附件
+          image: cnbcool/attachments:latest
+          settings:
+            attachments:
+              - dist.zip
   web_trigger_deploy:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
@@ -103,17 +103,17 @@ main:
           script: |
             apt-get update && apt-get install -y zip
             zip -r dist.zip dist
-        - name: 上传附件
-          image: cnbcool/attachments:latest
-          settings:
-            attachments:
-              - dist.zip
         - name: 发布
           type: git:release
           options:
             title: Release ${VERSION}
             description: Automated release for version ${VERSION}
             tag: ${VERSION}
+        - name: 上传附件
+          image: cnbcool/attachments:latest
+          settings:
+            attachments:
+              - dist.zip
         - name: 部署到服务器
           script: |
             apt-get update && apt-get install -y rsync
