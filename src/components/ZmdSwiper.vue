@@ -1,13 +1,26 @@
 <template>
   <div class="fixed right-2 bottom-18 md:bottom-12 w-64">
-    <ListTitle color="#1F1F20" :solid="false" titleFontSize="1rem" backTitleFontSize="1.25rem" bracket>
+    <ListTitle
+      color="#1F1F20"
+      class="w-64 transition-[width] ml-auto"
+      :class="{
+        '!w-50 md:w-64': !settings.swiperExpanded,
+      }"
+      :solid="false"
+      titleFontSize="1rem"
+      backTitleFontSize="1.25rem"
+      bracket
+    >
       BREAKING NEWS
       <template #backTitle>
         ENDFIELD
       </template>
       <template #right>
         <button
-          class="bg-[#FDFD59] text-[#272727] text-xs font-bold rounded-full px-2 py-0.5 hover:bg-[#FDFD59] active:bg-[#f2f27a] transition-all duration-200 flex items-center gap-1 mb-1"
+          class="bg-[#FDFD59] text-[#272727] text-xs font-bold rounded-full px-2 py-0.5 hover:bg-[#FDFD59] active:bg-[#f2f27a] transition-all duration-200 flex items-center gap-1 mb-0.5"
+          :class="{
+            'mb-1': settings.swiperExpanded,
+          }"
           ref="button"
           @click="settings.swiperExpanded = !settings.swiperExpanded"
         >

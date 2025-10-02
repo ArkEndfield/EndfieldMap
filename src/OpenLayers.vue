@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, provide, ref, watch } from 'vue';
+import { onMounted, onBeforeUnmount, provide, ref } from 'vue';
 import { Map } from 'ol';
 import {
   cacheMapId,
