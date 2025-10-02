@@ -31,7 +31,7 @@
     <motion.div
       :initial="{ height: 0 }"
       :animate="{ height: settings.swiperExpanded ? '9rem' : '0' }"
-      :transition="settings.swiperExpanded ? { duration: 0.5, type: 'spring', bounce: 0.25 } : { duration: 0.3, type: 'ease' }"
+      :transition="settings.swiperExpanded ? { duration: 0.5, type: 'spring', bounce: 0.25 } : { duration: 0.3 }"
       class="overflow-hidden"
     >
       <swiper

@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, defineModel } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import { motion, useAnimate } from 'motion-v';
 import { useI18n } from 'vue-i18n';
 
