@@ -57,8 +57,10 @@
     "mark_obtained": "표시 완료",
     "mark_unobtained": "표시 취소",
     "create_point": "포인트 생성",
+    "create_electric_pole": "전선 생성",
+    "connect_poles": "전선 연결",
     "delete_point": "포인트 삭제",
-    "create_electric_pole": "전선 생성"
+    "delete_connection": "연결 삭제"
   },
   "header": {
     "menu": "메뉴",
@@ -323,6 +325,7 @@
   "custom_point": {
     "title": "사용자 지정 포인트",
     "edit": "편집",
+    "connect": "연결",
     "edit_title": "커스텀 포인트 편집",
     "type": "포인트 유형",
     "type_custom": "커스텀",
@@ -415,6 +418,9 @@
     }
   },
   "multi_operate": {
-    "no_electric_pole_connector": "전선 전파 연결 모드에서는 다중 선택을 할 수 없습니다"
+    "no_electric_pole_connector": "전선 전파 연결 모드에서는 다중 선택을 할 수 없습니다",
+    "selected_count": "{count}개 선택",
+    "electric_pole_connection_mode": "전선 연결 모드",
+    "exit_connection": "연결 종료"
   }
 }

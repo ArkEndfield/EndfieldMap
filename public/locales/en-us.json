@@ -57,8 +57,10 @@
     "mark_obtained": "Mark Obtained",
     "mark_unobtained": "Mark Unobtained",
     "create_point": "Create Point",
+    "create_electric_pole": "Create Electric Pole",
+    "connect_poles": "Connect Electric Poles",
     "delete_point": "Delete Point",
-    "create_electric_pole": "Create Electric Pole"
+    "delete_connection": "Delete Connection"
   },
   "header": {
     "menu": "Menu",
@@ -323,6 +325,7 @@
   "custom_point": {
     "title": "Custom Point",
     "edit": "Edit",
+    "connect": "Connect",
     "edit_title": "Edit Custom Point",
     "type": "Point Type",
     "type_custom": "Custom",
@@ -415,6 +418,9 @@
     }
   },
   "multi_operate": {
-    "no_electric_pole_connector": "Cannot multi-select in electric pole connection mode"
+    "no_electric_pole_connector": "Cannot multi-select in electric pole connection mode",
+    "selected_count": "{count} selected",
+    "electric_pole_connection_mode": "Electric Pole Connection Mode",
+    "exit_connection": "Exit Connection"
   }
 }

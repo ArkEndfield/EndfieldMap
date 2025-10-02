@@ -57,8 +57,10 @@
     "mark_obtained": "標記獲取",
     "mark_unobtained": "取消標記獲取",
     "create_point": "創建標點",
+    "create_electric_pole": "創建電線杆",
+    "connect_poles": "連線電線杆",
     "delete_point": "刪除標點",
-    "create_electric_pole": "創建電線杆"
+    "delete_connection": "刪除連線"
   },
   "header": {
     "menu": "菜單",
@@ -318,6 +320,7 @@
   "custom_point": {
     "title": "自定義點位",
     "edit": "編輯",
+    "connect": "連線",
     "edit_title": "編輯自定義點位",
     "type": "點位類型",
     "type_custom": "自定義",
@@ -410,6 +413,9 @@
     }
   },
   "multi_operate": {
-    "no_electric_pole_connector": "無法在連線模式下進行批量選擇"
+    "no_electric_pole_connector": "無法在連線模式下進行批量選擇",
+    "selected_count": "{count} 個選擇",
+    "electric_pole_connection_mode": "電線杆連線模式",
+    "exit_connection": "退出連線"
   }
 }

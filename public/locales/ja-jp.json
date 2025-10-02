@@ -57,8 +57,10 @@
     "mark_obtained": "マーク取得",
     "mark_unobtained": "マーク取得解除",
     "create_point": "ポイント作成",
+    "create_electric_pole": "電線杆作成",
+    "connect_poles": "電線杆連線",
     "delete_point": "ポイント削除",
-    "create_electric_pole": "電線杆作成"
+    "delete_connection": "電線杆連線削除"
   },
   "header": {
     "menu": "メニュー",
@@ -323,6 +325,7 @@
   "custom_point": {
     "title": "カスタムポイント",
     "edit": "編集",
+    "connect": "連線",
     "edit_title": "カスタムポイント編集",
     "type": "ポイントタイプ",
     "type_custom": "カスタム",
@@ -415,6 +418,9 @@
     }
   },
   "multi_operate": {
-    "no_electric_pole_connector": "電線杆連線モードでは複数選択できません"
+    "no_electric_pole_connector": "電線杆連線モードでは複数選択できません",
+    "selected_count": "{count} 個選択",
+    "electric_pole_connection_mode": "電線杆連線モード",
+    "exit_connection": "連線を終了"
   }
 }

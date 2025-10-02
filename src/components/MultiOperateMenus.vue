@@ -15,7 +15,7 @@
         }"
       >
         <div class="whitespace-nowrap px-2 py-1 flex items-center gap-2">
-          <div>{{ multiSelectMarks.length }} 个选择</div>
+          <div>{{ t('multi_operate.selected_count', { count: multiSelectMarks.length }) }}</div>
           <motion.div
             class="flex items-center gap-2 overflow-hidden"
             :animate="{
@@ -63,13 +63,13 @@
         }"
       >
         <div class="whitespace-nowrap px-2 py-1 flex items-center gap-2 text-black">
-          <div>电线杆连线模式</div>
+          <div>{{ t('multi_operate.electric_pole_connection_mode') }}</div>
           <motion.div class="flex items-center gap-2 overflow-hidden">
             <button
               class="shrink-0 bg-yellow-500 hover:bg-yellow-600 px-2 py-1 rounded text-xs"
               @click="cancelConnectionMode"
             >
-              退出连线
+              {{ t('multi_operate.exit_connection') }}
             </button>
           </motion.div>
         </div>
