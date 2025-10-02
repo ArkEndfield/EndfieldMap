@@ -4,7 +4,7 @@
       color="#1F1F20"
       class="w-64 transition-[width] ml-auto"
       :class="{
-        '!w-50': !settings.swiperExpanded,
+        '!w-52': !settings.swiperExpanded,
       }"
       :solid="false"
       titleFontSize="1rem"
