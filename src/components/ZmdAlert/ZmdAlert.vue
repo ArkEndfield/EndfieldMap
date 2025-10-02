@@ -12,7 +12,7 @@
           width: props.width,
           height: props.height,
           backgroundImage: `url(${alert_bg})`,
-          transformOrigin: props.open ? 'top' : 'bottom',
+          transformOrigin: open ? 'top' : 'bottom',
         }"
         ref="alertRef"
         :initial="false"
@@ -43,7 +43,7 @@
         <div
           class="zmd-alert-actions"
           :class="{ single: props.hideCancel }"
-          v-show="props.open"
+          v-show="open"
           ref="buttonsRef"
         >
           <ZmdButton
@@ -77,9 +77,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, nextTick, defineModel } from 'vue';
 import { motion, useAnimate } from 'motion-v';
-import { nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ZmdAlertTickIcon from '@/components/ZmdAlert/icons/ZmdAlertTickIcon.vue';
@@ -91,7 +90,6 @@ import ZmdButton from '@/components/ZmdButton/ZmdButton.vue';
 const dialog = ref<HTMLDialogElement | null>(null);
 const { t } = useI18n();
 export type ZmdAlertProps = {
-  open: boolean;
   dismissible?: boolean;
   hideCancel?: boolean;
   cancelText?: string;
@@ -107,7 +105,6 @@ export type ZmdAlertProps = {
 };
 
 const props = withDefaults(defineProps<ZmdAlertProps>(), {
-  open: false,
   dismissible: true,
   hideCancel: false,
   width: '30em',
@@ -122,16 +119,18 @@ const props = withDefaults(defineProps<ZmdAlertProps>(), {
   onConfirm: () => {},
 });
 
-const emit = defineEmits(['update:open']);
+const open = defineModel<boolean>('open', { default: false });
 
 const backdropVisible = ref(false);
 const isProcessing = ref(false);
+const isOpening = ref(false);
 
 const [alertRef, alertAnimate] = useAnimate();
 const [contentRef, contentAnimate] = useAnimate();
 const [buttonsRef] = useAnimate();
 
 const handleDismiss = () => {
+  if (isOpening.value) return;
   if (props.dismissible && !isProcessing.value) {
     const result = props.onDismiss();
     if (result instanceof Promise) {
@@ -162,14 +161,14 @@ const handleClose = () => {
       .then(res => {
         isProcessing.value = false;
         if (res !== false) {
-          emit('update:open', false);
+          open.value = false;
         }
       })
       .catch(() => {
         isProcessing.value = false;
       });
   } else if (result !== false) {
-    emit('update:open', false);
+    open.value = false;
   }
 };
 
@@ -260,9 +259,10 @@ const shineAnimate = async (scope: typeof contentRef, show: boolean) => {
 };
 
 watch(
-  () => props.open,
+  () => open.value,
   async newVal => {
     if (newVal) {
+      isOpening.value = true;
       backdropVisible.value = true;
       await nextTick();
       await alertAnimate(
@@ -278,6 +278,7 @@ watch(
 
       shineAnimate(contentRef, newVal);
       shineAnimate(buttonsRef, newVal);
+      isOpening.value = false;
     } else {
       shineAnimate(contentRef, newVal);
       shineAnimate(buttonsRef, newVal);
