@@ -442,6 +442,7 @@
   },
   "multi_operate": {
     "no_electric_pole_connector": "电线杆连接模式下无法多选",
+    "no_multi_select": "多选模式下无法进入连线模式",
     "selected_count": "{count} 个选择",
     "electric_pole_connection_mode": "电线杆连线模式",
     "exit_connection": "退出连线"

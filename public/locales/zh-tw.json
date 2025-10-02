@@ -414,6 +414,7 @@
   },
   "multi_operate": {
     "no_electric_pole_connector": "無法在連線模式下進行批量選擇",
+    "no_multi_select": "無法在批量選擇模式下進入連線模式",
     "selected_count": "{count} 個選擇",
     "electric_pole_connection_mode": "電線杆連線模式",
     "exit_connection": "退出連線"

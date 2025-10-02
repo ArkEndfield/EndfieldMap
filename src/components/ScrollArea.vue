@@ -16,6 +16,7 @@
       ref="contentRef"
       class="scroll-content"
       :class="[props.contentClass, { 'flex-content': flexContainer }]"
+      :style="contentStyle"
       @scroll="handleScroll"
     >
       <slot />
@@ -82,6 +83,8 @@ interface Props {
   smoothScrollDuration?: number; // 平滑滚动持续时间(ms)
   scrollbarFadeDelay?: number; // 滚动条淡出延迟(ms)
   flexContainer?: boolean; // 是否作为flex容器使用，解决flex布局中的滚动问题
+  showVerticalScrollbar?: boolean; // 是否显示垂直滚动条
+  showHorizontalScrollbar?: boolean; // 是否显示水平滚动条
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -96,6 +99,8 @@ const props = withDefaults(defineProps<Props>(), {
   smoothScrollDuration: 150,
   scrollbarFadeDelay: 1000,
   flexContainer: false,
+  showVerticalScrollbar: true,
+  showHorizontalScrollbar: true,
 });
 
 // 引用元素
@@ -134,6 +139,11 @@ const startScrollLeft = ref(0);
 const containerStyle = computed(() => ({
   width: props.width,
   height: props.height,
+}));
+
+const contentStyle = computed(() => ({
+  overflowX: (props.showHorizontalScrollbar ? 'auto' : 'hidden') as any,
+  overflowY: (props.showVerticalScrollbar ? 'auto' : 'hidden') as any,
 }));
 
 const verticalTrackStyle = computed(() => ({
@@ -221,14 +231,14 @@ const updateScrollbars = () => {
   viewportWidth.value = viewport.clientWidth;
 
   // 计算垂直滚动条的高度和可见性
-  showVerticalScroll.value = contentHeight.value > viewportHeight.value;
+  showVerticalScroll.value = contentHeight.value > viewportHeight.value && props.showVerticalScrollbar;
   if (showVerticalScroll.value) {
     const ratio = viewportHeight.value / contentHeight.value;
     verticalThumbHeight.value = Math.max(30, ratio * viewportHeight.value);
   }
 
   // 计算水平滚动条的宽度和可见性
-  showHorizontalScroll.value = contentWidth.value > viewportWidth.value;
+  showHorizontalScroll.value = contentWidth.value > viewportWidth.value && props.showHorizontalScrollbar;
   if (showHorizontalScroll.value) {
     const ratio = viewportWidth.value / contentWidth.value;
     horizontalThumbWidth.value = Math.max(30, ratio * viewportWidth.value);
@@ -560,7 +570,6 @@ defineExpose({
 .scroll-content {
   height: 100%;
   width: 100%;
-  overflow: auto;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   -webkit-overflow-scrolling: touch; /* 支持iOS的惯性滚动 */

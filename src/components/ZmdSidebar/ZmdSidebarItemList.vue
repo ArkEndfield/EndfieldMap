@@ -2,6 +2,7 @@
   <ScrollArea
     class="zmd-sidebar-scroll-list"
     ref="scrollListRef"
+    :showHorizontalScrollbar="false"
   >
     <!-- 添加搜索输入框 -->
     <div class="search-container">

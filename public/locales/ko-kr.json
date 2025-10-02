@@ -419,6 +419,7 @@
   },
   "multi_operate": {
     "no_electric_pole_connector": "전선 전파 연결 모드에서는 다중 선택을 할 수 없습니다",
+    "no_multi_select": "다중 선택 모드에서는 연결 모드로 들어갈 수 없습니다",
     "selected_count": "{count}개 선택",
     "electric_pole_connection_mode": "전선 연결 모드",
     "exit_connection": "연결 종료"

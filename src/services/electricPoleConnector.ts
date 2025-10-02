@@ -7,6 +7,9 @@ import { DATA_DB_KEY } from '@/constants/db_key';
 import { StorageType } from '@/utils/indexedDBStorage';
 import { EVENTS, pubsub } from '@/services/pubsub';
 import { entityShowStates } from '@/data/entity';
+import { showSelectionIndicator, clearSelectionIndicator } from '@/services/selectionIndicator';
+import { popupManager } from '@/services/map';
+import { isMultiSelecting } from '@/data/marks';
 
 // 连线状态管理
 const isConnectionMode = ref(false);
@@ -23,10 +26,23 @@ export const MAX_CONNECTIONS_PER_POLE = 2; // 每个电线杆最多连接数
  * @param pole 起始电线杆
  */
 export const startConnectionMode = (pole: PointData) => {
+  if (isMultiSelecting.value) {
+    pubsub.publish(EVENTS.SHOW_ALERT, {
+      content: 'multi_operate.no_multi_select',
+      useI18n: true,
+    });
+    return;
+  }
   isConnectionMode.value = true;
   currentConnectionPole.value = pole;
   connectionHistory.value = [pole];
   console.log('开始电线杆连线模式:', pole.levelLogicId);
+
+  // 关闭当前弹窗
+  popupManager.value?.closeToast();
+
+  // 显示当前连线标点的选中指示器
+  showSelectionIndicator(pole.levelLogicId.toString(), 'rgba(253, 251, 84, 0.8)');
 };
 
 /**
@@ -36,6 +52,9 @@ export const endConnectionMode = () => {
   isConnectionMode.value = false;
   currentConnectionPole.value = null;
   connectionHistory.value = [];
+
+  // 清除选中指示器
+  clearSelectionIndicator();
 };
 
 /**
@@ -118,6 +137,9 @@ export const connectToPole = async (targetPole: PointData, showRangeAlert: boole
     // 更新连线历史
     connectionHistory.value.push(targetPole);
     currentConnectionPole.value = targetPole;
+
+    // 更新选中指示器到新的当前标点
+    showSelectionIndicator(targetPole.levelLogicId.toString(), 'rgba(253, 251, 84, 0.8)');
 
     // 保存到存储
     await saveConnectionsToStorage();

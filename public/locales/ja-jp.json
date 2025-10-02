@@ -419,6 +419,7 @@
   },
   "multi_operate": {
     "no_electric_pole_connector": "電線杆連線モードでは複数選択できません",
+    "no_multi_select": "複数選択モードでは連線モードに入れません",
     "selected_count": "{count} 個選択",
     "electric_pole_connection_mode": "電線杆連線モード",
     "exit_connection": "連線を終了"

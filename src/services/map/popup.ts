@@ -11,6 +11,7 @@ import {
   setMapZooming,
 } from '@/services/map/state';
 import { clearSelectionIndicator } from '@/services/selectionIndicator';
+import { isInConnectionMode } from '@/services/electricPoleConnector';
 
 /**
  * 初始化弹窗管理器
@@ -39,7 +40,10 @@ export function initPopupManager(
   manager.addVisibilityChangeListener(newValue => {
     if (!newValue && selectInteraction) {
       selectInteraction.getFeatures().clear();
-      clearSelectionIndicator(); // 清除选中标点的四个角落线条
+      // 在连线模式下不清除指示器
+      if (!isInConnectionMode.value) {
+        clearSelectionIndicator();
+      }
     }
   });
 
