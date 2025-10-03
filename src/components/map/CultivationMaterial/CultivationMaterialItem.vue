@@ -3,17 +3,21 @@
     :animate="{
       x: 0,
       opacity: 1,
-      height: 'auto',
+      maxHeight: 1000,
     }"
     :exit="{
       x: -100,
       opacity: 0,
-      height: 0,
+      maxHeight: 0,
+      transition: {
+        duration: 0.3,
+        type: 'tween',
+      }
     }"
     :initial="{
       x: -100,
       opacity: 0,
-      height: 0,
+      maxHeight: 0,
     }"
     :transition="{
       duration: 0.3,
