@@ -57,7 +57,7 @@
     </ContextMenuItem>
     <ContextMenuItem
       :label="t('context_menu.delete_point')"
-      v-show="!!rightClickCustomPoint"
+      v-show="!!rightClickCustomPoint && !isInConnectionMode && !isMultiSelecting"
       @click="() => handleAction(ACTION.DELETE)"
       className="text-red-500"
     >
@@ -75,7 +75,7 @@ import type { Coordinate } from 'ol/coordinate';
 import type { PointData } from '@/types/points';
 import { isMarked, markPoint } from '@/services/marks';
 import { createCustomPoint, deleteCustomPoint, isCustomPoint } from '@/services/customPoints';
-import { removeConnection, startConnectionMode, getPoleConnections, MAX_CONNECTIONS_PER_POLE } from '@/services/electricPoleConnector';
+import { removeConnection, startConnectionMode, getPoleConnections, MAX_CONNECTIONS_PER_POLE, isInConnectionMode } from '@/services/electricPoleConnector';
 import { getCurrentMapId, addMapContextMenuListener } from '@/services/map';
 import { ContextMenuRef } from '@/components/ContextMenu/type';
 import ContextMenu from '@/components/ContextMenu/ContextMenu.vue';
@@ -83,6 +83,7 @@ import ContextMenuItem from '@/components/ContextMenu/ContextMenuItem.vue';
 import CheckCircleIcon from '@/components/icons/CheckCircleIcon.vue';
 import LocationClusterIcon from '@/components/icons/LocationClusterIcon.vue';
 import TrashIcon from '@/components/icons/TrashIcon.vue';
+import { isMultiSelecting } from '@/data/marks';
 
 const { t } = useI18n();
 
