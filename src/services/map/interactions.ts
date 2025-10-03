@@ -71,7 +71,7 @@ export const pointSelectHandler = async function (event: SelectEvent) {
   if (features && features.length > 1) {
     // 聚合点点击处理
     // 如果有弹窗正在显示，先关闭它
-    if (popupManager.value?.isPopupVisible.value) {
+    if (popupManager.value?.state.isPopupVisible) {
       await popupManager.value.closeToast();
     }
 
@@ -145,8 +145,8 @@ export const pointSelectHandler = async function (event: SelectEvent) {
   setCurrentPoint(data);
 
   // 如果位置改变或弹出框当前不可见
-  if (positionChanged || !popupManager.value.isPopupVisible.value) {
-    if (popupManager.value.isPopupVisible.value) {
+  if (positionChanged || !popupManager.value.state.isPopupVisible) {
+    if (popupManager.value.state.isPopupVisible) {
       // 如果弹窗已经显示，先关闭弹窗
       await popupManager.value.closeToast();
       // 重新显示指示器
@@ -207,7 +207,7 @@ export const removeMapContextMenuListener = (
 /**
  * 地图点击处理
  */
-export function mapClickHandler(event: MapBrowserEvent<MouseEvent>) {
+export function mapClickHandler(event: MapBrowserEvent<PointerEvent>) {
   // 使用 any 避免 MapBrowserEvent 导入
   // 首先检查是否有Feature被点击
   const feature = map.value?.forEachFeatureAtPixel(

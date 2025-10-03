@@ -248,7 +248,7 @@ export function updateCustomPointMarker(
     if (point.value?.levelLogicId?.toString() === idAsString) {
       point.value = pointData;
       const popupMgr = popupManager.value;
-      if (popupMgr?.isPopupVisible.value) {
+      if (popupMgr?.state.isPopupVisible) {
         popupMgr.setCurrentPosition(xyz2crd(pointData.position));
         popupMgr.adjustPopupPosition();
       }

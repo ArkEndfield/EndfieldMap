@@ -175,7 +175,7 @@ function createTour() {
         },
         onHighlightStarted() {
           // 确保主弹窗已经打开
-          if (popupManager.value && !popupManager.value.isPopupVisible.value) {
+          if (popupManager.value && !popupManager.value.state.isPopupVisible) {
             const chestFeatures = MarkerManager.getMarkersByCategory('chest');
             if (chestFeatures.length > 0) {
               popupManager.value.openPopupForMarker(chestFeatures[0]);

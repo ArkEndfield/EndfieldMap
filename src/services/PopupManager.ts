@@ -1,4 +1,4 @@
-import { ref, Ref, watch } from 'vue';
+import { reactive, Ref, watch } from 'vue';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
 import Map from 'ol/Map';
@@ -13,13 +13,15 @@ export class PopupManager {
   private map: Map;
   private overlay: Overlay;
   private popupContainer: HTMLElement;
-  public isPopupVisible: Ref<boolean> = ref(false);
+  public state = reactive({
+    isPopupVisible: false,
+    showVideoInfo: false,
+    openSubPopup: false,
+    isMobileDevice: false,
+  });
   private currentPosition: number[] | undefined;
   private point: Ref<PointData | null>;
-  public showVideoInfo: Ref<boolean> = ref(false);
-  public openSubPopup: Ref<boolean> = ref(false);
   private isMapZooming = false; // 添加地图缩放状态标记
-  public isMobileDevice: Ref<boolean> = ref(false); // 添加设备类型标记
 
   constructor(
     map: Map,
@@ -55,22 +57,22 @@ export class PopupManager {
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
     const isMobileWidth = window.innerWidth < 768;
 
-    this.isMobileDevice.value = mobileRegex.test(userAgent) || isMobileWidth;
+    this.state.isMobileDevice = mobileRegex.test(userAgent) || isMobileWidth;
   }
 
   // 获取设备类型
   public getDeviceType(): boolean {
-    return this.isMobileDevice.value;
+    return this.state.isMobileDevice;
   }
 
   // 关闭弹出层
   async closeToast() {
-    this.isPopupVisible.value = false;
+    this.state.isPopupVisible = false;
     await new Promise<void>(resolve => rafTimeout(resolve, 150));
   }
 
   async openToast() {
-    this.isPopupVisible.value = true;
+    this.state.isPopupVisible = true;
     this.repositionPopup();
 
     // 等待animation完成后再调整位置，防止与motion动画冲突
@@ -78,11 +80,11 @@ export class PopupManager {
     await new Promise<void>(resolve => rafTimeout(resolve, 200));
 
     // 再次检查弹窗是否仍然可见
-    if (this.isPopupVisible.value) {
+    if (this.state.isPopupVisible) {
       // 使用 requestAnimationFrame 确保在下一帧调整位置
       requestAnimationFrame(() => {
         // 再次检查弹窗是否仍然可见
-        if (this.isPopupVisible.value) {
+        if (this.state.isPopupVisible) {
           this.adjustPopupPosition();
         }
       });
@@ -90,55 +92,55 @@ export class PopupManager {
   }
 
   addVisibilityChangeListener(callback: (visible: boolean) => void) {
-    return watch(this.isPopupVisible, callback);
+    return watch(() => this.state.isPopupVisible, callback);
   }
 
   // 切换视频信息显示状态
   toggleVideoInfo(show?: boolean) {
     // 如果提供了参数，直接设置为该值；否则切换状态
-    this.showVideoInfo.value =
-      show !== undefined ? show : !this.showVideoInfo.value;
-    return this.showVideoInfo.value;
+    this.state.showVideoInfo =
+      show !== undefined ? show : !this.state.showVideoInfo;
+    return this.state.showVideoInfo;
   }
 
   // 获取视频信息显示状态
   getVideoInfoStatus() {
-    return this.showVideoInfo.value;
+    return this.state.showVideoInfo;
   }
 
   // 切换子弹窗显示状态
   toggleSubPopup() {
     // 如果提供了参数，直接设置为该值；否则切换状态
-    this.openSubPopup.value = !this.openSubPopup.value;
+    this.state.openSubPopup = !this.state.openSubPopup;
     this.adjustPopupPosition();
-    return this.openSubPopup.value;
+    return this.state.openSubPopup;
   }
 
   // 打开副弹窗
   openSub() {
-    this.openSubPopup.value = true;
+    this.state.openSubPopup = true;
     this.adjustPopupPosition();
   }
 
   // 关闭副弹窗
   closeSub() {
-    this.openSubPopup.value = false;
+    this.state.openSubPopup = false;
     this.adjustPopupPosition();
   }
 
   // 获取子弹窗显示状态
   getSubPopupStatus() {
-    return this.openSubPopup.value;
+    return this.state.openSubPopup;
   }
 
   // 添加视频信息状态变化监听器
   addVideoInfoChangeListener(callback: (visible: boolean) => void) {
-    return watch(this.showVideoInfo, callback);
+    return watch(() => this.state.showVideoInfo, callback);
   }
 
   // 添加子弹窗状态变化监听器
   addSubPopupChangeListener(callback: (visible: boolean) => void) {
-    return watch(this.openSubPopup, callback);
+    return watch(() => this.state.openSubPopup, callback);
   }
 
   // 弹出层出现动画
@@ -177,7 +179,7 @@ export class PopupManager {
 
   // 弹出层离开动画
   async onLeavePopup(el: Element, onComplete: () => void) {
-    this.openSubPopup.value = false; // 关闭子弹窗
+    this.state.openSubPopup = false; // 关闭子弹窗
 
     try {
       // 移除可能存在的过渡样式
@@ -217,12 +219,12 @@ export class PopupManager {
       event.propertyName === 'transform' &&
       event.target &&
       (event.target as HTMLElement).classList.contains('popup-slider') &&
-      this.isPopupVisible.value
+      this.state.isPopupVisible
     ) {
       // 使用 requestAnimationFrame 确保在下一帧调整位置
       requestAnimationFrame(() => {
         // 再次检查弹窗是否仍然可见
-        if (this.isPopupVisible.value) {
+        if (this.state.isPopupVisible) {
           console.log('过渡动画结束，调整弹窗位置');
           this.adjustPopupPosition();
         }
@@ -243,7 +245,7 @@ export class PopupManager {
   // 调整弹窗位置函数 - 添加防止缩放冲突的逻辑
   adjustPopupPosition() {
     if (
-      !this.isPopupVisible.value ||
+      !this.state.isPopupVisible ||
       !this.point.value ||
       !settings.value.adjustPopupPosition
     )
@@ -258,13 +260,11 @@ export class PopupManager {
 
     // 使用 requestAnimationFrame 确保在下一帧获取位置，避免动画过程中的不准确位置
     requestAnimationFrame(() => {
-      // 再次检查弹窗是否仍然可见
-      if (!this.isPopupVisible.value) {
-        console.log('弹窗已不可见，取消位置调整');
-        return;
-      }
-
-      // 获取当前弹窗的实际尺寸
+    // 再次检查弹窗是否仍然可见
+    if (!this.state.isPopupVisible) {
+      console.log('弹窗已不可见，取消位置调整');
+      return;
+    }      // 获取当前弹窗的实际尺寸
       const popupRect = this.popupContainer.getBoundingClientRect();
       const mapRect = this.map.getTargetElement().getBoundingClientRect();
 
@@ -291,8 +291,8 @@ export class PopupManager {
       let extraRightMargin = 0;
       let extraTopMargin = 0;
 
-      if (this.openSubPopup.value) {
-        if (this.isMobileDevice.value) {
+      if (this.state.openSubPopup) {
+        if (this.state.isMobileDevice) {
           // 移动设备上向上展开，增加顶部检查的边界
           extraTopMargin = 300; // 预估副弹窗高度
         } else {
@@ -344,8 +344,8 @@ export class PopupManager {
           adjustX !== 0
             ? Math.sign(adjustX) *
               (extraOffset +
-                (this.openSubPopup.value &&
-                !this.isMobileDevice.value &&
+                (this.state.openSubPopup &&
+                !this.state.isMobileDevice &&
                 adjustX < 0
                   ? 40
                   : 0))
@@ -356,8 +356,8 @@ export class PopupManager {
           adjustY !== 0
             ? Math.sign(adjustY) *
               (extraOffset +
-                (this.openSubPopup.value &&
-                this.isMobileDevice.value &&
+                (this.state.openSubPopup &&
+                this.state.isMobileDevice &&
                 adjustY > 0
                   ? 40
                   : 0))
@@ -386,7 +386,7 @@ export class PopupManager {
 
   // 重新计算弹窗的位置，基于当前标点坐标和分辨率
   public repositionPopup() {
-    if (!this.isPopupVisible.value || !this.point.value) return;
+    if (!this.state.isPopupVisible || !this.point.value) return;
 
     const currentMap = this.map;
     if (!currentMap) return;
@@ -453,7 +453,7 @@ export class PopupManager {
     await new Promise(resolve => rafTimeout(resolve, 300));
 
     // 确保弹窗可见
-    this.isPopupVisible.value = true;
+    this.state.isPopupVisible = true;
     // 打开弹窗并等待动画完成
     await this.openToast();
   }

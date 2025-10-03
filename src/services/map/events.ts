@@ -36,7 +36,7 @@ const handleZoomChangeInternal = debounce(function () {
   updateClusterDistance(zoom);
 
   // 如果弹窗是打开的，则在缩放时重新定位弹窗
-  if (popupManager.value && popupManager.value.isPopupVisible.value) {
+  if (popupManager.value && popupManager.value.state.isPopupVisible) {
     // 使用 requestAnimationFrame 确保在下一帧调整位置
     requestAnimationFrame(() => {
       popupManager.value?.repositionPopup();
@@ -81,10 +81,7 @@ const moveEndChangeInternal = debounce(() => {
 
   // 在移动或缩放结束后，重置缩放状态标志
   if (popupManager.value) {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('重置缩放状态标志');
-    }
-    setMapZooming(false); // 使用 state 中的 setter
+    setMapZooming(false);
   }
 }, 200);
 

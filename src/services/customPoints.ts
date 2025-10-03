@@ -287,7 +287,7 @@ export async function updateCustomPoint(
     point.value = updatedPoint;
 
     // 如果弹窗管理器存在且当前正在显示弹窗，确保弹窗位置正确
-    if (popupManager.value && popupManager.value.isPopupVisible.value) {
+    if (popupManager.value && popupManager.value.state.isPopupVisible) {
       // 设置当前位置，以便PopupManager可以正确重新定位弹窗
       popupManager.value.setCurrentPosition(xyz2crd(updatedPoint.position));
       // 重新定位弹窗
