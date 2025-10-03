@@ -30,7 +30,7 @@
       }"
       :transition="{
         duration: 0.5,
-        type: 'spring',
+        type: showContent ? 'spring' : 'tween',
         bounce: 0.25,
       }"
     >
