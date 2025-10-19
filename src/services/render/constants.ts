@@ -11,6 +11,11 @@ export const CACHE_CLEANUP_TIMEOUT = 5 * 60 * 1000; // 5分钟
 export const DEFAULT_RADIUS = 15;
 
 /**
+ * 大图标半径
+ */
+export const LARGE_RADIUS = 30;
+
+/**
  * 默认描边宽度
  */
 export const DEFAULT_STROKE_WIDTH = 2;

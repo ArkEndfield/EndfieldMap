@@ -5,7 +5,7 @@ import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import VectorLayer from 'ol/layer/Vector';
 import Cluster from 'ol/source/Cluster';
 import { LayerStore, StyleCacheEntry } from '@/types/render';
-import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
+import { Style, Circle as CircleStyle, Fill } from 'ol/style';
 import settings from '@/data/settings';
 import { ELECTRIC_POLE_RANGE_COLOR } from '@/services/render/constants';
 
@@ -59,10 +59,10 @@ export const electricPoleRangeLayer = new VectorLayer({
       image: new CircleStyle({
         radius: radiusInPixels,
         fill: new Fill({ color: ELECTRIC_POLE_RANGE_COLOR }),
-        stroke: new Stroke({
-          color: 'rgba(255, 255, 0, 0.6)',
-          width: 1,
-        }),
+        // stroke: new Stroke({
+        //   color: 'rgba(255, 255, 0, 0.6)',
+        //   width: 1,
+        // }),
       }),
     });
   },

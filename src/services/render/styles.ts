@@ -12,6 +12,7 @@ import Feature from 'ol/Feature';
 import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_RADIUS,
+  LARGE_RADIUS,
   DEFAULT_STROKE_COLOR,
   DEFAULT_STROKE_WIDTH,
   FINISHED_OPACITY,
@@ -33,18 +34,24 @@ import {
   multiSelectMarks,
 } from '@/data/marks';
 
+const LARGE_ICON_PATHS = new Set<string>([
+  'custom/electric_pole',
+]);
+
 /**
  * 创建圆形标点样式
  * @param entityType 实体类型
- * @param size 标点数量
+ * @param count 标点数量
  * @returns 样式数组
  */
 export async function createCircleIconStyle(
   entityType: string,
-  size: number = 1
+  radius: number = DEFAULT_RADIUS,
+  iconRadius: number = DEFAULT_RADIUS,
+  count: number = 1
 ): Promise<Style[]> {
   const store = getStore();
-  const cacheKey = `${entityType}-${size}`;
+  const cacheKey = `${entityType}-${radius}-${iconRadius}-${count}`;
 
   if (store.iconStyleCache[cacheKey] !== undefined) {
     // 清除之前的清理定时器
@@ -56,8 +63,7 @@ export async function createCircleIconStyle(
 
   const stylePromise = (async () => {
     const color = getColorForEntity(entityType);
-    const radius = DEFAULT_RADIUS;
-    const targetIconSize = radius * 2;
+    const targetIconSize = iconRadius * 2;
 
     const imagePath = `/assets/${
       entityInfo[entityType]?.category || 'default'
@@ -70,10 +76,10 @@ export async function createCircleIconStyle(
       targetIconSize
     );
 
-    const baseStyles = createBaseStyles(radius, color, imagePath, optimalScale);
+    const baseStyles = createBaseStyles(radius, radius, color, imagePath, optimalScale);
 
-    if (size > 1) {
-      baseStyles.push(createClusterStyle(radius, size));
+    if (count > 1) {
+      baseStyles.push(createClusterStyle(radius, count));
     }
 
     return baseStyles;
@@ -95,6 +101,7 @@ export async function createCircleIconStyle(
  */
 export function createBaseStyles(
   radius: number,
+  iconRadius: number,
   color: string,
   imagePath: string,
   optimalScale: number,
@@ -106,7 +113,7 @@ export function createBaseStyles(
     createLeftDecoration(radius),
     createRightDecoration(radius),
     createBottomTriangleIndicator(color),
-    createIconStyle(imagePath, radius, optimalScale),
+    createIconStyle(imagePath, iconRadius, optimalScale),
   ];
 
   // 电线杆范围现在使用独立的层，不再在标点样式中添加
@@ -331,8 +338,14 @@ export function createClusterStyleFunction(entityType: string): (feature: Featur
 
     // 缓存中没有找到样式
     if (!store.styleCache[styleKey]) {
+      const iconPath = `${entityInfo[entityType]?.category || 'default'}/${
+        entityInfo[entityType]?.entityInfo.pic || 'default'
+      }`;
+
+      const isLargeIcon = LARGE_ICON_PATHS.has(iconPath);
+
       // 基础样式不存在，异步创建
-      createCircleIconStyle(entityType, size).then(baseStyle => {
+      createCircleIconStyle(entityType, DEFAULT_RADIUS, isLargeIcon ? LARGE_RADIUS + 5 : DEFAULT_RADIUS, size).then(baseStyle => {
         // 保存原始样式
         addStyleToCache(styleKey, { style: baseStyle });
 

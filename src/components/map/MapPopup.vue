@@ -4,8 +4,8 @@
     ref="popupContainer"
     id="popup-container"
     :animate="{
-      opacity: popupManager?.isPopupVisible.value ? 1 : 0,
-      transform: popupManager?.isPopupVisible.value ? 'scaleY(1)' : 'scaleY(0)',
+      opacity: popupManager?.state.isPopupVisible ? 1 : 0,
+      transform: popupManager?.state.isPopupVisible ? 'scaleY(1)' : 'scaleY(0)',
     }"
     :transition="{
       duration: 0.3,
