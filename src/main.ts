@@ -16,12 +16,14 @@ import {
 import { initDB } from '@/utils/indexedDBStorage';
 import { loadPoints } from '@/services/points';
 import { browserTip, loadErrorTip } from '@/utils/browserHandle';
+import { loadSwiperData } from '@/services/swiper';
 
 // 应用启动序列 - 确保顺序执行所有初始化步骤
 async function initializeApp() {
   console.log('🚀 开始应用初始化序列...');
 
   try {
+    loadSwiperData();
     // 步骤1: 初始化 IndexedDB 数据库
     console.log('步骤1: 初始化 IndexedDB 数据库');
     await initDB();

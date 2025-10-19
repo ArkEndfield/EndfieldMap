@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed right-2 bottom-18 md:bottom-12 w-64">
+  <div class="fixed right-2 bottom-18 md:bottom-12 w-64" v-if="swiperConfig.enable && swiperConfig.list.length > 0">
     <ListTitle
       color="#1F1F20"
       class="w-64 transition-[width] ml-auto"
@@ -41,10 +41,12 @@
         pagination
         :autoplay="{ delay: 2500, disableOnInteraction: false }"
         @autoplayTimeLeft="onAutoplayTimeLeft"
-        class="h-36 bg-[#1F1F20] shadow-lg text-white"
+        class="h-36 bg-[#1F1F20] shadow-lg text-white overflow-hidden rounded-md"
       >
-      <swiper-slide v-for="i in 9" :key="i" class="!flex items-center justify-center text-2xl font-bold">
-        Slide {{ i }}
+      <swiper-slide v-for="data in swiperConfig.list" :key="data.cover" class="!flex items-center justify-center text-2xl font-bold">
+        <a :href="data.link" target="_blank" rel="noopener noreferrer">
+          <img :src="data.cover" alt="" class="w-full h-full object-cover hover:scale-105 transition" referrerpolicy="no-referrer" />
+        </a>
       </swiper-slide>
       <template #container-end>
         <div class="autoplay-progress">
@@ -70,6 +72,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { useI18n } from 'vue-i18n'
 import settings from '@/data/settings'
+import { swiperConfig } from '@/data/swiper'
 
 const modules = [Pagination, Autoplay]
 const { t } = useI18n()
@@ -78,6 +81,7 @@ const progressCircle = ref()
 const progressContent = ref()
 
 const onAutoplayTimeLeft = (_: SwiperType, time: number, progress: number) => {
+  if (swiperConfig.value.list.length <= 1) return;
   progressCircle.value.style.setProperty('--progress', 1 - progress);
   progressContent.value.textContent = Math.ceil(time / 1000);
 };
