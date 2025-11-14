@@ -1,0 +1,642 @@
+import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import {
+  DEFAULT_CLUSTER_DISTANCE,
+  EntityInstanceKey,
+  FeatureType,
+  FeatureTypeKey,
+  type MapIndex,
+} from '@endfieldmap/map-core/const/map';
+import { CommonPointDataManager } from '@endfieldmap/map-core/data/entity/common_point';
+import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { ClusterOptions } from '@endfieldmap/map-core/render/features/_base';
+import type { MapFeature } from '@endfieldmap/map-core/render/features/feature';
+import { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
+import { EntityLayerContainer } from '@endfieldmap/map-core/render/layers/entity/entity_container';
+import type { EntityCategoryData, EntityData } from '@endfieldmap/map-core/types/entity';
+import type { JSONLoader } from '@endfieldmap/tools';
+import { groupBy, logger } from '@endfieldmap/tools';
+import { action, computed, observable, runInAction } from 'mobx';
+import type { Feature } from 'ol';
+import { boundingExtent } from 'ol/extent';
+import type { Point } from 'ol/geom';
+import type { EntityVisibilityChangeEventDetail } from '@endfieldmap/map-core/types/event';
+import type { EntityVisibility, FeatureMarked, StorageData } from '@endfieldmap/map-core/types/data';
+
+export interface EntityControllerConfig {
+  jsonLoader: JSONLoader;
+  dataPath: string;
+  imagePath: string;
+  clusterOptions?: ClusterOptions;
+  disableCluster?: boolean;
+}
+
+export class EntityController {
+  public commonPointDataManager: CommonPointDataManager;
+  public cachedLayer: Map<MapIndex, Map<EntityCategoryData['category'], CommonPointEntityLayer[]>> = new Map();
+  public imagePath: string;
+  public disableCluster: boolean;
+  private clusterOptions: ClusterOptions;
+  @observable accessor currentMapAllLayers: CommonPointEntityLayer[] = [];
+  private lastDistance: number = 0;
+
+  constructor(config: EntityControllerConfig) {
+    this.commonPointDataManager = new CommonPointDataManager({
+      jsonLoader: config.jsonLoader,
+      assetPath: config.dataPath,
+    });
+    this.imagePath = config.imagePath;
+    this.disableCluster = config.disableCluster ?? false;
+    this.clusterOptions = {
+      ...(config.clusterOptions ?? {}),
+      distance: config.disableCluster ? 0 : (config.clusterOptions?.distance ?? DEFAULT_CLUSTER_DISTANCE),
+    };
+    this.registerEventHandler();
+  }
+
+  /**
+   * 注册事件处理器
+   */
+  private registerEventHandler() {
+    // 点击事件
+    mapEventEmitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
+      // 收集所有可见 layers 的 features
+      const allClickedFeatures: Array<{
+        features: Feature<Point>[];
+        layer: CommonPointEntityLayer;
+      }> = [];
+
+      for (const layer of this.currentMapAllLayers) {
+        // 只处理可见的layer
+        if (!layer.visible) continue;
+
+        const clickedFeatures = await layer.layer.getFeatures(event.pixel);
+        if (clickedFeatures.length) {
+          const features = (clickedFeatures[0].get('features') as Feature<Point>[]).filter(
+            (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
+          );
+          if (features.length > 0) {
+            allClickedFeatures.push({ features, layer });
+          }
+        }
+      }
+
+      if (allClickedFeatures.length === 0) return;
+
+      // 选择最上层的 layer（z-index 最大的，或者最后添加的）
+      const selectedLayerFeatures = allClickedFeatures[allClickedFeatures.length - 1];
+      const features = selectedLayerFeatures.features;
+
+      if (features.length > 1) {
+        // 处理聚合点击
+        const coordinates = features.map((r) => r.getGeometry()?.getCoordinates?.()).filter((coord) => !!coord);
+        const extent = boundingExtent(coordinates);
+        const instances = features.map((r) => r.get(EntityInstanceKey) as MapFeature);
+        mapEventEmitter.fire(MAP_EVENT.CLUSTER_CLICK, {
+          features,
+          instances,
+          coordinates,
+          extent,
+          event,
+        });
+      } else {
+        // 处理单个实体点击
+        const feature = features[0];
+        const instance = feature.get(EntityInstanceKey) as MapFeature;
+        mapEventEmitter.fire(MAP_EVENT.ENTITY_CLICK, {
+          instance,
+          feature,
+          event,
+        });
+      }
+    });
+    // 缩放事件，设置聚合距离
+    mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, (zoom) => {
+      const shouldCluster = this.shouldCluster(zoom);
+      let newDistance = this.lastDistance;
+      if (shouldCluster) {
+        newDistance = this.clusterOptions.distance!;
+      } else {
+        newDistance = 0;
+      }
+      if (newDistance !== this.lastDistance) {
+        this.lastDistance = newDistance;
+        this.currentMapAllLayers.forEach((layer) => {
+          layer.entity.clusterSource.setDistance(newDistance);
+        });
+      }
+    });
+  }
+
+  /**
+   * 是否需要聚合
+   * @param zoom 缩放级别
+   * @returns 是否需要聚合
+   */
+  private shouldCluster(zoom: number): boolean {
+    return !this.disableCluster && zoom < 4;
+  }
+
+  /**
+   * 通知实体可见性变化
+   */
+  private notifyEntityVisibilityChange(event: EntityVisibilityChangeEventDetail) {
+    mapEventEmitter.fire(MAP_EVENT.ENTITY_VISIBILITY_CHANGE, event);
+  }
+
+  /**
+   * 获取实体图层
+   * @param mapIndex 地图索引
+   * @returns 实体图层
+   */
+  @action
+  public async getLayers(mapIndex: MapIndex): Promise<CommonPointEntityLayer[]> {
+    this.currentMapAllLayers = [];
+    if (this.cachedLayer.has(mapIndex)) {
+      const layers = Array.from(this.cachedLayer.get(mapIndex)!.values()).flat();
+      runInAction(() => {
+        this.currentMapAllLayers = layers;
+      });
+      return layers;
+    } else {
+      const data = await this.commonPointDataManager.getCategoryData(mapIndex);
+      const layers: Map<EntityCategoryData['category'], CommonPointEntityLayer[]> = new Map();
+      const currentLayers: CommonPointEntityLayer[] = [];
+      for (const [category, entities] of data) {
+        const infoDataGroup = groupBy(entities, 'entityDataIdKey');
+        const groupEntries = Object.entries(infoDataGroup);
+        for (const [id, entities] of groupEntries) {
+          const infoData = await this.commonPointDataManager.getInfoData(id);
+          if (!infoData) continue;
+          const layer = new CommonPointEntityLayer({
+            name: infoData.entityInfo.pic,
+            infoData: infoData,
+            icon: {
+              url: `${this.imagePath}/${infoData.category}/${infoData.entityInfo.pic}.png`,
+            },
+            data: entities,
+            mapIndex: mapIndex,
+            clusterOptions: this.clusterOptions,
+            renderBuffer: 250,
+          });
+          // 将 layer 添加到全局列表中
+          currentLayers.push(layer);
+          layers.set(category, [...(layers.get(category) || []), layer]);
+        }
+      }
+      runInAction(() => {
+        this.currentMapAllLayers = currentLayers;
+        this.cachedLayer.set(mapIndex, layers);
+      });
+      return this.currentMapAllLayers;
+    }
+  }
+
+  /**
+   * 获取实体图层容器
+   * @param mapIndex 地图索引
+   * @returns 实体图层容器
+   */
+  public async getEntityLayer(mapIndex: MapIndex): Promise<EntityLayerContainer | null> {
+    const layers = await this.getLayers(mapIndex);
+    if (layers.length === 0) return null;
+    return new EntityLayerContainer(layers);
+  }
+
+  // #region 实体图层可见性操作
+
+  /**
+   * 显示实体图层
+   * @param category 实体分类
+   * @param entityDataIdKey 实体数据ID
+   */
+  @action
+  public showEntity(entityDataIdKey: EntityData['entityDataIdKey']) {
+    const layer = this.currentMapAllLayers.find((layer) => layer.entityDataIdKey === entityDataIdKey);
+    if (!layer) return;
+    layer.setVisible(true);
+    this.notifyEntityVisibilityChange({
+      batch: false,
+      visible: true,
+      layers: [layer],
+      changes: [{ layer, visible: true }],
+    });
+  }
+
+  /**
+   * 隐藏实体图层
+   * @param entityDataIdKey 实体数据ID
+   */
+  @action
+  public hideEntity(entityDataIdKey: EntityData['entityDataIdKey']) {
+    const layer = this.currentMapAllLayers.find((layer) => layer.entityDataIdKey === entityDataIdKey);
+    if (!layer) return;
+    layer.setVisible(false);
+    this.notifyEntityVisibilityChange({
+      batch: false,
+      visible: false,
+      layers: [layer],
+      changes: [{ layer, visible: false }],
+    });
+  }
+
+  /**
+   * 切换实体图层的可见性
+   * @param entityDataIdKey 实体数据ID
+   */
+  @action
+  public toggleEntityVisible(entityDataIdKey: EntityData['entityDataIdKey']) {
+    const layer = this.currentMapAllLayers.find((layer) => layer.entityDataIdKey === entityDataIdKey);
+    if (!layer) {
+      logger.warn(
+        `[EntityController|toggleEntityVisible] Entity layer not found for entity data id key: ${entityDataIdKey}`
+      );
+      return;
+    }
+    const newVisible = !layer.visible;
+    layer.setVisible(newVisible);
+    this.notifyEntityVisibilityChange({
+      batch: false,
+      visible: newVisible,
+      layers: [layer],
+      changes: [{ layer, visible: newVisible }],
+    });
+  }
+
+  /**
+   * 显示所有实体图层
+   */
+  @action
+  public showAllEntities() {
+    const affectedLayers = this.currentMapAllLayers.filter((layer) => !layer.visible);
+    affectedLayers.forEach((layer) => {
+      layer.setVisible(true);
+    });
+    if (affectedLayers.length > 0) {
+      this.notifyEntityVisibilityChange({
+        batch: true,
+        visible: true,
+        layers: affectedLayers,
+        changes: affectedLayers.map((layer) => ({ layer, visible: true })),
+      });
+    }
+  }
+
+  /**
+   * 隐藏所有实体图层
+   */
+  @action
+  public hideAllEntities() {
+    const affectedLayers = this.currentMapAllLayers.filter((layer) => layer.visible);
+    affectedLayers.forEach((layer) => {
+      layer.setVisible(false);
+    });
+    if (affectedLayers.length > 0) {
+      this.notifyEntityVisibilityChange({
+        batch: true,
+        visible: false,
+        layers: affectedLayers,
+        changes: affectedLayers.map((layer) => ({ layer, visible: false })),
+      });
+    }
+  }
+  /**
+   * 切换实体图层的可见性
+   * @param entityDataIdKey 实体数据ID
+   */
+  @action
+  public toggleAllEntityVisible() {
+    const changes = this.currentMapAllLayers.map((layer) => {
+      const newVisible = !layer.visible;
+      layer.setVisible(newVisible);
+      return { layer, visible: newVisible };
+    });
+    if (changes.length > 0) {
+      this.notifyEntityVisibilityChange({
+        batch: true,
+        visible: false, // 对于切换操作，这个字段没有明确的意义
+        layers: this.currentMapAllLayers,
+        changes,
+      });
+    }
+  }
+
+  /**
+   * 显示分类中的所有实体图层
+   * @param category 实体分类
+   */
+  @action
+  public showCategoryEntities(category: EntityCategoryData['category']) {
+    const layers = this.currentMapAllLayers.filter((layer) => layer.infoData.category === category);
+    const affectedLayers = layers.filter((layer) => !layer.visible);
+    affectedLayers.forEach((layer) => {
+      layer.setVisible(true);
+    });
+    if (affectedLayers.length > 0) {
+      this.notifyEntityVisibilityChange({
+        batch: true,
+        visible: true,
+        layers: affectedLayers,
+        changes: affectedLayers.map((layer) => ({ layer, visible: true })),
+      });
+    }
+  }
+
+  /**
+   * 隐藏分类中的所有实体图层
+   * @param category 实体分类
+   */
+  @action
+  public hideCategoryEntities(category: EntityCategoryData['category']) {
+    const layers = this.currentMapAllLayers.filter((layer) => layer.infoData.category === category);
+    const affectedLayers = layers.filter((layer) => layer.visible);
+    affectedLayers.forEach((layer) => {
+      layer.setVisible(false);
+    });
+    if (affectedLayers.length > 0) {
+      this.notifyEntityVisibilityChange({
+        batch: true,
+        visible: false,
+        layers: affectedLayers,
+        changes: affectedLayers.map((layer) => ({ layer, visible: false })),
+      });
+    }
+  }
+
+  /**
+   * 切换分类中的所有实体图层的可见性
+   * @param category 实体分类
+   */
+  @action
+  public toggleCategoryEntityVisible(category: EntityCategoryData['category']) {
+    const layers = this.currentMapAllLayers.filter((layer) => layer.infoData.category === category);
+    const changes = layers.map((layer) => {
+      const newVisible = !layer.visible;
+      layer.setVisible(newVisible);
+      return { layer, visible: newVisible };
+    });
+    if (changes.length > 0) {
+      this.notifyEntityVisibilityChange({
+        batch: true,
+        visible: false, // 对于切换操作，这个字段没有明确的意义
+        layers,
+        changes,
+      });
+    }
+  }
+
+  /**
+   * 获取当前地图的所有实体信息列表
+   * @returns 实体信息列表
+   */
+  @computed get currentEntityInfoList() {
+    return this.currentMapAllLayers.map((layer) => layer.entityInfo);
+  }
+
+  /**
+   * 获取地图的分类后所有实体信息列表
+   * @param mapIndex 地图索引
+   * @returns 实体信息列表
+   */
+  @action
+  async getMapCategorizedEntityInfoList(mapIndex: MapIndex) {
+    const layers = await this.getMapEntityInfoList(mapIndex);
+    return groupBy(layers, 'category');
+  }
+
+  /**
+   * 获取地图的实体信息列表
+   * @param mapIndex 地图索引
+   * @returns 实体信息列表
+   */
+  @action
+  async getMapEntityInfoList(mapIndex: MapIndex) {
+    const layers = await this.getLayers(mapIndex);
+    return layers.map((layer) => layer.entityInfo);
+  }
+
+  public clearAllMarked(): void {
+    try {
+      for (const [_, categoryMap] of this.cachedLayer.entries()) {
+        for (const [_, layers] of categoryMap.entries()) {
+          for (const layer of layers) {
+            layer.entity.features.getArray().forEach((feature) => {
+              if (feature.marked) {
+                feature.setMarked(false);
+              }
+            });
+          }
+        }
+      }
+    } catch (error) {
+      logger.error('[DataController|clearAllMarked] Failed to clear marked entities', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 重置所有layer的可见性，将所有layer的visible状态设置为默认值
+   * @param visible 默认可见性
+   */
+  public resetAllLayerVisibility(visible: boolean = false): void {
+    try {
+      for (const [_, categoryMap] of this.cachedLayer.entries()) {
+        for (const [_, layers] of categoryMap.entries()) {
+          for (const layer of layers) {
+            layer.setVisible(visible);
+          }
+        }
+      }
+    } catch (error) {
+      logger.error('[DataController|resetAllLayerVisibility] Failed to reset layer visibility', error);
+      throw error;
+    }
+  }
+  // #endregion
+
+  // #region 数据处理
+
+  /**
+   * 导出层级可见性数据
+   * @returns 层级可见性数据
+   */
+  public exportLayerVisibility(): StorageData<EntityVisibility> {
+    try {
+      const layerVisibility = {} as StorageData<EntityVisibility>;
+
+      // 遍历所有缓存的地图层
+      for (const [mapIndex, categoryMap] of this.cachedLayer.entries()) {
+        // 初始化该地图的数据
+        layerVisibility[mapIndex] = {};
+
+        // 遍历该地图的所有分类层
+        for (const [_, layers] of categoryMap.entries()) {
+          for (const layer of layers) {
+            // 收集layer的可见性状态
+            const layerKey = layer.entityDataIdKey;
+            layerVisibility[mapIndex][layerKey] = layer.visible;
+          }
+        }
+      }
+      return layerVisibility;
+    } catch (error) {
+      logger.error('[DataController|exportLayerVisibility] Failed to export layer visibility', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 导入层级可见性数据
+   * @param layerVisibility 层级可见性数据
+   * @returns 导入的层级数量
+   */
+  public importLayerVisibility(layerVisibility: StorageData<EntityVisibility>): number {
+    try {
+      // 验证
+      if (!this.validateLayerVisibility(layerVisibility)) {
+        logger.error('[DataController|importLayerVisibility] Invalid layer visibility data');
+        throw new Error('Invalid layer visibility data');
+      }
+
+      let layerCount = 0;
+
+      // 遍历所有缓存的地图层
+      for (const [mapIndex, categoryMap] of this.cachedLayer.entries()) {
+        const layerVisibilityMap = layerVisibility[mapIndex] || {};
+
+        // 遍历该地图的所有分类层
+        for (const [_, layers] of categoryMap.entries()) {
+          for (const layer of layers) {
+            const layerKey = layer.entityDataIdKey;
+
+            // 恢复layer的可见性
+            if (layerKey in layerVisibilityMap) {
+              layer.setVisible(layerVisibilityMap[layerKey]);
+              layerCount++;
+            }
+          }
+        }
+      }
+      return layerCount;
+    } catch (error) {
+      logger.error('[DataController|importLayerVisibility] Failed to import layer visibility', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 验证层级可见性数据格式
+   * @param layerVisibility 要验证的层级可见性数据
+   * @returns 数据是否有效
+   */
+  public validateLayerVisibility(layerVisibility: unknown): layerVisibility is StorageData<EntityVisibility> {
+    if (!layerVisibility || typeof layerVisibility !== 'object') {
+      return false;
+    }
+
+    const obj = layerVisibility as Record<string, unknown>;
+    for (const key in obj) {
+      if (typeof obj[key] !== 'object') {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * 导出标记的feature数据
+   * @returns 标记的feature数据
+   */
+  public exportMarkedFeatures(): StorageData<FeatureMarked> {
+    try {
+      const markedFeatures: StorageData<FeatureMarked> = {};
+
+      // 遍历所有缓存的地图层
+      for (const [mapIndex, categoryMap] of this.cachedLayer.entries()) {
+        // 初始化该地图的数据
+        markedFeatures[mapIndex] = {};
+
+        // 遍历该地图的所有分类层
+        for (const [_, layers] of categoryMap.entries()) {
+          for (const layer of layers) {
+            // 收集该层中所有marked的entity的levelLogicId
+            const layerMarkedFeatures = layer.entity.features
+              .getArray()
+              .filter((feature) => feature.marked)
+              .map((feature) => feature.data.levelLogicId)
+              .reduce((acc, levelLogicId) => {
+                acc[levelLogicId] = true;
+                return acc;
+              }, {} as FeatureMarked);
+
+            Object.assign(markedFeatures[mapIndex], layerMarkedFeatures);
+          }
+        }
+      }
+
+      return markedFeatures;
+    } catch (error) {
+      logger.error('[DataController|exportMarkedEntities] Failed to export marked entities', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 验证标记的实体数据格式
+   * @param markedFeatures 要验证的标记数据
+   * @returns 数据是否有效
+   */
+  public validateMarkedFeatures(markedFeatures: unknown): markedFeatures is StorageData<FeatureMarked> {
+    if (!markedFeatures || typeof markedFeatures !== 'object') {
+      return false;
+    }
+
+    const obj = markedFeatures as Record<string, unknown>;
+    for (const key in obj) {
+      if (typeof obj[key] !== 'object' || obj[key] === null) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * 导入标记的实体数据
+   * @param markedFeatures 标记的实体数据
+   * @returns 导入的标记数量
+   */
+  public importMarkedFeatures(markedFeatures: StorageData<FeatureMarked>): number {
+    try {
+      let markedCount = 0;
+
+      // 遍历所有缓存的地图层
+      for (const [mapIndex, categoryMap] of this.cachedLayer.entries()) {
+        const markedLogicIdMap = markedFeatures[mapIndex] || {};
+
+        // 遍历该地图的所有分类层
+        for (const [_, layers] of categoryMap.entries()) {
+          for (const layer of layers) {
+            // 恢复entity的marked状态
+            layer.entity.features.getArray().forEach((feature) => {
+              const levelLogicId = feature.data.levelLogicId;
+              const shouldBeMarked = markedLogicIdMap[levelLogicId] === true;
+
+              if (feature.marked !== shouldBeMarked) {
+                feature.setMarked(shouldBeMarked);
+                if (shouldBeMarked) {
+                  markedCount++;
+                }
+              }
+            });
+          }
+        }
+      }
+      return markedCount;
+    } catch (error) {
+      logger.error('[DataController|importMarkedEntities] Failed to import marked entities', error);
+      throw error;
+    }
+  }
+  // #endregion
+}

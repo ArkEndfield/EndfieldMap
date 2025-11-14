@@ -1,0 +1,42 @@
+import { DEFAULT_MAP_CENTERS, MapIndex, type ViewState } from '@endfieldmap/tools/const';
+import type { Coordinate } from 'ol/coordinate';
+
+/**
+ * 获取地图中心点
+ * @param mapId 地图索引，默认值为 'map01'
+ * @returns 地图中心点
+ */
+export const getMapCenter = (mapId?: MapIndex | null): ViewState => {
+  if (!mapId || !(mapId in DEFAULT_MAP_CENTERS)) {
+    return DEFAULT_MAP_CENTERS[MapIndex.MAP01];
+  }
+  return DEFAULT_MAP_CENTERS[mapId];
+};
+
+/**
+ * 将XYZ坐标转换为OL坐标
+ * @param pos xyz坐标
+ * @param mapIndex 地图索引
+ * @returns  OL坐标
+ */
+export const xyz2crd = (pos: { x: number; y: number; z: number }, mapIndex: MapIndex) => {
+  const coords = mapIndex === MapIndex.MAP02 ? [pos.x / 8 + 80, pos.z / 8 + 224] : [pos.x / 8 + 128, pos.z / 8 + 160];
+
+  return coords;
+};
+
+/**
+ * 将OL坐标转换为XYZ坐标
+ * @param coordinate OL坐标
+ * @param mapIndex 地图索引
+ * @returns xyz坐标
+ */
+export const crd2xyz = (coordinate: Coordinate, mapIndex: MapIndex) => {
+  const x = mapIndex === MapIndex.MAP02 ? coordinate[0] - 80 : coordinate[0] - 128;
+  const z = mapIndex === MapIndex.MAP02 ? coordinate[1] - 224 : coordinate[1] - 160;
+  return {
+    x: x * 8,
+    y: 0,
+    z: z * 8,
+  };
+};
