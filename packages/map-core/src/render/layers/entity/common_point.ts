@@ -26,9 +26,9 @@ import {
   createDecoration,
   createIconStyle,
 } from '@endfieldmap/map-core/render/factory';
-import type { ClusterOptions } from '@endfieldmap/map-core/render/features/_base';
-import { EntityFeature } from '@endfieldmap/map-core/render/features/entity';
-import type { MapFeature } from '@endfieldmap/map-core/render/features/feature';
+import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
+import { ClusterEntitySource } from '@endfieldmap/map-core/render/source/entity';
+import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import type { EntityDataList, EntityInfoData, EntityInfoItemData } from '@endfieldmap/map-core/types';
 import { action, computed, observable } from 'mobx';
@@ -57,7 +57,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
   /** 图层实例 */
   public layer: VectorLayer;
   /** entity 实例 */
-  @observable accessor entity: EntityFeature;
+  @observable accessor entity: ClusterEntitySource;
   /** 配置 */
   @observable accessor config: CommonPointEntityLayerConfig;
   /** 实体信息数据 */
@@ -251,7 +251,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     super();
     this.config = config;
     this.infoData = config.infoData;
-    this.entity = new EntityFeature({
+    this.entity = new ClusterEntitySource({
       data: config.data,
       mapIndex: config.mapIndex,
       clusterOptions: config.clusterOptions,
@@ -265,8 +265,9 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       visible: this.visible,
     });
     this.layer.set(LayerTypeKey, LayerType.ENTITY);
+    const iconSize = this.config.icon.size ?? DEFAULT_ICON_SIZE;
     // 预创建图标样式
-    this.iconStyleCache = createIconStyle(this.config.icon.url, DEFAULT_ICON_SIZE, ENTITY_RADIUS, 3);
+    this.iconStyleCache = createIconStyle(this.config.icon.url, iconSize, ENTITY_RADIUS, 3);
   }
 
   /**

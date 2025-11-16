@@ -1,6 +1,6 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { MapFeature } from '@endfieldmap/map-core/render/features/feature';
+import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
 import type { Map as OlMap } from 'ol';

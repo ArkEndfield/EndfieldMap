@@ -8,10 +8,10 @@ import {
 } from '@endfieldmap/map-core/const/map';
 import { CommonPointDataManager } from '@endfieldmap/map-core/data/entity/common_point';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { ClusterOptions } from '@endfieldmap/map-core/render/features/_base';
-import type { MapFeature } from '@endfieldmap/map-core/render/features/feature';
+import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
+import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
-import { EntityLayerContainer } from '@endfieldmap/map-core/render/layers/entity/entity_container';
+import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
 import type { EntityCategoryData, EntityData } from '@endfieldmap/map-core/types/entity';
 import type { JSONLoader } from '@endfieldmap/tools';
 import { groupBy, logger } from '@endfieldmap/tools';
@@ -35,9 +35,11 @@ export class EntityController {
   public cachedLayer: Map<MapIndex, Map<EntityCategoryData['category'], CommonPointEntityLayer[]>> = new Map();
   public imagePath: string;
   public disableCluster: boolean;
+  public entityLayerContainer: MultiLayerContainer | null = null;
   private clusterOptions: ClusterOptions;
   @observable accessor currentMapAllLayers: CommonPointEntityLayer[] = [];
   private lastDistance: number = 0;
+  private currentMapIndex?: MapIndex;
 
   constructor(config: EntityControllerConfig) {
     this.commonPointDataManager = new CommonPointDataManager({
@@ -57,58 +59,6 @@ export class EntityController {
    * 注册事件处理器
    */
   private registerEventHandler() {
-    // 点击事件
-    mapEventEmitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
-      // 收集所有可见 layers 的 features
-      const allClickedFeatures: Array<{
-        features: Feature<Point>[];
-        layer: CommonPointEntityLayer;
-      }> = [];
-
-      for (const layer of this.currentMapAllLayers) {
-        // 只处理可见的layer
-        if (!layer.visible) continue;
-
-        const clickedFeatures = await layer.layer.getFeatures(event.pixel);
-        if (clickedFeatures.length) {
-          const features = (clickedFeatures[0].get('features') as Feature<Point>[]).filter(
-            (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
-          );
-          if (features.length > 0) {
-            allClickedFeatures.push({ features, layer });
-          }
-        }
-      }
-
-      if (allClickedFeatures.length === 0) return;
-
-      // 选择最上层的 layer（z-index 最大的，或者最后添加的）
-      const selectedLayerFeatures = allClickedFeatures[allClickedFeatures.length - 1];
-      const features = selectedLayerFeatures.features;
-
-      if (features.length > 1) {
-        // 处理聚合点击
-        const coordinates = features.map((r) => r.getGeometry()?.getCoordinates?.()).filter((coord) => !!coord);
-        const extent = boundingExtent(coordinates);
-        const instances = features.map((r) => r.get(EntityInstanceKey) as MapFeature);
-        mapEventEmitter.fire(MAP_EVENT.CLUSTER_CLICK, {
-          features,
-          instances,
-          coordinates,
-          extent,
-          event,
-        });
-      } else {
-        // 处理单个实体点击
-        const feature = features[0];
-        const instance = feature.get(EntityInstanceKey) as MapFeature;
-        mapEventEmitter.fire(MAP_EVENT.ENTITY_CLICK, {
-          instance,
-          feature,
-          event,
-        });
-      }
-    });
     // 缩放事件，设置聚合距离
     mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, (zoom) => {
       const shouldCluster = this.shouldCluster(zoom);
@@ -148,15 +98,9 @@ export class EntityController {
    * @param mapIndex 地图索引
    * @returns 实体图层
    */
-  @action
-  public async getLayers(mapIndex: MapIndex): Promise<CommonPointEntityLayer[]> {
-    this.currentMapAllLayers = [];
+  public async getMapLayers(mapIndex: MapIndex): Promise<CommonPointEntityLayer[]> {
     if (this.cachedLayer.has(mapIndex)) {
-      const layers = Array.from(this.cachedLayer.get(mapIndex)!.values()).flat();
-      runInAction(() => {
-        this.currentMapAllLayers = layers;
-      });
-      return layers;
+      return Array.from(this.cachedLayer.get(mapIndex)!.values()).flat();
     } else {
       const data = await this.commonPointDataManager.getCategoryData(mapIndex);
       const layers: Map<EntityCategoryData['category'], CommonPointEntityLayer[]> = new Map();
@@ -183,23 +127,27 @@ export class EntityController {
           layers.set(category, [...(layers.get(category) || []), layer]);
         }
       }
-      runInAction(() => {
-        this.currentMapAllLayers = currentLayers;
-        this.cachedLayer.set(mapIndex, layers);
-      });
-      return this.currentMapAllLayers;
+      this.cachedLayer.set(mapIndex, layers);
+      return Array.from(layers.values()).flat();
     }
   }
 
+
   /**
-   * 获取实体图层容器
+   * 获取实体图层
    * @param mapIndex 地图索引
-   * @returns 实体图层容器
+   * @returns 实体图层
    */
-  public async getEntityLayer(mapIndex: MapIndex): Promise<EntityLayerContainer | null> {
-    const layers = await this.getLayers(mapIndex);
-    if (layers.length === 0) return null;
-    return new EntityLayerContainer(layers);
+  @action
+  public async switchMapLayers(mapIndex: MapIndex): Promise<CommonPointEntityLayer[]> {
+    if (this.currentMapIndex === mapIndex) return this.currentMapAllLayers;
+    this.currentMapIndex = mapIndex;
+    const layers = await this.getMapLayers(mapIndex);
+    runInAction(() => {
+      this.currentMapAllLayers = layers;
+      this.entityLayerContainer = new MultiLayerContainer(layers.map(layer => layer.layer));
+    });
+    return layers;
   }
 
   // #region 实体图层可见性操作
@@ -410,7 +358,7 @@ export class EntityController {
    */
   @action
   async getMapEntityInfoList(mapIndex: MapIndex) {
-    const layers = await this.getLayers(mapIndex);
+    const layers = await this.getMapLayers(mapIndex);
     return layers.map((layer) => layer.entityInfo);
   }
 
@@ -498,11 +446,9 @@ export class EntityController {
       }
 
       let layerCount = 0;
-
       // 遍历所有缓存的地图层
       for (const [mapIndex, categoryMap] of this.cachedLayer.entries()) {
         const layerVisibilityMap = layerVisibility[mapIndex] || {};
-
         // 遍历该地图的所有分类层
         for (const [_, layers] of categoryMap.entries()) {
           for (const layer of layers) {

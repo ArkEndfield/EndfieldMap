@@ -1,11 +1,13 @@
 import type { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { MapFeature } from '@endfieldmap/map-core/render/features/feature';
-import type { Feature, MapBrowserEvent } from 'ol';
+import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
+import type { Feature, Map as OlMap, MapBrowserEvent } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
 import type { FeatureLike } from 'ol/Feature';
 import type { Point } from 'ol/geom';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
+import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
 
 export interface ClusterEventDetail {
     features: Feature<Point>[];
@@ -19,6 +21,26 @@ export interface EntityEventDetail {
     instance: MapFeature;
     feature: FeatureLike;
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+}
+
+export interface MapContextMenuEventDetail {
+    pixel: [number, number];
+    coordinate: Coordinate | undefined;
+    originalEvent: MouseEvent;
+    map: OlMap;
+}
+
+export interface EntityContextMenuEventDetail {
+    instance: MapFeature;
+    feature: FeatureLike;
+    layer: CommonPointEntityLayer | ElectricPoleEntityLayer;
+    event: MapContextMenuEventDetail;
+}
+
+export interface ConnectionContextMenuEventDetail {
+    feature: FeatureLike;
+    layer: ElectricPoleConnectionLayer;
+    event: MapContextMenuEventDetail;
 }
 
 export interface FeatureSelectEventDetail {
@@ -50,16 +72,18 @@ export interface MapEventEmitter {
     [MAP_EVENT.ZOOM_CHANGE]: number;
     [MAP_EVENT.MAP_CLICK]: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
     [MAP_EVENT.MAP_CENTER_CHANGE]: Coordinate | undefined;
-
+    [MAP_EVENT.MAP_CONTEXT_MENU]: MapContextMenuEventDetail;
     [MAP_EVENT.FEATURE_SELECT]: FeatureSelectEventDetail;
     [MAP_EVENT.FEATURE_STATE_CHANGE]: FeatureStateChangeEventDetail;
 
     // 高级封装的
     [MAP_EVENT.CLUSTER_CLICK]: ClusterEventDetail;
     [MAP_EVENT.ENTITY_CLICK]: EntityEventDetail;
+    [MAP_EVENT.ENTITY_CONTEXT_MENU]: EntityContextMenuEventDetail;
     [MAP_EVENT.ENTITY_VISIBILITY_CHANGE]: EntityVisibilityChangeEventDetail;
     [MAP_EVENT.ACTIVE_FEATURE_CHANGE]: ActiveFeatureChangeEventDetail;
     [MAP_EVENT.SELECTION_START]: void;
+    [MAP_EVENT.CONNECTION_CONTEXT_MENU]: ConnectionContextMenuEventDetail;
 }
 
 export type MapEventListener<T extends keyof MapEventEmitter> = (event: MapEventEmitter[T]) => void;

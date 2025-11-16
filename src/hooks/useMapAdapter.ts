@@ -72,6 +72,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
             }
           });
           adapter.current.renderAreaName(Language.ZH_CN);
+          adapter.current.renderElectricPole(currentMap);
           adapter.current.mapController.setCenter(data.center);
         }
       });

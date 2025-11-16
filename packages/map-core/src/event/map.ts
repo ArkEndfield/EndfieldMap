@@ -2,6 +2,7 @@ import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { DEFAULT_ZOOM } from '@endfieldmap/map-core/const/map';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { MapContextMenuEventDetail } from '@endfieldmap/map-core/types/event';
 import type { Map as OlMap, View } from 'ol';
 
 /**
@@ -45,6 +46,20 @@ export class EndfieldMapEvent {
 
     this.onView('change:center', () => {
       this.event.fire(MAP_EVENT.MAP_CENTER_CHANGE, this.view.getCenter());
+    });
+
+    const viewport = this.map.getViewport();
+    viewport.addEventListener('contextmenu', (domEvent: MouseEvent) => {
+      domEvent.preventDefault();
+      const pixel = this.map.getEventPixel(domEvent) as [number, number];
+      const coordinate = this.map.getCoordinateFromPixel(pixel);
+      const detail: MapContextMenuEventDetail = {
+        pixel,
+        coordinate: coordinate ?? undefined,
+        originalEvent: domEvent,
+        map: this.map,
+      };
+      this.event.fire(MAP_EVENT.MAP_CONTEXT_MENU, detail);
     });
   }
 }

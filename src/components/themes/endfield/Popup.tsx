@@ -136,16 +136,9 @@ const Popup: React.FC<PopupProps> = observer(({ adapter }) => {
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500 min-w-[50px]">位置:</span>
                 <span className="font-mono text-gray-900 text-xs">
-                  ({activeFeature.data.position.x}, {activeFeature.data.position.y})
+                  ({activeFeature.coordinates[0]}, {activeFeature.coordinates[1]})
                 </span>
               </div>
-
-              {activeFeature.data.position.z !== undefined && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-gray-500 min-w-[50px]">高度:</span>
-                  <span className="font-mono text-gray-900 text-xs">{activeFeature.data.position.z}</span>
-                </div>
-              )}
 
               <div className="pt-2 mt-2 border-t border-gray-100">
                 <div className="flex items-start space-x-2 text-xs">

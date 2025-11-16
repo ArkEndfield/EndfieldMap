@@ -1,6 +1,6 @@
 import { MAP_EVENT } from "@endfieldmap/map-core/const/event";
 import mapEventEmitter from "@endfieldmap/map-core/event/emitter";
-import type { MapFeature } from "@endfieldmap/map-core/render/features/feature";
+import type { MapFeature } from "@endfieldmap/map-core/render/source/feature/feature";
 import type { CommonPointEntityLayer } from "@endfieldmap/map-core/render/layers/entity/common_point";
 import type { DisposeListener } from "@endfieldmap/map-core/types/event";
 import { logger } from "@endfieldmap/tools";
@@ -98,9 +98,11 @@ export class ActiveFeatureController {
         }
 
         // 激活新的feature
-        if (feature) {
+        if (feature && feature.activable) {
             feature.setActive(true);
             logger.debug('[ActiveFeatureController] Activated feature', feature.data);
+        } else {
+            feature = null;
         }
 
         this.activeFeature = feature;

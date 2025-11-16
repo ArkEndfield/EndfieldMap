@@ -1,7 +1,7 @@
 import { MAP_EVENT } from "@endfieldmap/map-core/const/event";
 import { EntityInstanceKey } from "@endfieldmap/map-core/const/map";
 import mapEventEmitter from "@endfieldmap/map-core/event/emitter";
-import type { MapFeature } from "@endfieldmap/map-core/render/features/feature";
+import type { MapFeature } from "@endfieldmap/map-core/render/source/feature/feature";
 import type { DisposeListener,EntityEventDetail } from "@endfieldmap/map-core/types/event";
 import { action, observable } from "mobx";
 import type { Feature } from "ol";

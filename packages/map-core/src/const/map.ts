@@ -81,6 +81,9 @@ export const LayerTypeKey = 'layerType';
 /** 地图类型键 */
 export const MapTypeKey = 'mapType';
 
+/** 电线杆 ID 键 */
+export const ElectricPoleIdKey = '#electric_pole';
+
 /** 地图类型 */
 export const enum MapType {
   MAP = 'map',
@@ -98,4 +101,5 @@ export const enum LayerType {
 export const enum FeatureType {
   AREA_NAME,
   ENTITY,
+  CONNECTION,
 }

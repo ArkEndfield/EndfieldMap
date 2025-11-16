@@ -16,6 +16,8 @@ import type { SimpleMapConfig } from '@endfieldmap/map-core/types/map';
 import type { JSONLoader, Language, LoggerReporter } from "@endfieldmap/tools";
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from "mobx";
+import { ElectricPoleController } from "@endfieldmap/map-core/controller/electric_pole";
+import { EventController } from "@endfieldmap/map-core/controller/event";
 
 export interface AdapterConfig {
   container: HTMLElement;
@@ -47,6 +49,10 @@ export class EndfieldMapAdapter {
   public mapLayerController: MapLayerController;
   /** 实体数据管理器 */
   public entityController: EntityController;
+  /** 电线杆数据管理器 */
+  public electricPoleController: ElectricPoleController;
+  /** 事件控制器 */
+  public eventController: EventController;
   /** 激活特征控制器 */
   public activeFeatureController: ActiveFeatureController;
   /** 数据控制器 */
@@ -96,7 +102,13 @@ export class EndfieldMapAdapter {
     this.dataController = new DataController({
       entityController: this.entityController,
     });
-    
+    this.electricPoleController = new ElectricPoleController({
+      imagePath: `${this.asset.entityImage}/custom`,
+    });
+    this.eventController = new EventController({
+      entityController: this.entityController,
+      electricPoleController: this.electricPoleController,
+    });
     // 初始化popup控制器（默认启用）
     if (config.popup?.enabled !== false) {
       this.popupController = new PopupController({
@@ -135,9 +147,23 @@ export class EndfieldMapAdapter {
   @action
   public async renderEntity(mapIndex: MapIndex) {
     this.layerController.removeLayer(LayerType.ENTITY);
-    const entityLayer = await this.entityController.getEntityLayer(mapIndex);
+    await this.entityController.switchMapLayers(mapIndex);
+    const entityLayer = this.entityController.entityLayerContainer;
     if (entityLayer) {
       this.layerController.addLayer(LayerType.ENTITY, entityLayer);
+    }
+  }
+
+  /**
+   * 渲染电线杆
+   * @param mapIndex 地图索引
+   */
+  @action
+  public renderElectricPole(mapIndex: MapIndex) {
+    this.electricPoleController.switchMapElectricPoleLayers(mapIndex);
+    const electricPoleLayer = this.electricPoleController.layerContainer;
+    if (electricPoleLayer) {
+      this.layerController.addLayer(LayerType.ENTITY, electricPoleLayer);
     }
   }
 }

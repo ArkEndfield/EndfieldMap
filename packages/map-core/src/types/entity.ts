@@ -1,4 +1,4 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import type { ElectricPoleIdKey, MapIndex } from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
 /**
@@ -16,13 +16,13 @@ export interface EntityData {
   /** 位置 */
   position: Position;
   /** 默认隐藏 */
-  defaultHide: boolean;
+  defaultHide?: boolean;
   /** 在完成任务后隐藏 */
   is_hide_after_mission?: string;
   /** 最大数量 */
-  max_count: number;
+  max_count?: number;
   /** 类型ID */
-  type_id: string;
+  type_id?: string;
   /** 在完成任务前隐藏 */
   is_hide_before_mission?: string;
   prts_id?: string;
@@ -36,9 +36,25 @@ export interface EntityData {
 }
 
 /**
+ * 电线杆数据
+ */
+export interface ElectricPoleData extends EntityData {
+  entityDataIdKey: typeof ElectricPoleIdKey;
+  is_electric_pole: boolean;
+  entityType: '#ElectricPole';
+  templateId: '#electric_pole';
+  connections: ConnectionData;
+}
+
+/**
  * 实体数据列表
  */
 export type EntityDataList = EntityData[];
+
+/**
+ * 电线杆数据列表
+ */
+export type ElectricPoleDataList = ElectricPoleData[];
 
 /**
  * 实体分类数据，来自于json
@@ -93,16 +109,21 @@ export type EntityInfoDataJson = Record<EntityInfoKey, EntityInfoData>;
 /**
  * 实体信息项数据，用于EntityLayer的数据返回
  */
-export interface EntityInfoItemData {
+export interface EntityInfoItemData<T extends EntityData | ElectricPoleData = EntityData> {
   uniqueKey: string;
   category: EntityCategoryData['category'];
   entityDataIdKey: EntityData['entityDataIdKey'];
   entityInfo: EntityInfoData['entityInfo'];
   visible: boolean;
-  data: EntityDataList;
+  data: T[];
   mapIndex: MapIndex;
   count: number;
   markedCount: number;
   selectedCount: number;
   activeCount: number;
+}
+
+export interface ConnectionData {
+  from?: EntityData['levelLogicId'] | null;
+  to?: EntityData['levelLogicId'] | null;
 }
