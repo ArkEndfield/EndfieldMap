@@ -33,10 +33,13 @@ export class AnimatedRingFeature {
   @observable accessor opacity: number = 1;
 
   /** 动画持续时间（毫秒） */
-  private duration: number = 300;
+  private duration: number = 500;
+
+  /** 淡入动画持续时间（毫秒） */
+  private fadeInDuration: number = 200;
 
   /** 淡出动画持续时间（毫秒） */
-  private fadeOutDuration: number = 200;
+  private fadeOutDuration: number = 300;
 
   /** 动画开始时间 */
   private startTime: number;
@@ -47,12 +50,18 @@ export class AnimatedRingFeature {
   /** 淡出开始时间 */
   private fadeOutStartTime: number = 0;
 
+  /** 淡出开始时的透明度 */
+  private fadeOutStartOpacity: number = 1;
+
   constructor(coordinate: Coordinate, iconRadius: number) {
     // 计算目标半径和起始半径
     this.targetRadius = iconRadius + 4;
-    this.startRadius = this.targetRadius * 1.5;
-    this.endRadius = this.targetRadius * 1.5; // 淡出时扩散到的半径
+    this.startRadius = this.targetRadius * 1.2;
+    this.endRadius = this.targetRadius * 1.2; // 淡出时扩散到的半径
     this.currentRadius = this.startRadius;
+
+    // 初始透明度为0，用于淡入效果
+    this.opacity = 0;
 
     // 创建OpenLayers Feature
     this.feature = new Feature({
@@ -77,8 +86,8 @@ export class AnimatedRingFeature {
       // 使用ease-out缓动函数
       const easedProgress = this.easeOut(fadeProgress);
       
-      // 透明度线性减少
-      this.opacity = 1 - fadeProgress;
+      // 透明度从淡出开始时的透明度线性减少到0
+      this.opacity = this.fadeOutStartOpacity * (1 - fadeProgress);
       
       // 半径从当前半径扩大到结束半径
       this.currentRadius = this.fadeOutStartRadius + (this.endRadius - this.fadeOutStartRadius) * easedProgress;
@@ -95,6 +104,10 @@ export class AnimatedRingFeature {
       // 计算当前半径（从起始半径收缩到目标半径）
       this.currentRadius = this.startRadius - (this.startRadius - this.targetRadius) * easedProgress;
 
+      // 淡入效果：在前fadeInDuration毫秒内，透明度从0增加到1
+      const fadeInProgress = Math.min(elapsed / this.fadeInDuration, 1);
+      this.opacity = fadeInProgress;
+
       return false; // 收缩动画不会自动结束，需要等待淡出
     }
   }
@@ -107,6 +120,7 @@ export class AnimatedRingFeature {
       this.isFadingOut = true;
       this.fadeOutStartTime = timestamp;
       this.fadeOutStartRadius = this.currentRadius; // 记录淡出开始时的半径
+      this.fadeOutStartOpacity = this.opacity; // 记录淡出开始时的透明度
     }
   }
 

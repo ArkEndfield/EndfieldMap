@@ -5,6 +5,8 @@ import { EndfieldMap } from "@endfieldmap/map-core/render/map";
 import type { MapConfig } from "@endfieldmap/map-core/types/map";
 import type { Coordinate } from "ol/coordinate";
 import { HoverFeatureController } from "@endfieldmap/map-core/controller/hover_feature";
+import type { CommonPointEntityLayer } from "@endfieldmap/map-core/render/layers/entity/common_point";
+import type { ElectricPoleEntityLayer } from "@endfieldmap/map-core/render/layers/entity/electric_pole";
 
 export interface MapControllerConfig {
   mapConfig: Omit<MapConfig, 'mapImageUrl'>;
@@ -12,8 +14,8 @@ export interface MapControllerConfig {
 }
 
 export interface MapControllerDependencies {
-  getEntityLayers: () => any[];
-  getElectricPoleLayers: () => any[];
+  getEntityLayers: () => CommonPointEntityLayer[];
+  getElectricPoleLayers: () => ElectricPoleEntityLayer[];
 }
 
 export class MapController {
