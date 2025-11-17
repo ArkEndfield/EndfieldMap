@@ -268,7 +268,7 @@ export class ElectricPoleController {
     // 使用循环而不是递归，避免极端情况下的递归深度问题
     // 在 maxId 足够大的前提下，出现碰撞的概率极低。
     // 同时在 initElectricPoleData 中通过传入全局 usedIds，保证本次批量生成期间绝不重复。
-    // eslint-disable-next-line no-constant-condition
+     
     while (true) {
       const newId = Math.floor(Math.random() * maxId);
       if (!existingSet.has(newId)) {

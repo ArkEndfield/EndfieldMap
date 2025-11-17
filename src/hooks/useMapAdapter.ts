@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { sentryReporter } from '@/services/logger';
 import { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
+import { initCursorEventListeners } from '@/services/cursor';
 import { dataService } from '@/services/data';
 import { assetsHost } from '@/services/env';
 
@@ -46,6 +47,9 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
     // 初始化激活feature事件监听器，用于设置和清除激活的feature
     initActiveFeatureEventListeners(adapter.current);
+
+    // 初始化鼠标指针样式监听器
+    initCursorEventListeners(adapter.current);
   }, [containerRef]);
 
   useEffect(() => {

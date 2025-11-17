@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+/public/data/entity
+/public/data/map
+/public/images/entity
+/public/images/map
