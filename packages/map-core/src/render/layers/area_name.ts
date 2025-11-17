@@ -55,9 +55,10 @@ export class AreaNameLayer extends SingleLayerBase {
     this.layer = new VectorLayer({
       source: this.vectorSource,
       zIndex: -1,
-      renderBuffer: this.config.renderBuffer ?? 250,
+      renderBuffer: this.config.renderBuffer ?? 100,
       updateWhileAnimating: this.config.updateWhileAnimating ?? false,
       updateWhileInteracting: this.config.updateWhileInteracting ?? false,
+      declutter: true,
     });
     this.layer.set(LayerTypeKey, LayerType.AREA_NAME);
   }

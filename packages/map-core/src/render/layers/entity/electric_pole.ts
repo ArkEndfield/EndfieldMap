@@ -87,11 +87,12 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
     this.layer = new VectorLayer({
       source: this.entity.source,
       style: this.createStyle.bind(this),
-      renderBuffer: config.renderBuffer ?? 250,
+      renderBuffer: config.renderBuffer ?? 100,
       updateWhileAnimating: false,
       updateWhileInteracting: false,
       visible: this.visible,
       zIndex: 6, // 电线杆图层
+      declutter: false,
     });
     this.layer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
     const iconSize = this.config.icon.size ?? DEFAULT_ICON_SIZE;

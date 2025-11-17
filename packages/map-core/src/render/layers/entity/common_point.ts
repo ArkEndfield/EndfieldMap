@@ -116,11 +116,12 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     this.layer = new VectorLayer({
       source: this.entity.clusterSource,
       style: this.createStyle.bind(this),
-      renderBuffer: config.renderBuffer ?? 250,
+      renderBuffer: config.renderBuffer ?? 100,
       updateWhileAnimating: false,
       updateWhileInteracting: false,
       visible: this.visible,
       zIndex: 5, // 普通实体图层
+      declutter: false,
     });
     this.layer.set(LayerTypeKey, LayerType.ENTITY);
     const iconSize = this.config.icon.size ?? DEFAULT_ICON_SIZE;
@@ -164,31 +165,56 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     const features = feature.get('features');
     const size: number = features.length;
 
-    // 获取所有MapFeature实例
+    // 快速路径：单个feature且无状态变化
+    if (size === 1) {
+      const mapFeature: MapFeature = features[0].get(EntityInstanceKey);
+      const marked = mapFeature.marked;
+      const selected = mapFeature.isSelected;
+      
+      // 计算透明度
+      const fillOpacity: '50' | '75' | '100' = marked ? '50' : '100';
+      const strokeOpacity: '50' | '75' | '100' = selected ? '50' : fillOpacity;
+      const state: 'selected' | 'normal' = selected ? 'selected' : 'normal';
+      
+      const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state, 1);
+      const cachedStyle = this.styleCache.get(cacheKey);
+      if (cachedStyle) {
+        return cachedStyle;
+      }
+
+      // 创建样式
+      const styles: Style[] = [...CommonPointEntityLayer.BASE_BACKDROP_STYLE];
+      if (state === 'selected') {
+        styles.push(...CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]);
+      } else {
+        styles.push(...CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`]);
+      }
+      styles.push(this.iconStyleCache!);
+      
+      this.styleCache.set(cacheKey, styles);
+      return styles;
+    }
+
+    // 聚合feature的处理
     const mapFeatures: MapFeature[] = features.map((f: Feature) => f.get(EntityInstanceKey));
 
     // 统计marked、selected的数量
-    const markedCount = mapFeatures.filter((mf) => mf.marked).length;
-    const selectedCount = mapFeatures.filter((mf) => mf.isSelected).length;
+    let markedCount = 0;
+    let selectedCount = 0;
+    for (let i = 0; i < size; i++) {
+      if (mapFeatures[i].marked) markedCount++;
+      if (mapFeatures[i].isSelected) selectedCount++;
+    }
 
     const hasMarked = markedCount > 0;
     const hasSelected = selectedCount > 0;
-
-    // 判断是否所有feature都marked
     const allMarked = markedCount === size;
-    // 判断是否所有feature都selected
     const allSelected = selectedCount === size;
 
     // 计算透明度（基于marked状态）
     let fillOpacity: '50' | '75' | '100' = '100';
     if (hasMarked) {
-      // 如果所有feature都marked，透明度为50%
-      if (allMarked) {
-        fillOpacity = '50';
-      } else {
-        // 有多个feature但不是全部marked，透明度为75%
-        fillOpacity = '75';
-      }
+      fillOpacity = allMarked ? '50' : '75';
     }
 
     // 计算描边透明度和状态
@@ -197,11 +223,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     
     if (hasSelected) {
       state = 'selected';
-      if (allSelected) {
-        strokeOpacity = '50';
-      } else {
-        strokeOpacity = '75';
-      }
+      strokeOpacity = allSelected ? '50' : '75';
     } else {
       strokeOpacity = fillOpacity;
     }
@@ -227,14 +249,12 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     styles.push(this.iconStyleCache!);
 
     // 添加 size 样式（聚合数量）
-    if (size > 1) {
-      styles.push(
-        createClusterStyle({
-          radius: ENTITY_RADIUS,
-          size: size,
-        }),
-      );
-    }
+    styles.push(
+      createClusterStyle({
+        radius: ENTITY_RADIUS,
+        size: size,
+      }),
+    );
 
     // 缓存样式
     this.styleCache.set(cacheKey, styles);
