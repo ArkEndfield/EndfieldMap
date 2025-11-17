@@ -94,7 +94,7 @@ export class EndfieldSelectionInteraction {
             
             source.getFeatures().forEach((feature: Feature<Geometry>) => {
                 const mapFeature = feature.get(EntityInstanceKey) as MapFeature | undefined;
-                if (mapFeature) {
+                if (mapFeature && typeof mapFeature.setIsSelected === 'function') {
                     mapFeature.setIsSelected(selectedSingleFeatures.has(feature));
                 }
             });

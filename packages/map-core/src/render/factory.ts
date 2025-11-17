@@ -228,23 +228,48 @@ export function createIconStyle(
 }
 
 /**
- * 创建实体点位的图标 + hover 样式（静态样式，不含动画）
+ * 创建hover圆环样式
+ * @param radius 当前圆环半径
+ * @param baseRadius 底部圆的基础半径（不含描边）
+ * @param strokeWidth 描边宽度
+ * @param strokeColor 描边颜色（半透明主题色）
+ * @returns 圆环样式
+ */
+export function createHoverRingStyle(
+  radius: number,
+  baseRadius: number,
+  strokeWidth: number = 2,
+  strokeColor: string = 'rgba(255, 255, 255, 0.6)',
+): Style {
+  // displacement 应该与底部圆一致：baseRadius + 底部圆描边宽度(3) * 2
+  const displacement = baseRadius + 3 * 2;
+  
+  return new Style({
+    image: new CircleStyle({
+      radius: radius,
+      fill: undefined, // 无填充
+      stroke: new Stroke({
+        color: strokeColor,
+        width: strokeWidth,
+      }),
+      displacement: [0, displacement],
+    }),
+  });
+}
+
+/**
+ * 创建实体点位的图标样式
  */
 export function createEntityIconStyles({
   url,
   size,
   radius,
   borderWidth = 0,
-  hoverScale = 1.15,
 }: {
   url: string;
   size: number;
   radius: number;
   borderWidth?: number;
-  hoverScale?: number;
-}): { iconStyle: Style; hoverIconStyle: Style } {
-  const iconStyle = createIconStyle(url, size, radius, borderWidth);
-  const hoverIconStyle = createIconStyle(url, size * hoverScale, radius, borderWidth);
-
-  return { iconStyle, hoverIconStyle };
+}): Style {
+  return createIconStyle(url, size, radius, borderWidth);
 }

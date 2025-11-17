@@ -23,7 +23,6 @@
 
 ## Testing Guidelines
 
-- Use Vitest for unit tests in `packages/*`; colocate tests as `*.test.ts` / `*.test.tsx` near the code under test.
 - New features and bug fixes should include or update tests covering happy paths and key edge cases.
 - Before opening a PR, run relevant package tests and `pnpm lint`.
 

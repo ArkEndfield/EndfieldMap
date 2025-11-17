@@ -1,8 +1,5 @@
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import {
-  DEFAULT_ACTIVE_COLOR,
-  DEFAULT_ACTIVE_COLOR_TRANSPARENT_50,
-  DEFAULT_ACTIVE_COLOR_TRANSPARENT_75,
   DEFAULT_FILL_COLOR,
   DEFAULT_FILL_COLOR_TRANSPARENT_50,
   DEFAULT_FILL_COLOR_TRANSPARENT_75,
@@ -67,8 +64,6 @@ export class CommonPointEntityLayer extends SingleLayerBase {
   private styleCache: Map<string, Style[]> = new Map();
   /** 图标样式缓存 */
   private iconStyleCache: Style | null = null;
-  /** hover 时的图标样式缓存（稍大一点，突出 hover 效果） */
-  private hoverIconStyleCache: Style | null = null;
 
   /** 通用样式-backdrop */
   private static readonly BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
@@ -109,24 +104,6 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     ),
   } as const;
 
-  /** 激活样式（蓝色描边） */
-  private static readonly ACTIVE_STYLE_BG = {
-    ...createEntityBackgroundStyles(
-      ENTITY_RADIUS,
-      DEFAULT_STROKE_WIDTH,
-      {
-        '100': DEFAULT_FILL_COLOR,
-        '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
-        '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
-      },
-      {
-        '100': DEFAULT_ACTIVE_COLOR,
-        '50': DEFAULT_ACTIVE_COLOR_TRANSPARENT_50,
-        '75': DEFAULT_ACTIVE_COLOR_TRANSPARENT_75,
-      },
-    ),
-  } as const;
-
   constructor(config: CommonPointEntityLayerConfig) {
     super();
     this.config = config;
@@ -143,19 +120,18 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       updateWhileAnimating: false,
       updateWhileInteracting: false,
       visible: this.visible,
+      zIndex: 5, // 普通实体图层
     });
     this.layer.set(LayerTypeKey, LayerType.ENTITY);
     const iconSize = this.config.icon.size ?? DEFAULT_ICON_SIZE;
-    // 预创建图标样式（普通 + hover）
-    const { iconStyle, hoverIconStyle } = createEntityIconStyles({
+    // 预创建图标样式
+    const iconStyle = createEntityIconStyles({
       url: this.config.icon.url,
       size: iconSize,
       radius: ENTITY_RADIUS,
       borderWidth: 3,
-      hoverScale: 1.15,
     });
     this.iconStyleCache = iconStyle;
-    this.hoverIconStyleCache = hoverIconStyle;
   }
 
   /**
@@ -180,9 +156,8 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     strokeOpacity: '50' | '75' | '100',
     state: 'active' | 'selected' | 'normal',
     size: number,
-    hoverState: 'none' | 'some',
   ): string {
-    return `${fillOpacity}-${strokeOpacity}-${state}-${size}-${hoverState}`;
+    return `${fillOpacity}-${strokeOpacity}-${state}-${size}`;
   }
 
   private createStyle(feature: FeatureLike) {
@@ -192,23 +167,17 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     // 获取所有MapFeature实例
     const mapFeatures: MapFeature[] = features.map((f: Feature) => f.get(EntityInstanceKey));
 
-    // 统计marked、selected、active 和 hovered 的数量
+    // 统计marked、selected的数量
     const markedCount = mapFeatures.filter((mf) => mf.marked).length;
     const selectedCount = mapFeatures.filter((mf) => mf.isSelected).length;
-    const activeCount = mapFeatures.filter((mf) => mf.active).length;
-    const hoveredCount = mapFeatures.filter((mf) => mf.hovered).length;
 
     const hasMarked = markedCount > 0;
     const hasSelected = selectedCount > 0;
-    const hasActive = activeCount > 0;
-    const hasHovered = hoveredCount > 0;
 
     // 判断是否所有feature都marked
     const allMarked = markedCount === size;
     // 判断是否所有feature都selected
     const allSelected = selectedCount === size;
-    // 判断是否所有feature都active
-    const allActive = activeCount === size;
 
     // 计算透明度（基于marked状态）
     let fillOpacity: '50' | '75' | '100' = '100';
@@ -222,18 +191,11 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       }
     }
 
-    // 计算描边透明度和状态（active优先级最高）
+    // 计算描边透明度和状态
     let strokeOpacity: '50' | '75' | '100' = '100';
-    let state: 'active' | 'selected' | 'normal' = 'normal';
+    let state: 'selected' | 'normal' = 'normal';
     
-    if (hasActive) {
-      state = 'active';
-      if (allActive) {
-        strokeOpacity = '50';
-      } else {
-        strokeOpacity = '75';
-      }
-    } else if (hasSelected) {
+    if (hasSelected) {
       state = 'selected';
       if (allSelected) {
         strokeOpacity = '50';
@@ -244,9 +206,8 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       strokeOpacity = fillOpacity;
     }
 
-    // 生成缓存键并尝试从缓存获取样式（聚合点中只要存在 hovered 就视为 hover）
-    const hoverState: 'none' | 'some' = hasHovered ? 'some' : 'none';
-    const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state, size, hoverState);
+    // 生成缓存键并尝试从缓存获取样式
+    const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state, size);
     const cachedStyle = this.styleCache.get(cacheKey);
     if (cachedStyle) {
       return cachedStyle;
@@ -256,20 +217,14 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     const styles: Style[] = [...CommonPointEntityLayer.BASE_BACKDROP_STYLE];
 
     // 根据状态添加对应样式（包含背景、装饰线和三角指示器）
-    if (state === 'active') {
-      styles.push(...CommonPointEntityLayer.ACTIVE_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]);
-    } else if (state === 'selected') {
+    if (state === 'selected') {
       styles.push(...CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]);
     } else {
       styles.push(...CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`]);
     }
 
-    // 添加图标样式：在 hover 状态下放大图标（包括聚合点）
-    if (hasHovered) {
-      styles.push(this.hoverIconStyleCache!);
-    } else {
-      styles.push(this.iconStyleCache!);
-    }
+    // 添加图标样式
+    styles.push(this.iconStyleCache!);
 
     // 添加 size 样式（聚合数量）
     if (size > 1) {
@@ -303,7 +258,6 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       count: this.config.data.length,
       markedCount: this.entity.features.getArray().filter((feature) => feature.marked).length,
       selectedCount: this.entity.features.getArray().filter((feature) => feature.isSelected).length,
-      activeCount: this.entity.features.getArray().filter((feature) => feature.active).length,
     }
   }
 }

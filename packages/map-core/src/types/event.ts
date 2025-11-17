@@ -69,6 +69,13 @@ export interface FeatureStateChangeEventDetail {
 export interface ActiveFeatureChangeEventDetail {
     oldFeature: MapFeature | null;
     newFeature: MapFeature | null;
+    coordinate: Coordinate | null;
+}
+
+export interface HoverFeatureChangeEventDetail {
+    oldFeature: MapFeature | null;
+    newFeature: MapFeature | null;
+    coordinate: Coordinate | null;
 }
 
 export interface ElectricPoleChangedEventDetail {
@@ -91,6 +98,7 @@ export interface MapEventEmitter {
     [MAP_EVENT.ENTITY_CONTEXT_MENU]: EntityContextMenuEventDetail;
     [MAP_EVENT.ENTITY_VISIBILITY_CHANGE]: EntityVisibilityChangeEventDetail;
     [MAP_EVENT.ACTIVE_FEATURE_CHANGE]: ActiveFeatureChangeEventDetail;
+    [MAP_EVENT.HOVER_FEATURE_CHANGE]: HoverFeatureChangeEventDetail;
     [MAP_EVENT.SELECTION_START]: void;
     [MAP_EVENT.CONNECTION_CONTEXT_MENU]: ConnectionContextMenuEventDetail;
   [MAP_EVENT.ELECTRIC_POLE_CHANGED]: ElectricPoleChangedEventDetail;

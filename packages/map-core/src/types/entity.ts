@@ -119,7 +119,6 @@ export interface EntityInfoItemData<T extends EntityData | ElectricPoleData = En
   count: number;
   markedCount: number;
   selectedCount: number;
-  activeCount: number;
 }
 
 export type ElectricPoleMapData = Record<MapIndex, ElectricPoleDataList>;

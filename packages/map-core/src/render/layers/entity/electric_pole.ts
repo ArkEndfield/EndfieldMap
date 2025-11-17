@@ -1,8 +1,5 @@
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import {
-  DEFAULT_ACTIVE_COLOR,
-  DEFAULT_ACTIVE_COLOR_TRANSPARENT_50,
-  DEFAULT_ACTIVE_COLOR_TRANSPARENT_75,
   DEFAULT_FILL_COLOR,
   DEFAULT_FILL_COLOR_TRANSPARENT_50,
   DEFAULT_FILL_COLOR_TRANSPARENT_75,
@@ -58,8 +55,6 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
   private styleCache: Map<string, Style[]> = new Map();
   /** 图标样式缓存 */
   private iconStyleCache: Style | null = null;
-  /** hover 时的图标样式缓存（稍大一点，突出 hover 效果） */
-  private hoverIconStyleCache: Style | null = null;
 
   /** 通用样式-backdrop */
   private static readonly BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
@@ -82,24 +77,6 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
     ),
   } as const;
 
-  /** 激活样式（蓝色描边） */
-  private static readonly ACTIVE_STYLE_BG = {
-    ...createEntityBackgroundStyles(
-      ENTITY_RADIUS,
-      DEFAULT_STROKE_WIDTH,
-      {
-        '100': DEFAULT_FILL_COLOR,
-        '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
-        '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
-      },
-      {
-        '100': DEFAULT_ACTIVE_COLOR,
-        '50': DEFAULT_ACTIVE_COLOR_TRANSPARENT_50,
-        '75': DEFAULT_ACTIVE_COLOR_TRANSPARENT_75,
-      },
-    ),
-  } as const;
-
   constructor(config: ElectricPoleEntityLayerConfig) {
     super();
     this.config = config;
@@ -114,19 +91,18 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       updateWhileAnimating: false,
       updateWhileInteracting: false,
       visible: this.visible,
+      zIndex: 6, // 电线杆图层
     });
     this.layer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
     const iconSize = this.config.icon.size ?? DEFAULT_ICON_SIZE;
-    // 预创建图标样式（普通 + hover）
-    const { iconStyle, hoverIconStyle } = createEntityIconStyles({
+    // 预创建图标样式
+    const iconStyle = createEntityIconStyles({
       url: this.config.icon.url,
       size: iconSize,
       radius: ENTITY_RADIUS,
       borderWidth: 3,
-      hoverScale: 1.15,
     });
     this.iconStyleCache = iconStyle;
-    this.hoverIconStyleCache = hoverIconStyle;
   }
 
   /**
@@ -167,21 +143,13 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       fillOpacity = '75';
     }
 
-    // 计算描边透明度和状态（active优先级最高）
-    let strokeOpacity: '50' | '75' | '100' = '100';
-    let state: 'active' | 'selected' | 'normal' = 'normal';
-    
-    if (mapFeature.active) {
-      state = 'active';
-      strokeOpacity = '50';
-    } else {
-      strokeOpacity = fillOpacity;
-    }
+    // 计算描边透明度和状态
+    const strokeOpacity: '50' | '75' | '100' = fillOpacity;
+    const state = 'normal' as const;
 
-    const hoverState: 'none' | 'hovered' = mapFeature.hovered ? 'hovered' : 'none';
     // 生成缓存键并尝试从缓存获取样式
     const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state);
-    const cachedStyle = this.styleCache.get(cacheKey + '-' + hoverState);
+    const cachedStyle = this.styleCache.get(cacheKey);
     if (cachedStyle) {
       return cachedStyle;
     }
@@ -189,22 +157,14 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
     // 创建样式数组
     const styles: Style[] = [...ElectricPoleEntityLayer.BASE_BACKDROP_STYLE];
 
-    // 根据状态添加对应样式（包含背景、装饰线和三角指示器）
-    if (state === 'active') {
-      styles.push(...ElectricPoleEntityLayer.ACTIVE_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]);
-    } else {
-      styles.push(...ElectricPoleEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`]);
-    }
+    // 添加背景样式（包含背景、装饰线和三角指示器）
+    styles.push(...ElectricPoleEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`]);
 
-    // 添加图标样式：在 hover 状态下放大图标
-    if (mapFeature.hovered) {
-      styles.push(this.hoverIconStyleCache!);
-    } else {
-      styles.push(this.iconStyleCache!);
-    }
+    // 添加图标样式
+    styles.push(this.iconStyleCache!);
 
     // 缓存样式
-    this.styleCache.set(cacheKey + '-' + hoverState, styles);
+    this.styleCache.set(cacheKey, styles);
 
     return styles;
   }
@@ -228,7 +188,6 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       count: this.config.data.length,
       markedCount: this.entity.features.getArray().filter((feature) => feature.marked).length,
       selectedCount: this.entity.features.getArray().filter((feature) => feature.isSelected).length,
-      activeCount: this.entity.features.getArray().filter((feature) => feature.active).length,
     }
   }
 }

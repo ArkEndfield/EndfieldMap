@@ -57,15 +57,6 @@ export const DEFAULT_SELECTED_COLOR_TRANSPARENT_50 = 'rgba(255, 215, 0, 0.5)';
 /** 默认选中颜色-透明75% */
 export const DEFAULT_SELECTED_COLOR_TRANSPARENT_75 = 'rgba(255, 215, 0, 0.75)';
 
-/** 默认激活颜色（蓝色） */
-export const DEFAULT_ACTIVE_COLOR = 'rgba(0, 123, 255, 1)';
-
-/** 默认激活颜色-透明50% */
-export const DEFAULT_ACTIVE_COLOR_TRANSPARENT_50 = 'rgba(0, 123, 255, 0.5)';
-
-/** 默认激活颜色-透明75% */
-export const DEFAULT_ACTIVE_COLOR_TRANSPARENT_75 = 'rgba(0, 123, 255, 0.75)';
-
 /** 默认描边宽度 */
 export const DEFAULT_STROKE_WIDTH = 3;
 

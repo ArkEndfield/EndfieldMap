@@ -22,8 +22,6 @@ export class MapFeature extends FeatureBase {
     @observable accessor marked: boolean = false;
     @observable accessor isSelected: boolean = false;
     @observable accessor active: boolean = false;
-    /** 是否处于 hover 状态 */
-    @observable accessor hovered: boolean = false;
     private _onChange?: () => void;
     
     constructor(config: MapFeatureConfig) {
@@ -118,7 +116,7 @@ export class MapFeature extends FeatureBase {
         if (this.active !== active) {
             const oldValue = this.active;
             this.active = active;
-            this._onChange?.();
+            // 不再调用 _onChange，因为 active 状态由独立的 ActiveLayer 处理
 
             // 触发状态变化事件
             mapEventEmitter.fire(MAP_EVENT.FEATURE_STATE_CHANGE, {
@@ -126,26 +124,6 @@ export class MapFeature extends FeatureBase {
                 property: 'active',
                 oldValue,
                 newValue: active,
-            });
-        }
-    }
-
-    /**
-     * 设置 hovered 状态
-     * @param hovered 是否 hover
-     */
-    @action
-    public setHovered(hovered: boolean) {
-        if (this.hovered !== hovered) {
-            const oldValue = this.hovered;
-            this.hovered = hovered;
-            this._onChange?.();
-
-            mapEventEmitter.fire(MAP_EVENT.FEATURE_STATE_CHANGE, {
-                feature: this,
-                property: 'hovered',
-                oldValue,
-                newValue: hovered,
             });
         }
     }

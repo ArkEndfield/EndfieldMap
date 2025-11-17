@@ -29,6 +29,7 @@ export class ElectricPoleConnectionLayer extends SingleLayerBase {
           width: 3,
         }),
       }),
+      zIndex: 4, // 电线杆连线图层
     });
   }
 

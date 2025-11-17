@@ -111,6 +111,7 @@ export class ActiveFeatureController {
         mapEventEmitter.fire(MAP_EVENT.ACTIVE_FEATURE_CHANGE, {
             oldFeature,
             newFeature: feature,
+            coordinate: feature ? feature.coordinates : null,
         });
     }
 

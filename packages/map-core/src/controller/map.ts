@@ -4,19 +4,31 @@ import mapEventEmitter from "@endfieldmap/map-core/event/emitter";
 import { EndfieldMap } from "@endfieldmap/map-core/render/map";
 import type { MapConfig } from "@endfieldmap/map-core/types/map";
 import type { Coordinate } from "ol/coordinate";
+import { HoverFeatureController } from "@endfieldmap/map-core/controller/hover_feature";
 
 export interface MapControllerConfig {
   mapConfig: Omit<MapConfig, 'mapImageUrl'>;
   asset: EndfieldMapAsset;
 }
 
+export interface MapControllerDependencies {
+  getEntityLayers: () => any[];
+  getElectricPoleLayers: () => any[];
+}
+
 export class MapController {
   public mapRenderer: EndfieldMap;
-  constructor(config: MapControllerConfig) {
+  public hoverFeatureController: HoverFeatureController;
+  
+  constructor(config: MapControllerConfig, dependencies?: MapControllerDependencies) {
     const { mapConfig, asset } = config;
     this.mapRenderer = new EndfieldMap({
         ...mapConfig,
         mapImageUrl: asset.mapImage,
+    });
+    this.hoverFeatureController = new HoverFeatureController({
+      getEntityLayers: dependencies?.getEntityLayers || (() => []),
+      getElectricPoleLayers: dependencies?.getElectricPoleLayers || (() => []),
     });
     this.registerEventHandler();
   }
@@ -50,5 +62,12 @@ export class MapController {
    */
   public get selection() {
     return this.mapRenderer.selection;
+  }
+
+  /**
+   * 销毁控制器，清理资源
+   */
+  public dispose() {
+    this.hoverFeatureController.dispose();
   }
 }

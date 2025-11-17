@@ -49,6 +49,7 @@ export class ElectricPoleZoneLayer extends SingleLayerBase {
         }),
       }),
       renderBuffer: config.renderBuffer ?? 250,
+      zIndex: 3, // 电线杆范围图层
     });
 
     this.layer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);

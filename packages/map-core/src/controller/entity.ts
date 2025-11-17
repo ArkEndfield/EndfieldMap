@@ -30,6 +30,7 @@ export class EntityController {
   @observable accessor currentMapAllLayers: CommonPointEntityLayer[] = [];
   private lastDistance: number = 0;
   private currentMapIndex?: MapIndex;
+  private currentZoom: number = 3;
 
   constructor(config: EntityControllerConfig) {
     this.commonPointDataManager = new CommonPointDataManager({
@@ -51,6 +52,7 @@ export class EntityController {
   private registerEventHandler() {
     // 缩放事件，设置聚合距离
     mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, (zoom) => {
+      this.currentZoom = zoom;
       const shouldCluster = this.shouldCluster(zoom);
       let newDistance = this.lastDistance;
       if (shouldCluster) {
@@ -74,6 +76,19 @@ export class EntityController {
    */
   private shouldCluster(zoom: number): boolean {
     return !this.disableCluster && zoom < 4;
+  }
+
+  /**
+   * 初始化聚合距离，根据当前zoom级别设置
+   */
+  private initClusterDistance() {
+    const shouldCluster = this.shouldCluster(this.currentZoom);
+    const newDistance = shouldCluster ? this.clusterOptions.distance! : 0;
+    
+    this.lastDistance = newDistance;
+    this.currentMapAllLayers.forEach((layer) => {
+      layer.entity.clusterSource.setDistance(newDistance);
+    });
   }
 
   /**
@@ -136,6 +151,8 @@ export class EntityController {
       this.currentMapAllLayers = layers;
       this.entityLayerContainer = new MultiLayerContainer(layers.map((layer) => layer.layer));
     });
+    // 初始化聚合距离，确保图层创建后立即应用正确的聚合设置
+    this.initClusterDistance();
     return layers;
   }
 

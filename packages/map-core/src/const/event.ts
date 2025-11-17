@@ -14,6 +14,7 @@ export const MAP_EVENT = {
   CONNECTION_CONTEXT_MENU: 'connection:context_menu',
   ENTITY_VISIBILITY_CHANGE: 'entity:visibility:change',
   ACTIVE_FEATURE_CHANGE: 'active:feature:change',
+  HOVER_FEATURE_CHANGE: 'hover:feature:change',
   SELECTION_START: 'selection:start',
   ELECTRIC_POLE_CHANGED: 'electric_pole:changed',
 } as const;
