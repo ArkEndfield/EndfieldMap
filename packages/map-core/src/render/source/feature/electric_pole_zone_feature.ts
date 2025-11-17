@@ -39,5 +39,3 @@ export class ElectricPoleZoneFeature extends FeatureBase {
     this.feature.set(FeatureTypeKey, FeatureType.ENTITY);
   }
 }
-
-

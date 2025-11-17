@@ -19,9 +19,6 @@ export interface ElectricPoleZoneLayerConfig {
   renderBuffer?: number;
 }
 
-/** 默认电线杆覆盖区域半径（地图坐标单位） */
-export const DEFAULT_ELECTRIC_ZONE_RADIUS = 20;
-
 /**
  * 电线杆覆盖区域图层
  * 使用 Circle 几何（地图坐标半径），尺寸随地图缩放保持一致
@@ -54,7 +51,7 @@ export class ElectricPoleZoneLayer extends SingleLayerBase {
       renderBuffer: config.renderBuffer ?? 250,
     });
 
-    this.layer.set(LayerTypeKey, LayerType.ENTITY);
+    this.layer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
   }
 
   /**

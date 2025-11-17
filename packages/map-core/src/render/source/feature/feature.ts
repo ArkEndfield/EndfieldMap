@@ -1,7 +1,7 @@
 import type { Coordinate } from 'ol/coordinate';
-import { FeatureType, FeatureTypeKey, type MapIndex } from "@endfieldmap/map-core/const/map";
+import { FeatureType, FeatureTypeKey } from "@endfieldmap/map-core/const/map";
 import { MAP_EVENT } from "@endfieldmap/map-core/const/event";
-import type { ConnectionData, EntityData } from "@endfieldmap/map-core/types/entity";
+import type { EntityData } from "@endfieldmap/map-core/types/entity";
 import mapEventEmitter from "@endfieldmap/map-core/event/emitter";
 import { xyz2crd } from "@endfieldmap/tools";
 import { LineString, Point } from "ol/geom";
@@ -181,7 +181,7 @@ export class ConnectionFeature extends FeatureBase {
         return [this.from.coordinates, this.to?.coordinates ?? [0, 0]];
     }
 
-    @computed get data(): ConnectionData {
+    @computed get data() {
         return {
             from: this.from.data.levelLogicId,
             to: this.to?.data?.levelLogicId,

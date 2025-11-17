@@ -1,4 +1,3 @@
-import type { EntityDataList } from '@endfieldmap/map-core/types/entity';
 import type { MapIndex } from '@endfieldmap/tools';
 import { Collection } from 'ol';
 import type { Feature } from 'ol';

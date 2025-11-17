@@ -66,7 +66,7 @@ const EntityPanel = observer(({ adapter }: EntityPanelProps) => {
     result.sort((a, b) => a.category.localeCompare(b.category));
 
     return result;
-  }, [adapter, entities]);
+  }, [entities]);
 
   // 切换分类显示/隐藏
   const handleCategoryClick = (category: string, allDisplayed: boolean) => {

@@ -1,4 +1,4 @@
-import type { ViewState } from '@endfieldmap/tools/const/typing';
+import type { Coordinate } from 'ol/coordinate';
 
 /**
  * 地图索引
@@ -13,7 +13,7 @@ export const enum MapIndex {
  * 默认地图中心点
  * TODO: 自动化
  */
-export const DEFAULT_MAP_CENTERS: Record<MapIndex, ViewState> = {
+export const DEFAULT_MAP_CENTERS: Record<MapIndex, Coordinate> = {
   [MapIndex.MAP01]: [100, 152],
   [MapIndex.MAP02]: [50, 188],
 };

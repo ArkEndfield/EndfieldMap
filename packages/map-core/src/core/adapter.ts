@@ -163,7 +163,7 @@ export class EndfieldMapAdapter {
     this.electricPoleController.switchMapElectricPoleLayers(mapIndex);
     const electricPoleLayer = this.electricPoleController.layerContainer;
     if (electricPoleLayer) {
-      this.layerController.addLayer(LayerType.ENTITY, electricPoleLayer);
+      this.layerController.addLayer(LayerType.ELECTRIC_POLE, electricPoleLayer);
     }
   }
 }

@@ -10,7 +10,6 @@ import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/fea
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
-import { logger } from '@endfieldmap/tools';
 
 export interface EventControllerConfig {
   entityController: EntityController;

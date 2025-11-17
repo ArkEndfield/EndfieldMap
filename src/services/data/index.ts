@@ -10,10 +10,9 @@ import {
   StorageManager,
   JSONLoader,
 } from '@endfieldmap/tools';
-import { EntityDataService } from './entity';
-
-const THROTTLE_INTERVAL = 1000;
-
+import { EntityDataService } from '@/services/data/entity';
+import { ElectricPoleDataService } from '@/services/data/electric_pole';
+import { THROTTLE_INTERVAL } from '@/const/data';
 class DataService {
   public storage: StorageManager;
   public jsonLoader: JSONLoader;
@@ -21,6 +20,7 @@ class DataService {
   private adapter: EndfieldMapAdapter | null = null;
 
   public entityDataService: EntityDataService;
+  public electricPoleDataService: ElectricPoleDataService;
 
   constructor() {
     this.storage = new StorageManager({
@@ -32,18 +32,23 @@ class DataService {
       storage: this.storage,
     });
     this.entityDataService = new EntityDataService(this.storage);
+    this.electricPoleDataService = new ElectricPoleDataService(this.storage);
   }
 
   public async init() {
     if (this.initialized) return;
     await this.storage.init();
     await this.entityDataService.initFromStorage();
+    // 初始化电线杆预设数据（仅从 Storage 读取，不依赖 adapter）
+    await this.electricPoleDataService.initFromStorage();
     this.initialized = true;
   }
 
   public registerAdapter(adapter: EndfieldMapAdapter) {
     this.adapter = adapter;
     this.initDataEventListeners();
+    // 注册 electric pole 适配器，并在内部应用当前预设数据
+    this.electricPoleDataService.registerAdapter(adapter);
   }
 
   public initDataEventListeners() {
@@ -84,6 +89,11 @@ class DataService {
         this.setMapCenter(currentMap, center);
       }, THROTTLE_INTERVAL)
     );
+
+    // 监听电线杆数据变化事件，自动保存到当前预设（节流）
+    this.adapter.event.on(MAP_EVENT.ELECTRIC_POLE_CHANGED, () => {
+      this.electricPoleDataService.saveCurrentAdapterDataToStorageThrottled();
+    });
   }
   
   public setMapCenter(mapIndex: MapIndex, center: Coordinate) {

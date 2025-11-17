@@ -8,6 +8,8 @@ export enum StorageType {
 export enum StorageKey {
   MARKED_FEATURES = 'marked_features',
   LAYERS_VISIBILITY = 'layers_visibility',
+
+  ELECTRIC_POLE = 'electric_pole',
 }
 
 // local storage type enum

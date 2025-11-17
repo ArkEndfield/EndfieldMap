@@ -43,7 +43,7 @@ export interface ElectricPoleData extends EntityData {
   is_electric_pole: boolean;
   entityType: '#ElectricPole';
   templateId: '#electric_pole';
-  connections: ConnectionData;
+  connectTo: EntityData['levelLogicId'] | null;
 }
 
 /**
@@ -123,7 +123,4 @@ export interface EntityInfoItemData<T extends EntityData | ElectricPoleData = En
   activeCount: number;
 }
 
-export interface ConnectionData {
-  from?: EntityData['levelLogicId'] | null;
-  to?: EntityData['levelLogicId'] | null;
-}
+export type ElectricPoleMapData = Record<MapIndex, ElectricPoleDataList>;

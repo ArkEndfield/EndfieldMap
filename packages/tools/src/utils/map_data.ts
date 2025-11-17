@@ -1,4 +1,4 @@
-import { DEFAULT_MAP_CENTERS, MapIndex, type ViewState } from '@endfieldmap/tools/const';
+import { DEFAULT_MAP_CENTERS, MapIndex } from '@endfieldmap/tools/const';
 import type { Coordinate } from 'ol/coordinate';
 
 /**
@@ -6,7 +6,7 @@ import type { Coordinate } from 'ol/coordinate';
  * @param mapId 地图索引，默认值为 'map01'
  * @returns 地图中心点
  */
-export const getMapCenter = (mapId?: MapIndex | null): ViewState => {
+export const getMapCenter = (mapId?: MapIndex | null): Coordinate => {
   if (!mapId || !(mapId in DEFAULT_MAP_CENTERS)) {
     return DEFAULT_MAP_CENTERS[MapIndex.MAP01];
   }
@@ -39,4 +39,12 @@ export const crd2xyz = (coordinate: Coordinate, mapIndex: MapIndex) => {
     y: 0,
     z: z * 8,
   };
+};
+
+export const calculateDistance = (coordinate1: Coordinate, coordinate2: Coordinate) => {
+  const x1 = coordinate1[0];
+  const y1 = coordinate1[1];
+  const x2 = coordinate2[0];
+  const y2 = coordinate2[1];
+  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 };

@@ -195,7 +195,7 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       updateWhileInteracting: false,
       visible: this.visible,
     });
-    this.layer.set(LayerTypeKey, LayerType.ENTITY);
+    this.layer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
     const iconSize = this.config.icon.size ?? DEFAULT_ICON_SIZE;
     // 预创建图标样式
     this.iconStyleCache = createIconStyle(this.config.icon.url, iconSize, ENTITY_RADIUS, 3);

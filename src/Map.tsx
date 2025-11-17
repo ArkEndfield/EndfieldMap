@@ -9,6 +9,7 @@ const ThemedComponents = getThemedComponents(themeNames.ENDFIELD);
 
 const ThemedPopup = ThemedComponents.get(ComponentType.POPUP)!;
 const ThemedEntityPanel = ThemedComponents.get(ComponentType.ENTITY_PANEL)!;
+const ThemedElectricPolePresetPanel = ThemedComponents.get(ComponentType.ELECTRIC_POLE_PRESET_PANEL)!;
 
 function EndfieldMap() {
   const container = useRef<HTMLDivElement>(null);
@@ -76,6 +77,13 @@ function EndfieldMap() {
         </button>
       )}
 
+      {/* 电线杆预设管理面板（Endfield 主题组件） */}
+      {adapter && (
+        <Suspense>
+          <ThemedElectricPolePresetPanel adapter={adapter} />
+        </Suspense>
+      )}
+
       {/* 弹窗组件 */}
       {adapter && (
         <Suspense>
@@ -92,4 +100,5 @@ function EndfieldMap() {
   );
 }
 
-export default observer(EndfieldMap);
+const EndfieldMapObserver = observer(EndfieldMap);
+export default EndfieldMapObserver;

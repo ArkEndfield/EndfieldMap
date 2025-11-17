@@ -39,7 +39,6 @@ export function debounce<TArgs extends unknown[], TReturn>(
   immediate = false
 ): (...args: TArgs) => Promise<TReturn> | undefined {
   let timeoutId: NodeJS.Timeout | null = null;
-  let lastResult: TReturn | undefined;
   let lastPromise: Promise<TReturn> | undefined;
 
   return (...args: TArgs): Promise<TReturn> | undefined => {
@@ -55,9 +54,7 @@ export function debounce<TArgs extends unknown[], TReturn>(
         const result = func(...args);
         if (isPromise(result)) {
           lastPromise = result;
-          lastResult = undefined;
         } else {
-          lastResult = result;
           lastPromise = undefined;
         }
       }
@@ -67,10 +64,8 @@ export function debounce<TArgs extends unknown[], TReturn>(
       const result = func(...args);
       if (isPromise(result)) {
         lastPromise = result;
-        lastResult = undefined;
         return lastPromise;
       } else {
-        lastResult = result;
         lastPromise = undefined;
         return undefined;
       }

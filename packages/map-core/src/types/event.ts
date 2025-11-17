@@ -67,6 +67,10 @@ export interface ActiveFeatureChangeEventDetail {
     newFeature: MapFeature | null;
 }
 
+export interface ElectricPoleChangedEventDetail {
+  mapIndex: string | null;
+}
+
 export interface MapEventEmitter {
     // 基于 ol 的
     [MAP_EVENT.ZOOM_CHANGE]: number;
@@ -84,6 +88,7 @@ export interface MapEventEmitter {
     [MAP_EVENT.ACTIVE_FEATURE_CHANGE]: ActiveFeatureChangeEventDetail;
     [MAP_EVENT.SELECTION_START]: void;
     [MAP_EVENT.CONNECTION_CONTEXT_MENU]: ConnectionContextMenuEventDetail;
+  [MAP_EVENT.ELECTRIC_POLE_CHANGED]: ElectricPoleChangedEventDetail;
 }
 
 export type MapEventListener<T extends keyof MapEventEmitter> = (event: MapEventEmitter[T]) => void;

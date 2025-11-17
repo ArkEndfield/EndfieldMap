@@ -84,6 +84,9 @@ export const MapTypeKey = 'mapType';
 /** 电线杆 ID 键 */
 export const ElectricPoleIdKey = '#electric_pole';
 
+/** TODO: 电线杆覆盖区域半径（地图坐标单位） */
+export const ELECTRIC_ZONE_RADIUS = 20;
+
 /** 地图类型 */
 export const enum MapType {
   MAP = 'map',
@@ -95,6 +98,7 @@ export const enum LayerType {
   MAP = 'map',
   AREA_NAME = 'areaName',
   ENTITY = 'entity',
+  ELECTRIC_POLE = 'electricPole',
 }
 
 /** 特征类型 */

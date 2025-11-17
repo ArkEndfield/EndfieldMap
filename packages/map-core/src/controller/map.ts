@@ -3,6 +3,7 @@ import type { EndfieldMapAsset } from "@endfieldmap/map-core/data/asset";
 import mapEventEmitter from "@endfieldmap/map-core/event/emitter";
 import { EndfieldMap } from "@endfieldmap/map-core/render/map";
 import type { MapConfig } from "@endfieldmap/map-core/types/map";
+import type { Coordinate } from "ol/coordinate";
 
 export interface MapControllerConfig {
   mapConfig: Omit<MapConfig, 'mapImageUrl'>;
@@ -31,7 +32,7 @@ export class MapController {
    * 设置地图中心点
    * @param center 中心点
    */
-  public setCenter(center: [number, number]) {
+  public setCenter(center: Coordinate) {
     this.mapRenderer.view.setCenter(center);
   }
 

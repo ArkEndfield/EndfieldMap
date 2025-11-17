@@ -20,6 +20,12 @@ export class EndfieldMapLayerController {
    * @param layer 图层实例
    */
   public addLayer(type: LayerType, layer: UnionLayerBase): void {
+    // 如果该类型已有图层，先移除，避免向地图重复添加相同的 layer 实例
+    const existing = this.layers.get(type);
+    if (existing) {
+      this.removeLayer(type);
+    }
+
     if (isMultiLayer(layer)) {
       layer.layers.forEach((layer) => {
         this.map.addLayer(layer);

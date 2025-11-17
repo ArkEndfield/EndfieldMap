@@ -1,12 +1,15 @@
 import { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
-import { ElectricPoleZoneLayer, DEFAULT_ELECTRIC_ZONE_RADIUS } from '@endfieldmap/map-core/render/layers/electric_pole_zone';
-import type { ElectricPoleData, ElectricPoleDataList } from '@endfieldmap/map-core/types';
-import { ElectricPoleIdKey, type MapIndex } from '@endfieldmap/map-core/const/map';
+import { ElectricPoleZoneLayer } from '@endfieldmap/map-core/render/layers/electric_pole_zone';
+import type { ElectricPoleData, ElectricPoleDataList, ElectricPoleMapData } from '@endfieldmap/map-core/types';
+import { ELECTRIC_ZONE_RADIUS, ElectricPoleIdKey, type MapIndex } from '@endfieldmap/map-core/const/map';
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
 import { computed } from 'mobx';
 import { Coordinate } from 'ol/coordinate';
 import { crd2xyz, logger } from '@endfieldmap/tools';
+import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 
 export interface ElectricPoleControllerConfig {
   imagePath: string;
@@ -32,15 +35,13 @@ export class ElectricPoleController {
    * @param mapIndex 地图索引
    * @param data 电线杆数据列表
    */
-  public initMapElectricPoleLayers(mapIndex: MapIndex, data: ElectricPoleDataList) {
-    if (this.currentMapIndex === mapIndex) return;
-    this.currentMapIndex = mapIndex;
-
+  public initMapElectricPoleLayers(mapIndex: MapIndex, data: ElectricPoleDataList, notifyChange: boolean = false) {
     const entityLayer = new ElectricPoleEntityLayer({
       data: data,
       mapIndex: mapIndex,
       icon: {
         url: `${this.imagePath}/electric_pole.png`,
+        // TODO: 电线杆图标尺寸
         size: 52,
       },
     });
@@ -50,7 +51,7 @@ export class ElectricPoleController {
     const zoneLayer = new ElectricPoleZoneLayer({
       data: data,
       mapIndex: mapIndex,
-      radius: DEFAULT_ELECTRIC_ZONE_RADIUS,
+      radius: ELECTRIC_ZONE_RADIUS,
     });
 
     entityLayer.entity.features.forEach((feature) => {
@@ -61,21 +62,102 @@ export class ElectricPoleController {
     this.entityLayer.set(mapIndex, entityLayer);
     this.connectionLayer.set(mapIndex, connectionLayer);
     this.zoneLayer.set(mapIndex, zoneLayer);
-    this.layerContainer = new MultiLayerContainer([zoneLayer.layer, connectionLayer.layer, entityLayer.layer]);
+    // 初始化时，根据数据中的 connections 信息补全连接状态与连线几何
+    this.syncAllElectricPoleConnections(mapIndex);
+    if (notifyChange) {
+      this.notifyElectricPoleChanged();
+    }
+  }
+
+  /**
+   * 初始化电线杆数据
+   * @param data 电线杆数据
+   */
+  public initElectricPoleData(data: ElectricPoleMapData) {
+    Object.entries(data).forEach(([mapIndexKey, list]) => {
+      const mapIndex = mapIndexKey as MapIndex;
+      const poleList = list as ElectricPoleDataList;
+
+      // 为当前地图上的每一根电线杆重新生成唯一的 levelLogicId，
+      // 并在同一张地图内构建 oldId -> newId 的映射，用于修正 connectTo。
+      const idMap = new Map<number, number>();
+
+      for (const pole of poleList) {
+        const oldId = pole.levelLogicId;
+        const newId = this.generateLevelLogicId();
+        idMap.set(oldId, newId);
+      }
+
+      const remappedList: ElectricPoleDataList = poleList.map((pole) => {
+        const oldId = pole.levelLogicId;
+        const newId = idMap.get(oldId)!;
+
+        let newConnectTo: ElectricPoleData['levelLogicId'] | null = null;
+        if (pole.connectTo != null) {
+          const mapped = idMap.get(pole.connectTo);
+          if (mapped != null) {
+            newConnectTo = mapped;
+          } else {
+            // 如果找不到对应的目标电线杆，说明原数据不完整，直接断开连接并打日志
+            logger.warn('[ElectricPoleController|initElectricPoleData] connectTo target not found after remap', {
+              mapIndex,
+              from: oldId,
+              to: pole.connectTo,
+            });
+            newConnectTo = null;
+          }
+        }
+
+        return {
+          ...pole,
+          levelLogicId: newId,
+          connectTo: newConnectTo,
+        };
+      });
+
+      this.initMapElectricPoleLayers(mapIndex, remappedList);
+    });
+    this.notifyElectricPoleChanged();
+  }
+
+  /**
+   * 重置所有地图上的电线杆数据
+   * - 清空现有的电线杆图层与数据
+   * - 使用新的 ElectricPoleMapData 重新初始化
+   */
+  public resetAllElectricPoleData(data: ElectricPoleMapData) {
+    // 清空现有图层和状态
+    this.entityLayer.clear();
+    this.connectionLayer.clear();
+    this.zoneLayer.clear();
+    this.layerContainer = null;
+    this.currentMapIndex = undefined;
+
+    // 使用新的数据重新初始化
+    this.initElectricPoleData(data);
+    this.notifyElectricPoleChanged();
   }
 
   /**
    * 切换地图图层
    * @param mapIndex 地图索引
-   * @param data 电线杆数据列表
    */
   public switchMapElectricPoleLayers(mapIndex: MapIndex) {
-    if (this.currentMapIndex === mapIndex) return;
-    // 如果 entity / connection / zone 图层不存在，直接创建
+    // 如果 entity / connection / zone 图层不存在，直接创建空图层
     if (!this.entityLayer.has(mapIndex) || !this.connectionLayer.has(mapIndex) || !this.zoneLayer.has(mapIndex)) {
       this.initMapElectricPoleLayers(mapIndex, []);
     }
+
     this.currentMapIndex = mapIndex;
+
+    const entityLayer = this.entityLayer.get(mapIndex);
+    const connectionLayer = this.connectionLayer.get(mapIndex);
+    const zoneLayer = this.zoneLayer.get(mapIndex);
+
+    if (entityLayer && connectionLayer && zoneLayer) {
+      // 每次切换地图时，根据目标地图重建 layerContainer，保证展示正确
+      this.layerContainer = new MultiLayerContainer([zoneLayer.layer, connectionLayer.layer, entityLayer.layer]);
+    }
   }
 
   /**
@@ -92,6 +174,13 @@ export class ElectricPoleController {
     const feature = entityLayer.entity.addElectricPoleEntity(data);
     connectionLayer.addFeature(feature.connectionFeature);
     zoneLayer.addZone(feature.data);
+
+    // 新增时，同步该电线杆与其他电线杆之间的连接关系
+    this.syncElectricPoleConnections(mapIndex, feature);
+
+    // 数据变化事件
+    this.notifyElectricPoleChanged();
+
     return feature;
   }
 
@@ -101,7 +190,18 @@ export class ElectricPoleController {
    */
   @computed
   public get currentData() {
-    return this.currentMapIndex ? this.entityLayer.get(this.currentMapIndex)?.entity?.data ?? [] : [];
+    return this.currentMapIndex ? (this.entityLayer.get(this.currentMapIndex)?.entity?.data ?? []) : [];
+  }
+
+  @computed
+  public get allData(): ElectricPoleMapData {
+    const data: Partial<ElectricPoleMapData> = {};
+
+    this.entityLayer.forEach((layer, mapIndex) => {
+      data[mapIndex] = layer.entity.data;
+    });
+
+    return data as ElectricPoleMapData;
   }
 
   /**
@@ -136,10 +236,7 @@ export class ElectricPoleController {
       templateId: '#electric_pole',
       entityType: '#ElectricPole',
       position: xyzPosition,
-      connections: {
-        from: null,
-        to: null,
-      },
+      connectTo: null,
       is_electric_pole: true,
       used_for_quest: false,
       state: 0,
@@ -163,6 +260,53 @@ export class ElectricPoleController {
   }
 
   /**
+   * 同步当前地图上所有电线杆的连接关系
+   * - 根据每个 ElectricPoleFeature.data.connections 中的 from / to
+   *   建立 feature 之间的互相引用与连线几何
+   */
+  private syncAllElectricPoleConnections(mapIndex: MapIndex) {
+    const entityLayer = this.entityLayer.get(mapIndex);
+    if (!entityLayer) return;
+
+    const features = entityLayer.entity.features.getArray();
+    features.forEach((feature) => {
+      this.syncElectricPoleConnections(mapIndex, feature);
+    });
+  }
+
+  /**
+   * 同步单个电线杆的连接关系
+   * - 若 data.connections.from 存在：让 from 电线杆 connectTo 当前电线杆
+   * - 若 data.connections.to 存在：让当前电线杆 connectTo to 电线杆
+   * 这样可以保证：
+   *   1. ElectricPoleData.connections 双端数据一致
+   *   2. ElectricPoleFeature.connectionEntityFeatures 与 ConnectionFeature 几何保持同步
+   */
+  private syncElectricPoleConnections(mapIndex: MapIndex, feature: ElectricPoleFeature) {
+    const entityLayer = this.entityLayer.get(mapIndex);
+    if (!entityLayer) return;
+
+    const { connectTo } = feature.data ?? {};
+
+    // 处理 to：当前电线杆指向某个电线杆
+    if (connectTo != null) {
+      const toFeature = entityLayer.entity.getFeatureById(connectTo);
+      if (!toFeature) {
+        logger.warn('[ElectricPoleController|syncElectricPoleConnections] `to` feature not found', {
+          mapIndex,
+          connectTo,
+          currentId: feature.data.levelLogicId,
+        });
+      } else {
+        // 若当前还未建立连接或连接目标不一致，则重建连接
+        if (!feature.connectionEntityFeatures.to || feature.connectionEntityFeatures.to.data.levelLogicId !== connectTo) {
+          feature.connectTo(toFeature);
+        }
+      }
+    }
+  }
+
+  /**
    * 删除电线杆实体
    * @param mapIndex 地图索引
    * @param id 逻辑ID
@@ -172,7 +316,10 @@ export class ElectricPoleController {
     const connectionLayer = this.connectionLayer.get(mapIndex);
     const zoneLayer = this.zoneLayer.get(mapIndex);
     if (!entityLayer || !connectionLayer || !zoneLayer) {
-      logger.error('[ElectricPoleController|deleteElectricPoleEntity] Entity / connection / zone layer not found', { mapIndex, id });
+      logger.error('[ElectricPoleController|deleteElectricPoleEntity] Entity / connection / zone layer not found', {
+        mapIndex,
+        id,
+      });
       return false;
     }
     const feature = entityLayer.entity.getFeatureById(id);
@@ -182,24 +329,24 @@ export class ElectricPoleController {
     }
 
     // 删除前，先清理与该电线杆相关的所有连线关系
-    entityLayer.entity.features.getArray().forEach((otherFeature) => {
-      if (otherFeature === feature) return;
-
-      // 其他电线杆的 to 指向被删除电线杆：需要断开该连线（清理连线 geometry 和数据）
-      if (otherFeature.data.connections.to === id) {
-        otherFeature.clearConnectionTo();
-      }
-
-      // 其他电线杆的 from 指向被删除电线杆：仅清理引用关系
-      if (otherFeature.data.connections.from === id) {
-        otherFeature.clearConnectionFrom();
-      }
-    });
+    feature.clearConnectionTo();
+    feature.clearConnectionFrom();
 
     // 删除电线杆自身的实体、连线 Feature 和覆盖区域
     entityLayer.entity.removeFeature(feature);
     connectionLayer.removeFeature(feature.connectionFeature);
     zoneLayer.removeZoneById(id);
+    // 数据变化事件
+    this.notifyElectricPoleChanged();
     return true;
+  }
+
+  /**
+   * 触发电线杆数据变化事件
+   */
+  private notifyElectricPoleChanged() {
+    mapEventEmitter.fire(MAP_EVENT.ELECTRIC_POLE_CHANGED, {
+      mapIndex: this.currentMapIndex ?? null,
+    });
   }
 }

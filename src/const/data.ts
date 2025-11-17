@@ -1,0 +1,1 @@
+export const THROTTLE_INTERVAL = 1000;

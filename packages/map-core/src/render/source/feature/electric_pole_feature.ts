@@ -1,10 +1,12 @@
-import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
+import { ELECTRIC_ZONE_RADIUS, EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
 import { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import { ElectricPoleData } from '@endfieldmap/map-core/types';
-import { action, computed, observable } from 'mobx';
+import { action, observable } from 'mobx';
 import { Point } from 'ol/geom';
 import type { BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
-import { xyz2crd } from '@endfieldmap/tools';
+import { calculateDistance, xyz2crd } from '@endfieldmap/tools';
+import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 
 export interface ElectricPoleFeatureConfig extends BaseFeatureConfig {
   data: ElectricPoleData;
@@ -44,36 +46,51 @@ export class ElectricPoleFeature extends MapFeature {
     this.feature.set(EntityInstanceKey, this);
   }
 
-  @computed get connections() {
-    return this.data.connections;
-  }
-
-  @action setConnectionFrom(pole: ElectricPoleFeature) {
-    this.data.connections.from = pole.data.levelLogicId;
+  @action
+  public setConnectionFrom(pole: ElectricPoleFeature) {
     this.connectionEntityFeatures.from = pole;
   }
 
-  @action connectTo(pole: ElectricPoleFeature) {
-    this.data.connections.to = pole.data.levelLogicId;
+  @action
+  public connectTo(pole: ElectricPoleFeature) {
+    const distance = calculateDistance(this.coordinates, pole.coordinates);
+    if (distance > ELECTRIC_ZONE_RADIUS) {
+      throw new Error(`The distance between the two poles is too far: ${distance}`);
+    }
+    this.data.connectTo = pole.data.levelLogicId;
     this.connectionEntityFeatures.to = pole;
     this.connectionFeature.setTo(pole);
     pole.setConnectionFrom(this);
+    this.notifyElectricPoleChanged();
   }
 
   /**
    * 清除指向当前电线杆的连接（被其他电线杆作为 from 连接到当前电线杆）
    */
-  @action clearConnectionFrom() {
-    this.data.connections.from = null;
+  @action
+  public clearConnectionFrom() {
+    this.connectionEntityFeatures.from?.clearConnectionTo();
     this.connectionEntityFeatures.from = null;
+    this.notifyElectricPoleChanged();
   }
 
   /**
    * 清除当前电线杆指向其他电线杆的连接（当前电线杆作为 from 指向其他电线杆）
    */
-  @action clearConnectionTo() {
-    this.data.connections.to = null;
+  @action
+  public clearConnectionTo() {
+    this.data.connectTo = null;
     this.connectionEntityFeatures.to = null;
     this.connectionFeature.clearTo();
+    this.notifyElectricPoleChanged();
+  }
+
+  /**
+   * 通知电线杆连接关系发生变化
+   */
+  private notifyElectricPoleChanged() {
+    mapEventEmitter.fire(MAP_EVENT.ELECTRIC_POLE_CHANGED, {
+      mapIndex: this.mapIndex ?? null,
+    });
   }
 }
