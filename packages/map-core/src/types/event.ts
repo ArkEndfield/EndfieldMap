@@ -48,6 +48,10 @@ export interface FeatureSelectEventDetail {
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 }
 
+export interface MapHoverEventDetail {
+    event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+}
+
 export interface EntityVisibilityChangeEventDetail {
     batch: boolean;
     visible: boolean;
@@ -57,7 +61,7 @@ export interface EntityVisibilityChangeEventDetail {
 
 export interface FeatureStateChangeEventDetail {
     feature: MapFeature;
-    property: 'marked' | 'isSelected' | 'active';
+    property: 'marked' | 'isSelected' | 'active' | 'hovered';
     oldValue: boolean;
     newValue: boolean;
 }
@@ -75,6 +79,7 @@ export interface MapEventEmitter {
     // 基于 ol 的
     [MAP_EVENT.ZOOM_CHANGE]: number;
     [MAP_EVENT.MAP_CLICK]: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+    [MAP_EVENT.MAP_HOVER]: MapHoverEventDetail;
     [MAP_EVENT.MAP_CENTER_CHANGE]: Coordinate | undefined;
     [MAP_EVENT.MAP_CONTEXT_MENU]: MapContextMenuEventDetail;
     [MAP_EVENT.FEATURE_SELECT]: FeatureSelectEventDetail;

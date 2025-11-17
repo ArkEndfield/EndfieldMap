@@ -44,6 +44,11 @@ export class EndfieldMapEvent {
       this.event.fire(MAP_EVENT.MAP_CLICK, event);
     });
 
+    // hover 实体（包含普通实体和电线杆），只转发浏览器事件，命中逻辑复用点击的控制器逻辑
+    this.onMap('pointermove', (event) => {
+      this.event.fire(MAP_EVENT.MAP_HOVER, { event });
+    });
+
     this.onView('change:center', () => {
       this.event.fire(MAP_EVENT.MAP_CENTER_CHANGE, this.view.getCenter());
     });

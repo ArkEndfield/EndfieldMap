@@ -22,6 +22,8 @@ export class MapFeature extends FeatureBase {
     @observable accessor marked: boolean = false;
     @observable accessor isSelected: boolean = false;
     @observable accessor active: boolean = false;
+    /** 是否处于 hover 状态 */
+    @observable accessor hovered: boolean = false;
     private _onChange?: () => void;
     
     constructor(config: MapFeatureConfig) {
@@ -124,6 +126,26 @@ export class MapFeature extends FeatureBase {
                 property: 'active',
                 oldValue,
                 newValue: active,
+            });
+        }
+    }
+
+    /**
+     * 设置 hovered 状态
+     * @param hovered 是否 hover
+     */
+    @action
+    public setHovered(hovered: boolean) {
+        if (this.hovered !== hovered) {
+            const oldValue = this.hovered;
+            this.hovered = hovered;
+            this._onChange?.();
+
+            mapEventEmitter.fire(MAP_EVENT.FEATURE_STATE_CHANGE, {
+                feature: this,
+                property: 'hovered',
+                oldValue,
+                newValue: hovered,
             });
         }
     }

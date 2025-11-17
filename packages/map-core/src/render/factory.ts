@@ -7,6 +7,8 @@ import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 import Text from 'ol/style/Text';
 
+export type OpacityLevel = '50' | '75' | '100';
+
 /**
  * 创建模糊阴影的SVG字符串
  * @param radius 半径
@@ -138,6 +140,34 @@ export function createBottomTriangleIndicator(color: string = DEFAULT_STROKE_COL
 }
 
 /**
+ * 创建实体点位的背景样式（圆形 + 两侧装饰 + 底部三角）
+ * 生成以 `${fillOpacity}-${strokeOpacity}` 为键的样式组合
+ */
+export function createEntityBackgroundStyles(
+  radius: number,
+  strokeWidth: number,
+  fillColors: Record<OpacityLevel, string>,
+  strokeColors: Record<OpacityLevel, string>,
+): Record<string, Style[]> {
+  const result: Record<string, Style[]> = {};
+
+  (['100', '50', '75'] as OpacityLevel[]).forEach((fillOpacity) => {
+    (['100', '50', '75'] as OpacityLevel[]).forEach((strokeOpacity) => {
+      const strokeColor = strokeColors[strokeOpacity];
+      const key = `${fillOpacity}-${strokeOpacity}`;
+      result[key] = [
+        createCircleStyle(radius, fillColors[fillOpacity], strokeWidth, strokeColor),
+        createDecoration(radius, 'left', strokeWidth, strokeColor),
+        createDecoration(radius, 'right', strokeWidth, strokeColor),
+        createBottomTriangleIndicator(strokeColor),
+      ];
+    });
+  });
+
+  return result;
+}
+
+/**
  * 创建聚合样式
  * @param radius 半径
  * @param size 数量
@@ -176,22 +206,45 @@ export function createClusterStyle({
 /**
  * 创建图标样式
  * @param imagePath 图片路径
- * @param radius 半径
- * @param optimalScale 最佳缩放比例
+ * @param size 图标尺寸（像素）
+ * @param radius 底部圆半径，用于计算位移
+ * @param borderWidth 底部圆边框宽度
  */
 export function createIconStyle(
-    imagePath: string,
-    size: number,
-    radius: number,
-    borderWidth: number = 0,
-  ): Style {
-    return new Style({
-      image: new Icon({
-        src: imagePath,
-        anchor: [0.5, 0.5],
-        width: size,
-        height: size,
-        displacement: [0, radius + borderWidth * 2],
-      }),
-    });
-  }
+  imagePath: string,
+  size: number,
+  radius: number,
+  borderWidth: number = 0,
+): Style {
+  return new Style({
+    image: new Icon({
+      src: imagePath,
+      anchor: [0.5, 0.5],
+      width: size,
+      height: size,
+      displacement: [0, radius + borderWidth * 2],
+    }),
+  });
+}
+
+/**
+ * 创建实体点位的图标 + hover 样式（静态样式，不含动画）
+ */
+export function createEntityIconStyles({
+  url,
+  size,
+  radius,
+  borderWidth = 0,
+  hoverScale = 1.15,
+}: {
+  url: string;
+  size: number;
+  radius: number;
+  borderWidth?: number;
+  hoverScale?: number;
+}): { iconStyle: Style; hoverIconStyle: Style } {
+  const iconStyle = createIconStyle(url, size, radius, borderWidth);
+  const hoverIconStyle = createIconStyle(url, size * hoverScale, radius, borderWidth);
+
+  return { iconStyle, hoverIconStyle };
+}

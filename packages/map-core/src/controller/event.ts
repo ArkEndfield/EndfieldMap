@@ -19,12 +19,15 @@ export interface EventControllerConfig {
 export class EventController {
   private entityController: EntityController;
   private electricPoleController: ElectricPoleController;
+  /** 上一次 hover 的实体实例列表 */
+  private lastHoveredFeatures: MapFeature[] = [];
 
   constructor(config: EventControllerConfig) {
     this.entityController = config.entityController;
     this.electricPoleController = config.electricPoleController;
     this.registerClickEventHandlers();
     this.registerContextMenuEventHandlers();
+    this.registerHoverEventHandlers();
   }
 
   private registerClickEventHandlers() {
@@ -173,6 +176,90 @@ export class EventController {
         layer: selectedLayerFeatures.layer,
         event: detail,
       });
+    });
+  }
+
+  /**
+   * 注册 hover 事件处理
+   * - 来自 EndfieldMapEvent 中的 MAP_EVENT.MAP_HOVER（pointermove）
+   * - 命中检测逻辑与点击事件保持一致（电线杆走非聚合图层，普通实体走聚合图层）
+   */
+  private registerHoverEventHandlers() {
+    mapEventEmitter.on(MAP_EVENT.MAP_HOVER, async (detail) => {
+      const event = detail.event;
+      const allHoveredFeatures: Array<{
+        features: Feature<Point>[];
+        layer: CommonPointEntityLayer | ElectricPoleEntityLayer;
+      }> = [];
+
+      // 1. 电线杆 hover（非聚合图层，直接使用命中的要素）
+      for (const layer of this.electricPoleController.currentMapAllEntityLayers) {
+        if (!layer.visible) continue;
+        const hovered = await layer.layer.getFeatures(event.pixel);
+        if (hovered.length) {
+          const features = hovered.filter(
+            (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
+          ) as Feature<Point>[];
+          if (features.length > 0) {
+            allHoveredFeatures.push({ features, layer });
+          }
+        }
+      }
+
+      // 2. 普通实体 hover（聚合图层，逻辑与点击保持一致）
+      for (const layer of this.entityController.currentMapAllLayers) {
+        if (!layer.visible) continue;
+
+        const hovered = await layer.layer.getFeatures(event.pixel);
+        if (hovered.length) {
+          const features = (hovered[0].get('features') as Feature<Point>[])
+            .filter((r) => r.get(FeatureTypeKey) === FeatureType.ENTITY);
+          if (features.length > 0) {
+            allHoveredFeatures.push({ features, layer });
+          }
+        }
+      }
+
+      // 没有命中任何实体，清空 hover 状态
+      if (allHoveredFeatures.length === 0) {
+        for (const last of this.lastHoveredFeatures) {
+          if (last.hovered) {
+            last.setHovered(false);
+          }
+        }
+        this.lastHoveredFeatures = [];
+        return;
+      }
+
+      // 命中多个层时，选择最上层的 layer（与点击逻辑一致）
+      const selectedLayerFeatures = allHoveredFeatures[allHoveredFeatures.length - 1];
+      const features = selectedLayerFeatures.features;
+
+      const currentHoveredInstances: MapFeature[] = [];
+      for (const feature of features) {
+        const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+        if (instance) {
+          currentHoveredInstances.push(instance);
+        }
+      }
+
+      const currentSet = new Set(currentHoveredInstances);
+
+      // 先取消上一次 hover 但这一次不在 hover 列表中的实例
+      for (const last of this.lastHoveredFeatures) {
+        if (!currentSet.has(last) && last.hovered) {
+          last.setHovered(false);
+        }
+      }
+
+      // 为当前 hover 的实例设置 hovered = true
+      for (const current of currentHoveredInstances) {
+        if (!current.hovered) {
+          current.setHovered(true);
+        }
+      }
+
+      this.lastHoveredFeatures = currentHoveredInstances;
     });
   }
 }

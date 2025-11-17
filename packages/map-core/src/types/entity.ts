@@ -40,7 +40,6 @@ export interface EntityData {
  */
 export interface ElectricPoleData extends EntityData {
   entityDataIdKey: typeof ElectricPoleIdKey;
-  is_electric_pole: boolean;
   entityType: '#ElectricPole';
   templateId: '#electric_pole';
   connectTo: EntityData['levelLogicId'] | null;

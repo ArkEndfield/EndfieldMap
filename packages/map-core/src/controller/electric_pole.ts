@@ -74,6 +74,16 @@ export class ElectricPoleController {
    * @param data 电线杆数据
    */
   public initElectricPoleData(data: ElectricPoleMapData) {
+    // 全局已使用的 levelLogicId 集合，用于保证本次重映射过程中所有电线杆 ID 全局唯一
+    const globalUsedIds = new Set<number>();
+
+    // 将当前已存在图层中的 ID 也加入集合，避免与已有数据冲突（如果此前已经初始化过）
+    this.entityLayer.forEach((layer) => {
+      layer.entity.data.forEach((pole) => {
+        globalUsedIds.add(pole.levelLogicId);
+      });
+    });
+
     Object.entries(data).forEach(([mapIndexKey, list]) => {
       const mapIndex = mapIndexKey as MapIndex;
       const poleList = list as ElectricPoleDataList;
@@ -84,8 +94,10 @@ export class ElectricPoleController {
 
       for (const pole of poleList) {
         const oldId = pole.levelLogicId;
-        const newId = this.generateLevelLogicId();
+        const newId = this.generateLevelLogicId(globalUsedIds);
         idMap.set(oldId, newId);
+        // 记录到全局集合，保证后续生成的 ID 不会与当前已生成的重复
+        globalUsedIds.add(newId);
       }
 
       const remappedList: ElectricPoleDataList = poleList.map((pole) => {
@@ -237,10 +249,6 @@ export class ElectricPoleController {
       entityType: '#ElectricPole',
       position: xyzPosition,
       connectTo: null,
-      is_electric_pole: true,
-      used_for_quest: false,
-      state: 0,
-      option_interact: 0,
     };
     return this.addElectricPoleEntity(mapIndex, data);
   }
@@ -249,14 +257,24 @@ export class ElectricPoleController {
    * 生成逻辑ID
    * @returns 逻辑ID
    */
-  private generateLevelLogicId(): number {
+  private generateLevelLogicId(usedIds?: Set<number>): number {
     const maxId = 100_000_000;
-    const existingIds = this.currentData.map((data) => data.levelLogicId);
-    const newId = Math.floor(Math.random() * maxId);
-    if (existingIds.includes(newId)) {
-      return this.generateLevelLogicId();
+    // 如果调用方传入了已使用 ID 集合，则在该集合基础上生成；
+    // 否则默认使用当前地图已有的数据进行去重（兼容旧用法，例如 createElectricPoleEntity）。
+    const existingSet =
+      usedIds ??
+      new Set(this.currentData.map((data) => data.levelLogicId));
+
+    // 使用循环而不是递归，避免极端情况下的递归深度问题
+    // 在 maxId 足够大的前提下，出现碰撞的概率极低。
+    // 同时在 initElectricPoleData 中通过传入全局 usedIds，保证本次批量生成期间绝不重复。
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const newId = Math.floor(Math.random() * maxId);
+      if (!existingSet.has(newId)) {
+        return newId;
+      }
     }
-    return newId;
   }
 
   /**

@@ -18,10 +18,8 @@ import {
 } from '@endfieldmap/map-core/const/map';
 import {
   createBlurredShadowStyles,
-  createBottomTriangleIndicator,
-  createCircleStyle,
-  createDecoration,
-  createIconStyle,
+  createEntityBackgroundStyles,
+  createEntityIconStyles,
 } from '@endfieldmap/map-core/render/factory';
 import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
@@ -60,124 +58,46 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
   private styleCache: Map<string, Style[]> = new Map();
   /** 图标样式缓存 */
   private iconStyleCache: Style | null = null;
+  /** hover 时的图标样式缓存（稍大一点，突出 hover 效果） */
+  private hoverIconStyleCache: Style | null = null;
 
   /** 通用样式-backdrop */
   private static readonly BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
 
   /** 非选中样式（包含背景、装饰线和三角指示器） */
   private static readonly NORMAL_STYLE_BG = {
-    '100-100': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR),
-    ],
-    '100-50': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-    ],
-    '100-75': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-    ],
-    '50-100': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_50, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR),
-    ],
-    '50-50': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_50, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-    ],
-    '50-75': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_50, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-    ],
-    '75-100': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_75, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR),
-    ],
-    '75-50': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_75, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR_TRANSPARENT_50),
-    ],
-    '75-75': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_75, DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-      createBottomTriangleIndicator(DEFAULT_STROKE_COLOR_TRANSPARENT_75),
-    ],
+    ...createEntityBackgroundStyles(
+      ENTITY_RADIUS,
+      DEFAULT_STROKE_WIDTH,
+      {
+        '100': DEFAULT_FILL_COLOR,
+        '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
+        '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
+      },
+      {
+        '100': DEFAULT_STROKE_COLOR,
+        '50': DEFAULT_STROKE_COLOR_TRANSPARENT_50,
+        '75': DEFAULT_STROKE_COLOR_TRANSPARENT_75,
+      },
+    ),
   } as const;
 
   /** 激活样式（蓝色描边） */
   private static readonly ACTIVE_STYLE_BG = {
-    '100-100': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR),
-    ],
-    '100-50': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-    ],
-    '100-75': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-    ],
-    '50-100': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_50, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR),
-    ],
-    '50-50': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_50, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-    ],
-    '50-75': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_50, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-    ],
-    '75-100': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_75, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR),
-    ],
-    '75-50': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_75, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR_TRANSPARENT_50),
-    ],
-    '75-75': [
-      createCircleStyle(ENTITY_RADIUS, DEFAULT_FILL_COLOR_TRANSPARENT_75, DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'left', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createDecoration(ENTITY_RADIUS, 'right', DEFAULT_STROKE_WIDTH, DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-      createBottomTriangleIndicator(DEFAULT_ACTIVE_COLOR_TRANSPARENT_75),
-    ],
+    ...createEntityBackgroundStyles(
+      ENTITY_RADIUS,
+      DEFAULT_STROKE_WIDTH,
+      {
+        '100': DEFAULT_FILL_COLOR,
+        '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
+        '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
+      },
+      {
+        '100': DEFAULT_ACTIVE_COLOR,
+        '50': DEFAULT_ACTIVE_COLOR_TRANSPARENT_50,
+        '75': DEFAULT_ACTIVE_COLOR_TRANSPARENT_75,
+      },
+    ),
   } as const;
 
   constructor(config: ElectricPoleEntityLayerConfig) {
@@ -197,8 +117,16 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
     });
     this.layer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
     const iconSize = this.config.icon.size ?? DEFAULT_ICON_SIZE;
-    // 预创建图标样式
-    this.iconStyleCache = createIconStyle(this.config.icon.url, iconSize, ENTITY_RADIUS, 3);
+    // 预创建图标样式（普通 + hover）
+    const { iconStyle, hoverIconStyle } = createEntityIconStyles({
+      url: this.config.icon.url,
+      size: iconSize,
+      radius: ENTITY_RADIUS,
+      borderWidth: 3,
+      hoverScale: 1.15,
+    });
+    this.iconStyleCache = iconStyle;
+    this.hoverIconStyleCache = hoverIconStyle;
   }
 
   /**
@@ -217,7 +145,11 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
    * @param strokeOpacity 描边透明度
    * @param state 状态：'active' | 'selected' | 'normal'
    */
-  private generateStyleCacheKey(fillOpacity: '50' | '75' | '100', strokeOpacity: '50' | '75' | '100', state: 'active' | 'selected' | 'normal'): string {
+  private generateStyleCacheKey(
+    fillOpacity: '50' | '75' | '100',
+    strokeOpacity: '50' | '75' | '100',
+    state: 'active' | 'selected' | 'normal',
+  ): string {
     return `${fillOpacity}-${strokeOpacity}-${state}`;
   }
 
@@ -246,9 +178,10 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       strokeOpacity = fillOpacity;
     }
 
+    const hoverState: 'none' | 'hovered' = mapFeature.hovered ? 'hovered' : 'none';
     // 生成缓存键并尝试从缓存获取样式
     const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state);
-    const cachedStyle = this.styleCache.get(cacheKey);
+    const cachedStyle = this.styleCache.get(cacheKey + '-' + hoverState);
     if (cachedStyle) {
       return cachedStyle;
     }
@@ -263,11 +196,15 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       styles.push(...ElectricPoleEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`]);
     }
 
-    // 添加图标样式
-    styles.push(this.iconStyleCache!);
+    // 添加图标样式：在 hover 状态下放大图标
+    if (mapFeature.hovered) {
+      styles.push(this.hoverIconStyleCache!);
+    } else {
+      styles.push(this.iconStyleCache!);
+    }
 
     // 缓存样式
-    this.styleCache.set(cacheKey, styles);
+    this.styleCache.set(cacheKey + '-' + hoverState, styles);
 
     return styles;
   }
