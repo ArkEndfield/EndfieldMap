@@ -3,7 +3,7 @@ import { DEFAULT_ZOOM } from '@endfieldmap/map-core/const/map';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { MapContextMenuEventDetail } from '@endfieldmap/map-core/types/event';
-import type { Map as OlMap, View } from 'ol';
+import type { Map as OlMap, MapBrowserEvent, View } from 'ol';
 
 /**
  * 地图事件管理器
@@ -45,7 +45,11 @@ export class EndfieldMapEvent {
     });
 
     // hover 实体（包含普通实体和电线杆），只转发浏览器事件，命中逻辑复用点击的控制器逻辑
-    this.onMap('pointermove', (event) => {
+    this.onMap('pointermove', (event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>) => {
+      // 拖拽过程中不处理 pointermove 以避免 hover 逻辑干扰拖拽（包括平移和框选）
+      if (event.dragging) {
+        return;
+      }
       this.event.fire(MAP_EVENT.MAP_HOVER, { event });
     });
 

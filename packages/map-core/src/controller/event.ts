@@ -2,14 +2,11 @@ import { EntityController } from '@endfieldmap/map-core/controller/entity';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
-import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
+import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import { boundingExtent } from 'ol/extent';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
-import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
+import { hitTestEntitiesAt, type EntityHitTestResult } from '@endfieldmap/map-core/event/entity_hit_test';
 
 export interface EventControllerConfig {
   entityController: EntityController;
@@ -30,40 +27,23 @@ export class EventController {
   private registerClickEventHandlers() {
     // 点击事件
     mapEventEmitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
-      // 收集所有可见 layers 的 features
-      const allClickedFeatures: Array<{
-        features: Feature<Point>[];
-        layer: CommonPointEntityLayer | ElectricPoleEntityLayer;
-      }> = [];
+      const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter(
+        (layer) => layer.visible
+      );
+      const entityLayers = this.entityController.currentMapAllLayers.filter((layer) => layer.visible);
 
-      // 处理电线杆点击（非聚合图层，直接使用命中的要素）
-      for (const layer of this.electricPoleController.currentMapAllEntityLayers) {
-        if (!layer.visible) continue;
-        const clickedFeatures = await layer.layer.getFeatures(event.pixel);
-        if (clickedFeatures.length) {
-          const features = clickedFeatures.filter(
-            (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
-          ) as Feature<Point>[];
-          if (features.length > 0) {
-            allClickedFeatures.push({ features, layer });
-          }
-        }
-      }
-
-      for (const layer of this.entityController.currentMapAllLayers) {
-        // 只处理可见的layer
-        if (!layer.visible) continue;
-
-        const clickedFeatures = await layer.layer.getFeatures(event.pixel);
-        if (clickedFeatures.length) {
-          const features = (clickedFeatures[0].get('features') as Feature<Point>[]).filter(
-            (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
-          );
-          if (features.length > 0) {
-            allClickedFeatures.push({ features, layer });
-          }
-        }
-      }
+      const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
+        {
+          coordinate: event.coordinate as [number, number] | undefined,
+          pixel: event.pixel as [number, number],
+          map: event.map,
+        },
+        electricPoleLayers,
+        entityLayers,
+        {
+          enableHitDetectionFallback: true,
+        },
+      );
 
       if (allClickedFeatures.length === 0) return;
 
@@ -98,39 +78,23 @@ export class EventController {
 
   private registerContextMenuEventHandlers() {
     mapEventEmitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
-      const allClickedFeatures: Array<{
-        features: Feature<Point>[];
-        layer: CommonPointEntityLayer | ElectricPoleEntityLayer;
-      }> = [];
+      const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter(
+        (layer) => layer.visible
+      );
+      const entityLayers = this.entityController.currentMapAllLayers.filter((layer) => layer.visible);
 
-      // 处理电线杆右键（非聚合图层，直接使用命中的要素）
-      for (const layer of this.electricPoleController.currentMapAllEntityLayers) {
-        if (!layer.visible) continue;
-        const clickedFeatures = await layer.layer.getFeatures(detail.pixel);
-        if (clickedFeatures.length) {
-          const features = clickedFeatures.filter(
-            (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
-          ) as Feature<Point>[];
-          if (features.length > 0) {
-            allClickedFeatures.push({ features, layer });
-          }
-        }
-      }
-
-      // 处理普通实体右键（聚合图层）
-      for (const layer of this.entityController.currentMapAllLayers) {
-        if (!layer.visible) continue;
-
-        const clickedFeatures = await layer.layer.getFeatures(detail.pixel);
-        if (clickedFeatures.length) {
-          const features = (clickedFeatures[0].get('features') as Feature<Point>[]).filter(
-            (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
-          );
-          if (features.length > 0) {
-            allClickedFeatures.push({ features, layer });
-          }
-        }
-      }
+      const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
+        {
+          coordinate: detail.coordinate,
+          pixel: detail.pixel,
+          map: detail.map,
+        },
+        electricPoleLayers,
+        entityLayers,
+        {
+          enableHitDetectionFallback: true,
+        },
+      );
 
       // 如果没有命中实体，尝试命中电线连接
       if (allClickedFeatures.length === 0) {

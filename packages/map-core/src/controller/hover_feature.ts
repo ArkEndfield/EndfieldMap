@@ -1,13 +1,13 @@
 import { MAP_EVENT } from "@endfieldmap/map-core/const/event";
-import { EntityInstanceKey, FeatureTypeKey, FeatureType } from "@endfieldmap/map-core/const/map";
+import { EntityInstanceKey } from "@endfieldmap/map-core/const/map";
 import mapEventEmitter from "@endfieldmap/map-core/event/emitter";
+import { hitTestEntitiesAt, type EntityHitTestResult } from "@endfieldmap/map-core/event/entity_hit_test";
 import type { MapFeature } from "@endfieldmap/map-core/render/source/feature/feature";
 import type { CommonPointEntityLayer } from "@endfieldmap/map-core/render/layers/entity/common_point";
 import type { ElectricPoleEntityLayer } from "@endfieldmap/map-core/render/layers/entity/electric_pole";
 import type { DisposeListener } from "@endfieldmap/map-core/types/event";
 import { logger } from "@endfieldmap/tools";
 import { action, observable } from "mobx";
-import type { Feature } from "ol";
 import type { Coordinate } from "ol/coordinate";
 import type { Point } from "ol/geom";
 
@@ -40,45 +40,32 @@ export class HoverFeatureController {
      * 注册事件处理器
      */
     private registerEventHandlers() {
-        // 监听MAP_HOVER事件
+        // 监听MAP_HOVER事件：使用统一的实体命中检测（与 click 共享）
         const disposeHover = mapEventEmitter.on(MAP_EVENT.MAP_HOVER, async (detail) => {
             const { event } = detail;
-            
-            // 收集所有可见 layers 的 features（与 entity_click 逻辑一致）
-            const allHoveredFeatures: Array<{
-                features: Feature<Point>[];
-                layer: CommonPointEntityLayer | ElectricPoleEntityLayer;
-            }> = [];
-
-            // 处理电线杆hover（非聚合图层，直接使用命中的要素）
-            for (const layer of this.getElectricPoleLayers()) {
-                if (!layer.visible) continue;
-                const hoveredFeatures = await layer.layer.getFeatures(event.pixel);
-                if (hoveredFeatures.length) {
-                    const features = hoveredFeatures.filter(
-                        (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
-                    ) as Feature<Point>[];
-                    if (features.length > 0) {
-                        allHoveredFeatures.push({ features, layer });
-                    }
+            const coordinate = event.coordinate as Coordinate | undefined;
+            if (!coordinate) {
+                if (this.hoverFeature !== null) {
+                    this.setHoverFeature(null, null);
                 }
+                return;
             }
 
-            // 处理普通实体hover（聚合图层）
-            for (const layer of this.getEntityLayers()) {
-                // 只处理可见的layer
-                if (!layer.visible) continue;
+            const electricPoleLayers = this.getElectricPoleLayers().filter(layer => layer.visible);
+            const entityLayers = this.getEntityLayers().filter(layer => layer.visible);
 
-                const hoveredFeatures = await layer.layer.getFeatures(event.pixel);
-                if (hoveredFeatures.length) {
-                    const features = (hoveredFeatures[0].get('features') as Feature<Point>[]).filter(
-                        (r) => r.get(FeatureTypeKey) === FeatureType.ENTITY
-                    );
-                    if (features.length > 0) {
-                        allHoveredFeatures.push({ features, layer });
-                    }
-                }
-            }
+            const allHoveredFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
+                {
+                    coordinate,
+                    pixel: event.pixel as [number, number],
+                    map: event.map,
+                },
+                electricPoleLayers,
+                entityLayers,
+                {
+                    enableHitDetectionFallback: false,
+                },
+            );
 
             // 如果没有命中任何feature，清除hover状态
             if (allHoveredFeatures.length === 0) {
@@ -95,20 +82,16 @@ export class HoverFeatureController {
             // 取第一个feature作为hover target
             const feature = features[0];
             const mapFeature = feature.get(EntityInstanceKey) as MapFeature;
-            
+
             // 确定hover坐标
             let hoverCoordinate: Coordinate;
             if (features.length > 1) {
-                // 聚合情况：使用聚合中心坐标
-                const hoveredFeatures = await selectedLayerFeatures.layer.layer.getFeatures(event.pixel);
-                if (hoveredFeatures.length > 0) {
-                    const clusterFeature = hoveredFeatures[0];
-                    const geometry = clusterFeature.getGeometry();
-                    if (geometry && geometry.getType() === 'Point') {
-                        hoverCoordinate = (geometry as Point).getCoordinates();
-                    } else {
-                        hoverCoordinate = mapFeature.coordinates;
-                    }
+                // 聚合情况：使用聚合中心坐标（Cluster feature 的几何中心）
+                const source = selectedLayerFeatures.layer.layer.getSource();
+                const clusterFeature = source?.getClosestFeatureToCoordinate(coordinate);
+                const geometry = clusterFeature?.getGeometry();
+                if (geometry && geometry.getType() === "Point") {
+                    hoverCoordinate = (geometry as Point).getCoordinates();
                 } else {
                     hoverCoordinate = mapFeature.coordinates;
                 }
@@ -116,7 +99,7 @@ export class HoverFeatureController {
                 // 单个feature：使用feature自己的坐标
                 hoverCoordinate = mapFeature.coordinates;
             }
-            
+
             // 更新hover状态
             if (mapFeature !== this.hoverFeature) {
                 this.setHoverFeature(mapFeature, hoverCoordinate);
@@ -132,14 +115,16 @@ export class HoverFeatureController {
 
             if (event.batch) {
                 // 批量操作
-                if ('layers' in event && event.layers) {
+                if ("layers" in event && event.layers) {
                     // 直接隐藏layers的情况
                     if (!event.visible) {
                         hiddenLayers = event.layers;
                     }
-                } else if ('changes' in event && event.changes) {
+                } else if ("changes" in event && event.changes) {
                     // toggle操作，从changes中找出被隐藏的layers
-                    hiddenLayers = event.changes.filter((c: { layer: CommonPointEntityLayer; visible: boolean }) => !c.visible).map((c: { layer: CommonPointEntityLayer; visible: boolean }) => c.layer);
+                    hiddenLayers = event.changes
+                        .filter((c: { layer: CommonPointEntityLayer; visible: boolean }) => !c.visible)
+                        .map((c: { layer: CommonPointEntityLayer; visible: boolean }) => c.layer);
                 }
             } else {
                 // 非批量操作，从layers数组中找出被隐藏的layer
@@ -150,7 +135,7 @@ export class HoverFeatureController {
 
             // 检查hover feature是否属于被隐藏的layer
             if (hiddenLayers.some(layer => this.isFeatureInLayer(this.hoverFeature!, layer))) {
-                logger.debug('[HoverFeatureController] Clearing hover feature because layer was hidden');
+                logger.debug("[HoverFeatureController] Clearing hover feature because layer was hidden");
                 this.clearHoverFeature();
             }
         });
@@ -158,7 +143,7 @@ export class HoverFeatureController {
         // 监听选择开始事件
         const disposeSelectionStart = mapEventEmitter.on(MAP_EVENT.SELECTION_START, () => {
             if (this.hoverFeature) {
-                logger.debug('[HoverFeatureController] Clearing hover feature because selection started');
+                logger.debug("[HoverFeatureController] Clearing hover feature because selection started");
                 this.clearHoverFeature();
             }
         });
@@ -166,7 +151,7 @@ export class HoverFeatureController {
         // 监听聚合点击事件
         const disposeClusterClick = mapEventEmitter.on(MAP_EVENT.CLUSTER_CLICK, () => {
             if (this.hoverFeature) {
-                logger.debug('[HoverFeatureController] Clearing hover feature because cluster was clicked');
+                logger.debug("[HoverFeatureController] Clearing hover feature because cluster was clicked");
                 this.clearHoverFeature();
             }
         });
@@ -200,11 +185,11 @@ export class HoverFeatureController {
         const oldFeature = this.hoverFeature;
 
         if (oldFeature) {
-            logger.debug('[HoverFeatureController] Unhovered feature', oldFeature.data);
+            logger.debug("[HoverFeatureController] Unhovered feature", oldFeature.data);
         }
 
         if (feature) {
-            logger.debug('[HoverFeatureController] Hovered feature', feature.data);
+            logger.debug("[HoverFeatureController] Hovered feature", feature.data);
         }
 
         this.hoverFeature = feature;
