@@ -41,7 +41,7 @@ export class EventController {
         electricPoleLayers,
         entityLayers,
         {
-          enableHitDetectionFallback: true,
+          enableHitDetectionFallback: false,
         },
       );
 
