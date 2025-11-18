@@ -63,6 +63,15 @@ export class EndfieldMap {
       units: 'pixels',
       extent: [0, 0, 256, 256],
     });
+    // 上下左右多给 100px 的裕度
+    const projectionExtent = this.projection.getExtent();
+    // TODO: 需要根据地图的实际边界来计算裕度
+    const extent = [
+      projectionExtent[0] - 100, // 左
+      projectionExtent[1], // 下
+      projectionExtent[2] + 50, // 右
+      projectionExtent[3] + 50, // 上
+    ];
     this.view = new View({
       projection: this.projection,
       center: DEFAULT_CENTER,
@@ -71,6 +80,7 @@ export class EndfieldMap {
       minZoom: this.config.minZoom,
       rotation: DEFAULT_ROTATION,
       enableRotation: false,
+      extent: extent,
     });
     this.map = new Map({
       target: this.config.container,

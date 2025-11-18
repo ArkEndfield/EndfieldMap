@@ -156,7 +156,21 @@ export class HoverFeatureController {
             }
         });
 
-        this.disposeListeners.push(disposeHover, disposeVisibilityChange, disposeSelectionStart, disposeClusterClick);
+        // 监听缩放变化事件：缩放会导致聚合拆分/重组，此时原有 hover 圈位置通常已不再对应实际实体
+        const disposeZoomChange = mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, () => {
+            if (this.hoverFeature) {
+                logger.debug("[HoverFeatureController] Clearing hover feature because zoom changed");
+                this.clearHoverFeature();
+            }
+        });
+
+        this.disposeListeners.push(
+            disposeHover,
+            disposeVisibilityChange,
+            disposeSelectionStart,
+            disposeClusterClick,
+            disposeZoomChange,
+        );
     }
 
     /**
