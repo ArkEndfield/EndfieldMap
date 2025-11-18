@@ -16,10 +16,11 @@
 
 ## Coding Style & Naming Conventions
 
-- TypeScript + React functional components with hooks-first state management (MobX/Zustand where already in use).
+- TypeScript + React functional components with hooks-first state management (MobX where already in use).
 - Formatting is enforced by Prettier (`.prettierrc`): 2-space indent, semicolons, single quotes, and 120-character line width.
 - Use `PascalCase` for React components and `camelCase` for variables, functions, and most file names (e.g., `useMapStore.ts`).
 - Prefer explicit types over `any`; use named exports when practical.
+- DO NOT use `any` type.
 
 ## Testing Guidelines
 
