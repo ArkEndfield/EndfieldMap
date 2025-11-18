@@ -8,7 +8,7 @@ import { useMapAdapter } from '@/hooks/useMapAdapter';
 const ThemedComponents = getThemedComponents(themeNames.ENDFIELD);
 
 const ThemedPopup = ThemedComponents.get(ComponentType.POPUP)!;
-const ThemedEntityPanel = ThemedComponents.get(ComponentType.ENTITY_PANEL)!;
+// const ThemedEntityPanel = ThemedComponents.get(ComponentType.ENTITY_PANEL)!;
 
 function EndfieldMap() {
   const container = useRef<HTMLDivElement>(null);
@@ -26,11 +26,11 @@ function EndfieldMap() {
         </Suspense>
       )}
 
-      {adapter && (
+      {/* {adapter && (
         <Suspense>
           <ThemedEntityPanel adapter={adapter} />
         </Suspense>
-      )}
+      )} */}
     </div>
   );
 }

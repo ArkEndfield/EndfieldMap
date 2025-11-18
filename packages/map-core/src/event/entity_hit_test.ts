@@ -1,4 +1,10 @@
-import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
+import {
+  DEFAULT_ICON_SIZE,
+  DEFAULT_STROKE_WIDTH,
+  EntityInstanceKey,
+  FeatureType,
+  FeatureTypeKey,
+} from '@endfieldmap/map-core/const/map';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import type { Map as OlMap } from 'ol';
@@ -69,13 +75,13 @@ export async function hitTestEntitiesAt(
     const source = layer.layer.getSource();
     if (!source) continue;
 
-    const closestFeature = source.getClosestFeatureToCoordinate(coordinate);
+    const closestFeature = source.getClosestFeatureToCoordinate(coordinate) as Feature<Point>;
     if (!closestFeature) continue;
 
     const geometry = closestFeature.getGeometry();
     if (!geometry) continue;
 
-    const closestCoordinate = geometry.getCoordinates() as Coordinate;
+    const closestCoordinate = geometry.getCoordinates();
     const [featurePx, featurePy] = map.getPixelFromCoordinate(closestCoordinate);
     const dxPx = pointerPx - featurePx;
     const dyPx = pointerPy - featurePy;
@@ -90,12 +96,26 @@ export async function hitTestEntitiesAt(
       continue;
     }
 
-    const features = [closestFeature].filter(
-      (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY,
-    ) as Feature<Point>[];
+    // 在相同坐标上可能有多根电线杆（例如叠放），这里按 feature 的创建顺序选择“最上面”的一个
+    const overlappedFeatures = source.getFeaturesAtCoordinate(closestCoordinate) as Feature<Point>[];
 
-    if (features.length > 0) {
-      results.push({ features, layer });
+    let selectedFeature: Feature<Point> | null = null;
+    let maxOrder = -Infinity;
+
+    for (const candidate of overlappedFeatures) {
+      if (candidate.get(FeatureTypeKey) !== FeatureType.ENTITY) {
+        continue;
+      }
+      const instance = candidate.get(EntityInstanceKey) as { order?: number } | undefined;
+      const order = instance?.order ?? 0;
+      if (!selectedFeature || order > maxOrder) {
+        selectedFeature = candidate;
+        maxOrder = order;
+      }
+    }
+
+    if (selectedFeature) {
+      results.push({ features: [selectedFeature], layer });
     }
   }
 
@@ -104,13 +124,13 @@ export async function hitTestEntitiesAt(
     const source = layer.layer.getSource();
     if (!source) continue;
 
-    const closestClusterFeature = source.getClosestFeatureToCoordinate(coordinate);
+    const closestClusterFeature = source.getClosestFeatureToCoordinate(coordinate) as Feature<Point>;
     if (!closestClusterFeature) continue;
 
     const geometry = closestClusterFeature.getGeometry();
     if (!geometry) continue;
 
-    const closestCoordinate = geometry.getCoordinates() as Coordinate;
+    const closestCoordinate = geometry.getCoordinates();
     const [featurePx, featurePy] = map.getPixelFromCoordinate(closestCoordinate);
     const dxPx = pointerPx - featurePx;
     const dyPx = pointerPy - featurePy;
@@ -128,9 +148,16 @@ export async function hitTestEntitiesAt(
       continue;
     }
 
-    const features = clusterFeatures.filter(
-      (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY,
-    );
+    // 过滤出实体特征后，按创建顺序从“上到下”排序（order 越大越在上）
+    const features = clusterFeatures
+      .filter((feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY)
+      .sort((a, b) => {
+        const aInstance = a.get(EntityInstanceKey) as { order?: number } | undefined;
+        const bInstance = b.get(EntityInstanceKey) as { order?: number } | undefined;
+        const aOrder = aInstance?.order ?? 0;
+        const bOrder = bInstance?.order ?? 0;
+        return bOrder - aOrder;
+      });
 
     if (features.length > 0) {
       results.push({ features, layer });
@@ -146,9 +173,15 @@ export async function hitTestEntitiesAt(
         continue;
       }
 
-      const features = clickedFeatures.filter(
+      const features = (clickedFeatures.filter(
         (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY,
-      ) as Feature<Point>[];
+      ) as Feature<Point>[]).sort((a, b) => {
+        const aInstance = a.get(EntityInstanceKey) as { order?: number } | undefined;
+        const bInstance = b.get(EntityInstanceKey) as { order?: number } | undefined;
+        const aOrder = aInstance?.order ?? 0;
+        const bOrder = bInstance?.order ?? 0;
+        return bOrder - aOrder;
+      });
 
       if (features.length > 0) {
         results.push({ features, layer });
@@ -167,9 +200,15 @@ export async function hitTestEntitiesAt(
         continue;
       }
 
-      const features = clusterFeatures.filter(
-        (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY,
-      );
+      const features = clusterFeatures
+        .filter((feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY)
+        .sort((a, b) => {
+          const aInstance = a.get(EntityInstanceKey) as { order?: number } | undefined;
+          const bInstance = b.get(EntityInstanceKey) as { order?: number } | undefined;
+          const aOrder = aInstance?.order ?? 0;
+          const bOrder = bInstance?.order ?? 0;
+          return bOrder - aOrder;
+        });
 
       if (features.length > 0) {
         results.push({ features, layer });

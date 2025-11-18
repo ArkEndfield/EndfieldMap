@@ -18,6 +18,19 @@ const Popup: React.FC<PopupProps> = observer(({ adapter }) => {
     };
   }, [adapter, isMobile]);
 
+  // 桌面端：在内容渲染完成后，通知 PopupController 再做一次位置更新 + 视图自动平移
+  useEffect(() => {
+    if (isMobile || !adapter?.popupController || !desktopRef.current || !activeFeature) return;
+
+    const frameId = window.requestAnimationFrame(() => {
+      adapter.popupController?.updatePosition();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [adapter, activeFeature, isMobile]);
+
   const handleClose = () => {
     adapter?.activeFeatureController.clearActiveFeature();
   };
