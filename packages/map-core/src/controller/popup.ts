@@ -64,11 +64,6 @@ export class PopupController {
     if (!coordinate) return;
 
     this.overlay.setPosition(coordinate);
-    // 确保overlay元素可见
-    const element = this.overlay.getElement();
-    if (element) {
-      element.style.display = '';
-    }
     logger.debug('[PopupController] Updated overlay position', coordinate);
   }
 
@@ -77,13 +72,9 @@ export class PopupController {
    */
   private clearOverlayPosition() {
     if (!this.overlay) return;
-    this.overlay.setPosition(undefined);
-    // 确保overlay元素完全隐藏
-    const element = this.overlay.getElement();
-    if (element) {
-      element.style.display = 'none';
-    }
-    logger.debug('[PopupController] Cleared overlay position');
+    // 不再立即清空位置，避免打断 React 的退出动画
+    // 仅记录日志，真正的隐藏由 React 控制（通过 activeFeature 变化触发）
+    logger.debug('[PopupController] Cleared overlay position (handled by React)');
   }
 
   /**
