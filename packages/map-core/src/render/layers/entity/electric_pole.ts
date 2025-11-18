@@ -55,9 +55,11 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
   private styleCache: Map<string, Style[]> = new Map();
   /** 图标样式缓存 */
   private iconStyleCache: Style | null = null;
+  /** 是否启用阴影（性能优化选项） */
+  private enableShadow: boolean = false;
 
   /** 通用样式-backdrop */
-  private static readonly BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
+  private static BASE_BACKDROP_STYLE: Style[] = [];
 
   /** 非选中样式（包含背景、装饰线和三角指示器） */
   private static readonly NORMAL_STYLE_BG = {
@@ -104,6 +106,11 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       borderWidth: 3,
     });
     this.iconStyleCache = iconStyle;
+    
+    // 初始化阴影样式（如果启用）
+    if (this.enableShadow) {
+      ElectricPoleEntityLayer.BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
+    }
   }
 
   /**
@@ -155,14 +162,12 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       return cachedStyle;
     }
 
-    // 创建样式数组
-    const styles: Style[] = [...ElectricPoleEntityLayer.BASE_BACKDROP_STYLE];
-
-    // 添加背景样式（包含背景、装饰线和三角指示器）
-    styles.push(...ElectricPoleEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`]);
-
-    // 添加图标样式
-    styles.push(this.iconStyleCache!);
+    // 创建样式数组（优化：减少数组操作）
+    const bgStyles = ElectricPoleEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
+    
+    const styles: Style[] = this.enableShadow
+      ? [...ElectricPoleEntityLayer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!]
+      : [...bgStyles, this.iconStyleCache!];
 
     // 缓存样式
     this.styleCache.set(cacheKey, styles);

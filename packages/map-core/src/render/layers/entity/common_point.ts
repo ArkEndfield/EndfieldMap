@@ -46,6 +46,11 @@ export interface CommonPointEntityLayerConfig {
   mapIndex: MapIndex;
   clusterOptions?: ClusterOptions;
   renderBuffer?: number;
+  /** 性能配置 */
+  performance?: {
+    enableShadow?: boolean;
+    maxStyleCacheSize?: number;
+  };
 }
 
 export class CommonPointEntityLayer extends SingleLayerBase {
@@ -62,11 +67,17 @@ export class CommonPointEntityLayer extends SingleLayerBase {
 
   /** 样式缓存 */
   private styleCache: Map<string, Style[]> = new Map();
+  /** 样式缓存键的 LRU 队列 */
+  private styleCacheKeys: string[] = [];
   /** 图标样式缓存 */
   private iconStyleCache: Style | null = null;
+  /** 是否启用阴影（性能优化选项） */
+  private enableShadow: boolean = false;
+  /** 样式缓存最大数量 */
+  private maxStyleCacheSize: number = 1000;
 
   /** 通用样式-backdrop */
-  private static readonly BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
+  private static BASE_BACKDROP_STYLE: Style[] = [];
 
   /** 选中样式（包含背景、装饰线和三角指示器） */
   private static readonly SELECTED_STYLE_BG = {
@@ -108,6 +119,11 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     super();
     this.config = config;
     this.infoData = config.infoData;
+    
+    // 应用性能配置
+    this.enableShadow = config.performance?.enableShadow ?? false;
+    this.maxStyleCacheSize = config.performance?.maxStyleCacheSize ?? 1000;
+    
     this.entity = new ClusterEntitySource({
       data: config.data,
       mapIndex: config.mapIndex,
@@ -133,6 +149,11 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       borderWidth: 3,
     });
     this.iconStyleCache = iconStyle;
+    
+    // 初始化阴影样式（如果启用）
+    if (this.enableShadow) {
+      CommonPointEntityLayer.BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
+    }
   }
 
   /**
@@ -182,16 +203,16 @@ export class CommonPointEntityLayer extends SingleLayerBase {
         return cachedStyle;
       }
 
-      // 创建样式
-      const styles: Style[] = [...CommonPointEntityLayer.BASE_BACKDROP_STYLE];
-      if (state === 'selected') {
-        styles.push(...CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]);
-      } else {
-        styles.push(...CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`]);
-      }
-      styles.push(this.iconStyleCache!);
+      // 创建样式（优化：减少数组操作）
+      const bgStyles = state === 'selected' 
+        ? CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
+        : CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
       
-      this.styleCache.set(cacheKey, styles);
+      const styles: Style[] = this.enableShadow
+        ? [...CommonPointEntityLayer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!]
+        : [...bgStyles, this.iconStyleCache!];
+      
+      this.addToStyleCache(cacheKey, styles);
       return styles;
     }
 
@@ -235,35 +256,51 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       return cachedStyle;
     }
 
-    // 创建样式数组
-    const styles: Style[] = [...CommonPointEntityLayer.BASE_BACKDROP_STYLE];
+    // 创建样式数组（优化：减少数组操作）
+    const bgStyles = state === 'selected'
+      ? CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
+      : CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
+    
+    const clusterStyle = createClusterStyle({
+      radius: ENTITY_RADIUS,
+      size: size,
+    });
 
-    // 根据状态添加对应样式（包含背景、装饰线和三角指示器）
-    if (state === 'selected') {
-      styles.push(...CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]);
-    } else {
-      styles.push(...CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`]);
-    }
-
-    // 添加图标样式
-    styles.push(this.iconStyleCache!);
-
-    // 添加 size 样式（聚合数量）
-    styles.push(
-      createClusterStyle({
-        radius: ENTITY_RADIUS,
-        size: size,
-      }),
-    );
+    const styles: Style[] = this.enableShadow
+      ? [...CommonPointEntityLayer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!, clusterStyle]
+      : [...bgStyles, this.iconStyleCache!, clusterStyle];
 
     // 缓存样式
-    this.styleCache.set(cacheKey, styles);
+    this.addToStyleCache(cacheKey, styles);
 
     return styles;
   }
 
   @computed get entityDataIdKey() {
     return this.infoData.entityInfo.point;
+  }
+
+  /**
+   * 添加样式到缓存，使用 LRU 策略管理缓存大小
+   */
+  private addToStyleCache(key: string, styles: Style[]): void {
+    // 如果已存在，先移除旧的键
+    const existingIndex = this.styleCacheKeys.indexOf(key);
+    if (existingIndex !== -1) {
+      this.styleCacheKeys.splice(existingIndex, 1);
+    }
+
+    // 添加到队列末尾
+    this.styleCacheKeys.push(key);
+    this.styleCache.set(key, styles);
+
+    // 如果超过最大缓存数量，移除最旧的
+    if (this.styleCacheKeys.length > this.maxStyleCacheSize) {
+      const oldestKey = this.styleCacheKeys.shift();
+      if (oldestKey) {
+        this.styleCache.delete(oldestKey);
+      }
+    }
   }
 
   @computed get entityInfo(): EntityInfoItemData {
