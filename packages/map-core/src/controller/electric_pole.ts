@@ -221,8 +221,12 @@ export class ElectricPoleController {
    * @returns 电线杆图层列表
    */
   @computed
-  public get currentMapAllEntityLayers() {
-    return this.currentMapIndex ? Array.from(this.entityLayer.values()) : [];
+  public get currentMapAllEntityLayers(): ElectricPoleEntityLayer[] {
+    if (!this.currentMapIndex) {
+      return [];
+    }
+    const layer = this.entityLayer.get(this.currentMapIndex);
+    return layer ? [layer] : [];
   }
 
   /**

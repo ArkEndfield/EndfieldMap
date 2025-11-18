@@ -1,7 +1,7 @@
 import { MAP_EVENT } from "@endfieldmap/map-core/const/event";
 import { EntityInstanceKey } from "@endfieldmap/map-core/const/map";
 import mapEventEmitter from "@endfieldmap/map-core/event/emitter";
-import { hitTestEntitiesAt, type EntityHitTestResult } from "@endfieldmap/map-core/event/entity_hit_test";
+import { hitTestEntitiesAt, selectTopmostHitResult, type EntityHitTestResult } from "@endfieldmap/map-core/event/entity_hit_test";
 import type { MapFeature } from "@endfieldmap/map-core/render/source/feature/feature";
 import type { CommonPointEntityLayer } from "@endfieldmap/map-core/render/layers/entity/common_point";
 import type { ElectricPoleEntityLayer } from "@endfieldmap/map-core/render/layers/entity/electric_pole";
@@ -63,7 +63,7 @@ export class HoverFeatureController {
                 electricPoleLayers,
                 entityLayers,
                 {
-                    enableHitDetectionFallback: false,
+                    enableHitDetectionFallback: true,
                 },
             );
 
@@ -75,8 +75,14 @@ export class HoverFeatureController {
                 return;
             }
 
-            // 选择最上层的 layer（z-index 最大的，或者最后添加的）
-            const selectedLayerFeatures = allHoveredFeatures[allHoveredFeatures.length - 1];
+            // 选择最上层的 layer（基于 z-index 和添加顺序）
+            const selectedLayerFeatures = selectTopmostHitResult(allHoveredFeatures);
+            if (!selectedLayerFeatures) {
+                if (this.hoverFeature !== null) {
+                    this.setHoverFeature(null, null);
+                }
+                return;
+            }
             const features = selectedLayerFeatures.features;
 
             // 取第一个feature作为hover target

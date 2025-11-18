@@ -6,7 +6,7 @@ import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import { boundingExtent } from 'ol/extent';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
-import { hitTestEntitiesAt, type EntityHitTestResult } from '@endfieldmap/map-core/event/entity_hit_test';
+import { hitTestEntitiesAt, selectTopmostHitResult, type EntityHitTestResult } from '@endfieldmap/map-core/event/entity_hit_test';
 
 export interface EventControllerConfig {
   entityController: EntityController;
@@ -41,14 +41,15 @@ export class EventController {
         electricPoleLayers,
         entityLayers,
         {
-          enableHitDetectionFallback: false,
+          enableHitDetectionFallback: true,
         },
       );
 
       if (allClickedFeatures.length === 0) return;
 
-      // 选择最上层的 layer（z-index 最大的，或者最后添加的）
-      const selectedLayerFeatures = allClickedFeatures[allClickedFeatures.length - 1];
+      // 选择最上层的 layer（基于 z-index 和添加顺序）
+      const selectedLayerFeatures = selectTopmostHitResult(allClickedFeatures);
+      if (!selectedLayerFeatures) return;
       const features = selectedLayerFeatures.features;
 
       if (features.length > 1) {
@@ -112,8 +113,9 @@ export class EventController {
         return;
       }
 
-      // 选择最上层的 layer
-      const selectedLayerFeatures = allClickedFeatures[allClickedFeatures.length - 1];
+      // 选择最上层的 layer（基于 z-index 和添加顺序）
+      const selectedLayerFeatures = selectTopmostHitResult(allClickedFeatures);
+      if (!selectedLayerFeatures) return;
       const features = selectedLayerFeatures.features;
 
       // 右键只针对单个实体触发上下文菜单，如果命中多个，选择第一个

@@ -23,8 +23,36 @@ export interface EntityHitTestResult {
   layer: CommonPointEntityLayer | ElectricPoleEntityLayer;
 }
 
+/**
+ * 在多个命中结果中选择视觉上“最上层”的那个
+ * - 优先比较图层的 zIndex
+ * - 若 zIndex 一致，后出现的（添加顺序更靠后）优先
+ */
+export function selectTopmostHitResult(results: EntityHitTestResult[]): EntityHitTestResult | null {
+  if (results.length === 0) {
+    return null;
+  }
+
+  let topIndex = 0;
+  let topZIndex = results[0].layer.layer.getZIndex() ?? 0;
+
+  for (let i = 1; i < results.length; i += 1) {
+    const zIndex = results[i].layer.layer.getZIndex() ?? 0;
+    if (zIndex > topZIndex || (zIndex === topZIndex && i > topIndex)) {
+      topIndex = i;
+      topZIndex = zIndex;
+    }
+  }
+
+  return results[topIndex];
+}
+
 export interface EntityHitTestOptions {
-  /** 是否在未命中时回退到基于 getFeatures(pixel) 的命中检测（仅用于点击/右键，避免 hover 卡顿） */
+  /**
+   * 是否启用基于 `layer.getFeatures(pixel)` 的高精度命中检测
+   * - `true`：使用像素级命中检测，命中顺序与实际渲染顺序一致（推荐用于 click / hover）
+   * - `false`/未传：使用几何近邻 + 包络盒命中（性能更好，但在复杂重叠情况下可能与渲染顺序不完全一致）
+   */
   enableHitDetectionFallback?: boolean;
 }
 
@@ -40,6 +68,27 @@ export async function hitTestEntitiesAt(
   entityLayers: CommonPointEntityLayer[],
   options?: EntityHitTestOptions,
 ): Promise<EntityHitTestResult[]> {
+  const { coordinate } = input;
+
+  if (!coordinate) {
+    return [];
+  }
+
+  if (options?.enableHitDetectionFallback) {
+    return hitTestEntitiesByPixel(input, electricPoleLayers, entityLayers);
+  }
+
+  return hitTestEntitiesByGeometry(input, electricPoleLayers, entityLayers);
+}
+
+/**
+ * 使用几何近邻 + 包络盒的快速命中检测（旧实现，性能较好）
+ */
+function hitTestEntitiesByGeometry(
+  input: EntityHitTestInput,
+  electricPoleLayers: ElectricPoleEntityLayer[],
+  entityLayers: CommonPointEntityLayer[],
+): EntityHitTestResult[] {
   const { coordinate, pixel, map } = input;
 
   if (!coordinate) {
@@ -128,9 +177,9 @@ export async function hitTestEntitiesAt(
     if (!closestClusterFeature) continue;
 
     const geometry = closestClusterFeature.getGeometry();
-    if (!geometry) continue;
+    if (!geometry || geometry.getType() !== 'Point') continue;
 
-    const closestCoordinate = geometry.getCoordinates();
+    const closestCoordinate = (geometry as Point).getCoordinates();
     const [featurePx, featurePy] = map.getPixelFromCoordinate(closestCoordinate);
     const dxPx = pointerPx - featurePx;
     const dyPx = pointerPy - featurePy;
@@ -164,55 +213,117 @@ export async function hitTestEntitiesAt(
     }
   }
 
-  // 如果需要，回退到基于 getFeatures(pixel) 的命中检测（点击 / 右键时使用，hover 不使用）
-  if (results.length === 0 && options?.enableHitDetectionFallback) {
-    // 电线杆：非聚合图层，直接使用命中的要素
-    for (const layer of electricPoleLayers) {
-      const clickedFeatures = await layer.layer.getFeatures(pixel);
-      if (!clickedFeatures.length) {
-        continue;
-      }
+  return results;
+}
 
-      const features = (clickedFeatures.filter(
-        (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY,
-      ) as Feature<Point>[]).sort((a, b) => {
-        const aInstance = a.get(EntityInstanceKey) as { order?: number } | undefined;
-        const bInstance = b.get(EntityInstanceKey) as { order?: number } | undefined;
-        const aOrder = aInstance?.order ?? 0;
-        const bOrder = bInstance?.order ?? 0;
-        return bOrder - aOrder;
-      });
+/**
+ * 使用 `layer.getFeatures(pixel)` 的像素级命中检测
+ * 命中顺序与实际渲染顺序一致，适合需要精确层叠顺序的场景
+ */
+async function hitTestEntitiesByPixel(
+  input: EntityHitTestInput,
+  electricPoleLayers: ElectricPoleEntityLayer[],
+  entityLayers: CommonPointEntityLayer[],
+): Promise<EntityHitTestResult[]> {
+  const { pixel, map } = input;
 
-      if (features.length > 0) {
-        results.push({ features, layer });
-      }
+  // 参考实体样式计算命中区域
+  const baseRadiusPx = DEFAULT_ICON_SIZE / 2;
+  const strokeWidthPx = DEFAULT_STROKE_WIDTH;
+  const circleRadiusPx = baseRadiusPx + strokeWidthPx;
+  const circleCenterOffsetYPx = baseRadiusPx + strokeWidthPx * 2;
+  const circleBottomFromAnchorPx = circleCenterOffsetYPx + circleRadiusPx;
+  const indicatorCenterOffsetYPx = -1.5;
+  const indicatorRadiusPx = 4;
+  const indicatorTopFromAnchorPx = indicatorCenterOffsetYPx - indicatorRadiusPx;
+
+  const rawTopFromAnchorPx = indicatorTopFromAnchorPx - 2;
+  const rawBottomFromAnchorPx = circleBottomFromAnchorPx + 2;
+  const visualTopFromAnchorPx = -rawBottomFromAnchorPx;
+  const visualBottomFromAnchorPx = -rawTopFromAnchorPx;
+  const halfWidthPx = circleRadiusPx + 2;
+
+  const [pointerPx, pointerPy] = pixel;
+
+  const results: EntityHitTestResult[] = [];
+
+  // 电线杆：直接基于像素命中结果过滤（顺序与渲染一致）
+  for (const layer of electricPoleLayers) {
+    const clickedFeatures = await layer.layer.getFeatures(pixel);
+    if (!clickedFeatures.length) {
+      continue;
     }
 
-    // 普通实体：聚合图层，使用第一个聚合要素的底层 features
-    for (const layer of entityLayers) {
-      const clickedFeatures = await layer.layer.getFeatures(pixel);
-      if (!clickedFeatures.length) {
+    const hitFeatures: Feature<Point>[] = [];
+
+    for (const feature of clickedFeatures) {
+      if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
         continue;
       }
 
-      const clusterFeatures = clickedFeatures[0].get('features') as Feature<Point>[] | undefined;
-      if (!clusterFeatures || clusterFeatures.length === 0) {
+      const geometry = feature.getGeometry();
+      if (!geometry || geometry.getType() !== 'Point') {
         continue;
       }
 
-      const features = clusterFeatures
-        .filter((feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY)
-        .sort((a, b) => {
-          const aInstance = a.get(EntityInstanceKey) as { order?: number } | undefined;
-          const bInstance = b.get(EntityInstanceKey) as { order?: number } | undefined;
-          const aOrder = aInstance?.order ?? 0;
-          const bOrder = bInstance?.order ?? 0;
-          return bOrder - aOrder;
-        });
+      const coordinate = (geometry as Point).getCoordinates();
+      const [featurePx, featurePy] = map.getPixelFromCoordinate(coordinate);
+      const dxPx = pointerPx - featurePx;
+      const dyPx = pointerPy - featurePy;
 
-      if (features.length > 0) {
-        results.push({ features, layer });
+      if (dyPx < visualTopFromAnchorPx || dyPx > visualBottomFromAnchorPx) {
+        continue;
       }
+
+      if (Math.abs(dxPx) > halfWidthPx) {
+        continue;
+      }
+
+      hitFeatures.push(feature as Feature<Point>);
+    }
+
+    if (hitFeatures.length > 0) {
+      results.push({ features: hitFeatures, layer });
+    }
+  }
+
+  // 普通实体：基于 Cluster 图层的像素命中结果
+  for (const layer of entityLayers) {
+    const clickedClusterFeatures = await layer.layer.getFeatures(pixel);
+    if (!clickedClusterFeatures.length) {
+      continue;
+    }
+
+    // 只取渲染顺序中最上面的一个聚合要素
+    const topClusterFeature = clickedClusterFeatures[0];
+    const geometry = topClusterFeature.getGeometry();
+    if (!geometry || geometry.getType() !== 'Point') {
+      continue;
+    }
+
+    const [featurePx, featurePy] = map.getPixelFromCoordinate((geometry as Point).getCoordinates());
+    const dxPx = pointerPx - featurePx;
+    const dyPx = pointerPy - featurePy;
+
+    if (dyPx < visualTopFromAnchorPx || dyPx > visualBottomFromAnchorPx) {
+      continue;
+    }
+
+    if (Math.abs(dxPx) > halfWidthPx) {
+      continue;
+    }
+
+    const clusterFeatures = topClusterFeature.get('features') as Feature<Point>[] | undefined;
+    if (!clusterFeatures || clusterFeatures.length === 0) {
+      continue;
+    }
+
+    const entityFeatures = clusterFeatures.filter(
+      (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY,
+    ) as Feature<Point>[];
+
+    if (entityFeatures.length > 0) {
+      results.push({ features: entityFeatures, layer });
     }
   }
 
