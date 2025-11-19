@@ -62,9 +62,6 @@ export class HoverFeatureController {
                 },
                 electricPoleLayers,
                 entityLayers,
-                {
-                    enableHitDetectionFallback: true,
-                },
             );
 
             // 如果没有命中任何feature，清除hover状态

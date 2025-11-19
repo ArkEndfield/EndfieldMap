@@ -40,9 +40,6 @@ export class EventController {
         },
         electricPoleLayers,
         entityLayers,
-        {
-          enableHitDetectionFallback: true,
-        },
       );
 
       if (allClickedFeatures.length === 0) return;
@@ -92,9 +89,6 @@ export class EventController {
         },
         electricPoleLayers,
         entityLayers,
-        {
-          enableHitDetectionFallback: true,
-        },
       );
 
       // 如果没有命中实体，尝试命中电线连接
