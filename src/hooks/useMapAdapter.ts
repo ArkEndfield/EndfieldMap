@@ -2,7 +2,7 @@ import { Language } from '@endfieldmap/tools';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { sentryReporter } from '@/services/logger';
-import { EndfieldMapAdapter } from '@endfieldmap/map-core';
+import { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
 import { dataService } from '@/services/data';
@@ -52,38 +52,46 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     initCursorEventListeners(adapter.current);
   }, [containerRef]);
 
+  const renderMap = useCallback(
+    (mapIdx?: MapIndex) => {
+      if (adapter.current) {
+        const data = dataService.getDataFromLocalStorage(mapIdx);
+        const currentMap = data.currentMap;
+        adapter.current.mapController.setZoom(data.zoom);
+        adapter.current.renderMap(currentMap);
+        adapter.current.renderEntity(currentMap).then(() => {
+          // 显示entity
+          if (adapter.current) {
+            // adapter.current.entityController.showEntity('int_trchest_common_normal');
+
+            const storedEntityVisibility = dataService.entityDataService.entityVisibilityData;
+            const storedFeatureMarked = dataService.entityDataService.featureMarkedData;
+            if (adapter.current.entityController.validateLayerVisibility(storedEntityVisibility)) {
+              adapter.current.entityController.importLayerVisibility(storedEntityVisibility);
+            }
+            if (adapter.current.entityController.validateMarkedFeatures(storedFeatureMarked)) {
+              adapter.current.entityController.importMarkedFeatures(storedFeatureMarked);
+            }
+          }
+        });
+        adapter.current.renderAreaName(Language.ZH_CN);
+        adapter.current.renderElectricPole(currentMap);
+        adapter.current.mapController.setCenter(data.center);
+      }
+    },
+    [],
+  );
+
   useEffect(() => {
     if (containerRef.current) {
       init().then(() => {
-        if (adapter.current) {
-          const data = dataService.getDataFromLocalStorage();
-          const currentMap = data.currentMap;
-          adapter.current.mapController.setZoom(data.zoom);
-          adapter.current.renderMap(currentMap);
-          adapter.current.renderEntity(currentMap).then(() => {
-            // 显示entity
-            if (adapter.current) {
-              // adapter.current.entityController.showEntity('int_trchest_common_normal');
-
-              const storedEntityVisibility = dataService.entityDataService.entityVisibilityData;
-              const storedFeatureMarked = dataService.entityDataService.featureMarkedData;
-              if (adapter.current.entityController.validateLayerVisibility(storedEntityVisibility)) {
-                adapter.current.entityController.importLayerVisibility(storedEntityVisibility);
-              }
-              if (adapter.current.entityController.validateMarkedFeatures(storedFeatureMarked)) {
-                adapter.current.entityController.importMarkedFeatures(storedFeatureMarked);
-              }
-            }
-          });
-          adapter.current.renderAreaName(Language.ZH_CN);
-          adapter.current.renderElectricPole(currentMap);
-          adapter.current.mapController.setCenter(data.center);
-        }
+        renderMap();
       });
     }
-  }, [init, containerRef]);
+  }, [init, containerRef, renderMap]);
 
   return {
     adapter: adapterReactive,
+    renderMap
   };
 }

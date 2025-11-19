@@ -1,4 +1,4 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import { MapIndex, MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import {
   DEFAULT_FILL_COLOR,
   DEFAULT_FILL_COLOR_TRANSPARENT_50,
@@ -25,7 +25,11 @@ import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import { ClusterEntitySource } from '@endfieldmap/map-core/render/source/entity';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
-import type { EntityDataList, EntityInfoData, EntityInfoItemData } from '@endfieldmap/map-core/types';
+import type {
+  EntityDataList,
+  EntityInfoData,
+  EntityInfoItemData,
+} from '@endfieldmap/map-core/types';
 import { action, computed, observable } from 'mobx';
 import type { Feature } from 'ol';
 import type { FeatureLike } from 'ol/Feature';
@@ -64,6 +68,8 @@ export class CommonPointEntityLayer extends SingleLayerBase {
   @observable accessor infoData: EntityInfoData;
   /** 是否可见 */
   @observable accessor visible: boolean = false;
+  /** marked feature 过滤模式 */
+  @observable accessor markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
 
   /** 样式缓存 */
   private styleCache: Map<string, Style[]> = new Map();
@@ -167,6 +173,20 @@ export class CommonPointEntityLayer extends SingleLayerBase {
   }
 
   /**
+   * 设置 marked feature 过滤模式
+   * @param mode 过滤模式
+   */
+  @action
+  public setMarkedFilterMode(mode: MarkedFeatureFilterMode) {
+    if (this.markedFilterMode === mode) {
+      return;
+    }
+    this.markedFilterMode = mode;
+    // 通知聚合源重新计算，以便样式函数按新过滤模式重绘
+    this.entity.clusterSource.changed();
+  }
+
+  /**
    * 生成样式缓存的键
    * @param fillOpacity 填充透明度
    * @param strokeOpacity 描边透明度
@@ -182,21 +202,48 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     return `${fillOpacity}-${strokeOpacity}-${state}-${size}`;
   }
 
-  private createStyle(feature: FeatureLike) {
-    const features = feature.get('features');
-    const size: number = features.length;
+  private isFeatureVisibleByMarked(feature: MapFeature): boolean {
+    if (this.markedFilterMode === MarkedFeatureFilterMode.Marked) {
+      return feature.marked;
+    }
+    if (this.markedFilterMode === MarkedFeatureFilterMode.Unmarked) {
+      return !feature.marked;
+    }
+    return true;
+  }
 
-    // 快速路径：单个feature且无状态变化
+  private createStyle(feature: FeatureLike): Style[] {
+    const clusterFeatures = feature.get('features') as Feature[] | undefined;
+    if (!clusterFeatures || clusterFeatures.length === 0) {
+      return [];
+    }
+
+    // 将聚合中的 feature 映射为 MapFeature，并根据 markedFilterMode 过滤
+    const mapFeatures: MapFeature[] = clusterFeatures.map((f: Feature) =>
+      f.get(EntityInstanceKey) as MapFeature,
+    );
+    const visibleFeatures = mapFeatures.filter((mapFeature) =>
+      this.isFeatureVisibleByMarked(mapFeature),
+    );
+
+    const size: number = visibleFeatures.length;
+
+    // 当前聚合内没有符合过滤条件的 feature，则不渲染
+    if (size === 0) {
+      return [];
+    }
+
+    // 快速路径：单个 feature 且无状态变化
     if (size === 1) {
-      const mapFeature: MapFeature = features[0].get(EntityInstanceKey);
+      const mapFeature = visibleFeatures[0];
       const marked = mapFeature.marked;
       const selected = mapFeature.isSelected;
-      
+
       // 计算透明度
       const fillOpacity: '50' | '75' | '100' = marked ? '50' : '100';
       const strokeOpacity: '50' | '75' | '100' = selected ? '50' : fillOpacity;
       const state: 'selected' | 'normal' = selected ? 'selected' : 'normal';
-      
+
       const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state, 1);
       const cachedStyle = this.styleCache.get(cacheKey);
       if (cachedStyle) {
@@ -204,27 +251,25 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       }
 
       // 创建样式（优化：减少数组操作）
-      const bgStyles = state === 'selected' 
+      const bgStyles = state === 'selected'
         ? CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
         : CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
-      
+
       const styles: Style[] = this.enableShadow
         ? [...CommonPointEntityLayer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!]
         : [...bgStyles, this.iconStyleCache!];
-      
+
       this.addToStyleCache(cacheKey, styles);
       return styles;
     }
 
-    // 聚合feature的处理
-    const mapFeatures: MapFeature[] = features.map((f: Feature) => f.get(EntityInstanceKey));
-
-    // 统计marked、selected的数量
+    // 聚合 feature 的处理（仅基于当前过滤后可见的 feature）
+    // 统计 marked、selected 的数量
     let markedCount = 0;
     let selectedCount = 0;
     for (let i = 0; i < size; i++) {
-      if (mapFeatures[i].marked) markedCount++;
-      if (mapFeatures[i].isSelected) selectedCount++;
+      if (visibleFeatures[i].marked) markedCount++;
+      if (visibleFeatures[i].isSelected) selectedCount++;
     }
 
     const hasMarked = markedCount > 0;
@@ -232,7 +277,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     const allMarked = markedCount === size;
     const allSelected = selectedCount === size;
 
-    // 计算透明度（基于marked状态）
+    // 计算透明度（基于 marked 状态）
     let fillOpacity: '50' | '75' | '100' = '100';
     if (hasMarked) {
       fillOpacity = allMarked ? '50' : '75';
@@ -241,7 +286,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     // 计算描边透明度和状态
     let strokeOpacity: '50' | '75' | '100' = '100';
     let state: 'selected' | 'normal' = 'normal';
-    
+
     if (hasSelected) {
       state = 'selected';
       strokeOpacity = allSelected ? '50' : '75';
@@ -260,10 +305,10 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     const bgStyles = state === 'selected'
       ? CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
       : CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
-    
+
     const clusterStyle = createClusterStyle({
       radius: ENTITY_RADIUS,
-      size: size,
+      size,
     });
 
     const styles: Style[] = this.enableShadow
@@ -276,7 +321,8 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     return styles;
   }
 
-  @computed get entityDataIdKey() {
+  @computed
+  get entityDataIdKey() {
     return this.infoData.entityInfo.point;
   }
 
@@ -303,7 +349,8 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     }
   }
 
-  @computed get entityInfo(): EntityInfoItemData {
+  @computed
+  get entityInfo(): EntityInfoItemData {
     return {
       uniqueKey: `${this.config.mapIndex}-${this.infoData.category}-${this.entityDataIdKey}`,
       category: this.infoData.category,

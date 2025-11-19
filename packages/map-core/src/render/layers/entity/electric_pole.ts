@@ -175,11 +175,13 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
     return styles;
   }
 
-  @computed get entityDataIdKey() {
+  @computed
+  get entityDataIdKey() {
     return ElectricPoleIdKey;
   }
 
-  @computed get entityInfo(): EntityInfoItemData<ElectricPoleData> {
+  @computed
+  get entityInfo(): EntityInfoItemData<ElectricPoleData> {
     return {
       uniqueKey: `${this.config.mapIndex}-${ElectricPoleIdKey}`,
       category: 'electric_pole',

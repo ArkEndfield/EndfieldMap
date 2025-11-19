@@ -1,11 +1,14 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { DEFAULT_CLUSTER_DISTANCE, type MapIndex } from '@endfieldmap/map-core/const/map';
+import { DEFAULT_CLUSTER_DISTANCE, MarkedFeatureFilterMode, type MapIndex } from '@endfieldmap/map-core/const/map';
 import { CommonPointDataManager } from '@endfieldmap/map-core/data/entity/common_point';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
-import type { EntityCategoryData, EntityData } from '@endfieldmap/map-core/types/entity';
+import type {
+  EntityCategoryData,
+  EntityData,
+} from '@endfieldmap/map-core/types/entity';
 import type { JSONLoader } from '@endfieldmap/tools';
 import { groupBy, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
@@ -31,6 +34,8 @@ export class EntityController {
   private lastDistance: number = 0;
   private currentMapIndex?: MapIndex;
   private currentZoom: number = 3;
+  /** 当前 marked feature 过滤模式 */
+  @observable accessor markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
 
   constructor(config: EntityControllerConfig) {
     this.commonPointDataManager = new CommonPointDataManager({
@@ -92,6 +97,15 @@ export class EntityController {
   }
 
   /**
+   * 将当前 marked 过滤模式应用到指定图层列表
+   */
+  private applyMarkedFilterModeToLayers(layers: CommonPointEntityLayer[]) {
+    layers.forEach((layer) => {
+      layer.setMarkedFilterMode(this.markedFilterMode);
+    });
+  }
+
+  /**
    * 通知实体可见性变化
    */
   private notifyEntityVisibilityChange(event: EntityVisibilityChangeEventDetail) {
@@ -127,6 +141,8 @@ export class EntityController {
             clusterOptions: this.clusterOptions,
             renderBuffer: 250,
           });
+          // 应用当前 marked feature 过滤模式
+          layer.setMarkedFilterMode(this.markedFilterMode);
           // 将 layer 添加到全局列表中
           currentLayers.push(layer);
           layers.set(category, [...(layers.get(category) || []), layer]);
@@ -149,6 +165,8 @@ export class EntityController {
     const layers = await this.getMapLayers(mapIndex);
     runInAction(() => {
       this.currentMapAllLayers = layers;
+      // 确保切换地图后，新的图层也应用当前的 marked 过滤模式
+      this.applyMarkedFilterModeToLayers(layers);
       this.entityLayerContainer = new MultiLayerContainer(layers.map((layer) => layer.layer));
     });
     // 初始化聚合距离，确保图层创建后立即应用正确的聚合设置
@@ -338,11 +356,62 @@ export class EntityController {
     }
   }
 
+  // #region marked feature 过滤
+
+  /**
+   * 设置 marked feature 的全局过滤模式
+   * @param mode 过滤模式
+   */
+  @action
+  public setMarkedFeatureFilter(mode: MarkedFeatureFilterMode) {
+    if (this.markedFilterMode === mode) {
+      return;
+    }
+    this.markedFilterMode = mode;
+
+    // 应用到当前地图的所有图层
+    this.applyMarkedFilterModeToLayers(this.currentMapAllLayers);
+
+    // 同步到已缓存的其它地图图层
+    for (const [, categoryMap] of this.cachedLayer.entries()) {
+      for (const [, layers] of categoryMap.entries()) {
+        this.applyMarkedFilterModeToLayers(layers);
+      }
+    }
+  }
+
+  /**
+   * 仅显示已标记的 feature
+   */
+  @action
+  public showOnlyMarkedFeatures() {
+    this.setMarkedFeatureFilter(MarkedFeatureFilterMode.Marked);
+  }
+
+  /**
+   * 仅显示未标记的 feature
+   */
+  @action
+  public showOnlyUnmarkedFeatures() {
+    this.setMarkedFeatureFilter(MarkedFeatureFilterMode.Unmarked);
+  }
+
+  /**
+   * 显示所有 feature（不按 marked 过滤）
+   */
+  @action
+  public showAllFeatures() {
+    this.setMarkedFeatureFilter(MarkedFeatureFilterMode.All);
+  }
+
+  // #endregion
+
   /**
    * 获取当前地图的所有实体信息列表
    * @returns 实体信息列表
    */
-  @computed get currentEntityInfoList() {
+  @computed
+  get currentEntityInfoList() {
     return this.currentMapAllLayers.map((layer) => layer.entityInfo);
   }
 

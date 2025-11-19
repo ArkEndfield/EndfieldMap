@@ -98,3 +98,15 @@ export const enum FeatureType {
   ENTITY,
   CONNECTION,
 }
+
+/**
+ * marked feature 筛选模式
+ * - 'all'：显示全部
+ * - 'marked-only'：仅显示已标记的 feature
+ * - 'unmarked-only'：仅显示未标记的 feature
+ */
+export enum MarkedFeatureFilterMode {
+  All,
+  Marked,
+  Unmarked,
+}

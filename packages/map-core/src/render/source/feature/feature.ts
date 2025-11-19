@@ -128,11 +128,13 @@ export class MapFeature extends FeatureBase {
         }
     }
 
-    @computed get id(): number {
+    @computed
+    get id(): number {
         return this.data.levelLogicId;
     }
 
-    @computed get coordinates(): Coordinate {
+    @computed
+    get coordinates(): Coordinate {
         return xyz2crd(this.data.position, this.mapIndex);
     }
 }
@@ -177,11 +179,13 @@ export class ConnectionFeature extends FeatureBase {
         this.feature.setGeometry(undefined);
     }
 
-    @computed get coordinates(): [Coordinate, Coordinate] {
+    @computed
+    get coordinates(): [Coordinate, Coordinate] {
         return [this.from.coordinates, this.to?.coordinates ?? [0, 0]];
     }
 
-    @computed get data() {
+    @computed
+    get data() {
         return {
             from: this.from.data.levelLogicId,
             to: this.to?.data?.levelLogicId,

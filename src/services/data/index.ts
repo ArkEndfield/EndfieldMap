@@ -117,8 +117,8 @@ class DataService {
    * 从LocalStorage中获取数据
    * @returns 数据
    */
-  public getDataFromLocalStorage() {
-    const currentMap = LocalStorageDB.get<MapIndex>(LocalStorageKey.MAP_CURRENT_MAP) || MapIndex.MAP01;
+  public getDataFromLocalStorage(mapIdx?: MapIndex) {
+    const currentMap = mapIdx || LocalStorageDB.get<MapIndex>(LocalStorageKey.MAP_CURRENT_MAP) || MapIndex.MAP01;
     const zoom = LocalStorageDB.get<DataState<number>>(LocalStorageKey.MAP_ZOOM)?.[currentMap] ?? 3;
     const center =
       LocalStorageDB.get<DataState<Coordinate>>(LocalStorageKey.MAP_VIEW_STATE)?.[currentMap] ?? getMapCenter(currentMap);
