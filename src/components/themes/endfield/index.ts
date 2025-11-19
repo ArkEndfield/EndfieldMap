@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { ComponentType, type ThemedComponentsMap } from "@/components/themes/types";
 
-const Popup = lazy(() => import("./Popup"));
+const Popup = lazy(() => import("./popup"));
 const EntityPanel = lazy(() => import("./EntityPanel"));
 const ElectricPolePresetPanel = lazy(() => import("./ElectricPolePresetPanel"));
 
