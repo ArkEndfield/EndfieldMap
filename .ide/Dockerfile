@@ -1,14 +1,12 @@
 # 使用官方的 Node.js 22 作为基础镜像
 FROM node:22
 # --- 环境配置 ---
-# 设置环境变量，支持中文显示和输入
 ENV LANG C.UTF-8
 ENV LANGUAGE C.UTF-8
 ENV LOCALE zh-CN
-# 关键：定义插件市场的环境变量。code-server 进程会自动读取它们！
 ENV SERVICE_URL=https://marketplace.visualstudio.com/_apis/public/gallery
 ENV ITEM_URL=https://marketplace.visualstudio.com/items
-# 定义插件列表，便于后续维护和增删
+# 定义插件列表
 ENV VSCODE_EXTENSIONS=" \
     redhat.vscode-yaml \
     dbaeumer.vscode-eslint \
@@ -29,37 +27,34 @@ ENV VSCODE_EXTENSIONS=" \
     rvest.vs-code-prettier-eslint \
     naumovs.color-highlight \
     britesnow.vscode-toggle-quotes \
+    ms-ceintl.vscode-language-pack-zh-hans \
     "
 # --- 系统和软件安装 ---
 RUN set -ex; \
-    # 更新包列表并安装依赖
+    # 安装系统依赖
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    build-essential \
-    libcairo2-dev \
-    libpango1.0-dev \
-    libjpeg-dev \
-    libgif-dev \
-    librsvg2-dev \
-    fonts-wqy-zenhei \
-    fonts-wqy-microhei \
-    fonts-noto-cjk \
-    fonts-noto-extra \
-    wget \
-    unzip \
-    openssh-server \
-    git \
-    # 清理 apt 缓存，减小镜像体积
+    build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
+    fonts-wqy-zenhei fonts-wqy-microhei fonts-noto-cjk fonts-noto-extra \
+    wget unzip openssh-server git \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     \
     # 安装 code-server
     && curl -fsSL https://code-server.dev/install.sh | sh \
     \
-    # --- 插件安装核心逻辑 ---
-    # 直接运行安装命令即可，它会自动使用上面定义的 ENV 环境变量
+    # 安装所有插件
     && for extension in ${VSCODE_EXTENSIONS}; do \
         echo "--> Installing extension: $extension"; \
         code-server --install-extension "$extension"; \
     done \
     \
-    && echo "✅ All extensions installed successfully from Microsoft Marketplace."
+    # --- 配置默认语言为中文---
+    # 1. 为即将运行的 coder 用户创建配置目录
+    && mkdir -p /root/.local/share/code-server/User \
+    # 2. 写入语言配置到 settings.json 文件中
+    && echo '{"locale":"zh-cn"}' > /root/.local/share/code-server/User/argv.json \
+    # 3. 清理插件缓存，强制 code-server 在启动时重新扫描插件，解决语言包不显示的问题
+    && rm -rf /root/.local/share/code-server/extensions/extensions.json \
+    && rm -rf /root/.local/share/code-server/CachedExtensionVSIXs \
+    && code-server --list-extensions \
+    && echo "✅ All extensions installed successfully."
