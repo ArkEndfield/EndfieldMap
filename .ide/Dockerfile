@@ -27,7 +27,6 @@ ENV VSCODE_EXTENSIONS=" \
     rvest.vs-code-prettier-eslint \
     naumovs.color-highlight \
     britesnow.vscode-toggle-quotes \
-    ms-ceintl.vscode-language-pack-zh-hans \
     "
 # --- 系统和软件安装 ---
 RUN set -ex; \
@@ -47,14 +46,4 @@ RUN set -ex; \
         echo "--> Installing extension: $extension"; \
         code-server --install-extension "$extension"; \
     done \
-    \
-    # --- 配置默认语言为中文---
-    # 1. 为即将运行的 coder 用户创建配置目录
-    && mkdir -p /root/.local/share/code-server/User \
-    # 2. 写入语言配置到 settings.json 文件中
-    && echo '{"locale":"zh-cn"}' > /root/.local/share/code-server/User/argv.json \
-    # 3. 清理插件缓存，强制 code-server 在启动时重新扫描插件，解决语言包不显示的问题
-    && rm -rf /root/.local/share/code-server/extensions/extensions.json \
-    && rm -rf /root/.local/share/code-server/CachedExtensionVSIXs \
-    && code-server --list-extensions \
     && echo "✅ All extensions installed successfully."
