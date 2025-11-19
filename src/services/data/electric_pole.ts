@@ -1,32 +1,16 @@
 import { THROTTLE_INTERVAL } from '@/const/data';
+import type {
+  ElectricPolePresetStorage,
+  ElectricPolePreset,
+  ElectricPolePresetExportBundle,
+} from '@/types/electric_pole';
 import type { ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { MapIndex, StorageKey, throttle, type StorageManager } from '@endfieldmap/tools';
 import { makeAutoObservable, runInAction } from 'mobx';
 
-export interface ElectricPolePreset {
-  id: string;
-  name: string;
-  data: ElectricPoleMapData;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface ElectricPolePresetStorage {
-  presets: ElectricPolePreset[];
-  currentPresetId: string | null;
-}
-
 /**
- * 导入 / 导出电线杆预设时使用的文件结构
- * - 允许同时包含多个预设
+ * 电线杆数据管理器
  */
-export interface ElectricPolePresetExportBundle {
-  type: 'electric_pole_preset_bundle';
-  version: 1;
-  exportedAt: number;
-  presets: Array<Pick<ElectricPolePreset, 'id' | 'name' | 'data' | 'createdAt' | 'updatedAt'>>;
-}
-
 export class ElectricPoleDataService {
   private adapter?: EndfieldMapAdapter;
   private storage: StorageManager;
@@ -224,9 +208,7 @@ export class ElectricPoleDataService {
     const now = Date.now();
     const baseData =
       initialData ??
-      (this.adapter && this.initialized
-        ? this.adapter.electricPoleController.allData
-        : ({} as ElectricPoleMapData));
+      (this.adapter && this.initialized ? this.adapter.electricPoleController.allData : ({} as ElectricPoleMapData));
     const ensuredData = this.ensureMapData(baseData);
 
     const newPreset: ElectricPolePreset = {

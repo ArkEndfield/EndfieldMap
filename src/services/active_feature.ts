@@ -1,5 +1,9 @@
-import { EndfieldMapAdapter, MAP_EVENT } from "@endfieldmap/map-core";
+import { EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
 
+/**
+ * 初始化激活feature事件监听器
+ * @param adapter 地图适配器
+ */
 export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter) {
   // 监听entity_click事件，设置active_feature
   adapter.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
