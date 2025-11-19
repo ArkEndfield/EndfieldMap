@@ -1,23 +1,23 @@
-import { LayerType, MapIndex } from "@endfieldmap/map-core/const";
-import { ActiveFeatureController } from "@endfieldmap/map-core/controller/active_feature";
-import { AreaNameController } from "@endfieldmap/map-core/controller/area_name";
-import { DataController } from "@endfieldmap/map-core/controller/data";
-import { EntityController } from "@endfieldmap/map-core/controller/entity";
-import { EndfieldMapLayerController } from "@endfieldmap/map-core/controller/layer";
+import { LayerType, MapIndex } from '@endfieldmap/map-core/const';
+import { ActiveFeatureController } from '@endfieldmap/map-core/controller/active_feature';
+import { AreaNameController } from '@endfieldmap/map-core/controller/area_name';
+import { DataController } from '@endfieldmap/map-core/controller/data';
+import { EntityController } from '@endfieldmap/map-core/controller/entity';
+import { EndfieldMapLayerController } from '@endfieldmap/map-core/controller/layer';
 import { MapController } from '@endfieldmap/map-core/controller/map';
-import { MapLayerController } from "@endfieldmap/map-core/controller/map_layer";
-import { PopupController } from "@endfieldmap/map-core/controller/popup";
+import { MapLayerController } from '@endfieldmap/map-core/controller/map_layer';
+import { PopupController } from '@endfieldmap/map-core/controller/popup';
 import type { EndfieldMapAssetConfig } from '@endfieldmap/map-core/data/asset';
 import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import { EndfieldMapEvent } from "@endfieldmap/map-core/event/map";
+import { EndfieldMapEvent } from '@endfieldmap/map-core/event/map';
 import type { SimpleMapConfig } from '@endfieldmap/map-core/types/map';
-import type { JSONLoader, Language, LoggerReporter } from "@endfieldmap/tools";
+import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
-import { action, observable } from "mobx";
-import { ElectricPoleController } from "@endfieldmap/map-core/controller/electric_pole";
-import { EventController } from "@endfieldmap/map-core/controller/event";
+import { action, observable } from 'mobx';
+import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
+import { EventController } from '@endfieldmap/map-core/controller/event';
 
 export interface AdapterConfig {
   container: HTMLElement;
@@ -72,22 +72,22 @@ export class EndfieldMapAdapter {
     this.container = config.container;
     this.asset = new EndfieldMapAsset(config.asset);
     this.jsonLoader = config.jsonLoader;
-    this.mapController = new MapController({
-      asset: this.asset,
-      mapConfig: {
-        container: this.container,
-        ...(config.map || {}),
+    this.mapController = new MapController(
+      {
+        asset: this.asset,
+        mapConfig: {
+          container: this.container,
+          ...(config.map || {}),
+        },
+      },
+      {
+        getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
+        getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
       }
-    }, {
-      getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
-      getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
-    });
+    );
     this.eventManager = new EndfieldMapEvent(this.mapController.mapRenderer.map, this.mapController.mapRenderer.view);
     this.layerController = new EndfieldMapLayerController(this.mapController.mapRenderer.map);
-    this.layerController.addLayer(
-      LayerType.MAP,
-      this.mapController.mapRenderer.mapLayer,
-    );
+    this.layerController.addLayer(LayerType.MAP, this.mapController.mapRenderer.mapLayer);
     this.mapLayerController = new MapLayerController({
       tileUrl: this.asset.mapImage,
       projection: this.mapController.mapRenderer.projection,
@@ -95,13 +95,15 @@ export class EndfieldMapAdapter {
     this.areaNameController = new AreaNameController({
       jsonLoader: this.jsonLoader,
       asset_path: this.asset.areaName,
-    })
+    });
     this.entityController = new EntityController({
       jsonLoader: this.jsonLoader,
       dataPath: this.asset.entityData,
       imagePath: this.asset.entityImage,
     });
-    this.activeFeatureController = new ActiveFeatureController();
+    this.activeFeatureController = new ActiveFeatureController({
+      disableActiveFeature: config.map?.disableActiveFeature,
+    });
     this.dataController = new DataController({
       entityController: this.entityController,
     });
@@ -118,7 +120,7 @@ export class EndfieldMapAdapter {
         map: this.mapController.mapRenderer.map,
       });
     }
-    
+
     this.layerController.addLayer(LayerType.AREA_NAME, this.areaNameController.areaNameLayer);
     this.layerController.addLayer(LayerType.MAP, this.mapLayerController.mapLayer);
   }
@@ -168,5 +170,21 @@ export class EndfieldMapAdapter {
     if (electricPoleLayer) {
       this.layerController.addLayer(LayerType.ELECTRIC_POLE, electricPoleLayer);
     }
+  }
+
+  /**
+   * 设置是否启用active feature
+   * @param enable 是否启用
+   */
+  public setActiveFeatureEnable(enable: boolean) {
+    this.activeFeatureController.setEnable(enable);
+  }
+
+  /**
+   * 设置是否启用hover feature
+   * @param enable 是否启用
+   */
+  public setHoverFeatureEnable(enable: boolean) {
+    this.mapController.setHoverFeatureEnable(enable);
   }
 }

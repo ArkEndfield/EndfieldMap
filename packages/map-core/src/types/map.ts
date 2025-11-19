@@ -10,6 +10,10 @@ export interface SimpleMapConfig {
   controlElement?: HTMLElement;
   /** 覆盖层元素 */
   overlayElement?: HTMLElement;
+  /** 是否禁用active feature */
+  disableActiveFeature?: boolean;
+  /** 是否禁用hover feature */
+  disableHoverFeature?: boolean;
 }
 
 /** 地图配置 */

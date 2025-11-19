@@ -10,6 +10,7 @@ import i18n from '@/i18n';
 import { getLanguage } from '@/utils/language';
 import type { LanguageLocale } from '@/types/language';
 import { getAssetUrls } from '@/utils/url';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 /**
  * 地图适配器 hook
@@ -17,7 +18,7 @@ import { getAssetUrls } from '@/utils/url';
 export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | null>) {
   const adapter = useRef<EndfieldMapAdapter | null>(null);
   const [adapterReactive, setAdapterReactive] = useState<EndfieldMapAdapter | null>(null);
-
+  const isMobile = useIsMobile();
   /**
    * 初始化地图函数
    */
@@ -94,7 +95,16 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
         adapter.current.renderAreaName(getLanguage(i18n.language as LanguageLocale));
       }
     });
+    return () => {
+      i18n.off('languageChanged');
+    };
   }, []);
+
+  useEffect(() => {
+    if (adapterReactive) {
+      adapterReactive.setHoverFeatureEnable(!isMobile);
+    }
+  }, [isMobile, adapterReactive]);
 
   return {
     adapter: adapterReactive,
