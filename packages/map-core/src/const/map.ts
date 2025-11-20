@@ -90,6 +90,8 @@ export const enum LayerType {
   AREA_NAME = 'areaName',
   ENTITY = 'entity',
   ELECTRIC_POLE = 'electricPole',
+  ACTIVE_FEATURE = 'activeFeature',
+  HOVER_FEATURE = 'hoverFeature',
 }
 
 /** 特征类型 */

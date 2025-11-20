@@ -6,6 +6,7 @@ import type { FeatureLike } from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type Style from 'ol/style/Style';
+import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const';
 
 /**
  * Hover图层
@@ -44,7 +45,7 @@ export class HoverLayer extends SingleLayerBase {
     });
     
     // 设置图层类型标识，用于在hit test中排除此图层
-    this.layer.set('type', 'hover');
+    this.layer.set(LayerTypeKey, LayerType.HOVER_FEATURE);
   }
 
   /**
