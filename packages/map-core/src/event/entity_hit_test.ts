@@ -111,8 +111,9 @@ function hitTestEntitiesByGeometry(
   const rawTopFromAnchorPx = indicatorTopFromAnchorPx - 2; // 再往上多给 2px
   const rawBottomFromAnchorPx = circleBottomFromAnchorPx + 2; // 再往下多给 2px
   // 样式里“上”是负、“下”是正；屏幕坐标 y 反向，所以这里反转一次：
-  const visualTopFromAnchorPx = -rawBottomFromAnchorPx; // 大部分区域在锚点上方
-  const visualBottomFromAnchorPx = -rawTopFromAnchorPx; // 锚点下方保留一小段
+  const upwardOffsetPx = 5; // 整体向上偏移 5px
+  const visualTopFromAnchorPx = -rawBottomFromAnchorPx - upwardOffsetPx; // 大部分区域在锚点上方
+  const visualBottomFromAnchorPx = -rawTopFromAnchorPx - upwardOffsetPx; // 锚点下方保留一小段
   const halfWidthPx = circleRadiusPx + 2; // 水平方向以圆半径为主，稍微放大一点
 
   const [pointerPx, pointerPy] = pixel;
@@ -239,8 +240,9 @@ async function hitTestEntitiesByPixel(
 
   const rawTopFromAnchorPx = indicatorTopFromAnchorPx - 2;
   const rawBottomFromAnchorPx = circleBottomFromAnchorPx + 2;
-  const visualTopFromAnchorPx = -rawBottomFromAnchorPx;
-  const visualBottomFromAnchorPx = -rawTopFromAnchorPx;
+  const upwardOffsetPx = 5; // 整体向上偏移 5px
+  const visualTopFromAnchorPx = -rawBottomFromAnchorPx - upwardOffsetPx;
+  const visualBottomFromAnchorPx = -rawTopFromAnchorPx - upwardOffsetPx;
   const halfWidthPx = circleRadiusPx + 2;
 
   const [pointerPx, pointerPy] = pixel;
