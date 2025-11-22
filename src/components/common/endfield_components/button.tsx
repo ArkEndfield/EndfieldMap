@@ -55,10 +55,12 @@ export const ZmdButton = ({
             ],
           }
         : {
-            backgroundColor: ['#f2f1efb5', '#f2f1ef'],
+            backgroundColor: ['#ececec77', '#e8e8e8b5', '#ececec77', '#e8e8e8b5'],
             boxShadow: [
-              '0 0 0 0.1em #f2f1efb5, 0 0 0 0.1em #a0a2a3 inset',
-              '0 0 0 0.1em #f2f1ef, 0 0 0 0.1em #a0a2a3 inset',
+              '0 0 0 0.1em #ececec77, 0 0 0 0.1em #a5a5a5 inset',
+              '0 0 0 0.1em #e8e8e8b5, 0 0 0 0.1em #a5a5a5 inset',
+              '0 0 0 0.1em #ececec77, 0 0 0 0.1em #a5a5a5 inset',
+              '0 0 0 0.1em #e8e8e8b5, 0 0 0 0.1em #a5a5a5 inset',
             ],
           };
 
@@ -80,10 +82,12 @@ export const ZmdButton = ({
             ],
           }
         : {
-            backgroundColor: ['#f2f1ef', '#f2f1efb5'],
+            backgroundColor: ['#e8e8e8b5', '#f2f1ef', '#e8e8e8b5', '#f2f1ef'],
             boxShadow: [
+              '0 0 0 0.1em #e8e8e8b5, 0 0 0 0.1em #a5a5a5 inset',
               '0 0 0 0.1em #f2f1ef, 0 0 0 0.1em #a0a2a3 inset',
-              '0 0 0 0.1em #f2f1efb5, 0 0 0 0.1em #a0a2a3 inset',
+              '0 0 0 0.1em #e8e8e8b5, 0 0 0 0.1em #a5a5a5 inset',
+              '0 0 0 0.1em #f2f1ef, 0 0 0 0.1em #a0a2a3 inset',
             ],
           };
 

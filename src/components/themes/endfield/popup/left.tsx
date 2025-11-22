@@ -6,7 +6,7 @@ import { getEntityIcon } from '@/utils/entity';
 import { ScrollArea } from '@/components/common/ScrollArea';
 import { ClipSquare, Deco } from './deco';
 import { Guide } from '../../../common/guide';
-import { ZmdButton } from '@/components/common/zmd_button';
+import { ZmdButton } from '@/components/common/endfield_components/button';
 
 export interface LeftContentProps {
   adapter: EndfieldMapAdapter;

@@ -8,7 +8,8 @@ interface Resources {
     }
   },
   "translation": {
-
+    "cancel": "取消",
+    "confirm": "确认"
   }
 }
 
