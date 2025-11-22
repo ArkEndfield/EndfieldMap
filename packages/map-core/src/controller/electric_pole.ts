@@ -265,14 +265,12 @@ export class ElectricPoleController {
     const maxId = 100_000_000;
     // 如果调用方传入了已使用 ID 集合，则在该集合基础上生成；
     // 否则默认使用当前地图已有的数据进行去重（兼容旧用法，例如 createElectricPoleEntity）。
-    const existingSet =
-      usedIds ??
-      new Set(this.currentData.map((data) => data.levelLogicId));
+    const existingSet = usedIds ?? new Set(this.currentData.map((data) => data.levelLogicId));
 
     // 使用循环而不是递归，避免极端情况下的递归深度问题
     // 在 maxId 足够大的前提下，出现碰撞的概率极低。
     // 同时在 initElectricPoleData 中通过传入全局 usedIds，保证本次批量生成期间绝不重复。
-     
+
     while (true) {
       const newId = Math.floor(Math.random() * maxId);
       if (!existingSet.has(newId)) {
@@ -321,7 +319,10 @@ export class ElectricPoleController {
         });
       } else {
         // 若当前还未建立连接或连接目标不一致，则重建连接
-        if (!feature.connectionEntityFeatures.to || feature.connectionEntityFeatures.to.data.levelLogicId !== connectTo) {
+        if (
+          !feature.connectionEntityFeatures.to ||
+          feature.connectionEntityFeatures.to.data.levelLogicId !== connectTo
+        ) {
           feature.connectTo(toFeature);
         }
       }

@@ -82,16 +82,16 @@ export class AnimatedRingFeature {
       // 淡出动画：向外扩散并淡出
       const fadeElapsed = timestamp - this.fadeOutStartTime;
       const fadeProgress = Math.min(fadeElapsed / this.fadeOutDuration, 1);
-      
+
       // 使用ease-out缓动函数
       const easedProgress = this.easeOut(fadeProgress);
-      
+
       // 透明度从淡出开始时的透明度线性减少到0
       this.opacity = this.fadeOutStartOpacity * (1 - fadeProgress);
-      
+
       // 半径从当前半径扩大到结束半径
       this.currentRadius = this.fadeOutStartRadius + (this.endRadius - this.fadeOutStartRadius) * easedProgress;
-      
+
       return fadeProgress >= 1;
     } else {
       // 收缩动画

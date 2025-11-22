@@ -1,8 +1,8 @@
-import { FeatureType, FeatureTypeKey } from "@endfieldmap/map-core/const/map";
-import FeatureBase, { type BaseFeatureConfig } from "@endfieldmap/map-core/render/source/feature/_base";
-import type { ElectricPoleData } from "@endfieldmap/map-core/types";
-import { xyz2crd } from "@endfieldmap/tools";
-import { Circle as CircleGeom } from "ol/geom";
+import { FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
+import FeatureBase, { type BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
+import type { ElectricPoleData } from '@endfieldmap/map-core/types';
+import { xyz2crd } from '@endfieldmap/tools';
+import { Circle as CircleGeom } from 'ol/geom';
 
 export interface ElectricPoleZoneFeatureConfig extends BaseFeatureConfig {
   /** 电线杆数据 */

@@ -23,11 +23,13 @@ export class SingleEntitySource extends SourceBase<MapFeature, EntityFeatureConf
 
   private initSource() {
     for (const data of this.config.data) {
-      this.features.push(new MapFeature({
-        data,
-        mapIndex: this.config.mapIndex,
-        entityInfo: this.config.entityInfo,
-      }));
+      this.features.push(
+        new MapFeature({
+          data,
+          mapIndex: this.config.mapIndex,
+          entityInfo: this.config.entityInfo,
+        })
+      );
     }
     this.source.addFeatures(this.features.getArray().map((feature) => feature.feature));
   }
@@ -46,12 +48,16 @@ export class ClusterEntitySource extends SingleEntitySource {
       source: this.source,
       distance: this.config.clusterOptions?.distance ?? DEFAULT_CLUSTER_DISTANCE,
     });
-    
+
     // 创建节流函数，约60fps (16ms)
-    this.throttledClusterUpdate = throttle(() => {
-      this.clusterSource.changed();
-    }, 16, { leading: false, trailing: true });
-    
+    this.throttledClusterUpdate = throttle(
+      () => {
+        this.clusterSource.changed();
+      },
+      16,
+      { leading: false, trailing: true }
+    );
+
     // 为每个MapFeature设置onChange回调
     this.features.forEach((feature) => {
       feature.setOnChange(this.throttledClusterUpdate);

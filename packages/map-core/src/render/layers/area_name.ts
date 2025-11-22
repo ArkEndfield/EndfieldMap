@@ -173,7 +173,6 @@ export class AreaNameLayer extends SingleLayerBase {
     }
   }
 
-
   /**
    * 移除图层
    */

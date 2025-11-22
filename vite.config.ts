@@ -31,8 +31,8 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         ...(isDev ? alias : {}),
-        "@": resolve(__dirname, './src'),
-        "@eftypes": resolve(__dirname, './src/@types'),
+        '@': resolve(__dirname, './src'),
+        '@eftypes': resolve(__dirname, './src/@types'),
       },
     },
   };

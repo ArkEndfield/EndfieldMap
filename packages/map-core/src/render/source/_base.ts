@@ -18,9 +18,9 @@ export default abstract class SourceBase<T extends FeatureBase, C extends BaseSo
   /** 配置 */
   public config: C;
   /** feature集合 */
-  @observable accessor  features: Collection<T>;
+  @observable accessor features: Collection<T>;
   /** source */
-  @observable accessor  source: VectorSource;
+  @observable accessor source: VectorSource;
 
   constructor(config: C) {
     this.config = config;

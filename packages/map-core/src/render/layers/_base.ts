@@ -7,7 +7,6 @@ export abstract class SingleLayerBase {
   public abstract layer: BaseLayer;
 }
 
-
 export abstract class MultiLayerBase {
   public isMultiLayer = true;
   /** 图层实例集合 */

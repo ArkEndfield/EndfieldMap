@@ -66,7 +66,7 @@ export async function hitTestEntitiesAt(
   input: EntityHitTestInput,
   electricPoleLayers: ElectricPoleEntityLayer[],
   entityLayers: CommonPointEntityLayer[],
-  options?: EntityHitTestOptions,
+  options?: EntityHitTestOptions
 ): Promise<EntityHitTestResult[]> {
   const { coordinate } = input;
 
@@ -87,7 +87,7 @@ export async function hitTestEntitiesAt(
 function hitTestEntitiesByGeometry(
   input: EntityHitTestInput,
   electricPoleLayers: ElectricPoleEntityLayer[],
-  entityLayers: CommonPointEntityLayer[],
+  entityLayers: CommonPointEntityLayer[]
 ): EntityHitTestResult[] {
   const { coordinate, pixel, map } = input;
 
@@ -224,7 +224,7 @@ function hitTestEntitiesByGeometry(
 async function hitTestEntitiesByPixel(
   input: EntityHitTestInput,
   electricPoleLayers: ElectricPoleEntityLayer[],
-  entityLayers: CommonPointEntityLayer[],
+  entityLayers: CommonPointEntityLayer[]
 ): Promise<EntityHitTestResult[]> {
   const { pixel, map } = input;
 
@@ -321,7 +321,7 @@ async function hitTestEntitiesByPixel(
     }
 
     const entityFeatures = clusterFeatures.filter(
-      (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY,
+      (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY
     ) as Feature<Point>[];
 
     if (entityFeatures.length > 0) {

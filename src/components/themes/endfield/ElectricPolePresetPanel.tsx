@@ -59,9 +59,7 @@ const ElectricPolePresetPanel: React.FC<EntityPanelProps> = observer(({ adapter 
 
   const handleDeleteSelected = async () => {
     if (!selectedIds.length) return;
-    const confirmed = window.confirm(
-      `确定要删除选中的 ${selectedIds.length} 个电线杆预设吗？此操作不可恢复。`
-    );
+    const confirmed = window.confirm(`确定要删除选中的 ${selectedIds.length} 个电线杆预设吗？此操作不可恢复。`);
     if (!confirmed) return;
 
     for (const id of selectedIds) {
@@ -190,16 +188,10 @@ const ElectricPolePresetPanel: React.FC<EntityPanelProps> = observer(({ adapter 
                     }}
                   />
                   <div className="flex-1 min-w-0">
-                    <div
-                      className={`truncate ${
-                        isCurrent ? 'font-semibold text-emerald-700' : 'text-gray-800'
-                      }`}
-                    >
+                    <div className={`truncate ${isCurrent ? 'font-semibold text-emerald-700' : 'text-gray-800'}`}>
                       {preset.name || '(未命名预设)'}
                     </div>
-                    {isCurrent && (
-                      <div className="text-[10px] text-emerald-600 mt-0.5">当前预设</div>
-                    )}
+                    {isCurrent && <div className="text-[10px] text-emerald-600 mt-0.5">当前预设</div>}
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     <button
@@ -263,6 +255,3 @@ const ElectricPolePresetPanel: React.FC<EntityPanelProps> = observer(({ adapter 
 });
 
 export default ElectricPolePresetPanel;
-
-
-

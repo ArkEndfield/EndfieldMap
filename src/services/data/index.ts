@@ -53,10 +53,14 @@ class DataService {
 
     this.itemDataService = new ItemDataService(this.jsonLoader, this.storage);
     this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.storage, this.itemDataService);
-    this.dungeonSeriesDataService = new DungeonSeriesDataService(this.jsonLoader, this.storage, this.chestRewardDataService);
+    this.dungeonSeriesDataService = new DungeonSeriesDataService(
+      this.jsonLoader,
+      this.storage,
+      this.chestRewardDataService
+    );
     this.guideDataService = new GuideDataService(this.jsonLoader, this.storage);
 
-    this.initDataServices()
+    this.initDataServices();
   }
 
   private async initDataServices() {

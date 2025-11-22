@@ -1,4 +1,3 @@
-
 export interface ItemData {
   id: string;
   iconId: string;

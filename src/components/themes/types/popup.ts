@@ -1,5 +1,5 @@
-import type { EndfieldMapAdapter } from "@endfieldmap/map-core";
+import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 
 export interface PopupProps {
-    adapter: EndfieldMapAdapter;
+  adapter: EndfieldMapAdapter;
 }

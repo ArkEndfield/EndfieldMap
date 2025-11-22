@@ -1,7 +1,7 @@
-import type { MapIndex } from "./data";
+import type { MapIndex } from './data';
 
-export type { Coordinate } from "ol/coordinate";
+export type { Coordinate } from 'ol/coordinate';
 
 export type DataState<T> = {
-    [key in MapIndex]: T;
-}
+  [key in MapIndex]: T;
+};

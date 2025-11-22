@@ -37,4 +37,3 @@
 
 - Prefer minimal, targeted changes aligned with existing patterns and directory layout.
 - Do not introduce new dependencies or tooling without clear justification in the PR description or accompanying notes.
-

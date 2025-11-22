@@ -75,7 +75,7 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
         '100': DEFAULT_STROKE_COLOR,
         '50': DEFAULT_STROKE_COLOR_TRANSPARENT_50,
         '75': DEFAULT_STROKE_COLOR_TRANSPARENT_75,
-      },
+      }
     ),
   } as const;
 
@@ -106,7 +106,7 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       borderWidth: 3,
     });
     this.iconStyleCache = iconStyle;
-    
+
     // 初始化阴影样式（如果启用）
     if (this.enableShadow) {
       ElectricPoleEntityLayer.BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
@@ -132,7 +132,7 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
   private generateStyleCacheKey(
     fillOpacity: '50' | '75' | '100',
     strokeOpacity: '50' | '75' | '100',
-    state: 'active' | 'selected' | 'normal',
+    state: 'active' | 'selected' | 'normal'
   ): string {
     return `${fillOpacity}-${strokeOpacity}-${state}`;
   }
@@ -164,7 +164,7 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
 
     // 创建样式数组（优化：减少数组操作）
     const bgStyles = ElectricPoleEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
-    
+
     const styles: Style[] = this.enableShadow
       ? [...ElectricPoleEntityLayer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!]
       : [...bgStyles, this.iconStyleCache!];
@@ -196,6 +196,6 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
       count: this.config.data.length,
       markedCount: this.entity.features.getArray().filter((feature) => feature.marked).length,
       selectedCount: this.entity.features.getArray().filter((feature) => feature.isSelected).length,
-    }
+    };
   }
 }

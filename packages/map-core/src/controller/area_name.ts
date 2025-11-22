@@ -1,10 +1,10 @@
-import type { MapIndex } from "@endfieldmap/map-core/const";
+import type { MapIndex } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { AreaNameDataManager } from "@endfieldmap/map-core/data/area_name";
+import { AreaNameDataManager } from '@endfieldmap/map-core/data/area_name';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { AreaNameFeatureStyle, AreaNameLayerConfig} from "@endfieldmap/map-core/render/layers/area_name";
-import { AreaNameLayer } from "@endfieldmap/map-core/render/layers/area_name";
-import type { JSONLoader, Language } from "@endfieldmap/tools";
+import type { AreaNameFeatureStyle, AreaNameLayerConfig } from '@endfieldmap/map-core/render/layers/area_name';
+import { AreaNameLayer } from '@endfieldmap/map-core/render/layers/area_name';
+import type { JSONLoader, Language } from '@endfieldmap/tools';
 
 export interface AreaNameControllerConfig extends AreaNameLayerConfig {
   jsonLoader: JSONLoader;
@@ -28,7 +28,12 @@ export class AreaNameController {
     this.setAreaName(this.areaNameDataManager.mapIndex, this.areaNameDataManager.language, zoom);
   }
 
-  public async setAreaName(mapIndex: MapIndex | null, language: Language | null, zoom?: number, forceUpdate: boolean = false) {
+  public async setAreaName(
+    mapIndex: MapIndex | null,
+    language: Language | null,
+    zoom?: number,
+    forceUpdate: boolean = false
+  ) {
     if (!language || !mapIndex || !zoom) return;
     const currentData = this.areaNameDataManager.currentData;
     const areaNameData = await this.areaNameDataManager.getAreaNameData(mapIndex, language, zoom);
@@ -41,7 +46,12 @@ export class AreaNameController {
    * 刷新图层
    */
   public refresh() {
-    this.setAreaName(this.areaNameDataManager.mapIndex, this.areaNameDataManager.language, this.areaNameDataManager.zoom, true);
+    this.setAreaName(
+      this.areaNameDataManager.mapIndex,
+      this.areaNameDataManager.language,
+      this.areaNameDataManager.zoom,
+      true
+    );
   }
 
   /**
@@ -62,7 +72,7 @@ export class AreaNameController {
     this.refresh();
   }
 
-   /**
+  /**
    * 改变文本字体
    * @param font 文本字体
    */

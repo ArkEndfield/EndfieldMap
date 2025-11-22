@@ -78,7 +78,7 @@ export class StorageManager {
     await this.ensureInitialized();
 
     const type = options?.type || StorageType.TEMPORARY;
-    
+
     // 计算过期时间
     let expiry: number | null;
     if (type === StorageType.PERMANENT) {
@@ -201,21 +201,21 @@ export class StorageManager {
   public async temporarySet<T>(key: string, value: T, options?: SetOptions): Promise<void> {
     await this.set(key, value, { ...options, type: StorageType.TEMPORARY });
   }
-  
+
   /**
    * 从临时存储获取语法糖，相当于 get(key, StorageType.TEMPORARY)
    */
   public async temporaryGet<T>(key: string): Promise<T | null> {
     return await this.get(key, StorageType.TEMPORARY);
   }
-  
+
   /**
    * 从临时存储删除语法糖，相当于 remove(key, StorageType.TEMPORARY)
    */
   public async temporaryRemove(key: string): Promise<void> {
     await this.remove(key, StorageType.TEMPORARY);
   }
-  
+
   /**
    * 清空临时存储语法糖，相当于 clear(StorageType.TEMPORARY)
    */

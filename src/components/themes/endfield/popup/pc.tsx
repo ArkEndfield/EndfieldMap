@@ -41,7 +41,6 @@ const PCPopup: React.FC<PopupProps> = observer(({ adapter }) => {
     };
   }, [adapter, activeFeature]);
 
-
   const [isExpand, setIsExpand] = useState(false);
 
   const handleExpandButton = () => {

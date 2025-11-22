@@ -20,10 +20,7 @@ export function isPromise<T>(value: T | Promise<T>): value is Promise<T> {
 
   // 检查是否是Promise-like对象（有then和catch方法）
   const promiseLike = value as Record<string, unknown>;
-  return (
-    typeof promiseLike.then === 'function' &&
-    typeof promiseLike.catch === 'function'
-  );
+  return typeof promiseLike.then === 'function' && typeof promiseLike.catch === 'function';
 }
 
 /**

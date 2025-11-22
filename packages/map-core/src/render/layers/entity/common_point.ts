@@ -25,11 +25,7 @@ import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import { ClusterEntitySource } from '@endfieldmap/map-core/render/source/entity';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
-import type {
-  EntityDataList,
-  EntityInfoData,
-  EntityInfoItemData,
-} from '@endfieldmap/map-core/types';
+import type { EntityDataList, EntityInfoData, EntityInfoItemData } from '@endfieldmap/map-core/types';
 import { action, computed, observable } from 'mobx';
 import type { Feature } from 'ol';
 import type { FeatureLike } from 'ol/Feature';
@@ -99,7 +95,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
         '100': DEFAULT_SELECTED_COLOR,
         '50': DEFAULT_SELECTED_COLOR_TRANSPARENT_50,
         '75': DEFAULT_SELECTED_COLOR_TRANSPARENT_75,
-      },
+      }
     ),
   } as const;
 
@@ -117,7 +113,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
         '100': DEFAULT_STROKE_COLOR,
         '50': DEFAULT_STROKE_COLOR_TRANSPARENT_50,
         '75': DEFAULT_STROKE_COLOR_TRANSPARENT_75,
-      },
+      }
     ),
   } as const;
 
@@ -125,11 +121,11 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     super();
     this.config = config;
     this.infoData = config.infoData;
-    
+
     // 应用性能配置
     this.enableShadow = config.performance?.enableShadow ?? false;
     this.maxStyleCacheSize = config.performance?.maxStyleCacheSize ?? 1000;
-    
+
     this.entity = new ClusterEntitySource({
       data: config.data,
       mapIndex: config.mapIndex,
@@ -156,7 +152,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       borderWidth: 3,
     });
     this.iconStyleCache = iconStyle;
-    
+
     // 初始化阴影样式（如果启用）
     if (this.enableShadow) {
       CommonPointEntityLayer.BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
@@ -198,7 +194,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     fillOpacity: '50' | '75' | '100',
     strokeOpacity: '50' | '75' | '100',
     state: 'active' | 'selected' | 'normal',
-    size: number,
+    size: number
   ): string {
     return `${fillOpacity}-${strokeOpacity}-${state}-${size}`;
   }
@@ -220,12 +216,8 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     }
 
     // 将聚合中的 feature 映射为 MapFeature，并根据 markedFilterMode 过滤
-    const mapFeatures: MapFeature[] = clusterFeatures.map((f: Feature) =>
-      f.get(EntityInstanceKey) as MapFeature,
-    );
-    const visibleFeatures = mapFeatures.filter((mapFeature) =>
-      this.isFeatureVisibleByMarked(mapFeature),
-    );
+    const mapFeatures: MapFeature[] = clusterFeatures.map((f: Feature) => f.get(EntityInstanceKey) as MapFeature);
+    const visibleFeatures = mapFeatures.filter((mapFeature) => this.isFeatureVisibleByMarked(mapFeature));
 
     const size: number = visibleFeatures.length;
 
@@ -252,9 +244,10 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       }
 
       // 创建样式（优化：减少数组操作）
-      const bgStyles = state === 'selected'
-        ? CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
-        : CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
+      const bgStyles =
+        state === 'selected'
+          ? CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
+          : CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
 
       const styles: Style[] = this.enableShadow
         ? [...CommonPointEntityLayer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!]
@@ -303,9 +296,10 @@ export class CommonPointEntityLayer extends SingleLayerBase {
     }
 
     // 创建样式数组（优化：减少数组操作）
-    const bgStyles = state === 'selected'
-      ? CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
-      : CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
+    const bgStyles =
+      state === 'selected'
+        ? CommonPointEntityLayer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
+        : CommonPointEntityLayer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
 
     const clusterStyle = createClusterStyle({
       radius: ENTITY_RADIUS,
@@ -363,6 +357,6 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       count: this.config.data.length,
       markedCount: this.entity.features.getArray().filter((feature) => feature.marked).length,
       selectedCount: this.entity.features.getArray().filter((feature) => feature.isSelected).length,
-    }
+    };
   }
 }

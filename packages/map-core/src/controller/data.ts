@@ -1,6 +1,6 @@
-import type { EntityController } from "@endfieldmap/map-core/controller/entity";
-import { logger } from "@endfieldmap/tools";
-import type { ExportedData } from "@endfieldmap/map-core/types/data";
+import type { EntityController } from '@endfieldmap/map-core/controller/entity';
+import { logger } from '@endfieldmap/tools';
+import type { ExportedData } from '@endfieldmap/map-core/types/data';
 
 /**
  * 数据控制器配置
@@ -22,7 +22,7 @@ export class DataController {
 
   constructor(config: DataControllerConfig) {
     this.entityController = config.entityController;
-    this.version = config.version || "1.0.0";
+    this.version = config.version || '1.0.0';
   }
 
   /**
@@ -52,7 +52,6 @@ export class DataController {
     return this.entityController.validateMarkedFeatures(obj.markedFeatures);
   }
 
-
   /**
    * 导入数据
    * @param data 要导入的数据对象
@@ -81,4 +80,3 @@ export class DataController {
     }
   }
 }
-

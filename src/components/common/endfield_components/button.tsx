@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { motion, useAnimate } from 'motion/react';
 import { cn } from '@/utils/style';
 
-interface ZmdButtonProps {
+export interface ZmdButtonProps {
   type?: 'primary' | 'default';
   text?: string;
   showIcon?: boolean;

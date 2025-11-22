@@ -1,4 +1,4 @@
-import type { LoadingState} from '@endfieldmap/tools/const/enum';
+import type { LoadingState } from '@endfieldmap/tools/const/enum';
 import { StorageType } from '@endfieldmap/tools/const/enum';
 import { JSONLoaderError } from '@endfieldmap/tools/const/error';
 import type { StorageManager } from '@endfieldmap/tools/storage/manager';
@@ -40,11 +40,7 @@ export class JSONLoader {
    * @param retryDelay 重试延迟（毫秒）
    * @returns Promise<T> 返回JSON数据
    */
-  public async loadJSON<T>(
-    url: string,
-    maxRetries: number = 5,
-    retryDelay: number = 1000
-  ): Promise<T> {
+  public async loadJSON<T>(url: string, maxRetries: number = 5, retryDelay: number = 1000): Promise<T> {
     let retries = 0;
 
     // 检查IndexedDB缓存
@@ -74,13 +70,10 @@ export class JSONLoader {
       } catch (error) {
         retries++;
         if (retries === maxRetries) {
-          throw new JSONLoaderError(
-            `Failed to load JSON after ${maxRetries} retries: ${error}`,
-            url
-          );
+          throw new JSONLoaderError(`Failed to load JSON after ${maxRetries} retries: ${error}`, url);
         }
         // 等待一段时间后重试
-        await new Promise<void>(resolve => setTimeout(resolve, retryDelay));
+        await new Promise<void>((resolve) => setTimeout(resolve, retryDelay));
       }
     }
 

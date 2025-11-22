@@ -11,6 +11,7 @@ import { Language } from '@endfieldmap/tools';
 const ThemedComponents = getThemedComponents(themeNames.ENDFIELD);
 
 const ThemedPopup = ThemedComponents.get(ComponentType.POPUP)!;
+const ThemedZoomController = ThemedComponents.get(ComponentType.ZOOM_CONTROLLER)!;
 // const ThemedEntityPanel = ThemedComponents.get(ComponentType.ENTITY_PANEL)!;
 
 function EndfieldMap() {
@@ -34,6 +35,11 @@ function EndfieldMap() {
           <button onClick={() => i18n.changeLanguage(getLanguageLocale(Language.ZH_CN))}>中文</button>
           <button onClick={() => i18n.changeLanguage(getLanguageLocale(Language.EN_US))}>English</button>
         </div>
+      )}
+      {adapter && (
+        <Suspense>
+          <ThemedZoomController adapter={adapter} />
+        </Suspense>
       )}
 
       {/* {adapter && (

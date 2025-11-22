@@ -5,10 +5,7 @@ import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
-import type {
-  EntityCategoryData,
-  EntityData,
-} from '@endfieldmap/map-core/types/entity';
+import type { EntityCategoryData, EntityData } from '@endfieldmap/map-core/types/entity';
 import type { JSONLoader } from '@endfieldmap/tools';
 import { groupBy, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
@@ -89,7 +86,7 @@ export class EntityController {
   private initClusterDistance() {
     const shouldCluster = this.shouldCluster(this.currentZoom);
     const newDistance = shouldCluster ? this.clusterOptions.distance! : 0;
-    
+
     this.lastDistance = newDistance;
     this.currentMapAllLayers.forEach((layer) => {
       layer.entity.clusterSource.setDistance(newDistance);

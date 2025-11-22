@@ -18,6 +18,8 @@ import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
 import { EventController } from '@endfieldmap/map-core/controller/event';
+import { ZoomController } from '@endfieldmap/map-core/controller/zoom';
+import type Control from 'ol/control/Control';
 
 export interface AdapterConfig {
   container: HTMLElement;
@@ -59,6 +61,8 @@ export class EndfieldMapAdapter {
   public dataController: DataController;
   /** Popup控制器 */
   public popupController: PopupController | null = null;
+  /** 缩放控制器 */
+  public zoomController: ZoomController | null = null;
   /** 事件 */
   public event: EndfieldMapEmitter;
   /** 当前地图索引 */
@@ -120,6 +124,11 @@ export class EndfieldMapAdapter {
         map: this.mapController.mapRenderer.map,
       });
     }
+
+    // 初始化缩放控制器
+    this.zoomController = new ZoomController();
+    // 注册缩放控件到地图
+    this.mapController.mapRenderer.map.addControl(this.zoomController);
 
     this.layerController.addLayer(LayerType.AREA_NAME, this.areaNameController.areaNameLayer);
     this.layerController.addLayer(LayerType.MAP, this.mapLayerController.mapLayer);
@@ -186,5 +195,34 @@ export class EndfieldMapAdapter {
    */
   public setHoverFeatureEnable(enable: boolean) {
     this.mapController.setHoverFeatureEnable(enable);
+  }
+
+  /**
+   * 注册控件到地图
+   * @param control OpenLayers控件实例
+   */
+  public addControl(control: Control): void {
+    this.mapController.mapRenderer.map.addControl(control);
+  }
+
+  /**
+   * 从地图移除控件
+   * @param control OpenLayers控件实例
+   */
+  public removeControl(control: Control): void {
+    this.mapController.mapRenderer.map.removeControl(control);
+  }
+
+  /**
+   * 销毁适配器，清理所有资源
+   */
+  public dispose(): void {
+    // 取消注册缩放控件
+    if (this.zoomController) {
+      this.mapController.mapRenderer.map.removeControl(this.zoomController);
+      this.zoomController.dispose();
+    }
+    // 清理地图控制器
+    this.mapController.dispose();
   }
 }

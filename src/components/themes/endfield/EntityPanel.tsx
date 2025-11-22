@@ -78,28 +78,18 @@ const EntityPanel = observer(({ adapter }: EntityPanelProps) => {
   };
 
   if (!currentMap) {
-    return (
-      <div className="p-4 text-gray-500">
-        初始化中...
-      </div>
-    );
+    return <div className="p-4 text-gray-500">初始化中...</div>;
   }
 
   if (!categorizedEntities.length) {
-    return (
-      <div className="p-4 text-gray-500">
-        加载中...
-      </div>
-    );
+    return <div className="p-4 text-gray-500">加载中...</div>;
   }
 
   return (
     <div className="w-64 h-full overflow-auto bg-white absolute bottom-0 left-0 right-0">
       <div className="p-4 space-y-4">
-        <h2 className="text-lg font-bold text-gray-800 sticky top-0 bg-white z-10 pb-2 border-b">
-          实体列表
-        </h2>
-        
+        <h2 className="text-lg font-bold text-gray-800 sticky top-0 bg-white z-10 pb-2 border-b">实体列表</h2>
+
         {categorizedEntities.map((categoryInfo) => (
           <div key={categoryInfo.category} className="space-y-2">
             {/* 分类标题 */}
@@ -134,18 +124,18 @@ const EntityPanel = observer(({ adapter }: EntityPanelProps) => {
                   <div className="flex items-center justify-between gap-2">
                     <span className="truncate flex-1">{entity.entityInfo.pic}</span>
                     <div className="flex items-center gap-2 whitespace-nowrap">
-                      <span className={`text-xs px-2 py-0.5 rounded ${
-                        entity.markedCount === entity.count
-                          ? 'bg-blue-100 text-blue-700'
-                          : entity.markedCount > 0
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-gray-100 text-gray-600'
-                      }`}>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded ${
+                          entity.markedCount === entity.count
+                            ? 'bg-blue-100 text-blue-700'
+                            : entity.markedCount > 0
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
                         {entity.markedCount}/{entity.count}
                       </span>
-                      <span className={`text-xs font-medium ${
-                        entity.visible ? 'text-green-600' : 'text-gray-400'
-                      }`}>
+                      <span className={`text-xs font-medium ${entity.visible ? 'text-green-600' : 'text-gray-400'}`}>
                         {entity.visible ? '显示' : '隐藏'}
                       </span>
                     </div>

@@ -1,6 +1,6 @@
-import SourceBase, { type BaseSourceConfig } from "@endfieldmap/map-core/render/source/_base";
-import type { ElectricPoleData, ElectricPoleDataList } from "@endfieldmap/map-core/types";
-import { ElectricPoleZoneFeature } from "@endfieldmap/map-core/render/source/feature/electric_pole_zone_feature";
+import SourceBase, { type BaseSourceConfig } from '@endfieldmap/map-core/render/source/_base';
+import type { ElectricPoleData, ElectricPoleDataList } from '@endfieldmap/map-core/types';
+import { ElectricPoleZoneFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_zone_feature';
 
 export interface ElectricPoleZoneSourceConfig extends BaseSourceConfig {
   /** 电线杆数据列表 */
@@ -47,5 +47,3 @@ export class ElectricPoleZoneSource extends SourceBase<ElectricPoleZoneFeature, 
     }
   }
 }
-
-

@@ -1,12 +1,12 @@
-import type { MapIndex } from "@endfieldmap/map-core/const/map";
-import { LayerType, LayerTypeKey } from "@endfieldmap/map-core/const/map";
-import { SingleLayerBase } from "@endfieldmap/map-core/render/layers/_base";
-import { ElectricPoleZoneSource } from "@endfieldmap/map-core/render/source/electric_pole_zone";
-import type { ElectricPoleData, ElectricPoleDataList } from "@endfieldmap/map-core/types";
-import Fill from "ol/style/Fill";
-import Stroke from "ol/style/Stroke";
-import Style from "ol/style/Style";
-import VectorLayer from "ol/layer/Vector";
+import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
+import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
+import { ElectricPoleZoneSource } from '@endfieldmap/map-core/render/source/electric_pole_zone';
+import type { ElectricPoleData, ElectricPoleDataList } from '@endfieldmap/map-core/types';
+import Fill from 'ol/style/Fill';
+import Stroke from 'ol/style/Stroke';
+import Style from 'ol/style/Style';
+import VectorLayer from 'ol/layer/Vector';
 
 export interface ElectricPoleZoneLayerConfig {
   /** 电线杆数据列表 */
@@ -41,10 +41,10 @@ export class ElectricPoleZoneLayer extends SingleLayerBase {
       source: this.source.source,
       style: new Style({
         fill: new Fill({
-          color: "rgba(0, 123, 255, 0.15)",
+          color: 'rgba(0, 123, 255, 0.15)',
         }),
         stroke: new Stroke({
-          color: "rgba(0, 123, 255, 0.6)",
+          color: 'rgba(0, 123, 255, 0.6)',
           width: 2,
         }),
       }),
@@ -69,5 +69,3 @@ export class ElectricPoleZoneLayer extends SingleLayerBase {
     this.source.removeZoneById(id);
   }
 }
-
-

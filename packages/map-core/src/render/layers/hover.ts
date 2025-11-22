@@ -43,7 +43,7 @@ export class HoverLayer extends SingleLayerBase {
       updateWhileInteracting: true,
       zIndex: 8, // 最高层级，确保hover效果在所有图层之上
     });
-    
+
     // 设置图层类型标识，用于在hit test中排除此图层
     this.layer.set(LayerTypeKey, LayerType.HOVER_FEATURE);
   }
@@ -60,9 +60,9 @@ export class HoverLayer extends SingleLayerBase {
         this.animatedRing.startFadeOut(performance.now());
       }
       // 将当前动画移到淡出列表（保存当前的baseRadius）
-      this.fadingRings.push({ 
-        ring: this.animatedRing, 
-        baseRadius: this.baseRadius 
+      this.fadingRings.push({
+        ring: this.animatedRing,
+        baseRadius: this.baseRadius,
       });
     }
 
@@ -91,10 +91,10 @@ export class HoverLayer extends SingleLayerBase {
       // 将当前动画移到淡出列表
       this.fadingRings.push({
         ring: this.animatedRing,
-        baseRadius: this.baseRadius
+        baseRadius: this.baseRadius,
       });
       this.animatedRing = null;
-      
+
       // 确保动画循环正在运行以完成淡出
       if (this.animationFrameId === null) {
         this.animate();

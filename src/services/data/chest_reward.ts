@@ -1,5 +1,10 @@
 import { ItemDataService } from './item';
-import type { DealedRewardItem, DealedRewardItemWithCount, DealedRewardItemWithoutCount, RewardItem } from '@eftypes/reward';
+import type {
+  DealedRewardItem,
+  DealedRewardItemWithCount,
+  DealedRewardItemWithoutCount,
+  RewardItem,
+} from '@eftypes/reward';
 import { getAssetUrls } from '@/utils/url';
 import { StorageKey, type JSONLoader, type StorageManager } from '@endfieldmap/tools';
 import { assetsHost } from '@/services/env';

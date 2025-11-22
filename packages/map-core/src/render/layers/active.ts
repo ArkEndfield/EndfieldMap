@@ -177,7 +177,7 @@ export class ActiveLayer extends SingleLayerBase {
 
     // 圆环半径 = 底部圆半径 + 2px
     const ringRadius = this.circleRadius + 2;
-    
+
     // displacement 应该与底部圆一致：baseRadius + 底部圆描边宽度(3) * 2
     const displacement = this.baseRadius + 3 * 2;
 
@@ -202,7 +202,7 @@ export class ActiveLayer extends SingleLayerBase {
       const progress = elapsed / ripple.duration; // 0 到 1
 
       // 计算波纹半径：从主圆环半径扩散到更小的范围
-      const rippleRadius = ringRadius + (ringRadius * 0.6 * progress);
+      const rippleRadius = ringRadius + ringRadius * 0.6 * progress;
 
       // 计算透明度：从 0.6 淡出到 0
       const opacity = 0.6 * (1 - progress);

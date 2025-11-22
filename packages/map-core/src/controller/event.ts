@@ -6,7 +6,11 @@ import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import { boundingExtent } from 'ol/extent';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
-import { hitTestEntitiesAt, selectTopmostHitResult, type EntityHitTestResult } from '@endfieldmap/map-core/event/entity_hit_test';
+import {
+  hitTestEntitiesAt,
+  selectTopmostHitResult,
+  type EntityHitTestResult,
+} from '@endfieldmap/map-core/event/entity_hit_test';
 
 export interface EventControllerConfig {
   entityController: EntityController;
@@ -27,9 +31,7 @@ export class EventController {
   private registerClickEventHandlers() {
     // 点击事件
     mapEventEmitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
-      const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter(
-        (layer) => layer.visible
-      );
+      const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter((layer) => layer.visible);
       const entityLayers = this.entityController.currentMapAllLayers.filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
@@ -39,7 +41,7 @@ export class EventController {
           map: event.map,
         },
         electricPoleLayers,
-        entityLayers,
+        entityLayers
       );
 
       if (allClickedFeatures.length === 0) return;
@@ -76,9 +78,7 @@ export class EventController {
 
   private registerContextMenuEventHandlers() {
     mapEventEmitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
-      const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter(
-        (layer) => layer.visible
-      );
+      const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter((layer) => layer.visible);
       const entityLayers = this.entityController.currentMapAllLayers.filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
@@ -88,7 +88,7 @@ export class EventController {
           map: detail.map,
         },
         electricPoleLayers,
-        entityLayers,
+        entityLayers
       );
 
       // 如果没有命中实体，尝试命中电线连接

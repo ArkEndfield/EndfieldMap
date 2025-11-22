@@ -1,6 +1,6 @@
 /**
  * 地图渲染性能配置
- * 
+ *
  * 当显示大量实体时，可以通过调整这些配置来优化性能
  */
 export interface MapPerformanceConfig {

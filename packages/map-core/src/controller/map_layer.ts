@@ -1,10 +1,16 @@
-import { DEFAULT_NON_ACTIVE_OPACITY, DEFAULT_OPACITY, type MapIndex, type MapType,MapTypeKey } from '@endfieldmap/map-core/const/map';
+import {
+  DEFAULT_NON_ACTIVE_OPACITY,
+  DEFAULT_OPACITY,
+  type MapIndex,
+  type MapType,
+  MapTypeKey,
+} from '@endfieldmap/map-core/const/map';
 import type { MapLayerConfig } from '@endfieldmap/map-core/render/layers/map';
 import { MapLayer } from '@endfieldmap/map-core/render/layers/map';
 
 export interface MapLayerControllerConfig extends MapLayerConfig {
-    /** 非激活状态下透明度 */
-    nonActiveOpacity?: number;
+  /** 非激活状态下透明度 */
+  nonActiveOpacity?: number;
 }
 
 export class MapLayerController {

@@ -82,7 +82,12 @@ export function createCircleStyle(
  * @param color 颜色
  * @param direction 方向，'left'、'right'、'top' 或 'bottom'
  */
-export function createDecoration(radius: number, direction: 'left' | 'right' | 'top' | 'bottom', strokeWidth: number = 0, color: string = DEFAULT_STROKE_COLOR): Style {
+export function createDecoration(
+  radius: number,
+  direction: 'left' | 'right' | 'top' | 'bottom',
+  strokeWidth: number = 0,
+  color: string = DEFAULT_STROKE_COLOR
+): Style {
   let displacementX: number;
   let displacementY: number;
   let angle: number;
@@ -147,7 +152,7 @@ export function createEntityBackgroundStyles(
   radius: number,
   strokeWidth: number,
   fillColors: Record<OpacityLevel, string>,
-  strokeColors: Record<OpacityLevel, string>,
+  strokeColors: Record<OpacityLevel, string>
 ): Record<string, Style[]> {
   const result: Record<string, Style[]> = {};
 
@@ -173,19 +178,19 @@ export function createEntityBackgroundStyles(
  * @param size 数量
  */
 export function createClusterStyle({
-    radius,
-    size,
-    bgColor = DEFAULT_STROKE_COLOR,
-    textColor = '#fff',
-    textStrokeColor = '#000',
-    textStrokeWidth = 2,
+  radius,
+  size,
+  bgColor = DEFAULT_STROKE_COLOR,
+  textColor = '#fff',
+  textStrokeColor = '#000',
+  textStrokeWidth = 2,
 }: {
-    radius: number;
-    size: number;
-    bgColor?: string;
-    textColor?: string;
-    textStrokeColor?: string;
-    textStrokeWidth?: number;
+  radius: number;
+  size: number;
+  bgColor?: string;
+  textColor?: string;
+  textStrokeColor?: string;
+  textStrokeWidth?: number;
 }): Style {
   return new Style({
     image: new CircleStyle({
@@ -210,12 +215,7 @@ export function createClusterStyle({
  * @param radius 底部圆半径，用于计算位移
  * @param borderWidth 底部圆边框宽度
  */
-export function createIconStyle(
-  imagePath: string,
-  size: number,
-  radius: number,
-  borderWidth: number = 0,
-): Style {
+export function createIconStyle(imagePath: string, size: number, radius: number, borderWidth: number = 0): Style {
   return new Style({
     image: new Icon({
       src: imagePath,
@@ -239,11 +239,11 @@ export function createHoverRingStyle(
   radius: number,
   baseRadius: number,
   strokeWidth: number = 2,
-  strokeColor: string = 'rgba(255, 255, 255, 0.6)',
+  strokeColor: string = 'rgba(255, 255, 255, 0.6)'
 ): Style {
   // displacement 应该与底部圆一致：baseRadius + 底部圆描边宽度(3) * 2
   const displacement = baseRadius + 3 * 2;
-  
+
   return new Style({
     image: new CircleStyle({
       radius: radius,

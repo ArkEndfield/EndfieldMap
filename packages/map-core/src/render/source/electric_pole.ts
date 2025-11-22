@@ -1,6 +1,6 @@
-import SourceBase, { BaseSourceConfig } from "@endfieldmap/map-core/render/source/_base";
-import { ElectricPoleFeature } from "@endfieldmap/map-core/render/source/feature/electric_pole_feature";
-import type { ElectricPoleData, ElectricPoleDataList } from "@endfieldmap/map-core/types";
+import SourceBase, { BaseSourceConfig } from '@endfieldmap/map-core/render/source/_base';
+import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import type { ElectricPoleData, ElectricPoleDataList } from '@endfieldmap/map-core/types';
 
 export interface ElectricPoleSourceConfig extends BaseSourceConfig {
   data: ElectricPoleDataList;

@@ -9,7 +9,7 @@ import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from './icons';
 
 const ALERT_BANNER_BG_LEFT = '/images/bg/alert/alert_banner_bg_left.png';
 const ALERT_BANNER_BG_RIGHT = '/images/bg/alert/alert_banner_bg_right.png';
-const DECO_COMMON_LOGO_BG = '/images/bg/deco_common_logo_bg.png'
+const DECO_COMMON_LOGO_BG = '/images/bg/deco_common_logo_bg.png';
 
 export interface ZmdAlertFullProps {
   open: boolean;

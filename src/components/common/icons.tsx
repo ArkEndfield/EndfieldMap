@@ -1,4 +1,4 @@
-import type { IconProps } from "@eftypes/icon";
+import type { IconProps } from '@eftypes/icon';
 
 export const BookIcon = (props: IconProps) => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
@@ -22,7 +22,15 @@ export const BookIcon = (props: IconProps) => (
 );
 
 export const CenterIcon = (props: IconProps) => (
-  <svg viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="1em" height="1em" {...props}>
+  <svg
+    viewBox="0 0 32 32"
+    id="icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+    width="1em"
+    height="1em"
+    {...props}
+  >
     <g>
       <path
         fill="currentColor"
@@ -164,19 +172,21 @@ export const EditIcon = (props: IconProps) => (
         strokeLinecap="round"
         strokeLinejoin="round"
       ></path>
-      <path
-        d="M21 21H12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      ></path>
+      <path d="M21 21H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
     </g>
   </svg>
 );
 
 export const ExportIcon = (props: IconProps) => (
-  <svg fill="currentColor" width="1em" height="1em" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg
+    fill="currentColor"
+    width="1em"
+    height="1em"
+    viewBox="0 0 256 256"
+    id="Flat"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
     <g>
       <path d="M136,88H120V35.3103L91.65625,63.64648A7.99983,7.99983,0,1,1,80.34375,52.332l42-41.98926a8.00063,8.00063,0,0,1,11.3125,0l42,41.98926a7.99983,7.99983,0,1,1-11.3125,11.31445L136,35.3103Zm64,0H136v40a8,8,0,0,1-16,0V88H56a16.01833,16.01833,0,0,0-16,16V208a16.01833,16.01833,0,0,0,16,16H200a16.01833,16.01833,0,0,0,16-16V104A16.01833,16.01833,0,0,0,200,88Z"></path>
     </g>

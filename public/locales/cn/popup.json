@@ -1,7 +1,7 @@
 {
-    "reward": {
-        "chest": {
-            "title": "宝箱内容"
-        }
+  "reward": {
+    "chest": {
+      "title": "宝箱内容"
     }
+  }
 }

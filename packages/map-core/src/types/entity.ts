@@ -75,7 +75,7 @@ export interface EntityCategoryData {
  */
 export interface EntityLevelData {
   map_level_id: string;
-  categories: EntityCategoryData[]
+  categories: EntityCategoryData[];
 }
 
 /**
@@ -83,7 +83,7 @@ export interface EntityLevelData {
  */
 export interface EntityJsonData {
   map_id: MapIndex;
-  levels: EntityLevelData[]
+  levels: EntityLevelData[];
 }
 
 /**
@@ -104,7 +104,7 @@ export interface EntityInfoData {
   entityInfo: {
     point: EntityInfoKey;
     pic: string;
-  }
+  };
 }
 
 /**

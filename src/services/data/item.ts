@@ -31,9 +31,7 @@ export class ItemDataService {
 
     this.loadingPromise = (async () => {
       const assetPath = getAssetUrls(assetsHost);
-      const itemData = await this.jsonLoader.loadJSON<Record<string, ItemData>>(
-        `${assetPath.itemData}/item_data.json`
-      );
+      const itemData = await this.jsonLoader.loadJSON<Record<string, ItemData>>(`${assetPath.itemData}/item_data.json`);
       this.storage.permanentSet(StorageKey.ITEM_DATA, itemData);
       this.inited = true;
       this.loadingPromise = null;

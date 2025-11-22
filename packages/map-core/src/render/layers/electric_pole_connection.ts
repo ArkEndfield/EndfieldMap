@@ -1,10 +1,10 @@
-import VectorLayer from "ol/layer/Vector";
-import { SingleLayerBase } from "@endfieldmap/map-core/render/layers/_base";
-import { ConnectionFeature } from "@endfieldmap/map-core/render/source/feature/feature";
-import { MapIndex } from "@endfieldmap/map-core/const/map";
-import { ElectricPoleConnectionSource } from "@endfieldmap/map-core/render/source/electric_pole_connection";
-import Style from "ol/style/Style";
-import Stroke from "ol/style/Stroke";
+import VectorLayer from 'ol/layer/Vector';
+import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
+import { ConnectionFeature } from '@endfieldmap/map-core/render/source/feature/feature';
+import { MapIndex } from '@endfieldmap/map-core/const/map';
+import { ElectricPoleConnectionSource } from '@endfieldmap/map-core/render/source/electric_pole_connection';
+import Style from 'ol/style/Style';
+import Stroke from 'ol/style/Stroke';
 
 export interface ElectricPoleConnectionLayerConfig {
   mapIndex: MapIndex;
@@ -24,7 +24,7 @@ export class ElectricPoleConnectionLayer extends SingleLayerBase {
     this.layer = new VectorLayer({
       source: this.source.source,
       style: new Style({
-        stroke: new Stroke({  
+        stroke: new Stroke({
           color: '#FFD700',
           width: 3,
         }),
@@ -33,7 +33,7 @@ export class ElectricPoleConnectionLayer extends SingleLayerBase {
     });
   }
 
-  /** 
+  /**
    * 添加连接feature
    * @param feature 连接feature
    */

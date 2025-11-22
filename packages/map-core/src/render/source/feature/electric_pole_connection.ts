@@ -1,10 +1,10 @@
-import { ConnectionFeature, type ConnectionFeatureConfig } from "@endfieldmap/map-core/render/source/feature/feature";
+import { ConnectionFeature, type ConnectionFeatureConfig } from '@endfieldmap/map-core/render/source/feature/feature';
 
 // export interface ElectricPoleFeatureConfig extends ConnectionFeatureConfig {
 // }
 
 export class ElectricPoleConnectionFeature extends ConnectionFeature {
-    constructor(config: ConnectionFeatureConfig) {
-        super(config);
-    }
+  constructor(config: ConnectionFeatureConfig) {
+    super(config);
+  }
 }

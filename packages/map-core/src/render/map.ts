@@ -1,4 +1,13 @@
-import { DEFAULT_CENTER, DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, DEFAULT_PIXEL_RATIO, DEFAULT_ROTATION,DEFAULT_ZOOM, DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH } from '@endfieldmap/map-core/const/map';
+import {
+  DEFAULT_CENTER,
+  DEFAULT_MAX_ZOOM,
+  DEFAULT_MIN_ZOOM,
+  DEFAULT_PIXEL_RATIO,
+  DEFAULT_ROTATION,
+  DEFAULT_ZOOM,
+  DEFAULT_ICON_SIZE,
+  DEFAULT_STROKE_WIDTH,
+} from '@endfieldmap/map-core/const/map';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EndfieldSelectionInteraction } from '@endfieldmap/map-core/event/selection';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
@@ -161,7 +170,7 @@ export class EndfieldMap {
    */
   public dispose(): void {
     // 清理事件监听器
-    this.disposeListeners.forEach(dispose => dispose());
+    this.disposeListeners.forEach((dispose) => dispose());
     this.disposeListeners = [];
 
     // 隐藏hover效果

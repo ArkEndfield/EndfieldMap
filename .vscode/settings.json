@@ -1,13 +1,8 @@
 {
-    "i18n-ally.localesPaths": [
-        "public/locales/"
-    ],
-    "i18n-ally.pathMatcher": "{locale}/{namespace}.json",
-    "i18n-ally.keystyle": "nested",
-    "i18n-ally.enabledParsers": [
-        "ts",
-        "json",
-    ],
-    "i18n-ally.sourceLanguage": "cn",
-    "typescript.autoClosingTags": false
+  "i18n-ally.localesPaths": ["public/locales/"],
+  "i18n-ally.pathMatcher": "{locale}/{namespace}.json",
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.enabledParsers": ["ts", "json"],
+  "i18n-ally.sourceLanguage": "cn",
+  "typescript.autoClosingTags": false
 }

@@ -1,1 +1,1 @@
-# Arknights Endfield Map Tool
+# Arknights Endfield Map

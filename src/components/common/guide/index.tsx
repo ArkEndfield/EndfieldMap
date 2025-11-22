@@ -10,9 +10,9 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { GuideNode } from './node';
 
-import "yet-another-react-lightbox/styles.css";
-import "./captions.css";
-import "./thumbnails.css";
+import 'yet-another-react-lightbox/styles.css';
+import './captions.css';
+import './thumbnails.css';
 
 const collectImages = (nodes: GuideNodeType[]) => {
   const slides: Slide[] = [];
@@ -93,8 +93,8 @@ export const Guide = ({ entity }: { entity: EntityData }) => {
         plugins={[Captions, Fullscreen, Thumbnails, Zoom]}
         styles={{
           button: {
-            cursor: 'unset'
-          }
+            cursor: 'unset',
+          },
         }}
       />
       {guide?.nodes.map((node, index) => (
