@@ -72,15 +72,6 @@ export class EndfieldMap {
       units: 'pixels',
       extent: [0, 0, 256, 256],
     });
-    // 上下左右多给 100px 的裕度
-    const projectionExtent = this.projection.getExtent();
-    // TODO: 需要根据地图的实际边界来计算裕度
-    const extent = [
-      projectionExtent[0] - 100, // 左
-      projectionExtent[1], // 下
-      projectionExtent[2] + 50, // 右
-      projectionExtent[3] + 50, // 上
-    ];
     this.view = new View({
       projection: this.projection,
       center: DEFAULT_CENTER,
@@ -89,7 +80,6 @@ export class EndfieldMap {
       minZoom: this.config.minZoom,
       rotation: DEFAULT_ROTATION,
       enableRotation: false,
-      extent: extent,
     });
     this.map = new Map({
       target: this.config.container,
@@ -122,6 +112,56 @@ export class EndfieldMap {
     this.registerHoverEventHandler();
     // 监听ACTIVE_FEATURE_CHANGE事件
     this.registerActiveEventHandler();
+    // 设置动态边界约束
+    this.setupDynamicConstraint();
+  }
+
+  /**
+   * 设置动态边界约束，根据当前缩放级别限制拖动范围
+   */
+  private setupDynamicConstraint(): void {
+    // 屏幕像素留白（不随缩放变化）
+    const paddingPixels = { top: 400, right: 400, bottom: 400, left: 600 };
+
+    mapEventEmitter.on(MAP_EVENT.MAP_MOVE_END, () => {
+      const resolution = this.view.getResolution();
+      const center = this.view.getCenter();
+      const size = this.map.getSize();
+
+      if (!resolution || !center || !size) return;
+
+      // 计算视图在当前分辨率下的半宽和半高（地图坐标）
+      const viewHalfWidth = (size[0] / 2) * resolution;
+      const viewHalfHeight = (size[1] / 2) * resolution;
+
+      // 转换 padding 为地图坐标
+      const paddingMap = {
+        left: paddingPixels.left * resolution,
+        right: paddingPixels.right * resolution,
+        bottom: paddingPixels.bottom * resolution,
+        top: paddingPixels.top * resolution,
+      };
+
+      const projectionExtent = this.projection.getExtent();
+
+      // 计算允许的中心点范围
+      const minX = projectionExtent[0] + viewHalfWidth - paddingMap.left;
+      const minY = projectionExtent[1] + viewHalfHeight - paddingMap.bottom;
+      const maxX = projectionExtent[2] - viewHalfWidth + paddingMap.right;
+      const maxY = projectionExtent[3] - viewHalfHeight + paddingMap.top;
+
+      // 约束中心点
+      const constrainedX = Math.max(minX, Math.min(center[0], maxX));
+      const constrainedY = Math.max(minY, Math.min(center[1], maxY));
+
+      // 如果中心点超出范围，使用动画过渡调整回合法位置
+      if (constrainedX !== center[0] || constrainedY !== center[1]) {
+        this.view.animate({
+          center: [constrainedX, constrainedY],
+          duration: 200,
+        });
+      }
+    });
   }
 
   /**

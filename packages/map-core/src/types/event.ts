@@ -1,6 +1,6 @@
 import type { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import type { Feature, Map as OlMap, MapBrowserEvent } from 'ol';
+import type { Feature, Map as OlMap, MapBrowserEvent, MapEvent } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
 import type { FeatureLike } from 'ol/Feature';
@@ -91,6 +91,7 @@ export interface MapEventEmitter {
   [MAP_EVENT.MAP_CONTEXT_MENU]: MapContextMenuEventDetail;
   [MAP_EVENT.FEATURE_SELECT]: FeatureSelectEventDetail;
   [MAP_EVENT.FEATURE_STATE_CHANGE]: FeatureStateChangeEventDetail;
+  [MAP_EVENT.MAP_MOVE_END]: MapEvent;
 
   // 高级封装的
   [MAP_EVENT.CLUSTER_CLICK]: ClusterEventDetail;

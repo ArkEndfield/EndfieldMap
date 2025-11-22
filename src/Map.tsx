@@ -4,9 +4,9 @@ import { observer } from 'mobx-react-lite';
 import { getThemedComponents, themeNames } from '@/components/themes';
 import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/useMapAdapter';
-import i18n from './i18n';
-import { getLanguageLocale } from './utils/language';
-import { Language } from '@endfieldmap/tools';
+// import i18n from './i18n';
+// import { getLanguageLocale } from './utils/language';
+// import { Language } from '@endfieldmap/tools';
 
 const ThemedComponents = getThemedComponents(themeNames.ENDFIELD);
 
@@ -30,12 +30,13 @@ function EndfieldMap() {
         </Suspense>
       )}
 
-      {adapter && (
+      {/* {adapter && (
         <div className="fixed bottom-4 right-4">
           <button onClick={() => i18n.changeLanguage(getLanguageLocale(Language.ZH_CN))}>中文</button>
           <button onClick={() => i18n.changeLanguage(getLanguageLocale(Language.EN_US))}>English</button>
         </div>
-      )}
+      )} */}
+
       {adapter && (
         <Suspense>
           <ThemedZoomController adapter={adapter} />

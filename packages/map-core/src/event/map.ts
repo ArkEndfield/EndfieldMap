@@ -53,6 +53,10 @@ export class EndfieldMapEvent {
       this.event.fire(MAP_EVENT.MAP_HOVER, { event });
     });
 
+    this.onMap('moveend', (e) => {
+      this.event.fire(MAP_EVENT.MAP_MOVE_END, e);
+    });
+
     this.onView('change:center', () => {
       this.event.fire(MAP_EVENT.MAP_CENTER_CHANGE, this.view.getCenter());
     });

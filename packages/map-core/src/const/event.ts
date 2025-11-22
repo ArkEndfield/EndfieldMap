@@ -4,6 +4,7 @@ export const MAP_EVENT = {
   MAP_HOVER: 'map:hover',
   MAP_CENTER_CHANGE: 'map:center:change',
   MAP_CONTEXT_MENU: 'map:context_menu',
+  MAP_MOVE_END: 'map:move_end',
 
   FEATURE_SELECT: 'feature:select',
   FEATURE_STATE_CHANGE: 'feature:state:change',
