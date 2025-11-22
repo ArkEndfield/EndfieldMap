@@ -18,6 +18,10 @@ import {
 import { EntityDataService } from '@/services/data/entity';
 import { ElectricPoleDataService } from '@/services/data/electric_pole';
 import { THROTTLE_INTERVAL } from '@/const/data';
+import { ItemDataService } from '@/services/data/item';
+import { DungeonSeriesDataService } from '@/services/data/dungeon_series';
+import { ChestRewardDataService } from '@/services/data/chest_reward';
+import { GuideDataService } from '@/services/data/guide';
 
 /**
  * 数据服务
@@ -30,6 +34,10 @@ class DataService {
 
   public entityDataService: EntityDataService;
   public electricPoleDataService: ElectricPoleDataService;
+  public itemDataService: ItemDataService;
+  public dungeonSeriesDataService: DungeonSeriesDataService;
+  public chestRewardDataService: ChestRewardDataService;
+  public guideDataService: GuideDataService;
 
   constructor() {
     this.storage = new StorageManager({
@@ -42,6 +50,20 @@ class DataService {
     });
     this.entityDataService = new EntityDataService(this.storage);
     this.electricPoleDataService = new ElectricPoleDataService(this.storage);
+
+    this.itemDataService = new ItemDataService(this.jsonLoader, this.storage);
+    this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.storage, this.itemDataService);
+    this.dungeonSeriesDataService = new DungeonSeriesDataService(this.jsonLoader, this.storage, this.chestRewardDataService);
+    this.guideDataService = new GuideDataService(this.jsonLoader, this.storage);
+
+    this.initDataServices()
+  }
+
+  private async initDataServices() {
+    this.itemDataService.getItemData();
+    this.chestRewardDataService.getRewardsData();
+    this.dungeonSeriesDataService.getDungeonSeriesData();
+    this.guideDataService.getGuidesData();
   }
 
   public async init() {

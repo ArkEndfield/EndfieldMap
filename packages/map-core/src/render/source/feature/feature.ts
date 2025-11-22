@@ -1,7 +1,7 @@
 import type { Coordinate } from 'ol/coordinate';
 import { FeatureType, FeatureTypeKey } from "@endfieldmap/map-core/const/map";
 import { MAP_EVENT } from "@endfieldmap/map-core/const/event";
-import type { EntityData } from "@endfieldmap/map-core/types/entity";
+import type { EntityData, EntityInfoData } from "@endfieldmap/map-core/types/entity";
 import mapEventEmitter from "@endfieldmap/map-core/event/emitter";
 import { xyz2crd } from "@endfieldmap/tools";
 import { LineString, Point } from "ol/geom";
@@ -11,6 +11,7 @@ import FeatureBase, { BaseFeatureConfig } from '@endfieldmap/map-core/render/sou
 
 export interface MapFeatureConfig extends BaseFeatureConfig {
     data: EntityData;
+    entityInfo: EntityInfoData;
 }
 
 export interface ConnectionFeatureConfig extends BaseFeatureConfig {
@@ -18,7 +19,8 @@ export interface ConnectionFeatureConfig extends BaseFeatureConfig {
 }
 
 export class MapFeature extends FeatureBase {
-    @observable accessor data: EntityData;
+    @observable accessor _data: EntityData;
+    @observable accessor entityInfo: EntityInfoData;
     @observable accessor marked: boolean = false;
     @observable accessor isSelected: boolean = false;
     @observable accessor active: boolean = false;
@@ -26,7 +28,8 @@ export class MapFeature extends FeatureBase {
     
     constructor(config: MapFeatureConfig) {
         super(config);
-        this.data = config.data;
+        this._data = config.data;
+        this.entityInfo = config.entityInfo;
         this.initFeature();
     }
 
@@ -125,6 +128,14 @@ export class MapFeature extends FeatureBase {
                 oldValue,
                 newValue: active,
             });
+        }
+    }
+
+    @computed
+    get data(): EntityData & { entityInfo: EntityInfoData } {
+        return {
+            ...this._data,
+            entityInfo: this.entityInfo
         }
     }
 

@@ -23,3 +23,5 @@ export interface MapConfig extends SimpleMapConfig {
   /** 静态资源地址 */
   mapImageUrl: string;
 }
+
+export type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';

@@ -22,5 +22,7 @@ export const getAssetUrls = (host?: string) => {
     areaName: createFullUrl(host, '/data/map/area_name'),
     entityData: createFullUrl(host, '/data/entity'),
     entityImage: createFullUrl(host, '/images/entity'),
+    itemData: createFullUrl(host, '/data/item'),
+    itemImage: createFullUrl(host, '/images/item'),
   };
 };

@@ -26,8 +26,11 @@ dist-ssr
 
 /public/data/entity
 /public/data/map
+/public/data/item
 /public/images/entity
 /public/images/map
+/public/images/item
+/public/images/guides
 
 # pnpm store
 .pnpm-store

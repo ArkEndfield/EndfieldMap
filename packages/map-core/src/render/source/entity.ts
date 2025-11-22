@@ -5,12 +5,13 @@ import { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature'
 import { Cluster } from 'ol/source';
 import { action, observable } from 'mobx';
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
-import { EntityDataList } from '@endfieldmap/map-core/types';
+import type { EntityDataList, EntityInfoData } from '@endfieldmap/map-core/types';
 import { throttle } from '@endfieldmap/tools';
 
 export interface EntityFeatureConfig extends BaseSourceConfig {
   mapIndex: MapIndex;
   data: EntityDataList;
+  entityInfo: EntityInfoData;
   clusterOptions?: ClusterOptions;
 }
 
@@ -25,6 +26,7 @@ export class SingleEntitySource extends SourceBase<MapFeature, EntityFeatureConf
       this.features.push(new MapFeature({
         data,
         mapIndex: this.config.mapIndex,
+        entityInfo: this.config.entityInfo,
       }));
     }
     this.source.addFeatures(this.features.getArray().map((feature) => feature.feature));

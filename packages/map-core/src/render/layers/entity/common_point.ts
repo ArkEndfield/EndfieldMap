@@ -134,6 +134,7 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       data: config.data,
       mapIndex: config.mapIndex,
       clusterOptions: config.clusterOptions,
+      entityInfo: config.infoData,
     });
     this.layer = new VectorLayer({
       source: this.entity.clusterSource,

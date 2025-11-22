@@ -1,22 +1,7 @@
 import type { ElectricPoleIdKey, MapIndex } from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
-/**
- * 实体数据，来自于json
- */
-export interface EntityData {
-  /** 逻辑ID */
-  levelLogicId: number;
-  /** 实体数据ID */
-  entityDataIdKey: string;
-  /** 模板ID */
-  templateId: string;
-  /** 实体类型 */
-  entityType: string;
-  /** 位置 */
-  position: Position;
-  /** 默认隐藏 */
-  defaultHide?: boolean;
+export interface EnityProperties {
   /** 在完成任务后隐藏 */
   is_hide_after_mission?: string;
   /** 最大数量 */
@@ -33,6 +18,28 @@ export interface EntityData {
   option_interact?: number;
   /** 奖励ID */
   reward_id?: string;
+  /** 副本奖励ID */
+  dungeion_series_id?: string;
+}
+
+/**
+ * 实体数据，来自于json
+ */
+export interface EntityData {
+  /** 逻辑ID */
+  levelLogicId: number;
+  /** 实体数据ID */
+  entityDataIdKey: string;
+  /** 模板ID */
+  templateId: string;
+  /** 实体类型 */
+  entityType: string;
+  /** 位置 */
+  position: Position;
+  /** 默认隐藏 */
+  defaultHide?: boolean;
+  /** 属性 */
+  properties: EnityProperties;
 }
 
 /**

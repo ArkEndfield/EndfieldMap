@@ -1,5 +1,5 @@
 import { LanguageMap, LanguageMapReverse } from '@/const/language';
-import type { LanguageLocale } from '@/types/language';
+import type { LanguageLocale } from '@eftypes/language';
 import type { Language } from '@endfieldmap/tools';
 
 export const getLanguageLocale = (language: Language) => {

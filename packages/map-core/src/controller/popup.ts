@@ -128,18 +128,10 @@ export class PopupController {
   public updatePosition() {
     if (!this.currentFeature || !this.overlay) return;
 
-    const geometry = this.currentFeature.feature.getGeometry() as Point;
-    const coordinate = geometry?.getCoordinates();
-    if (!coordinate) {
-      return;
-    }
-
-    this.overlay.setPosition(coordinate);
     this.overlay.panIntoView({
       animation: {
         duration: 250,
       },
-      margin: DEFAULT_ICON_SIZE * 2,
     });
   }
 

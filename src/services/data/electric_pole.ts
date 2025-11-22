@@ -3,7 +3,7 @@ import type {
   ElectricPolePresetStorage,
   ElectricPolePreset,
   ElectricPolePresetExportBundle,
-} from '@/types/electric_pole';
+} from '@eftypes/electric_pole';
 import type { ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { MapIndex, StorageKey, throttle, type StorageManager } from '@endfieldmap/tools';
 import { makeAutoObservable, runInAction } from 'mobx';

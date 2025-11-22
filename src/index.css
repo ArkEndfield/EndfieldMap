@@ -1,4 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Noto+Sans+SC:wght@100..900&display=swap');
 @import 'tailwindcss';
+
+* {
+  cursor: url('/images/cursor/default.cur'), auto;
+}
+
+/* 隐藏滚动条 */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 /* OpenLayers DragBox样式 - 框选框 */
 .ol-dragbox {

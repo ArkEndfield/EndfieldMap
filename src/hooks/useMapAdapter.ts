@@ -8,7 +8,7 @@ import { dataService } from '@/services/data';
 import { assetsHost } from '@/services/env';
 import i18n from '@/i18n';
 import { getLanguage } from '@/utils/language';
-import type { LanguageLocale } from '@/types/language';
+import type { LanguageLocale } from '@eftypes/language';
 import { getAssetUrls } from '@/utils/url';
 import { useIsMobile } from '@/hooks/useIsMobile';
 

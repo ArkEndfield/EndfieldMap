@@ -32,6 +32,7 @@ export default defineConfig(({ command, mode }) => {
       alias: {
         ...(isDev ? alias : {}),
         "@": resolve(__dirname, './src'),
+        "@eftypes": resolve(__dirname, './src/@types'),
       },
     },
   };

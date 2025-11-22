@@ -6,10 +6,22 @@ export enum StorageType {
 
 // storage key enum
 export enum StorageKey {
+  /** 标记已获取的数据 */
   MARKED_FEATURES = 'marked_features',
+  /** 筛选显示类型标点的数据 */
   LAYERS_VISIBILITY = 'layers_visibility',
 
+  /** 电线杆数据 */
   ELECTRIC_POLE = 'electric_pole',
+
+  /** ChestReward */
+  CHEST_REWARD = 'chest_reward',
+  /** ItemData */
+  ITEM_DATA = 'item_data',
+  /** DungeonSeries */
+  DUNGEON_SERIES = 'dungeon_series',
+  /** Guide */
+  GUIDE = 'guide',
 }
 
 // local storage type enum

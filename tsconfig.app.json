@@ -29,7 +29,9 @@
       "@endfieldmap/tools": ["./packages/tools/src/index.ts"],
       "@endfieldmap/tools/*": ["./packages/tools/src/*"],
       "@/": ["./src"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@eftypes/": ["./src/@types"],
+      "@eftypes/*": ["./src/@types/*"]
     }
   },
   "include": ["src"]

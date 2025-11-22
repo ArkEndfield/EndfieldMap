@@ -1,4 +1,4 @@
-import type { LanguageLocale } from '@/types/language';
+import type { LanguageLocale } from '@eftypes/language';
 import { Language } from '@endfieldmap/tools';
 
 export const LanguageConfig: { code: Language; locale: LanguageLocale }[] = [
