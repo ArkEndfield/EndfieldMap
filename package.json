@@ -11,6 +11,7 @@
     "build:web": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:fix": "prettier --write . && eslint . --fix",
+    "lng:type": "i18next-cli types",
     "preview": "vite preview"
   },
   "dependencies": {
