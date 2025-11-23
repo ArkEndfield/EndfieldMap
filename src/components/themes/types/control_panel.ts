@@ -1,5 +1,5 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 
-export interface EntityPanelProps {
+export interface ControlPanelProps {
   adapter: EndfieldMapAdapter;
 }

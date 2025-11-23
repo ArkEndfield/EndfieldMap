@@ -2,7 +2,7 @@ import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
 import { useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import type { EntityPanelProps } from '@/components/themes/types/entity_panel';
+import type { ControlPanelProps } from '@/components/themes/types/control_panel';
 
 interface EntityItemInfo extends EntityInfoItemData {
   markedCount: number;
@@ -20,7 +20,7 @@ interface CategoryInfo {
  * 实体面板组件
  * 显示当前地图的所有实体，支持按分类显示/隐藏
  */
-const EntityPanel = observer(({ adapter }: EntityPanelProps) => {
+const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
   const entities = adapter.entityController.currentEntityInfoList;
   const currentMap = adapter.currentMapIndex;

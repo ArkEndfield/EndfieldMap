@@ -7,6 +7,8 @@ export const themeNames = {
   ENDFIELD: 'endfield',
 } as const;
 
+export type  ThemeNames = (typeof themeNames)[keyof typeof themeNames];
+
 themes.set(themeNames.ENDFIELD, endfieldTheme);
 
 export const getThemedComponents = (themeName: (typeof themeNames)[keyof typeof themeNames]) => {

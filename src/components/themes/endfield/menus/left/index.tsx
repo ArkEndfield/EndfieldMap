@@ -24,7 +24,7 @@ const MenuListDeco = () => (
 
 export const MenuListForPC = () => {
   return (
-    <div className="flex relative items-center">
+    <div className="flex h-12.5 relative items-center">
       <MenuListDeco />
       {menus.map((Menu, index) => (
         <MenuContainer key={index} rightBorder={index !== menus.length - 1}>

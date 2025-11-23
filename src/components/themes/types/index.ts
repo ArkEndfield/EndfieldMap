@@ -1,12 +1,12 @@
 import type { PopupProps } from './popup';
-import type { EntityPanelProps } from './entity_panel';
+import type { ControlPanelProps } from './control_panel';
 import type { LazyExoticComponent } from 'react';
 import type { ZoomControllerProps } from './zoom_controller';
 import type { MenusProps } from './menus';
 
 export enum ComponentType {
   POPUP = 'Popup',
-  ENTITY_PANEL = 'EntityPanel',
+  CONTROL_PANEL = 'ControlPanel',
   ELECTRIC_POLE_PRESET_PANEL = 'ElectricPolePresetPanel',
   ZOOM_CONTROLLER = 'ZoonController',
   MENUS = 'Menus',
@@ -14,11 +14,9 @@ export enum ComponentType {
 
 export interface ThemedComponentProps {
   [ComponentType.POPUP]: PopupProps;
-  [ComponentType.ENTITY_PANEL]: EntityPanelProps;
+  [ComponentType.CONTROL_PANEL]: ControlPanelProps;
   [ComponentType.MENUS]: MenusProps,
   [ComponentType.ZOOM_CONTROLLER]: ZoomControllerProps;
-  // 电线杆预设管理面板，目前仅需要 adapter
-  [ComponentType.ELECTRIC_POLE_PRESET_PANEL]: EntityPanelProps;
 }
 
 export type ThemedComponentsMap = Map<

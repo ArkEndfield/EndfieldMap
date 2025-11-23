@@ -1,19 +1,48 @@
-import { useRef, Suspense } from 'react';
+import { useRef, Suspense, useState, useMemo } from 'react';
 
 import { observer } from 'mobx-react-lite';
-import { getThemedComponents, themeNames } from '@/components/themes';
+import { getThemedComponents, themeNames, type ThemeNames } from '@/components/themes';
 import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/useMapAdapter';
-// import i18n from './i18n';
-// import { getLanguageLocale } from './utils/language';
-// import { Language } from '@endfieldmap/tools';
+import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 
-const ThemedComponents = getThemedComponents(themeNames.ENDFIELD);
+function Controllers({ adapter }: { adapter: EndfieldMapAdapter }) {
+  const [theme, _setTheme] = useState<ThemeNames>(themeNames.ENDFIELD);
+  
+  const ThemedComponents = useMemo(() => {
+    const components = getThemedComponents(theme);
+    return {
+      Popup: components.get(ComponentType.POPUP)!,
+      ZoomController: components.get(ComponentType.ZOOM_CONTROLLER)!,
+      Menus: components.get(ComponentType.MENUS)!,
+      ControlPanel: components.get(ComponentType.CONTROL_PANEL)!,
+    };
+  }, [theme]);
 
-const ThemedPopup = ThemedComponents.get(ComponentType.POPUP)!;
-const ThemedZoomController = ThemedComponents.get(ComponentType.ZOOM_CONTROLLER)!;
-const ThemedMenus = ThemedComponents.get(ComponentType.MENUS)!;
-// const ThemedEntityPanel = ThemedComponents.get(ComponentType.ENTITY_PANEL)!;
+  return (
+    <>
+      {/* 弹窗组件 */}
+      <Suspense>
+        <ThemedComponents.Popup adapter={adapter} />
+      </Suspense>
+
+      {/* 缩放组件 */}
+      <Suspense>
+        <ThemedComponents.ZoomController adapter={adapter} />
+      </Suspense>
+
+      {/* 菜单组件 */}
+      <Suspense>
+        <ThemedComponents.Menus adapter={adapter} />
+      </Suspense>
+
+      {/** 操作组件 */}
+      <Suspense>
+        <ThemedComponents.ControlPanel adapter={adapter} />
+      </Suspense>
+    </>
+  );
+}
 
 function EndfieldMap() {
   const container = useRef<HTMLDivElement>(null);
@@ -24,39 +53,8 @@ function EndfieldMap() {
       {/* 地图容器 */}
       <div ref={container} className="w-full h-full"></div>
 
-      {/* 弹窗组件 */}
-      {adapter && (
-        <Suspense>
-          <ThemedPopup adapter={adapter} />
-        </Suspense>
-      )}
-
-      {/* {adapter && (
-        <div className="fixed bottom-4 right-4">
-          <button onClick={() => i18n.changeLanguage(getLanguageLocale(Language.ZH_CN))}>中文</button>
-          <button onClick={() => i18n.changeLanguage(getLanguageLocale(Language.EN_US))}>English</button>
-        </div>
-      )} */}
-
-      {adapter && (
-        <Suspense>
-          <ThemedZoomController adapter={adapter} />
-        </Suspense>
-      )}
-
-      {adapter && (
-        <Suspense>
-          <ThemedMenus adapter={adapter} />
-        </Suspense>
-      )}
-
-      
-
-      {/* {adapter && (
-        <Suspense>
-          <ThemedEntityPanel adapter={adapter} />
-        </Suspense>
-      )} */}
+      {/* 控制组件 */}
+      {adapter && <Controllers adapter={adapter} />}
     </div>
   );
 }
