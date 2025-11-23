@@ -15,7 +15,7 @@ export enum ComponentType {
 export interface ThemedComponentProps {
   [ComponentType.POPUP]: PopupProps;
   [ComponentType.CONTROL_PANEL]: ControlPanelProps;
-  [ComponentType.MENUS]: MenusProps,
+  [ComponentType.MENUS]: MenusProps;
   [ComponentType.ZOOM_CONTROLLER]: ZoomControllerProps;
 }
 
@@ -23,3 +23,7 @@ export type ThemedComponentsMap = Map<
   ComponentType,
   LazyExoticComponent<React.FC<ThemedComponentProps[keyof ThemedComponentProps]>>
 >;
+
+export type ThemedComponent<T extends ComponentType> = T extends keyof ThemedComponentProps
+  ? LazyExoticComponent<React.FC<ThemedComponentProps[T]>>
+  : never;

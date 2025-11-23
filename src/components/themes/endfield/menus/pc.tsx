@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import { cn } from '@/utils/style';
 import { MenuListForPC } from './left';
 import { RightMenu } from './right';
@@ -5,7 +6,10 @@ import type { MenusProps } from '../../types/menus';
 
 export default function PCMenus({ adapter }: MenusProps) {
   return (
-    <div
+    <motion.div
+      initial={{ y: '-100%' }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.1, ease: 'easeOut' }}
       className={cn(
         'fixed flex justify-start gap-8 text-white select-none z-10',
         'before:absolute before:-z-1 before:left-0 before:top-0 before:bottom-0 before:w-24 before:bg-linear-to-tr before:from-white/25 before:via-white/0 before:to-black/0',
@@ -23,6 +27,6 @@ export default function PCMenus({ adapter }: MenusProps) {
         <RightMenu adapter={adapter} />
       </div>
       <div className="absolute bottom-0 right-4 border-[1.5px] border-[#FDFA85] h-2 w-1 border-l-0"></div>
-    </div>
+    </motion.div>
   );
 }

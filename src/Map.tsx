@@ -12,10 +12,10 @@ function Controllers({ adapter }: { adapter: EndfieldMapAdapter }) {
   const ThemedComponents = useMemo(() => {
     const components = getThemedComponents(theme);
     return {
-      Popup: components.get(ComponentType.POPUP)!,
-      ZoomController: components.get(ComponentType.ZOOM_CONTROLLER)!,
-      Menus: components.get(ComponentType.MENUS)!,
-      ControlPanel: components.get(ComponentType.CONTROL_PANEL)!,
+      Popup: components.get(ComponentType.POPUP),
+      ZoomController: components.get(ComponentType.ZOOM_CONTROLLER),
+      Menus: components.get(ComponentType.MENUS),
+      ControlPanel: components.get(ComponentType.CONTROL_PANEL),
     };
   }, [theme]);
 
