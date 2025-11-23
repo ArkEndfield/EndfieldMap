@@ -1,15 +1,15 @@
 import type { LanguageLocale } from '@eftypes/language';
 import { Language } from '@endfieldmap/tools';
 
-export const LanguageConfig: { code: Language; locale: LanguageLocale }[] = [
-  { code: Language.ZH_CN, locale: 'cn' },
-  { code: Language.ZH_TW, locale: 'tc' },
-  { code: Language.EN_US, locale: 'en' },
-  { code: Language.JA_JP, locale: 'jp' },
-  { code: Language.KO_KR, locale: 'kr' },
+export const languageConfig: { code: Language; locale: LanguageLocale, displayName: string }[] = [
+  { code: Language.ZH_CN, locale: 'cn', displayName: '简体中文' },
+  { code: Language.ZH_TW, locale: 'tc', displayName: '繁体中文' },
+  { code: Language.EN_US, locale: 'en', displayName: 'English' },
+  { code: Language.JA_JP, locale: 'jp', displayName: '日本語' },
+  { code: Language.KO_KR, locale: 'kr', displayName: '한국어' },
 ];
 
-export const LanguageMap = LanguageConfig.reduce(
+export const LanguageMap = languageConfig.reduce(
   (acc, { code, locale }) => {
     acc[code] = locale;
     return acc;
@@ -17,7 +17,7 @@ export const LanguageMap = LanguageConfig.reduce(
   {} as Record<Language, LanguageLocale>
 );
 
-export const LanguageMapReverse = LanguageConfig.reduce(
+export const LanguageMapReverse = languageConfig.reduce(
   (acc, { code, locale }) => {
     acc[locale] = code;
     return acc;

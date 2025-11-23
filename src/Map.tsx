@@ -12,6 +12,7 @@ const ThemedComponents = getThemedComponents(themeNames.ENDFIELD);
 
 const ThemedPopup = ThemedComponents.get(ComponentType.POPUP)!;
 const ThemedZoomController = ThemedComponents.get(ComponentType.ZOOM_CONTROLLER)!;
+const ThemedMenus = ThemedComponents.get(ComponentType.MENUS)!;
 // const ThemedEntityPanel = ThemedComponents.get(ComponentType.ENTITY_PANEL)!;
 
 function EndfieldMap() {
@@ -42,6 +43,14 @@ function EndfieldMap() {
           <ThemedZoomController adapter={adapter} />
         </Suspense>
       )}
+
+      {adapter && (
+        <Suspense>
+          <ThemedMenus adapter={adapter} />
+        </Suspense>
+      )}
+
+      
 
       {/* {adapter && (
         <Suspense>

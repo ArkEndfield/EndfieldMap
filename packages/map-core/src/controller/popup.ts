@@ -93,13 +93,7 @@ export class PopupController {
     // 创建新的overlay
     this.overlay = new Overlay({
       element,
-      autoPan: {
-        animation: {
-          duration: 250,
-        },
-        // 使用较小的边距，避免在视口较小时自动平移计算失败导致 Popup 超出屏幕
-        margin: DEFAULT_ICON_SIZE * 2,
-      },
+      autoPan: false,
       offset: [0, -DEFAULT_ICON_SIZE * 2],
       positioning: 'bottom-center',
     });
@@ -132,6 +126,7 @@ export class PopupController {
       animation: {
         duration: 250,
       },
+      margin: 60,
     });
   }
 

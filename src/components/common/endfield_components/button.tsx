@@ -127,7 +127,7 @@ export const ZmdButton = ({
     <button
       disabled={isDisabled}
       className={cn(
-        'flex-1 flex items-center justify-center rounded-full min-w-28',
+        'flex items-center justify-center rounded-full min-w-28',
         isIconLeft ? 'pl-[0.3em] pr-[0.35em] py-[0.3em]' : 'px-[0.35em] py-[0.3em]',
         isPrimary ? 'bg-[#2a2728] text-[#fefcfc]' : 'bg-[#f2f1ef] text-[#4d4d4d]',
         isDisabled && 'opacity-70 pointer-events-none',
