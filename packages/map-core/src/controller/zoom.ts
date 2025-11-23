@@ -106,6 +106,7 @@ export class ZoomController extends Control {
     if (animate) {
       this.view.animate({
         zoom: zoom,
+        duration: 200
       });
     } else {
       this.view.setZoom(zoom);

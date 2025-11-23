@@ -41,7 +41,7 @@ export const RangeButton: React.FC<RangeButtonProps> = ({ disabled = false, onCl
 
 export interface RangeBarProps {
   value?: number;
-  onChange?: (value: number) => void;
+  onChange?: (value: number, isDragging?: boolean) => void;
   min?: number;
   max?: number;
   step?: number;
@@ -70,11 +70,11 @@ export const RangeBar: React.FC<RangeBarProps> = ({
   const value = isControlled ? controlledValue : internalValue;
 
   const handleChange = React.useCallback(
-    (newValue: number) => {
+    (newValue: number, isDragging?: boolean) => {
       if (!isControlled) {
         setInternalValue(newValue);
       }
-      onChange?.(newValue);
+      onChange?.(newValue, isDragging);
     },
     [isControlled, onChange]
   );
@@ -84,7 +84,7 @@ export const RangeBar: React.FC<RangeBarProps> = ({
 
   // Set value based on click/drag position
   const setValue = React.useCallback(
-    (clientX: number, clientY: number) => {
+    (clientX: number, clientY: number, isDragging: boolean) => {
       if (!trackRef.current || disabled) return;
 
       const rect = trackRef.current.getBoundingClientRect();
@@ -109,14 +109,14 @@ export const RangeBar: React.FC<RangeBarProps> = ({
       
       newValue = Math.max(min, Math.min(max, newValue));
 
-      handleChange(newValue);
+      handleChange(newValue, isDragging);
     },
     [min, max, step, disabled, direction, snapToStep, handleChange]
   );
 
   // Handle track click
   const handleTrackClick = (event: React.MouseEvent) => {
-    setValue(event.clientX, event.clientY);
+    setValue(event.clientX, event.clientY, false);
   };
 
   // Start dragging
@@ -140,7 +140,7 @@ export const RangeBar: React.FC<RangeBarProps> = ({
         clientY = event.clientY;
       }
 
-      setValue(clientX, clientY);
+      setValue(clientX, clientY, true);
     },
     [isDragging, setValue]
   );
@@ -308,7 +308,7 @@ export const RangeBar: React.FC<RangeBarProps> = ({
 
 export interface RangeInputProps {
   value?: number;
-  onChange?: (value: number) => void;
+  onChange?: (value: number, isDragging?: boolean) => void;
   className?: string;
   min?: number;
   max?: number;
@@ -350,25 +350,35 @@ export const RangeInput = React.forwardRef<HTMLDivElement, RangeInputProps>(
     const isControlled = controlledValue !== undefined;
     const value = isControlled ? controlledValue : internalValue;
 
-    const handleChange = (newValue: number) => {
+    const handleChange = (newValue: number, isDragging?: boolean) => {
       if (!isControlled) {
         setInternalValue(newValue);
       }
-      onChange?.(newValue);
+      onChange?.(newValue, isDragging);
     };
 
     const handleIncrement = () => {
       if (disabled) return;
-      const newValue = Math.min(value + step, max);
-      handleChange(newValue);
-      onIncrement?.();
+      if (onIncrement) {
+        // If custom increment handler is provided, use it
+        onIncrement();
+      } else {
+        // Otherwise, handle internally with animation (isDragging = false)
+        const newValue = Math.min(value + step, max);
+        handleChange(newValue, false);
+      }
     };
 
     const handleDecrement = () => {
       if (disabled) return;
-      const newValue = Math.max(value - step, min);
-      handleChange(newValue);
-      onDecrement?.();
+      if (onDecrement) {
+        // If custom decrement handler is provided, use it
+        onDecrement();
+      } else {
+        // Otherwise, handle internally with animation (isDragging = false)
+        const newValue = Math.max(value - step, min);
+        handleChange(newValue, false);
+      }
     };
 
     const isVertical = direction === 'vertical';

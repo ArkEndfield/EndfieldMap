@@ -33,9 +33,10 @@ const ZoomController: React.FC<ZoomControllerProps> = observer(({ adapter }) => 
     };
   }, [adapter]);
 
-  // 处理用户通过滑块改变缩放（拖动时不使用动画）
-  const handleZoomChange = (newZoom: number) => {
-    adapter.zoomController?.setZoom(newZoom, false);
+  // 处理用户通过滑块改变缩放
+  // isDragging 为 true 时不使用动画（拖动），为 false 时使用动画（点击）
+  const handleZoomChange = (newZoom: number, isDragging?: boolean) => {
+    adapter.zoomController?.setZoom(newZoom, !isDragging);
   };
 
   // 处理增减按钮点击（使用动画）
