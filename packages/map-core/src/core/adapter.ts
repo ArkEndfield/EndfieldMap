@@ -198,6 +198,14 @@ export class EndfieldMapAdapter {
   }
 
   /**
+   * 设置是否启用聚合标点
+   * @param enable 是否启用聚合
+   */
+  public setClusterEnable(enable: boolean) {
+    this.entityController.setClusterEnable(enable);
+  }
+
+  /**
    * 注册控件到地图
    * @param control OpenLayers控件实例
    */

@@ -16,6 +16,7 @@ import VectorSource from 'ol/source/Vector';
 
 export class EndfieldSelectionInteraction {
   @observable accessor isSelecting: boolean = false;
+  @observable accessor selectedFeatures: Feature<Geometry>[] = [];
   private _map?: Map;
   private _disposeEntityClickListener?: DisposeListener;
   public select: Select;
@@ -40,9 +41,17 @@ export class EndfieldSelectionInteraction {
   }
 
   private initSelectionListener() {
-    const updateSelection = () => this.updateMapFeatureSelection();
+    const updateSelection = () => {
+      this.updateMapFeatureSelection();
+      this.syncSelectedFeatures();
+    };
     this.select.getFeatures().on('add', updateSelection);
     this.select.getFeatures().on('remove', updateSelection);
+  }
+
+  @action
+  private syncSelectedFeatures() {
+    this.selectedFeatures = this.select.getFeatures().getArray();
   }
 
   private initClickListener() {
@@ -191,6 +200,14 @@ export class EndfieldSelectionInteraction {
   public stopSelecting() {
     this.isSelecting = false;
     this.clearSelection();
+  }
+
+  @action
+  public toggleSelecting() {
+    this.isSelecting = !this.isSelecting;
+    if (!this.isSelecting) {
+      this.clearSelection();
+    }
   }
 
   public clearSelection() {

@@ -81,6 +81,33 @@ export class EntityController {
   }
 
   /**
+   * 设置是否启用聚合
+   * @param enable 是否启用聚合
+   */
+  @action
+  public setClusterEnable(enable: boolean) {
+    const newDisableCluster = !enable;
+    if (this.disableCluster === newDisableCluster) {
+      return;
+    }
+    this.disableCluster = newDisableCluster;
+    // 刷新聚合距离以应用更改
+    this.refreshClusterDistance();
+  }
+
+  /**
+   * 刷新聚合距离，根据当前设置重新计算并应用
+   */
+  private refreshClusterDistance() {
+    const shouldCluster = this.shouldCluster(this.currentZoom);
+    const newDistance = shouldCluster ? this.clusterOptions.distance! : 0;
+    this.lastDistance = newDistance;
+    this.currentMapAllLayers.forEach((layer) => {
+      layer.entity.clusterSource.setDistance(newDistance);
+    });
+  }
+
+  /**
    * 初始化聚合距离，根据当前zoom级别设置
    */
   private initClusterDistance() {
