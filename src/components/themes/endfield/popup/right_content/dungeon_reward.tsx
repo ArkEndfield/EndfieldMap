@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { Item } from '../../item';
+import { Item } from '../../components/item';
 import type { DealedRewardItem } from '@eftypes/reward';
 import { hasDungeonReward, isDealedRewardItemWithCount } from '@/utils/reward';
 import type { EntityData } from '@endfieldmap/map-core';

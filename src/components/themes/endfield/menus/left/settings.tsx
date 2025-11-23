@@ -15,6 +15,7 @@ export const HeaderMenuSettings = () => {
   return (
     <HeaderMenuTemplate icon={<CogIcon />} title={t('settings.title')} onClick={handleOpen}>
       <ZmdAlert open={open} onOpenChange={setOpen} hideCancel>
+        {/** TODO: settings */}
         <h1 className="text-lg font-bold text-center">{t('settings.title')}</h1>
       </ZmdAlert>
     </HeaderMenuTemplate>

@@ -253,6 +253,7 @@ export class ElectricPoleController {
       entityType: '#ElectricPole',
       position: xyzPosition,
       connectTo: null,
+      properties: {}
     };
     return this.addElectricPoleEntity(mapIndex, data);
   }

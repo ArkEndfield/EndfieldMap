@@ -50,6 +50,9 @@ const ZoomController: React.FC<ZoomControllerProps> = observer(({ adapter }) => 
     adapter.zoomController?.setZoom(newZoom, true);
   };
 
+  // TODO: mobile
+  if(isMobile) return null;
+
   return (
     <div ref={containerRef} className="fixed right-4 top-1/2 -translate-y-1/2">
       <RangeInput
