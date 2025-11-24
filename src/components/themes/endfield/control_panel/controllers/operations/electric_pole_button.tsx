@@ -5,11 +5,13 @@ import { createPortal } from 'react-dom';
 import { useState, useEffect } from 'react';
 import { ElectricPoleManager } from './electric_pole';
 import { dataService } from '@/services/data';
+import { useTranslation } from 'react-i18next';
 
 export const ElectricPoleButton = observer(
   ({ adapter, portalRef }: { adapter: EndfieldMapAdapter; portalRef: React.RefObject<HTMLDivElement | null> }) => {
     const [open, setOpen] = useState(false);
     const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
+    const { t } = useTranslation('sidebar');
 
     useEffect(() => {
       if (portalRef.current) {
@@ -27,7 +29,7 @@ export const ElectricPoleButton = observer(
     return (
       <>
         <OperationButton
-          title={open ? '关闭管理器' : '电线杆管理'}
+          title={open ? t('operation.close_electric_pole_manager') : t('operation.electric_pole_manager')}
           subtitle="ELECTRIC POLE MANAGER"
           onClick={onToggle}
         />

@@ -125,7 +125,7 @@ export default function EntityGroup({
 
           {/* Content */}
           {children || (
-            <div className="text-center text-[0.8em]">内容为空</div>
+            <div className="text-center text-[0.8em]">...</div>
           )}
 
 

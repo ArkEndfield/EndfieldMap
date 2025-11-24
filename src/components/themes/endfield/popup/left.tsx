@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/common/scroll_area';
 import { ClipSquare, Deco } from './deco';
 import { Guide } from '../../../common/guide';
 import { ZmdButton } from '@/components/common/endfield_components/button';
+import { useTranslation } from 'react-i18next';
 
 export interface LeftContentProps {
   adapter: EndfieldMapAdapter;
@@ -46,6 +47,7 @@ const Header = ({ name, pic }: { name: string; pic: string }) => (
 /** 左边弹窗内容 */
 export const LeftContent: React.FC<LeftContentProps> = observer(({ adapter, activeFeature }) => {
   const entityData = activeFeature?.data;
+  const { t } = useTranslation(['popup', 'common']);
 
   if (!adapter || !activeFeature || !entityData) return null;
 
@@ -96,7 +98,7 @@ export const LeftContent: React.FC<LeftContentProps> = observer(({ adapter, acti
                 }}
                 iconPosition={activeFeature.marked ? 'left' : 'right'}
               >
-                {activeFeature.marked ? '取消标记' : '标记'}
+                {activeFeature.marked ? t('common:operate.unmark') : t('common:operate.mark')}
               </ZmdButton>
             </div>
           )}

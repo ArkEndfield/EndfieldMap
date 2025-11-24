@@ -1,4 +1,4 @@
-import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
+import type { Category, EntityInfoItemData } from '@endfieldmap/map-core';
 import { useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ interface EntityItemInfo extends EntityInfoItemData {
 }
 
 interface CategoryInfo {
-  category: string;
+  category: Category;
   entities: EntityItemInfo[];
   totalEntities: number;
   displayedEntities: number;
@@ -25,7 +25,7 @@ interface CategoryInfo {
  * 显示当前地图的所有实体，支持按分类显示/隐藏
  */
 const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['sidebar']);
   const [searchQuery, setSearchQuery] = useState('');
 
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
@@ -47,7 +47,7 @@ const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
         const entityIdKey = entity.entityDataIdKey.toLowerCase();
         const translatedEntityName = String(t(entity.entityDataIdKey as never)).toLowerCase();
         const category = entity.category.toLowerCase();
-        const translatedCategory = String(t(entity.category as never)).toLowerCase();
+        const translatedCategory = t(`sidebar:filter.category.${entity.category}`).toLowerCase();
 
         const matches =
           entityIdKey.includes(lowerSearchQuery) ||
@@ -62,7 +62,7 @@ const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
     });
 
     // 按 category 分组
-    const categoryMap = new Map<string, EntityItemInfo[]>();
+    const categoryMap = new Map<Category, EntityItemInfo[]>();
     entityInfoMap.forEach((entity) => {
       const category = entity.category;
       if (!categoryMap.has(category)) {
@@ -94,7 +94,7 @@ const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
   }, [entities, searchQuery, t]);
 
   // 切换分类显示/隐藏
-  const handleCategoryClick = (category: string, allDisplayed: boolean) => {
+  const handleCategoryClick = (category: Category, allDisplayed: boolean) => {
     if (allDisplayed) {
       adapter.entityController.hideCategoryEntities(category);
     } else {
@@ -113,14 +113,14 @@ const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
         <Search
           value={searchQuery}
           onValueChange={(v) => setSearchQuery(v)}
-          placeholder="搜索实体..."
+          placeholder={t('sidebar:filter.search_placeholder')}
         />
       </div>
 
       {categorizedEntities.map((categoryInfo) => (
         <EntityGroup
           key={categoryInfo.category}
-          title={categoryInfo.category}
+          title={t(`filter.category.${categoryInfo.category}`)}
           subtitle={categoryInfo.category}
           onIconClick={() => handleCategoryClick(categoryInfo.category, categoryInfo.allDisplayed)}
           iconColor={categoryInfo.allDisplayed ? '#f9f853' : '#ffffff'}

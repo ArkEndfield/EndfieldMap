@@ -1,19 +1,23 @@
 import { MarkedFeatureFilterMode, type EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import FilterToggle from './_toggle';
+import { useTranslation } from 'react-i18next';
 
 const filterModes = [
-  { label: '全部', value: MarkedFeatureFilterMode.All },
-  { label: '已标记', value: MarkedFeatureFilterMode.Marked },
-  { label: '未标记', value: MarkedFeatureFilterMode.Unmarked },
-];
+  { label: 'all', value: MarkedFeatureFilterMode.All },
+  { label: 'marked', value: MarkedFeatureFilterMode.Marked },
+  { label: 'unmarked', value: MarkedFeatureFilterMode.Unmarked },
+] as const;
 
 export const Filters = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
   const filterMode = adapter.entityController.markedFilterMode;
+  const { t } = useTranslation('sidebar');
+
   const setFilterMode = (mode: MarkedFeatureFilterMode) => {
     adapter.activeFeatureController.clearActiveFeature();
     adapter.entityController.setMarkedFeatureFilter(mode);
   };
+
   return (
     <div className="flex text-sm gap-2 w-full">
       {
@@ -28,7 +32,7 @@ export const Filters = observer(({ adapter }: { adapter: EndfieldMapAdapter }) =
               }
             }}
           >
-            {mode.label}
+            {t(`filter.${mode.label}`)}
           </FilterToggle>
         ))
       }

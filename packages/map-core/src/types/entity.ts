@@ -64,11 +64,14 @@ export type EntityDataList = EntityData[];
  */
 export type ElectricPoleDataList = ElectricPoleData[];
 
+// TODO: 希望做成自动化
+export type Category = 'chest' | 'dnarrative' | 'dungeon' | 'enemy' | 'ether' | 'mineral' | 'narrative' | 'plant' | 'settlement' | 'spcstone' | 'special';
+
 /**
  * 实体分类数据，来自于json
  */
 export interface EntityCategoryData {
-  category: string;
+  category: Category;
   data: EntityDataList;
 }
 

@@ -4,9 +4,11 @@ import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
 import { dataService } from '@/services/data';
 import { alert } from '@/components/common/endfield_components/alert_api';
+import { useTranslation } from 'react-i18next';
 
 const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
   const selectedFeatures = adapter.mapController.selection.selectedFeatures;
+  const { t } = useTranslation(['sidebar', 'common']);
 
   const markFeatures = (marked: boolean) => {
     selectedFeatures.forEach((feature) => {
@@ -17,38 +19,41 @@ const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) =
 
   return (
     <div className="fixed top-14 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4">
-      <div className="text-sm text-gray-600">已选中: {selectedFeatures.length} 个对象</div>
+      <div className="text-sm text-gray-600">{t('sidebar:operation.selected_feature', { val: selectedFeatures.length })}</div>
       {selectedFeatures.length > 0 && (
         <div className="flex gap-2 mt-2">
           <button className="bg-blue-500 text-white px-2 py-1 rounded" onClick={() => markFeatures(true)}>
-            标记
+            {t('common:operate.mark')}
           </button>
           <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={() => markFeatures(false)}>
-            取消标记
+            {t('common:operate.unmark')}
           </button>
         </div>
       )}
-      <button onClick={() => adapter.mapController.selection.stopSelecting()}>取消</button>
+      <button onClick={() => adapter.mapController.selection.stopSelecting()}>{t('operation.cancel_operation')}</button>
     </div>
   );
 });
 
 export const SelectModeOperation = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
   const isSelecting = adapter.mapController.selection.isSelecting;
+  const { t } = useTranslation('sidebar');
+
   const toggleSelectMode = () => {
     if (!isSelecting && dataService.electricPoleDataService.isInElectricOperateMode) {
       alert.info({
-        content: <div className="text-center">正在处于电线杆操作状态，请先结束操作</div>,
+        content: <div className="text-center">{t('operation.electric_pole_operating_tip')}</div>,
       });
       return;
     }
     adapter.mapController.selection.toggleSelecting();
     adapter.activeFeatureController.clearActiveFeature();
   };
+
   return (
     <>
       <OperationButton
-        title={isSelecting ? '取消操作' : '批量操作'}
+        title={isSelecting ? t('operation.cancel_operation') : t('operation.multi_operation')}
         subtitle="MULTI OPERATION"
         onClick={toggleSelectMode}
       />

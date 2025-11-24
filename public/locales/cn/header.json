@@ -1,26 +1,26 @@
 {
-    "about": {
-        "title": "关于"
-    },
-    "feedback": {
-        "title": "反馈"
-    },
-    "language": {
-        "title": "语言",
-        "change_language": "切换语言",
-        "language_list": {
-            "cn": "简体中文",
-            "tc": "繁体中文",
-            "en": "英语",
-            "jp": "日语",
-            "kr": "韩语"
-        }
-    },
-    "settings": {
-        "title": "设置"
-    },
-    "map": {
-        "change_map": "切换地图",
-        "map_change": "地图切换"
+  "about": {
+    "title": "关于"
+  },
+  "feedback": {
+    "title": "反馈"
+  },
+  "language": {
+    "title": "语言",
+    "change_language": "切换语言",
+    "language_list": {
+      "cn": "简体中文",
+      "tc": "繁体中文",
+      "en": "英语",
+      "jp": "日语",
+      "kr": "韩语"
     }
+  },
+  "settings": {
+    "title": "设置"
+  },
+  "map": {
+    "change_map": "切换地图",
+    "map_change": "地图切换"
+  }
 }
