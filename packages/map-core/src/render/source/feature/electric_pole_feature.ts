@@ -1,7 +1,7 @@
 import { ELECTRIC_ZONE_RADIUS, EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
 import { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import { ElectricPoleData } from '@endfieldmap/map-core/types';
-import { action, observable } from 'mobx';
+import { ElectricPoleData, EntityInfoData } from '@endfieldmap/map-core/types';
+import { action, computed, observable } from 'mobx';
 import { Point } from 'ol/geom';
 import type { BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
 import { calculateDistance, xyz2crd } from '@endfieldmap/tools';
@@ -10,6 +10,7 @@ import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 
 export interface ElectricPoleFeatureConfig extends BaseFeatureConfig {
   data: ElectricPoleData;
+  entityInfo: EntityInfoData;
 }
 
 export interface ConnectionFeatures {
@@ -23,7 +24,7 @@ export class ElectricPoleFeature extends MapFeature {
 
   @observable accessor connectionFeature: ConnectionFeature;
 
-  @observable accessor data: ElectricPoleData;
+  @observable accessor _data: ElectricPoleData;
 
   @observable accessor connectionEntityFeatures: ConnectionFeatures = {
     from: null,
@@ -32,7 +33,7 @@ export class ElectricPoleFeature extends MapFeature {
 
   constructor(config: ElectricPoleFeatureConfig) {
     super(config);
-    this.data = config.data;
+    this._data = config.data;
     this.connectionFeature = new ConnectionFeature({
       entity: this,
       mapIndex: this.mapIndex,
@@ -46,6 +47,14 @@ export class ElectricPoleFeature extends MapFeature {
     this.feature.set(EntityInstanceKey, this);
   }
 
+  @computed
+  get data() {
+    return {
+      ...this._data,
+      entityInfo: this.entityInfo,
+    };
+  }
+
   @action
   public setConnectionFrom(pole: ElectricPoleFeature) {
     this.connectionEntityFeatures.from = pole;
@@ -55,9 +64,10 @@ export class ElectricPoleFeature extends MapFeature {
   public connectTo(pole: ElectricPoleFeature) {
     const distance = calculateDistance(this.coordinates, pole.coordinates);
     if (distance > ELECTRIC_ZONE_RADIUS) {
+      // TODO: i18n
       throw new Error(`The distance between the two poles is too far: ${distance}`);
     }
-    this.data.connectTo = pole.data.levelLogicId;
+    this.data.properties.connectTo = pole.data.levelLogicId;
     this.connectionEntityFeatures.to = pole;
     this.connectionFeature.setTo(pole);
     pole.setConnectionFrom(this);
@@ -79,7 +89,7 @@ export class ElectricPoleFeature extends MapFeature {
    */
   @action
   public clearConnectionTo() {
-    this.data.connectTo = null;
+    this.data.properties.connectTo = null;
     this.connectionEntityFeatures.to = null;
     this.connectionFeature.clearTo();
     this.notifyElectricPoleChanged();

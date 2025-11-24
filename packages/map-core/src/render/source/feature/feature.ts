@@ -132,7 +132,7 @@ export class MapFeature extends FeatureBase {
   }
 
   @computed
-  get data(): EntityData & { entityInfo: EntityInfoData } {
+  get data() {
     return {
       ...this._data,
       entityInfo: this.entityInfo,

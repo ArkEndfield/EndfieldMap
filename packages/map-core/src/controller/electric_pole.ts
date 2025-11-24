@@ -105,8 +105,8 @@ export class ElectricPoleController {
         const newId = idMap.get(oldId)!;
 
         let newConnectTo: ElectricPoleData['levelLogicId'] | null = null;
-        if (pole.connectTo != null) {
-          const mapped = idMap.get(pole.connectTo);
+        if (pole.properties.connectTo != null) {
+          const mapped = idMap.get(pole.properties.connectTo);
           if (mapped != null) {
             newConnectTo = mapped;
           } else {
@@ -114,7 +114,7 @@ export class ElectricPoleController {
             logger.warn('[ElectricPoleController|initElectricPoleData] connectTo target not found after remap', {
               mapIndex,
               from: oldId,
-              to: pole.connectTo,
+              to: pole.properties.connectTo,
             });
             newConnectTo = null;
           }
@@ -123,7 +123,10 @@ export class ElectricPoleController {
         return {
           ...pole,
           levelLogicId: newId,
-          connectTo: newConnectTo,
+          properties: {
+            ...pole.properties,
+            connectTo: newConnectTo,
+          }
         };
       });
 
@@ -252,8 +255,9 @@ export class ElectricPoleController {
       templateId: '#electric_pole',
       entityType: '#ElectricPole',
       position: xyzPosition,
-      connectTo: null,
-      properties: {}
+      properties: {
+        connectTo: null,
+      }
     };
     return this.addElectricPoleEntity(mapIndex, data);
   }
@@ -307,7 +311,7 @@ export class ElectricPoleController {
     const entityLayer = this.entityLayer.get(mapIndex);
     if (!entityLayer) return;
 
-    const { connectTo } = feature.data ?? {};
+    const { connectTo } = feature.data?.properties ?? {};
 
     // 处理 to：当前电线杆指向某个电线杆
     if (connectTo != null) {

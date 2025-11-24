@@ -541,6 +541,7 @@ export class EntityController {
       // 验证
       if (!this.validateLayerVisibility(layerVisibility)) {
         logger.error('[DataController|importLayerVisibility] Invalid layer visibility data');
+        // TODO: i18n
         throw new Error('Invalid layer visibility data');
       }
 

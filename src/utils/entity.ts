@@ -12,5 +12,7 @@ export const getEntityIcon = (category?: string, pic?: string) => {
 
   const assetPath = getAssetUrls(assetsHost);
 
+  if (category === '#electric_pole') return `${assetPath.entityImage}/custom/${pic}.png`;
+
   return `${assetPath.entityImage}/${category}/${pic}.png`;
 };

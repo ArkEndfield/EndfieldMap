@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import type { PopupProps } from '@/components/themes/types/popup';
+import { dataService } from '@/services/data';
 
 const MobilePopup: React.FC<PopupProps> = observer(({ adapter }) => {
   const activeFeature = adapter?.activeFeatureController.activeFeature;
@@ -15,7 +16,7 @@ const MobilePopup: React.FC<PopupProps> = observer(({ adapter }) => {
     }
   };
 
-  if (!activeFeature) return null;
+  if (!activeFeature || dataService.electricPoleDataService.isInElectricOperateMode) return null;
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-2xl shadow-2xl max-h-[80vh] overflow-y-auto transform transition-transform duration-300 ease-out">

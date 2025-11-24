@@ -12,26 +12,29 @@ interface AlertConfig extends Omit<ZmdAlertProps, 'open' | 'onOpenChange'> {
 }
 
 class AlertManager {
-  private container: HTMLDivElement | null = null;
-  private root: Root | null = null;
-  private instances: Map<string, { destroy: () => void; update: (props: Partial<AlertConfig>) => void }> = new Map();
-
-  private getContainer() {
-    if (!this.container) {
-      this.container = document.createElement('div');
-      this.container.id = 'zmd-alert-container';
-      document.body.appendChild(this.container);
-      this.root = createRoot(this.container);
-    }
-    return { container: this.container, root: this.root! };
-  }
+  private instances: Map<
+    string,
+    { destroy: () => void; update: (props: Partial<AlertConfig>) => void; container: HTMLDivElement; root: Root }
+  > = new Map();
 
   private createAlert(config: AlertConfig): AlertInstance {
     const id = `alert-${Date.now()}-${Math.random()}`;
-    const { root } = this.getContainer();
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
 
     let currentOpen = true;
     let currentConfig = { ...config };
+    let isDestroying = false;
+
+    const cleanup = () => {
+      const instanceData = this.instances.get(id);
+      if (instanceData) {
+        this.instances.delete(id);
+        instanceData.root.unmount();
+        instanceData.container.remove();
+      }
+    };
 
     const render = (open: boolean, props: AlertConfig) => {
       root.render(
@@ -39,19 +42,17 @@ class AlertManager {
           {...props}
           open={open}
           onOpenChange={(newOpen) => {
+            if (newOpen === currentOpen) return;
             currentOpen = newOpen;
             if (!newOpen) {
-              // Wait for animation to complete (300ms = ~18 frames at 60fps)
-              let frames = 0;
-              const waitForAnimation = () => {
-                frames++;
-                if (frames < 18) {
-                  requestAnimationFrame(waitForAnimation);
-                } else {
-                  instance.destroy();
-                }
-              };
-              requestAnimationFrame(waitForAnimation);
+              if (!isDestroying) {
+                isDestroying = true;
+                render(false, currentConfig);
+              }
+              setTimeout(() => {
+                cleanup();
+                // TODO: 等待动画
+              }, 250);
             }
           }}
         >
@@ -62,23 +63,10 @@ class AlertManager {
 
     const instance: AlertInstance = {
       destroy: () => {
-        this.instances.delete(id);
-        if (this.instances.size === 0 && this.container) {
-          // Wait for animation to complete before cleanup
-          let frames = 0;
-          const waitForCleanup = () => {
-            frames++;
-            if (frames < 18) {
-              requestAnimationFrame(waitForCleanup);
-            } else if (this.instances.size === 0) {
-              this.root?.unmount();
-              this.container?.remove();
-              this.container = null;
-              this.root = null;
-            }
-          };
-          requestAnimationFrame(waitForCleanup);
-        }
+        if (isDestroying) return;
+        isDestroying = true;
+        // Trigger close animation by setting open to false
+        render(false, currentConfig);
       },
       update: (props: Partial<AlertConfig>) => {
         currentConfig = { ...currentConfig, ...props };
@@ -86,7 +74,7 @@ class AlertManager {
       },
     };
 
-    this.instances.set(id, instance);
+    this.instances.set(id, { ...instance, container, root });
     render(true, currentConfig);
 
     return instance;

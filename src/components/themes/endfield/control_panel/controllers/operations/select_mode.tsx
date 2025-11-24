@@ -3,6 +3,7 @@ import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
 import { dataService } from '@/services/data';
+import { alert } from '@/components/common/endfield_components/alert_api';
 
 const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
   const selectedFeatures = adapter.mapController.selection.selectedFeatures;
@@ -35,8 +36,12 @@ const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) =
 export const SelectModeOperation = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
   const isSelecting = adapter.mapController.selection.isSelecting;
   const toggleSelectMode = () => {
-    // TODO: 提示
-    if (!isSelecting && dataService.electricPoleDataService.isCreating) return;
+    if (!isSelecting && dataService.electricPoleDataService.isInElectricOperateMode) {
+      alert.info({
+        content: <div className="text-center">正在处于电线杆操作状态，请先结束操作</div>,
+      });
+      return;
+    }
     adapter.mapController.selection.toggleSelecting();
     adapter.activeFeatureController.clearActiveFeature();
   };

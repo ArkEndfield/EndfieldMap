@@ -119,6 +119,7 @@ const ElectricPolePresetPanel: React.FC<ControlPanelProps> = observer(({ adapter
         await service.importPresetBundle(parsed);
         window.alert('电线杆预设导入成功。');
       } else {
+        // TODO: i18m
         throw new Error('Invalid electric pole preset bundle format');
       }
     } catch (error) {

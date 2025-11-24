@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
 import { useState, useEffect } from 'react';
 import { ElectricPoleManager } from './electric_pole';
+import { dataService } from '@/services/data';
 
 export const ElectricPoleButton = observer(({ adapter, portalRef }: { adapter: EndfieldMapAdapter, portalRef: React.RefObject<HTMLDivElement | null> }) => {
   const [open, setOpen] = useState(false);
@@ -16,6 +17,7 @@ export const ElectricPoleButton = observer(({ adapter, portalRef }: { adapter: E
   }, [portalRef]);
 
   const onToggle = () => {
+    dataService.electricPoleDataService.stopCreateElectricPole();
     setOpen(!open);
   }
 

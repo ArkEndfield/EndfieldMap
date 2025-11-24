@@ -49,7 +49,9 @@ export interface ElectricPoleData extends EntityData {
   entityDataIdKey: typeof ElectricPoleIdKey;
   entityType: '#ElectricPole';
   templateId: '#electric_pole';
-  connectTo: EntityData['levelLogicId'] | null;
+  properties: EnityProperties & {
+    connectTo: EntityData['levelLogicId'] | null;
+  }
 }
 
 /**

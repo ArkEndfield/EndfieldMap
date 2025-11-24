@@ -1,3 +1,4 @@
+import { alert } from '@/components/common/endfield_components/alert_api';
 import { THROTTLE_INTERVAL } from '@/const/data';
 import type {
   ElectricPolePresetStorage,
@@ -5,6 +6,8 @@ import type {
   ElectricPolePresetExportBundle,
 } from '@eftypes/electric_pole';
 import type { ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
+import { MAP_EVENT } from '@endfieldmap/map-core';
+import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import { MapIndex, StorageKey, throttle, type StorageManager } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
 
@@ -32,6 +35,13 @@ export class ElectricPoleDataService {
 
   /** 是否处于创建电线杆状态 */
   @observable accessor isCreating: boolean = false;
+  /** 是否自动连接连续创建的电线杆 */
+  @observable accessor autoConnect: boolean = true;
+  private previouseCreatedPole: ElectricPoleFeature | null = null;
+
+  /** 是否处于连接电线杆状态 */
+  @observable accessor isConnecting: boolean = false;
+  private connectingPole: ElectricPoleFeature | null = null;
 
   constructor(storage: StorageManager) {
     this.storage = storage;
@@ -51,6 +61,7 @@ export class ElectricPoleDataService {
     });
     // 当 adapter 注册后，如果已经有预设数据，则应用当前预设到地图
     this.applyCurrentPresetToAdapter();
+    this.initEntityClickEvent();
   }
 
   // region: 数据处理和获取
@@ -199,15 +210,119 @@ export class ElectricPoleDataService {
   @action
   public stopCreateElectricPole() {
     this.isCreating = false;
+    this.previouseCreatedPole = null;
   }
 
   /** 切换创建状态 */
   @action
   public toggleCreateElectricPole() {
-    this.isCreating = !this.isCreating;
+    if (this.isCreating) {
+      this.stopCreateElectricPole();
+    } else {
+      this.startCreateElectricPole();
+    }
+  }
+
+  private initEntityClickEvent() {
+    if (this.adapter) {
+      this.adapter.event.on(MAP_EVENT.MAP_CLICK, (event) => {
+        if (!this.isCreating) return;
+        const mapIndex = this.adapter!.currentMapIndex;
+        const coordinate = event.coordinate;
+        const feature = this.adapter!.electricPoleController.createElectricPoleEntity(mapIndex, coordinate);
+        if (feature) {
+          if (this.autoConnect && this.previouseCreatedPole) {
+            // this.previouseCreatedPole.connectTo(feature)
+            try {
+              console.log('link start')
+              this.previouseCreatedPole.connectTo(feature);
+              this.previouseCreatedPole = feature;
+              this.setConnectingPole(feature);
+            } catch (error) {
+              alert.show({
+                // TODO: i18n
+                content: `连接失败：${error instanceof Error ? error.message : String(error)}`,
+                cancelText: '删除电线杆',
+                onCancel: () => {
+                  if (this.adapter) {
+                    const mapIndex = this.adapter.currentMapIndex;
+                    this.adapter.electricPoleController.deleteElectricPoleEntity(mapIndex, feature.id);
+                  }
+                },
+                onConfirm: () => {
+                  this.previouseCreatedPole = feature;
+                  this.setConnectingPole(feature);
+                }
+              })
+            }
+          } else {
+            this.previouseCreatedPole = feature;
+            if (this.autoConnect) {
+              this.setConnectingPole(feature);
+            }
+          }
+        }
+      })
+    }
   }
 
   // endregion
+
+  // region: 电线杆连接
+
+  /** 开始连接电线杆 */
+  @action
+  public startConnectElectricPole() {
+    this.isConnecting = true;
+  }
+
+  /** 结束连接电线杆 */
+  @action
+  public stopConnectElectricPole() {
+    this.isConnecting = false;
+    this.connectingPole = null;
+    this.adapter?.activeFeatureController?.clearActiveFeature?.();
+  }
+
+  /** 切换连接状态 */
+  @action
+  public toggleConnectElectricPole() {
+    if (this.isConnecting) {
+      this.stopConnectElectricPole();
+    } else {
+      this.startConnectElectricPole();
+    }
+  }
+
+  @action
+  public setConnectingPole(pole: ElectricPoleFeature) {
+    this.connectingPole = pole;
+    this.adapter?.activeFeatureController?.setActiveFeature?.(pole);
+  }
+
+  /** 电线杆连接操作 */
+  public connectElectricPole(pole: ElectricPoleFeature) {
+    if (!this.isConnecting) return;
+    if (this.connectingPole) {
+      try {
+        this.connectingPole.connectTo(pole);
+        this.setConnectingPole(pole);
+      } catch (error) {
+        alert.show({
+          content: `连接失败：${error instanceof Error ? error.message : String(error)}`,
+        })
+      }
+    } else {
+      this.setConnectingPole(pole);
+    }
+  }
+
+  // endregion
+
+  @computed
+  public get isInElectricOperateMode() {
+    return this.isCreating || this.isConnecting;
+  }
 
   // region: 预设管理
   /**

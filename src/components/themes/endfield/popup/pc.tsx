@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { StrokeSVGFilter } from './deco';
 import { LeftContent } from './left';
 import { RightContent } from './right';
+import { dataService } from '@/services/data';
 
 const PCPopup: React.FC<PopupProps> = observer(({ adapter }) => {
   // Create a detached element to serve as the overlay container
@@ -51,7 +52,7 @@ const PCPopup: React.FC<PopupProps> = observer(({ adapter }) => {
     <>
       <StrokeSVGFilter />
       <AnimatePresence>
-        {activeFeature && (
+        {activeFeature && !dataService.electricPoleDataService.isInElectricOperateMode && (
           <motion.div
             key="desktop-popup"
             initial={{ opacity: 0, y: 18, scale: 0.9 }}
