@@ -87,17 +87,19 @@ export const LeftContent: React.FC<LeftContentProps> = observer(({ adapter, acti
           </ScrollArea>
 
           {/* 操作按钮 */}
-          <div className="mt-3 pt-3 shrink-0 flex">
-            <ZmdButton
-              onClick={(e) => {
-                e.stopPropagation();
-                handleToggleMarked();
-              }}
-              iconPosition={activeFeature.marked ? 'left' : 'right'}
-            >
-              {activeFeature.marked ? '取消标记' : '标记'}
-            </ZmdButton>
-          </div>
+          {activeFeature.markable && (
+            <div className="mt-3 pt-3 shrink-0 flex">
+              <ZmdButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleMarked();
+                }}
+                iconPosition={activeFeature.marked ? 'left' : 'right'}
+              >
+                {activeFeature.marked ? '取消标记' : '标记'}
+              </ZmdButton>
+            </div>
+          )}
         </div>
       </div>
     </div>

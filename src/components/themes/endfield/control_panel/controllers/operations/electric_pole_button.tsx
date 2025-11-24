@@ -6,25 +6,38 @@ import { useState, useEffect } from 'react';
 import { ElectricPoleManager } from './electric_pole';
 import { dataService } from '@/services/data';
 
-export const ElectricPoleButton = observer(({ adapter, portalRef }: { adapter: EndfieldMapAdapter, portalRef: React.RefObject<HTMLDivElement | null> }) => {
-  const [open, setOpen] = useState(false);
-  const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
+export const ElectricPoleButton = observer(
+  ({ adapter, portalRef }: { adapter: EndfieldMapAdapter; portalRef: React.RefObject<HTMLDivElement | null> }) => {
+    const [open, setOpen] = useState(false);
+    const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (portalRef.current) {
-      setPortalContainer(portalRef.current);
-    }
-  }, [portalRef]);
+    useEffect(() => {
+      if (portalRef.current) {
+        setPortalContainer(portalRef.current);
+      }
+    }, [portalRef]);
 
-  const onToggle = () => {
-    dataService.electricPoleDataService.stopCreateElectricPole();
-    setOpen(!open);
+    const onToggle = () => {
+      if (!open) {
+        if (dataService.electricPoleDataService.isConnecting) {
+          dataService.electricPoleDataService.stopCreateElectricPole();
+        }
+        if (dataService.electricPoleDataService.isCreating) {
+          dataService.electricPoleDataService.stopConnectElectricPole();
+        }
+      }
+      setOpen(!open);
+    };
+
+    return (
+      <>
+        <OperationButton
+          title={open ? '关闭管理器' : '电线杆管理'}
+          subtitle="ELECTRIC POLE MANAGER"
+          onClick={onToggle}
+        />
+        {portalContainer && createPortal(<ElectricPoleManager open={open} adapter={adapter} />, portalContainer)}
+      </>
+    );
   }
-
-  return (
-    <>
-      <OperationButton title={open ? "关闭管理器" : "电线杆管理"} subtitle="ELECTRIC POLE MANAGER" onClick={onToggle} />
-      {portalContainer && createPortal(<ElectricPoleManager open={open} adapter={adapter} />, portalContainer)}
-    </>
-  );
-});
+);

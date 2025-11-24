@@ -39,8 +39,8 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
         open ? 'translate-x-0' : '-translate-x-full'
       )}
     >
-      <button onClick={onCreate}>{isCreating ? '停止创建' : '开始创建'}</button>
-      <button onClick={onConnect}>{isConnecting ? '停止连接' : '开始连接'}</button>
+      <button onClick={onCreate} disabled={isConnecting}>{isCreating ? '停止创建' : '开始创建'}</button>
+      <button onClick={onConnect} disabled={isCreating}>{isConnecting ? '停止连接' : '开始连接'}</button>
       <ElectricPolePresetPanel adapter={adapter} />
     </div>
   );

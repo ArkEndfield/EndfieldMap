@@ -6,7 +6,7 @@ import type {
   ElectricPolePresetExportBundle,
 } from '@eftypes/electric_pole';
 import type { ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
-import { MAP_EVENT } from '@endfieldmap/map-core';
+import { ElectricPoleIdKey, MAP_EVENT } from '@endfieldmap/map-core';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import { MapIndex, StorageKey, throttle, type StorageManager } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
@@ -37,7 +37,6 @@ export class ElectricPoleDataService {
   @observable accessor isCreating: boolean = false;
   /** 是否自动连接连续创建的电线杆 */
   @observable accessor autoConnect: boolean = true;
-  private previouseCreatedPole: ElectricPoleFeature | null = null;
 
   /** 是否处于连接电线杆状态 */
   @observable accessor isConnecting: boolean = false;
@@ -204,13 +203,14 @@ export class ElectricPoleDataService {
   @action
   public startCreateElectricPole() {
     this.isCreating = true;
+    if (this.autoConnect) this.setActiveFeatureToConnectingPole();
   }
 
   /**  结束创建电线杆 */
   @action
   public stopCreateElectricPole() {
     this.isCreating = false;
-    this.previouseCreatedPole = null;
+    this.stopConnectElectricPole();
   }
 
   /** 切换创建状态 */
@@ -230,13 +230,10 @@ export class ElectricPoleDataService {
         const mapIndex = this.adapter!.currentMapIndex;
         const coordinate = event.coordinate;
         const feature = this.adapter!.electricPoleController.createElectricPoleEntity(mapIndex, coordinate);
-        if (feature) {
-          if (this.autoConnect && this.previouseCreatedPole) {
-            // this.previouseCreatedPole.connectTo(feature)
+        if (feature && this.autoConnect) {
+          if (this.connectingPole) {
             try {
-              console.log('link start')
-              this.previouseCreatedPole.connectTo(feature);
-              this.previouseCreatedPole = feature;
+              this.connectingPole.connectTo(feature);
               this.setConnectingPole(feature);
             } catch (error) {
               alert.show({
@@ -250,16 +247,12 @@ export class ElectricPoleDataService {
                   }
                 },
                 onConfirm: () => {
-                  this.previouseCreatedPole = feature;
                   this.setConnectingPole(feature);
                 }
               })
             }
           } else {
-            this.previouseCreatedPole = feature;
-            if (this.autoConnect) {
-              this.setConnectingPole(feature);
-            }
+            this.setConnectingPole(feature);
           }
         }
       })
@@ -270,10 +263,19 @@ export class ElectricPoleDataService {
 
   // region: 电线杆连接
 
+  /** 设置激活feature为正在连接的电线杆 */
+  @action
+  public setActiveFeatureToConnectingPole() {
+    const activeFeature = this.adapter?.activeFeatureController?.activeFeature;
+    if (!activeFeature || activeFeature.entityInfo.entityInfo.point !== ElectricPoleIdKey) return;
+    this.setConnectingPole(activeFeature as ElectricPoleFeature);
+  }
+
   /** 开始连接电线杆 */
   @action
   public startConnectElectricPole() {
     this.isConnecting = true;
+    this.setActiveFeatureToConnectingPole();
   }
 
   /** 结束连接电线杆 */
@@ -297,7 +299,9 @@ export class ElectricPoleDataService {
   @action
   public setConnectingPole(pole: ElectricPoleFeature) {
     this.connectingPole = pole;
-    this.adapter?.activeFeatureController?.setActiveFeature?.(pole);
+    requestAnimationFrame(()=> {
+      this.adapter?.activeFeatureController?.setActiveFeature?.(pole);
+    })
   }
 
   /** 电线杆连接操作 */
@@ -309,7 +313,11 @@ export class ElectricPoleDataService {
         this.setConnectingPole(pole);
       } catch (error) {
         alert.show({
-          content: `连接失败：${error instanceof Error ? error.message : String(error)}`,
+          content: `连接失败：${error instanceof Error ? error.message : String(error)}，点击切换将当前连接的电线杆切换为点击的电线杆`,
+          cancelText: '切换',
+          onCancel: () => {
+            this.setConnectingPole(pole);
+          },
         })
       }
     } else {

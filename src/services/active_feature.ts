@@ -20,6 +20,9 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter) {
 
   // 监听map_click事件，清除active_feature
   adapter.event.on(MAP_EVENT.MAP_CLICK, () => {
+    if (dataService.electricPoleDataService.isInElectricOperateMode) {
+      return;
+    }
     adapter.activeFeatureController.clearActiveFeature();
   });
 }
