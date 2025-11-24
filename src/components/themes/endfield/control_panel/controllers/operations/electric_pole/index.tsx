@@ -45,7 +45,7 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
   return (
     <div
       className={cn(
-        'absolute top-0 left-0 h-full w-full overflow-hidden transition-all bg-[#272727]',
+        'absolute top-0 left-0 h-full w-full overflow-hidden transition-all bg-[#272727] z-2',
         open ? 'translate-x-0' : '-translate-x-full'
       )}
     >

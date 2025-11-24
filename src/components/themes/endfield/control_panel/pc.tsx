@@ -31,14 +31,22 @@ export default function PCControlPanel({ adapter }: ControlPanelProps) {
         <div className="pl-8 pr-8 shrink-0 grow-0">
           <HeaderLogo />
         </div>
-        <div className='px-3 overflow-hidden shrink-0 grow-0'>
-          <Operations adapter={adapter} portalRef={portalRef} />
+        <div className='px-3 overflow-hidden shrink-0 grow-0 mt-1 space-y-1'>
           <Filters adapter={adapter} />
+          <Operations adapter={adapter} portalRef={portalRef} />
         </div>
         <div className='flex-1 relative overflow-hidden' ref={portalRef}>
           <ScrollArea className="w-full h-full">
             <EntityPanel adapter={adapter} />
           </ScrollArea>
+        </div>
+
+        <div className="shrink-0 grow-0 p-2 text-sm text-center text-[#b9b9b9]">
+          <a
+            href="https://beian.miit.gov.cn/"
+            target="_blank"
+            >黑ICP备2025036958号-1</a
+          >
         </div>
       </div>
     </motion.div>

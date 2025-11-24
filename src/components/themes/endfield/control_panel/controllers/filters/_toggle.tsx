@@ -32,7 +32,7 @@ export default function FilterToggle({ checked, value, onChange, children, class
   };
 
   return (
-    <div
+    <button
       className={cn(
         'relative inline-block px-3 py-[0.4em] text-left cursor-pointer select-none',
         'whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out',
@@ -48,6 +48,6 @@ export default function FilterToggle({ checked, value, onChange, children, class
       onClick={toggle}
     >
       {children}
-    </div>
+    </button>
   );
 }

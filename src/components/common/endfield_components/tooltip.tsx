@@ -21,6 +21,10 @@ export interface TooltipProps<T extends React.ElementType> {
   children: React.ReactNode;
   /** tooltip 的位置 */
   placement?: Placement;
+  /** tooltip 与触发元素的距离（像素） */
+  offset?: number;
+  /** 鼠标移到 tooltip 上时是否保持显示 */
+  keepOnHover?: boolean;
   /** tooltip 的打开事件 */
   onOpen?: () => void;
   /** tooltip 的关闭事件 */
@@ -54,6 +58,8 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
   tooltip,
   children,
   placement = 'top',
+  offset = TOOLTIP_OFFSET,
+  keepOnHover = true,
   onOpen,
   onClose,
   onOpenChange,
@@ -85,36 +91,36 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
 
       switch (p) {
         case 'top':
-          t = triggerRect.top - tooltipRect.height - TOOLTIP_OFFSET;
+          t = triggerRect.top - tooltipRect.height - offset;
           l = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
           break;
         case 'top-start':
-          t = triggerRect.top - tooltipRect.height - TOOLTIP_OFFSET;
+          t = triggerRect.top - tooltipRect.height - offset;
           l = triggerRect.left;
           break;
         case 'top-end':
-          t = triggerRect.top - tooltipRect.height - TOOLTIP_OFFSET;
+          t = triggerRect.top - tooltipRect.height - offset;
           l = triggerRect.right - tooltipRect.width;
           break;
         case 'bottom':
-          t = triggerRect.bottom + TOOLTIP_OFFSET;
+          t = triggerRect.bottom + offset;
           l = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
           break;
         case 'bottom-start':
-          t = triggerRect.bottom + TOOLTIP_OFFSET;
+          t = triggerRect.bottom + offset;
           l = triggerRect.left;
           break;
         case 'bottom-end':
-          t = triggerRect.bottom + TOOLTIP_OFFSET;
+          t = triggerRect.bottom + offset;
           l = triggerRect.right - tooltipRect.width;
           break;
         case 'left':
           t = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
-          l = triggerRect.left - tooltipRect.width - TOOLTIP_OFFSET;
+          l = triggerRect.left - tooltipRect.width - offset;
           break;
         case 'right':
           t = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
-          l = triggerRect.right + TOOLTIP_OFFSET;
+          l = triggerRect.right + offset;
           break;
       }
 
@@ -133,7 +139,7 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
         top = newPos.t;
         left = newPos.l;
       } else {
-        top = TOOLTIP_OFFSET;
+        top = offset;
       }
     }
 
@@ -144,7 +150,7 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
         top = newPos.t;
         left = newPos.l;
       } else {
-        top = viewportHeight - tooltipRect.height - TOOLTIP_OFFSET;
+        top = viewportHeight - tooltipRect.height - offset;
       }
     }
 
@@ -158,7 +164,7 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
         const newPos = calculateForPlacement(newPlacement);
         left = newPos.l;
       } else {
-        left = TOOLTIP_OFFSET;
+        left = offset;
       }
     }
 
@@ -172,12 +178,12 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
         const newPos = calculateForPlacement(newPlacement);
         left = newPos.l;
       } else {
-        left = viewportWidth - tooltipRect.width - TOOLTIP_OFFSET;
+        left = viewportWidth - tooltipRect.width - offset;
       }
     }
 
     setPosition({ top, left });
-  }, [placement]);
+  }, [placement, offset]);
 
   useEffect(() => {
     if (isOpen) {
@@ -267,8 +273,8 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
               'overflow-hidden rounded-tr-lg max-w-96',
               classNames?.toolTipContainer,
             )}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={keepOnHover ? handleMouseEnter : undefined}
+            onMouseLeave={keepOnHover ? handleMouseLeave : undefined}
           >
             <div className={cn('h-1 bg-[#FDFA85]', classNames?.topBorder)} />
             <motion.div

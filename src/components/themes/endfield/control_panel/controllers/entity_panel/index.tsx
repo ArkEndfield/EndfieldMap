@@ -1,8 +1,12 @@
 import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import type { ControlPanelProps } from '@/components/themes/types/control_panel';
+import EntityGroup from './group';
+import EntityItem from './item';
+import { Search } from './search';
 
 interface EntityItemInfo extends EntityInfoItemData {
   markedCount: number;
@@ -21,6 +25,9 @@ interface CategoryInfo {
  * 显示当前地图的所有实体，支持按分类显示/隐藏
  */
 const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
+  const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState('');
+
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
   const entities = adapter.entityController.currentEntityInfoList;
   const currentMap = adapter.currentMapIndex;
@@ -29,10 +36,28 @@ const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
   const categorizedEntities = useMemo<CategoryInfo[]>(() => {
     if (!entities.length) return [];
 
+    const lowerSearchQuery = searchQuery.toLowerCase().trim();
+
     // 构建实体信息映射
     const entityInfoMap = new Map<string, EntityItemInfo>();
 
     entities.forEach((entity) => {
+      // 如果有搜索条件，进行过滤
+      if (lowerSearchQuery) {
+        const entityIdKey = entity.entityDataIdKey.toLowerCase();
+        const translatedEntityName = String(t(entity.entityDataIdKey as never)).toLowerCase();
+        const category = entity.category.toLowerCase();
+        const translatedCategory = String(t(entity.category as never)).toLowerCase();
+
+        const matches =
+          entityIdKey.includes(lowerSearchQuery) ||
+          translatedEntityName.includes(lowerSearchQuery) ||
+          category.includes(lowerSearchQuery) ||
+          translatedCategory.includes(lowerSearchQuery);
+
+        if (!matches) return;
+      }
+
       entityInfoMap.set(entity.entityDataIdKey, entity);
     });
 
@@ -66,7 +91,7 @@ const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
     result.sort((a, b) => a.category.localeCompare(b.category));
 
     return result;
-  }, [entities]);
+  }, [entities, searchQuery, t]);
 
   // 切换分类显示/隐藏
   const handleCategoryClick = (category: string, allDisplayed: boolean) => {
@@ -81,66 +106,40 @@ const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
     return <div className="p-4 text-gray-500">初始化中...</div>;
   }
 
-  if (!categorizedEntities.length) {
-    return <div className="p-4 text-gray-500">加载中...</div>;
-  }
-
   return (
-    <div className="px-4 space-y-4">
-      {categorizedEntities.map((categoryInfo) => (
-        <div key={categoryInfo.category} className="space-y-2">
-          {/* 分类标题 */}
-          <button
-            onClick={() => handleCategoryClick(categoryInfo.category, categoryInfo.allDisplayed)}
-            className={`w-full text-left px-3 py-2 rounded-lg font-semibold text-sm transition-colors ${
-              categoryInfo.allDisplayed
-                ? 'bg-blue-500 text-white hover:bg-blue-600'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="truncate">{categoryInfo.category}</span>
-              <span className="ml-2 text-xs font-normal whitespace-nowrap">
-                {categoryInfo.displayedEntities}/{categoryInfo.totalEntities}
-              </span>
-            </div>
-          </button>
+    <div className="space-y-4">
+      {/* 搜索输入框 */}
+      <div className="px-2 pt-1">
+        <Search
+          value={searchQuery}
+          onValueChange={(v) => setSearchQuery(v)}
+          placeholder="搜索实体..."
+        />
+      </div>
 
+      {categorizedEntities.map((categoryInfo) => (
+        <EntityGroup
+          key={categoryInfo.category}
+          title={categoryInfo.category}
+          subtitle={categoryInfo.category}
+          onIconClick={() => handleCategoryClick(categoryInfo.category, categoryInfo.allDisplayed)}
+          iconColor={categoryInfo.allDisplayed ? '#f9f853' : '#ffffff'}
+        >
+          {/* {categoryInfo.displayedEntities}/{categoryInfo.totalEntities} */}
           {/* 实体列表 */}
-          <div className="space-y-1 pl-2">
+          <div className='grid grid-cols-2'>
             {categoryInfo.entities.map((entity) => (
-              <button
+              <EntityItem
                 key={entity.entityDataIdKey}
-                onClick={() => adapter?.entityController.toggleEntityVisible(entity.entityDataIdKey)}
-                className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
-                  entity.visible
-                    ? 'bg-green-50 text-green-800 border border-green-200 hover:bg-green-100'
-                    : 'bg-gray-50 text-gray-500 border border-gray-200 hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="truncate flex-1">{entity.entityInfo.pic}</span>
-                  <div className="flex items-center gap-2 whitespace-nowrap">
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded ${
-                        entity.markedCount === entity.count
-                          ? 'bg-blue-100 text-blue-700'
-                          : entity.markedCount > 0
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-gray-100 text-gray-600'
-                      }`}
-                    >
-                      {entity.markedCount}/{entity.count}
-                    </span>
-                    <span className={`text-xs font-medium ${entity.visible ? 'text-green-600' : 'text-gray-400'}`}>
-                      {entity.visible ? '显示' : '隐藏'}
-                    </span>
-                  </div>
-                </div>
-              </button>
+                entity={entity}
+                category={categoryInfo.category}
+                active={entity.visible}
+                onClick={() => adapter.entityController.toggleEntityVisible(entity.entityDataIdKey)}
+                hideCount={false}
+              />
             ))}
           </div>
-        </div>
+        </EntityGroup>
       ))}
     </div>
   );

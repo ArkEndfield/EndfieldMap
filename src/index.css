@@ -22,3 +22,20 @@
   box-sizing: border-box;
   border-radius: 2px;
 }
+
+/* 3D rotation animation for location marker */
+@keyframes rotate3d {
+  0% {
+    transform: perspective(800px) rotateY(0deg);
+  }
+  50% {
+    transform: perspective(800px) rotateY(180deg);
+  }
+  100% {
+    transform: perspective(800px) rotateY(360deg);
+  }
+}
+
+.animate-rotate3d {
+  animation: rotate3d 4s linear infinite;
+}

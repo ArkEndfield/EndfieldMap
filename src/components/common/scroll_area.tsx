@@ -399,7 +399,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       {showBarY && (
         <div
           className={cn(
-            'right-1 pl-1 top-0 bottom-0 flex flex-col gap-0.5 transition-opacity duration-300',
+            'right-1 pl-1 top-0 bottom-0 flex flex-col gap-0.5 transition-opacity duration-300 z-5',
             scrollBarPlacementStyle === 'block' ? 'relative' : 'absolute',
             isVisible ? 'opacity-100' : 'opacity-0',
             !canScrollY && 'opacity-50 pointer-events-none',
@@ -508,7 +508,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       {showBarX && (
         <div
           className={cn(
-            'left-0 right-0 bottom-1 pt-1 flex flex-row transition-opacity duration-300',
+            'left-0 right-0 bottom-1 pt-1 flex flex-row transition-opacity duration-300 z-5',
             scrollBarPlacementStyle === 'block' ? 'relative' : 'absolute',
             isVisible ? 'opacity-100' : 'opacity-0',
             !canScrollX && 'opacity-50 pointer-events-none',

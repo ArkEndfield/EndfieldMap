@@ -51,7 +51,7 @@ function EndfieldMap() {
   return (
     <div className="relative w-screen h-screen">
       {/* 地图容器 */}
-      <div ref={container} className="w-full h-full"></div>
+      <div ref={container} className="fixed w-full h-full"></div>
 
       {/* 控制组件 */}
       {adapter && <Controllers adapter={adapter} />}
