@@ -47,14 +47,11 @@ class AlertFullManager {
           {...props}
           open={open}
           onOpenChange={(newOpen) => {
-            if (newOpen === currentOpen) return;
-            currentOpen = newOpen;
-            if (!newOpen) {
-              // Re-render with open=false to trigger exit animation
-              if (!isDestroying) {
-                isDestroying = true;
-                render(false, currentConfig);
-              }
+            if (!newOpen && currentOpen && !isDestroying) {
+              currentOpen = false;
+              isDestroying = true;
+              // Trigger close animation
+              render(false, currentConfig);
               // Wait for animation to complete before cleanup
               setTimeout(() => {
                 cleanup();
@@ -69,7 +66,8 @@ class AlertFullManager {
 
     const instance: AlertFullInstance = {
       destroy: () => {
-        if (isDestroying) return;
+        if (isDestroying || !currentOpen) return;
+        currentOpen = false;
         isDestroying = true;
         // Trigger close animation by setting open to false
         render(false, currentConfig);

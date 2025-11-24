@@ -42,13 +42,11 @@ class AlertManager {
           {...props}
           open={open}
           onOpenChange={(newOpen) => {
-            if (newOpen === currentOpen) return;
-            currentOpen = newOpen;
-            if (!newOpen) {
-              if (!isDestroying) {
-                isDestroying = true;
-                render(false, currentConfig);
-              }
+            if (!newOpen && currentOpen && !isDestroying) {
+              currentOpen = false;
+              isDestroying = true;
+              // Trigger close animation
+              render(false, currentConfig);
               setTimeout(() => {
                 cleanup();
                 // TODO: 等待动画
@@ -63,7 +61,8 @@ class AlertManager {
 
     const instance: AlertInstance = {
       destroy: () => {
-        if (isDestroying) return;
+        if (isDestroying || !currentOpen) return;
+        currentOpen = false;
         isDestroying = true;
         // Trigger close animation by setting open to false
         render(false, currentConfig);
