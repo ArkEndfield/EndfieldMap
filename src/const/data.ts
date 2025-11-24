@@ -1,1 +1,1 @@
-export const THROTTLE_INTERVAL = 1000;
+export const DEBOUNCE_INTERVAL = 1000;

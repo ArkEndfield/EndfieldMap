@@ -1,5 +1,5 @@
 import type { StorageData, EntityVisibility, FeatureMarked, MapIndex, EntityData } from '@endfieldmap/map-core';
-import { StorageKey, throttle, type StorageManager } from '@endfieldmap/tools';
+import { StorageKey, debounce, type StorageManager } from '@endfieldmap/tools';
 
 /**
  * 实体数据管理器
@@ -8,7 +8,7 @@ export class EntityDataService {
   public entityVisibilityData: StorageData<EntityVisibility> = {};
   public featureMarkedData: StorageData<FeatureMarked> = {};
   private storage: StorageManager;
-  private THROTTLE_INTERVAL = 1000;
+  private DEBOUNCE_INTERVAL = 1000;
 
   constructor(storage: StorageManager) {
     this.storage = storage;
@@ -31,7 +31,7 @@ export class EntityDataService {
       this.entityVisibilityData[mapIndex] = {};
     }
     this.entityVisibilityData[mapIndex][entityDataIdKey] = visible;
-    this.saveEntityVisibilityToStorageThrottled();
+    this.saveEntityVisibilityToStorageDebounced();
   }
 
   public updateFeatureMarked(mapIndex: MapIndex, levelLogicId: EntityData['levelLogicId'], marked: boolean) {
@@ -39,7 +39,7 @@ export class EntityDataService {
       this.featureMarkedData[mapIndex] = {};
     }
     this.featureMarkedData[mapIndex][levelLogicId] = marked;
-    this.saveFeatureMarkedToStorageThrottled();
+    this.saveFeatureMarkedToStorageDebounced();
   }
 
   public async saveEntityVisibilityToStorage() {
@@ -50,11 +50,11 @@ export class EntityDataService {
     return await this.storage.permanentSet(StorageKey.MARKED_FEATURES, this.featureMarkedData);
   }
 
-  get saveEntityVisibilityToStorageThrottled() {
-    return throttle(this.saveEntityVisibilityToStorage.bind(this), this.THROTTLE_INTERVAL);
+  get saveEntityVisibilityToStorageDebounced() {
+    return debounce(this.saveEntityVisibilityToStorage.bind(this), this.DEBOUNCE_INTERVAL);
   }
 
-  get saveFeatureMarkedToStorageThrottled() {
-    return throttle(this.saveFeatureMarkedToStorage.bind(this), this.THROTTLE_INTERVAL);
+  get saveFeatureMarkedToStorageDebounced() {
+    return debounce(this.saveFeatureMarkedToStorage.bind(this), this.DEBOUNCE_INTERVAL);
   }
 }

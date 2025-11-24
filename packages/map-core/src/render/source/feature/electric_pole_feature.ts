@@ -79,9 +79,16 @@ export class ElectricPoleFeature extends MapFeature {
    */
   @action
   public clearConnectionFrom() {
-    this.connectionEntityFeatures.from?.clearConnectionTo();
-    this.connectionEntityFeatures.from = null;
-    this.notifyElectricPoleChanged();
+    const fromPole = this.connectionEntityFeatures.from;
+    if (fromPole) {
+      // 清除对方的 to 引用和连线，但不触发递归
+      fromPole.data.properties.connectTo = null;
+      fromPole.connectionEntityFeatures.to = null;
+      fromPole.connectionFeature.clearTo();
+      // 清除当前的 from 引用
+      this.connectionEntityFeatures.from = null;
+      this.notifyElectricPoleChanged();
+    }
   }
 
   /**
@@ -89,10 +96,16 @@ export class ElectricPoleFeature extends MapFeature {
    */
   @action
   public clearConnectionTo() {
-    this.data.properties.connectTo = null;
-    this.connectionEntityFeatures.to = null;
-    this.connectionFeature.clearTo();
-    this.notifyElectricPoleChanged();
+    const toPole = this.connectionEntityFeatures.to;
+    if (toPole) {
+      // 清除对方的 from 引用
+      toPole.connectionEntityFeatures.from = null;
+      // 清除当前的 to 引用和连线
+      this.data.properties.connectTo = null;
+      this.connectionEntityFeatures.to = null;
+      this.connectionFeature.clearTo();
+      this.notifyElectricPoleChanged();
+    }
   }
 
   /**

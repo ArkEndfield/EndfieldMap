@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { throttle } from '@endfieldmap/tools';
-import { cn } from '../../utils/style';
+import { debounce } from '@endfieldmap/tools';
+import { cn } from '@/utils/style';
 
 type ScrollbarVisibility = 'hidden' | 'auto' | 'scrollbar';
 
@@ -131,12 +131,12 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
     });
   }, []);
 
-  // 节流版本的更新函数
-  const throttledUpdateScrollStateRef = useRef<(() => void) | null>(null);
+  // 防抖版本的更新函数
+  const debouncedUpdateScrollStateRef = useRef<(() => void) | null>(null);
 
   // 处理滚动事件
   const handleScroll = useCallback(() => {
-    throttledUpdateScrollStateRef.current?.();
+    debouncedUpdateScrollStateRef.current?.();
 
     if (onScroll && contentRef.current) {
       onScroll({
@@ -327,11 +327,8 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
 
   // 初始化和更新
   useEffect(() => {
-    // 创建节流函数
-    throttledUpdateScrollStateRef.current = throttle(updateScrollState, 16, {
-      leading: true,
-      trailing: true,
-    }) as () => void;
+    // 创建防抖函数
+    debouncedUpdateScrollStateRef.current = debounce(updateScrollState, 16) as () => void;
 
     // 立即更新一次
     updateScrollState();
@@ -341,14 +338,14 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
     const rafId = requestAnimationFrame(updateScrollState);
 
     const resizeObserver = new ResizeObserver(() => {
-      // 立即更新一次，不节流
+      // 立即更新一次，不防抖
       updateScrollState();
-      // 再用节流版本更新一次，处理连续变化
-      throttledUpdateScrollStateRef.current?.();
+      // 再用防抖版本更新一次，处理连续变化
+      debouncedUpdateScrollStateRef.current?.();
     });
 
     const mutationObserver = new MutationObserver(() => {
-      throttledUpdateScrollStateRef.current?.();
+      debouncedUpdateScrollStateRef.current?.();
     });
 
     if (contentRef.current) {

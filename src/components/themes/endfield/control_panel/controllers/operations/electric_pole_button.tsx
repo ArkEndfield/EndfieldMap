@@ -18,13 +18,8 @@ export const ElectricPoleButton = observer(
     }, [portalRef]);
 
     const onToggle = () => {
-      if (!open) {
-        if (dataService.electricPoleDataService.isConnecting) {
-          dataService.electricPoleDataService.stopCreateElectricPole();
-        }
-        if (dataService.electricPoleDataService.isCreating) {
-          dataService.electricPoleDataService.stopConnectElectricPole();
-        }
+      if (dataService.electricPoleDataService.isInElectricOperateMode) {
+        dataService.electricPoleDataService.stopAllOperation();
       }
       setOpen(!open);
     };

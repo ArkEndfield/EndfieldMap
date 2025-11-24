@@ -6,7 +6,7 @@ import { Cluster } from 'ol/source';
 import { action, observable } from 'mobx';
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { EntityDataList, EntityInfoData } from '@endfieldmap/map-core/types';
-import { throttle } from '@endfieldmap/tools';
+import { debounce } from '@endfieldmap/tools';
 
 export interface EntityFeatureConfig extends BaseSourceConfig {
   mapIndex: MapIndex;
@@ -38,8 +38,8 @@ export class SingleEntitySource extends SourceBase<MapFeature, EntityFeatureConf
 export class ClusterEntitySource extends SingleEntitySource {
   /** clusterSource */
   @observable accessor clusterSource: Cluster;
-  /** 节流的聚合更新函数 */
-  private throttledClusterUpdate: () => void;
+  /** 防抖的聚合更新函数 */
+  private debouncedClusterUpdate: () => void;
 
   constructor(config: EntityFeatureConfig) {
     super(config);
@@ -49,18 +49,17 @@ export class ClusterEntitySource extends SingleEntitySource {
       distance: this.config.clusterOptions?.distance ?? DEFAULT_CLUSTER_DISTANCE,
     });
 
-    // 创建节流函数，约60fps (16ms)
-    this.throttledClusterUpdate = throttle(
+    // 创建防抖函数，16ms延迟
+    this.debouncedClusterUpdate = debounce(
       () => {
         this.clusterSource.changed();
       },
-      16,
-      { leading: false, trailing: true }
+      16
     );
 
     // 为每个MapFeature设置onChange回调
     this.features.forEach((feature) => {
-      feature.setOnChange(this.throttledClusterUpdate);
+      feature.setOnChange(this.debouncedClusterUpdate);
     });
   }
 
@@ -71,7 +70,7 @@ export class ClusterEntitySource extends SingleEntitySource {
   @action
   public addFeature(feature: MapFeature) {
     super.addFeature(feature);
-    feature.setOnChange(this.throttledClusterUpdate);
+    feature.setOnChange(this.debouncedClusterUpdate);
   }
 
   /**
@@ -81,6 +80,6 @@ export class ClusterEntitySource extends SingleEntitySource {
   @action
   public removeFeature(feature: MapFeature) {
     super.removeFeature(feature);
-    feature.setOnChange(this.throttledClusterUpdate);
+    feature.setOnChange(this.debouncedClusterUpdate);
   }
 }

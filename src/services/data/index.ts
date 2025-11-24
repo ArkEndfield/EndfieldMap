@@ -11,13 +11,13 @@ import {
   MapIndex,
   type DataState,
   type Coordinate,
-  throttle,
   StorageManager,
   JSONLoader,
+  debounce,
 } from '@endfieldmap/tools';
 import { EntityDataService } from '@/services/data/entity';
 import { ElectricPoleDataService } from '@/services/data/electric_pole';
-import { THROTTLE_INTERVAL } from '@/const/data';
+import { DEBOUNCE_INTERVAL } from '@/const/data';
 import { ItemDataService } from '@/services/data/item';
 import { DungeonSeriesDataService } from '@/services/data/dungeon_series';
 import { ChestRewardDataService } from '@/services/data/chest_reward';
@@ -104,25 +104,25 @@ class DataService {
 
     this.adapter.event.on(
       MAP_EVENT.ZOOM_CHANGE,
-      throttle((zoom: number) => {
+      debounce((zoom: number) => {
         const currentMap = this.adapter!.currentMapIndex;
         this.setMapZoom(currentMap, zoom);
-      }, THROTTLE_INTERVAL)
+      }, DEBOUNCE_INTERVAL)
     );
 
     this.adapter.event.on(
       MAP_EVENT.MAP_CENTER_CHANGE,
-      throttle((center?: Coordinate) => {
+      debounce((center?: Coordinate) => {
         if (!center) return;
         const currentMap = this.adapter!.currentMapIndex;
         this.setMapCenter(currentMap, center);
-      }, THROTTLE_INTERVAL)
+      }, DEBOUNCE_INTERVAL)
     );
 
     // 监听电线杆数据变化事件，自动保存到当前预设（节流）
-    this.adapter.event.on(MAP_EVENT.ELECTRIC_POLE_CHANGED, () => {
-      this.electricPoleDataService.saveCurrentAdapterDataToStorageThrottled();
-    });
+    this.adapter.event.on(MAP_EVENT.ELECTRIC_POLE_CHANGED, debounce(() => {
+      this.electricPoleDataService.saveCurrentAdapterDataToStorage();
+    }, DEBOUNCE_INTERVAL));
   }
 
   public setMapCenter(mapIndex: MapIndex, center: Coordinate) {

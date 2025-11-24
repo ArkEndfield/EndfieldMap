@@ -6,7 +6,7 @@ import { ELECTRIC_ZONE_RADIUS, ElectricPoleIdKey, type MapIndex } from '@endfiel
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
 import { computed } from 'mobx';
 import { Coordinate } from 'ol/coordinate';
-import { crd2xyz, logger } from '@endfieldmap/tools';
+import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
@@ -56,7 +56,6 @@ export class ElectricPoleController {
 
     entityLayer.entity.features.forEach((feature) => {
       connectionLayer.addFeature(feature.connectionFeature);
-      zoneLayer.addZone(feature.data);
     });
 
     this.entityLayer.set(mapIndex, entityLayer);
@@ -249,6 +248,25 @@ export class ElectricPoleController {
    */
   public createElectricPoleEntity(mapIndex: MapIndex, position: Coordinate) {
     const xyzPosition = crd2xyz(position, mapIndex);
+    
+    // 检查半径 0.1 范围内是否已存在电线杆
+    const entityLayer = this.entityLayer.get(mapIndex);
+    if (entityLayer) {
+      const features = entityLayer.entity.features.getArray();
+      // TODO: 电线杆创建距离限制
+      const duplicateRadius = 10;
+      
+      for (const feature of features) {
+        const existingPos = feature.data.position;
+        const distance = calculateXYZDistance(xyzPosition, existingPos);
+
+        if (distance < duplicateRadius) {
+          // TODO: i18n
+          throw new Error(`[ElectricPoleController|createElectricPoleEntity] duplicate electric pole at ${position} (distance: ${distance})`)
+        }
+      }
+    }
+    
     const data: ElectricPoleData = {
       levelLogicId: this.generateLevelLogicId(),
       entityDataIdKey: ElectricPoleIdKey,
