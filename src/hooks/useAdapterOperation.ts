@@ -34,6 +34,7 @@ export function useAdapterOperation(adapter: EndfieldMapAdapter) {
       adapter.renderElectricPole(currentMap);
       // 设置地图中心
       adapter.mapController.setCenter(data.center);
+      dataService.electricPoleDataService.stopAllOperation();
     }
   };
 

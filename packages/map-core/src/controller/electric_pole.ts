@@ -4,7 +4,7 @@ import { ElectricPoleZoneLayer } from '@endfieldmap/map-core/render/layers/elect
 import type { ElectricPoleData, ElectricPoleDataList, ElectricPoleMapData } from '@endfieldmap/map-core/types';
 import { ELECTRIC_ZONE_RADIUS, ElectricPoleIdKey, type MapIndex } from '@endfieldmap/map-core/const/map';
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
-import { computed } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { Coordinate } from 'ol/coordinate';
 import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
@@ -22,6 +22,7 @@ export class ElectricPoleController {
   public imagePath: string;
   public layerContainer: MultiLayerContainer | null = null;
   private currentMapIndex?: MapIndex;
+  @observable accessor zoneVisible: boolean = true;
 
   constructor(config: ElectricPoleControllerConfig) {
     this.imagePath = config.imagePath;
@@ -61,6 +62,10 @@ export class ElectricPoleController {
     this.entityLayer.set(mapIndex, entityLayer);
     this.connectionLayer.set(mapIndex, connectionLayer);
     this.zoneLayer.set(mapIndex, zoneLayer);
+    
+    // 应用当前的 zone 可见性设置
+    zoneLayer.setVisible(this.zoneVisible);
+    
     // 初始化时，根据数据中的 connections 信息补全连接状态与连线几何
     this.syncAllElectricPoleConnections(mapIndex);
     if (notifyChange) {
@@ -394,5 +399,23 @@ export class ElectricPoleController {
     mapEventEmitter.fire(MAP_EVENT.ELECTRIC_POLE_CHANGED, {
       mapIndex: this.currentMapIndex ?? null,
     });
+  }
+
+  /**
+   * 设置所有地图的 zone 图层可见性
+   */
+  @action
+  public setZoneVisible(visible: boolean) {
+    this.zoneVisible = visible;
+    this.zoneLayer.forEach((layer) => {
+      layer.setVisible(visible);
+    });
+  }
+
+  /**
+   * 切换 zone 图层可见性
+   */
+  public toggleZoneVisible() {
+    this.setZoneVisible(!this.zoneVisible);
   }
 }

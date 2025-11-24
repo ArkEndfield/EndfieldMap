@@ -50,9 +50,24 @@ export class ElectricPoleZoneLayer extends SingleLayerBase {
       }),
       renderBuffer: config.renderBuffer ?? 250,
       zIndex: 3, // 电线杆范围图层
+      visible: true,
     });
 
     this.layer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
+  }
+
+  /**
+   * 设置图层可见性
+   */
+  public setVisible(visible: boolean) {
+    this.layer.setVisible(visible);
+  }
+
+  /**
+   * 获取图层可见性
+   */
+  public getVisible(): boolean {
+    return this.layer.getVisible();
   }
 
   /**

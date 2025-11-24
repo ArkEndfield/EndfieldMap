@@ -5,6 +5,7 @@ import { HeaderLogo } from '@/components/common/header_logo';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { Operations } from './controllers/operations';
 import { useRef } from 'react';
+import { Filters } from './controllers/filters';
 
 const TopDeco = () => (
   <div
@@ -32,6 +33,7 @@ export default function PCControlPanel({ adapter }: ControlPanelProps) {
         </div>
         <div className='px-3 overflow-hidden shrink-0 grow-0'>
           <Operations adapter={adapter} portalRef={portalRef} />
+          <Filters adapter={adapter} />
         </div>
         <div className='flex-1 relative overflow-hidden' ref={portalRef}>
           <ScrollArea className="w-full h-full">

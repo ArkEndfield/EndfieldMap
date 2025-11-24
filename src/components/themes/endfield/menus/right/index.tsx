@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { MapButton } from './button';
-import { MapIndex } from '@endfieldmap/tools';
+import { LocalStorageDB, LocalStorageKey, MapIndex } from '@endfieldmap/tools';
 import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { useAdapterOperation } from '@/hooks/useAdapterOperation';
 import { createPortal } from 'react-dom';
@@ -23,6 +23,7 @@ export const RightMenu = ({ adapter }: { adapter: EndfieldMapAdapter }) => {
 
   const changeMap = (mapIndex: MapIndex) => {
     renderMap(mapIndex);
+    LocalStorageDB.set<MapIndex>(LocalStorageKey.MAP_CURRENT_MAP, mapIndex);
     setShowPopover(false);
     setShowChangeAnimation(true);
 

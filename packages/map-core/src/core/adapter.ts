@@ -143,6 +143,8 @@ export class EndfieldMapAdapter {
   public renderMap(mapIndex: MapIndex) {
     this.currentMapIndex = mapIndex;
     this.mapLayerController.renderMap(mapIndex);
+    this.activeFeatureController.clearActiveFeature();
+    this.mapController.selection.stopSelecting();
   }
 
   /**
