@@ -1,5 +1,5 @@
 import type { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
+import type { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { Feature, Map as OlMap, MapBrowserEvent, MapEvent } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
@@ -37,10 +37,23 @@ export interface EntityContextMenuEventDetail {
   event: MapContextMenuEventDetail;
 }
 
+export interface ConnectionClickEventDetail {
+  feature: FeatureLike;
+  instance: ConnectionFeature;
+  layer: ElectricPoleConnectionLayer;
+  event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+}
+
 export interface ConnectionContextMenuEventDetail {
   feature: FeatureLike;
   layer: ElectricPoleConnectionLayer;
   event: MapContextMenuEventDetail;
+}
+
+export interface HoverConnectionChangeEventDetail {
+  oldFeature: FeatureLike | null;
+  newFeature: FeatureLike | null;
+  layer: ElectricPoleConnectionLayer | null;
 }
 
 export interface FeatureSelectEventDetail {
@@ -97,11 +110,13 @@ export interface MapEventEmitter {
   [MAP_EVENT.CLUSTER_CLICK]: ClusterEventDetail;
   [MAP_EVENT.ENTITY_CLICK]: EntityEventDetail;
   [MAP_EVENT.ENTITY_CONTEXT_MENU]: EntityContextMenuEventDetail;
+  [MAP_EVENT.CONNECTION_CLICK]: ConnectionClickEventDetail;
+  [MAP_EVENT.CONNECTION_CONTEXT_MENU]: ConnectionContextMenuEventDetail;
   [MAP_EVENT.ENTITY_VISIBILITY_CHANGE]: EntityVisibilityChangeEventDetail;
   [MAP_EVENT.ACTIVE_FEATURE_CHANGE]: ActiveFeatureChangeEventDetail;
   [MAP_EVENT.HOVER_FEATURE_CHANGE]: HoverFeatureChangeEventDetail;
+  [MAP_EVENT.HOVER_CONNECTION_CHANGE]: HoverConnectionChangeEventDetail;
   [MAP_EVENT.SELECTION_START]: void;
-  [MAP_EVENT.CONNECTION_CONTEXT_MENU]: ConnectionContextMenuEventDetail;
   [MAP_EVENT.ELECTRIC_POLE_CHANGED]: ElectricPoleChangedEventDetail;
 }
 

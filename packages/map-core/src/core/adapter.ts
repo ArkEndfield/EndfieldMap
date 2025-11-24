@@ -87,6 +87,7 @@ export class EndfieldMapAdapter {
       {
         getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
         getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
+        getConnectionLayer: () => this.electricPoleController?.currentConnectionLayer || null,
       }
     );
     this.eventManager = new EndfieldMapEvent(this.mapController.mapRenderer.map, this.mapController.mapRenderer.view);

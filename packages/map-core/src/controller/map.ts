@@ -5,8 +5,10 @@ import { EndfieldMap } from '@endfieldmap/map-core/render/map';
 import type { MapConfig } from '@endfieldmap/map-core/types/map';
 import type { Coordinate } from 'ol/coordinate';
 import { HoverFeatureController } from '@endfieldmap/map-core/controller/hover_feature';
+import { HoverConnectionController } from '@endfieldmap/map-core/controller/hover_connection';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
 
 export interface MapControllerConfig {
   mapConfig: Omit<MapConfig, 'mapImageUrl'>;
@@ -16,11 +18,13 @@ export interface MapControllerConfig {
 export interface MapControllerDependencies {
   getEntityLayers: () => CommonPointEntityLayer[];
   getElectricPoleLayers: () => ElectricPoleEntityLayer[];
+  getConnectionLayer: () => ElectricPoleConnectionLayer | null;
 }
 
 export class MapController {
   public mapRenderer: EndfieldMap;
   public hoverFeatureController: HoverFeatureController;
+  public hoverConnectionController: HoverConnectionController;
 
   constructor(config: MapControllerConfig, dependencies?: MapControllerDependencies) {
     const { mapConfig, asset } = config;
@@ -32,6 +36,10 @@ export class MapController {
       getEntityLayers: dependencies?.getEntityLayers || (() => []),
       getElectricPoleLayers: dependencies?.getElectricPoleLayers || (() => []),
       disableHoverFeature: mapConfig.disableHoverFeature,
+    });
+    this.hoverConnectionController = new HoverConnectionController({
+      getConnectionLayer: dependencies?.getConnectionLayer || (() => null),
+      disableHoverConnection: mapConfig.disableHoverFeature,
     });
     this.registerEventHandler();
   }
@@ -73,6 +81,7 @@ export class MapController {
    */
   public setHoverFeatureEnable(enable: boolean) {
     this.hoverFeatureController.setEnable(enable);
+    this.hoverConnectionController.setEnable(enable);
   }
 
   /**
@@ -80,5 +89,6 @@ export class MapController {
    */
   public dispose() {
     this.hoverFeatureController.dispose();
+    this.hoverConnectionController.dispose();
   }
 }

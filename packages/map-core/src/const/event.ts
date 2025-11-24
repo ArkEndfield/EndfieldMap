@@ -12,10 +12,12 @@ export const MAP_EVENT = {
   CLUSTER_CLICK: 'cluster:click',
   ENTITY_CLICK: 'entity:click',
   ENTITY_CONTEXT_MENU: 'entity:context_menu',
+  CONNECTION_CLICK: 'connection:click',
   CONNECTION_CONTEXT_MENU: 'connection:context_menu',
   ENTITY_VISIBILITY_CHANGE: 'entity:visibility:change',
   ACTIVE_FEATURE_CHANGE: 'active:feature:change',
   HOVER_FEATURE_CHANGE: 'hover:feature:change',
+  HOVER_CONNECTION_CHANGE: 'hover:connection:change',
   SELECTION_START: 'selection:start',
   ELECTRIC_POLE_CHANGED: 'electric_pole:changed',
 } as const;

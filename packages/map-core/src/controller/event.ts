@@ -4,7 +4,7 @@ import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import { boundingExtent } from 'ol/extent';
-import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
+import type { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
 import {
   hitTestEntitiesAt,
@@ -44,7 +44,23 @@ export class EventController {
         entityLayers
       );
 
-      if (allClickedFeatures.length === 0) return;
+      // 如果没有命中实体，尝试命中电线连接
+      if (allClickedFeatures.length === 0) {
+        const connectionLayer = this.electricPoleController.currentConnectionLayer;
+        if (!connectionLayer || !connectionLayer.layer.getVisible()) return;
+
+        const clickedFeatures = await connectionLayer.layer.getFeatures(event.pixel as [number, number]);
+        if (clickedFeatures.length === 0) return;
+        const feature = clickedFeatures[0];
+        const instance = feature.get(EntityInstanceKey) as ConnectionFeature;
+        mapEventEmitter.fire(MAP_EVENT.CONNECTION_CLICK, {
+          feature: feature,
+          instance,
+          layer: connectionLayer as ElectricPoleConnectionLayer,
+          event,
+        });
+        return;
+      }
 
       // 选择最上层的 layer（基于 z-index 和添加顺序）
       const selectedLayerFeatures = selectTopmostHitResult(allClickedFeatures);

@@ -4,7 +4,7 @@ import type {
   ElectricPolePreset,
   ElectricPolePresetExportBundle,
 } from '@eftypes/electric_pole';
-import type { ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
+import type { ElectricPoleConnectionFeature, ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { ElectricPoleIdKey, MAP_EVENT } from '@endfieldmap/map-core';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import { logger, MapIndex, StorageKey, type StorageManager } from '@endfieldmap/tools';
@@ -45,7 +45,7 @@ export class ElectricPoleDataService {
   @observable accessor isDeleting: boolean = false;
 
   /** 是否处于删除连线状态 */
-  @observable accessor isDeletingLine: boolean = false;
+  @observable accessor isDeletingConnection: boolean = false;
 
   constructor(storage: StorageManager) {
     this.storage = storage;
@@ -65,6 +65,7 @@ export class ElectricPoleDataService {
     this.applyCurrentPresetToAdapter();
     this.initEntityClickEvent();
     this.initElecticPoleClickEvent();
+    this.initElectricPoleChangeEvent();
   }
 
   // region: 数据处理和获取
@@ -316,22 +317,50 @@ export class ElectricPoleDataService {
   // region: 连线删除
 
   @action
-  public startDeleteLine() {
-    this.isDeletingLine = true;
+  public startDeleteConnection() {
+    this.isDeletingConnection = true;
+    this.initConnectionClickEvent();
   }
 
   @action
-  public stopDeleteLine() {
-    this.isDeletingLine = false;
+  public stopDeleteConnection() {
+    this.isDeletingConnection = false;
   }
 
   @action
-  public toggleDeleteLine() {
-    if (this.isDeletingLine) {
-      this.stopDeleteLine();
+  public toggleDeleteConnnection() {
+    if (this.isDeletingConnection) {
+      this.stopDeleteConnection();
     } else {
-      this.startDeleteLine();
+      this.startDeleteConnection();
     }
+  }
+
+  @action
+  public deleteConnection(connectionFeature: ElectricPoleConnectionFeature) {
+    if (!this.isDeletingConnection) return;
+    // 获取连接的起始电线杆并清除其连接
+    const fromPole = connectionFeature.from as ElectricPoleFeature;
+    if (fromPole) {
+      fromPole.clearConnectionTo();
+    }
+    this.adapter?.mapController.hoverConnectionController.clearHoverConnection();
+  }
+
+  private initConnectionClickEvent() {
+    this.adapter?.event.on(MAP_EVENT.CONNECTION_CLICK, (event) => {
+      if (!this.isDeletingConnection) return;
+      this.deleteConnection(event.instance);
+    });
+  }
+
+  private initElectricPoleChangeEvent() {
+    this.adapter?.event.on(MAP_EVENT.ELECTRIC_POLE_CHANGED, () => {
+      // 当电线杆连接关系发生变化时，自动保存数据
+      this.saveCurrentAdapterDataToStorage().catch((error) => {
+        console.error('Failed to save electric pole data after connection change:', error);
+      });
+    });
   }
 
   // endregion
@@ -511,7 +540,7 @@ export class ElectricPoleDataService {
   // TODO: 更新需要补充
   @computed
   public get isInElectricOperateMode() {
-    return this.isCreating || this.isConnecting || this.isDeleting || this.isDeletingLine;
+    return this.isCreating || this.isConnecting || this.isDeleting || this.isDeletingConnection;
   }
 
   // TODO: 更新需要补充
@@ -520,7 +549,7 @@ export class ElectricPoleDataService {
     this.stopConnectElectricPole();
     this.stopCreateElectricPole();
     this.stopDeleteElectricPole();
-    this.stopDeleteLine();
+    this.stopDeleteConnection();
   }
 
   // region: 预设管理

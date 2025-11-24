@@ -131,12 +131,13 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
     });
   }, []);
 
-  // 防抖版本的更新函数
+  // 防抖版本的更新函数（仅用于 resize/mutation 等非滚动事件）
   const debouncedUpdateScrollStateRef = useRef<(() => void) | null>(null);
 
   // 处理滚动事件
   const handleScroll = useCallback(() => {
-    debouncedUpdateScrollStateRef.current?.();
+    // 滚动时立即更新状态，不使用防抖
+    updateScrollState();
 
     if (onScroll && contentRef.current) {
       onScroll({
@@ -154,7 +155,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
         setIsScrolling(false);
       }, 1000);
     }
-  }, [onScroll, autoHide]);
+  }, [onScroll, autoHide, updateScrollState]);
 
   // 滚动到指定位置
   const scrollTo = useCallback((options: { left?: number; top?: number; smooth?: boolean }) => {

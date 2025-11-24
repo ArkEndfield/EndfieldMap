@@ -14,6 +14,7 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
   const isCreating = dataService.electricPoleDataService.isCreating;
   const isConnecting = dataService.electricPoleDataService.isConnecting;
   const isDeleting = dataService.electricPoleDataService.isDeleting;
+  const isDeletingConnection = dataService.electricPoleDataService.isDeletingConnection;
   const isSelecting = adapter.mapController.selection.isSelecting;
   const isAutoConnect = dataService.electricPoleDataService.autoConnect;
   const onCreate = () => {
@@ -43,6 +44,15 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
     }
     dataService.electricPoleDataService.toggleDeleteElectricPole();
   };
+  const onRemoveConnection = () => {
+    if (!isCreating && isSelecting) {
+      alert.info({
+        content: <div className="text-center">正在处于批量管理状态，请先结束批量管理</div>,
+      });
+      return;
+    }
+    dataService.electricPoleDataService.toggleDeleteConnnection();
+  };
   return (
     <div
       className={cn(
@@ -50,9 +60,10 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
         open ? 'translate-x-0' : '-translate-x-full'
       )}
     >
-      <button onClick={onCreate} disabled={isConnecting || isDeleting}>{isCreating ? '停止创建' : '开始创建'}</button>
-      <button onClick={onConnect} disabled={isCreating || isDeleting}>{isConnecting ? '停止连接' : '开始连接'}</button>
-      <button onClick={onRemove} disabled={isCreating || isConnecting}>{isDeleting ? '停止删除' : '开始删除'}</button>
+      <button onClick={onCreate} disabled={isConnecting || isDeleting || isDeletingConnection}>{isCreating ? '停止创建' : '开始创建'}</button>
+      <button onClick={onConnect} disabled={isCreating || isDeleting || isDeletingConnection}>{isConnecting ? '停止连接' : '开始连接'}</button>
+      <button onClick={onRemove} disabled={isCreating || isConnecting || isDeletingConnection}>{isDeleting ? '停止删除' : '开始删除'}</button>
+      <button onClick={onRemoveConnection} disabled={isCreating || isConnecting || isDeleting}>{isDeletingConnection ? '停止删除连接' : '开始删除连接'}</button>
       <div>
         <input type="checkbox" checked={isAutoConnect} name="isAutoConnect" id="enableAutoConnect" onChange={() => dataService.electricPoleDataService.toggleAutoConnect()} />
         <label htmlFor="enableAutoConnect">
