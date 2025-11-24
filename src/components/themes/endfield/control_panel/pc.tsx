@@ -4,6 +4,7 @@ import EntityPanel from './controllers/entity_panel';
 import { HeaderLogo } from '@/components/common/header_logo';
 import { ScrollArea } from '@/components/common/ScrollArea';
 import { Operations } from './controllers/operations';
+import { useRef } from 'react';
 
 const TopDeco = () => (
   <div
@@ -15,6 +16,8 @@ const TopDeco = () => (
 );
 
 export default function PCControlPanel({ adapter }: ControlPanelProps) {
+  const portalRef = useRef<HTMLDivElement>(null);
+
   return (
     <motion.div
       initial={{ x: '-100%' }}
@@ -27,12 +30,14 @@ export default function PCControlPanel({ adapter }: ControlPanelProps) {
         <div className="pl-8 pr-8 shrink-0 grow-0">
           <HeaderLogo />
         </div>
-        <div className='px-3 overflow-hidden'>
-          <Operations adapter={adapter} />
+        <div className='px-3 overflow-hidden shrink-0 grow-0'>
+          <Operations adapter={adapter} portalRef={portalRef} />
         </div>
-        <ScrollArea className="flex-1">
-          <EntityPanel adapter={adapter} />
-        </ScrollArea>
+        <div className='flex-1 relative overflow-hidden' ref={portalRef}>
+          <ScrollArea className="w-full h-full">
+            <EntityPanel adapter={adapter} />
+          </ScrollArea>
+        </div>
       </div>
     </motion.div>
   );

@@ -131,7 +131,7 @@ const ElectricPolePresetPanel: React.FC<ControlPanelProps> = observer(({ adapter
   };
 
   return (
-    <div className="absolute top-4 left-4 z-50 bg-white/95 backdrop-blur rounded-lg shadow-lg p-3 space-y-2 w-80">
+    <div className="p-3 space-y-2">
       <div className="flex items-center justify-between">
         <div className="text-sm font-semibold text-gray-800">电线杆预设管理</div>
         <button
@@ -142,7 +142,7 @@ const ElectricPolePresetPanel: React.FC<ControlPanelProps> = observer(({ adapter
         </button>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-gray-600">
+      <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-1">
           <input
             type="checkbox"

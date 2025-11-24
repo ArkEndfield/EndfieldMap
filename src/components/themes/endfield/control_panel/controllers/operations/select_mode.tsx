@@ -2,6 +2,7 @@ import { EntityInstanceKey, type EndfieldMapAdapter, type MapFeature } from '@en
 import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
+import { dataService } from '@/services/data';
 
 const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
   const selectedFeatures = adapter.mapController.selection.selectedFeatures;
@@ -34,6 +35,8 @@ const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) =
 export const SelectModeOperation = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
   const isSelecting = adapter.mapController.selection.isSelecting;
   const toggleSelectMode = () => {
+    // TODO: 提示
+    if (!isSelecting && dataService.electricPoleDataService.isCreating) return;
     adapter.mapController.selection.toggleSelecting();
     adapter.activeFeatureController.clearActiveFeature();
   };

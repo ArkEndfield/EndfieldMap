@@ -6,7 +6,7 @@ import type {
 } from '@eftypes/electric_pole';
 import type { ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { MapIndex, StorageKey, throttle, type StorageManager } from '@endfieldmap/tools';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 
 /**
  * 电线杆数据管理器
@@ -15,33 +15,28 @@ export class ElectricPoleDataService {
   private adapter?: EndfieldMapAdapter;
   private storage: StorageManager;
 
-  /**
-   * 是否已经从 Storage 中加载了预设数据
-   */
+  /** 是否已经从 Storage 中加载了预设数据 */
   private storageInitialized: boolean = false;
 
-  /**
-   * 是否已经注册了 adapter
-   */
+  /** 是否已经注册了 adapter */
   private adapterRegistered: boolean = false;
 
-  /**
-   * 预设存储结构
-   */
-  private presetStorage: ElectricPolePresetStorage = {
+  /** 预设存储结构 */
+  @observable accessor presetStorage: ElectricPolePresetStorage = {
     presets: [],
     currentPresetId: null,
   };
 
-  /**
-   * 服务是否完全就绪（已加载存储 + 已注册 adapter）
-   */
+  /** 服务是否完全就绪（已加载存储 + 已注册 adapter） */
   private initialized: boolean = false;
+
+  /** 是否处于创建电线杆状态 */
+  @observable accessor isCreating: boolean = false;
 
   constructor(storage: StorageManager) {
     this.storage = storage;
     // 使用 MobX 使预设相关状态变为可观察，从而驱动 React observer 组件实时更新
-    makeAutoObservable(this);
+    // makeAutoObservable(this);
   }
 
   /**
@@ -57,6 +52,8 @@ export class ElectricPoleDataService {
     // 当 adapter 注册后，如果已经有预设数据，则应用当前预设到地图
     this.applyCurrentPresetToAdapter();
   }
+
+  // region: 数据处理和获取
 
   /**
    * 从 Storage 中初始化电线杆预设数据
@@ -91,22 +88,14 @@ export class ElectricPoleDataService {
   }
 
   /**
-   * 兼容旧方法名，内部调用新的初始化逻辑
-   */
-  public async initDataFromStorage() {
-    return this.initFromStorage();
-  }
-
-  /**
    * 当前是否已经完全初始化完毕
    */
   public get isInitialized() {
     return this.initialized;
   }
 
-  /**
-   * 当前预设列表（只暴露只读信息）
-   */
+  /** 当前预设列表（只暴露只读信息）*/
+  @computed
   public get presetList(): Array<Pick<ElectricPolePreset, 'id' | 'name'>> {
     return this.presetStorage.presets.map((preset) => ({
       id: preset.id,
@@ -114,24 +103,21 @@ export class ElectricPoleDataService {
     }));
   }
 
-  /**
-   * 当前预设 ID
-   */
+  /** 当前预设 ID */
+  @computed
   public get currentPresetId(): string | null {
     return this.presetStorage.currentPresetId;
   }
 
-  /**
-   * 当前预设完整对象
-   */
+  /** 当前预设完整对象 */
+  @computed
   public get currentPreset(): ElectricPolePreset | null {
     if (!this.presetStorage.currentPresetId) return null;
     return this.presetStorage.presets.find((p) => p.id === this.presetStorage.currentPresetId) ?? null;
   }
 
-  /**
-   * 当前预设的电线杆数据
-   */
+  /** 当前预设的电线杆数据 */
+  @computed
   public get currentPresetData(): ElectricPoleMapData | null {
     const preset = this.currentPreset;
     return preset ? preset.data : null;
@@ -199,15 +185,41 @@ export class ElectricPoleDataService {
     return throttle(this.saveCurrentAdapterDataToStorage.bind(this), THROTTLE_INTERVAL);
   }
 
+  // endregion
+
+  // region: 电线杆创建
+
+  /** 开始创建电线杆 */
+  @action
+  public startCreateElectricPole() {
+    this.isCreating = true;
+  }
+
+  /**  结束创建电线杆 */
+  @action
+  public stopCreateElectricPole() {
+    this.isCreating = false;
+  }
+
+  /** 切换创建状态 */
+  @action
+  public toggleCreateElectricPole() {
+    this.isCreating = !this.isCreating;
+  }
+
+  // endregion
+
+  // region: 预设管理
   /**
    * 创建一个新的电线杆预设
    * @param name 预设名称
-   * @param initialData 初始数据，不传则从当前地图数据生成
+   * @param initialData 初始数据，为 true 从当前地图数据生成
    */
-  public async createPreset(name: string, initialData?: ElectricPoleMapData) {
+  public async createPreset(name: string, initialData?: ElectricPoleMapData | boolean) {
     const now = Date.now();
+    const useInitialData = !!initialData && initialData !== true;
     const baseData =
-      initialData ??
+      useInitialData ? initialData : 
       (this.adapter && this.initialized ? this.adapter.electricPoleController.allData : ({} as ElectricPoleMapData));
     const ensuredData = this.ensureMapData(baseData);
 
@@ -341,7 +353,10 @@ export class ElectricPoleDataService {
     if (!this.currentPresetId) return;
     await this.deletePreset(this.currentPresetId);
   }
+  
+  // endregion
 
+  // region: 导入导出预设
   /**
    * 导出指定预设为 JSON 文件
    * - 新结构：ElectricPolePresetExportBundle，内部包含 presets 数组
@@ -413,9 +428,9 @@ export class ElectricPoleDataService {
     await this.savePresetStorage();
   }
 
-  /**
-   * ---------- 内部工具方法 ----------
-   */
+  // endreigon
+
+  // region: 内部工具方法
 
   /**
    * 保证 ElectricPoleMapData 中包含所有已知地图索引
@@ -536,4 +551,5 @@ export class ElectricPoleDataService {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
+  // endregion
 }
