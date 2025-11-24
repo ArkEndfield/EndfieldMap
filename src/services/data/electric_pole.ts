@@ -341,9 +341,10 @@ export class ElectricPoleDataService {
   public async createPreset(name: string, initialData?: ElectricPoleMapData | boolean) {
     const now = Date.now();
     const useInitialData = !!initialData && initialData !== true;
+    const useCurrentData = initialData === true;
     const baseData =
       useInitialData ? initialData : 
-      (this.adapter && this.initialized ? this.adapter.electricPoleController.allData : ({} as ElectricPoleMapData));
+      (this.adapter && this.initialized && useCurrentData ? this.adapter.electricPoleController.allData : ({} as ElectricPoleMapData));
     const ensuredData = this.ensureMapData(baseData);
 
     const newPreset: ElectricPolePreset = {
