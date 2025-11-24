@@ -127,7 +127,7 @@ const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
         >
           {/* {categoryInfo.displayedEntities}/{categoryInfo.totalEntities} */}
           {/* 实体列表 */}
-          <div className='grid grid-cols-2'>
+          <div className='grid grid-cols-2 gap-2 py-2'>
             {categoryInfo.entities.map((entity) => (
               <EntityItem
                 key={entity.entityDataIdKey}

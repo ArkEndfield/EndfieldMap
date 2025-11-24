@@ -108,7 +108,7 @@ export default function EntityGroup({
       {/* Content Container */}
       <div className="bg-[#1d1d1d] -mt-1.5 relative">
         <motion.div
-          className="overflow-hidden px-4 relative"
+          className="overflow-hidden pl-4 pr-2 relative"
           animate={{ height: isOpen ? 'auto' : 0 }}
           transition={{ duration: 0.3 }}
         >

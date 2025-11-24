@@ -56,68 +56,45 @@ const EntityItem = observer(
       <Tooltip
         tooltip={displayName}
         placement="right"
-        offset={-4}
+        offset={0}
         keepOnHover={false}
         as="button"
         asProps={{
           onClick,
           className: cn(
-            'flex items-center relative px-[0.3em] py-[0.5em] relative overflow-hidden select-none cursor-pointer',
-            'before:content-[""] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2',
-            'before:w-0 before:h-[2px] before:bg-[#343434] before:z-0 before:transition-all',
-            active && 'before:w-[0.6em] before:bg-[#fdfb55]',
+            'flex items-center relative overflow-hidden select-none cursor-pointer w-full',
             'filter-[drop-shadow(0_0_0.2em_rgba(0,0,0,0.6))]',
             active && 'filter-[drop-shadow(0_0_0.3em_rgba(253,251,85,0.3))]'
           ),
         }}
       >
-        <div className="w-[2.2em] h-[2.2em] relative z-2 flex justify-center items-center shrink-0">
-          <div
-            className={cn(
-              'w-full h-full bg-[#313131] rounded-full flex justify-center items-center p-[0.4em] relative z-2 overflow-hidden',
-              'shadow-[0_0_0.2em_rgba(0,0,0,0.3),0_0_0_0.15em_#313131_inset,0_0_0_0.25em_#605f5f_inset]',
-              active &&
-                'shadow-[0_0_0.2em_rgba(0,0,0,0.3),0_0_0_0.15em_#313131_inset,0_0_0_0.25em_#313131_inset,0_0_0_0.25em_#fdfb55_inset]',
-              !active && 'hover:shadow-[0_0_0.2em_rgba(0,0,0,0.3),0_0_0_0.15em_#313131_inset,0_0_0_0.25em_#777_inset]',
-              'after:content-[""] after:absolute after:inset-0 after:rounded-full',
-              active && 'after:shadow-[inset_0_0_0.5em_rgba(253,251,85,0.5)]'
-            )}
-          >
-            {children ||
-              (iconSrc && (
-                <img src={iconSrc} alt={String(displayName)} className="w-full h-full rounded-full object-contain" />
-              ))}
-          </div>
-
-          <div
-            className={cn(
-              'absolute top-[-3px] bottom-[-3px] left-[-3px] w-[calc(100%+6px)] rounded-full z-1 opacity-0 transition-opacity -translate-x-1/2',
-              active && 'opacity-100',
-              'before:content-[""] before:absolute before:w-full before:h-full before:rounded-full',
-              'before:border before:border-dashed before:border-[rgba(253,251,85,0.3)]',
-              'before:border-l-2 before:border-l-[rgba(253,251,85,0.6)]',
-              'before:border-r-2 before:border-r-[rgba(253,251,85,0.6)]',
-              'after:content-[""] after:absolute after:w-full after:h-full after:rounded-full after:rotate-45',
-              'after:border after:border-dashed after:border-[rgba(253,251,85,0.3)]',
-              'after:border-t-2 after:border-t-[rgba(253,251,85,0.6)]',
-              'after:border-b-2 after:border-b-[rgba(253,251,85,0.6)]'
-            )}
-          />
-        </div>
-
         <div
           className={cn(
-            'bg-[#1d1d1d] relative z-1 -ml-[1em] rounded-r-full grow overflow-hidden',
+            'bg-[#1d1d1d] relative z-1 rounded-full grow overflow-hidden flex items-center',
             'shadow-[0_0_0_0.1em_#242424_inset]',
             active && 'bg-[#252525] shadow-[0_0_0_0.1em_rgba(253,251,85,0.4)_inset]',
             !active && 'hover:bg-[#222222]'
           )}
         >
-          <div className="py-[0.3em] pl-[1.2em] pr-[0.4em] flex w-full relative z-3 items-center justify-between overflow-hidden">
+          <div className="w-6 h-6 flex justify-center items-center shrink-0 ml-1 my-1">
             <div
               className={cn(
-                'flex-1 text-[0.8em] mr-[0.5em] text-[#cccccc] whitespace-nowrap overflow-hidden text-ellipsis min-w-0 pl-[0.2em]',
-                active && 'text-[#fdfb55] [text-shadow:0_0_5px_rgba(253,251,85,0.5)]',
+                'w-full h-full rounded-full bg-[#2a2a2a] p-0.5 flex items-center justify-center',
+                'shadow-[0_0_0.1em_rgba(0,0,0,0.5),0_0_0_1px_#1a1a1a_inset]',
+                'transition-all duration-200',
+                active && 'bg-[#333333] shadow-[0_0_0.3em_rgba(253,251,85,0.3),0_0_0_1px_rgba(253,251,85,0.2)_inset]',
+                !active && 'hover:bg-[#303030]'
+              )}
+            >
+              {children || (iconSrc && <img src={iconSrc} alt={String(displayName)} className="w-full h-full object-contain" />)}
+            </div>
+          </div>
+
+          <div className="py-1 pl-1 pr-1.5 flex flex-1 relative z-3 items-center justify-between overflow-hidden">
+            <div
+              className={cn(
+                'flex-1 text-[0.8em] mr-0.5 text-[#cccccc] whitespace-nowrap overflow-hidden text-ellipsis min-w-0',
+                active && 'text-[#fdfb55]',
                 !active && 'hover:text-[#dddddd]'
               )}
             >
@@ -129,8 +106,7 @@ const EntityItem = observer(
                 className={cn(
                   'shrink-0 font-medium bg-[#2a2a2a] text-[#aaaaaa] px-[0.05em] py-[0.03em] rounded-full min-w-[1.2em]',
                   'text-center shadow-[0_0_0_1px_#333333] inline-flex items-center justify-center leading-none ml-[0.1em] relative overflow-hidden',
-                  active &&
-                    'bg-[rgba(253,251,85,0.15)] text-[#fdfb55] shadow-[0_0_0_1px_rgba(253,251,85,0.4)] [text-shadow:0_0_5px_rgba(253,251,85,0.5)]',
+                  active && 'bg-[rgba(253,251,85,0.15)] text-[#fdfb55]',
                   !active && 'hover:bg-[#333333] hover:text-[#bbbbbb]'
                 )}
               >
@@ -145,20 +121,7 @@ const EntityItem = observer(
             )}
           </div>
 
-          <div
-            className={cn(
-              'absolute w-[0.5em] h-[0.5em] opacity-0 top-0 right-0',
-              'border-t border-r border-transparent transition-all',
-              active && 'opacity-100 h-full w-[1em] border-[rgba(253,251,85,0.7)] rounded-tr-full rounded-br-full'
-            )}
-          />
-          <div
-            className={cn(
-              'absolute w-[0.5em] h-[0.5em] opacity-0 bottom-0 left-[1em]',
-              'border-b border-l border-transparent transition-all',
-              active && 'opacity-100 w-[0.8em] border-[rgba(253,251,85,0.7)]'
-            )}
-          />
+
         </div>
       </Tooltip>
     );
