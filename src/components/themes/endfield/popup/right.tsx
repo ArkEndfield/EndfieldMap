@@ -1,7 +1,7 @@
 import { cn } from '@/utils/style';
 import { DoubleChevronRight } from '@/components/common/icons';
 import { observer } from 'mobx-react-lite';
-import { ScrollArea } from '@/components/common/ScrollArea';
+import { ScrollArea } from '@/components/common/scroll_area';
 import { ChestReward } from './right_content/chest_reward';
 import type { EntityData } from '@endfieldmap/map-core';
 import { DungeonReward } from './right_content/dungeon_reward';

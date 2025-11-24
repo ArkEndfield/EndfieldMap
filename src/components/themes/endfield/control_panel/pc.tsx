@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import type { ControlPanelProps } from '../../types/control_panel';
 import EntityPanel from './controllers/entity_panel';
 import { HeaderLogo } from '@/components/common/header_logo';
-import { ScrollArea } from '@/components/common/ScrollArea';
+import { ScrollArea } from '@/components/common/scroll_area';
 import { Operations } from './controllers/operations';
 import { useRef } from 'react';
 

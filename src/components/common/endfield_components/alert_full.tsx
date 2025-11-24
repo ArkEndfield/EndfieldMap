@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ZmdButton } from './button';
-import { ScrollArea } from '../ScrollArea';
+import { ScrollArea } from '../scroll_area';
 import { cn } from '@/utils/style';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from './icons';
 

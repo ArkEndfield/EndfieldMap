@@ -3,7 +3,7 @@ import { PowerIcon } from '@/components/common/icons';
 import { observer } from 'mobx-react-lite';
 import type { EndfieldMapAdapter, MapFeature } from '@endfieldmap/map-core';
 import { getEntityIcon } from '@/utils/entity';
-import { ScrollArea } from '@/components/common/ScrollArea';
+import { ScrollArea } from '@/components/common/scroll_area';
 import { ClipSquare, Deco } from './deco';
 import { Guide } from '../../../common/guide';
 import { ZmdButton } from '@/components/common/endfield_components/button';
