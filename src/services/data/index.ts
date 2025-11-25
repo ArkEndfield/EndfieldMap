@@ -1,5 +1,6 @@
 import {
   MAP_EVENT,
+  MarkedFeatureFilterMode,
   type EndfieldMapAdapter,
   type EntityVisibilityChangeEventDetail,
   type FeatureStateChangeEventDetail,
@@ -142,6 +143,16 @@ class DataService {
     LocalStorageDB.set(LocalStorageKey.MAP_CURRENT_MAP, mapIndex);
   }
 
+  public setEnableCluster(enable: boolean) {
+    this.adapter?.setClusterEnable(enable);
+    LocalStorageDB.set(LocalStorageKey.CLUSTER_ENABLED, enable);
+  }
+
+  public setFilterMarkedMode(filterMode: MarkedFeatureFilterMode) {
+    this.adapter?.entityController?.setMarkedFeatureFilter?.(filterMode);
+    LocalStorageDB.set(LocalStorageKey.FILTER_MARKED, filterMode);
+  }
+
   /**
    * 从LocalStorage中获取数据
    * @returns 数据
@@ -152,10 +163,24 @@ class DataService {
     const center =
       LocalStorageDB.get<DataState<Coordinate>>(LocalStorageKey.MAP_VIEW_STATE)?.[currentMap] ??
       getMapCenter(currentMap);
+
+    // 20251125 新增
+    const enableCluster = LocalStorageDB.get<boolean>(LocalStorageKey.CLUSTER_ENABLED) ?? true;
+    const displayEletricPole = LocalStorageDB.get<boolean>(LocalStorageKey.ELECTRIC_POLE_DISPLAY) ?? true;
+    const displayEletricPoleRange = LocalStorageDB.get<boolean>(LocalStorageKey.ELECTRIC_POLE_RANGE_DISPLAY) ?? true;
+    const filterMarked = LocalStorageDB.get<MarkedFeatureFilterMode>(LocalStorageKey.FILTER_MARKED) ?? MarkedFeatureFilterMode.All;
+    const sidebarCollapsed =  LocalStorageDB.get<boolean>(LocalStorageKey.SIDEBAR_COLLAPSED) ?? false;
+
     return {
       zoom,
       center,
-      currentMap: currentMap,
+      currentMap,
+      enableCluster,
+      displayEletricPoleRange,
+      displayEletricPole,
+      filterMarked,
+      // TODO: 侧边栏收缩
+      sidebarCollapsed
     };
   }
 }

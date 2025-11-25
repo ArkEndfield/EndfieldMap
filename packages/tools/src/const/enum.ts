@@ -26,9 +26,24 @@ export enum StorageKey {
 
 // local storage type enum
 export enum LocalStorageKey {
+  // 地图缩放
   MAP_ZOOM = 'map_zoom',
+  // 地图视图位置
   MAP_VIEW_STATE = 'map_view_state',
+  // 查看的地图
   MAP_CURRENT_MAP = 'map_current_map',
+
+  // 20251125
+  // 启用聚合
+  CLUSTER_ENABLED = 'cluster_enabled',
+  // 显示电线杆范围
+  ELECTRIC_POLE_RANGE_DISPLAY = 'electric_pole_range_display',
+  // 显示电线杆
+  ELECTRIC_POLE_DISPLAY = 'electric_pole_display',
+  // 标记筛选
+  FILTER_MARKED = 'filter_marked',
+  // 侧边栏展开情况
+  SIDEBAR_COLLAPSED = 'sidebar_collapsed',
 }
 
 /** 加载状态枚举 */

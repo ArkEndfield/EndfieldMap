@@ -122,7 +122,7 @@ export type EntityInfoDataJson = Record<EntityInfoKey, EntityInfoData>;
  */
 export interface EntityInfoItemData<T extends EntityData | ElectricPoleData = EntityData> {
   uniqueKey: string;
-  category: EntityCategoryData['category'];
+  category: EntityCategoryData['category'] | typeof ElectricPoleIdKey;
   entityDataIdKey: EntityData['entityDataIdKey'];
   entityInfo: EntityInfoData['entityInfo'];
   visible: boolean;

@@ -18,6 +18,7 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
   const isDeletingConnection = dataService.electricPoleDataService.isDeletingConnection;
   const isAutoConnect = dataService.electricPoleDataService.autoConnect;
   const isZoneVisible = adapter.electricPoleController.zoneVisible;
+  const isElecricPoleVisible = adapter.electricPoleController.electricPoleVisible;
 
   const isSelecting = adapter.mapController.selection.isSelecting;
   const checkCanOperate = () => {
@@ -78,9 +79,19 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
           checked={isZoneVisible}
           name="isZoneVisible"
           id="enableZoneVisible"
-          onChange={() => adapter.electricPoleController.toggleZoneVisible()}
+          onChange={() => dataService.electricPoleDataService.toggleZoneVisibility()}
         />
         <label htmlFor="enableZoneVisible">显示覆盖范围</label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          checked={isElecricPoleVisible}
+          name="isElecricPoleVisible"
+          id="enableElecricPoleVisible"
+          onChange={() => dataService.electricPoleDataService.toggleVisibility()}
+        />
+        <label htmlFor="enableElecricPoleVisible">显示电线杆</label>
       </div>
       <ElectricPolePresetPanel />
     </div>

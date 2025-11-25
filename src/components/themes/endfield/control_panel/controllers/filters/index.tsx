@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import FilterToggle from './_toggle';
 import { useTranslation } from 'react-i18next';
 import { useAdapter } from '@/hooks/use_adapter';
+import { dataService } from '@/services/data';
 
 const filterModes = [
   { label: 'all', value: MarkedFeatureFilterMode.All },
@@ -18,7 +19,7 @@ export const Filters = observer(() => {
 
   const setFilterMode = (mode: MarkedFeatureFilterMode) => {
     adapter.activeFeatureController.clearActiveFeature();
-    adapter.entityController.setMarkedFeatureFilter(mode);
+    dataService.setFilterMarkedMode(mode);
   };
 
   return (

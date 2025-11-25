@@ -23,6 +23,7 @@ export class ElectricPoleController {
   public layerContainer: MultiLayerContainer | null = null;
   private currentMapIndex?: MapIndex;
   @observable accessor zoneVisible: boolean = true;
+  @observable accessor electricPoleVisible: boolean = true;
 
   constructor(config: ElectricPoleControllerConfig) {
     this.imagePath = config.imagePath;
@@ -63,8 +64,10 @@ export class ElectricPoleController {
     this.connectionLayer.set(mapIndex, connectionLayer);
     this.zoneLayer.set(mapIndex, zoneLayer);
     
-    // 应用当前的 zone 可见性设置
-    zoneLayer.setVisible(this.zoneVisible);
+    // 应用当前的可见性设置
+    zoneLayer.setVisible(this.zoneVisible && this.electricPoleVisible);
+    entityLayer.setVisible(this.electricPoleVisible);
+    connectionLayer.setVisible(this.electricPoleVisible);
     
     // 初始化时，根据数据中的 connections 信息补全连接状态与连线几何
     this.syncAllElectricPoleConnections(mapIndex);
@@ -408,7 +411,7 @@ export class ElectricPoleController {
   public setZoneVisible(visible: boolean) {
     this.zoneVisible = visible;
     this.zoneLayer.forEach((layer) => {
-      layer.setVisible(visible);
+      layer.setVisible(visible && this.electricPoleVisible);
     });
   }
 
@@ -417,5 +420,29 @@ export class ElectricPoleController {
    */
   public toggleZoneVisible() {
     this.setZoneVisible(!this.zoneVisible);
+  }
+
+  /**
+   * 设置所有地图的电线杆可见性（包括实体、连线和范围）
+   */
+  @action
+  public setElectricPoleVisible(visible: boolean) {
+    this.electricPoleVisible = visible;
+    this.entityLayer.forEach((layer) => {
+      layer.setVisible(visible);
+    });
+    this.connectionLayer.forEach((layer) => {
+      layer.setVisible(visible);
+    });
+    this.zoneLayer.forEach((layer) => {
+      layer.setVisible(visible && this.zoneVisible);
+    });
+  }
+
+  /**
+   * 切换电线杆可见性
+   */
+  public toggleElectricPoleVisible() {
+    this.setElectricPoleVisible(!this.electricPoleVisible);
   }
 }

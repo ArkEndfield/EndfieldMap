@@ -56,6 +56,10 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       adapter.current.mapController.setZoom(data.zoom);
       // 渲染地图
       adapter.current.renderMap(currentMap);
+      // 设置是否聚合
+      adapter.current.setClusterEnable(data.enableCluster);
+      // 设置标记过滤参数
+      adapter.current.entityController.setMarkedFeatureFilter(data.filterMarked);
       // 渲染实体
       adapter.current.renderEntity(currentMap).then(() => {
         // 显示entity
@@ -76,6 +80,10 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       adapter.current.renderElectricPole(currentMap);
       // 设置地图中心
       adapter.current.mapController.setCenter(data.center);
+      // 设置电线杆可见性
+      adapter.current.electricPoleController.setZoneVisible(data.displayEletricPoleRange);
+      // 设置电线杆范围可见性
+      adapter.current.electricPoleController.setElectricPoleVisible(data.displayEletricPole);
     }
   }, []);
 

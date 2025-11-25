@@ -4,6 +4,7 @@ import {
   EntityInstanceKey,
   FeatureType,
   FeatureTypeKey,
+  MarkedFeatureFilterMode,
 } from '@endfieldmap/map-core/const/map';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
@@ -11,6 +12,7 @@ import type { Map as OlMap } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Feature } from 'ol';
 import type { Point } from 'ol/geom';
+import { MapFeature } from '../types';
 
 export interface EntityHitTestInput {
   coordinate: Coordinate | undefined;
@@ -156,7 +158,18 @@ function hitTestEntitiesByGeometry(
       if (candidate.get(FeatureTypeKey) !== FeatureType.ENTITY) {
         continue;
       }
-      const instance = candidate.get(EntityInstanceKey) as { order?: number } | undefined;
+      const instance = candidate.get(EntityInstanceKey) as MapFeature | undefined;
+      
+      // 根据 layer 的 markedFilterMode 过滤
+      const marked = instance?.marked ?? false;
+      const markable = instance?.markable ?? false;
+      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+        continue;
+      }
+      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+        continue;
+      }
+      
       const order = instance?.order ?? 0;
       if (!selectedFeature || order > maxOrder) {
         selectedFeature = candidate;
@@ -200,7 +213,22 @@ function hitTestEntitiesByGeometry(
 
     // 过滤出实体特征后，按创建顺序从“上到下”排序（order 越大越在上）
     const features = clusterFeatures
-      .filter((feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY)
+      .filter((feature) => {
+        if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
+          return false;
+        }
+        // 根据 layer 的 markedFilterMode 过滤
+        const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+        const marked = instance?.marked ?? false;
+        const markable = instance?.markable ?? false;
+        if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+          return false;
+        }
+        if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+          return false;
+        }
+        return true;
+      })
       .sort((a, b) => {
         const aInstance = a.get(EntityInstanceKey) as { order?: number } | undefined;
         const bInstance = b.get(EntityInstanceKey) as { order?: number } | undefined;
@@ -263,6 +291,17 @@ async function hitTestEntitiesByPixel(
         continue;
       }
 
+      // 根据 layer 的 markedFilterMode 过滤
+      const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+      const marked = instance?.marked ?? false;
+      const markable = instance?.markable ?? false;
+      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+        continue;
+      }
+      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+        continue;
+      }
+
       const geometry = feature.getGeometry();
       if (!geometry || geometry.getType() !== 'Point') {
         continue;
@@ -320,9 +359,23 @@ async function hitTestEntitiesByPixel(
       continue;
     }
 
-    const entityFeatures = clusterFeatures.filter(
-      (feature) => feature.get(FeatureTypeKey) === FeatureType.ENTITY
-    ) as Feature<Point>[];
+    const entityFeatures = clusterFeatures.filter((feature) => {
+      if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
+        return false;
+      }
+      // 根据 layer 的 markedFilterMode 过滤
+      const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+      const marked = instance?.marked ?? false;
+      const markable = instance?.markable ?? false;
+      
+      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+        return false;
+      }
+      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+        return false;
+      }
+      return true;
+    }) as Feature<Point>[];
 
     if (entityFeatures.length > 0) {
       results.push({ features: entityFeatures, layer });

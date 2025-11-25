@@ -4,6 +4,7 @@ import { SettingItem } from '../../components/setting_item';
 import { useAdapter } from '@/hooks/use_adapter';
 import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { observer } from 'mobx-react-lite';
+import { dataService } from '@/services/data';
 
 export const MapSetting = observer(() => {
   const { t } = useTranslation('settings');
@@ -15,7 +16,7 @@ export const MapSetting = observer(() => {
         <EndfieldSwitch
           className="min-w-64"
           checked={enableCluster}
-          onChange={(v) => adapter.entityController.setClusterEnable(v)}
+          onChange={(v) => dataService.setEnableCluster(v)}
         />
       </SettingItem>
     </SettingsZone>

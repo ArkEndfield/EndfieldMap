@@ -12,6 +12,7 @@ import {
   EntityInstanceKey,
   LayerType,
   LayerTypeKey,
+  MarkedFeatureFilterMode,
 } from '@endfieldmap/map-core/const/map';
 import {
   createBlurredShadowStyles,
@@ -50,6 +51,8 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
   @observable accessor config: ElectricPoleEntityLayerConfig;
   /** 是否可见 */
   @observable accessor visible: boolean = true;
+  /** marked feature 过滤模式 */
+  @observable accessor markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
 
   /** 样式缓存 */
   private styleCache: Map<string, Style[]> = new Map();
@@ -124,6 +127,19 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
   }
 
   /**
+   * 设置 marked feature 过滤模式
+   * @param mode 过滤模式
+   */
+  @action
+  public setMarkedFilterMode(mode: MarkedFeatureFilterMode) {
+    if (this.markedFilterMode === mode) {
+      return;
+    }
+    this.markedFilterMode = mode;
+    this.layer.changed();
+  }
+
+  /**
    * 生成样式缓存的键
    * @param fillOpacity 填充透明度
    * @param strokeOpacity 描边透明度
@@ -142,6 +158,15 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
     if (!mapFeature) {
       return [];
     }
+
+    // 根据 markedFilterMode 过滤
+    if (this.markedFilterMode === MarkedFeatureFilterMode.Marked && !mapFeature.marked) {
+      return [];
+    }
+    if (this.markedFilterMode === MarkedFeatureFilterMode.Unmarked && mapFeature.marked) {
+      return [];
+    }
+
     // 获取所有MapFeature实例
     // 计算透明度（基于marked状态）
     let fillOpacity: '50' | '75' | '100' = '100';
@@ -184,7 +209,7 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
   get entityInfo(): EntityInfoItemData<ElectricPoleData> {
     return {
       uniqueKey: `${this.config.mapIndex}-${ElectricPoleIdKey}`,
-      category: 'electric_pole',
+      category: ElectricPoleIdKey,
       entityDataIdKey: this.entityDataIdKey,
       entityInfo: {
         point: ElectricPoleIdKey,

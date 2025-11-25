@@ -83,4 +83,11 @@ export class ElectricPoleConnectionLayer extends SingleLayerBase {
   public clearFeatures() {
     this.source.clearFeatures();
   }
+
+  /**
+   * 设置图层可见性
+   */
+  public setVisible(visible: boolean) {
+    this.layer.setVisible(visible);
+  }
 }

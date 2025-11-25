@@ -7,7 +7,7 @@ import type {
 import type { ElectricPoleConnectionFeature, ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { ElectricPoleIdKey, MAP_EVENT } from '@endfieldmap/map-core';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
-import { logger, MapIndex, StorageKey, type StorageManager } from '@endfieldmap/tools';
+import { LocalStorageDB, LocalStorageKey, logger, MapIndex, StorageKey, type StorageManager } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
 
 /**
@@ -269,6 +269,43 @@ export class ElectricPoleDataService {
         }
       });
     }
+  }
+
+  /**
+   * 修改电线杆范围是否可见
+   * @param visible 
+   */
+  @action
+  public changeZoneVisibility(visible: boolean) {
+    this.adapter?.electricPoleController?.setZoneVisible?.(visible);
+    LocalStorageDB.set(LocalStorageKey.ELECTRIC_POLE_RANGE_DISPLAY, visible);
+  }
+
+  /**
+   * 切换电线杆范围可见性
+   */
+  @action
+  public toggleZoneVisibility() {
+    const visible = !this.adapter?.electricPoleController?.zoneVisible;
+    this.changeZoneVisibility(visible);
+  }
+
+  /**
+   * 修改电线杆可见性
+   */
+  @action
+  public changeVisibility(visible: boolean) {
+    this.adapter?.electricPoleController?.setElectricPoleVisible?.(visible);
+    LocalStorageDB.set(LocalStorageKey.ELECTRIC_POLE_DISPLAY, visible);
+  }
+
+  /**
+   * 切换电线杆可见性
+   */
+  @action
+  public toggleVisibility() {
+    const visible = !this.adapter?.electricPoleController?.electricPoleVisible;
+    this.changeVisibility(visible);
   }
 
   // endregion
