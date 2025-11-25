@@ -147,10 +147,15 @@ export class EndfieldSelectionInteraction {
   ) {
     this._map?.getAllLayers().forEach((layer) => {
       if (!('getSource' in layer)) return;
-      const source = (layer as VectorLayer<VectorSource>).getSource();
-      if (!source?.getFeaturesInExtent) return;
+      
+      // Skip invisible layers
+      if (!layer.getVisible()) return;
+      
+      const layerSource = (layer as VectorLayer<VectorSource>).getSource();
+      if (!layerSource?.getFeaturesInExtent) return;
 
-      const boxFeatures = source.getFeaturesInExtent(extent).filter((feature: Feature<Geometry>) => {
+      // Get features from the layer source (might be cluster features)
+      const boxFeatures = layerSource.getFeaturesInExtent(extent).filter((feature: Feature<Geometry>) => {
         const geometry = feature.getGeometry();
         return geometry?.intersectsExtent?.(extent);
       });
@@ -158,6 +163,7 @@ export class EndfieldSelectionInteraction {
       if (oblique) {
         this.selectObliqueFeatures(boxFeatures, rotation, world, worldWidth);
       } else {
+        // addFeatureToSelection will handle expanding cluster features
         boxFeatures.forEach((f) => this.addFeatureToSelection(f));
       }
     });
@@ -187,7 +193,13 @@ export class EndfieldSelectionInteraction {
    */
   private addFeatureToSelection(feature: Feature<Geometry>) {
     const underlyingFeatures = this.getUnderlyingFeatures(feature);
-    underlyingFeatures.forEach((f) => this.select.getFeatures().push(f));
+    // Only add features that aren't already selected
+    const selectedArray = this.select.getFeatures().getArray();
+    underlyingFeatures.forEach((f) => {
+      if (!selectedArray.includes(f)) {
+        this.select.getFeatures().push(f);
+      }
+    });
   }
 
   @action

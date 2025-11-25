@@ -1,0 +1,8 @@
+{
+  "confirm": "확인",
+  "cancel": "취소",
+  "operate": {
+    "mark": "표시 완료",
+    "unmark": "표시 취소"
+  }
+}

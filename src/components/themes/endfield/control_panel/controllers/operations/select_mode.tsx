@@ -12,8 +12,10 @@ const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) =
 
   const markFeatures = (marked: boolean) => {
     selectedFeatures.forEach((feature) => {
-      const instance = feature.get(EntityInstanceKey) as MapFeature;
-      instance.setMarked(marked);
+      const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+      if (instance && typeof instance.setMarked === 'function') {
+        instance.setMarked(marked);
+      }
     });
   };
 

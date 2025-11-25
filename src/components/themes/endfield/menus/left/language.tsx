@@ -17,6 +17,7 @@ export const HeaderMenuLanguage = () => {
   };
 
   const changeLanguage = (locale: LanguageLocale) => {
+    console.log(locale)
     i18n.changeLanguage(locale);
     setOpen(false);
   };
@@ -60,7 +61,7 @@ export const HeaderMenuLanguage = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    strokeWidth="2"
                   >
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>

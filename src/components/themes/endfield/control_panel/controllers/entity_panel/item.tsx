@@ -104,7 +104,7 @@ const EntityItem = observer(
             {!hideCount && entity && (
               <div
                 className={cn(
-                  'shrink-0 font-medium bg-[#2a2a2a] text-[#aaaaaa] px-[0.05em] py-[0.03em] rounded-full min-w-[1.2em]',
+                  'shrink-0 w-fit font-medium bg-[#2a2a2a] text-[#aaaaaa] px-[0.3em] py-[0.15em] rounded-full min-w-[1.2em] grow-0',
                   'text-center shadow-[0_0_0_1px_#333333] inline-flex items-center justify-center leading-none ml-[0.1em] relative overflow-hidden',
                   active && 'bg-[rgba(253,251,85,0.15)] text-[#fdfb55]',
                   !active && 'hover:bg-[#333333] hover:text-[#bbbbbb]'
@@ -114,7 +114,7 @@ const EntityItem = observer(
                   className="absolute left-0 top-0 h-full bg-[rgba(253,251,85,0.2)] transition-[width] duration-300 ease-in-out"
                   style={{ width: progressWidth }}
                 />
-                <div className="scale-[0.6] relative z-1">
+                <div className="relative z-1 text-[10px] font-[JetBrains_Mono] leading-none">
                   {markCount}/{entity.count}
                 </div>
               </div>

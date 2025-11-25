@@ -7,8 +7,9 @@ import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { useAdapterOperation } from '@/hooks/useAdapterOperation';
 import { createPortal } from 'react-dom';
 import { SwitchIcon } from '@/components/common/icons';
+import { observer } from 'mobx-react-lite';
 
-export const RightMenu = ({ adapter }: { adapter: EndfieldMapAdapter }) => {
+export const RightMenu = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
   const { t } = useTranslation(['header', 'map']);
   const [showPopover, setShowPopover] = useState(false);
   const [showChangeAnimation, setShowChangeAnimation] = useState(false);
@@ -228,4 +229,4 @@ export const RightMenu = ({ adapter }: { adapter: EndfieldMapAdapter }) => {
       )}
     </>
   );
-};
+});
