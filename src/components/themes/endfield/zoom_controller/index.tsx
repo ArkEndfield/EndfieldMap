@@ -1,13 +1,14 @@
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import type { ZoomControllerProps } from '../../types/zoom_controller';
 import { RangeInput } from './range_input';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
+import { useAdapter } from '@/hooks/use_adapter';
 
-const ZoomController: React.FC<ZoomControllerProps> = observer(({ adapter }) => {
+const ZoomController: React.FC = observer(() => {
   const isMobile = useIsMobile();
+  const { adapter } = useAdapter();
   const [zoom, setZoom] = useState(1);
   const [minZoom, setMinZoom] = useState(1);
   const [maxZoom, setMaxZoom] = useState(5);

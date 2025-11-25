@@ -1,8 +1,8 @@
 import { CogIcon } from '@/components/common/icons';
 import { HeaderMenuTemplate } from './_template';
-import { ZmdAlert } from '@/components/common/endfield_components/alert';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SettingsPage } from '@/components/common/settings';
 
 export const HeaderMenuSettings = () => {
   const [open, setOpen] = useState(false);
@@ -14,10 +14,7 @@ export const HeaderMenuSettings = () => {
 
   return (
     <HeaderMenuTemplate icon={<CogIcon />} title={t('settings.title')} onClick={handleOpen}>
-      <ZmdAlert open={open} onOpenChange={setOpen} hideCancel>
-        {/** TODO: settings */}
-        <h1 className="text-lg font-bold text-center">{t('settings.title')}</h1>
-      </ZmdAlert>
+      <SettingsPage open={open} onClose={() => setOpen(false)} />
     </HeaderMenuTemplate>
   );
 };

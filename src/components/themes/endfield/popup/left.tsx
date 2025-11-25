@@ -1,18 +1,13 @@
 import { cn } from '@/utils/style';
 import { PowerIcon } from '@/components/common/icons';
 import { observer } from 'mobx-react-lite';
-import type { EndfieldMapAdapter, MapFeature } from '@endfieldmap/map-core';
 import { getEntityIcon } from '@/utils/entity';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { ClipSquare, Deco } from './deco';
 import { Guide } from '../../../common/guide';
 import { ZmdButton } from '@/components/common/endfield_components/button';
 import { useTranslation } from 'react-i18next';
-
-export interface LeftContentProps {
-  adapter: EndfieldMapAdapter;
-  activeFeature: MapFeature;
-}
+import { useAdapter } from '@/hooks/use_adapter';
 
 /** 描边 */
 const Border = () => (
@@ -45,11 +40,13 @@ const Header = ({ name, pic }: { name: string; pic: string }) => (
 );
 
 /** 左边弹窗内容 */
-export const LeftContent: React.FC<LeftContentProps> = observer(({ adapter, activeFeature }) => {
-  const entityData = activeFeature?.data;
+export const LeftContent: React.FC = observer(() => {
+  const { adapter } = useAdapter();
   const { t } = useTranslation(['popup', 'common']);
+  const activeFeature = adapter.activeFeatureController.activeFeature;
+  const entityData = activeFeature?.data;
 
-  if (!adapter || !activeFeature || !entityData) return null;
+  if ( !activeFeature || !entityData) return null;
 
   const handleToggleMarked = () => {
     if (activeFeature) {

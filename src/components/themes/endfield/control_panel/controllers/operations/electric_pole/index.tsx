@@ -1,16 +1,17 @@
-import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import ElectricPolePresetPanel from './electric_pole_preset_panel';
 import { cn } from '@/utils/style';
 import { observer } from 'mobx-react-lite';
 import { dataService } from '@/services/data';
 import { alert } from '@/components/common/endfield_components/alert_api';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export interface ElectricPoleManagerProps {
-  adapter: EndfieldMapAdapter;
   open: boolean;
 }
 
-export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(({ adapter, open }) => {
+export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(({ open }) => {
+  const { adapter } = useAdapter();
+
   const isCreating = dataService.electricPoleDataService.isCreating;
   const isConnecting = dataService.electricPoleDataService.isConnecting;
   const isDeleting = dataService.electricPoleDataService.isDeleting;
@@ -81,7 +82,7 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
         />
         <label htmlFor="enableZoneVisible">显示覆盖范围</label>
       </div>
-      <ElectricPolePresetPanel adapter={adapter} />
+      <ElectricPolePresetPanel />
     </div>
   );
 });

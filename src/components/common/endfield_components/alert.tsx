@@ -219,7 +219,7 @@ export const ZmdAlert = ({
       ref={dialogRef}
       className={
         cn(
-          "fixed top-0 left-0 w-screen h-screen inset-0 z-20 flex items-center bg-black/20 justify-center max-w-screen max-h-screen",
+          "fixed top-0 left-0 w-screen h-screen inset-0 z-20 flex items-center bg-black/20 justify-center max-w-screen max-h-screen backdrop:bg-transparent",
           classNames?.backdrop && typeof classNames.backdrop === 'function' ? classNames.backdrop(open) : classNames?.backdrop
         )
       }

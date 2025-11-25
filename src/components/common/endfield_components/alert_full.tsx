@@ -135,7 +135,7 @@ export const ZmdAlertFull = ({
     <AnimatePresence>
       {open && (
         <motion.dialog
-          className="fixed top-0 right-0 bottom-0 left-0 w-screen h-screen z-60 flex items-center justify-center"
+          className="fixed top-0 right-0 bottom-0 left-0 w-screen h-screen z-60 flex items-center justify-center backdrop:bg-transparent"
           initial={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
           animate={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
           exit={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}

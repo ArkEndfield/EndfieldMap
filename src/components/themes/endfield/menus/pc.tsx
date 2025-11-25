@@ -2,9 +2,8 @@ import { motion } from 'motion/react';
 import { cn } from '@/utils/style';
 import { MenuListForPC } from './left';
 import { RightMenu } from './right';
-import type { MenusProps } from '../../types/menus';
 
-export default function PCMenus({ adapter }: MenusProps) {
+export default function PCMenus() {
   return (
     <motion.div
       initial={{ y: '-100%' }}
@@ -24,7 +23,7 @@ export default function PCMenus({ adapter }: MenusProps) {
       </div>
       <MenuListForPC />
       <div className='ml-auto'>
-        <RightMenu adapter={adapter} />
+        <RightMenu />
       </div>
       <div className="absolute bottom-0 right-4 border-[1.5px] border-[#FDFA85] h-2 w-1 border-l-0"></div>
     </motion.div>

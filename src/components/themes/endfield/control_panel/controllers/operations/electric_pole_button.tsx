@@ -1,4 +1,3 @@
-import { type EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
@@ -8,7 +7,7 @@ import { dataService } from '@/services/data';
 import { useTranslation } from 'react-i18next';
 
 export const ElectricPoleButton = observer(
-  ({ adapter, portalRef }: { adapter: EndfieldMapAdapter; portalRef: React.RefObject<HTMLDivElement | null> }) => {
+  ({ portalRef }: { portalRef: React.RefObject<HTMLDivElement | null> }) => {
     const [open, setOpen] = useState(false);
     const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
     const { t } = useTranslation('sidebar');
@@ -33,7 +32,7 @@ export const ElectricPoleButton = observer(
           subtitle="ELECTRIC POLE MANAGER"
           onClick={onToggle}
         />
-        {portalContainer && createPortal(<ElectricPoleManager open={open} adapter={adapter} />, portalContainer)}
+        {portalContainer && createPortal(<ElectricPoleManager open={open} />, portalContainer)}
       </>
     );
   }

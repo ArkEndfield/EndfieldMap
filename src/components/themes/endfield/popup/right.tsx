@@ -3,13 +3,12 @@ import { DoubleChevronRight } from '@/components/common/icons';
 import { observer } from 'mobx-react-lite';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { ChestReward } from './right_content/chest_reward';
-import type { EntityData } from '@endfieldmap/map-core';
 import { DungeonReward } from './right_content/dungeon_reward';
 import { hasReward } from '@/utils/reward';
 import { ClipSquare } from './deco';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export interface RightContentProps {
-  entity: EntityData;
   isExpand: boolean;
   toggleExpand: () => void;
 }
@@ -47,9 +46,12 @@ const ToggleButton = ({ onClick, isExpand }: { onClick: () => void; isExpand: bo
 );
 
 /** 右边弹窗内容 */
-export const RightContent: React.FC<RightContentProps> = observer(({ isExpand, toggleExpand, entity }) => {
+export const RightContent: React.FC<RightContentProps> = observer(({ isExpand, toggleExpand }) => {
+  const { adapter } = useAdapter();
+  const activeFeature = adapter?.activeFeatureController.activeFeature;
+  const entity = activeFeature?.data;
   const showRewards = hasReward(entity);
-  if (!showRewards) {
+  if (!entity || !showRewards) {
     return null;
   }
   return (

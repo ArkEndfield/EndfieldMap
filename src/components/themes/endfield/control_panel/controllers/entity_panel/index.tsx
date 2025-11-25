@@ -3,10 +3,10 @@ import { useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
-import type { ControlPanelProps } from '@/components/themes/types/control_panel';
 import EntityGroup from './group';
 import EntityItem from './item';
 import { Search } from './search';
+import { useAdapter } from '@/hooks/use_adapter';
 
 interface EntityItemInfo extends EntityInfoItemData {
   markedCount: number;
@@ -24,8 +24,9 @@ interface CategoryInfo {
  * 实体面板组件
  * 显示当前地图的所有实体，支持按分类显示/隐藏
  */
-const EntityPanel = observer(({ adapter }: ControlPanelProps) => {
+const EntityPanel = observer(() => {
   const { t } = useTranslation(['sidebar']);
+  const { adapter } = useAdapter();
   const [searchQuery, setSearchQuery] = useState('');
 
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数

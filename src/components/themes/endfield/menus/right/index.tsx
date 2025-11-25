@@ -3,19 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { MapButton } from './button';
 import { LocalStorageDB, LocalStorageKey, MapIndex } from '@endfieldmap/tools';
-import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
-import { useAdapterOperation } from '@/hooks/useAdapterOperation';
 import { createPortal } from 'react-dom';
 import { SwitchIcon } from '@/components/common/icons';
 import { observer } from 'mobx-react-lite';
+import { useAdapter } from '@/hooks/use_adapter';
 
-export const RightMenu = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
+export const RightMenu = observer(() => {
   const { t } = useTranslation(['header', 'map']);
   const [showPopover, setShowPopover] = useState(false);
   const [showChangeAnimation, setShowChangeAnimation] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
-  const { renderMap } = useAdapterOperation(adapter);
+  const { adapter, renderMap } = useAdapter();
   const mapIndex = adapter.currentMapIndex;
 
   const togglePopover = () => {

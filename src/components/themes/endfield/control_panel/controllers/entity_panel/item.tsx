@@ -5,6 +5,7 @@ import { Tooltip } from '@/components/common/endfield_components/tooltip';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
 import { observer } from 'mobx-react-lite';
+import Counter from '@/components/common/count_up';
 
 interface EntityItemProps {
   hideCount?: boolean;
@@ -30,20 +31,13 @@ const EntityItem = observer(
       return '未命名';
     }, [entity, t]);
 
-    const markCount = useMemo(() => {
-      if (entity) {
-        return entity.markedCount;
-      }
-      return 0;
-    }, [entity]);
-
     const progressWidth = useMemo(() => {
       if (entity && entity.count > 0) {
-        const percentage = (markCount / entity.count) * 100;
+        const percentage = ((entity.markedCount || 0) / entity.count) * 100;
         return `${percentage}%`;
       }
       return '0%';
-    }, [entity, markCount]);
+    }, [entity]);
 
     const iconSrc = useMemo(() => {
       if (entity && category) {
@@ -86,7 +80,8 @@ const EntityItem = observer(
                 !active && 'hover:bg-[#303030]'
               )}
             >
-              {children || (iconSrc && <img src={iconSrc} alt={String(displayName)} className="w-full h-full object-contain" />)}
+              {children ||
+                (iconSrc && <img src={iconSrc} alt={String(displayName)} className="w-full h-full object-contain" />)}
             </div>
           </div>
 
@@ -114,14 +109,13 @@ const EntityItem = observer(
                   className="absolute left-0 top-0 h-full bg-[rgba(253,251,85,0.2)] transition-[width] duration-300 ease-in-out"
                   style={{ width: progressWidth }}
                 />
-                <div className="relative z-1 text-[10px] font-[JetBrains_Mono] leading-none">
-                  {markCount}/{entity.count}
+                <div className="relative z-1 text-[10px] font-[JetBrains_Mono] leading-none inline-flex items-center">
+                  <Counter value={entity.markedCount || 0} />
+                  <span>/{entity.count}</span>
                 </div>
               </div>
             )}
           </div>
-
-
         </div>
       </Tooltip>
     );

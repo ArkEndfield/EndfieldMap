@@ -10,7 +10,7 @@ import i18n from '@/i18n';
 import { getLanguage } from '@/utils/language';
 import type { LanguageLocale } from '@eftypes/language';
 import { getAssetUrls } from '@/utils/url';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 /**
  * 地图适配器 hook
@@ -109,5 +109,6 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
   return {
     adapter: adapterReactive,
+    renderMap,
   };
 }

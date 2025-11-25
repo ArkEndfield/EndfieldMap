@@ -1,12 +1,15 @@
-import { EntityInstanceKey, type EndfieldMapAdapter, type MapFeature } from '@endfieldmap/map-core';
+import { EntityInstanceKey, type MapFeature } from '@endfieldmap/map-core';
 import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
 import { dataService } from '@/services/data';
 import { alert } from '@/components/common/endfield_components/alert_api';
 import { useTranslation } from 'react-i18next';
+import { useAdapter } from '@/hooks/use_adapter';
 
-const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
+const SelectOperator = observer(() => {
+  const { adapter } = useAdapter();
+
   const selectedFeatures = adapter.mapController.selection.selectedFeatures;
   const { t } = useTranslation(['sidebar', 'common']);
 
@@ -37,7 +40,8 @@ const SelectOperator = observer(({ adapter }: { adapter: EndfieldMapAdapter }) =
   );
 });
 
-export const SelectModeOperation = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
+export const SelectModeOperation = observer(() => {
+  const { adapter } = useAdapter();
   const isSelecting = adapter.mapController.selection.isSelecting;
   const { t } = useTranslation('sidebar');
 
@@ -59,7 +63,7 @@ export const SelectModeOperation = observer(({ adapter }: { adapter: EndfieldMap
         subtitle="MULTI OPERATION"
         onClick={toggleSelectMode}
       />
-      {isSelecting && createPortal(<SelectOperator adapter={adapter} />, document.body)}
+      {isSelecting && createPortal(<SelectOperator />, document.body)}
     </>
   );
 });

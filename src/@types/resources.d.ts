@@ -15,17 +15,6 @@ interface Resources {
     "feedback": {
       "title": "反馈"
     },
-    "language": {
-      "change_language": "切换语言",
-      "language_list": {
-        "cn": "简体中文",
-        "en": "英语",
-        "jp": "日语",
-        "kr": "韩语",
-        "tc": "繁体中文"
-      },
-      "title": "语言"
-    },
     "map": {
       "change_map": "切换地图",
       "map_change": "地图切换"
@@ -43,6 +32,19 @@ interface Resources {
       "chest": {
         "title": "宝箱内容"
       }
+    }
+  },
+  "settings": {
+    "language": {
+      "change_language": "切换语言",
+      "language_list": {
+        "cn": "简体中文",
+        "en": "英语",
+        "jp": "日语",
+        "kr": "韩语",
+        "tc": "繁体中文"
+      },
+      "title": "语言"
     }
   },
   "sidebar": {

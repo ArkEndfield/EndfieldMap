@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import type { ControlPanelProps } from '../../types/control_panel';
 import EntityPanel from './controllers/entity_panel';
 import { HeaderLogo } from '@/components/common/header_logo';
 import { ScrollArea } from '@/components/common/scroll_area';
@@ -17,7 +16,7 @@ const TopDeco = () => (
   ></div>
 );
 
-export default function PCControlPanel({ adapter }: ControlPanelProps) {
+export default function PCControlPanel() {
   const portalRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(true);
 
@@ -39,12 +38,12 @@ export default function PCControlPanel({ adapter }: ControlPanelProps) {
           <HeaderLogo className="z-1 relative" />
         </div>
         <div className="px-3 overflow-hidden shrink-0 grow-0 mt-1 space-y-1">
-          <Filters adapter={adapter} />
-          <Operations adapter={adapter} portalRef={portalRef} />
+          <Filters />
+          <Operations portalRef={portalRef} />
         </div>
         <div className="flex-1 relative overflow-hidden" ref={portalRef}>
           <ScrollArea className="w-full h-full">
-            <EntityPanel adapter={adapter} />
+            <EntityPanel />
           </ScrollArea>
         </div>
 

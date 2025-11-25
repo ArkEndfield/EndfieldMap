@@ -1,8 +1,4 @@
-import type { PopupProps } from './popup';
-import type { ControlPanelProps } from './control_panel';
 import type { LazyExoticComponent } from 'react';
-import type { ZoomControllerProps } from './zoom_controller';
-import type { MenusProps } from './menus';
 
 export enum ComponentType {
   POPUP = 'Popup',
@@ -13,10 +9,10 @@ export enum ComponentType {
 }
 
 export interface ThemedComponentProps {
-  [ComponentType.POPUP]: PopupProps;
-  [ComponentType.CONTROL_PANEL]: ControlPanelProps;
-  [ComponentType.MENUS]: MenusProps;
-  [ComponentType.ZOOM_CONTROLLER]: ZoomControllerProps;
+  [ComponentType.POPUP]: object;
+  [ComponentType.CONTROL_PANEL]: object;
+  [ComponentType.MENUS]: object;
+  [ComponentType.ZOOM_CONTROLLER]: object;
 }
 
 export type ThemedComponentsMap = Map<

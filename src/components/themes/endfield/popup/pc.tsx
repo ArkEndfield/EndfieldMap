@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import type { PopupProps } from '@/components/themes/types/popup';
 import { observer } from 'mobx-react-lite';
 import { StrokeSVGFilter } from './deco';
 import { LeftContent } from './left';
 import { RightContent } from './right';
 import { dataService } from '@/services/data';
+import { useAdapter } from '@/hooks/use_adapter';
 
-const PCPopup: React.FC<PopupProps> = observer(({ adapter }) => {
-  // Create a detached element to serve as the overlay container
+const PCPopup: React.FC = observer(() => {
+  const { adapter } = useAdapter();
+
   const container = useMemo(() => {
     const div = document.createElement('div');
     div.className = 'relative pointer-events-none';
@@ -76,10 +77,10 @@ const PCPopup: React.FC<PopupProps> = observer(({ adapter }) => {
               className="flex w-78 pointer-events-auto cursor-pointer relative z-0"
             >
               {/* 左侧内容 */}
-              <LeftContent adapter={adapter} activeFeature={activeFeature} />
+              <LeftContent />
 
               {/* 右侧展开内容 */}
-              <RightContent entity={activeFeature.data} isExpand={isExpand} toggleExpand={handleExpandButton} />
+              <RightContent isExpand={isExpand} toggleExpand={handleExpandButton} />
             </motion.div>
           </motion.div>
         )}

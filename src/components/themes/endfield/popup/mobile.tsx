@@ -1,9 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import type { PopupProps } from '@/components/themes/types/popup';
 import { dataService } from '@/services/data';
+import { useAdapter } from '@/hooks/use_adapter';
 
-const MobilePopup: React.FC<PopupProps> = observer(({ adapter }) => {
+const MobilePopup: React.FC = observer(() => {
+  const { adapter } = useAdapter();
   const activeFeature = adapter?.activeFeatureController.activeFeature;
 
   const handleClose = () => {

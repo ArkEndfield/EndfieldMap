@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import type { ControlPanelProps } from '@/components/themes/types/control_panel';
 import { dataService } from '@/services/data';
 
 /**
@@ -14,9 +13,7 @@ import { dataService } from '@/services/data';
  *
  * 依赖 MobX 响应式的 electricPoleDataService，列表勾选状态为本地 UI 状态。
  */
-const ElectricPolePresetPanel: React.FC<ControlPanelProps> = observer(({ adapter }) => {
-  if (!adapter) return null;
-
+const ElectricPolePresetPanel: React.FC = observer(() => {
   const service = dataService.electricPoleDataService;
   const currentPresetId = service.currentPresetId ?? '';
   const presets = service.presetList;

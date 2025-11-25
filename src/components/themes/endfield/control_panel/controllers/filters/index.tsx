@@ -1,7 +1,8 @@
-import { MarkedFeatureFilterMode, type EndfieldMapAdapter } from '@endfieldmap/map-core';
+import { MarkedFeatureFilterMode } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import FilterToggle from './_toggle';
 import { useTranslation } from 'react-i18next';
+import { useAdapter } from '@/hooks/use_adapter';
 
 const filterModes = [
   { label: 'all', value: MarkedFeatureFilterMode.All },
@@ -9,9 +10,11 @@ const filterModes = [
   { label: 'unmarked', value: MarkedFeatureFilterMode.Unmarked },
 ] as const;
 
-export const Filters = observer(({ adapter }: { adapter: EndfieldMapAdapter }) => {
-  const filterMode = adapter.entityController.markedFilterMode;
+export const Filters = observer(() => {
+  const { adapter } = useAdapter();
   const { t } = useTranslation('sidebar');
+
+  const filterMode = adapter.entityController.markedFilterMode;
 
   const setFilterMode = (mode: MarkedFeatureFilterMode) => {
     adapter.activeFeatureController.clearActiveFeature();
