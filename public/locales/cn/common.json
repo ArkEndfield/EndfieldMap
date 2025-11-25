@@ -1,6 +1,8 @@
 {
   "confirm": "确认",
   "cancel": "取消",
+  "on": "开启",
+  "off": "关闭",
   "operate": {
     "mark": "标记",
     "unmark": "取消标记"

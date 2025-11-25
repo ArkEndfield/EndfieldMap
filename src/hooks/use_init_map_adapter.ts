@@ -47,7 +47,6 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     initCursorEventListeners(adapter.current);
   }, [containerRef]);
 
-  // TODO: 看看能不能和 useAdapterOperation 合并这个方法
   const renderMap = useCallback((mapIdx?: MapIndex) => {
     if (adapter.current) {
       // 从 localStorage 获取数据

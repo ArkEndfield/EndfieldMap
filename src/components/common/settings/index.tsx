@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { TabList, type TabItem } from './tabs';
 import { ScrollArea } from '../scroll_area';
-import { CogIcon, QuestionIcon, TranslateIcon } from '../icons';
+import { MapIcon, QuestionIcon, TranslateIcon } from '../icons';
 import { LanguageSetting } from './items/language';
+import { MapSetting } from './items/map';
+import { AboutPage } from './items/about';
 
 export interface SettingsPageProps {
   open: boolean;
@@ -22,12 +24,8 @@ export interface SettingItem<T extends string> extends TabItem<T> {
 const settingList = [
   {
     key: 'general',
-    icon: <CogIcon />,
-    Component: () => (
-      <div className="h-[1000px]">
-        通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用通用
-      </div>
-    ),
+    icon: <MapIcon />,
+    Component: MapSetting,
   },
   {
     key: 'language',
@@ -37,7 +35,7 @@ const settingList = [
   {
     key: 'about',
     icon: <QuestionIcon />,
-    Component: () => <div>关于</div>,
+    Component: AboutPage,
   },
 ] as const;
 
@@ -64,7 +62,7 @@ const BgDeco = () => (
 
 const CloseButton = ({ onClose }: SettingsProps) => (
   <button
-    className="absolute shrink-0 grow-0 top-4 right-8 w-6.5 h-6.5 flex justify-center items-center rounded-full text-[#FFFEFE] hover:text-[#c9c9c9] transition-colors drop-shadow-sm"
+    className="absolute shrink-0 grow-0 top-4 right-8 w-6.5 h-6.5 flex justify-center items-center rounded-full text-[#FFFEFE] hover:text-[#c9c9c9] drop-shadow-sm active:scale-95 transition-[transform_colors]"
     onClick={onClose}
   >
     <svg width="100%" height="100%" viewBox="0 0 75 75" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -79,10 +77,11 @@ const CloseButton = ({ onClose }: SettingsProps) => (
 const ContentWrapper = ({ children, active }: { children: React.ReactNode; active?: boolean }) =>
   active ? (
     <motion.div
-      initial={{ scale: 1.01, opacity: 0.5 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 1.01, opacity: 0.5 }}
-      transition={{ duration: 0.1 }}
+      initial={{ opacity: 0.5 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0.5 }}
+      transition={{ duration: 0.3 }}
+      className='h-full'
     >
       <ScrollArea className="w-full h-full overflow-hidden">{children}</ScrollArea>
     </motion.div>

@@ -3,15 +3,14 @@ interface Resources {
   "common": {
     "cancel": "取消",
     "confirm": "确认",
+    "off": "关闭",
+    "on": "开启",
     "operate": {
       "mark": "标记",
       "unmark": "取消标记"
     }
   },
   "header": {
-    "about": {
-      "title": "关于"
-    },
     "feedback": {
       "title": "反馈"
     },
@@ -45,6 +44,10 @@ interface Resources {
         "tc": "繁体中文"
       },
       "title": "语言"
+    },
+    "map": {
+      "cluster": "标点聚合",
+      "title": "地图"
     }
   },
   "sidebar": {

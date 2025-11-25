@@ -24,7 +24,7 @@ export class EntityController {
   public commonPointDataManager: CommonPointDataManager;
   public cachedLayer: Map<MapIndex, Map<EntityCategoryData['category'], CommonPointEntityLayer[]>> = new Map();
   public imagePath: string;
-  public disableCluster: boolean;
+  @observable accessor disableCluster: boolean;
   public entityLayerContainer: MultiLayerContainer | null = null;
   private clusterOptions: ClusterOptions;
   @observable accessor currentMapAllLayers: CommonPointEntityLayer[] = [];
@@ -93,6 +93,14 @@ export class EntityController {
     this.disableCluster = newDisableCluster;
     // 刷新聚合距离以应用更改
     this.refreshClusterDistance();
+  }
+
+  /**
+   * 切换启用/关闭聚合
+   */
+  @action
+  public toggleClusterEnable() {
+    this.setClusterEnable(!this.disableCluster);
   }
 
   /**
