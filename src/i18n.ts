@@ -3,7 +3,7 @@ import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import { isDev } from '@/services/env';
-
+const ns = ['common', 'header', 'map', 'popup', 'sidebar'];
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -17,9 +17,11 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     fallbackLng: 'cn',
-    ns: ['common', 'header', 'map', 'popup', 'sidebar'],
+    ns: ns,
     defaultNS: 'common',
     debug: isDev,
+  }, () => {
+    i18n.loadNamespaces(ns);
   });
 
 export default i18n;
