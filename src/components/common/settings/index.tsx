@@ -8,6 +8,8 @@ import { LanguageSetting } from './items/language';
 import { MapSetting } from './items/map';
 import { AboutPage } from './items/about';
 import { DataSetting } from './items/data';
+import uiManager from '@/services/ui_manager';
+import { observer } from 'mobx-react-lite';
 
 export interface SettingsPageProps {
   open: boolean;
@@ -49,9 +51,20 @@ const BgDeco = () => (
   <div className="absolute -z-1 left-5 select-none">
     <div className="relative w-30 h-25 -top-2 bg-no-repeat bg-contain opacity-10 bg-[url(/images/bg/deco_common_logo_bg.png)]"></div>
     <div className="font-[Outfit] absolute top-2 left-2">
-      <svg width="40" height="10" viewBox="0 0 40 10" fill="none" className='text-[#666]' xmlns="http://www.w3.org/2000/svg">
-        <text x="0" y="5" fill="currentColor" fontSize="4" fontFamily="Outfit" fontWeight="400">绝命笋干JMSG</text>
-        <text x="0" y="10" fill="currentColor" fontSize="4" fontFamily="Outfit" fontWeight="400">ZMDMAP</text>
+      <svg
+        width="40"
+        height="10"
+        viewBox="0 0 40 10"
+        fill="none"
+        className="text-[#666]"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <text x="0" y="5" fill="currentColor" fontSize="4" fontFamily="Outfit" fontWeight="400">
+          绝命笋干JMSG
+        </text>
+        <text x="0" y="10" fill="currentColor" fontSize="4" fontFamily="Outfit" fontWeight="400">
+          ZMDMAP
+        </text>
       </svg>
       <div className="flex items-center">
         <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -87,7 +100,7 @@ const ContentWrapper = ({ children, active }: { children: React.ReactNode; activ
       animate={{ opacity: 1 }}
       exit={{ opacity: 0.5 }}
       transition={{ duration: 0.3 }}
-      className='h-full'
+      className="h-full"
     >
       <ScrollArea className="w-full h-full overflow-hidden">{children}</ScrollArea>
     </motion.div>
@@ -103,6 +116,7 @@ const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
       dialogRef.current?.close();
     }
   }, [open]);
+  if (!open) return null;
   return (
     <motion.dialog
       ref={dialogRef}
@@ -140,5 +154,13 @@ const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
   );
 };
 
-export const SettingsPage: React.FC<SettingsPageProps> = ({ open, onClose }) =>
-  createPortal(<AnimatePresence>{open && <Settings open={open} onClose={onClose} />}</AnimatePresence>, document.body);
+export const SettingsPage: React.FC = observer(() => {
+  const open = uiManager.settingsShown;
+  const onClose = () => uiManager.setSettingsShown(false);
+  return createPortal(
+    <AnimatePresence>
+      <Settings open={open} onClose={onClose} />
+    </AnimatePresence>,
+    document.body
+  );
+});

@@ -1,7 +1,7 @@
 import { Tooltip } from '@/components/common/endfield_components/tooltip';
 
 export interface HeaderMenuProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   icon: React.ReactNode;
   title: string;
   onClick?: () => void;

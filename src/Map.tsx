@@ -6,8 +6,14 @@ import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import type { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
 import { AdapterProvider } from '@/components/common/adapter_provider';
+import { SettingsPage } from './components/common/settings';
 
-function Controllers({ adapter, renderMap }: { adapter: EndfieldMapAdapter, renderMap: (mapIdx?: MapIndex | undefined) => void }) {
+export interface ControllersProps {
+  adapter: EndfieldMapAdapter;
+  renderMap: (mapIdx?: MapIndex | undefined) => void;
+}
+
+const Controllers = observer(({ adapter, renderMap }: ControllersProps) => {
   const [theme, _setTheme] = useState<ThemeNames>(themeNames.ENDFIELD);
   
   const ThemedComponents = useMemo(() => {
@@ -41,9 +47,12 @@ function Controllers({ adapter, renderMap }: { adapter: EndfieldMapAdapter, rend
       <Suspense>
         <ThemedComponents.ControlPanel />
       </Suspense>
+
+      {/* 设置页面 */}
+      <SettingsPage />
     </AdapterProvider>
   );
-}
+});
 
 function EndfieldMap() {
   const container = useRef<HTMLDivElement>(null);

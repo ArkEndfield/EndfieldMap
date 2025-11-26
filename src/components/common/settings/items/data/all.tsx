@@ -18,6 +18,9 @@ const clearAll = (confirmText: string): Promise<boolean> => {
       onCancel() {
         resolve(false);
       },
+      onDismiss() {
+        resolve(false);
+      },
     });
   });
 };
