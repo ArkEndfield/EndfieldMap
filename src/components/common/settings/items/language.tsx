@@ -5,11 +5,11 @@ import { SettingsZone } from '../components/settings_zone';
 import { SettingItem } from '../components/setting_item';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { cn } from '@/utils/style';
+import { useCurrentLanguage } from '@/hooks/use_current_language';
 
 export const LanguageSetting = () => {
   const { t, i18n } = useTranslation('settings');
-  const currentLocales = i18n.languages as LanguageLocale[];
-  const currentLocale = currentLocales.find((locale) => languageConfig.some((item) => item.locale === locale)) || 'cn';
+  const currentLocale = useCurrentLanguage();
 
   const changeLanguage = (locale: LanguageLocale) => {
     i18n.changeLanguage(locale);

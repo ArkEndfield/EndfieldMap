@@ -3,10 +3,12 @@ import { HeaderMenuTemplate } from './_template';
 import { ZmdAlert } from '@/components/common/endfield_components/alert';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useCurrentLanguage } from '@/hooks/use_current_language';
 
 export const HeaderMenuFeedback = () => {
   const [open, setOpen] = useState(false);
-  const { t, i18n } = useTranslation('header');
+  const { t } = useTranslation('header');
+  const currentLocale = useCurrentLanguage();
 
   const handleOpen = () => {
     setOpen(true);
@@ -17,7 +19,7 @@ export const HeaderMenuFeedback = () => {
       <ZmdAlert open={open} onOpenChange={setOpen} hideCancel>
         <h1 className="text-lg font-bold text-center mb-2">{t('feedback.title')}</h1>
         <div className="px-4">
-          {['cn', 'tc'].includes(i18n.language) && (
+          {['cn', 'tc'].includes(currentLocale) && (
             <div>
               <div className="w-full flex justify-center">
                 <img
