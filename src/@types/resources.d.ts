@@ -35,6 +35,10 @@ interface Resources {
   },
   "settings": {
     "about": {
+      "community": "社区",
+      "discord": "Discord",
+      "qq_group": "QQ群 ({{group_number}})",
+      "subscrible": "关注",
       "title": "关于"
     },
     "data": {

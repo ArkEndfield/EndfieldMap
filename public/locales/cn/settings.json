@@ -47,6 +47,10 @@
     }
   },
   "about": {
-    "title": "关于"
+    "title": "关于",
+    "subscrible": "关注",
+    "community": "社区",
+    "qq_group": "QQ群 ({{group_number}})",
+    "discord": "Discord"
   }
 }

@@ -28,7 +28,7 @@ export const StateSettings = () => {
   });
   return (
     <SettingItem title={t('data.state_data.title')} tailDeco>
-      <EndfieldFormButton className="min-w-64" onClick={execute} left={loading && <Loading />}>
+      <EndfieldFormButton onClick={execute} left={loading && <Loading />}>
         {t('data.state_data.clear')}
       </EndfieldFormButton>
     </SettingItem>

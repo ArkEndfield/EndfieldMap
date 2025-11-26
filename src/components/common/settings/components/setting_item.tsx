@@ -61,7 +61,7 @@ export const SettingItem = ({ title, description, question, children, className,
     >
       <Deco withTail={tailDeco} />
       <div className={cn('flex-1 p-1 relative z-1', classNames?.left?.container)}>
-        <div className={cn('flex ml-4', classNames?.left?.title?.container)}>
+        <div className={cn('flex md:ml-4', classNames?.left?.title?.container)}>
           <div className={cn(classNames?.left?.title?.content)}>{title}</div>
           {question && (
             <Tooltip
@@ -78,7 +78,7 @@ export const SettingItem = ({ title, description, question, children, className,
         </div>
         {description && <div className={cn('text-sm text-zinc-600', classNames?.left?.description)}>{description}</div>}
       </div>
-      <div className={cn('flex shrink-0 grow-0 relative z-1', classNames?.content)}>{children}</div>
+      <div className={cn('flex shrink-0 grow-0 relative z-1 min-w-32 md:min-w-64', classNames?.content)}>{children}</div>
     </div>
   );
 };

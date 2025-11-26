@@ -11,7 +11,7 @@ export const ClusterSettings = observer(() => {
   const enableCluster = !adapter.entityController.disableCluster;
   return (
     <SettingItem title={t('map.cluster')} tailDeco>
-      <EndfieldSwitch className="min-w-64" checked={enableCluster} onChange={(v) => dataService.setEnableCluster(v)} />
+      <EndfieldSwitch checked={enableCluster} onChange={(v) => dataService.setEnableCluster(v)} />
     </SettingItem>
   );
 });

@@ -28,7 +28,7 @@ export const CacheSettings = () => {
   });
   return (
     <SettingItem title={t('data.cache.title')} tailDeco>
-      <EndfieldFormButton className="min-w-64" onClick={execute} left={loading && <Loading />} variant="primary">
+      <EndfieldFormButton onClick={execute} left={loading && <Loading />} variant="primary">
         {t('data.cache.clear')}
       </EndfieldFormButton>
     </SettingItem>

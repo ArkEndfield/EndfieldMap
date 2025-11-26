@@ -16,7 +16,7 @@ export const CenterViewSettings = observer(() => {
   };
   return (
     <SettingItem title={t('map.move_center')} tailDeco>
-      <EndfieldFormButton className='min-w-64' onClick={moveToCenter}>{t('map.move_center')}</EndfieldFormButton>
+      <EndfieldFormButton onClick={moveToCenter}>{t('map.move_center')}</EndfieldFormButton>
     </SettingItem>
   );
 });

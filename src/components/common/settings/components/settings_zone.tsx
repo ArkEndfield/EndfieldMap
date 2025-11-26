@@ -25,7 +25,7 @@ const Deco = () => (
 
 export const SettingsZone: React.FC<SettingsZoneProps> = ({ title, children, className, classNames }) => {
   return (
-    <div className={cn('flex flex-col gap-2 ml-4 mr-16', className)}>
+    <div className={cn('flex flex-col gap-2 mx-4 md:mr-16', className)}>
       <div
         className={cn(
           'relative text-lg font-bold border-l-4 pl-2 border-[#ffee34] text-[#ffee34]',

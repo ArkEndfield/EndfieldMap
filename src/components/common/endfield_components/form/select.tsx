@@ -146,7 +146,7 @@ export const EndfieldSelect = <T extends string>({
     };
   }, []);
   return (
-    <div className={cn('relative min-w-32 text-[#373537]', className)}>
+    <div className={cn('relative w-full text-[#373537]', className)}>
       <Trigger expand={open} ref={triggerRef} onClick={toggleSelect} disabled={disabled}>
         {currentValueLabel}
       </Trigger>

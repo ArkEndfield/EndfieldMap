@@ -32,7 +32,7 @@ export const EntitySettings = () => {
   });
   return (
     <SettingItem title={t('data.entity_data.title')} tailDeco>
-      <EndfieldFormButton className="min-w-64" onClick={execute} left={loading && <Loading />}>
+      <EndfieldFormButton onClick={execute} left={loading && <Loading />}>
         {t('data.entity_data.clear')}
       </EndfieldFormButton>
     </SettingItem>

@@ -6,6 +6,7 @@ import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
 import { observer } from 'mobx-react-lite';
 import Counter from '@/components/common/count_up';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 interface EntityItemProps {
   hideCount?: boolean;
@@ -20,6 +21,7 @@ interface EntityItemProps {
 const EntityItem = observer(
   ({ hideCount = false, entity, category, active = false, onClick, children }: EntityItemProps) => {
     const { t } = useTranslation();
+    const isMobile = useIsMobile();
 
     const displayName = useMemo(() => {
       if (entity) {
@@ -51,6 +53,7 @@ const EntityItem = observer(
         tooltip={displayName}
         placement="right"
         offset={0}
+        disabled={isMobile}
         keepOnHover={false}
         as="button"
         asProps={{
