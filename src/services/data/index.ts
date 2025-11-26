@@ -169,7 +169,6 @@ class DataService {
     const displayEletricPole = LocalStorageDB.get<boolean>(LocalStorageKey.ELECTRIC_POLE_DISPLAY) ?? true;
     const displayEletricPoleRange = LocalStorageDB.get<boolean>(LocalStorageKey.ELECTRIC_POLE_RANGE_DISPLAY) ?? true;
     const filterMarked = LocalStorageDB.get<MarkedFeatureFilterMode>(LocalStorageKey.FILTER_MARKED) ?? MarkedFeatureFilterMode.All;
-    const sidebarCollapsed =  LocalStorageDB.get<boolean>(LocalStorageKey.SIDEBAR_COLLAPSED) ?? false;
 
     return {
       zoom,
@@ -179,8 +178,6 @@ class DataService {
       displayEletricPoleRange,
       displayEletricPole,
       filterMarked,
-      // TODO: 侧边栏收缩
-      sidebarCollapsed
     };
   }
 }

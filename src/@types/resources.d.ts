@@ -34,6 +34,40 @@ interface Resources {
     }
   },
   "settings": {
+    "about": {
+      "title": "关于"
+    },
+    "data": {
+      "cache": {
+        "clear": "清除缓存",
+        "failed": "缓存清除失败：{{reason}}",
+        "success": "缓存清除成功，刷新网页生效",
+        "title": "缓存"
+      },
+      "entity_data": {
+        "clear": "清除标点数据",
+        "description": "包括不同类型标点可见性筛选状态、所有标点标记状态，清除后所有标点状态将重置",
+        "failed": "清除标点数据失败：{{reason}}",
+        "success": "清除标点数据成功，刷新网页生效",
+        "title": "标点数据"
+      },
+      "state_data": {
+        "clear": "清除状态数据",
+        "description": "包括地图位置状态、当前查看地图状态、聚合设置、电线杆相关显示隐藏等非重要内容",
+        "failed": "清除状态数据失败：{{reason}}",
+        "success": "清除状态数据成功，刷新网页生效",
+        "title": "状态数据"
+      },
+      "storage_data": {
+        "clear": "清除储存数据",
+        "confirm": "[危险操作]确认要删除所有数据吗？删除后不可恢复！删除的数据包括状态数据、标点筛选数据、标记数据以及所有电线杆数据。",
+        "description": "[危险操作]删除所有存储数据，包括状态数据、标点筛选数据以及所有电线杆数据",
+        "failed": "清除所有储存数据失败：{{reason}}",
+        "success": "清除所有储存数据成功，刷新网页生效",
+        "title": "储存数据"
+      },
+      "title": "数据管理"
+    },
     "language": {
       "change_language": "切换语言",
       "language_list": {

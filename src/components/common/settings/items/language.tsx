@@ -8,7 +8,8 @@ import { cn } from '@/utils/style';
 
 export const LanguageSetting = () => {
   const { t, i18n } = useTranslation('settings');
-  const currentLocale = i18n.language as LanguageLocale;
+  const currentLocales = i18n.languages as LanguageLocale[];
+  const currentLocale = currentLocales.find((locale) => languageConfig.some((item) => item.locale === locale)) || 'cn';
 
   const changeLanguage = (locale: LanguageLocale) => {
     i18n.changeLanguage(locale);

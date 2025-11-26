@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { TabList, type TabItem } from './tabs';
 import { ScrollArea } from '../scroll_area';
-import { MapIcon, QuestionIcon, TranslateIcon } from '../icons';
+import { DataBaseIcon, MapIcon, QuestionIcon, TranslateIcon } from '../icons';
 import { LanguageSetting } from './items/language';
 import { MapSetting } from './items/map';
 import { AboutPage } from './items/about';
+import { DataSetting } from './items/data';
 
 export interface SettingsPageProps {
   open: boolean;
@@ -31,6 +32,11 @@ const settingList = [
     key: 'language',
     icon: <TranslateIcon />,
     Component: LanguageSetting,
+  },
+  {
+    key: 'data',
+    icon: <DataBaseIcon />,
+    Component: DataSetting,
   },
   {
     key: 'about',

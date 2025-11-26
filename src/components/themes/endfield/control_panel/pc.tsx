@@ -3,9 +3,11 @@ import EntityPanel from './controllers/entity_panel';
 import { HeaderLogo } from '@/components/common/header_logo';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { Operations } from './controllers/operations';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Filters } from './controllers/filters';
 import TitleArrow from './controllers/arrow';
+import uiManager from '@/services/ui_manager';
+import { observer } from 'mobx-react-lite';
 
 const TopDeco = () => (
   <div
@@ -16,9 +18,9 @@ const TopDeco = () => (
   ></div>
 );
 
-export default function PCControlPanel() {
+const PCControlPanel = observer(() => {
   const portalRef = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState(true);
+  const isOpen = uiManager.sidebarCollapsed;
 
   return (
     <motion.div
@@ -29,15 +31,14 @@ export default function PCControlPanel() {
     >
       <TopDeco />
 
-      <div className="absolute left-0 top-9 z-0">
-        <TitleArrow open={isOpen} onToggle={() => setIsOpen(!isOpen)} />
+      <div className="absolute left-0 top-6 z-0">
+        <TitleArrow open={isOpen} onToggle={() => uiManager.toggleSidebar()} />
       </div>
-
+      <div className="absolute pl-8 pr-8 shrink-0 grow-0 w-full top-3 z-1">
+        <HeaderLogo className="z-1 relative" />
+      </div>
       <div className="bg-[#272727] border-r-[0.45em] border-r-[#5a5b5a] flex-1 flex flex-col overflow-y-hidden">
-        <div className="pl-8 pr-8 shrink-0 grow-0 relative">
-          <HeaderLogo className="z-1 relative" />
-        </div>
-        <div className="px-3 overflow-hidden shrink-0 grow-0 mt-1 space-y-1">
+        <div className="px-3 overflow-hidden shrink-0 grow-0 mt-1 space-y-1 pt-28">
           <Filters />
           <Operations portalRef={portalRef} />
         </div>
@@ -55,4 +56,6 @@ export default function PCControlPanel() {
       </div>
     </motion.div>
   );
-}
+})
+
+export default PCControlPanel;

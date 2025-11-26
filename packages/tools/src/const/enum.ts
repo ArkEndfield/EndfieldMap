@@ -42,8 +42,6 @@ export enum LocalStorageKey {
   ELECTRIC_POLE_DISPLAY = 'electric_pole_display',
   // 标记筛选
   FILTER_MARKED = 'filter_marked',
-  // 侧边栏展开情况
-  SIDEBAR_COLLAPSED = 'sidebar_collapsed',
 }
 
 /** 加载状态枚举 */

@@ -22,7 +22,7 @@ export class LocalStorageDB {
   }
 
   public static clear(): void {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    localStorage.clear();
   }
 
   public static key(index: number): string | null {
