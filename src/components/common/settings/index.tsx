@@ -109,6 +109,7 @@ const ContentWrapper = ({ children, active }: { children: React.ReactNode; activ
 const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [activeTab, setActiveTab] = useState<(typeof settingList)[number]['key']>(settingList[0].key);
+
   useEffect(() => {
     if (open) {
       dialogRef.current?.showModal();
@@ -116,7 +117,7 @@ const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
       dialogRef.current?.close();
     }
   }, [open]);
-  if (!open) return null;
+
   return (
     <motion.dialog
       ref={dialogRef}
@@ -159,7 +160,7 @@ export const SettingsPage: React.FC = observer(() => {
   const onClose = () => uiManager.setSettingsShown(false);
   return createPortal(
     <AnimatePresence>
-      <Settings open={open} onClose={onClose} />
+      {open && <Settings open={open} onClose={onClose} />}
     </AnimatePresence>,
     document.body
   );
