@@ -21,7 +21,7 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className }: Endfi
   return (
     <div className={cn('flex items-center relative shadow-[0_0_3px_#00000044] rounded-full bg-[#5C5A5D]', className)}>
       <motion.div
-        className="absolute left-0 h-full rounded-full bg-[#D4D2D3] shadow-[0_0_3px_#00000066] z-1"
+        className="absolute left-0 h-full rounded-full bg-[#EDEBEC] shadow-[0_0_3px_#00000066] z-1"
         style={{
           width: 'calc(50% + 0.5em)',
         }}

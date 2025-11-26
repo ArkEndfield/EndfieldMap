@@ -60,6 +60,18 @@ export class MapController {
   }
 
   /**
+   * 移动视图中心
+   * @param center 中心点
+   */
+  public moveViewCenter(center: Coordinate, zoom?: number) {
+    this.mapRenderer.view.animate({
+      center,
+      zoom,
+      duration: 500,
+    });
+  }
+
+  /**
    * 设置地图缩放级别
    * @param zoom 缩放级别
    */

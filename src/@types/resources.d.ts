@@ -81,6 +81,7 @@ interface Resources {
     },
     "map": {
       "cluster": "标点聚合",
+      "move_center": "回到地图中心",
       "title": "地图"
     }
   },
