@@ -7,8 +7,17 @@ import type {
 import type { ElectricPoleConnectionFeature, ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { ElectricPoleIdKey, MAP_EVENT } from '@endfieldmap/map-core';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
-import { LocalStorageDB, LocalStorageKey, logger, MapIndex, StorageKey, type StorageManager } from '@endfieldmap/tools';
+import {
+  LocalStorageDB,
+  LocalStorageKey,
+  logger,
+  MapIndex,
+  StorageKey,
+  type StorageManager,
+  debounce,
+} from '@endfieldmap/tools';
 import { action, computed, observable, runInAction, toJS } from 'mobx';
+import { DEBOUNCE_INTERVAL } from '@/const/data';
 
 /**
  * 电线杆数据管理器
@@ -392,12 +401,15 @@ export class ElectricPoleDataService {
   }
 
   private initElectricPoleChangeEvent() {
-    this.adapter?.event.on(MAP_EVENT.ELECTRIC_POLE_CHANGED, () => {
-      // 当电线杆连接关系发生变化时，自动保存数据
-      this.saveCurrentAdapterDataToStorage().catch((error) => {
-        console.error('Failed to save electric pole data after connection change:', error);
-      });
-    });
+    this.adapter?.event.on(
+      MAP_EVENT.ELECTRIC_POLE_CHANGED,
+      debounce(() => {
+        // 当电线杆连接关系发生变化时，自动保存数据
+        this.saveCurrentAdapterDataToStorage().catch((error) => {
+          logger.error('Failed to save electric pole data after connection change:', error);
+        });
+      }, DEBOUNCE_INTERVAL)
+    );
   }
 
   // endregion

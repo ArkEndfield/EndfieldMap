@@ -119,11 +119,6 @@ class DataService {
         this.setMapCenter(currentMap, center);
       }, DEBOUNCE_INTERVAL)
     );
-
-    // 监听电线杆数据变化事件，自动保存到当前预设（节流）
-    this.adapter.event.on(MAP_EVENT.ELECTRIC_POLE_CHANGED, debounce(() => {
-      this.electricPoleDataService.saveCurrentAdapterDataToStorage();
-    }, DEBOUNCE_INTERVAL));
   }
 
   public setMapCenter(mapIndex: MapIndex, center: Coordinate) {
@@ -168,7 +163,8 @@ class DataService {
     const enableCluster = LocalStorageDB.get<boolean>(LocalStorageKey.CLUSTER_ENABLED) ?? true;
     const displayEletricPole = LocalStorageDB.get<boolean>(LocalStorageKey.ELECTRIC_POLE_DISPLAY) ?? true;
     const displayEletricPoleRange = LocalStorageDB.get<boolean>(LocalStorageKey.ELECTRIC_POLE_RANGE_DISPLAY) ?? true;
-    const filterMarked = LocalStorageDB.get<MarkedFeatureFilterMode>(LocalStorageKey.FILTER_MARKED) ?? MarkedFeatureFilterMode.All;
+    const filterMarked =
+      LocalStorageDB.get<MarkedFeatureFilterMode>(LocalStorageKey.FILTER_MARKED) ?? MarkedFeatureFilterMode.All;
 
     return {
       zoom,
