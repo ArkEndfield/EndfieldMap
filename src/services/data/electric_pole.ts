@@ -202,6 +202,12 @@ export class ElectricPoleDataService {
     return this.saveDataToStorage(this.temporaryData);
   }
 
+  public clearActiveFeature() {
+    this.adapter?.activeFeatureController?.clearActiveFeature?.();
+    this.connectingPole = null;
+    this.isConnecting = false;
+  }
+
   // endregion
 
   // region: 电线杆创建
@@ -627,7 +633,7 @@ export class ElectricPoleDataService {
 
     runInAction(() => {
       this.presetStorage.presets.push(newPreset);
-      this.adapter?.activeFeatureController?.clearActiveFeature?.();
+      this.clearActiveFeature();
       this.presetStorage.currentPresetId = newPreset.id;
     });
 
@@ -645,7 +651,7 @@ export class ElectricPoleDataService {
    */
   public async switchPreset(presetId: string) {
     if (this.presetStorage.currentPresetId === presetId) return;
-    this.adapter?.activeFeatureController?.clearActiveFeature?.();
+    this.clearActiveFeature();
 
     // 在切换预设之前，先将当前地图中的电线杆数据保存到当前预设中
     if (this.initialized && this.adapter && this.currentPreset) {
@@ -722,10 +728,10 @@ export class ElectricPoleDataService {
       if (isCurrent) {
         nextPreset = this.presetStorage.presets[0] ?? null;
         this.presetStorage.currentPresetId = nextPreset ? nextPreset.id : null;
-        this.adapter?.activeFeatureController?.clearActiveFeature?.();
+        this.clearActiveFeature();
       } else if (!this.presetStorage.presets.length) {
         this.presetStorage.currentPresetId = null;
-        this.adapter?.activeFeatureController?.clearActiveFeature?.();
+        this.clearActiveFeature();
       }
     });
 
