@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { logger } from '@endfieldmap/tools';
-import { alert } from '@/components/common/endfield_components/alert_api';
+import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { dataService } from '@/services/data';
 
 export interface PresetItem {
@@ -22,10 +22,10 @@ export const usePresetPanel = () => {
   const isIndeterminate = selectedIds.length > 0 && selectedIds.length < presets.length;
 
   const handleCreatePreset = async () => {
-    const name = window.prompt(
-      t('sidebar:operation.electric_pole.preset.create_tip'),
-      t('sidebar:operation.electric_pole.preset.create_default_name')
-    );
+    const name = await alert.prompt({
+      content: t('sidebar:operation.electric_pole.preset.create_tip'),
+      defaultValue: t('sidebar:operation.electric_pole.preset.create_default_name'),
+    });
     if (!name) return;
     await service.createPreset(name);
   };
@@ -41,7 +41,7 @@ export const usePresetPanel = () => {
       if (checked) {
         return prev.filter((x) => x !== id);
       }
-      return [...prev, id]
+      return [...prev, id];
     });
   };
 
@@ -61,7 +61,6 @@ export const usePresetPanel = () => {
       logger.error('导出电线杆预设失败:', selectedIds, error);
     }
   };
-
 
   const handleDeleteSelected = async () => {
     if (!selectedIds.length) return;
@@ -87,7 +86,10 @@ export const usePresetPanel = () => {
         setSelectedIds(failIds);
         if (failCount > 0) {
           alert.info(
-            t('sidebar:operation.electric_pole.preset.delete.batch_fail_tip', { count: failCount, ids: failIds.join('') })
+            t('sidebar:operation.electric_pole.preset.delete.batch_fail_tip', {
+              count: failCount,
+              ids: failIds.join(''),
+            })
           );
         }
       },
@@ -114,9 +116,11 @@ export const usePresetPanel = () => {
   const handleRenamePreset = async (id: string) => {
     const preset = presets.find((p) => p.id === id);
     const currentName = preset?.name ?? '';
-    const name = window.prompt(
-      t('sidebar:operation.electric_pole.preset.create_tip'),
-      currentName || t('sidebar:operation.electric_pole.preset.create_default_name')
+    const name = await alert.prompt(
+      {
+        content: t('sidebar:operation.electric_pole.preset.create_tip'),
+        defaultValue: currentName || t('sidebar:operation.electric_pole.preset.create_default_name')
+      }
     );
     if (!name) return;
     await service.renamePreset(id, name);
@@ -139,13 +143,19 @@ export const usePresetPanel = () => {
         alert.info(t('sidebar:operation.electric_pole.preset.import.success'));
       } else {
         alert.info(
-          t('sidebar:operation.electric_pole.preset.import.failed', t('sidebar:operation.electric_pole.preset.import.format_error'))
+          t(
+            'sidebar:operation.electric_pole.preset.import.failed',
+            t('sidebar:operation.electric_pole.preset.import.format_error')
+          )
         );
       }
     } catch (error) {
       logger.error('电线杆导入失败：', error);
       alert.info(
-        t('sidebar:operation.electric_pole.preset.import.failed', t('sidebar:operation.electric_pole.preset.import.error_tip'))
+        t(
+          'sidebar:operation.electric_pole.preset.import.failed',
+          t('sidebar:operation.electric_pole.preset.import.error_tip')
+        )
       );
     } finally {
       event.target.value = '';

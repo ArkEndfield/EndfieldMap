@@ -90,7 +90,7 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
     <div
       className={cn(
         'top-0 left-0 h-full w-full pt-1 overflow-hidden transition-all bg-[#272727] z-2 flex flex-col',
-        isMobile ? 'relative' : 'absolute',
+        isMobile ? 'relative' : 'absolute z-5',
         isMobile || open ? 'translate-x-0' : '-translate-x-full'
       )}
     >

@@ -7,7 +7,7 @@ import { dataService } from '@/services/data';
 import { useTranslation } from 'react-i18next';
 import { SideButton } from '../mobile/side_button';
 import type { SheetRef } from 'react-modal-sheet';
-import { alert } from '@/components/common/endfield_components/alert_api';
+import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { OperationTip } from './_tip';
 
 const ElectricPoleButtonIcon = ({ children }: { children: React.ReactNode }) => (

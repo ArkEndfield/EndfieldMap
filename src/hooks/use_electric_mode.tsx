@@ -1,6 +1,6 @@
 import { dataService } from "@/services/data";
 import { useAdapter } from "./use_adapter";
-import { alert } from "@/components/common/endfield_components/alert_api";
+import { alert } from "@/components/common/endfield_components/alert/alert_api";
 import { differenceArray } from "@endfieldmap/tools";
 import { useTranslation } from "react-i18next";
 import type Resources from "@eftypes/resources";

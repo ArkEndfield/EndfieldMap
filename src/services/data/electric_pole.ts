@@ -1,4 +1,4 @@
-import { alert } from '@/components/common/endfield_components/alert_api';
+import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import type {
   ElectricPolePresetStorage,
   ElectricPolePreset,

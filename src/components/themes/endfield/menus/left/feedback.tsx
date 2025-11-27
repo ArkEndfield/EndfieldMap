@@ -1,6 +1,6 @@
 import { FeedbackIcon } from '@/components/common/icons';
 import { HeaderMenuTemplate } from './_template';
-import { ZmdAlert } from '@/components/common/endfield_components/alert';
+import { ZmdAlert } from '@/components/common/endfield_components/alert/alert';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrentLanguage } from '@/hooks/use_current_language';

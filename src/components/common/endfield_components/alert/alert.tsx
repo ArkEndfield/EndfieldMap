@@ -2,10 +2,10 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { motion, useAnimate } from 'motion/react';
 // import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
-import { ZmdButton } from './button';
+import { ZmdButton } from '../button';
 import { cn } from '@/utils/style';
 import { useTranslation } from 'react-i18next';
-import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from './icons';
+import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '../icons';
 
 const ALERT_BG = '/images/bg/alert/alert_bg.png';
 const ALERT_BANNER_BG_LEFT = '/images/bg/alert/alert_banner_bg_left.png';

@@ -1,6 +1,6 @@
-import { type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { ZmdAlert, type ZmdAlertProps } from './alert';
+import { PromptInput } from './input';
 
 interface AlertInstance {
   destroy: () => void;
@@ -8,7 +8,19 @@ interface AlertInstance {
 }
 
 interface AlertConfig extends Omit<ZmdAlertProps, 'open' | 'onOpenChange'> {
-  content?: ReactNode;
+  content?: React.ReactNode;
+}
+
+interface PromptConfig extends Omit<AlertConfig, 'content'> {
+  content?: React.ReactNode;
+  placeholder?: string;
+  defaultValue?: string;
+  inputType?: 'text' | 'password' | 'number' | 'email' | 'url' | 'tel';
+  required?: boolean;
+  maxLength?: number;
+  minLength?: number;
+  pattern?: string;
+  inputClassName?: string;
 }
 
 class AlertManager {
@@ -115,13 +127,64 @@ class AlertManager {
   info(config: Omit<AlertConfig, 'hideCancel'> | string): AlertInstance {
     if (typeof config === 'string') {
       return this.createAlert({
-        content: <div className='text-center'>{config}</div>,
+        content: <div className="text-center">{config}</div>,
         hideCancel: true,
       });
     }
     return this.createAlert({
       ...config,
       hideCancel: true,
+    });
+  }
+
+  prompt(config: PromptConfig | string): Promise<string | null> {
+    return new Promise((resolve) => {
+      let inputValue = typeof config === 'string' ? '' : (config.defaultValue ?? '');
+
+      const promptConfig: PromptConfig = typeof config === 'string' ? { content: config } : config;
+
+      this.createAlert({
+        ...promptConfig,
+        content: (
+          <PromptInput
+            placeholder={promptConfig.placeholder}
+            defaultValue={promptConfig.defaultValue}
+            inputType={promptConfig.inputType}
+            maxLength={promptConfig.maxLength}
+            minLength={promptConfig.minLength}
+            pattern={promptConfig.pattern}
+            inputClassName={promptConfig.inputClassName}
+            content={promptConfig.content}
+            onValueChange={(value) => {
+              inputValue = value;
+            }}
+          />
+        ),
+        onConfirm: async () => {
+          if (promptConfig.required && !inputValue.trim()) {
+            return false;
+          }
+          const result = await promptConfig.onConfirm?.();
+          if (result !== false) {
+            resolve(inputValue);
+          }
+          return result;
+        },
+        onCancel: async () => {
+          const result = await promptConfig.onCancel?.();
+          if (result !== false) {
+            resolve(null);
+          }
+          return result;
+        },
+        onClose: async () => {
+          const result = await promptConfig.onClose?.();
+          if (result !== false) {
+            resolve(null);
+          }
+          return result;
+        },
+      });
     });
   }
 

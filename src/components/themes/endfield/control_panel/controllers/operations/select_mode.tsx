@@ -2,7 +2,7 @@ import { EntityInstanceKey, type MapFeature } from '@endfieldmap/map-core';
 import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
 import { dataService } from '@/services/data';
-import { alert } from '@/components/common/endfield_components/alert_api';
+import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { useTranslation } from 'react-i18next';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';

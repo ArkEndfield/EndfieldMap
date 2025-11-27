@@ -3,7 +3,7 @@ import { SettingItem } from '../../components/setting_item';
 import { useTranslation } from 'react-i18next';
 import { usePromiseState } from '@/hooks/use_promise_state';
 import { Loading } from '../../components/loading';
-import { alert } from '@/components/common/endfield_components/alert_api';
+import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { LocalStorageDB } from '@endfieldmap/tools';
 
 export const StateSettings = () => {
