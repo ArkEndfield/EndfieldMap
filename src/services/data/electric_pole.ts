@@ -627,6 +627,7 @@ export class ElectricPoleDataService {
 
     runInAction(() => {
       this.presetStorage.presets.push(newPreset);
+      this.adapter?.activeFeatureController?.clearActiveFeature?.();
       this.presetStorage.currentPresetId = newPreset.id;
     });
 
