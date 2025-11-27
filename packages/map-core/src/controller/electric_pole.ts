@@ -143,6 +143,20 @@ export class ElectricPoleController {
   }
 
   /**
+   * 加载电线杆数据（不重新生成 ID）
+   * - 用于从预设加载数据，保持原有的 levelLogicId 和 connectTo 引用
+   * @param data 电线杆数据
+   */
+  public loadElectricPoleData(data: ElectricPoleMapData) {
+    Object.entries(data).forEach(([mapIndexKey, list]) => {
+      const mapIndex = mapIndexKey as MapIndex;
+      const poleList = list as ElectricPoleDataList;
+      this.initMapElectricPoleLayers(mapIndex, poleList);
+    });
+    this.notifyElectricPoleChanged();
+  }
+
+  /**
    * 重置所有地图上的电线杆数据
    * - 清空现有的电线杆图层与数据
    * - 使用新的 ElectricPoleMapData 重新初始化
@@ -155,9 +169,8 @@ export class ElectricPoleController {
     this.layerContainer = null;
     this.currentMapIndex = undefined;
 
-    // 使用新的数据重新初始化
-    this.initElectricPoleData(data);
-    this.notifyElectricPoleChanged();
+    // 直接加载数据，不重新生成 ID（预设数据的 ID 已经是唯一的）
+    this.loadElectricPoleData(data);
   }
 
   /**
