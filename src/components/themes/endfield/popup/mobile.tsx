@@ -85,9 +85,9 @@ const MobilePopup: React.FC = observer(() => {
   }, [activeFeature]);
 
   return (
-    <Sheet isOpen={open} onClose={handleClose} snapPoints={snapPoints} initialSnap={5} dragVelocityThreshold={1500}>
+    <Sheet isOpen={open} onClose={handleClose} snapPoints={snapPoints} initialSnap={5}>
       <Sheet.Container>
-        <Sheet.Header className="bg-[#272727]" />
+        <Sheet.Header className="bg-[#272727] rounded-t-md" />
         <Sheet.Content disableDrag disableScroll className="bg-[#272727] text-white">
           <div className="w-full h-full flex flex-col">
             {showRewards && (

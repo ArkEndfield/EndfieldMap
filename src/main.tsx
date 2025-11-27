@@ -7,7 +7,8 @@ import '@/i18n';
 
 import '@/index.css';
 import { disablePageZoom } from '@endfieldmap/tools';
+import { isDev } from './services/env';
 
-disablePageZoom();
+if (!isDev) disablePageZoom();
 
 createRoot(document.getElementById('root')!).render(<App />);

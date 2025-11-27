@@ -3,8 +3,12 @@
   "cancel": "取消",
   "on": "开启",
   "off": "关闭",
+  "select_all": "全选",
+  "rename": "重命名",
+  "delete": "删除",
   "operate": {
     "mark": "标记",
-    "unmark": "取消标记"
+    "unmark": "取消标记",
+    "clear_selection": "清空选择"
   }
 }

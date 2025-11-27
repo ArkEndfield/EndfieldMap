@@ -1,13 +1,15 @@
 import { EntityInstanceKey, type MapFeature } from '@endfieldmap/map-core';
 import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
-import { createPortal } from 'react-dom';
 import { dataService } from '@/services/data';
 import { alert } from '@/components/common/endfield_components/alert_api';
 import { useTranslation } from 'react-i18next';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { SideButton } from '../mobile/side_button';
+import { OperationTip } from './_tip';
+import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
+import { AnimatePresence, motion } from 'motion/react';
 
 const MultiOperationIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 92" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -76,22 +78,36 @@ const SelectOperator = observer(() => {
     });
   };
 
+  const clearSelection = () => {
+    adapter.mapController.selection.clearSelection();
+  }
+
   return (
-    <div className="fixed top-14 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4">
-      <div className="text-sm text-gray-600">
+    <div className='flex items-center gap-2 flex-wrap justify-center'>
+      <span className='text-center'>
         {t('sidebar:operation.selected_feature', { val: selectedFeatures.length })}
-      </div>
-      {selectedFeatures.length > 0 && (
-        <div className="flex gap-2 mt-2">
-          <button className="bg-blue-500 text-white px-2 py-1 rounded" onClick={() => markFeatures(true)}>
-            {t('common:operate.mark')}
-          </button>
-          <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={() => markFeatures(false)}>
-            {t('common:operate.unmark')}
-          </button>
-        </div>
-      )}
-      <button onClick={() => adapter.mapController.selection.stopSelecting()}>{t('operation.cancel_operation')}</button>
+      </span>
+      <AnimatePresence>
+        {selectedFeatures.length > 0 && (
+          <motion.div
+            className="flex gap-1 overflow-hidden"
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 'auto', opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+          >
+            <EndfieldFormButton className='text-sm py-0.5 px-2' onClick={() => markFeatures(true)}>
+              {t('common:operate.mark')}
+            </EndfieldFormButton>
+            <EndfieldFormButton className="text-sm py-0.5 px-2" onClick={() => markFeatures(false)}>
+              {t('common:operate.unmark')}
+            </EndfieldFormButton>
+            <EndfieldFormButton className="text-sm py-0.5 px-2" variant='primary' onClick={clearSelection}>
+              {t('common:operate.clear_selection')}
+            </EndfieldFormButton>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 });
@@ -104,12 +120,15 @@ export const SelectModeOperation = observer(() => {
 
   const toggleSelectMode = () => {
     if (!isSelecting && dataService.electricPoleDataService.isInElectricOperateMode) {
-      alert.info({
-        content: <div className="text-center">{t('operation.electric_pole_operating_tip')}</div>,
-      });
+      alert.info(t('operation.electric_pole_operating_tip'));
       return;
     }
     adapter.mapController.selection.toggleSelecting();
+    adapter.activeFeatureController.clearActiveFeature();
+  };
+
+  const stopSelectMode = () => {
+    adapter.mapController.selection.stopSelecting();
     adapter.activeFeatureController.clearActiveFeature();
   };
 
@@ -117,7 +136,9 @@ export const SelectModeOperation = observer(() => {
     <>
       {isMobile ? (
         <SideButton onClick={toggleSelectMode}>
-          <MultiOperationIcon>{isSelecting ? t('operation.cancel_operation') : t('operation.multi_operation')}</MultiOperationIcon>
+          <MultiOperationIcon>
+            {isSelecting ? t('operation.cancel_operation') : t('operation.multi_operation')}
+          </MultiOperationIcon>
         </SideButton>
       ) : (
         <OperationButton
@@ -126,7 +147,9 @@ export const SelectModeOperation = observer(() => {
           onClick={toggleSelectMode}
         />
       )}
-      {isSelecting && createPortal(<SelectOperator />, document.body)}
+      <OperationTip open={isSelecting} onClose={stopSelectMode}>
+        <SelectOperator />
+      </OperationTip>
     </>
   );
 });

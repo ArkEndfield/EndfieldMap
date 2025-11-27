@@ -3,12 +3,16 @@ interface Resources {
   "common": {
     "cancel": "取消",
     "confirm": "确认",
+    "delete": "删除",
     "off": "关闭",
     "on": "开启",
     "operate": {
+      "clear_selection": "清空选择",
       "mark": "标记",
       "unmark": "取消标记"
-    }
+    },
+    "rename": "重命名",
+    "select_all": "全选"
   },
   "header": {
     "feedback": {
@@ -119,10 +123,58 @@ interface Resources {
     "operation": {
       "cancel_operation": "取消操作",
       "close_electric_pole_manager": "关闭管理器",
+      "electric_pole": {
+        "connect": {
+          "delete": {
+            "in_mode": "正在删除连线",
+            "start": "删除连线"
+          },
+          "in_mode": "正在连接电线杆",
+          "start": "连接"
+        },
+        "create": {
+          "auto_connect": "创建时自动连接",
+          "in_mode": "正在创建电线杆",
+          "start": "创建"
+        },
+        "delete": {
+          "in_mode": "正在删除电线杆",
+          "start": "删除"
+        },
+        "display": "显示电线杆",
+        "preset": {
+          "batch_delete": "批量删除",
+          "create": "新建预设",
+          "create_default_name": "新预设",
+          "create_tip": "请输入新电线杆预设名称",
+          "current": "当前预设",
+          "delete": {
+            "batch_fail_tip": "{{count}}个预设删除失败，id为{{ids}}",
+            "confirm": "确定要删除预设「{{name}}」吗？此操作不可恢复",
+            "confirm_batch": "确定要删除选中的 {{count, number}} 个电线杆预设吗？此操作不可恢复。",
+            "fail_tip": "删除失败"
+          },
+          "empty": "暂无预设，请先创建",
+          "export_select": "导出所选预设",
+          "import": {
+            "button": "导入预设",
+            "error_tip": "文件格式不合法或解析错误",
+            "failed": "电线杆预设导入失败：{{reason}}",
+            "format_error": "文件内容格式不正确",
+            "success": "电线杆预设导入成功"
+          },
+          "select_info": "共 {{total, number}} 个预设，已选 {{select, number}} 个",
+          "title": "电线杆预设"
+        },
+        "zone": {
+          "display": "显示电线杆范围"
+        }
+      },
       "electric_pole_manager": "电线杆管理",
       "electric_pole_operating_tip": "正在处于电线杆操作状态，请先结束操作",
       "multi_operation": "批量操作",
-      "selected_feature": "已选中 {{val, number}} 个标点"
+      "selected_feature": "已选中 {{val, number}} 个标点",
+      "selecting_operating_tip": "正在处于批量操作状态，请先结束批量操作"
     },
     "unfold": "展开"
   }

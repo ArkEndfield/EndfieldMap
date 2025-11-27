@@ -1,0 +1,55 @@
+import { useTranslation } from 'react-i18next';
+import { PresetListItem } from './preset_list_item';
+import type { PresetItem } from '@/hooks/use_preset_panel';
+
+interface PresetListProps {
+  presets: PresetItem[];
+  currentPresetId: string;
+  selectedIds: string[];
+  onSwitch: (id: string) => void;
+  onToggleSelect: (id: string) => void;
+  onRename: (id: string) => void;
+  onDelete: (id: string) => void;
+}
+
+const PresetList: React.FC<PresetListProps> = ({
+  presets,
+  currentPresetId,
+  selectedIds,
+  onSwitch,
+  onToggleSelect,
+  onRename,
+  onDelete,
+}) => {
+  const { t } = useTranslation(['sidebar']);
+
+  if (presets.length === 0) {
+    return (
+      <div className="rounded-md max-h-64 overflow-y-auto bg-white/80">
+        <div className="py-6 text-center text-xs text-gray-400">
+          {t('sidebar:operation.electric_pole.preset.empty')}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      {presets.map((preset, index) => (
+          <PresetListItem
+            title={preset.name}
+            key={preset.id}
+            index={index + 1}
+            active={preset.id === currentPresetId}
+            select={selectedIds.includes(preset.id)}
+            onClick={() => onSwitch(preset.id)}
+            onToggleSelect={() => onToggleSelect(preset.id)}
+            onRename={() => onRename(preset.id)}
+            onDelete={() => onDelete(preset.id)}
+          />
+        ))}
+    </div>
+  );
+};
+
+export default PresetList;

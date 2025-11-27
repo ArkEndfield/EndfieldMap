@@ -112,7 +112,13 @@ class AlertManager {
     });
   }
 
-  info(config: Omit<AlertConfig, 'hideCancel'>): AlertInstance {
+  info(config: Omit<AlertConfig, 'hideCancel'> | string): AlertInstance {
+    if (typeof config === 'string') {
+      return this.createAlert({
+        content: <div className='text-center'>{config}</div>,
+        hideCancel: true,
+      });
+    }
     return this.createAlert({
       ...config,
       hideCancel: true,

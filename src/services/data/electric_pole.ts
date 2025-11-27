@@ -531,7 +531,6 @@ export class ElectricPoleDataService {
   public stopConnectElectricPole() {
     this.isConnecting = false;
     this.connectingPole = null;
-    this.adapter?.activeFeatureController?.clearActiveFeature?.();
   }
 
   /** 切换连接状态 */

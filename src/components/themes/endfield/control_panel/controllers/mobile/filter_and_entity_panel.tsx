@@ -48,7 +48,7 @@ export const FilterControl = () => {
       </button>
       <Sheet isOpen={open} onClose={onClose}>
         <Sheet.Container>
-          <Sheet.Header className="bg-[#272727]" />
+          <Sheet.Header className="bg-[#272727] rounded-t-md" />
           <Sheet.Content disableDrag disableScroll className="flex flex-col bg-[#272727] text-white">
             <div className="w-full h-full overflow-hidden flex flex-col">
               <div className="shrink-0 p-2">
@@ -65,7 +65,7 @@ export const FilterControl = () => {
             e.stopPropagation();
             onClose();
           }}
-          className="pointer-events-auto"
+          className="pointer-events-auto bg-black/40!"
         />
       </Sheet>
     </>

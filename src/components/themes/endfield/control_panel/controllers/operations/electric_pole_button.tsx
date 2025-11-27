@@ -2,12 +2,13 @@ import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
 import { useState, useEffect, useRef } from 'react';
-import { ElectricPoleManager, ElectricPoleManagerMobile } from './electric_pole';
+import { ElectricModeTip, ElectricPoleManager, ElectricPoleManagerMobile } from './electric_pole';
 import { dataService } from '@/services/data';
 import { useTranslation } from 'react-i18next';
 import { SideButton } from '../mobile/side_button';
 import type { SheetRef } from 'react-modal-sheet';
 import { alert } from '@/components/common/endfield_components/alert_api';
+import { OperationTip } from './_tip';
 
 const ElectricPoleButtonIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,9 +51,7 @@ export const ElectricPoleButtomMobile = observer(() => {
   const onClose = () => {
     if (dataService.electricPoleDataService.isInElectricOperateMode) {
       sheet.current?.snapTo(1);
-      alert.info({
-        content: <div className="text-center">{t('operation.electric_pole_operating_tip')}</div>,
-      });
+      alert.info(t('operation.electric_pole_operating_tip'));
       return;
     }
     setOpen(false);
@@ -92,6 +91,10 @@ export const ElectricPoleButton = observer(({ portalRef }: { portalRef: React.Re
     setOpen(!open);
   };
 
+  const onClose = () => {
+    dataService.electricPoleDataService.stopAllOperation();
+  }
+
   return (
     <>
       <OperationButton
@@ -100,6 +103,9 @@ export const ElectricPoleButton = observer(({ portalRef }: { portalRef: React.Re
         onClick={onToggle}
       />
       {portalContainer && createPortal(<ElectricPoleManager open={open} />, portalContainer)}
+      <OperationTip open={dataService.electricPoleDataService.isInElectricOperateMode} onClose={onClose}>
+        <ElectricModeTip />
+      </OperationTip>
     </>
   );
 });
