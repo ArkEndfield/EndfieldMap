@@ -722,8 +722,10 @@ export class ElectricPoleDataService {
       if (isCurrent) {
         nextPreset = this.presetStorage.presets[0] ?? null;
         this.presetStorage.currentPresetId = nextPreset ? nextPreset.id : null;
+        this.adapter?.activeFeatureController?.clearActiveFeature?.();
       } else if (!this.presetStorage.presets.length) {
         this.presetStorage.currentPresetId = null;
+        this.adapter?.activeFeatureController?.clearActiveFeature?.();
       }
     });
 
