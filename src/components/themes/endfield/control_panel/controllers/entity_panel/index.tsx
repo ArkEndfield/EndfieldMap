@@ -65,7 +65,7 @@ const EntityPanel = observer(() => {
     // 按 category 分组
     const categoryMap = new Map<Category, EntityItemInfo[]>();
     entityInfoMap.forEach((entity) => {
-      const category = entity.category;
+      const category = entity.category as Category;
       if (!categoryMap.has(category)) {
         categoryMap.set(category, []);
       }

@@ -105,7 +105,7 @@ export type EntityInfoKey = EntityData['entityDataIdKey'];
  * 实体信息数据
  */
 export interface EntityInfoData {
-  category: EntityCategoryData['category'];
+  category: EntityCategoryData['category'] | typeof ElectricPoleIdKey;
   entityInfo: {
     point: EntityInfoKey;
     pic: string;

@@ -39,20 +39,56 @@ const Header = ({ name, pic }: { name: string; pic: string }) => (
   </div>
 );
 
-/** 左边弹窗内容 */
-export const LeftContent: React.FC = observer(() => {
+export const LeftContent = observer(({ className }: { className?: string }) => {
   const { adapter } = useAdapter();
   const { t } = useTranslation(['popup', 'common']);
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityData = activeFeature?.data;
 
-  if ( !activeFeature || !entityData) return null;
+  if (!activeFeature || !entityData) return null;
 
   const handleToggleMarked = () => {
     if (activeFeature) {
       activeFeature.toggleMarked();
     }
   };
+
+  return (
+    <div className={cn('relative z-1 flex flex-col', className)}>
+      <Header
+        name={entityData.entityInfo.entityInfo.point}
+        pic={getEntityIcon(entityData.entityInfo.category, entityData.entityInfo.entityInfo.pic)}
+      />
+
+      <div className="my-2 text-sm flex flex-wrap items-center gap-2 px-4 shrink-0">
+        <span className="ml-auto text-zinc-400">id: {entityData.levelLogicId}</span>
+      </div>
+
+      <ScrollArea className="flex-1 min-h-0">
+        <Guide entity={entityData} />
+      </ScrollArea>
+
+      {/* 操作按钮 */}
+      {activeFeature.markable && (
+        <div className="mt-3 pt-3 shrink-0 flex">
+          <ZmdButton
+            onClick={(e) => {
+              e.stopPropagation();
+              handleToggleMarked();
+            }}
+            iconPosition={activeFeature.marked ? 'left' : 'right'}
+          >
+            {activeFeature.marked ? t('common:operate.unmark') : t('common:operate.mark')}
+          </ZmdButton>
+        </div>
+      )}
+    </div>
+  );
+});
+
+/** 左边弹窗内容 */
+export const LeftContentContainer: React.FC = observer(() => {
+  const { adapter } = useAdapter();
 
   return (
     <div className={cn('w-full', 'border-b-6 border-[#656465] relative')}>
@@ -71,35 +107,7 @@ export const LeftContent: React.FC = observer(() => {
       >
         <Deco />
 
-        <div className="relative z-1 flex flex-col max-h-78">
-          <Header
-            name={entityData.entityInfo.entityInfo.point}
-            pic={getEntityIcon(entityData.entityInfo.category, entityData.entityInfo.entityInfo.pic)}
-          />
-
-          <div className="my-2 text-sm flex flex-wrap items-center gap-2 px-4 shrink-0">
-            <span className="ml-auto text-zinc-400">id: {entityData.levelLogicId}</span>
-          </div>
-
-          <ScrollArea className="flex-1 min-h-0">
-            <Guide entity={entityData} />
-          </ScrollArea>
-
-          {/* 操作按钮 */}
-          {activeFeature.markable && (
-            <div className="mt-3 pt-3 shrink-0 flex">
-              <ZmdButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleToggleMarked();
-                }}
-                iconPosition={activeFeature.marked ? 'left' : 'right'}
-              >
-                {activeFeature.marked ? t('common:operate.unmark') : t('common:operate.mark')}
-              </ZmdButton>
-            </div>
-          )}
-        </div>
+        <LeftContent className="max-h-78" />
       </div>
     </div>
   );

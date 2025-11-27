@@ -5,7 +5,7 @@ import type { ElectricPoleData, ElectricPoleDataList, ElectricPoleMapData } from
 import { ELECTRIC_ZONE_RADIUS, ElectricPoleIdKey, type MapIndex } from '@endfieldmap/map-core/const/map';
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
 import { action, computed, observable } from 'mobx';
-import { Coordinate } from 'ol/coordinate';
+import type { Coordinate } from 'ol/coordinate';
 import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';

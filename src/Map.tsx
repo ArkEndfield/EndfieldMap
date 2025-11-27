@@ -59,7 +59,7 @@ function EndfieldMap() {
   const { adapter, renderMap } = useMapAdapter(container);
 
   return (
-    <div className="relative w-screen h-screen">
+    <div className="relative w-full h-full overflow-hidden">
       {/* 地图容器 */}
       <div ref={container} className="fixed w-full h-full"></div>
 

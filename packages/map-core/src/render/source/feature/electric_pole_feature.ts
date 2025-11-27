@@ -1,6 +1,6 @@
 import { ELECTRIC_ZONE_RADIUS, EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
 import { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import { ElectricPoleData, EntityInfoData } from '@endfieldmap/map-core/types';
+import type { ElectricPoleData, EntityInfoData } from '@endfieldmap/map-core/types';
 import { action, computed, observable } from 'mobx';
 import { Point } from 'ol/geom';
 import type { BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';

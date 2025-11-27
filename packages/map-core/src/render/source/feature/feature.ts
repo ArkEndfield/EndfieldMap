@@ -7,7 +7,7 @@ import { xyz2crd } from '@endfieldmap/tools';
 import { LineString, Point } from 'ol/geom';
 import { action, computed, observable } from 'mobx';
 import VectorSource from 'ol/source/Vector';
-import FeatureBase, { BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
+import FeatureBase, { type BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
 
 export interface MapFeatureConfig extends BaseFeatureConfig {
   data: EntityData;

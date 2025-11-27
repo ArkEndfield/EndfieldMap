@@ -1,6 +1,7 @@
 import { cn } from '@/utils/style';
 import { Tooltip } from '../../endfield_components/tooltip';
 import { QuestionIcon } from '../../icons';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 export interface SettingItemProps {
   title: React.ReactNode;
@@ -55,6 +56,7 @@ const Deco = ({ withTail }: { withTail?: boolean }) => (
 );
 
 export const SettingItem = ({ title, description, question, children, className, classNames, tailDeco }: SettingItemProps) => {
+  const isMobile = useIsMobile();
   return (
     <div
       className={cn('flex relative p-2 items-center border-[1.5px] rounded-sm bg-white/10 border-white/30', className)}
@@ -78,7 +80,7 @@ export const SettingItem = ({ title, description, question, children, className,
         </div>
         {description && <div className={cn('text-sm text-zinc-600', classNames?.left?.description)}>{description}</div>}
       </div>
-      <div className={cn('flex shrink-0 grow-0 relative z-1 min-w-32 md:min-w-64', classNames?.content)}>{children}</div>
+      <div className={cn('flex shrink-0 grow-0 relative z-1 min-w-32 md:min-w-64', isMobile && "text-sm", classNames?.content)}>{children}</div>
     </div>
   );
 };

@@ -18,7 +18,7 @@ export const OperationButton = ({ icon, subtitle, title, onClick }: OperationBut
 
   return (
     <button
-      className="relative min-w-[6em] w-auto px-4 py-2 text-center transition-all duration-250 ease-in-out select-none rounded-[2px] hover:bg-[rgba(40,40,42,0.7)] active:bg-[rgba(50,50,54,0.9)]
+      className="relative min-w-[6em] w-auto px-4 py-2 text-center transition-all duration-250 ease-in-out select-none rounded-xs hover:bg-[rgba(40,40,42,0.7)] active:bg-[rgba(50,50,54,0.9)]
         before:content-[''] before:absolute before:top-1/2 before:-translate-y-1/2 before:left-0 before:w-[0.75px] before:h-[40%] before:bg-[#35383d] before:transition-all before:duration-250
         after:content-[''] after:absolute after:top-1/2 after:-translate-y-1/2 after:right-0 after:w-[0.75px] after:h-[40%] after:bg-[#35383d] after:transition-all after:duration-250
         first:before:w-[1.5px] last:after:w-[1.5px]"
@@ -39,8 +39,8 @@ export const OperationButton = ({ icon, subtitle, title, onClick }: OperationBut
             'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-none',
             'transition-[width,height,opacity,box-shadow] duration-150 ease-in-out will-change-[width,height,opacity,box-shadow]',
             isHovered
-                ? 'w-[calc(100%-2px)] h-[calc(100%-2px)] opacity-0 shadow-[inset_0_0_5px_rgba(224,224,224,0.3)]'
-                : 'w-0 h-[2px] opacity-100 shadow-[inset_0_0_5px_rgba(193,193,193,0)]',
+              ? 'w-[calc(100%-2px)] h-[calc(100%-2px)] opacity-0 shadow-[inset_0_0_5px_rgba(224,224,224,0.3)]'
+              : 'w-0 h-0.5 opacity-100 shadow-[inset_0_0_5px_rgba(193,193,193,0)]',
             isActive ? 'opacity-0!' : ''
           )}
           style={{
@@ -50,16 +50,18 @@ export const OperationButton = ({ icon, subtitle, title, onClick }: OperationBut
             backgroundRepeat: 'no-repeat',
           }}
         />
-        
+
         {/* Active gradient */}
         <div
           className={cn(
             'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-none',
             'transition-[width,height,opacity,box-shadow] duration-150 ease-in-out will-change-[width,height,opacity,box-shadow]',
             isHovered
-                ? 'w-[calc(100%-2px)] h-[calc(100%-2px)] opacity-100 shadow-[inset_0_0_5px_rgba(224,224,224,0.3)]'
-                : 'w-0 h-[2px] opacity-0 shadow-[inset_0_0_5px_rgba(193,193,193,0)]',
-            isActive ? 'w-[calc(100%-2px)]! h-[calc(100%-2px)]! opacity-100! shadow-[inset_0_0_5px_rgba(224,224,224,0.3)]!' : '',
+              ? 'w-[calc(100%-2px)] h-[calc(100%-2px)] opacity-100 shadow-[inset_0_0_5px_rgba(224,224,224,0.3)]'
+              : 'w-0 h-0.5 opacity-0 shadow-[inset_0_0_5px_rgba(193,193,193,0)]',
+            isActive
+              ? 'w-[calc(100%-2px)]! h-[calc(100%-2px)]! opacity-100! shadow-[inset_0_0_5px_rgba(224,224,224,0.3)]!'
+              : ''
           )}
           style={{
             backgroundImage: isActive
@@ -73,15 +75,13 @@ export const OperationButton = ({ icon, subtitle, title, onClick }: OperationBut
       </div>
 
       {/* Title */}
-      <div className={cn(
-        'relative z-2 flex items-center justify-center gap-[0.1em] transition-colors duration-250',
-        isHovered ? 'text-[#e0e0e0]' : ''
-      )}>
-        {icon && (
-          <div className="shrink-0 flex items-center justify-center w-[1em] h-[1em] text-[#707275]">
-            {icon}
-          </div>
+      <div
+        className={cn(
+          'relative z-2 flex items-center justify-center gap-[0.1em] transition-colors duration-250',
+          isHovered ? 'text-[#e0e0e0]' : ''
         )}
+      >
+        {icon && <div className="shrink-0 flex items-center justify-center w-[1em] h-[1em] text-[#707275]">{icon}</div>}
         <div
           className="grow text-center"
           style={{
@@ -95,13 +95,7 @@ export const OperationButton = ({ icon, subtitle, title, onClick }: OperationBut
       {/* Subtitle */}
       {subtitle && (
         <div className="relative z-2 flex justify-center">
-          <svg
-            width="100%"
-            height="4"
-            viewBox="0 0 200 20"
-            preserveAspectRatio="xMidYMid meet"
-            className="max-w-full"
-          >
+          <svg width="100%" height="4" viewBox="0 0 200 20" preserveAspectRatio="xMidYMid meet" className="max-w-full">
             <text
               x="50%"
               y="50%"

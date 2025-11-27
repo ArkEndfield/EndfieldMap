@@ -1,5 +1,5 @@
 import { electricPoleEntityInfo } from '@endfieldmap/map-core/const/entity';
-import SourceBase, { BaseSourceConfig } from '@endfieldmap/map-core/render/source/_base';
+import SourceBase, { type BaseSourceConfig } from '@endfieldmap/map-core/render/source/_base';
 import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import type { ElectricPoleData, ElectricPoleDataList } from '@endfieldmap/map-core/types';
 

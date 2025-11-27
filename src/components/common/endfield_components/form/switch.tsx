@@ -7,9 +7,11 @@ export interface EndfieldSwitchProps {
   onChange: (checked: boolean) => void;
   disabled?: boolean;
   className?: string;
+  onText?: React.ReactNode;
+  offText?: React.ReactNode;
 }
 
-export const EndfieldSwitch = ({ checked, onChange, disabled, className }: EndfieldSwitchProps) => {
+export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText, offText }: EndfieldSwitchProps) => {
   const { t } = useTranslation('common');
 
   const changeValue = (value: boolean) => {
@@ -19,7 +21,12 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className }: Endfi
   };
 
   return (
-    <div className={cn('flex items-center w-full relative shadow-[0_0_3px_#00000044] rounded-full bg-[#5C5A5D]', className)}>
+    <div
+      className={cn(
+        'flex items-center w-full relative shadow-[0_0_3px_#00000044] rounded-full bg-[#5C5A5D]',
+        className
+      )}
+    >
       <motion.div
         className="absolute left-0 h-full rounded-full bg-[#EDEBEC] shadow-[0_0_3px_#00000066] z-1"
         style={{
@@ -45,7 +52,7 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className }: Endfi
           checked ? 'text-[#373537]' : 'text-[#B3B1B4]'
         )}
       >
-        {t('on')}
+        {onText ?? t('on')}
       </button>
       <button
         onClick={() => changeValue(false)}
@@ -55,7 +62,7 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className }: Endfi
           checked ? 'text-[#B3B1B4]' : 'text-[#373537]'
         )}
       >
-        {t('off')}
+        {offText ?? t('off')}
       </button>
     </div>
   );

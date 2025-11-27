@@ -7,10 +7,13 @@ import { createPortal } from 'react-dom';
 import { SwitchIcon } from '@/components/common/icons';
 import { observer } from 'mobx-react-lite';
 import { useAdapter } from '@/hooks/use_adapter';
+import { cn } from '@/utils/style';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
-export const RightMenu = observer(() => {
+export const RightMenu: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'map']);
   const [showPopover, setShowPopover] = useState(false);
+  const isMobile = useIsMobile();
   const [showChangeAnimation, setShowChangeAnimation] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -55,34 +58,47 @@ export const RightMenu = observer(() => {
 
   return (
     <>
-      <div className="relative text-white w-[12em] z-1">
-        <div ref={triggerRef} className="flex flex-col items-end pb-1 pt-4 md:pt-1 px-4" id="change-map">
-          <button className="text-xs" onClick={togglePopover}>
-            <div className="bg-[#1E1E1D] h-3 pl-1.5 z-0 relative flex items-center gap-1">
-              <div className="text-[#FBFA54] mt-1">
-                <SwitchIcon />
+      <div className={cn('relative text-white w-[12em] z-1', isMobile && 'w-full flex-1')}>
+        <div ref={triggerRef} className={cn(!isMobile && 'flex flex-col items-end pb-1 pt-1 px-4')}>
+          {!isMobile && (
+            <button className="text-xs" onClick={togglePopover}>
+              <div className="bg-[#1E1E1D] h-3 pl-1.5 z-0 relative flex items-center gap-1">
+                <div className="text-[#FBFA54] mt-1">
+                  <SwitchIcon />
+                </div>
+                <div className="mt-1 pr-1">{t('header:map.change_map')}</div>
               </div>
-              <div className="mt-1 pr-1">{t('header:map.change_map')}</div>
-            </div>
-            <div
-              className="bg-[#1E1E1D] -z-1 relative h-[0.3rem] mb-[-0.01em]"
-              style={{
-                clipPath: 'polygon(0% 0%, 100% 0%, 100% 0.3rem, 0.3rem 100%)',
-              }}
-            />
-          </button>
+              <div
+                className="bg-[#1E1E1D] -z-1 relative h-[0.3rem] mb-[-0.01em]"
+                style={{
+                  clipPath: 'polygon(0% 0%, 100% 0%, 100% 0.3rem, 0.3rem 100%)',
+                }}
+              />
+            </button>
+          )}
           <div
-            className="text-2xl font-extrabold hover:text-[#fdfb55] cursor-pointer"
+            className={cn(
+              'font-extrabold',
+              isMobile ? 'w-full text-xl h-full text-center py-3 flex items-center justify-center gap-1.5' : 'text-2xl hover:text-[#fdfb55] cursor-pointer'
+            )}
             style={{ textShadow: '0 0 0.1em rgba(0,0,0,0.2)' }}
             onClick={togglePopover}
           >
             {t(`map:${mapIndex}`)}
+            {isMobile && (
+              <div className="text-[#FBFA54] mt-1">
+                <SwitchIcon />
+              </div>
+            )}
           </div>
         </div>
 
         <motion.div
           ref={popoverRef}
-          className="absolute bg-[#222222] shadow-lg w-64 overflow-hidden right-0 top-full"
+          className={cn(
+            'absolute bg-[#222222] shadow-lg overflow-hidden top-full',
+            isMobile ? 'w-screen left-0' : 'right-0 w-64'
+          )}
           animate={{
             opacity: showPopover ? 1 : 0,
             y: showPopover ? '2px' : '-10px',

@@ -27,10 +27,14 @@ interface Resources {
     "map02": "锦陇"
   },
   "popup": {
+    "entity": {
+      "title": "实体信息"
+    },
     "reward": {
       "chest": {
         "title": "宝箱内容"
-      }
+      },
+      "title": "奖励"
     }
   },
   "settings": {
@@ -93,6 +97,7 @@ interface Resources {
     "filter": {
       "all": "全部",
       "category": {
+        "#electric_pole": "电线杆",
         "chest": "宝箱",
         "dnarrative": "世界叙事回响",
         "dungeon": "副本点位",
@@ -107,6 +112,7 @@ interface Resources {
       },
       "marked": "已标记",
       "search_placeholder": "搜索...",
+      "title": "筛选标点",
       "unmarked": "未标记"
     },
     "fold": "折叠",

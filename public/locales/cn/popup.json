@@ -1,5 +1,9 @@
 {
+  "entity": {
+    "title": "实体信息"
+  },
   "reward": {
+    "title": "奖励",
     "chest": {
       "title": "宝箱内容"
     }

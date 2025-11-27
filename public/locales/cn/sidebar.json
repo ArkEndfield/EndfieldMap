@@ -2,6 +2,7 @@
   "fold": "折叠",
   "unfold": "展开",
   "filter": {
+    "title": "筛选标点",
     "all": "全部",
     "marked": "已标记",
     "unmarked": "未标记",
@@ -17,7 +18,8 @@
       "plant": "植物类素材",
       "narrative": "世界叙事碎片",
       "dnarrative": "世界叙事回响",
-      "dungeon": "副本点位"
+      "dungeon": "副本点位",
+      "#electric_pole": "电线杆"
     }
   },
   "operation": {

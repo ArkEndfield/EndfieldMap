@@ -12,7 +12,7 @@ import type { Map as OlMap } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Feature } from 'ol';
 import type { Point } from 'ol/geom';
-import { MapFeature } from '../types';
+import type { MapFeature } from '../types';
 
 export interface EntityHitTestInput {
   coordinate: Coordinate | undefined;

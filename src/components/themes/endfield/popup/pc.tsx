@@ -3,8 +3,8 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { observer } from 'mobx-react-lite';
 import { StrokeSVGFilter } from './deco';
-import { LeftContent } from './left';
-import { RightContent } from './right';
+import { LeftContentContainer } from './left';
+import { RightContentContainer } from './right';
 import { dataService } from '@/services/data';
 import { useAdapter } from '@/hooks/use_adapter';
 
@@ -63,7 +63,7 @@ const PCPopup: React.FC = observer(() => {
             className="relative z-1"
           >
             {/* 指向feature的三角箭头 */}
-            <div className="absolute left-1/2 -translate-x-1/2 top-full -mt-px -translate-y-[6px] w-0 h-0 border-l-18 border-r-18 border-t-16 border-l-transparent border-r-transparent border-t-[#393A39] z-1" />
+            <div className="absolute left-1/2 -translate-x-1/2 top-full -mt-px -translate-y-1.5 w-0 h-0 border-l-18 border-r-18 border-t-16 border-l-transparent border-r-transparent border-t-[#393A39] z-1" />
             {/* 内容 - 横向展开卡片容器 */}
             <motion.div
               key={activeFeature.id}
@@ -77,10 +77,10 @@ const PCPopup: React.FC = observer(() => {
               className="flex w-78 pointer-events-auto cursor-pointer relative z-0"
             >
               {/* 左侧内容 */}
-              <LeftContent />
+              <LeftContentContainer />
 
               {/* 右侧展开内容 */}
-              <RightContent isExpand={isExpand} toggleExpand={handleExpandButton} />
+              <RightContentContainer isExpand={isExpand} toggleExpand={handleExpandButton} />
             </motion.div>
           </motion.div>
         )}

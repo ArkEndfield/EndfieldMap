@@ -45,8 +45,24 @@ const ToggleButton = ({ onClick, isExpand }: { onClick: () => void; isExpand: bo
   </button>
 );
 
+export const RightContent = () => {
+  const { adapter } = useAdapter();
+  const activeFeature = adapter?.activeFeatureController.activeFeature;
+  const entity = activeFeature?.data;
+  const showRewards = hasReward(entity);
+  if (!entity || !showRewards) {
+    return null;
+  }
+  return (
+    <>
+      <ChestReward entity={entity} />
+      <DungeonReward entity={entity} />
+    </>
+  );
+};
+
 /** 右边弹窗内容 */
-export const RightContent: React.FC<RightContentProps> = observer(({ isExpand, toggleExpand }) => {
+export const RightContentContainer: React.FC<RightContentProps> = observer(({ isExpand, toggleExpand }) => {
   const { adapter } = useAdapter();
   const activeFeature = adapter?.activeFeatureController.activeFeature;
   const entity = activeFeature?.data;
@@ -66,8 +82,7 @@ export const RightContent: React.FC<RightContentProps> = observer(({ isExpand, t
 
       <div className="bg-[#272827] text-white flex-1 flex items-center justify-center">
         <ScrollArea contentClassName="p-4 pb-8">
-          <ChestReward entity={entity} />
-          <DungeonReward entity={entity} />
+          <RightContent />
         </ScrollArea>
       </div>
 

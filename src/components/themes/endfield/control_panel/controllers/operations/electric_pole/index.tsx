@@ -1,9 +1,13 @@
+import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { observer } from 'mobx-react-lite';
 import ElectricPolePresetPanel from './electric_pole_preset_panel';
 import { cn } from '@/utils/style';
-import { observer } from 'mobx-react-lite';
 import { dataService } from '@/services/data';
 import { alert } from '@/components/common/endfield_components/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
+import { useIsMobile } from '@/hooks/use_is_mobile';
+import { snapPoints } from '@/const/ui';
+import { forwardRef } from 'react';
 
 export interface ElectricPoleManagerProps {
   open: boolean;
@@ -11,6 +15,7 @@ export interface ElectricPoleManagerProps {
 
 export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(({ open }) => {
   const { adapter } = useAdapter();
+  const isMobile = useIsMobile();
 
   const isCreating = dataService.electricPoleDataService.isCreating;
   const isConnecting = dataService.electricPoleDataService.isConnecting;
@@ -22,6 +27,7 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
 
   const isSelecting = adapter.mapController.selection.isSelecting;
   const checkCanOperate = () => {
+    console.log(isSelecting);
     if (!isSelecting) return true;
     alert.info({
       content: <div className="text-center">正在处于批量管理状态，请先结束批量管理</div>,
@@ -29,25 +35,26 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
     return false;
   };
   const onCreate = () => {
-    if (!checkCanOperate) return;
+    if (!checkCanOperate()) return;
     dataService.electricPoleDataService.toggleCreateElectricPole();
   };
   const onConnect = () => {
-    if (!checkCanOperate) return;
+    if (!checkCanOperate()) return;
     dataService.electricPoleDataService.toggleConnectElectricPole();
   };
   const onRemove = () => {
-    if (!checkCanOperate) return;
+    if (!checkCanOperate()) return;
     dataService.electricPoleDataService.toggleDeleteElectricPole();
   };
   const onRemoveConnection = () => {
-    if (!checkCanOperate) return;
+    if (!checkCanOperate()) return;
     dataService.electricPoleDataService.toggleDeleteConnnection();
   };
   return (
     <div
       className={cn(
-        'absolute top-0 left-0 h-full w-full overflow-hidden transition-all bg-[#272727] z-2',
+        'top-0 left-0 h-full w-full overflow-hidden transition-all bg-[#272727] z-2',
+        isMobile ? 'relative' : 'absolute',
         open ? 'translate-x-0' : '-translate-x-full'
       )}
     >
@@ -97,3 +104,32 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
     </div>
   );
 });
+
+export interface ElectricPoleManagerMobileProps {
+  open: boolean;
+  onClose: () => void;
+  dismissable?: boolean;
+}
+
+export const ElectricPoleManagerMobile = forwardRef<SheetRef, ElectricPoleManagerMobileProps>(
+  ({ open, onClose, dismissable = true }, ref) => (
+    <Sheet
+      ref={ref}
+      isOpen={open}
+      onClose={onClose}
+      snapPoints={snapPoints}
+      initialSnap={4}
+      dragVelocityThreshold={1500}
+    >
+      <Sheet.Container>
+        <Sheet.Header className="bg-[#272727]" />
+        <Sheet.Content disableDrag className="text-white">
+          <ElectricPoleManager open />
+        </Sheet.Content>
+      </Sheet.Container>
+      {dismissable && <Sheet.Backdrop onClick={onClose} />}
+    </Sheet>
+  )
+);
+
+ElectricPoleManagerMobile.displayName = 'ElectricPoleManagerMobile';

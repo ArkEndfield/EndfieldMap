@@ -10,6 +10,8 @@ import { AboutPage } from './items/about';
 import { DataSetting } from './items/data';
 import uiManager from '@/services/ui_manager';
 import { observer } from 'mobx-react-lite';
+import { useIsMobile } from '@/hooks/use_is_mobile';
+import { cn } from '@/utils/style';
 
 export interface SettingsPageProps {
   open: boolean;
@@ -79,19 +81,28 @@ const BgDeco = () => (
   </div>
 );
 
-const CloseButton = ({ onClose }: SettingsProps) => (
-  <button
-    className="absolute shrink-0 grow-0 top-4 right-8 w-6.5 h-6.5 flex justify-center items-center rounded-full text-[#FFFEFE] hover:text-[#c9c9c9] drop-shadow-sm active:scale-95 transition-[transform_colors]"
-    onClick={onClose}
-  >
-    <svg width="100%" height="100%" viewBox="0 0 75 75" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M37.5 0C58.2107 0 75 16.7893 75 37.5C75 58.2107 58.2107 75 37.5 75C16.7893 75 0 58.2107 0 37.5C0 16.7893 16.7893 0 37.5 0ZM40.3301 40.3271L37.502 43.1553L56.8457 62.5L62.5029 56.8428L43.1592 37.499L40.3301 40.3271ZM37.498 31.8457L18.1543 12.502L12.498 18.1582L31.8408 37.501L12.502 56.8398L18.1582 62.4961L37.5049 43.1504L34.6758 40.3223L31.8506 37.4971L34.6719 34.6758L37.498 31.8486L43.1533 37.5039L62.501 18.1562L56.8447 12.5L37.498 31.8457Z"
-        fill="currentColor"
-      />
-    </svg>
-  </button>
-);
+const CloseButton = ({ onClose }: SettingsProps) => {
+  const isMobile = useIsMobile();
+  return (
+    <button
+      className={cn(
+        'absolute shrink-0 grow-0 top-4 w-6.5 h-6.5',
+        isMobile ? 'right-4' : 'right-8',
+        'text-[#FFFEFE] hover:text-[#c9c9c9]',
+        'flex justify-center items-center',
+        'rounded-full drop-shadow-sm active:scale-95 transition-[transform_colors]'
+      )}
+      onClick={onClose}
+    >
+      <svg width="100%" height="100%" viewBox="0 0 75 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M37.5 0C58.2107 0 75 16.7893 75 37.5C75 58.2107 58.2107 75 37.5 75C16.7893 75 0 58.2107 0 37.5C0 16.7893 16.7893 0 37.5 0ZM40.3301 40.3271L37.502 43.1553L56.8457 62.5L62.5029 56.8428L43.1592 37.499L40.3301 40.3271ZM37.498 31.8457L18.1543 12.502L12.498 18.1582L31.8408 37.501L12.502 56.8398L18.1582 62.4961L37.5049 43.1504L34.6758 40.3223L31.8506 37.4971L34.6719 34.6758L37.498 31.8486L43.1533 37.5039L62.501 18.1562L56.8447 12.5L37.498 31.8457Z"
+          fill="currentColor"
+        />
+      </svg>
+    </button>
+  );
+};
 
 const ContentWrapper = ({ children, active }: { children: React.ReactNode; active?: boolean }) =>
   active ? (
@@ -121,7 +132,7 @@ const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
   return (
     <motion.dialog
       ref={dialogRef}
-      className="fixed flex flex-col top-0 left-0 w-screen h-screen inset-0 z-20 bg-black/50 text-white backdrop-blur-sm max-w-screen max-h-screen backdrop:bg-transparent"
+      className="fixed flex flex-col top-0 left-0 w-screen h-screen inset-0 z-20 bg-black/50 text-white backdrop-blur-sm max-w-screen max-h-screen overflow-hidden backdrop:bg-transparent"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, transition: { delay: 0.1 } }}
@@ -159,9 +170,7 @@ export const SettingsPage: React.FC = observer(() => {
   const open = uiManager.settingsShown;
   const onClose = () => uiManager.setSettingsShown(false);
   return createPortal(
-    <AnimatePresence>
-      {open && <Settings open={open} onClose={onClose} />}
-    </AnimatePresence>,
+    <AnimatePresence>{open && <Settings open={open} onClose={onClose} />}</AnimatePresence>,
     document.body
   );
 });

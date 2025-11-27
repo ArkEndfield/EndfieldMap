@@ -3,6 +3,16 @@
 
 html, body {
   font-family: "Noto Sans SC", "Outfit", "JetBrains Mono", sans-serif;
+  position: fixed;
+  touch-action: none;
+  width: 100%;
+  height: 100%;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .font-serif {

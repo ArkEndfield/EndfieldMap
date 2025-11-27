@@ -33,7 +33,7 @@ export const LanguageSetting = () => {
   return (
     <SettingsZone title={t('language.title')}>
       <SettingItem title={t('language.change_language')}>
-        <EndfieldSelect<LanguageLocale> value={currentLocale} options={selectOptions} onChange={changeLanguage} />
+        <EndfieldSelect<LanguageLocale> value={currentLocale} options={selectOptions} onChange={changeLanguage} className='min-w-40' />
       </SettingItem>
     </SettingsZone>
   );
