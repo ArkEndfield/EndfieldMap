@@ -5,7 +5,7 @@ import type { EntityData, EntityInfoData } from '@endfieldmap/map-core/types/ent
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { xyz2crd } from '@endfieldmap/tools';
 import { LineString, Point } from 'ol/geom';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, toJS } from 'mobx';
 import VectorSource from 'ol/source/Vector';
 import FeatureBase, { type BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
 
@@ -133,9 +133,11 @@ export class MapFeature extends FeatureBase {
 
   @computed
   get data() {
+    // 使用 toJS 将 MobX observable 转换为普通对象，确保序列化时属性不会丢失
+    const plainData = toJS(this._data);
     return {
-      ...this._data,
-      entityInfo: this.entityInfo,
+      ...plainData,
+      entityInfo: toJS(this.entityInfo),
     };
   }
 

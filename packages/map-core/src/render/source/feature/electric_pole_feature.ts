@@ -1,7 +1,7 @@
 import { ELECTRIC_ZONE_RADIUS, EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
 import { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { ElectricPoleData, EntityInfoData } from '@endfieldmap/map-core/types';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, toJS } from 'mobx';
 import { Point } from 'ol/geom';
 import type { BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
 import { calculateDistance, xyz2crd } from '@endfieldmap/tools';
@@ -49,9 +49,11 @@ export class ElectricPoleFeature extends MapFeature {
 
   @computed
   get data() {
+    // 使用 toJS 将 MobX observable 转换为普通对象，确保序列化时属性不会丢失
+    const plainData = toJS(this._data);
     return {
-      ...this._data,
-      entityInfo: this.entityInfo,
+      ...plainData,
+      entityInfo: toJS(this.entityInfo),
     };
   }
 
@@ -67,7 +69,8 @@ export class ElectricPoleFeature extends MapFeature {
       // TODO: i18n
       throw new Error(`The distance between the two poles is too far: ${distance}`);
     }
-    this.data.properties.connectTo = pole.data.levelLogicId;
+    // 直接修改 _data 而不是 data getter 返回的临时对象
+    this._data.properties.connectTo = pole._data.levelLogicId;
     this.connectionEntityFeatures.to = pole;
     this.connectionFeature.setTo(pole);
     pole.setConnectionFrom(this);
@@ -82,7 +85,8 @@ export class ElectricPoleFeature extends MapFeature {
     const fromPole = this.connectionEntityFeatures.from;
     if (fromPole) {
       // 清除对方的 to 引用和连线，但不触发递归
-      fromPole.data.properties.connectTo = null;
+      // 直接修改 _data 而不是 data getter 返回的临时对象
+      fromPole._data.properties.connectTo = null;
       fromPole.connectionEntityFeatures.to = null;
       fromPole.connectionFeature.clearTo();
       // 清除当前的 from 引用
@@ -101,7 +105,8 @@ export class ElectricPoleFeature extends MapFeature {
       // 清除对方的 from 引用
       toPole.connectionEntityFeatures.from = null;
       // 清除当前的 to 引用和连线
-      this.data.properties.connectTo = null;
+      // 直接修改 _data 而不是 data getter 返回的临时对象
+      this._data.properties.connectTo = null;
       this.connectionEntityFeatures.to = null;
       this.connectionFeature.clearTo();
       this.notifyElectricPoleChanged();

@@ -8,7 +8,7 @@ import type { ElectricPoleConnectionFeature, ElectricPoleMapData, EndfieldMapAda
 import { ElectricPoleIdKey, MAP_EVENT } from '@endfieldmap/map-core';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import { LocalStorageDB, LocalStorageKey, logger, MapIndex, StorageKey, type StorageManager } from '@endfieldmap/tools';
-import { action, computed, observable, runInAction } from 'mobx';
+import { action, computed, observable, runInAction, toJS } from 'mobx';
 
 /**
  * 电线杆数据管理器
@@ -251,7 +251,7 @@ export class ElectricPoleDataService {
                   content: `连接失败：${error instanceof Error ? error.message : String(error)}`,
                   cancelText: '删除电线杆',
                   onCancel: () => {
-                    this.deleteElectricPole(feature, true)
+                    this.deleteElectricPole(feature, true);
                   },
                   onConfirm: () => {
                     this.setConnectingPole(feature);
@@ -273,7 +273,7 @@ export class ElectricPoleDataService {
 
   /**
    * 修改电线杆范围是否可见
-   * @param visible 
+   * @param visible
    */
   @action
   public changeZoneVisibility(visible: boolean) {
@@ -422,7 +422,7 @@ export class ElectricPoleDataService {
 
       // 尝试建立连接，如果失败则尝试反向连接或调整连接链
       const connected = this.tryConnect(this.connectingPole, pole);
-      
+
       if (!connected) {
         throw new Error('无法建立连接：两个电线杆的连接位置都已满');
       }
@@ -494,7 +494,7 @@ export class ElectricPoleDataService {
     // 现在 next 的 to 位置应该是空的，可以反转连接
     // 1. 清除当前连接 pole->next
     pole.clearConnectionTo();
-    
+
     // 2. 建立反向连接 next->pole
     try {
       next.connectTo(pole);
@@ -653,7 +653,7 @@ export class ElectricPoleDataService {
     await this.savePresetStorage();
 
     if (this.adapter) {
-      this.applyPresetToAdapter(preset);
+      this.applyPresetToAdapter(toJS(preset));
     }
   }
 
@@ -718,7 +718,7 @@ export class ElectricPoleDataService {
     // 仅当删除的是当前预设时，才更新地图上的电线杆数据
     if (this.adapter && isCurrent) {
       if (nextPreset) {
-        this.applyPresetToAdapter(nextPreset);
+        this.applyPresetToAdapter(toJS(nextPreset));
       } else {
         // 若已经没有任何预设，则清空所有地图上的电线杆
         const emptyData = this.ensureMapData({} as ElectricPoleMapData);
@@ -743,25 +743,25 @@ export class ElectricPoleDataService {
    * 导出指定预设为 JSON 文件
    * - 新结构：ElectricPolePresetExportBundle，内部包含 presets 数组
    */
-  public exportPreset(presetId: string) {
-    this.exportPresets([presetId]);
+  public async exportPreset(presetId: string) {
+    await this.exportPresets([presetId]);
   }
 
   /**
    * 导出当前预设为 JSON 文件
    */
-  public exportCurrentPreset() {
+  public async exportCurrentPreset() {
     if (!this.currentPreset) {
       throw new Error('No current electric pole preset to export');
     }
-    this.exportPresets([this.currentPreset.id]);
+    await this.exportPresets([this.currentPreset.id]);
   }
 
   /**
    * 导出多个预设为单个 JSON 文件
    * @param presetIds 预设 ID 列表
    */
-  public exportPresets(presetIds: string[]) {
+  public async exportPresets(presetIds: string[]) {
     if (!presetIds.length) {
       throw new Error('No electric pole presets selected to export');
     }
@@ -773,7 +773,7 @@ export class ElectricPoleDataService {
       throw new Error('Selected electric pole presets not found');
     }
 
-    this.downloadPresetBundle(presets);
+    await this.downloadPresetBundle(presets);
   }
 
   /**
@@ -816,6 +816,7 @@ export class ElectricPoleDataService {
 
   /**
    * 保证 ElectricPoleMapData 中包含所有已知地图索引
+   * 并验证每个电线杆数据的有效性
    */
   private ensureMapData(data: ElectricPoleMapData): ElectricPoleMapData {
     const ensured: ElectricPoleMapData = { ...(data || ({} as ElectricPoleMapData)) };
@@ -825,6 +826,55 @@ export class ElectricPoleDataService {
     for (const map of maps) {
       if (!ensured[map]) {
         ensured[map] = [];
+      } else if (Array.isArray(ensured[map])) {
+        // 验证并过滤掉无效的电线杆数据
+        const validPoles = ensured[map].filter((pole) => {
+          // 检查是否有有效的坐标数据
+          if (!pole || typeof pole !== 'object') {
+            logger.warn('[ElectricPoleDataService|ensureMapData] Invalid pole data (not an object)', { map, pole });
+            return false;
+          }
+
+          // 检查坐标是否存在且有效
+          if (!pole.position || typeof pole.position !== 'object') {
+            logger.warn('[ElectricPoleDataService|ensureMapData] Missing or invalid position', { map, pole });
+            return false;
+          }
+
+          // 检查 x 和 y 属性是否存在且为数字
+          if (typeof pole.position.x !== 'number' || typeof pole.position.y !== 'number') {
+            logger.warn('[ElectricPoleDataService|ensureMapData] Invalid position x/y values', {
+              map,
+              poleId: pole.levelLogicId,
+              position: pole.position,
+            });
+            return false;
+          }
+
+          // 检查 x 和 y 是否为有效数字（非 NaN, 非 Infinity）
+          if (!Number.isFinite(pole.position.x) || !Number.isFinite(pole.position.y)) {
+            logger.warn('[ElectricPoleDataService|ensureMapData] Position contains NaN or Infinity', {
+              map,
+              poleId: pole.levelLogicId,
+              position: pole.position,
+            });
+            return false;
+          }
+
+          return true;
+        });
+
+        // 如果过滤掉了一些无效数据，记录警告
+        const filteredCount = ensured[map].length - validPoles.length;
+        if (filteredCount > 0) {
+          logger.warn(
+            `[ElectricPoleDataService|ensureMapData] Filtered out ${filteredCount} invalid electric pole(s) from ${map}`,
+            ensured[map],
+            validPoles
+          );
+        }
+
+        ensured[map] = validPoles;
       }
     }
 
@@ -838,7 +888,7 @@ export class ElectricPoleDataService {
     if (!this.adapter || !this.storageInitialized) return;
     const preset = this.currentPreset;
     if (!preset) return;
-    this.applyPresetToAdapter(preset);
+    this.applyPresetToAdapter(toJS(preset));
   }
 
   /**
@@ -846,10 +896,40 @@ export class ElectricPoleDataService {
    */
   private applyPresetToAdapter(preset: ElectricPolePreset) {
     if (!this.adapter) return;
-    const data = this.ensureMapData(preset.data);
-    this.adapter.electricPoleController.resetAllElectricPoleData(data);
-    // 重新渲染当前地图上的电线杆
-    this.adapter.renderElectricPole(this.adapter.currentMapIndex);
+
+    try {
+      const data = this.ensureMapData(preset.data);
+      this.adapter.electricPoleController.resetAllElectricPoleData(data);
+      // 重新渲染当前地图上的电线杆
+      this.adapter.renderElectricPole(this.adapter.currentMapIndex);
+    } catch (error) {
+      logger.error(
+        '[ElectricPoleDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data',
+        {
+          presetId: preset.id,
+          presetName: preset.name,
+          error,
+          preset: preset,
+        }
+      );
+
+      // 如果应用预设失败，使用空数据作为后备方案
+      // const emptyData = this.ensureMapData({} as ElectricPoleMapData);
+      // this.adapter.electricPoleController.resetAllElectricPoleData(emptyData);
+      // this.adapter.renderElectricPole(this.adapter.currentMapIndex);
+      const adapter = this.adapter;
+      // 通知用户数据可能已损坏
+      alert.info({
+        // TODO: i18n
+        content: `电线杆预设 "${preset.name}" 数据已损坏，请检查并重新创建预设。`,
+        onCancel: () => {
+          const emptyData = this.ensureMapData({} as ElectricPoleMapData);
+          adapter?.electricPoleController.resetAllElectricPoleData(emptyData);
+          adapter?.renderElectricPole(adapter?.currentMapIndex);
+        },
+        cancelText: '删除损坏预设',
+      });
+    }
   }
 
   /**
@@ -863,13 +943,10 @@ export class ElectricPoleDataService {
    * 将预设存储写入 Storage
    */
   private async savePresetStorage() {
-    // 通过 JSON 深拷贝将 MobX 可观察对象转换为普通对象，避免 IndexedDB DataCloneError
-    const plain: ElectricPolePresetStorage = JSON.parse(
-      JSON.stringify({
-        presets: this.presetStorage.presets,
-        currentPresetId: this.presetStorage.currentPresetId,
-      })
-    );
+    const plain = {
+      presets: toJS(this.presetStorage.presets),
+      currentPresetId: toJS(this.presetStorage.currentPresetId),
+    };
     await this.storage.permanentSet(StorageKey.ELECTRIC_POLE, plain);
   }
 
@@ -881,27 +958,10 @@ export class ElectricPoleDataService {
   }
 
   /**
-   * 在浏览器中触发下载 JSON 文件（支持导出多个预设）
+   * 在浏览器中触发下载 JSON 文件(支持导出多个预设)
+   * 优先使用 File System Access API，不支持时回退到 <a> 标签下载
    */
-  private downloadPresetBundle(presets: ElectricPolePreset[]) {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      // 非浏览器环境下直接返回 JSON 字符串
-      const bundle: ElectricPolePresetExportBundle = {
-        type: 'electric_pole_preset_bundle',
-        version: 1,
-        exportedAt: Date.now(),
-        presets: presets.map((p) => ({
-          id: p.id,
-          name: p.name,
-          data: this.ensureMapData(p.data),
-          createdAt: p.createdAt,
-          updatedAt: p.updatedAt,
-        })),
-      };
-      console.log('ElectricPole preset bundle JSON:', JSON.stringify(bundle, null, 2));
-      return;
-    }
-
+  private async downloadPresetBundle(presets: ElectricPolePreset[]) {
     const bundle: ElectricPolePresetExportBundle = {
       type: 'electric_pole_preset_bundle',
       version: 1,
@@ -917,17 +977,51 @@ export class ElectricPoleDataService {
 
     const json = JSON.stringify(bundle, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
-    a.href = url;
-    // 若只有一个预设，则沿用单预设的命名；否则使用 bundle 命名
+    // 生成文件名
+    let filename: string;
     if (presets.length === 1) {
       const preset = presets[0];
-      a.download = `electric_pole_${preset.name || preset.id}.json`;
+      filename = `electric_pole_${preset.name || preset.id}.json`;
     } else {
-      a.download = `electric_pole_presets_${presets.length}_${Date.now()}.json`;
+      filename = `electric_pole_presets_${presets.length}_${Date.now()}.json`;
     }
+
+    // 尝试使用 File System Access API
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: filename,
+          types: [
+            {
+              description: 'JSON Files',
+              accept: { 'application/json': ['.json'] },
+            },
+          ],
+        });
+
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        // TODO: i18n
+        alert.info('success');
+        return;
+      } catch (error) {
+        // 用户取消或其他错误，回退到 <a> 标签下载
+        if (error instanceof Error && error.name !== 'AbortError') {
+          logger.warn(
+            '[ElectricPoleDataService|downloadPresetBundle] File System Access API failed, falling back to <a> tag download',
+            error
+          );
+        }
+      }
+    }
+
+    // 回退到传统的 <a> 标签下载方式
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
