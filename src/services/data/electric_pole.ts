@@ -644,6 +644,7 @@ export class ElectricPoleDataService {
    */
   public async switchPreset(presetId: string) {
     if (this.presetStorage.currentPresetId === presetId) return;
+    this.adapter?.activeFeatureController?.clearActiveFeature?.();
 
     // 在切换预设之前，先将当前地图中的电线杆数据保存到当前预设中
     if (this.initialized && this.adapter && this.currentPreset) {
