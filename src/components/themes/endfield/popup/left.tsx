@@ -8,6 +8,7 @@ import { Guide } from '../../../common/guide';
 import { ZmdButton } from '@/components/common/endfield_components/button';
 import { useTranslation } from 'react-i18next';
 import { useAdapter } from '@/hooks/use_adapter';
+import { AnimatePresence, motion } from 'motion/react';
 
 /** 描边 */
 const Border = () => (
@@ -45,8 +46,6 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityData = activeFeature?.data;
 
-  if (!activeFeature || !entityData) return null;
-
   const handleToggleMarked = () => {
     if (activeFeature) {
       activeFeature.toggleMarked();
@@ -54,35 +53,46 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   };
 
   return (
-    <div className={cn('relative z-1 flex flex-col', className)}>
-      <Header
-        name={entityData.entityInfo.entityInfo.point}
-        pic={getEntityIcon(entityData.entityInfo.category, entityData.entityInfo.entityInfo.pic)}
-      />
+    <AnimatePresence mode="wait">
+      {activeFeature && entityData && (
+        <motion.div
+          key={activeFeature.id}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className={cn('relative z-1 flex flex-col', className)}
+        >
+          <Header
+            name={entityData.entityInfo.entityInfo.point}
+            pic={getEntityIcon(entityData.entityInfo.category, entityData.entityInfo.entityInfo.pic)}
+          />
 
-      <div className="my-2 text-sm flex flex-wrap items-center gap-2 px-4 shrink-0">
-        <span className="ml-auto text-zinc-400">id: {entityData.levelLogicId}</span>
-      </div>
+          <div className="my-2 text-sm flex flex-wrap items-center gap-2 px-4 shrink-0">
+            <span className="ml-auto text-zinc-400">id: {entityData.levelLogicId}</span>
+          </div>
 
-      <ScrollArea className="flex-1 min-h-0">
-        <Guide entity={entityData} />
-      </ScrollArea>
+          <ScrollArea className="flex-1 min-h-0">
+            <Guide entity={entityData} />
+          </ScrollArea>
 
-      {/* 操作按钮 */}
-      {activeFeature.markable && (
-        <div className="mt-3 pt-3 shrink-0 flex">
-          <ZmdButton
-            onClick={(e) => {
-              e.stopPropagation();
-              handleToggleMarked();
-            }}
-            iconPosition={activeFeature.marked ? 'left' : 'right'}
-          >
-            {activeFeature.marked ? t('common:operate.unmark') : t('common:operate.mark')}
-          </ZmdButton>
-        </div>
+          {/* 操作按钮 */}
+          {activeFeature.markable && (
+            <div className="mt-3 pt-3 shrink-0 flex">
+              <ZmdButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleMarked();
+                }}
+                iconPosition={activeFeature.marked ? 'left' : 'right'}
+              >
+                {activeFeature.marked ? t('common:operate.unmark') : t('common:operate.mark')}
+              </ZmdButton>
+            </div>
+          )}
+        </motion.div>
       )}
-    </div>
+    </AnimatePresence>
   );
 });
 
@@ -101,7 +111,7 @@ export const LeftContentContainer: React.FC = observer(() => {
 
       <div
         className={cn(
-          'w-full bg-[#272827] text-white p-3 pt-0 shadow-[0_-2px_0_#272827]',
+          'w-full bg-[#272827] text-white p-3 pt-0 shadow-[0_-2px_0_#272827] relative overflow-hidden',
           'after:absolute after:z-0 after:left-0 after:h-32 after:bottom-0 after:w-54 after:bg-linear-to-tr after:from-white/25 after:via-white/0 after:to-black/0'
         )}
       >

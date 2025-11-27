@@ -121,7 +121,14 @@ export class EndfieldMap {
    */
   private setupDynamicConstraint(): void {
     // 屏幕像素留白（不随缩放变化）
-    const paddingPixels = { top: 400, right: 400, bottom: 400, left: 600 };
+    // 使用视口尺寸的比例，大屏幕会有更大的 padding
+    // 左侧 padding 稍大，让地图整体偏右显示
+    const getPaddingPixels = (viewportWidth: number, viewportHeight: number) => ({
+      top: Math.max(viewportHeight * 0.25, 400),
+      right: Math.max(viewportWidth * 0.25, 400),
+      bottom: Math.max(viewportHeight * 0.25, 400),
+      left: Math.max(viewportWidth * 0.3, 500),
+    });
 
     mapEventEmitter.on(MAP_EVENT.MAP_MOVE_END, () => {
       const resolution = this.view.getResolution();
@@ -129,6 +136,8 @@ export class EndfieldMap {
       const size = this.map.getSize();
 
       if (!resolution || !center || !size) return;
+
+      const paddingPixels = getPaddingPixels(size[0], size[1]);
 
       // 计算视图在当前分辨率下的半宽和半高（地图坐标）
       const viewHalfWidth = (size[0] / 2) * resolution;
@@ -143,16 +152,37 @@ export class EndfieldMap {
       };
 
       const projectionExtent = this.projection.getExtent();
+      const mapCenterX = (projectionExtent[0] + projectionExtent[2]) / 2;
+      const mapCenterY = (projectionExtent[1] + projectionExtent[3]) / 2;
 
       // 计算允许的中心点范围
-      const minX = projectionExtent[0] + viewHalfWidth - paddingMap.left;
+      let minX = projectionExtent[0] + viewHalfWidth - paddingMap.left;
       const minY = projectionExtent[1] + viewHalfHeight - paddingMap.bottom;
-      const maxX = projectionExtent[2] - viewHalfWidth + paddingMap.right;
+      let maxX = projectionExtent[2] - viewHalfWidth + paddingMap.right;
       const maxY = projectionExtent[3] - viewHalfHeight + paddingMap.top;
 
-      // 约束中心点
-      const constrainedX = Math.max(minX, Math.min(center[0], maxX));
-      const constrainedY = Math.max(minY, Math.min(center[1], maxY));
+      // 计算偏移量，让地图内容整体偏右显示
+      // 地图中心点 X 减小 = 地图内容向右移动
+      const offsetX = (paddingMap.left - paddingMap.right) / 2;
+
+      let constrainedX: number;
+      let constrainedY: number;
+
+      // 当 minX > maxX 时（视口大于地图），锁定到偏移后的中心点
+      if (minX > maxX) {
+        constrainedX = mapCenterX - offsetX;
+      } else {
+        // 将整个约束范围向左偏移（让地图内容偏右）
+        minX -= offsetX;
+        maxX -= offsetX;
+        constrainedX = Math.max(minX, Math.min(center[0], maxX));
+      }
+
+      if (minY > maxY) {
+        constrainedY = mapCenterY;
+      } else {
+        constrainedY = Math.max(minY, Math.min(center[1], maxY));
+      }
 
       // 如果中心点超出范围，使用动画过渡调整回合法位置
       if (constrainedX !== center[0] || constrainedY !== center[1]) {
