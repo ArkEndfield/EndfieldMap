@@ -12,6 +12,16 @@ interface PresetListProps {
   onDelete: (id: string) => void;
 }
 
+const EmptyPresetList = () => {
+  const { t } = useTranslation('sidebar');
+
+  return (
+    <div className="rounded-md max-h-64 overflow-y-auto bg-white/10">
+      <div className="py-6 text-center text-xs text-gray-400">{t('operation.preset.empty')}</div>
+    </div>
+  );
+};
+
 const PresetList: React.FC<PresetListProps> = ({
   presets,
   currentPresetId,
@@ -21,14 +31,8 @@ const PresetList: React.FC<PresetListProps> = ({
   onRename,
   onDelete,
 }) => {
-  const { t } = useTranslation('sidebar');
-
   if (presets.length === 0) {
-    return (
-      <div className="rounded-md max-h-64 overflow-y-auto bg-white/80">
-        <div className="py-6 text-center text-xs text-gray-400">{t('operation.preset.empty')}</div>
-      </div>
-    );
+    return <EmptyPresetList />;
   }
 
   return (
