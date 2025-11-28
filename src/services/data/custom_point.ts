@@ -1,5 +1,5 @@
 import type { CustomPointPresetStorage, CustomPointPreset, CustomPointPresetExportBundle } from '@eftypes/custom_point';
-import type { CustomPointMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
+import type { CustomPointMapData, EndfieldMapAdapter, StorageData, EntityVisibility } from '@endfieldmap/map-core';
 import { MAP_EVENT, CustomPointKey } from '@endfieldmap/map-core';
 import type { CustomPointData, CustomPointIdKey } from '@endfieldmap/map-core/types';
 import type { Position } from '@endfieldmap/map-core/types/position';
@@ -11,6 +11,8 @@ import {
   crd2xyz,
   logger,
   calculateXYZDistance,
+  LocalStorageDB,
+  LocalStorageKey,
 } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction, toJS } from 'mobx';
 import { DEBOUNCE_INTERVAL } from '@/const/data';
@@ -31,6 +33,9 @@ export class CustomPointDataService {
     presets: [],
     currentPresetId: null,
   };
+
+  @observable accessor customPointVisibility: boolean = true;
+  public customPointVisibilityData: StorageData<EntityVisibility> = {};
 
   private initialized: boolean = false;
 
@@ -59,7 +64,11 @@ export class CustomPointDataService {
   public async initFromStorage() {
     if (this.storageInitialized) return;
 
-    const stored = await this.storage.permanentGet<CustomPointPresetStorage>(StorageKey.CUSTOM_POINT);
+    const [stored, visibility, visibilityData] = await Promise.all([
+      this.storage.permanentGet<CustomPointPresetStorage>(StorageKey.CUSTOM_POINT),
+      LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY),
+      this.storage.permanentGet<StorageData<EntityVisibility>>(StorageKey.CUSTOM_POINT_VISIBILITY),
+    ]);
 
     runInAction(() => {
       if (stored && Array.isArray(stored.presets)) {
@@ -78,6 +87,8 @@ export class CustomPointDataService {
           currentPresetId: null,
         };
       }
+      this.customPointVisibility = visibility ?? true;
+      this.customPointVisibilityData = visibilityData || {};
       this.storageInitialized = true;
       this.updateInitializedFlag();
     });
@@ -448,6 +459,8 @@ export class CustomPointDataService {
   @action
   public changeVisibility(visible: boolean) {
     this.adapter?.customPointController?.setCustomPointVisible?.(visible);
+    this.customPointVisibility = visible;
+    LocalStorageDB.set(LocalStorageKey.CUSTOM_POINT_DISPLAY, visible);
   }
 
   /**
@@ -465,6 +478,52 @@ export class CustomPointDataService {
   @action
   public setSelectedPointType(pointType: CustomPointIdKey) {
     this.selectedPointType = pointType;
+  }
+
+  /**
+   * 更新自定义标点类型的可见性
+   */
+  public updateCustomPointVisibility(mapIndex: MapIndex, entityDataIdKey: string, visible: boolean) {
+    if (!this.customPointVisibilityData[mapIndex]) {
+      this.customPointVisibilityData[mapIndex] = {};
+    }
+    this.customPointVisibilityData[mapIndex][entityDataIdKey] = visible;
+    this.saveCustomPointVisibilityToStorageDebounced();
+  }
+
+  /**
+   * 保存自定义标点可见性数据到存储
+   */
+  public async saveCustomPointVisibilityToStorage() {
+    return await this.storage.permanentSet(StorageKey.CUSTOM_POINT_VISIBILITY, this.customPointVisibilityData);
+  }
+
+  /**
+   * 防抖保存自定义标点可见性数据
+   */
+  get saveCustomPointVisibilityToStorageDebounced() {
+    return debounce(this.saveCustomPointVisibilityToStorage.bind(this), DEBOUNCE_INTERVAL);
+  }
+
+  /**
+   * 应用存储的可见性设置到自定义标点features
+   */
+  private applyStoredVisibility(mapIndex: MapIndex) {
+    if (!this.adapter) return;
+
+    const visibilityData = this.customPointVisibilityData[mapIndex];
+    if (!visibilityData) return;
+
+    const layer = this.adapter.customPointController.layerContainer;
+    if (!layer) return;
+
+    const features = layer.entity.features.getArray();
+    features.forEach((feature) => {
+      const entityDataIdKey = feature.data.entityDataIdKey;
+      if (entityDataIdKey in visibilityData) {
+        feature.setVisible(visibilityData[entityDataIdKey]);
+      }
+    });
   }
 
   public async createCustomPoint(mapIndex: MapIndex, position: Position) {
@@ -521,6 +580,8 @@ export class CustomPointDataService {
       this.adapter.customPointController.updateData(data);
       // 重新渲染当前地图上的自定义标点
       this.adapter.renderCustomPoint(this.adapter.currentMapIndex);
+      // 应用存储的可见性设置
+      this.applyStoredVisibility(this.adapter.currentMapIndex);
     } catch (error) {
       logger.error('[CustomPointDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data', {
         presetId: preset.id,

@@ -7,6 +7,7 @@ import type { CustomPointFeature } from '@endfieldmap/map-core/render/source/fea
 import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
 import { CustomPointKey } from '@endfieldmap/map-core/const/map';
 import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
+import { dataService } from '@/services/data';
 
 interface CustomPointTypeGroup {
   entityDataIdKey: string;
@@ -65,6 +66,12 @@ const CustomPointList: React.FC = observer(() => {
     group.features.forEach((feature) => {
       feature.setVisible(newVisible);
     });
+    // 保存可见性状态
+    dataService.customPointDataService.updateCustomPointVisibility(
+      adapter.currentMapIndex,
+      group.entityDataIdKey,
+      newVisible
+    );
   };
 
   if (customPointGroups.length === 0) {

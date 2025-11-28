@@ -15,6 +15,7 @@ import { CloseIcon, PlusIcon } from '@/components/common/icons';
 import { Toggle } from '../components/toggle';
 import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { AnimatePresence, motion } from 'motion/react';
+import { dataService } from '@/services/data';
 
 const CustomPointManagerToolbar = observer(() => {
   const { changeMode, getCurrentMode, toggleMode } = useCustomPointMode();
@@ -138,7 +139,7 @@ export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({
           className="w-full"
           checked={isCustomPointVisible}
           label={t('operation.custom_point.display')}
-          onToggle={() => adapter.customPointController.setCustomPointVisible(!isCustomPointVisible)}
+          onToggle={() => dataService.customPointDataService.changeVisibility(!isCustomPointVisible)}
         />
       </div>
 
@@ -162,7 +163,7 @@ export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({
         )}
       </AnimatePresence>
 
-      <div className="shrink-0 grow-0 mx-3 my-3">
+      <div className="shrink-0 grow-0 mx-3 my-3 text-sm">
         <EndfieldSwitch
           checked={showListTab}
           onChange={setShowListTab}

@@ -15,6 +15,8 @@ export enum StorageKey {
   ELECTRIC_POLE = 'electric_pole',
   /** 自定义标点数据 */
   CUSTOM_POINT = 'custom_point',
+  /** 自定义标点类型可见性 */
+  CUSTOM_POINT_VISIBILITY = 'custom_point_visibility',
 
   /** ChestReward */
   CHEST_REWARD = 'chest_reward',

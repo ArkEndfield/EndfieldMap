@@ -161,13 +161,28 @@ function hitTestEntitiesByGeometry(
       }
       const instance = candidate.get(EntityInstanceKey) as MapFeature | undefined;
 
+      // 过滤不可见的自定义标点
+      if (instance && 'visible' in instance && instance.visible === false) {
+        continue;
+      }
+
       // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
       const marked = instance?.marked ?? false;
       const markable = instance?.markable ?? false;
-      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+      if (
+        markable &&
+        'markedFilterMode' in layer &&
+        layer.markedFilterMode === MarkedFeatureFilterMode.Marked &&
+        !marked
+      ) {
         continue;
       }
-      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+      if (
+        markable &&
+        'markedFilterMode' in layer &&
+        layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked &&
+        marked
+      ) {
         continue;
       }
 
@@ -218,14 +233,30 @@ function hitTestEntitiesByGeometry(
         if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
           return false;
         }
-        // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
         const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
-        const marked = instance?.marked ?? false;
-        const markable = instance?.markable ?? false;
-        if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+
+        // 过滤不可见的自定义标点
+        if (instance && 'visible' in instance && instance.visible === false) {
           return false;
         }
-        if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+
+        // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
+        const marked = instance?.marked ?? false;
+        const markable = instance?.markable ?? false;
+        if (
+          markable &&
+          'markedFilterMode' in layer &&
+          layer.markedFilterMode === MarkedFeatureFilterMode.Marked &&
+          !marked
+        ) {
+          return false;
+        }
+        if (
+          markable &&
+          'markedFilterMode' in layer &&
+          layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked &&
+          marked
+        ) {
           return false;
         }
         return true;
@@ -292,14 +323,30 @@ async function hitTestEntitiesByPixel(
         continue;
       }
 
-      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
       const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
-      const marked = instance?.marked ?? false;
-      const markable = instance?.markable ?? false;
-      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+
+      // 过滤不可见的自定义标点
+      if (instance && 'visible' in instance && instance.visible === false) {
         continue;
       }
-      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+
+      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
+      const marked = instance?.marked ?? false;
+      const markable = instance?.markable ?? false;
+      if (
+        markable &&
+        'markedFilterMode' in layer &&
+        layer.markedFilterMode === MarkedFeatureFilterMode.Marked &&
+        !marked
+      ) {
+        continue;
+      }
+      if (
+        markable &&
+        'markedFilterMode' in layer &&
+        layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked &&
+        marked
+      ) {
         continue;
       }
 
@@ -364,15 +411,31 @@ async function hitTestEntitiesByPixel(
       if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
         return false;
       }
-      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
       const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+
+      // 过滤不可见的自定义标点
+      if (instance && 'visible' in instance && instance.visible === false) {
+        return false;
+      }
+
+      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
       const marked = instance?.marked ?? false;
       const markable = instance?.markable ?? false;
 
-      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+      if (
+        markable &&
+        'markedFilterMode' in layer &&
+        layer.markedFilterMode === MarkedFeatureFilterMode.Marked &&
+        !marked
+      ) {
         return false;
       }
-      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+      if (
+        markable &&
+        'markedFilterMode' in layer &&
+        layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked &&
+        marked
+      ) {
         return false;
       }
       return true;
