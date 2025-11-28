@@ -72,8 +72,9 @@ export const LayerTypeKey = 'layerType';
 /** 地图类型键 */
 export const MapTypeKey = 'mapType';
 
-/** 电线杆 ID 键 */
+/** 电线杆 ID 键 和 分类键 */
 export const ElectricPoleIdKey = '#electric_pole';
+export const ElectricPoleKey = ElectricPoleIdKey;
 
 /** 自定义标点 ID 键 */
 export const CustomPointKey = '#custom_point';

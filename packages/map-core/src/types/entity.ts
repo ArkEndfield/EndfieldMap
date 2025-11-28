@@ -1,4 +1,4 @@
-import type { ElectricPoleIdKey, CustomPointKey, MapIndex } from '@endfieldmap/map-core/const/map';
+import type { ElectricPoleIdKey, CustomPointKey, MapIndex, ElectricPoleKey } from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
 import type { customPointTypeMap } from '../data/custom_point';
 
@@ -140,7 +140,7 @@ export type EntityInfoKey = EntityData['entityDataIdKey'];
  * 实体信息数据
  */
 export interface EntityInfoData<T extends EntityInfoKey = EntityInfoKey> {
-  category: EntityCategoryData['category'] | typeof ElectricPoleIdKey | typeof CustomPointKey;
+  category: EntityCategoryData['category'] | typeof ElectricPoleKey | typeof CustomPointKey;
   entityInfo: {
     point: T;
     pic: string;
@@ -157,7 +157,7 @@ export type EntityInfoDataJson = Record<EntityInfoKey, EntityInfoData>;
  */
 export interface EntityInfoItemData<T extends EntityData | ElectricPoleData | CustomPointData = EntityData> {
   uniqueKey: string;
-  category: EntityCategoryData['category'] | typeof ElectricPoleIdKey | typeof CustomPointKey;
+  category: EntityCategoryData['category'] | typeof ElectricPoleKey | typeof CustomPointKey;
   entityDataIdKey: T['entityDataIdKey'];
   entityInfo: EntityInfoData<T['entityDataIdKey']>['entityInfo'];
   visible: boolean;

@@ -1,4 +1,4 @@
-import { ElectricPoleIdKey, EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
+import { ElectricPoleKey, EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
 import { dataService } from './data';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 
@@ -15,7 +15,7 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter) {
     // 电线杆特殊处理：在操作模式下进行连接操作
     if (
       dataService.electricPoleDataService.isInElectricOperateMode &&
-      instance.entityInfo.entityInfo.point === ElectricPoleIdKey
+      instance.entityInfo.category === ElectricPoleKey
     ) {
       dataService.electricPoleDataService.connectElectricPole(instance as ElectricPoleFeature);
       return;

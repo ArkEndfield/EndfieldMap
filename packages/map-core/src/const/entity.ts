@@ -1,10 +1,10 @@
-import type { EntityInfoData } from "../types";
-import { ElectricPoleIdKey } from "./map";
+import type { EntityInfoData } from '../types';
+import { ElectricPoleIdKey, ElectricPoleKey } from './map';
 
 export const electricPoleEntityInfo: EntityInfoData = {
-    category: ElectricPoleIdKey,
-    entityInfo: {
-        pic: 'electric_pole',
-        point: ElectricPoleIdKey
-    }
-}
+  category: ElectricPoleKey,
+  entityInfo: {
+    pic: 'electric_pole',
+    point: ElectricPoleIdKey,
+  },
+};

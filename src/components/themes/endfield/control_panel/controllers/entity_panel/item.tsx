@@ -7,6 +7,7 @@ import { cn } from '@/utils/style';
 import { observer } from 'mobx-react-lite';
 import Counter from '@/components/common/count_up';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 
 interface EntityItemProps {
   hideCount?: boolean;
@@ -26,11 +27,12 @@ const EntityItem = observer(
 
     const displayName = useMemo(() => {
       if (entity) {
-        if (entity.entityDataIdKey === 'electric_pole') {
+        if (entity.category === ElectricPoleKey) {
           return '';
         }
+
         // 检查是否是自定义标点类型（以 custom_point_ 开头）
-        if (entity.entityDataIdKey.startsWith('custom_point')) {
+        if (entity.category === CustomPointKey) {
           return t(`sidebar:operation.custom_point.type.${entity.entityDataIdKey}`, {
             defaultValue: entity.entityInfo.point,
           });

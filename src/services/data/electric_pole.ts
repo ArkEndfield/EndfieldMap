@@ -5,7 +5,7 @@ import type {
   ElectricPolePresetExportBundle,
 } from '@eftypes/electric_pole';
 import type { ElectricPoleConnectionFeature, ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
-import { ElectricPoleIdKey, MAP_EVENT } from '@endfieldmap/map-core';
+import { ElectricPoleKey, MAP_EVENT } from '@endfieldmap/map-core';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import {
   LocalStorageDB,
@@ -358,7 +358,7 @@ export class ElectricPoleDataService {
     this.adapter?.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
       if (!this.isDeleting) return;
       const instance = event.instance;
-      const isElectricPole = instance.entityInfo.entityInfo.point === ElectricPoleIdKey;
+      const isElectricPole = instance.entityInfo.category === ElectricPoleKey;
       if (!isElectricPole) return;
       this.deleteElectricPole(instance as ElectricPoleFeature);
     });
@@ -533,7 +533,7 @@ export class ElectricPoleDataService {
   @action
   public setActiveFeatureToConnectingPole() {
     const activeFeature = this.adapter?.activeFeatureController?.activeFeature;
-    if (!activeFeature || activeFeature.entityInfo.entityInfo.point !== ElectricPoleIdKey) return;
+    if (!activeFeature || activeFeature.entityInfo.category !== ElectricPoleKey) return;
     this.setConnectingPole(activeFeature as ElectricPoleFeature);
   }
 

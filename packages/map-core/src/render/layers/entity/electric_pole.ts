@@ -9,6 +9,7 @@ import {
   DEFAULT_STROKE_COLOR_TRANSPARENT_75,
   DEFAULT_STROKE_WIDTH,
   ElectricPoleIdKey,
+  ElectricPoleKey,
   EntityInstanceKey,
   LayerType,
   LayerTypeKey,
@@ -209,7 +210,7 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
   get entityInfo(): EntityInfoItemData<ElectricPoleData> {
     return {
       uniqueKey: `${this.config.mapIndex}-${ElectricPoleIdKey}`,
-      category: ElectricPoleIdKey,
+      category: ElectricPoleKey,
       entityDataIdKey: this.entityDataIdKey,
       entityInfo: {
         point: ElectricPoleIdKey,
