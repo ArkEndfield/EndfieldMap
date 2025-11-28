@@ -9,6 +9,7 @@
   "operate": {
     "mark": "标记",
     "unmark": "取消标记",
-    "clear_selection": "清空选择"
+    "clear_selection": "清空选择",
+    "rename": "重命名"
   }
 }

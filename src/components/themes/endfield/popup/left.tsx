@@ -9,6 +9,8 @@ import { ZmdButton } from '@/components/common/endfield_components/button';
 import { useTranslation } from 'react-i18next';
 import { useAdapter } from '@/hooks/use_adapter';
 import { AnimatePresence, motion } from 'motion/react';
+import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import { alert } from '@/components/common/endfield_components/alert/alert_api';
 
 /** 描边 */
 const Border = () => (
@@ -46,9 +48,30 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityData = activeFeature?.data;
 
+  const isElectricPole = activeFeature instanceof ElectricPoleFeature;
+  const displayName = isElectricPole
+    ? (activeFeature as ElectricPoleFeature).name
+    : entityData?.entityInfo.entityInfo.point;
+
   const handleToggleMarked = () => {
     if (activeFeature) {
       activeFeature.toggleMarked();
+    }
+  };
+
+  const handleRename = async () => {
+    if (!isElectricPole || !activeFeature) return;
+
+    const electricPole = activeFeature as ElectricPoleFeature;
+    const currentName = electricPole.name;
+
+    const newName = await alert.prompt({
+      content: t('popup:electric_pole.rename_tip'),
+      defaultValue: currentName,
+    });
+
+    if (newName && newName !== currentName) {
+      electricPole.rename(newName);
     }
   };
 
@@ -64,7 +87,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           className={cn('relative z-1 flex flex-col', className)}
         >
           <Header
-            name={entityData.entityInfo.entityInfo.point}
+            name={displayName || ''}
             pic={getEntityIcon(entityData.entityInfo.category, entityData.entityInfo.entityInfo.pic)}
           />
 
@@ -77,8 +100,8 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           </ScrollArea>
 
           {/* 操作按钮 */}
-          {activeFeature.markable && (
-            <div className="mt-3 pt-3 shrink-0 flex">
+          <div className="mt-3 pt-3 shrink-0 flex gap-2">
+            {activeFeature.markable && (
               <ZmdButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -88,8 +111,18 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
               >
                 {activeFeature.marked ? t('common:operate.unmark') : t('common:operate.mark')}
               </ZmdButton>
-            </div>
-          )}
+            )}
+            {isElectricPole && (
+              <ZmdButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRename();
+                }}
+              >
+                {t('common:operate.rename')}
+              </ZmdButton>
+            )}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

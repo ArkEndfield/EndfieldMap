@@ -430,10 +430,10 @@ export class ElectricPoleDataService {
 
       // 如果两个电线杆已经连接了
       if (
-        this.connectingPole.connectionEntityFeatures.to === pole ||
-        this.connectingPole.connectionEntityFeatures.from === pole ||
-        pole.connectionEntityFeatures.from === this.connectingPole ||
-        pole.connectionEntityFeatures.to === this.connectingPole
+        this.connectingPole.connectionTo === pole ||
+        this.connectingPole.connectionFrom === pole ||
+        pole.connectionFrom === this.connectingPole ||
+        pole.connectionTo === this.connectingPole
       ) {
         throw new Error('两个电线杆已经连接了');
       }
@@ -458,20 +458,20 @@ export class ElectricPoleDataService {
    */
   private tryConnect(from: ElectricPoleFeature, to: ElectricPoleFeature): boolean {
     // 情况1: from 的 to 位置空闲，直接连接 from->to
-    if (!from.connectionEntityFeatures.to) {
+    if (!from.connectionTo) {
       from.connectTo(to);
       return true;
     }
 
     // 情况2: from 的 to 位置已满，但 to 的 to 位置空闲，反向连接 to->from
-    if (!to.connectionEntityFeatures.to) {
+    if (!to.connectionTo) {
       to.connectTo(from);
       return true;
     }
 
     // 情况3: 两者的 to 都满了，尝试调整连接链
     // 如果 to 有 from 连接（即 to->C），尝试反转这条连接链
-    if (to.connectionEntityFeatures.to && !to.connectionEntityFeatures.from) {
+    if (to.connectionTo && !to.connectionFrom) {
       // to->C 存在，尝试递归反转连接链
       const reversed = this.reverseConnectionChain(to);
       if (reversed) {
@@ -482,7 +482,7 @@ export class ElectricPoleDataService {
     }
 
     // 情况4: 如果 from 有 from 连接（即 D->from），且 to 的 to 空闲，可以尝试反转 from 的连接链
-    if (from.connectionEntityFeatures.from && !from.connectionEntityFeatures.to) {
+    if (from.connectionFrom && !from.connectionTo) {
       const reversed = this.reverseConnectionChain(from);
       if (reversed) {
         // 反转成功后，from 的 to 位置应该空出来了，可以连接 from->to
@@ -500,11 +500,11 @@ export class ElectricPoleDataService {
    * @returns 是否成功反转
    */
   private reverseConnectionChain(pole: ElectricPoleFeature): boolean {
-    const next = pole.connectionEntityFeatures.to;
+    const next = pole.connectionTo;
     if (!next) return true; // 没有下一个节点，无需反转
 
     // 如果下一个节点的 to 也满了，需要先递归反转下一个节点的连接链
-    if (next.connectionEntityFeatures.to) {
+    if (next.connectionTo) {
       const reversed = this.reverseConnectionChain(next);
       if (!reversed) return false; // 递归反转失败
     }

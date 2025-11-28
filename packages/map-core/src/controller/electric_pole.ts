@@ -344,7 +344,7 @@ export class ElectricPoleController {
    * - 若 data.connections.to 存在：让当前电线杆 connectTo to 电线杆
    * 这样可以保证：
    *   1. ElectricPoleData.connections 双端数据一致
-   *   2. ElectricPoleFeature.connectionEntityFeatures 与 ConnectionFeature 几何保持同步
+   *   2. ElectricPoleFeature.connectionTo/connectionFrom 与 ConnectionFeature 几何保持同步
    */
   private syncElectricPoleConnections(mapIndex: MapIndex, feature: ElectricPoleFeature) {
     const entityLayer = this.entityLayer.get(mapIndex);
@@ -364,8 +364,8 @@ export class ElectricPoleController {
       } else {
         // 若当前还未建立连接或连接目标不一致，则重建连接
         if (
-          !feature.connectionEntityFeatures.to ||
-          feature.connectionEntityFeatures.to.data.levelLogicId !== connectTo
+          !feature.connectionTo ||
+          feature.connectionTo.data.levelLogicId !== connectTo
         ) {
           feature.connectTo(toFeature);
         }

@@ -9,6 +9,7 @@ interface Resources {
     "operate": {
       "clear_selection": "清空选择",
       "mark": "标记",
+      "rename": "重命名",
       "unmark": "取消标记"
     },
     "rename": "重命名",
@@ -31,6 +32,9 @@ interface Resources {
     "map02": "锦陇"
   },
   "popup": {
+    "electric_pole": {
+      "rename_tip": "请输入电线杆名称"
+    },
     "entity": {
       "title": "实体信息"
     },

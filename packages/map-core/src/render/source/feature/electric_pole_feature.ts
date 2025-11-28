@@ -13,11 +13,6 @@ export interface ElectricPoleFeatureConfig extends BaseFeatureConfig {
   entityInfo: EntityInfoData;
 }
 
-export interface ConnectionFeatures {
-  from: ElectricPoleFeature | null;
-  to: ElectricPoleFeature | null;
-}
-
 export class ElectricPoleFeature extends MapFeature {
   public selectable: boolean = false;
   public markable: boolean = false;
@@ -26,10 +21,8 @@ export class ElectricPoleFeature extends MapFeature {
 
   @observable accessor _data: ElectricPoleData;
 
-  @observable accessor connectionEntityFeatures: ConnectionFeatures = {
-    from: null,
-    to: null,
-  };
+  @observable accessor connectionFrom: ElectricPoleFeature | null = null;
+  @observable accessor connectionTo: ElectricPoleFeature | null = null;
 
   constructor(config: ElectricPoleFeatureConfig) {
     super(config);
@@ -59,7 +52,7 @@ export class ElectricPoleFeature extends MapFeature {
 
   @action
   public setConnectionFrom(pole: ElectricPoleFeature) {
-    this.connectionEntityFeatures.from = pole;
+    this.connectionFrom = pole;
   }
 
   @action
@@ -71,7 +64,7 @@ export class ElectricPoleFeature extends MapFeature {
     }
     // 直接修改 _data 而不是 data getter 返回的临时对象
     this._data.properties.connectTo = pole._data.levelLogicId;
-    this.connectionEntityFeatures.to = pole;
+    this.connectionTo = pole;
     this.connectionFeature.setTo(pole);
     pole.setConnectionFrom(this);
     this.notifyElectricPoleChanged();
@@ -82,15 +75,15 @@ export class ElectricPoleFeature extends MapFeature {
    */
   @action
   public clearConnectionFrom() {
-    const fromPole = this.connectionEntityFeatures.from;
+    const fromPole = this.connectionFrom;
     if (fromPole) {
       // 清除对方的 to 引用和连线，但不触发递归
       // 直接修改 _data 而不是 data getter 返回的临时对象
       fromPole._data.properties.connectTo = null;
-      fromPole.connectionEntityFeatures.to = null;
+      fromPole.connectionTo = null;
       fromPole.connectionFeature.clearTo();
       // 清除当前的 from 引用
-      this.connectionEntityFeatures.from = null;
+      this.connectionFrom = null;
       this.notifyElectricPoleChanged();
     }
   }
@@ -100,17 +93,35 @@ export class ElectricPoleFeature extends MapFeature {
    */
   @action
   public clearConnectionTo() {
-    const toPole = this.connectionEntityFeatures.to;
+    const toPole = this.connectionTo;
     if (toPole) {
       // 清除对方的 from 引用
-      toPole.connectionEntityFeatures.from = null;
+      toPole.connectionFrom = null;
       // 清除当前的 to 引用和连线
       // 直接修改 _data 而不是 data getter 返回的临时对象
       this._data.properties.connectTo = null;
-      this.connectionEntityFeatures.to = null;
+      this.connectionTo = null;
       this.connectionFeature.clearTo();
       this.notifyElectricPoleChanged();
     }
+  }
+
+  /**
+   * 重命名电线杆
+   * @param name 新名称
+   */
+  @action
+  public rename(name: string) {
+    this._data.properties.name = name;
+    this.notifyElectricPoleChanged();
+  }
+
+  /**
+   * 获取电线杆名称
+   */
+  @computed
+  get name(): string {
+    return this._data.properties.name || `ElectricPole #${this._data.levelLogicId}`;
   }
 
   /**
