@@ -9,6 +9,7 @@ import {
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
 import type { DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
@@ -18,6 +19,7 @@ import type { Point } from 'ol/geom';
 export interface HoverFeatureControllerConfig {
   getEntityLayers: () => CommonPointEntityLayer[];
   getElectricPoleLayers: () => ElectricPoleEntityLayer[];
+  getCustomPointLayers: () => CustomPointEntityLayer[];
   disableHoverFeature?: boolean;
 }
 
@@ -34,12 +36,15 @@ export class HoverFeatureController {
   private getEntityLayers: () => CommonPointEntityLayer[];
   /** 获取电线杆图层的函数 */
   private getElectricPoleLayers: () => ElectricPoleEntityLayer[];
+  /** 获取自定义标点图层的函数 */
+  private getCustomPointLayers: () => CustomPointEntityLayer[];
   /** 是否禁用 */
   private disabled: boolean = false;
 
   constructor(config: HoverFeatureControllerConfig) {
     this.getEntityLayers = config.getEntityLayers;
     this.getElectricPoleLayers = config.getElectricPoleLayers;
+    this.getCustomPointLayers = config.getCustomPointLayers;
     this.disabled = config.disableHoverFeature ?? false;
     this.registerEventHandlers();
   }
@@ -63,6 +68,7 @@ export class HoverFeatureController {
       }
 
       const electricPoleLayers = this.getElectricPoleLayers().filter((layer) => layer.visible);
+      const customPointLayers = this.getCustomPointLayers().filter((layer) => layer.visible);
       const entityLayers = this.getEntityLayers().filter((layer) => layer.visible);
 
       const allHoveredFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
@@ -71,7 +77,7 @@ export class HoverFeatureController {
           pixel: event.pixel as [number, number],
           map: event.map,
         },
-        electricPoleLayers,
+        [...electricPoleLayers, ...customPointLayers],
         entityLayers
       );
 
@@ -238,9 +244,6 @@ export class HoverFeatureController {
     this.setHoverFeature(null);
   }
 
-  /**
-   * 销毁控制器，清理事件监听器
-   */
   /**
    * 销毁控制器，清理事件监听器
    */

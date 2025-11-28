@@ -18,6 +18,7 @@ import {
 } from '@endfieldmap/tools';
 import { EntityDataService } from '@/services/data/entity';
 import { ElectricPoleDataService } from '@/services/data/electric_pole';
+import { CustomPointDataService } from '@/services/data/custom_point';
 import { DEBOUNCE_INTERVAL } from '@/const/data';
 import { ItemDataService } from '@/services/data/item';
 import { DungeonSeriesDataService } from '@/services/data/dungeon_series';
@@ -35,6 +36,7 @@ class DataService {
 
   public entityDataService: EntityDataService;
   public electricPoleDataService: ElectricPoleDataService;
+  public customPointDataService: CustomPointDataService;
   public itemDataService: ItemDataService;
   public dungeonSeriesDataService: DungeonSeriesDataService;
   public chestRewardDataService: ChestRewardDataService;
@@ -51,6 +53,7 @@ class DataService {
     });
     this.entityDataService = new EntityDataService(this.storage);
     this.electricPoleDataService = new ElectricPoleDataService(this.storage);
+    this.customPointDataService = new CustomPointDataService(this.storage);
 
     this.itemDataService = new ItemDataService(this.jsonLoader, this.storage);
     this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.storage, this.itemDataService);
@@ -77,6 +80,8 @@ class DataService {
     await this.entityDataService.initFromStorage();
     // 初始化电线杆预设数据（仅从 Storage 读取，不依赖 adapter）
     await this.electricPoleDataService.initFromStorage();
+    // 初始化自定义标点预设数据（仅从 Storage 读取，不依赖 adapter）
+    await this.customPointDataService.initFromStorage();
     this.initialized = true;
   }
 
@@ -85,6 +90,8 @@ class DataService {
     this.initDataEventListeners();
     // 注册 electric pole 适配器，并在内部应用当前预设数据
     this.electricPoleDataService.registerAdapter(adapter);
+    // 注册 custom point 适配器，并在内部应用当前预设数据
+    this.customPointDataService.registerAdapter(adapter);
   }
 
   public initDataEventListeners() {
@@ -163,6 +170,7 @@ class DataService {
     const enableCluster = LocalStorageDB.get<boolean>(LocalStorageKey.CLUSTER_ENABLED) ?? true;
     const displayEletricPole = LocalStorageDB.get<boolean>(LocalStorageKey.ELECTRIC_POLE_DISPLAY) ?? true;
     const displayEletricPoleRange = LocalStorageDB.get<boolean>(LocalStorageKey.ELECTRIC_POLE_RANGE_DISPLAY) ?? true;
+    const displayCustomPoint = LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY) ?? true;
     const filterMarked =
       LocalStorageDB.get<MarkedFeatureFilterMode>(LocalStorageKey.FILTER_MARKED) ?? MarkedFeatureFilterMode.All;
 
@@ -173,6 +181,7 @@ class DataService {
       enableCluster,
       displayEletricPoleRange,
       displayEletricPole,
+      displayCustomPoint,
       filterMarked,
     };
   }

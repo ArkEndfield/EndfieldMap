@@ -10,5 +10,8 @@
   },
   "electric_pole": {
     "rename_tip": "请输入电线杆名称"
+  },
+  "custom_point": {
+    "rename_tip": "请输入自定义点位名称"
   }
 }

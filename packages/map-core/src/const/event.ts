@@ -20,4 +20,5 @@ export const MAP_EVENT = {
   HOVER_CONNECTION_CHANGE: 'hover:connection:change',
   SELECTION_START: 'selection:start',
   ELECTRIC_POLE_CHANGED: 'electric_pole:changed',
+  CUSTOM_POINT_CHANGED: 'custom_point:changed',
 } as const;

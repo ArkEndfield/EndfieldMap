@@ -17,6 +17,7 @@ import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
+import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
 import { EventController } from '@endfieldmap/map-core/controller/event';
 import { ZoomController } from '@endfieldmap/map-core/controller/zoom';
 import type Control from 'ol/control/Control';
@@ -53,6 +54,8 @@ export class EndfieldMapAdapter {
   public entityController: EntityController;
   /** 电线杆数据管理器 */
   public electricPoleController: ElectricPoleController;
+  /** 自定义标点数据管理器 */
+  public customPointController: CustomPointController;
   /** 事件控制器 */
   public eventController: EventController;
   /** 激活特征控制器 */
@@ -87,6 +90,7 @@ export class EndfieldMapAdapter {
       {
         getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
         getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
+        getCustomPointLayers: () => (this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : []),
         getConnectionLayer: () => this.electricPoleController?.currentConnectionLayer || null,
       }
     );
@@ -115,9 +119,15 @@ export class EndfieldMapAdapter {
     this.electricPoleController = new ElectricPoleController({
       imagePath: `${this.asset.entityImage}/custom`,
     });
+    this.customPointController = new CustomPointController({
+      icon: {
+        url: `${this.asset.entityImage}/custom/marker.png`,
+      },
+    });
     this.eventController = new EventController({
       entityController: this.entityController,
       electricPoleController: this.electricPoleController,
+      customPointController: this.customPointController,
     });
     // 初始化popup控制器（默认启用）
     if (config.popup?.enabled !== false) {
@@ -181,6 +191,21 @@ export class EndfieldMapAdapter {
     const electricPoleLayer = this.electricPoleController.layerContainer;
     if (electricPoleLayer) {
       this.layerController.addLayer(LayerType.ELECTRIC_POLE, electricPoleLayer);
+    }
+  }
+
+  /**
+   * 渲染自定义标点
+   * @param mapIndex 地图索引
+   */
+  @action
+  public renderCustomPoint(mapIndex: MapIndex) {
+    this.customPointController.switchMapCustomPointLayers(mapIndex);
+    const customPointLayer = this.customPointController.layerContainer;
+    if (customPointLayer) {
+      // 先移除旧图层，再添加新图层
+      this.layerController.removeLayer(LayerType.CUSTOM_POINT);
+      this.layerController.addLayer(LayerType.CUSTOM_POINT, customPointLayer);
     }
   }
 

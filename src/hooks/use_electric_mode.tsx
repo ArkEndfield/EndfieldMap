@@ -48,13 +48,23 @@ export const useElectricMode = () => {
     };
 
     const checkCanOperate = () => {
-        // 直接读取 adapter 的最新状态
-        if (!adapter.mapController.selection.isSelecting) return true;
-        
-        alert.info({
-            content: <div className="text-center">{t('operation.selecting_operating_tip')}</div>,
-        });
-        return false;
+        // 检查是否在选择模式
+        if (adapter.mapController.selection.isSelecting) {
+            alert.info({
+                content: <div className="text-center">{t('operation.selecting_operating_tip')}</div>,
+            });
+            return false;
+        }
+
+        // 检查是否在自定义标点操作模式
+        if (dataService.customPointDataService.isInCustomPointOperateMode) {
+            alert.info({
+                content: <div className="text-center">{t('operation.custom_point_operating_tip')}</div>,
+            });
+            return false;
+        }
+
+        return true;
     };
 
     const isInMode = (...args: ElectricMode[]): boolean => {

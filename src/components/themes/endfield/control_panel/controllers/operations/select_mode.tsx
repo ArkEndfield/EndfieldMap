@@ -10,6 +10,7 @@ import { SideButton } from '../mobile/side_button';
 import { OperationTip } from './_tip';
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { AnimatePresence, motion } from 'motion/react';
+import uiManager from '@/services/ui_manager';
 
 const MultiOperationIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 92" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,13 +81,11 @@ const SelectOperator = observer(() => {
 
   const clearSelection = () => {
     adapter.mapController.selection.clearSelection();
-  }
+  };
 
   return (
-    <div className='flex items-center gap-2 flex-wrap justify-center'>
-      <span className='text-center'>
-        {t('sidebar:operation.selected_feature', { val: selectedFeatures.length })}
-      </span>
+    <div className="flex items-center gap-2 flex-wrap justify-center">
+      <span className="text-center">{t('sidebar:operation.selected_feature', { val: selectedFeatures.length })}</span>
       <AnimatePresence>
         {selectedFeatures.length > 0 && (
           <motion.div
@@ -96,13 +95,13 @@ const SelectOperator = observer(() => {
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
-            <EndfieldFormButton className='text-sm py-0.5 px-2' onClick={() => markFeatures(true)}>
+            <EndfieldFormButton className="text-sm py-0.5 px-2" onClick={() => markFeatures(true)}>
               {t('common:operate.mark')}
             </EndfieldFormButton>
             <EndfieldFormButton className="text-sm py-0.5 px-2" onClick={() => markFeatures(false)}>
               {t('common:operate.unmark')}
             </EndfieldFormButton>
-            <EndfieldFormButton className="text-sm py-0.5 px-2" variant='primary' onClick={clearSelection}>
+            <EndfieldFormButton className="text-sm py-0.5 px-2" variant="primary" onClick={clearSelection}>
               {t('common:operate.clear_selection')}
             </EndfieldFormButton>
           </motion.div>
@@ -123,6 +122,11 @@ export const SelectModeOperation = observer(() => {
       alert.info(t('operation.electric_pole_operating_tip'));
       return;
     }
+    if (!isSelecting && dataService.customPointDataService.isInCustomPointOperateMode) {
+      alert.info(t('operation.custom_point_operating_tip'));
+      return;
+    }
+    if (!adapter.mapController.selection.isSelecting) uiManager.closeAllManagers();
     adapter.mapController.selection.toggleSelecting();
     adapter.activeFeatureController.clearActiveFeature();
   };

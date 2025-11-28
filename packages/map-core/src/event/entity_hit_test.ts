@@ -8,6 +8,7 @@ import {
 } from '@endfieldmap/map-core/const/map';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
 import type { Map as OlMap } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Feature } from 'ol';
@@ -22,7 +23,7 @@ export interface EntityHitTestInput {
 
 export interface EntityHitTestResult {
   features: Feature<Point>[];
-  layer: CommonPointEntityLayer | ElectricPoleEntityLayer;
+  layer: CommonPointEntityLayer | ElectricPoleEntityLayer | CustomPointEntityLayer;
 }
 
 /**
@@ -60,13 +61,13 @@ export interface EntityHitTestOptions {
 
 /**
  * 基于实体样式（圆 + 底部指示器）的几何关系，统一执行点击 / hover 的实体命中检测。
- * 命中区域与 CommonPointEntityLayer / ElectricPoleEntityLayer 的样式保持一致：
+ * 命中区域与 CommonPointEntityLayer / ElectricPoleEntityLayer / CustomPointEntityLayer 的样式保持一致：
  * - 上方覆盖圆和装饰
  * - 下方只保留靠近锚点的一小段（底部指示器附近）
  */
 export async function hitTestEntitiesAt(
   input: EntityHitTestInput,
-  electricPoleLayers: ElectricPoleEntityLayer[],
+  electricPoleLayers: (ElectricPoleEntityLayer | CustomPointEntityLayer)[],
   entityLayers: CommonPointEntityLayer[],
   options?: EntityHitTestOptions
 ): Promise<EntityHitTestResult[]> {
@@ -88,7 +89,7 @@ export async function hitTestEntitiesAt(
  */
 function hitTestEntitiesByGeometry(
   input: EntityHitTestInput,
-  electricPoleLayers: ElectricPoleEntityLayer[],
+  electricPoleLayers: (ElectricPoleEntityLayer | CustomPointEntityLayer)[],
   entityLayers: CommonPointEntityLayer[]
 ): EntityHitTestResult[] {
   const { coordinate, pixel, map } = input;
@@ -159,17 +160,17 @@ function hitTestEntitiesByGeometry(
         continue;
       }
       const instance = candidate.get(EntityInstanceKey) as MapFeature | undefined;
-      
-      // 根据 layer 的 markedFilterMode 过滤
+
+      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
       const marked = instance?.marked ?? false;
       const markable = instance?.markable ?? false;
-      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
         continue;
       }
-      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
         continue;
       }
-      
+
       const order = instance?.order ?? 0;
       if (!selectedFeature || order > maxOrder) {
         selectedFeature = candidate;
@@ -217,14 +218,14 @@ function hitTestEntitiesByGeometry(
         if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
           return false;
         }
-        // 根据 layer 的 markedFilterMode 过滤
+        // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
         const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
         const marked = instance?.marked ?? false;
         const markable = instance?.markable ?? false;
-        if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+        if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
           return false;
         }
-        if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+        if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
           return false;
         }
         return true;
@@ -251,7 +252,7 @@ function hitTestEntitiesByGeometry(
  */
 async function hitTestEntitiesByPixel(
   input: EntityHitTestInput,
-  electricPoleLayers: ElectricPoleEntityLayer[],
+  electricPoleLayers: (ElectricPoleEntityLayer | CustomPointEntityLayer)[],
   entityLayers: CommonPointEntityLayer[]
 ): Promise<EntityHitTestResult[]> {
   const { pixel, map } = input;
@@ -291,14 +292,14 @@ async function hitTestEntitiesByPixel(
         continue;
       }
 
-      // 根据 layer 的 markedFilterMode 过滤
+      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
       const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
       const marked = instance?.marked ?? false;
       const markable = instance?.markable ?? false;
-      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
         continue;
       }
-      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
         continue;
       }
 
@@ -363,15 +364,15 @@ async function hitTestEntitiesByPixel(
       if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
         return false;
       }
-      // 根据 layer 的 markedFilterMode 过滤
+      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
       const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
       const marked = instance?.marked ?? false;
       const markable = instance?.markable ?? false;
-      
-      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+
+      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
         return false;
       }
-      if (markable && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+      if (markable && 'markedFilterMode' in layer && layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
         return false;
       }
       return true;

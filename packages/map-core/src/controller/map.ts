@@ -8,6 +8,7 @@ import { HoverFeatureController } from '@endfieldmap/map-core/controller/hover_f
 import { HoverConnectionController } from '@endfieldmap/map-core/controller/hover_connection';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
 import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
 
 export interface MapControllerConfig {
@@ -18,6 +19,7 @@ export interface MapControllerConfig {
 export interface MapControllerDependencies {
   getEntityLayers: () => CommonPointEntityLayer[];
   getElectricPoleLayers: () => ElectricPoleEntityLayer[];
+  getCustomPointLayers: () => CustomPointEntityLayer[];
   getConnectionLayer: () => ElectricPoleConnectionLayer | null;
 }
 
@@ -35,6 +37,7 @@ export class MapController {
     this.hoverFeatureController = new HoverFeatureController({
       getEntityLayers: dependencies?.getEntityLayers || (() => []),
       getElectricPoleLayers: dependencies?.getElectricPoleLayers || (() => []),
+      getCustomPointLayers: dependencies?.getCustomPointLayers || (() => []),
       disableHoverFeature: mapConfig.disableHoverFeature,
     });
     this.hoverConnectionController = new HoverConnectionController({

@@ -9,6 +9,7 @@ import { SideButton } from '../mobile/side_button';
 import type { SheetRef } from 'react-modal-sheet';
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { OperationTip } from './_tip';
+import uiManager from '@/services/ui_manager';
 
 const ElectricPoleButtonIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,9 +75,9 @@ export const ElectricPoleButtomMobile = observer(() => {
 });
 
 export const ElectricPoleButton = observer(({ portalRef }: { portalRef: React.RefObject<HTMLDivElement | null> }) => {
-  const [open, setOpen] = useState(false);
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
   const { t } = useTranslation('sidebar');
+  const open = uiManager.electricPoleManagerOpen;
 
   useEffect(() => {
     if (portalRef.current) {
@@ -88,12 +89,12 @@ export const ElectricPoleButton = observer(({ portalRef }: { portalRef: React.Re
     if (dataService.electricPoleDataService.isInElectricOperateMode) {
       dataService.electricPoleDataService.stopAllOperation();
     }
-    setOpen(!open);
+    uiManager.toggleElectricPoleManager();
   };
 
   const onClose = () => {
     dataService.electricPoleDataService.stopAllOperation();
-  }
+  };
 
   return (
     <>

@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useAdapter } from '@/hooks/use_adapter';
 import { AnimatePresence, motion } from 'motion/react';
 import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 
 /** 描边 */
@@ -49,8 +50,11 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const entityData = activeFeature?.data;
 
   const isElectricPole = activeFeature instanceof ElectricPoleFeature;
+  const isCustomPoint = activeFeature instanceof CustomPointFeature;
   const displayName = isElectricPole
     ? (activeFeature as ElectricPoleFeature).name
+    : isCustomPoint
+    ? (activeFeature as CustomPointFeature).name
     : entityData?.entityInfo.entityInfo.point;
 
   const handleToggleMarked = () => {
@@ -60,18 +64,32 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   };
 
   const handleRename = async () => {
-    if (!isElectricPole || !activeFeature) return;
+    if (!activeFeature) return;
 
-    const electricPole = activeFeature as ElectricPoleFeature;
-    const currentName = electricPole.name;
+    if (isElectricPole) {
+      const electricPole = activeFeature as ElectricPoleFeature;
+      const currentName = electricPole.name;
 
-    const newName = await alert.prompt({
-      content: t('popup:electric_pole.rename_tip'),
-      defaultValue: currentName,
-    });
+      const newName = await alert.prompt({
+        content: t('popup:electric_pole.rename_tip'),
+        defaultValue: currentName,
+      });
 
-    if (newName && newName !== currentName) {
-      electricPole.rename(newName);
+      if (newName && newName !== currentName) {
+        electricPole.rename(newName);
+      }
+    } else if (isCustomPoint) {
+      const customPoint = activeFeature as CustomPointFeature;
+      const currentName = customPoint.name;
+
+      const newName = await alert.prompt({
+        content: t('popup:custom_point.rename_tip'),
+        defaultValue: currentName,
+      });
+
+      if (newName && newName !== currentName) {
+        customPoint.rename(newName);
+      }
     }
   };
 
@@ -112,7 +130,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
                 {activeFeature.marked ? t('common:operate.unmark') : t('common:operate.mark')}
               </ZmdButton>
             )}
-            {isElectricPole && (
+            {(isElectricPole || isCustomPoint) && (
               <ZmdButton
                 onClick={(e) => {
                   e.stopPropagation();

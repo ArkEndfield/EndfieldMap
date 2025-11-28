@@ -13,6 +13,8 @@ export enum StorageKey {
 
   /** 电线杆数据 */
   ELECTRIC_POLE = 'electric_pole',
+  /** 自定义标点数据 */
+  CUSTOM_POINT = 'custom_point',
 
   /** ChestReward */
   CHEST_REWARD = 'chest_reward',
@@ -40,6 +42,8 @@ export enum LocalStorageKey {
   ELECTRIC_POLE_RANGE_DISPLAY = 'electric_pole_range_display',
   // 显示电线杆
   ELECTRIC_POLE_DISPLAY = 'electric_pole_display',
+  // 显示自定义标点
+  CUSTOM_POINT_DISPLAY = 'custom_point_display',
   // 标记筛选
   FILTER_MARKED = 'filter_marked',
 }

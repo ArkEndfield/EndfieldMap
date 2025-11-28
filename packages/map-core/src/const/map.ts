@@ -75,6 +75,9 @@ export const MapTypeKey = 'mapType';
 /** 电线杆 ID 键 */
 export const ElectricPoleIdKey = '#electric_pole';
 
+/** 自定义标点 ID 键 */
+export const CustomPointKey = '#custom_point';
+
 /** TODO: 电线杆覆盖区域半径（地图坐标单位） */
 export const ELECTRIC_ZONE_RADIUS = 20;
 
@@ -90,6 +93,7 @@ export const enum LayerType {
   AREA_NAME = 'areaName',
   ENTITY = 'entity',
   ELECTRIC_POLE = 'electricPole',
+  CUSTOM_POINT = 'customPoint',
   ACTIVE_FEATURE = 'activeFeature',
   HOVER_FEATURE = 'hoverFeature',
 }

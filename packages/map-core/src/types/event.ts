@@ -7,6 +7,7 @@ import type { FeatureLike } from 'ol/Feature';
 import type { Point } from 'ol/geom';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
 import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
 
 export interface ClusterEventDetail {
@@ -33,7 +34,7 @@ export interface MapContextMenuEventDetail {
 export interface EntityContextMenuEventDetail {
   instance: MapFeature;
   feature: FeatureLike;
-  layer: CommonPointEntityLayer | ElectricPoleEntityLayer;
+  layer: CommonPointEntityLayer | ElectricPoleEntityLayer | CustomPointEntityLayer;
   event: MapContextMenuEventDetail;
 }
 
@@ -95,6 +96,10 @@ export interface ElectricPoleChangedEventDetail {
   mapIndex: string | null;
 }
 
+export interface CustomPointChangedEventDetail {
+  mapIndex: string | null;
+}
+
 export interface MapEventEmitter {
   // 基于 ol 的
   [MAP_EVENT.ZOOM_CHANGE]: number;
@@ -118,6 +123,7 @@ export interface MapEventEmitter {
   [MAP_EVENT.HOVER_CONNECTION_CHANGE]: HoverConnectionChangeEventDetail;
   [MAP_EVENT.SELECTION_START]: void;
   [MAP_EVENT.ELECTRIC_POLE_CHANGED]: ElectricPoleChangedEventDetail;
+  [MAP_EVENT.CUSTOM_POINT_CHANGED]: CustomPointChangedEventDetail;
 }
 
 export type MapEventListener<T extends keyof MapEventEmitter> = (event: MapEventEmitter[T]) => void;

@@ -1,4 +1,4 @@
-import type { ElectricPoleIdKey, MapIndex } from '@endfieldmap/map-core/const/map';
+import type { ElectricPoleIdKey, CustomPointKey, MapIndex } from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
 export interface EnityProperties {
@@ -56,6 +56,19 @@ export interface ElectricPoleData extends EntityData {
 }
 
 /**
+ * 自定义标点数据
+ */
+export interface CustomPointData extends EntityData {
+  entityDataIdKey: typeof CustomPointKey;
+  entityType: '#CustomPoint';
+  templateId: '#custom_point';
+  properties: EnityProperties & {
+    name?: string;
+    pointType?: string;
+  }
+}
+
+/**
  * 实体数据列表
  */
 export type EntityDataList = EntityData[];
@@ -64,6 +77,11 @@ export type EntityDataList = EntityData[];
  * 电线杆数据列表
  */
 export type ElectricPoleDataList = ElectricPoleData[];
+
+/**
+ * 自定义标点数据列表
+ */
+export type CustomPointDataList = CustomPointData[];
 
 // TODO: 希望做成自动化
 export type Category = 'chest' | 'dnarrative' | 'dungeon' | 'enemy' | 'ether' | 'mineral' | 'narrative' | 'plant' | 'settlement' | 'spcstone' | 'special';
@@ -106,7 +124,7 @@ export type EntityInfoKey = EntityData['entityDataIdKey'];
  * 实体信息数据
  */
 export interface EntityInfoData {
-  category: EntityCategoryData['category'] | typeof ElectricPoleIdKey;
+  category: EntityCategoryData['category'] | typeof ElectricPoleIdKey | typeof CustomPointKey;
   entityInfo: {
     point: EntityInfoKey;
     pic: string;
@@ -123,7 +141,7 @@ export type EntityInfoDataJson = Record<EntityInfoKey, EntityInfoData>;
  */
 export interface EntityInfoItemData<T extends EntityData | ElectricPoleData = EntityData> {
   uniqueKey: string;
-  category: EntityCategoryData['category'] | typeof ElectricPoleIdKey;
+  category: EntityCategoryData['category'] | typeof ElectricPoleIdKey | typeof CustomPointKey;
   entityDataIdKey: EntityData['entityDataIdKey'];
   entityInfo: EntityInfoData['entityInfo'];
   visible: boolean;
@@ -135,3 +153,5 @@ export interface EntityInfoItemData<T extends EntityData | ElectricPoleData = En
 }
 
 export type ElectricPoleMapData = Record<MapIndex, ElectricPoleDataList>;
+
+export type CustomPointMapData = Record<MapIndex, CustomPointDataList>;

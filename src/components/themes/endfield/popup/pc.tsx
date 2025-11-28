@@ -53,7 +53,7 @@ const PCPopup: React.FC = observer(() => {
     <>
       <StrokeSVGFilter />
       <AnimatePresence>
-        {activeFeature && !dataService.electricPoleDataService.isInElectricOperateMode && (
+        {activeFeature && !dataService.electricPoleDataService.isInElectricOperateMode && !dataService.customPointDataService.isInCustomPointOperateMode && (
           <motion.div
             key="desktop-popup"
             initial={{ opacity: 0, y: 18, scale: 0.9 }}

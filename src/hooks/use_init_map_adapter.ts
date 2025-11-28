@@ -78,12 +78,16 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       adapter.current.renderAreaName(getLanguage(i18n.language as LanguageLocale));
       // 渲染电线杆
       adapter.current.renderElectricPole(currentMap);
+      // 渲染自定义标点
+      adapter.current.renderCustomPoint(currentMap);
       // 设置地图中心
       adapter.current.mapController.setCenter(data.center);
       // 设置电线杆可见性
       adapter.current.electricPoleController.setZoneVisible(data.displayEletricPoleRange);
       // 设置电线杆范围可见性
       adapter.current.electricPoleController.setElectricPoleVisible(data.displayEletricPole);
+      // 设置自定义标点可见性
+      adapter.current.customPointController.setCustomPointVisible(data.displayCustomPoint);
     }
   }, []);
 

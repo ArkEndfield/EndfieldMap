@@ -32,6 +32,9 @@ interface Resources {
     "map02": "锦陇"
   },
   "popup": {
+    "custom_point": {
+      "rename_tip": "请输入自定义点位名称"
+    },
     "electric_pole": {
       "rename_tip": "请输入电线杆名称"
     },
@@ -69,15 +72,15 @@ interface Resources {
       },
       "state_data": {
         "clear": "清除状态数据",
-        "description": "包括地图位置状态、当前查看地图状态、聚合设置、电线杆相关显示隐藏等非重要内容",
+        "description": "包括地图位置状态、当前查看地图状态、聚合设置、电线杆和自定义点位相关显示隐藏等非重要内容",
         "failed": "清除状态数据失败：{{reason}}",
         "success": "清除状态数据成功，刷新网页生效",
         "title": "状态数据"
       },
       "storage_data": {
         "clear": "清除储存数据",
-        "confirm": "[危险操作]确认要删除所有数据吗？删除后不可恢复！删除的数据包括状态数据、标点筛选数据、标记数据以及所有电线杆数据。",
-        "description": "[危险操作]删除所有存储数据，包括状态数据、标点筛选数据以及所有电线杆数据",
+        "confirm": "[危险操作]确认要删除所有数据吗？删除后不可恢复！删除的数据包括状态数据、标点筛选数据、标记数据以及所有电线杆数据和自定义点位数据。",
+        "description": "[危险操作]删除所有存储数据，包括状态数据、标点筛选数据以及所有电线杆数据和自定义点位数据",
         "failed": "清除所有储存数据失败：{{reason}}",
         "success": "清除所有储存数据成功，刷新网页生效",
         "title": "储存数据"
@@ -105,6 +108,7 @@ interface Resources {
     "filter": {
       "all": "全部",
       "category": {
+        "#custom_point": "自定义点位",
         "#electric_pole": "电线杆",
         "chest": "宝箱",
         "dnarrative": "世界叙事回响",
@@ -126,7 +130,45 @@ interface Resources {
     "fold": "折叠",
     "operation": {
       "cancel_operation": "取消操作",
+      "close_custom_point_manager": "关闭管理器",
       "close_electric_pole_manager": "关闭管理器",
+      "custom_point": {
+        "create": {
+          "in_mode": "正在创建自定义点位",
+          "start": "创建"
+        },
+        "delete": {
+          "in_mode": "正在删除自定义点位",
+          "start": "删除"
+        },
+        "display": "显示自定义点位",
+        "preset": {
+          "batch_delete": "批量删除",
+          "create": "新建预设",
+          "create_default_name": "新预设",
+          "create_tip": "请输入新自定义点位预设名称",
+          "current": "当前预设",
+          "delete": {
+            "batch_fail_tip": "{{count}}个预设删除失败，id为{{ids}}",
+            "confirm": "确定要删除预设「{{name}}」吗？此操作不可恢复",
+            "confirm_batch": "确定要删除选中的 {{count, number}} 个自定义点位预设吗？此操作不可恢复。",
+            "fail_tip": "删除失败"
+          },
+          "empty": "暂无预设，请先创建",
+          "export_select": "导出所选预设",
+          "import": {
+            "button": "导入预设",
+            "error_tip": "文件格式不合法或解析错误",
+            "failed": "自定义点位预设导入失败：{{reason}}",
+            "format_error": "文件内容格式不正确",
+            "success": "自定义点位预设导入成功"
+          },
+          "select_info": "共 {{total, number}} 个预设，已选 {{select, number}} 个",
+          "title": "自定义点位预设"
+        }
+      },
+      "custom_point_manager": "自定义点位",
+      "custom_point_operating_tip": "正在处于自定义点位操作状态，请先结束操作",
       "electric_pole": {
         "connect": {
           "delete": {

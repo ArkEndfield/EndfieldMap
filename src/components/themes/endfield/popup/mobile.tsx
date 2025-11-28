@@ -75,7 +75,7 @@ const MobilePopup: React.FC = observer(() => {
     adapter?.activeFeatureController.clearActiveFeature();
   };
 
-  const open = !!activeFeature && !dataService.electricPoleDataService.isInElectricOperateMode;
+  const open = !!activeFeature && !dataService.electricPoleDataService.isInElectricOperateMode && !dataService.customPointDataService.isInCustomPointOperateMode;
 
   const entity = activeFeature?.data;
   const showRewards = entity && hasReward(entity);
