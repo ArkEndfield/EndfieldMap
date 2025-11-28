@@ -34,7 +34,14 @@ interface Resources {
   },
   "popup": {
     "custom_point": {
-      "rename_tip": "请输入自定义点位名称"
+      "change_type": "切换标点类型",
+      "rename_tip": "请输入自定义点位名称",
+      "type": {
+        "custom_point_flag": "旗帜",
+        "custom_point_marker": "标记",
+        "custom_point_pin": "图钉",
+        "custom_point_star": "星标"
+      }
     },
     "electric_pole": {
       "rename_tip": "请输入电线杆名称"
@@ -143,6 +150,7 @@ interface Resources {
           "start": "删除"
         },
         "display": "显示自定义点位",
+        "no_data": "暂无自定义点位数据",
         "preset": {
           "create": "新建预设",
           "create_default_name": "新预设",
@@ -164,6 +172,17 @@ interface Resources {
           },
           "select_info": "共 {{total, number}} 个预设，已选 {{select, number}} 个",
           "title": "自定义点位预设"
+        },
+        "select_type": "选择标点类型",
+        "tab": {
+          "list": "显示/隐藏",
+          "preset": "预设列表"
+        },
+        "type": {
+          "custom_point_flag": "旗帜",
+          "custom_point_marker": "标记",
+          "custom_point_pin": "图钉",
+          "custom_point_star": "星标"
         }
       },
       "custom_point_manager": "自定义点位",

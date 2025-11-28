@@ -84,6 +84,18 @@
     },
     "custom_point": {
       "display": "显示自定义点位",
+      "no_data": "暂无自定义点位数据",
+      "select_type": "选择标点类型",
+      "tab": {
+        "list": "显示/隐藏",
+        "preset": "预设列表"
+      },
+      "type": {
+        "custom_point_marker": "标记",
+        "custom_point_flag": "旗帜",
+        "custom_point_star": "星标",
+        "custom_point_pin": "图钉"
+      },
       "create": {
         "start": "创建",
         "in_mode": "正在创建自定义点位"

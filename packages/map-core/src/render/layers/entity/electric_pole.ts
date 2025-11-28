@@ -202,7 +202,7 @@ export class ElectricPoleEntityLayer extends SingleLayerBase {
 
   @computed
   get entityDataIdKey() {
-    return ElectricPoleIdKey;
+    return ElectricPoleIdKey as ElectricPoleData['entityDataIdKey'];
   }
 
   @computed

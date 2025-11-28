@@ -1,16 +1,20 @@
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { observer } from 'mobx-react-lite';
 import CustomPointPresetPanel from './custom_point_preset_panel';
+import CustomPointList from './custom_point_list';
+import CustomPointTypeSelector from './custom_point_type_selector';
 import { cn } from '@/utils/style';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { snapPoints } from '@/const/ui';
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import { useCustomPointMode, type CustomPointMode } from '@/hooks/use_custom_point_mode';
 import { useTranslation } from 'react-i18next';
 import { OperatorToggleButton } from '../components/button';
 import { CloseIcon, PlusIcon } from '@/components/common/icons';
 import { Toggle } from '../components/toggle';
+import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
+import { AnimatePresence, motion } from 'motion/react';
 
 const CustomPointManagerToolbar = observer(() => {
   const { changeMode, getCurrentMode, toggleMode } = useCustomPointMode();
@@ -60,6 +64,54 @@ export const CustomPointModeTip = observer(() => {
   return t(`operation.custom_point.${displayText}.in_mode`);
 });
 
+const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
+  const variants = {
+    enter: {
+      x: direction === 'left' ? -300 : 300,
+      opacity: 0,
+    },
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: {
+      x: direction === 'left' ? -300 : 300,
+      opacity: 0,
+    },
+  };
+
+  return (
+    <motion.div
+      className="w-full h-full flex-1 flex flex-col overflow-hidden"
+      variants={variants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{
+        duration: 0.1,
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+const TabContent = ({ showListTab }: { showListTab: boolean }) => {
+  return (
+    <AnimatePresence mode="wait">
+      {showListTab ? (
+        <AnimationWrapper key="list" direction="left">
+          <CustomPointList />
+        </AnimationWrapper>
+      ) : (
+        <AnimationWrapper key="preset" direction="right">
+          <CustomPointPresetPanel />
+        </AnimationWrapper>
+      )}
+    </AnimatePresence>
+  );
+};
+
 export interface CustomPointManagerProps {
   open: boolean;
 }
@@ -68,6 +120,8 @@ export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({
   const { adapter } = useAdapter();
   const isMobile = useIsMobile();
   const { t } = useTranslation('sidebar');
+  const { isInMode } = useCustomPointMode();
+  const [showListTab, setShowListTab] = useState(true);
 
   const isCustomPointVisible = adapter.customPointController.customPointVisible;
 
@@ -90,7 +144,34 @@ export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({
 
       <CustomPointManagerToolbar />
 
-      <CustomPointPresetPanel />
+      <AnimatePresence initial={false}>
+        {isInMode('isCreating') && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.15, ease: 'easeInOut' }}
+            className="overflow-hidden shrink-0"
+          >
+            <div className="p-2 rounded-lg border border-[#444] w-fit mt-1 ml-1 mr-1 relative">
+              <div className="absolute -top-2.5 left-4 w-0 h-0 border-5 rotate-90 border-transparent border-r-[#444]" />
+              <div className="text-xs text-[#aaaaaa] mb-2">{t('operation.custom_point.select_type')}</div>
+              <CustomPointTypeSelector />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="shrink-0 grow-0 mx-3 my-3">
+        <EndfieldSwitch
+          checked={showListTab}
+          onChange={setShowListTab}
+          onText={t('operation.custom_point.tab.list')}
+          offText={t('operation.custom_point.tab.preset')}
+        />
+      </div>
+
+      <TabContent showListTab={showListTab} />
     </div>
   );
 });

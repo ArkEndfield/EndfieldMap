@@ -9,7 +9,7 @@ import { logger } from '@endfieldmap/tools';
 export interface CustomPointControllerConfig {
   data?: CustomPointMapData;
   icon: {
-    url: string;
+    imagePath: string;
     size?: number;
   };
 }

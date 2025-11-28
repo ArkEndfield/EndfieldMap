@@ -1,25 +1,24 @@
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import {
   DEFAULT_ICON_SIZE,
-  CustomPointKey,
   LayerType,
   LayerTypeKey,
   DEFAULT_STROKE_WIDTH,
+  EntityInstanceKey,
 } from '@endfieldmap/map-core/const/map';
 import { createEntityIconStyles, createEntityBackgroundStyles } from '@endfieldmap/map-core/render/factory';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import type { CustomPointDataList } from '@endfieldmap/map-core/types';
-import { action, computed, observable } from 'mobx';
+import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';
 import type Style from 'ol/style/Style';
 import { CustomPointSource } from '@endfieldmap/map-core/render/source/custom_point';
-import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
-
+import { CustomPointFeature } from '../../source/feature/custom_point_feature';
 export interface CustomPointEntityLayerConfig {
   data: CustomPointDataList;
   icon: {
-    url: string;
+    imagePath: string;
     size?: number;
   };
   mapIndex: MapIndex;
@@ -31,7 +30,7 @@ export class CustomPointEntityLayer extends SingleLayerBase {
   @observable accessor config: CustomPointEntityLayerConfig;
   @observable accessor visible: boolean = true;
 
-  private iconStyleCache: Style | null = null;
+  private iconStyleCache: Map<string, Style> = new Map();
   private styleCache: Map<string, Style[]> = new Map();
 
   // 自定义标点使用更深的颜色
@@ -80,28 +79,45 @@ export class CustomPointEntityLayer extends SingleLayerBase {
     });
 
     this.layer.set(LayerTypeKey, LayerType.CUSTOM_POINT);
-    this.layer.set('category', CustomPointKey);
+  }
 
-    // 预创建图标样式
-    const iconSize = this.config.icon.size || DEFAULT_ICON_SIZE;
-    this.iconStyleCache = createEntityIconStyles({
-      url: this.config.icon.url,
-      size: iconSize,
-      radius: CustomPointEntityLayer.ENTITY_RADIUS,
-      borderWidth: DEFAULT_STROKE_WIDTH,
-    });
+  /**
+   * 获取或创建图标样式
+   * @param pic 图标文件名（不含扩展名）
+   */
+  private getOrCreateIconStyle(pic: string): Style {
+    if (!this.iconStyleCache.has(pic)) {
+      const iconSize = this.config.icon.size || DEFAULT_ICON_SIZE;
+      const iconStyle = createEntityIconStyles({
+        url: `${this.config.icon.imagePath}/${pic}.png`,
+        size: iconSize,
+        radius: CustomPointEntityLayer.ENTITY_RADIUS,
+        borderWidth: DEFAULT_STROKE_WIDTH,
+      });
+      this.iconStyleCache.set(pic, iconStyle);
+    }
+    return this.iconStyleCache.get(pic)!;
   }
 
   private getStyle(feature: FeatureLike): Style[] {
-    const instance = feature.get('entityInstance');
+    const instance = feature.get(EntityInstanceKey) as CustomPointFeature;
+
+    // 如果 feature 不可见，返回空数组不渲染
+    if (instance && !instance.visible) {
+      return [];
+    }
+
+    // 获取图标文件名（从 entityInfo.pic）
+    const pic = instance.data.entityInfo.entityInfo.pic;
 
     if (!instance) {
       // 默认样式：背景 + 图标
       const bgStyles = CustomPointEntityLayer.BACKGROUND_STYLES['100-100'];
-      return [...bgStyles, this.iconStyleCache!];
+      const iconStyle = this.getOrCreateIconStyle(pic);
+      return [...bgStyles, iconStyle];
     }
 
-    // 根据实例状态生成缓存键
+    // 根据实例状态生成缓存键（包含图标类型）
     const marked = instance.marked || false;
     const selected = instance.isSelected || false;
 
@@ -109,40 +125,17 @@ export class CustomPointEntityLayer extends SingleLayerBase {
     const fillOpacity: '50' | '75' | '100' = marked ? '50' : '100';
     const strokeOpacity: '50' | '75' | '100' = selected ? '50' : fillOpacity;
 
-    const cacheKey = `${fillOpacity}-${strokeOpacity}`;
+    const cacheKey = `${pic}-${fillOpacity}-${strokeOpacity}`;
 
     // 尝试从缓存获取
     if (!this.styleCache.has(cacheKey)) {
-      const bgStyles = CustomPointEntityLayer.BACKGROUND_STYLES[cacheKey];
-      const styles = [...bgStyles, this.iconStyleCache!];
+      const bgStyles = CustomPointEntityLayer.BACKGROUND_STYLES[cacheKey.split('-').slice(1).join('-')];
+      const iconStyle = this.getOrCreateIconStyle(pic);
+      const styles = [...bgStyles, iconStyle];
       this.styleCache.set(cacheKey, styles);
     }
 
     return this.styleCache.get(cacheKey)!;
-  }
-
-  @computed
-  public get entityDataIdKey(): string {
-    return CustomPointKey;
-  }
-
-  @computed
-  public get entityInfo(): EntityInfoItemData {
-    return {
-      uniqueKey: `${this.config.mapIndex}-${CustomPointKey}-${CustomPointKey}`,
-      category: CustomPointKey,
-      entityDataIdKey: CustomPointKey,
-      entityInfo: {
-        point: CustomPointKey,
-        pic: '', // 自定义标点没有固定的pic
-      },
-      visible: this.visible,
-      data: this.config.data,
-      mapIndex: this.config.mapIndex,
-      count: this.config.data.length,
-      markedCount: this.entity.features.getArray().filter((feature) => feature.marked).length,
-      selectedCount: this.entity.features.getArray().filter((feature) => feature.isSelected).length,
-    };
   }
 
   @action

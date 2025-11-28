@@ -10,6 +10,7 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 
 interface EntityItemProps {
   hideCount?: boolean;
+  hideMarked?: boolean;
   markCount?: number;
   entity?: EntityInfoItemData;
   category?: string;
@@ -19,18 +20,24 @@ interface EntityItemProps {
 }
 
 const EntityItem = observer(
-  ({ hideCount = false, entity, category, active = false, onClick, children }: EntityItemProps) => {
-    const { t } = useTranslation();
+  ({ hideCount = false, entity, category, active = false, onClick, children, hideMarked = false }: EntityItemProps) => {
+    const { t } = useTranslation(['common', 'sidebar']);
     const isMobile = useIsMobile();
 
     const displayName = useMemo(() => {
       if (entity) {
         if (entity.entityDataIdKey === 'electric_pole') {
-          return t('custom_point.electric_pole' as never);
+          return '';
         }
-        return t(`entities.${entity.entityDataIdKey}` as never, { defaultValue: entity.entityInfo.point });
+        // 检查是否是自定义标点类型（以 custom_point_ 开头）
+        if (entity.entityDataIdKey.startsWith('custom_point')) {
+          return t(`sidebar:operation.custom_point.type.${entity.entityDataIdKey}`, {
+            defaultValue: entity.entityInfo.point,
+          });
+        }
+        return t(`entities.${entity.entityDataIdKey}`, { defaultValue: entity.entityInfo.point });
       }
-      return '未命名';
+      return 'unnamed';
     }, [entity, t]);
 
     const progressWidth = useMemo(() => {
@@ -113,8 +120,9 @@ const EntityItem = observer(
                   style={{ width: progressWidth }}
                 />
                 <div className="relative z-1 text-[10px] font-[JetBrains_Mono] leading-none inline-flex items-center">
-                  <Counter value={entity.markedCount || 0} />
-                  <span>/{entity.count}</span>
+                  {!hideMarked && <Counter value={entity.markedCount || 0} />}
+                  {!hideMarked && <span>/</span>}
+                  <span>{entity.count}</span>
                 </div>
               </div>
             )}

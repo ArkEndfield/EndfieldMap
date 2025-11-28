@@ -12,6 +12,13 @@
     "rename_tip": "请输入电线杆名称"
   },
   "custom_point": {
-    "rename_tip": "请输入自定义点位名称"
+    "rename_tip": "请输入自定义点位名称",
+    "change_type": "切换标点类型",
+    "type": {
+      "custom_point_marker": "标记",
+      "custom_point_flag": "旗帜",
+      "custom_point_star": "星标",
+      "custom_point_pin": "图钉"
+    }
   }
 }

@@ -1,7 +1,7 @@
 import type { CustomPointPresetStorage, CustomPointPreset, CustomPointPresetExportBundle } from '@eftypes/custom_point';
 import type { CustomPointMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { MAP_EVENT, CustomPointKey } from '@endfieldmap/map-core';
-import type { CustomPointData } from '@endfieldmap/map-core/types';
+import type { CustomPointData, CustomPointIdKey } from '@endfieldmap/map-core/types';
 import type { Position } from '@endfieldmap/map-core/types/position';
 import {
   MapIndex,
@@ -36,6 +36,7 @@ export class CustomPointDataService {
 
   @observable accessor isCreating: boolean = false;
   @observable accessor isDeleting: boolean = false;
+  @observable accessor selectedPointType: CustomPointIdKey = getDefaultCustomPointType().entityInfo.point;
 
   private eventListenerDisposers: Array<() => void> = [];
 
@@ -458,6 +459,14 @@ export class CustomPointDataService {
     this.changeVisibility(visible);
   }
 
+  /**
+   * 设置选中的自定义标点类型
+   */
+  @action
+  public setSelectedPointType(pointType: CustomPointIdKey) {
+    this.selectedPointType = pointType;
+  }
+
   public async createCustomPoint(mapIndex: MapIndex, position: Position) {
     if (!this.adapter || !this.initialized) {
       throw new Error('CustomPointDataService not initialized');
@@ -481,18 +490,15 @@ export class CustomPointDataService {
       }
     }
 
-    const defaultType = getDefaultCustomPointType();
     const newId = this.generateCustomPointId(mapIndex);
 
     const data: CustomPointData = {
       levelLogicId: newId,
-      entityDataIdKey: CustomPointKey,
+      entityDataIdKey: this.selectedPointType,
       templateId: '#custom_point',
       entityType: '#CustomPoint',
       position,
-      properties: {
-        pointType: defaultType.entityInfo.point,
-      },
+      properties: {},
     };
 
     const feature = this.adapter.customPointController.addCustomPointEntity(mapIndex, data);

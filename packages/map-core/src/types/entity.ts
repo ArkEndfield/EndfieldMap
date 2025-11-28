@@ -1,5 +1,6 @@
 import type { ElectricPoleIdKey, CustomPointKey, MapIndex } from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
+import type { customPointTypeMap } from '../data/custom_point';
 
 export interface EnityProperties {
   /** 在完成任务后隐藏 */
@@ -48,24 +49,28 @@ export interface EntityData {
 export interface ElectricPoleData extends EntityData {
   entityDataIdKey: typeof ElectricPoleIdKey;
   entityType: '#ElectricPole';
-  templateId: '#electric_pole';
+  templateId: typeof ElectricPoleIdKey;
   properties: EnityProperties & {
     connectTo: EntityData['levelLogicId'] | null;
     name?: string;
-  }
+  };
 }
+
+/**
+ * 自定义标点ID
+ */
+export type CustomPointIdKey = keyof typeof customPointTypeMap;
 
 /**
  * 自定义标点数据
  */
 export interface CustomPointData extends EntityData {
-  entityDataIdKey: typeof CustomPointKey;
+  entityDataIdKey: CustomPointIdKey;
   entityType: '#CustomPoint';
-  templateId: '#custom_point';
+  templateId: typeof CustomPointKey;
   properties: EnityProperties & {
     name?: string;
-    pointType?: string;
-  }
+  };
 }
 
 /**
@@ -84,7 +89,18 @@ export type ElectricPoleDataList = ElectricPoleData[];
 export type CustomPointDataList = CustomPointData[];
 
 // TODO: 希望做成自动化
-export type Category = 'chest' | 'dnarrative' | 'dungeon' | 'enemy' | 'ether' | 'mineral' | 'narrative' | 'plant' | 'settlement' | 'spcstone' | 'special';
+export type Category =
+  | 'chest'
+  | 'dnarrative'
+  | 'dungeon'
+  | 'enemy'
+  | 'ether'
+  | 'mineral'
+  | 'narrative'
+  | 'plant'
+  | 'settlement'
+  | 'spcstone'
+  | 'special';
 
 /**
  * 实体分类数据，来自于json
@@ -123,10 +139,10 @@ export type EntityInfoKey = EntityData['entityDataIdKey'];
 /**
  * 实体信息数据
  */
-export interface EntityInfoData {
+export interface EntityInfoData<T extends EntityInfoKey = EntityInfoKey> {
   category: EntityCategoryData['category'] | typeof ElectricPoleIdKey | typeof CustomPointKey;
   entityInfo: {
-    point: EntityInfoKey;
+    point: T;
     pic: string;
   };
 }
@@ -139,11 +155,11 @@ export type EntityInfoDataJson = Record<EntityInfoKey, EntityInfoData>;
 /**
  * 实体信息项数据，用于EntityLayer的数据返回
  */
-export interface EntityInfoItemData<T extends EntityData | ElectricPoleData = EntityData> {
+export interface EntityInfoItemData<T extends EntityData | ElectricPoleData | CustomPointData = EntityData> {
   uniqueKey: string;
   category: EntityCategoryData['category'] | typeof ElectricPoleIdKey | typeof CustomPointKey;
-  entityDataIdKey: EntityData['entityDataIdKey'];
-  entityInfo: EntityInfoData['entityInfo'];
+  entityDataIdKey: T['entityDataIdKey'];
+  entityInfo: EntityInfoData<T['entityDataIdKey']>['entityInfo'];
   visible: boolean;
   data: T[];
   mapIndex: MapIndex;

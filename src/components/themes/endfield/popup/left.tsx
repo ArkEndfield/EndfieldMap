@@ -12,6 +12,9 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
+import { customPointTypes } from '@endfieldmap/map-core/data/custom_point';
+import type { CustomPointIdKey } from '@endfieldmap/map-core';
 
 /** 描边 */
 const Border = () => (
@@ -54,8 +57,8 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const displayName = isElectricPole
     ? (activeFeature as ElectricPoleFeature).name
     : isCustomPoint
-    ? (activeFeature as CustomPointFeature).name
-    : entityData?.entityInfo.entityInfo.point;
+      ? (activeFeature as CustomPointFeature).name
+      : entityData?.entityInfo.entityInfo.point;
 
   const handleToggleMarked = () => {
     if (activeFeature) {
@@ -93,6 +96,17 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
     }
   };
 
+  const handleChangePointType = (newType: CustomPointIdKey) => {
+    if (!activeFeature || !isCustomPoint) return;
+    const customPoint = activeFeature as CustomPointFeature;
+    customPoint.changePointType(newType);
+  };
+
+  const customPointTypeOptions = customPointTypes.map((type) => ({
+    value: type.entityInfo.point,
+    label: t(`custom_point.type.${type.entityInfo.point}`, { defaultValue: type.entityInfo.point }),
+  }));
+
   return (
     <AnimatePresence mode="wait">
       {activeFeature && entityData && (
@@ -116,6 +130,18 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           <ScrollArea className="flex-1 min-h-0">
             <Guide entity={entityData} />
           </ScrollArea>
+
+          {/* 自定义标点类型选择 */}
+          {isCustomPoint && (
+            <div className="mt-3 shrink-0">
+              <div className="text-xs text-[#aaaaaa] mb-1">{t('popup:custom_point.change_type')}</div>
+              <EndfieldSelect
+                value={(activeFeature as CustomPointFeature).pointType}
+                options={customPointTypeOptions}
+                onChange={handleChangePointType}
+              />
+            </div>
+          )}
 
           {/* 操作按钮 */}
           <div className="mt-3 pt-3 shrink-0 flex gap-2">

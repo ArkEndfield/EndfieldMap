@@ -90,7 +90,8 @@ export class EndfieldMapAdapter {
       {
         getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
         getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
-        getCustomPointLayers: () => (this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : []),
+        getCustomPointLayers: () =>
+          this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : [],
         getConnectionLayer: () => this.electricPoleController?.currentConnectionLayer || null,
       }
     );
@@ -121,7 +122,7 @@ export class EndfieldMapAdapter {
     });
     this.customPointController = new CustomPointController({
       icon: {
-        url: `${this.asset.entityImage}/custom/marker.png`,
+        imagePath: `${this.asset.entityImage}/custom`,
       },
     });
     this.eventController = new EventController({
