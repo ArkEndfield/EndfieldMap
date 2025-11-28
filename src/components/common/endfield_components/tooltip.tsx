@@ -1,16 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback, createElement } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/utils/style';
 
-export type Placement =
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
-  | 'left'
-  | 'right';
+export type Placement = 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'right';
 
 export interface TooltipProps<T extends React.ElementType> {
   /** 是否禁用 toiltip */
@@ -235,60 +228,69 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
           onMouseEnter: handleMouseEnter,
           onMouseLeave: handleMouseLeave,
         },
-        children,
+        children
       )}
 
-      {isOpen && (
-        <div
-          ref={measureRef}
-          style={{
-            position: 'fixed',
-            top: -9999,
-            left: -9999,
-            visibility: 'hidden',
-            pointerEvents: 'none',
-          }}
-          className={cn('max-w-96', classNames?.toolTipContainer)}
-        >
-          <div className={cn('h-1', classNames?.topBorder)} />
-          <div className={cn('p-3 text-sm', classNames?.content)}>{tooltip}</div>
-        </div>
-      )}
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            ref={tooltipRef}
-            initial={{ width: 0, }}
-            animate={{ width: 'auto', }}
-            exit={{ width: 0, transition: { duration: 0.1, delay: 0.15, ease: 'linear' } }}
-            transition={{ duration: 0.1, ease: 'linear' }}
+      {isOpen &&
+        createPortal(
+          <div
+            ref={measureRef}
             style={{
               position: 'fixed',
-              top: position.top,
-              left: position.left,
-              zIndex: 9999,
+              top: -9999,
+              left: -9999,
+              visibility: 'hidden',
+              pointerEvents: 'none',
             }}
-            className={cn(
-              'overflow-hidden rounded-tr-lg max-w-96',
-              classNames?.toolTipContainer,
-            )}
-            onMouseEnter={keepOnHover ? handleMouseEnter : undefined}
-            onMouseLeave={keepOnHover ? handleMouseLeave : undefined}
+            className={cn('max-w-96', classNames?.toolTipContainer)}
           >
-            <div className={cn('h-1 bg-[#FDFA85]', classNames?.topBorder)} />
-            <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: 'auto' }}
-              exit={{ height: 0, transition: { duration: 0.1, ease: 'linear' } }}
-              transition={{ duration: 0.1, delay: 0.15, ease: 'linear' }}
-              className="overflow-hidden"
-            >
-              <div className={cn('p-3 text-white text-sm backdrop-blur-xs bg-black/60 rounded-b-xs', classNames?.content)}>{tooltip}</div>
-            </motion.div>
-          </motion.div>
+            <div className={cn('h-1', classNames?.topBorder)} />
+            <div className={cn('p-3 text-sm', classNames?.content)}>{tooltip}</div>
+          </div>,
+          document.body
         )}
-      </AnimatePresence>
+
+      {createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              ref={tooltipRef}
+              initial={{ width: 0 }}
+              animate={{ width: 'auto' }}
+              exit={{ width: 0, transition: { duration: 0.1, delay: 0.15, ease: 'linear' } }}
+              transition={{ duration: 0.1, ease: 'linear' }}
+              style={{
+                position: 'fixed',
+                top: position.top,
+                left: position.left,
+                zIndex: 9999,
+              }}
+              className={cn('overflow-hidden rounded-tr-lg max-w-96', classNames?.toolTipContainer)}
+              onMouseEnter={keepOnHover ? handleMouseEnter : undefined}
+              onMouseLeave={keepOnHover ? handleMouseLeave : undefined}
+            >
+              <div className={cn('h-1 bg-[#FDFA85]', classNames?.topBorder)} />
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: 'auto' }}
+                exit={{ height: 0, transition: { duration: 0.1, ease: 'linear' } }}
+                transition={{ duration: 0.1, delay: 0.15, ease: 'linear' }}
+                className="overflow-hidden"
+              >
+                <div
+                  className={cn(
+                    'p-3 text-white text-sm backdrop-blur-xs bg-black/60 rounded-b-xs',
+                    classNames?.content
+                  )}
+                >
+                  {tooltip}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 };
