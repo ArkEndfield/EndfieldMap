@@ -2,8 +2,8 @@ import { usePresetPanel } from '@/hooks/use_preset_panel';
 import { observer } from 'mobx-react-lite';
 import PresetHeader from './preset/preset_header';
 import PresetSelectBar from './preset/preset_select_bar';
-import PresetList from './preset/preset_list';
-import PresetToolbar from './preset/preset_toolbar';
+import PresetList from '../preset/preset_list';
+import PresetToolbar from '../preset/preset_toolbar';
 import { ScrollArea } from '@/components/common/scroll_area';
 
 /**

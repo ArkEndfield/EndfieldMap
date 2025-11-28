@@ -1,6 +1,6 @@
 import { cn } from '@/utils/style';
 
-interface ElectricPoleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface CustomPointButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** 按钮显示的标签文本 */
   label: string;
   /** 激活状态的点击事件 */
@@ -13,7 +13,7 @@ interface ElectricPoleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonE
   isDisabled?: boolean;
 }
 
-export const ElectricPoleButton: React.FC<ElectricPoleButtonProps> = ({
+export const OperatorToggleButton: React.FC<CustomPointButtonProps> = ({
   label,
   icon,
   isActive = false,
@@ -45,7 +45,7 @@ export const ElectricPoleButton: React.FC<ElectricPoleButtonProps> = ({
       <span className="text-base shrink-0">{icon}</span>
 
       {/* 文本 */}
-      <span className='pr-1'>{label}</span>
+      <span className="pr-1">{label}</span>
 
       <div
         className={cn(

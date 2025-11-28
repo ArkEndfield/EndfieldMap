@@ -10,9 +10,9 @@ import { snapPoints } from '@/const/ui';
 import { forwardRef, useRef } from 'react';
 import { useElectricMode, type ElectricMode } from '@/hooks/use_electric_mode';
 import { useTranslation } from 'react-i18next';
-import { ElectricPoleButton } from './components/button';
+import { OperatorToggleButton } from '../components/button';
 import { CloseIcon, PlusIcon } from '@/components/common/icons';
-import { Toggle } from './components/toggle';
+import { Toggle } from '../components/toggle';
 
 const PoleManagerToolbar = observer(() => {
   const { changeMode, getCurrentMode, toggleMode } = useElectricMode();
@@ -44,7 +44,7 @@ const PoleManagerToolbar = observer(() => {
   return (
     <div className="flex gap-1 px-1 shrink-0">
       {tools.map((tool) => (
-        <ElectricPoleButton
+        <OperatorToggleButton
           key={tool.key}
           label={tool.label}
           icon={tool.icon}

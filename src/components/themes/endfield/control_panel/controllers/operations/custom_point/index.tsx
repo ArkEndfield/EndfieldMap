@@ -8,9 +8,9 @@ import { snapPoints } from '@/const/ui';
 import { forwardRef, useRef } from 'react';
 import { useCustomPointMode, type CustomPointMode } from '@/hooks/use_custom_point_mode';
 import { useTranslation } from 'react-i18next';
-import { CustomPointButton } from './components/button';
+import { OperatorToggleButton } from '../components/button';
 import { CloseIcon, PlusIcon } from '@/components/common/icons';
-import { Toggle } from '../electric_pole/components/toggle';
+import { Toggle } from '../components/toggle';
 
 const CustomPointManagerToolbar = observer(() => {
   const { changeMode, getCurrentMode, toggleMode } = useCustomPointMode();
@@ -32,7 +32,7 @@ const CustomPointManagerToolbar = observer(() => {
   return (
     <div className="flex gap-1 px-1 shrink-0">
       {tools.map((tool) => (
-        <CustomPointButton
+        <OperatorToggleButton
           key={tool.key}
           label={tool.label}
           icon={tool.icon}

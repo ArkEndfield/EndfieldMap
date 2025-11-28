@@ -46,14 +46,14 @@ export const PresetListItem = ({
   return (
     <div className="w-full h-[52px] relative font-[Outfit] overflow-hidden flex items-center" onClick={handleClick}>
       <div className="absolute top-0 left-0 w-full h-full text-[#525252] text-[25px]">
-        <div className="absolute top-0 left-0 rounded-[2px] bg-linear-[91.97deg] from-[#a5a5a5] to-[#454545] w-full h-full" />
+        <div className="absolute top-0 left-0 rounded-xs bg-linear-[91.97deg] from-[#a5a5a5] to-[#454545] w-full h-full" />
         <div className="absolute -top-25 -left-6 rounded-full border-9 border-black box-border w-37 h-37 shrink-0 opacity-15" />
-        <div className={
-          cn(
-            "absolute top-0 left-0 rounded-l-[2px] bg-[#fcfb1e] h-full shrink-0 transition-[width]",
-            active ? "w-1.5" : "w-0"
-          )
-        } />
+        <div
+          className={cn(
+            'absolute top-0 left-0 rounded-l-xs bg-[#fcfb1e] h-full shrink-0 transition-[width]',
+            active ? 'w-1.5' : 'w-0'
+          )}
+        />
         <div className="absolute -right-8 -top-8">
           <div className="w-18 h-18 rounded-full border-15 border-black/5" />
         </div>
@@ -64,7 +64,7 @@ export const PresetListItem = ({
           <div className="absolute bottom-2.5 w-full bg-[#f5f5f5]/30 h-px" />
           <div className="absolute bottom-1 w-full bg-[#f5f5f5]/30 h-1" />
           <svg
-            className="absolute top-[2px] left-1"
+            className="absolute top-0.5 left-1"
             width="32"
             height="6"
             viewBox="0 0 32 6"
@@ -112,7 +112,9 @@ export const PresetListItem = ({
                   ) : null}
                 </AnimatePresence>
               </button>
-              <div className="realative font-[Outfit] font-bold ml-2.5 text-2xl shrink-0 min-w-7">{numberPadString(index, 2)}</div>
+              <div className="realative font-[Outfit] font-bold ml-2.5 text-2xl shrink-0 min-w-7">
+                {numberPadString(index, 2)}
+              </div>
               <div className="font-bold ml-1 text-sm flex-1 overflow-hidden whitespace-nowrap text-ellipsis">
                 {title}
               </div>

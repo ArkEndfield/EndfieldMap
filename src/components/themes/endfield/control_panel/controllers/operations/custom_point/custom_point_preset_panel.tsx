@@ -2,8 +2,8 @@ import { useCustomPointPresetPanel } from '@/hooks/use_custom_point_preset_panel
 import { observer } from 'mobx-react-lite';
 import PresetHeader from './preset/preset_header';
 import PresetSelectBar from '../electric_pole/preset/preset_select_bar';
-import PresetList from '../electric_pole/preset/preset_list';
-import PresetToolbar from '../electric_pole/preset/preset_toolbar';
+import PresetList from '../preset/preset_list';
+import PresetToolbar from '../preset/preset_toolbar';
 import { ScrollArea } from '@/components/common/scroll_area';
 
 /**

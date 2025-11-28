@@ -34,6 +34,9 @@
     "electric_pole_operating_tip": "正在处于电线杆操作状态，请先结束操作",
     "custom_point_operating_tip": "正在处于自定义点位操作状态，请先结束操作",
     "selecting_operating_tip": "正在处于批量操作状态，请先结束批量操作",
+    "preset": {
+      "empty": "暂无预设，请先创建"
+    },
     "electric_pole": {
       "display": "显示电线杆",
       "create": {
@@ -62,9 +65,7 @@
         "create_tip": "请输入新电线杆预设名称",
         "create_default_name": "新预设",
         "select_info": "共 {{total, number}} 个预设，已选 {{select, number}} 个",
-        "empty": "暂无预设，请先创建",
         "export_select": "导出所选预设",
-        "batch_delete": "批量删除",
         "current": "当前预设",
         "delete": {
           "confirm": "确定要删除预设「{{name}}」吗？此操作不可恢复",
@@ -97,9 +98,7 @@
         "create_tip": "请输入新自定义点位预设名称",
         "create_default_name": "新预设",
         "select_info": "共 {{total, number}} 个预设，已选 {{select, number}} 个",
-        "empty": "暂无预设，请先创建",
         "export_select": "导出所选预设",
-        "batch_delete": "批量删除",
         "current": "当前预设",
         "delete": {
           "confirm": "确定要删除预设「{{name}}」吗？此操作不可恢复",
