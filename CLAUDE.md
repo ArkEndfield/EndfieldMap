@@ -39,7 +39,6 @@ This is a monorepo structure managed with pnpm workspaces.
 - **Language**: TypeScript
 - **State Management**:
   - MobX (for complex domain state, e.g. map state)
-  - Zustand (for lighter UI state)
 - **Styling**: Tailwind CSS v4, SCSS (via sass-embedded), clsx/tailwind-merge
 - **Animations**: GSAP, Motion (framer-motion replacement)
 - **Internationalization**: i18next, react-i18next

@@ -18,6 +18,8 @@ export interface ConnectionFeatureConfig extends BaseFeatureConfig {
   entity: MapFeature;
 }
 
+type FeatureStateProperty = 'marked' | 'isSelected' | 'active';
+
 export class MapFeature extends FeatureBase {
   @observable accessor _data: EntityData;
   @observable accessor entityInfo: EntityInfoData;
@@ -39,95 +41,63 @@ export class MapFeature extends FeatureBase {
     this.feature.set(FeatureTypeKey, FeatureType.ENTITY);
   }
 
-  /**
-   * 设置onChange回调，当状态改变时触发
-   * @param callback 回调函数
-   */
   public setOnChange(callback: () => void) {
     this._onChange = callback;
   }
 
-  /**
-   * 设置marked状态
-   * @param marked 是否标记
-   */
+  private updateState(
+    property: FeatureStateProperty,
+    newValue: boolean,
+    shouldTriggerOnChange: boolean = true
+  ): boolean {
+    const currentValue = this[property];
+    if (currentValue === newValue) {
+      return false;
+    }
+
+    this[property] = newValue;
+
+    if (shouldTriggerOnChange) {
+      this._onChange?.();
+    }
+
+    mapEventEmitter.fire(MAP_EVENT.FEATURE_STATE_CHANGE, {
+      feature: this,
+      property,
+      oldValue: currentValue,
+      newValue,
+    });
+
+    return true;
+  }
+
   @action
   public setMarked(marked: boolean) {
-    if (!this.markable) {
-      return;
-    }
-    if (this.marked !== marked) {
-      const oldValue = this.marked;
-      this.marked = marked;
-      this._onChange?.();
-
-      // 触发状态变化事件
-      mapEventEmitter.fire(MAP_EVENT.FEATURE_STATE_CHANGE, {
-        feature: this,
-        property: 'marked',
-        oldValue,
-        newValue: marked,
-      });
+    if (this.markable) {
+      this.updateState('marked', marked);
     }
   }
 
-  /**
-   * 切换marked状态
-   */
-  public toggleMarked() {
+  public toggleMarked(): boolean {
     if (!this.markable) {
       return false;
     }
-    const marked = !this.marked;
-    this.setMarked(marked);
-    return marked;
+    const newValue = !this.marked;
+    this.setMarked(newValue);
+    return newValue;
   }
 
-  /**
-   * 设置isSelected状态
-   * @param isSelected 是否选中
-   */
   @action
   public setIsSelected(isSelected: boolean) {
-    if (!this.selectable) {
-      return;
-    }
-    if (this.isSelected !== isSelected) {
-      const oldValue = this.isSelected;
-      this.isSelected = isSelected;
-      this._onChange?.();
-
-      // 触发状态变化事件
-      mapEventEmitter.fire(MAP_EVENT.FEATURE_STATE_CHANGE, {
-        feature: this,
-        property: 'isSelected',
-        oldValue,
-        newValue: isSelected,
-      });
+    if (this.selectable) {
+      this.updateState('isSelected', isSelected);
     }
   }
 
-  /**
-   * 设置active状态
-   * @param active 是否激活
-   */
   @action
   public setActive(active: boolean) {
-    if (!this.activable) {
-      return;
-    }
-    if (this.active !== active) {
-      const oldValue = this.active;
-      this.active = active;
-      // 不再调用 _onChange，因为 active 状态由独立的 ActiveLayer 处理
-
-      // 触发状态变化事件
-      mapEventEmitter.fire(MAP_EVENT.FEATURE_STATE_CHANGE, {
-        feature: this,
-        property: 'active',
-        oldValue,
-        newValue: active,
-      });
+    if (this.activable) {
+      this.updateState('active', active, false);
     }
   }
 
