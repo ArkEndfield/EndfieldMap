@@ -15,7 +15,7 @@ import { EndfieldMapEvent } from '@endfieldmap/map-core/event/map';
 import type { SimpleMapConfig } from '@endfieldmap/map-core/types/map';
 import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
 import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
 import { EventController } from '@endfieldmap/map-core/controller/event';
@@ -70,6 +70,10 @@ export class EndfieldMapAdapter {
   public event: EndfieldMapEmitter;
   /** 当前地图索引 */
   @observable accessor currentMapIndex: MapIndex = MapIndex.MAP01;
+  /** 是否开启hover效果 */
+  @observable accessor enableHover: boolean = true;
+  /** hover debounce time */
+  @observable accessor hoverDebounceTime: number = 0;
 
   constructor(config: AdapterConfig) {
     if (config.consolaReporter) {
@@ -222,8 +226,22 @@ export class EndfieldMapAdapter {
    * 设置是否启用hover feature
    * @param enable 是否启用
    */
+  @action
   public setHoverFeatureEnable(enable: boolean) {
-    this.mapController.setHoverFeatureEnable(enable);
+    this.enableHover = enable;
+    this.mapController.hoverFeatureController.setEnable(enable);
+    this.mapController.hoverConnectionController.setEnable(enable);
+  }
+
+  /**
+   * 设置 hover debounce time
+   * @param time debounce time
+   */
+  @action
+  public setHoverDebounceTime(time: number) {
+    this.hoverDebounceTime = time;
+    this.mapController.hoverFeatureController.setDebounceTime(time);
+    this.mapController.hoverConnectionController.setDebounceTime(time);
   }
 
   /**

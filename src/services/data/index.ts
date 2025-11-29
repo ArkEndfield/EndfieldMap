@@ -24,6 +24,7 @@ import { ItemDataService } from '@/services/data/item';
 import { DungeonSeriesDataService } from '@/services/data/dungeon_series';
 import { ChestRewardDataService } from '@/services/data/chest_reward';
 import { GuideDataService } from '@/services/data/guide';
+import { action } from 'mobx';
 
 /**
  * 数据服务
@@ -150,6 +151,20 @@ class DataService {
     LocalStorageDB.set(LocalStorageKey.CLUSTER_ENABLED, enable);
   }
 
+  @action
+  public setHoverTime(time: number) {
+    if (time === -1) {
+      this.adapter?.setHoverFeatureEnable(false);
+      this.adapter?.setHoverDebounceTime(0);
+    } else {
+      if (!this.adapter?.enableHover) {
+        this.adapter?.setHoverFeatureEnable(true);
+      }
+      this.adapter?.setHoverDebounceTime(time);
+    }
+    LocalStorageDB.set(LocalStorageKey.HOVER_TIME, time);
+  }
+
   public setFilterMarkedMode(filterMode: MarkedFeatureFilterMode) {
     this.adapter?.entityController?.setMarkedFeatureFilter?.(filterMode);
     LocalStorageDB.set(LocalStorageKey.FILTER_MARKED, filterMode);
@@ -173,6 +188,7 @@ class DataService {
     const displayCustomPoint = LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY) ?? true;
     const filterMarked =
       LocalStorageDB.get<MarkedFeatureFilterMode>(LocalStorageKey.FILTER_MARKED) ?? MarkedFeatureFilterMode.All;
+    const hoverTime = LocalStorageDB.get<number>(LocalStorageKey.HOVER_TIME) ?? 0;
 
     return {
       zoom,
@@ -183,6 +199,7 @@ class DataService {
       displayEletricPole,
       displayCustomPoint,
       filterMarked,
+      hoverTime,
     };
   }
 }

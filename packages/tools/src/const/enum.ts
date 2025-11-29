@@ -48,6 +48,10 @@ export enum LocalStorageKey {
   CUSTOM_POINT_DISPLAY = 'custom_point_display',
   // 标记筛选
   FILTER_MARKED = 'filter_marked',
+
+  // 20251129
+  // 鼠标悬停检测响应时间
+  HOVER_TIME = 'hover_time',
 }
 
 /** 加载状态枚举 */

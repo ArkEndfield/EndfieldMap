@@ -91,15 +91,6 @@ export class MapController {
   }
 
   /**
-   * 设置是否启用hover feature
-   * @param enable 是否启用
-   */
-  public setHoverFeatureEnable(enable: boolean) {
-    this.hoverFeatureController.setEnable(enable);
-    this.hoverConnectionController.setEnable(enable);
-  }
-
-  /**
    * 销毁控制器，清理资源
    */
   public dispose() {

@@ -4,6 +4,7 @@ import { useAdapter } from '@/hooks/use_adapter';
 import { observer } from 'mobx-react-lite';
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { dataService } from '@/services/data';
 
 const options = [
   {
@@ -32,24 +33,14 @@ export const HoverSettings = observer(() => {
   const { t } = useTranslation('settings');
   const { adapter } = useAdapter();
   const isMobile = useIsMobile();
-  const hoverDebounceTime = adapter.mapController.hoverFeatureController.disabled
-    ? -1
-    : adapter.mapController.hoverFeatureController.debounceTime;
+  const hoverDebounceTime = !adapter.enableHover ? -1 : adapter.hoverDebounceTime;
 
   if (isMobile) {
     return null;
   }
 
   const setHoverTime = (time: number) => {
-    if (time === -1) {
-      adapter.mapController.hoverFeatureController.setEnable(false);
-      adapter.mapController.hoverFeatureController.setDebounceTime(0);
-      return;
-    }
-    if (adapter.mapController.hoverFeatureController.disabled) {
-      adapter.mapController.hoverFeatureController.setEnable(true);
-    }
-    adapter.mapController.hoverFeatureController.setDebounceTime(time);
+    dataService.setHoverTime(time);
   };
 
   return (

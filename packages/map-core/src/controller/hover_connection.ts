@@ -1,8 +1,8 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
-import type { DisposeListener } from '@endfieldmap/map-core/types/event';
-import { logger } from '@endfieldmap/tools';
+import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
+import { debounce, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 
@@ -20,17 +20,71 @@ export class HoverConnectionController {
   @observable accessor hoverFeature: FeatureLike | null = null;
   /** 当前hover的connection所属layer */
   @observable accessor hoverLayer: ElectricPoleConnectionLayer | null = null;
+  /** 是否开启防抖 */
+  @observable accessor debounceTime: number = 0;
+  /** 是否禁用 */
+  private disabled: boolean = false;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
   /** 获取连接图层的函数 */
   private getConnectionLayer: () => ElectricPoleConnectionLayer | null;
-  /** 是否禁用 */
-  private disabled: boolean = false;
+  /** 防抖后的hover处理函数 */
+  private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
 
   constructor(config: HoverConnectionControllerConfig) {
     this.getConnectionLayer = config.getConnectionLayer;
     this.disabled = config.disableHoverConnection ?? false;
+    this.updateDebouncedHoverHandler();
     this.registerEventHandlers();
+  }
+
+  /**
+   * 更新防抖处理函数
+   */
+  private updateDebouncedHoverHandler() {
+    if (this.debounceTime > 0) {
+      this.debouncedHandleHover = debounce(this.handleHover.bind(this), this.debounceTime);
+    } else {
+      this.debouncedHandleHover = null;
+    }
+  }
+
+  /**
+   * 处理hover事件的核心逻辑
+   */
+  private async handleHover(detail: MapHoverEventDetail): Promise<void> {
+    const { event } = detail;
+    const coordinate = event.coordinate;
+    if (!coordinate) {
+      if (this.hoverFeature !== null) {
+        this.setHoverConnection(null, null);
+      }
+      return;
+    }
+
+    const connectionLayer = this.getConnectionLayer();
+    if (!connectionLayer || !connectionLayer.layer.getVisible()) {
+      if (this.hoverFeature !== null) {
+        this.setHoverConnection(null, null);
+      }
+      return;
+    }
+
+    const clickedFeatures = await connectionLayer.layer.getFeatures(event.pixel as [number, number]);
+    if (clickedFeatures.length === 0) {
+      if (this.hoverFeature !== null) {
+        this.setHoverConnection(null, null);
+      }
+      return;
+    }
+
+    // 取第一个feature作为hover target
+    const feature = clickedFeatures[0];
+
+    // 更新hover状态
+    if (feature !== this.hoverFeature) {
+      this.setHoverConnection(feature, connectionLayer);
+    }
   }
 
   /**
@@ -42,38 +96,11 @@ export class HoverConnectionController {
     }
 
     // 监听MAP_HOVER事件：检测连接线的hover
-    const disposeHover = mapEventEmitter.on(MAP_EVENT.MAP_HOVER, async (detail) => {
-      const { event } = detail;
-      const coordinate = event.coordinate;
-      if (!coordinate) {
-        if (this.hoverFeature !== null) {
-          this.setHoverConnection(null, null);
-        }
-        return;
-      }
-
-      const connectionLayer = this.getConnectionLayer();
-      if (!connectionLayer || !connectionLayer.layer.getVisible()) {
-        if (this.hoverFeature !== null) {
-          this.setHoverConnection(null, null);
-        }
-        return;
-      }
-
-      const clickedFeatures = await connectionLayer.layer.getFeatures(event.pixel as [number, number]);
-      if (clickedFeatures.length === 0) {
-        if (this.hoverFeature !== null) {
-          this.setHoverConnection(null, null);
-        }
-        return;
-      }
-
-      // 取第一个feature作为hover target
-      const feature = clickedFeatures[0];
-
-      // 更新hover状态
-      if (feature !== this.hoverFeature) {
-        this.setHoverConnection(feature, connectionLayer);
+    const disposeHover = mapEventEmitter.on(MAP_EVENT.MAP_HOVER, (detail) => {
+      if (this.debounceTime > 0 && this.debouncedHandleHover) {
+        this.debouncedHandleHover(detail);
+      } else {
+        this.handleHover(detail);
       }
     });
 
@@ -189,5 +216,14 @@ export class HoverConnectionController {
       this.unregisterEventHandlers();
       this.clearHoverConnection();
     }
+  }
+
+  /**
+   * 设置防抖时间
+   */
+  @action
+  public setDebounceTime(time: number) {
+    this.debounceTime = time;
+    this.updateDebouncedHoverHandler();
   }
 }

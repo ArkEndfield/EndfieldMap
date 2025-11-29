@@ -33,7 +33,7 @@ export class HoverFeatureController {
   /** 是否开启防抖 */
   @observable accessor debounceTime: number = 0;
   /** 是否禁用 */
-  @observable accessor disabled: boolean = false;
+  private accessor disabled: boolean = false;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
   /** 获取实体图层的函数 */

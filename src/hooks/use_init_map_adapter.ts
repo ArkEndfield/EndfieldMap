@@ -58,6 +58,8 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       adapter.current.renderMap(currentMap);
       // 设置是否聚合
       adapter.current.setClusterEnable(data.enableCluster);
+      // 设置鼠标悬停检测响应时间
+      dataService.setHoverTime(data.hoverTime);
       // 设置标记过滤参数
       adapter.current.entityController.setMarkedFeatureFilter(data.filterMarked);
       // 渲染实体
@@ -113,8 +115,8 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   }, []);
 
   useEffect(() => {
-    if (adapterReactive) {
-      adapterReactive.setHoverFeatureEnable(!isMobile);
+    if (adapterReactive && isMobile) {
+      adapterReactive.setHoverFeatureEnable(true);
     }
   }, [isMobile, adapterReactive]);
 
