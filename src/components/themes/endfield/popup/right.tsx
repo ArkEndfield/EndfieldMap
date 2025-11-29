@@ -73,20 +73,22 @@ export const RightContentContainer: React.FC<RightContentProps> = observer(({ is
   return (
     <div
       className={cn(
-        'absolute h-full flex transition-all -z-2',
-        isExpand ? 'translate-x-80 translate-y-0 w-64' : 'translate-x-5 -translate-y-5 w-full'
+        'shrink-0 transition-all duration-300 ease-in-out relative -z-2',
+        isExpand ? 'ml-3 translate-x-0 translate-y-0 w-64' : '-ml-72 translate-x-4 -translate-y-5 w-78'
       )}
     >
-      {/* 描边层 */}
-      <Border />
+      <div className={cn('absolute transition-all -z-2 flex h-full', isExpand ? 'w-64' : 'w-78')}>
+        {/* 描边层 */}
+        <Border />
 
-      <div className="bg-[#272827] text-white flex-1 flex items-center justify-center">
-        <ScrollArea contentClassName="p-4 pb-8">
-          <RightContent />
-        </ScrollArea>
+        <div className="bg-[#272827] text-white w-full flex flex-col">
+          <ScrollArea contentClassName="p-4 pb-8" className="flex-1">
+            <RightContent />
+          </ScrollArea>
+        </div>
+
+        <ToggleButton onClick={toggleExpand} isExpand={isExpand} />
       </div>
-
-      <ToggleButton onClick={toggleExpand} isExpand={isExpand} />
     </div>
   );
 });

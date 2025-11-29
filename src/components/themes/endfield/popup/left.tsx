@@ -178,7 +178,7 @@ export const LeftContentContainer: React.FC = observer(() => {
   const { adapter } = useAdapter();
 
   return (
-    <div className={cn('w-full', 'border-b-6 border-[#656465] relative')}>
+    <div className={cn('w-78 shrink-0 h-auto', 'border-b-6 border-[#656465] relative')}>
       {/* 描边层 */}
       <Border />
 

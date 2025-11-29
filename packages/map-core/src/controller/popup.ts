@@ -95,7 +95,8 @@ export class PopupController {
       element,
       autoPan: false,
       offset: [0, -DEFAULT_ICON_SIZE * 2],
-      positioning: 'bottom-center',
+      positioning: 'bottom-left',
+      className: 'endfieldmap-popup-overlay',
     });
 
     this.map.addOverlay(this.overlay);

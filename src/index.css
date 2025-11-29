@@ -37,6 +37,11 @@ html, body {
   scrollbar-width: none;
 }
 
+/* popup */
+.endfieldmap-popup-overlay {
+  @apply -translate-x-39;
+}
+
 /* OpenLayers DragBox样式 - 框选框 */
 .ol-dragbox {
   background-color: rgba(100, 150, 255, 0.2);
