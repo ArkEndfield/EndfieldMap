@@ -1,5 +1,4 @@
 import type { MapIndex } from '@endfieldmap/tools';
-import { Collection } from 'ol';
 import type { Feature } from 'ol';
 import type { Geometry } from 'ol/geom';
 import type { Options } from 'ol/source/Cluster';
@@ -17,14 +16,13 @@ export interface BaseSourceConfig {
 export default abstract class SourceBase<T extends FeatureBase, C extends BaseSourceConfig> {
   /** 配置 */
   public config: C;
-  /** feature集合 */
-  @observable accessor features: Collection<T>;
+  /** feature集合 - 使用 MobX observable 数组 */
+  @observable accessor features: T[] = [];
   /** source */
   @observable accessor source: VectorSource;
 
   constructor(config: C) {
     this.config = config;
-    this.features = new Collection();
     this.source = new VectorSource();
   }
 
@@ -44,9 +42,7 @@ export default abstract class SourceBase<T extends FeatureBase, C extends BaseSo
    */
   @action
   public addFeatures(features: T[]) {
-    for (const feature of features) {
-      this.features.push(feature);
-    }
+    this.features.push(...features);
     this.source.addFeatures(features.map((feature) => feature.feature));
   }
 
@@ -56,7 +52,10 @@ export default abstract class SourceBase<T extends FeatureBase, C extends BaseSo
    */
   @action
   public removeFeature(feature: T) {
-    this.features.remove(feature);
+    const index = this.features.indexOf(feature);
+    if (index > -1) {
+      this.features.splice(index, 1);
+    }
     this.source.removeFeature(feature.feature);
   }
 
@@ -65,7 +64,7 @@ export default abstract class SourceBase<T extends FeatureBase, C extends BaseSo
    */
   @action
   public clearFeatures() {
-    this.features.clear();
+    this.features.length = 0;
     this.source.clear();
   }
 }

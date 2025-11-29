@@ -26,12 +26,10 @@ const CustomPointList: React.FC = observer(() => {
   const { adapter } = useAdapter();
 
   // 获取当前地图的所有自定义标点features，并按类型分组
-  // 移除 useMemo，让 observer 自动追踪 feature.visible 的变化
   const layer = adapter.customPointController.layerContainer;
+  const features = layer?.entity.features || [];
   const customPointGroups: CustomPointTypeGroup[] = (() => {
-    if (!layer) return [];
-
-    const features = layer.entity.features.getArray();
+    if (features.length === 0) return [];
 
     // 按 entityDataIdKey 分组
     const groupMap = new Map<string, CustomPointFeature[]>();
@@ -83,8 +81,8 @@ const CustomPointList: React.FC = observer(() => {
   }
 
   return (
-    <ScrollArea className="flex-1 px-3">
-      <div className="grid grid-cols-2 gap-2 py-2">
+    <ScrollArea className="flex-1">
+      <div className="grid grid-cols-2 gap-2 py-2 px-3">
         {customPointGroups.map((group) => {
           // 获取该类型的完整 EntityInfoData（包含正确的 pic）
           const typeEntityInfo = getCustomPointEntityInfo(group.entityDataIdKey) || getDefaultCustomPointType();

@@ -41,7 +41,7 @@ export class ElectricPoleZoneSource extends SourceBase<ElectricPoleZoneFeature, 
    * 根据 levelLogicId 删除对应覆盖区域
    */
   public removeZoneById(id: number) {
-    const feature = this.features.getArray().find((f) => f.data.levelLogicId === id);
+    const feature = this.features.find((f) => f.data.levelLogicId === id);
     if (feature) {
       this.removeFeature(feature);
     }

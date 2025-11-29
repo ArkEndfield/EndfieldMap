@@ -4,6 +4,7 @@ import { dataService } from '@/services/data';
 import { customPointTypes } from '@endfieldmap/map-core/data/custom_point';
 import { cn } from '@/utils/style';
 import type { CustomPointIdKey } from '@endfieldmap/map-core/types';
+import { getEntityIcon } from '@/utils/entity';
 
 /**
  * 自定义标点类型选择器
@@ -18,7 +19,7 @@ const CustomPointTypeSelector: React.FC = observer(() => {
   };
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="grid grid-cols-4 gap-1 w-full">
       {customPointTypes.map((type) => {
         const isSelected = selectedType === type.entityInfo.point;
         return (
@@ -30,7 +31,13 @@ const CustomPointTypeSelector: React.FC = observer(() => {
               isSelected ? 'bg-[#fdfb55] text-[#1d1d1d]' : 'bg-[#2a2a2a] text-[#cccccc] hover:bg-[#333333]'
             )}
           >
-            <div className={cn('w-2 h-2 rounded-full shrink-0', isSelected ? 'bg-[#1d1d1d]' : 'bg-[#fdfb55]')} />
+            <div className="w-4 h-4 rounded-full bg-[#1d1d1d]">
+              <img
+                className="w-full h-full"
+                src={getEntityIcon(type.category, type.entityInfo.pic)}
+                alt={type.entityInfo.point}
+              />
+            </div>
             <span className="text-sm">
               {t(`operation.custom_point.type.${type.entityInfo.point}`, { defaultValue: type.entityInfo.point })}
             </span>

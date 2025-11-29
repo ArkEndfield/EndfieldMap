@@ -31,7 +31,7 @@ export class SingleEntitySource extends SourceBase<MapFeature, EntityFeatureConf
         })
       );
     }
-    this.source.addFeatures(this.features.getArray().map((feature) => feature.feature));
+    this.source.addFeatures(this.features.map((feature) => feature.feature));
   }
 }
 

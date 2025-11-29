@@ -355,8 +355,8 @@ export class CommonPointEntityLayer extends SingleLayerBase {
       data: this.config.data,
       mapIndex: this.config.mapIndex,
       count: this.config.data.length,
-      markedCount: this.entity.features.getArray().filter((feature) => feature.marked).length,
-      selectedCount: this.entity.features.getArray().filter((feature) => feature.isSelected).length,
+      markedCount: this.entity.features.filter((feature) => feature.marked).length,
+      selectedCount: this.entity.features.filter((feature) => feature.isSelected).length,
     };
   }
 }

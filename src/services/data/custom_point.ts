@@ -517,7 +517,7 @@ export class CustomPointDataService {
     const layer = this.adapter.customPointController.layerContainer;
     if (!layer) return;
 
-    const features = layer.entity.features.getArray();
+    const features = layer.entity.features;
     features.forEach((feature) => {
       const entityDataIdKey = feature.data.entityDataIdKey;
       if (entityDataIdKey in visibilityData) {
@@ -537,7 +537,7 @@ export class CustomPointDataService {
 
     // 检查与已有自定义标点的距离
     if (customPointLayer) {
-      const features = customPointLayer.entity.features.getArray();
+      const features = customPointLayer.entity.features;
       for (const feature of features) {
         const existingPos = feature.data.position;
         const distance = calculateXYZDistance(position, existingPos);
@@ -724,7 +724,7 @@ export class CustomPointDataService {
     const existingIds =
       this.adapter.customPointController.entityLayer
         .get(mapIndex)
-        ?.entity.features.getArray()
+        ?.entity.features
         .map((f) => f.id) ?? [];
     let newId = Date.now();
     while (existingIds.includes(newId)) {

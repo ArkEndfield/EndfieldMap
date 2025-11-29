@@ -43,10 +43,10 @@ export class ElectricPoleSource extends SourceBase<ElectricPoleFeature, Electric
   }
 
   public get data() {
-    return this.features.getArray().map((feature) => feature.data);
+    return this.features.map((feature) => feature.data);
   }
 
   public getFeatureById(id: number) {
-    return this.features.getArray().find((feature) => feature.id === id);
+    return this.features.find((feature) => feature.id === id);
   }
 }

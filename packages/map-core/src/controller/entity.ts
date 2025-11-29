@@ -474,7 +474,7 @@ export class EntityController {
       for (const [_, categoryMap] of this.cachedLayer.entries()) {
         for (const [_, layers] of categoryMap.entries()) {
           for (const layer of layers) {
-            layer.entity.features.getArray().forEach((feature) => {
+            layer.entity.features.forEach((feature) => {
               if (feature.marked) {
                 feature.setMarked(false);
               }
@@ -615,7 +615,6 @@ export class EntityController {
           for (const layer of layers) {
             // 收集该层中所有marked的entity的levelLogicId
             const layerMarkedFeatures = layer.entity.features
-              .getArray()
               .filter((feature) => feature.marked)
               .map((feature) => feature.data.levelLogicId)
               .reduce((acc, levelLogicId) => {
@@ -672,7 +671,7 @@ export class EntityController {
         for (const [_, layers] of categoryMap.entries()) {
           for (const layer of layers) {
             // 恢复entity的marked状态
-            layer.entity.features.getArray().forEach((feature) => {
+            layer.entity.features.forEach((feature) => {
               const levelLogicId = feature.data.levelLogicId;
               const shouldBeMarked = markedLogicIdMap[levelLogicId] === true;
 

@@ -273,7 +273,7 @@ export class ElectricPoleController {
     // 检查半径 0.1 范围内是否已存在电线杆
     const entityLayer = this.entityLayer.get(mapIndex);
     if (entityLayer) {
-      const features = entityLayer.entity.features.getArray();
+      const features = entityLayer.entity.features;
       // TODO: 电线杆创建距离限制
       const duplicateRadius = 10;
       
@@ -332,7 +332,7 @@ export class ElectricPoleController {
     const entityLayer = this.entityLayer.get(mapIndex);
     if (!entityLayer) return;
 
-    const features = entityLayer.entity.features.getArray();
+    const features = entityLayer.entity.features;
     features.forEach((feature) => {
       this.syncElectricPoleConnections(mapIndex, feature);
     });

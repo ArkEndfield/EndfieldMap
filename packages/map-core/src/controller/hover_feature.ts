@@ -228,7 +228,7 @@ export class HoverFeatureController {
    */
   private isFeatureInLayer(feature: MapFeature, layer: CommonPointEntityLayer): boolean {
     // 通过检查layer的entity feature列表来判断
-    return layer.entity.features.getArray().some((f) => f === feature);
+    return layer.entity.features.some((f) => f === feature);
   }
 
   /**

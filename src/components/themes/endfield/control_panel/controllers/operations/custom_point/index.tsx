@@ -154,7 +154,7 @@ export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({
             transition={{ duration: 0.15, ease: 'easeInOut' }}
             className="overflow-hidden shrink-0"
           >
-            <div className="p-2 rounded-lg border border-[#444] w-fit mt-1 ml-1 mr-1 relative">
+            <div className="p-2 rounded-lg border border-[#444] w-full mt-1 ml-1 mr-1 relative">
               <div className="absolute -top-2.5 left-4 w-0 h-0 border-5 rotate-90 border-transparent border-r-[#444]" />
               <div className="text-xs text-[#aaaaaa] mb-2">{t('operation.custom_point.select_type')}</div>
               <CustomPointTypeSelector />

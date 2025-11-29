@@ -15,7 +15,7 @@ import { EndfieldMapEvent } from '@endfieldmap/map-core/event/map';
 import type { SimpleMapConfig } from '@endfieldmap/map-core/types/map';
 import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
-import { action, computed, observable } from 'mobx';
+import { action, observable } from 'mobx';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
 import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
 import { EventController } from '@endfieldmap/map-core/controller/event';
