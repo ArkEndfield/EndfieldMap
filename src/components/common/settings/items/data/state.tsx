@@ -21,13 +21,13 @@ export const StateSettings = () => {
     },
     onFailed(e) {
       alert.info({
-        content: t('data.state_data.failed', { reason:  e.message }),
+        content: t('data.state_data.failed', { reason: e.message }),
         dismissible: false,
       });
     },
   });
   return (
-    <SettingItem title={t('data.state_data.title')} tailDeco>
+    <SettingItem title={t('data.state_data.title')} description={t('data.state_data.description')} tailDeco>
       <EndfieldFormButton onClick={execute} left={loading && <Loading />}>
         {t('data.state_data.clear')}
       </EndfieldFormButton>

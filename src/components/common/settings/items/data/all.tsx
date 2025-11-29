@@ -48,7 +48,7 @@ export const AllStorageSettings = () => {
     },
   });
   return (
-    <SettingItem title={t('data.storage_data.title')} tailDeco>
+    <SettingItem title={t('data.storage_data.title')} description={t('data.storage_data.description')} tailDeco>
       <EndfieldFormButton onClick={execute} left={loading && <Loading />} variant="danger">
         {t('data.storage_data.clear')}
       </EndfieldFormButton>

@@ -10,10 +10,11 @@ import { StorageKey } from '@endfieldmap/tools';
 export const EntitySettings = () => {
   const { t } = useTranslation('settings');
   const { loading, execute } = usePromiseState({
-    fun: () => Promise.all([
-      dataService.storage.permanentRemove(StorageKey.LAYERS_VISIBILITY),
-      dataService.storage.permanentRemove(StorageKey.MARKED_FEATURES),
-    ]),
+    fun: () =>
+      Promise.all([
+        dataService.storage.permanentRemove(StorageKey.LAYERS_VISIBILITY),
+        dataService.storage.permanentRemove(StorageKey.MARKED_FEATURES),
+      ]),
     onSuccess() {
       alert.info({
         content: t('data.entity_data.success'),
@@ -31,7 +32,7 @@ export const EntitySettings = () => {
     },
   });
   return (
-    <SettingItem title={t('data.entity_data.title')} tailDeco>
+    <SettingItem title={t('data.entity_data.title')} description={t('data.entity_data.description')} tailDeco>
       <EndfieldFormButton onClick={execute} left={loading && <Loading />}>
         {t('data.entity_data.clear')}
       </EndfieldFormButton>

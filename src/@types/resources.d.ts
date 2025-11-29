@@ -108,6 +108,17 @@ interface Resources {
     },
     "map": {
       "cluster": "标点聚合",
+      "hover": {
+        "description": "鼠标在地图标点上的悬停检测响应时间，时间越短性能需求越高",
+        "title": "鼠标悬停检测响应时间",
+        "value": {
+          "normal": "正常",
+          "off": "关闭",
+          "slow": "慢",
+          "slower": "更慢",
+          "slowest": "最慢"
+        }
+      },
       "move_center": "回到地图中心",
       "title": "地图"
     }

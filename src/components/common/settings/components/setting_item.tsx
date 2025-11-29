@@ -55,7 +55,15 @@ const Deco = ({ withTail }: { withTail?: boolean }) => (
   </div>
 );
 
-export const SettingItem = ({ title, description, question, children, className, classNames, tailDeco }: SettingItemProps) => {
+export const SettingItem = ({
+  title,
+  description,
+  question,
+  children,
+  className,
+  classNames,
+  tailDeco,
+}: SettingItemProps) => {
   const isMobile = useIsMobile();
   return (
     <div
@@ -78,9 +86,19 @@ export const SettingItem = ({ title, description, question, children, className,
             </Tooltip>
           )}
         </div>
-        {description && <div className={cn('text-sm text-zinc-600', classNames?.left?.description)}>{description}</div>}
+        {description && (
+          <div className={cn('text-xs md:ml-4 text-zinc-300', classNames?.left?.description)}>{description}</div>
+        )}
       </div>
-      <div className={cn('flex shrink-0 grow-0 relative z-1 min-w-32 md:min-w-64', isMobile && "text-sm", classNames?.content)}>{children}</div>
+      <div
+        className={cn(
+          'flex shrink-0 grow-0 relative z-1 min-w-32 md:min-w-64',
+          isMobile && 'text-sm',
+          classNames?.content
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 };

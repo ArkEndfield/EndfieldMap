@@ -10,8 +10,8 @@ import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/fea
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
-import type { DisposeListener } from '@endfieldmap/map-core/types/event';
-import { logger } from '@endfieldmap/tools';
+import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
+import { debounce, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 import type { Point } from 'ol/geom';
@@ -30,6 +30,10 @@ export interface HoverFeatureControllerConfig {
 export class HoverFeatureController {
   /** 当前hover的feature */
   @observable accessor hoverFeature: MapFeature | null = null;
+  /** 是否开启防抖 */
+  @observable accessor debounceTime: number = 0;
+  /** 是否禁用 */
+  @observable accessor disabled: boolean = false;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
   /** 获取实体图层的函数 */
@@ -38,15 +42,99 @@ export class HoverFeatureController {
   private getElectricPoleLayers: () => ElectricPoleEntityLayer[];
   /** 获取自定义标点图层的函数 */
   private getCustomPointLayers: () => CustomPointEntityLayer[];
-  /** 是否禁用 */
-  private disabled: boolean = false;
+  /** 防抖后的hover处理函数 */
+  private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
 
   constructor(config: HoverFeatureControllerConfig) {
     this.getEntityLayers = config.getEntityLayers;
     this.getElectricPoleLayers = config.getElectricPoleLayers;
     this.getCustomPointLayers = config.getCustomPointLayers;
     this.disabled = config.disableHoverFeature ?? false;
+    this.updateDebouncedHoverHandler();
     this.registerEventHandlers();
+  }
+
+  /**
+   * 更新防抖处理函数
+   */
+  private updateDebouncedHoverHandler() {
+    if (this.debounceTime > 0) {
+      this.debouncedHandleHover = debounce(this.handleHover.bind(this), this.debounceTime);
+    } else {
+      this.debouncedHandleHover = null;
+    }
+  }
+
+  /**
+   * 处理hover事件的核心逻辑
+   */
+  private async handleHover(detail: MapHoverEventDetail): Promise<void> {
+    const { event } = detail;
+    const coordinate = event.coordinate as Coordinate | undefined;
+    if (!coordinate) {
+      if (this.hoverFeature !== null) {
+        this.setHoverFeature(null, null);
+      }
+      return;
+    }
+
+    const electricPoleLayers = this.getElectricPoleLayers().filter((layer) => layer.visible);
+    const customPointLayers = this.getCustomPointLayers().filter((layer) => layer.visible);
+    const entityLayers = this.getEntityLayers().filter((layer) => layer.visible);
+
+    const allHoveredFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
+      {
+        coordinate,
+        pixel: [event.pixel[0], event.pixel[1]],
+        map: event.map,
+      },
+      [...electricPoleLayers, ...customPointLayers],
+      entityLayers
+    );
+
+    // 如果没有命中任何feature，清除hover状态
+    if (allHoveredFeatures.length === 0) {
+      if (this.hoverFeature !== null) {
+        this.setHoverFeature(null, null);
+      }
+      return;
+    }
+
+    // 选择最上层的 layer（基于 z-index 和添加顺序）
+    const selectedLayerFeatures = selectTopmostHitResult(allHoveredFeatures);
+    if (!selectedLayerFeatures) {
+      if (this.hoverFeature !== null) {
+        this.setHoverFeature(null, null);
+      }
+      return;
+    }
+    const features = selectedLayerFeatures.features;
+
+    // 取第一个feature作为hover target
+    const feature = features[0];
+    const mapFeature = feature.get(EntityInstanceKey) as MapFeature;
+
+    // 确定hover坐标
+    let hoverCoordinate: Coordinate;
+    if (features.length > 1) {
+      // 聚合情况：使用聚合中心坐标（Cluster feature 的几何中心）
+      const source = selectedLayerFeatures.layer.layer.getSource();
+      const clusterFeature = source?.getClosestFeatureToCoordinate(coordinate);
+      const geometry = clusterFeature?.getGeometry();
+      if (geometry && geometry.getType() === 'Point') {
+        hoverCoordinate = (geometry as Point).getCoordinates();
+      } else {
+        hoverCoordinate = mapFeature.coordinates;
+      }
+    } else {
+      // 单个feature：使用feature自己的坐标
+      hoverCoordinate = mapFeature.coordinates;
+    }
+
+    // 更新hover状态
+    if (mapFeature !== this.hoverFeature) {
+      this.setHoverFeature(mapFeature, hoverCoordinate);
+    }
   }
 
   /**
@@ -57,72 +145,11 @@ export class HoverFeatureController {
       return;
     }
     // 监听MAP_HOVER事件：使用统一的实体命中检测（与 click 共享）
-    const disposeHover = mapEventEmitter.on(MAP_EVENT.MAP_HOVER, async (detail) => {
-      const { event } = detail;
-      const coordinate = event.coordinate as Coordinate | undefined;
-      if (!coordinate) {
-        if (this.hoverFeature !== null) {
-          this.setHoverFeature(null, null);
-        }
-        return;
-      }
-
-      const electricPoleLayers = this.getElectricPoleLayers().filter((layer) => layer.visible);
-      const customPointLayers = this.getCustomPointLayers().filter((layer) => layer.visible);
-      const entityLayers = this.getEntityLayers().filter((layer) => layer.visible);
-
-      const allHoveredFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
-        {
-          coordinate,
-          pixel: event.pixel as [number, number],
-          map: event.map,
-        },
-        [...electricPoleLayers, ...customPointLayers],
-        entityLayers
-      );
-
-      // 如果没有命中任何feature，清除hover状态
-      if (allHoveredFeatures.length === 0) {
-        if (this.hoverFeature !== null) {
-          this.setHoverFeature(null, null);
-        }
-        return;
-      }
-
-      // 选择最上层的 layer（基于 z-index 和添加顺序）
-      const selectedLayerFeatures = selectTopmostHitResult(allHoveredFeatures);
-      if (!selectedLayerFeatures) {
-        if (this.hoverFeature !== null) {
-          this.setHoverFeature(null, null);
-        }
-        return;
-      }
-      const features = selectedLayerFeatures.features;
-
-      // 取第一个feature作为hover target
-      const feature = features[0];
-      const mapFeature = feature.get(EntityInstanceKey) as MapFeature;
-
-      // 确定hover坐标
-      let hoverCoordinate: Coordinate;
-      if (features.length > 1) {
-        // 聚合情况：使用聚合中心坐标（Cluster feature 的几何中心）
-        const source = selectedLayerFeatures.layer.layer.getSource();
-        const clusterFeature = source?.getClosestFeatureToCoordinate(coordinate);
-        const geometry = clusterFeature?.getGeometry();
-        if (geometry && geometry.getType() === 'Point') {
-          hoverCoordinate = (geometry as Point).getCoordinates();
-        } else {
-          hoverCoordinate = mapFeature.coordinates;
-        }
+    const disposeHover = mapEventEmitter.on(MAP_EVENT.MAP_HOVER, (detail) => {
+      if (this.debounceTime > 0 && this.debouncedHandleHover) {
+        this.debouncedHandleHover(detail);
       } else {
-        // 单个feature：使用feature自己的坐标
-        hoverCoordinate = mapFeature.coordinates;
-      }
-
-      // 更新hover状态
-      if (mapFeature !== this.hoverFeature) {
-        this.setHoverFeature(mapFeature, hoverCoordinate);
+        this.handleHover(detail);
       }
     });
 
@@ -264,6 +291,7 @@ export class HoverFeatureController {
    * 设置是否启用
    * @param enable 是否启用
    */
+  @action
   public setEnable(enable: boolean) {
     if (enable === !this.disabled) {
       return;
@@ -277,5 +305,14 @@ export class HoverFeatureController {
       this.unregisterEventHandlers();
       this.clearHoverFeature();
     }
+  }
+
+  /**
+   * 设置防抖时间
+   */
+  @action
+  public setDebounceTime(time: number) {
+    this.debounceTime = time;
+    this.updateDebouncedHoverHandler();
   }
 }
