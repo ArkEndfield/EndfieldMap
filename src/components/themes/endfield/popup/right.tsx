@@ -7,6 +7,7 @@ import { DungeonReward } from './right_content/dungeon_reward';
 import { hasReward } from '@/utils/reward';
 import { ClipSquare } from './deco';
 import { useAdapter } from '@/hooks/use_adapter';
+import { AnimatePresence, motion } from 'motion/react';
 
 export interface RightContentProps {
   isExpand: boolean;
@@ -67,28 +68,33 @@ export const RightContentContainer: React.FC<RightContentProps> = observer(({ is
   const activeFeature = adapter?.activeFeatureController.activeFeature;
   const entity = activeFeature?.data;
   const showRewards = hasReward(entity);
-  if (!entity || !showRewards) {
-    return null;
-  }
+
   return (
-    <div
-      className={cn(
-        'shrink-0 transition-all duration-300 ease-in-out relative -z-2',
-        isExpand ? 'ml-3 translate-x-0 translate-y-0 w-64' : '-ml-72 translate-x-4 -translate-y-5 w-78'
+    <AnimatePresence>
+      {entity && showRewards && (
+        <motion.div
+          initial={false}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2, ease: 'easeInOut' }}
+          className={cn(
+            'shrink-0 transition-all duration-300 ease-in-out relative -z-2',
+            isExpand ? 'ml-3 translate-x-0 translate-y-0 w-64' : '-ml-72 translate-x-4 -translate-y-5 w-78'
+          )}
+        >
+          <div className={cn('absolute transition-all -z-2 flex h-full', isExpand ? 'w-64' : 'w-78')}>
+            {/* 描边层 */}
+            <Border />
+
+            <div className="bg-[#272827] text-white w-full flex flex-col">
+              <ScrollArea contentClassName="p-4 pb-8" className="flex-1">
+                <RightContent />
+              </ScrollArea>
+            </div>
+
+            <ToggleButton onClick={toggleExpand} isExpand={isExpand} />
+          </div>
+        </motion.div>
       )}
-    >
-      <div className={cn('absolute transition-all -z-2 flex h-full', isExpand ? 'w-64' : 'w-78')}>
-        {/* 描边层 */}
-        <Border />
-
-        <div className="bg-[#272827] text-white w-full flex flex-col">
-          <ScrollArea contentClassName="p-4 pb-8" className="flex-1">
-            <RightContent />
-          </ScrollArea>
-        </div>
-
-        <ToggleButton onClick={toggleExpand} isExpand={isExpand} />
-      </div>
-    </div>
+    </AnimatePresence>
   );
 });
