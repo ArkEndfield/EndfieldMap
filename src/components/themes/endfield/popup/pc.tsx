@@ -7,6 +7,7 @@ import { LeftContentContainer } from './left';
 import { RightContentContainer } from './right';
 import { dataService } from '@/services/data';
 import { useAdapter } from '@/hooks/use_adapter';
+import uiManager from '@/services/ui_manager';
 
 const PCPopup: React.FC = observer(() => {
   const { adapter } = useAdapter();
@@ -34,13 +35,15 @@ const PCPopup: React.FC = observer(() => {
   useEffect(() => {
     if (!adapter?.popupController || !activeFeature) return;
 
-    const timeoutId = window.setTimeout(() => {
-      adapter.popupController?.updatePosition();
-    }, 150);
+    if (uiManager.adjustPopup) {
+      const timeoutId = window.setTimeout(() => {
+        adapter.popupController?.updatePosition();
+      }, 150);
 
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
+    }
   }, [adapter, activeFeature]);
 
   const [isExpand, setIsExpand] = useState(false);
@@ -48,9 +51,11 @@ const PCPopup: React.FC = observer(() => {
   const handleExpandButton = () => {
     setIsExpand((isExpand) => !isExpand);
     // 调整位置
-    window.setTimeout(() => {
-      adapter.popupController?.updatePosition();
-    }, 200);
+    if (uiManager.adjustPopup) {
+      window.setTimeout(() => {
+        adapter.popupController?.updatePosition();
+      }, 200);
+    }
   };
 
   return createPortal(

@@ -1,4 +1,5 @@
 export enum UILocalStorageKey {
-    SIDEBAR_COLLAPSED = 'sidebarCollapsed',
-    THEME = 'theme',
+  SIDEBAR_COLLAPSED = 'sidebarCollapsed',
+  THEME = 'theme',
+  ADJUST_POPUP = 'adjustPopup',
 }

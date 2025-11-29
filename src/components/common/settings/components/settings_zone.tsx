@@ -3,6 +3,7 @@ import { cn } from '@/utils/style';
 export interface SettingsZoneProps {
   title: React.ReactNode;
   children: React.ReactNode;
+  icon?: React.ReactNode;
   className?: string;
   classNames?: {
     title?: string;
@@ -23,19 +24,20 @@ const Deco = () => (
   </svg>
 );
 
-export const SettingsZone: React.FC<SettingsZoneProps> = ({ title, children, className, classNames }) => {
+export const SettingsZone: React.FC<SettingsZoneProps> = ({ title, icon, children, className, classNames }) => {
   return (
     <div className={cn('flex flex-col gap-2 mx-4 md:mr-16', className)}>
       <div
         className={cn(
-          'relative text-lg font-bold border-l-4 pl-2 border-[#ffee34] text-[#ffee34]',
+          'relative flex items-center gap-2 text-lg font-bold border-l-4 pl-2 border-[#ffee34] text-[#ffee34]',
           'before:absolute before:left-2 before:bottom-0 before:right-12 before:h-[1.5px] before:bg-[#ffffff7d]',
           classNames?.title
         )}
       >
-        {title}
-        <div className='absolute right-0 -bottom-px text-[#ffffff7d]'>
-            <Deco />
+        {icon && <div className="shrink-0">{icon}</div>}
+        <span>{title}</span>
+        <div className="absolute right-0 -bottom-px text-[#ffffff7d]">
+          <Deco />
         </div>
       </div>
       <div className={cn('space-y-2 mx-2', classNames?.content)}>{children}</div>

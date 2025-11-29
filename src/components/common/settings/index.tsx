@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { TabList, type TabItem } from './tabs';
 import { ScrollArea } from '../scroll_area';
-import { DataBaseIcon, MapIcon, QuestionIcon, TranslateIcon } from '../icons';
-import { LanguageSetting } from './items/language';
+import { DataBaseIcon, MapIcon, QuestionIcon, LayoutAndLanguageIcon } from '../icons';
+import { DisplaySettings } from './items/display';
 import { MapSetting } from './items/map';
 import { AboutPage } from './items/about';
 import { DataSetting } from './items/data';
@@ -34,9 +34,9 @@ const settingList = [
     Component: MapSetting,
   },
   {
-    key: 'language',
-    icon: <TranslateIcon />,
-    Component: LanguageSetting,
+    key: 'display',
+    icon: <LayoutAndLanguageIcon />,
+    Component: DisplaySettings,
   },
   {
     key: 'data',

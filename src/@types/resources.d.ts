@@ -95,16 +95,27 @@ interface Resources {
       },
       "title": "数据管理"
     },
-    "language": {
-      "change_language": "切换语言",
-      "language_list": {
-        "cn": "简体中文",
-        "en": "英语",
-        "jp": "日语",
-        "kr": "韩语",
-        "tc": "繁体中文"
+    "display": {
+      "language": {
+        "change_language": "切换语言",
+        "language_list": {
+          "cn": "简体中文",
+          "en": "英语",
+          "jp": "日语",
+          "kr": "韩语",
+          "tc": "繁体中文"
+        },
+        "title": "语言"
       },
-      "title": "语言"
+      "layout": {
+        "popup": {
+          "right_adjust": {
+            "description": "当展开弹窗并且弹窗超出屏幕外，自动调整地图视图位置",
+            "title": "弹窗调整"
+          }
+        },
+        "title": "布局展示"
+      }
     },
     "map": {
       "cluster": "标点聚合",

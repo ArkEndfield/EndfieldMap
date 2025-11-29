@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { languageConfig } from '@/const/language';
 import type { LanguageLocale } from '@/@types/language';
-import { SettingsZone } from '../components/settings_zone';
-import { SettingItem } from '../components/setting_item';
+import { SettingsZone } from '../../components/settings_zone';
+import { SettingItem } from '../../components/setting_item';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { cn } from '@/utils/style';
 import { useCurrentLanguage } from '@/hooks/use_current_language';
+import { TranslateIcon } from '@/components/common/icons';
 
 export const LanguageSetting = () => {
   const { t, i18n } = useTranslation('settings');
@@ -25,15 +26,20 @@ export const LanguageSetting = () => {
           'border-[#5f5d5d] text-[#5f5d5d]': !active,
         })}
       >
-        {t(`language.language_list.${locale.locale}`)}
+        {t(`display.language.language_list.${locale.locale}`)}
       </span>
     ),
   }));
 
   return (
-    <SettingsZone title={t('language.title')}>
-      <SettingItem title={t('language.change_language')}>
-        <EndfieldSelect<LanguageLocale> value={currentLocale} options={selectOptions} onChange={changeLanguage} className='min-w-40' />
+    <SettingsZone title={t('display.language.title')} icon={<TranslateIcon />}>
+      <SettingItem title={t('display.language.change_language')}>
+        <EndfieldSelect<LanguageLocale>
+          value={currentLocale}
+          options={selectOptions}
+          onChange={changeLanguage}
+          className="min-w-40"
+        />
       </SettingItem>
     </SettingsZone>
   );

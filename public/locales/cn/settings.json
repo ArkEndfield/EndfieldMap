@@ -1,13 +1,24 @@
 {
-  "language": {
-    "title": "语言",
-    "change_language": "切换语言",
-    "language_list": {
-      "cn": "简体中文",
-      "tc": "繁体中文",
-      "en": "英语",
-      "jp": "日语",
-      "kr": "韩语"
+  "display": {
+    "language": {
+      "title": "语言",
+      "change_language": "切换语言",
+      "language_list": {
+        "cn": "简体中文",
+        "tc": "繁体中文",
+        "en": "英语",
+        "jp": "日语",
+        "kr": "韩语"
+      }
+    },
+    "layout": {
+      "title": "布局展示",
+      "popup": {
+        "right_adjust": {
+          "title": "弹窗调整",
+          "description": "当展开弹窗并且弹窗超出屏幕外，自动调整地图视图位置"
+        }
+      }
     }
   },
   "map": {

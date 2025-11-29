@@ -10,8 +10,6 @@ const TextDeco = ({ className }: { className?: string }) => (
   </div>
 );
 
-
-
 const CommunityCard = ({
   title,
   icon,
@@ -24,7 +22,7 @@ const CommunityCard = ({
   type?: 'default' | 'primary';
 }) => {
   const isPrimary = type === 'primary';
-  
+
   return (
     <a href={link} target="_blank">
       <button
@@ -52,7 +50,7 @@ const CommunityCard = ({
         <div className="rounded-full text-3xl flex items-center justify-center">{icon}</div>
         <div
           className={cn(
-            'relative self-stretch shrink-0 grow-0 w-[2px] transition-colors duration-300',
+            'relative self-stretch shrink-0 grow-0 w-0.5 transition-colors duration-300',
             isPrimary ? 'bg-[#fff500] group-hover:bg-[#efe701]' : 'bg-[#ccc] group-hover:bg-[#aaa]'
           )}
         />
@@ -109,8 +107,13 @@ export const AboutPage = () => {
           <TextDeco />
         </div>
         <div className="w-4 h-4 rounded-full bg-[#fdde55] mb-4" />
-        <div className='flex flex-col gap-2'>
-          <CommunityCard title={t('about.qq_group', { group_number: "1020923535" })} link="https://qm.qq.com/q/6NDYnkjXmU" icon={<QQIcon />} type='primary' />
+        <div className="flex flex-col gap-2">
+          <CommunityCard
+            title={t('about.qq_group', { group_number: '1020923535' })}
+            link="https://qm.qq.com/q/6NDYnkjXmU"
+            icon={<QQIcon />}
+            type="primary"
+          />
           <CommunityCard title={t('about.discord')} link="https://discord.gg/DDgx65vaMF" icon={<DiscordIcon />} />
         </div>
       </div>

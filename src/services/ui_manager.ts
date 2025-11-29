@@ -9,20 +9,24 @@ class UIManager {
   @observable accessor theme!: ThemeNames;
   @observable accessor electricPoleManagerOpen: boolean;
   @observable accessor customPointManagerOpen: boolean;
+  @observable accessor adjustPopup: boolean;
 
   constructor() {
     this.settingsShown = false;
     this.electricPoleManagerOpen = false;
     this.customPointManagerOpen = false;
+    this.adjustPopup = true;
     this.restoreDataFromLocalStorage();
   }
 
   private getDataFromLocalStorage() {
     const sidebarCollapsed = LocalStorageDB.get<boolean>(UILocalStorageKey.SIDEBAR_COLLAPSED) ?? true;
     const theme = LocalStorageDB.get<ThemeNames>(UILocalStorageKey.THEME) ?? themeNames.ENDFIELD;
+    const adjustPopup = LocalStorageDB.get<boolean>(UILocalStorageKey.ADJUST_POPUP) ?? true;
     return {
       sidebarCollapsed,
       theme,
+      adjustPopup,
     };
   }
 
@@ -30,6 +34,7 @@ class UIManager {
     const data = this.getDataFromLocalStorage();
     this.setSidebarCollapsed(data.sidebarCollapsed);
     this.setTheme(data.theme);
+    this.setAdjustPopupOpen(data.adjustPopup);
   }
 
   // region: 主题
@@ -106,6 +111,19 @@ class UIManager {
   @action
   public toggleCustomPointManager() {
     this.setCustomPointManagerOpen(!this.customPointManagerOpen);
+  }
+  // endregion
+
+  // region: 调整弹出层
+  @action
+  public setAdjustPopupOpen(open: boolean) {
+    this.adjustPopup = open;
+    LocalStorageDB.set(UILocalStorageKey.ADJUST_POPUP, open);
+  }
+
+  @action
+  public toggleAdjustPopup() {
+    this.setAdjustPopupOpen(!this.adjustPopup);
   }
   // endregion
 }
