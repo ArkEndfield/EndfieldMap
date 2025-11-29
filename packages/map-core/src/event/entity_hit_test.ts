@@ -15,6 +15,10 @@ import type { Feature } from 'ol';
 import type { Point } from 'ol/geom';
 import type { MapFeature } from '../types';
 
+// ============================================================================
+// Types
+// ============================================================================
+
 export interface EntityHitTestInput {
   coordinate: Coordinate | undefined;
   pixel: [number, number];
@@ -26,10 +30,247 @@ export interface EntityHitTestResult {
   layer: CommonPointEntityLayer | ElectricPoleEntityLayer | CustomPointEntityLayer;
 }
 
+export interface EntityHitTestOptions {
+  /**
+   * Debounce delay in milliseconds.
+   * Used by createDebouncedHitTest to control debounce timing.
+   * @default 16 (approximately 60fps)
+   */
+  debounceDelay?: number;
+}
+
+type EntityLayer = CommonPointEntityLayer | ElectricPoleEntityLayer | CustomPointEntityLayer;
+
+// ============================================================================
+// Constants - Cached hit test geometry calculations
+// ============================================================================
+
+const BASE_RADIUS_PX = DEFAULT_ICON_SIZE / 2;
+const STROKE_WIDTH_PX = DEFAULT_STROKE_WIDTH;
+const CIRCLE_RADIUS_PX = BASE_RADIUS_PX + STROKE_WIDTH_PX;
+const CIRCLE_CENTER_OFFSET_Y_PX = BASE_RADIUS_PX + STROKE_WIDTH_PX * 2;
+const CIRCLE_BOTTOM_FROM_ANCHOR_PX = CIRCLE_CENTER_OFFSET_Y_PX + CIRCLE_RADIUS_PX;
+const INDICATOR_CENTER_OFFSET_Y_PX = -1.5;
+const INDICATOR_RADIUS_PX = 4;
+const INDICATOR_TOP_FROM_ANCHOR_PX = INDICATOR_CENTER_OFFSET_Y_PX - INDICATOR_RADIUS_PX;
+
+const RAW_TOP_FROM_ANCHOR_PX = INDICATOR_TOP_FROM_ANCHOR_PX - 2;
+const RAW_BOTTOM_FROM_ANCHOR_PX = CIRCLE_BOTTOM_FROM_ANCHOR_PX + 2;
+const UPWARD_OFFSET_PX = 5;
+const VISUAL_TOP_FROM_ANCHOR_PX = -RAW_BOTTOM_FROM_ANCHOR_PX - UPWARD_OFFSET_PX;
+const VISUAL_BOTTOM_FROM_ANCHOR_PX = -RAW_TOP_FROM_ANCHOR_PX - UPWARD_OFFSET_PX;
+const HALF_WIDTH_PX = CIRCLE_RADIUS_PX + 2;
+
+// ============================================================================
+// Utility Functions
+// ============================================================================
+
 /**
- * 在多个命中结果中选择视觉上“最上层”的那个
- * - 优先比较图层的 zIndex
- * - 若 zIndex 一致，后出现的（添加顺序更靠后）优先
+ * 检查特征是否通过可见性和过滤模式检查
+ * 提取以减少代码重复并提高性能
+ */
+function isFeatureVisible(feature: Feature<Point>, layer: EntityLayer): boolean {
+  if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
+    return false;
+  }
+
+  const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+
+  if (instance && 'visible' in instance && instance.visible === false) {
+    return false;
+  }
+
+  if (!instance?.markable) {
+    return true;
+  }
+
+  const marked = instance.marked ?? false;
+
+  if (!('markedFilterMode' in layer)) {
+    return true;
+  }
+
+  if (layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
+    return false;
+  }
+
+  if (layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * 检查像素坐标是否在击中测试范围内
+ * 用于高频率悬停事件的早期退出优化
+ */
+function isWithinHitBounds(dxPx: number, dyPx: number): boolean {
+  if (dyPx < VISUAL_TOP_FROM_ANCHOR_PX || dyPx > VISUAL_BOTTOM_FROM_ANCHOR_PX) {
+    return false;
+  }
+
+  if (Math.abs(dxPx) > HALF_WIDTH_PX) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * 选择重叠特征中基于 order 属性的最上层特征
+ * 如果没有找到有效特征，则返回 null
+ */
+function selectTopmostFeature(features: Feature<Point>[], layer: EntityLayer): Feature<Point> | null {
+  let selectedFeature: Feature<Point> | null = null;
+  let maxOrder = -Infinity;
+
+  for (const candidate of features) {
+    if (!isFeatureVisible(candidate, layer)) {
+      continue;
+    }
+
+    const instance = candidate.get(EntityInstanceKey) as MapFeature | undefined;
+    const order = instance?.order ?? 0;
+
+    if (!selectedFeature || order > maxOrder) {
+      selectedFeature = candidate;
+      maxOrder = order;
+    }
+  }
+
+  return selectedFeature;
+}
+
+/**
+ * 过滤和排序聚簇特征，按可见性和顺序排序
+ * 如果没有找到有效特征，则返回空数组
+ */
+function filterAndSortClusterFeatures(clusterFeatures: Feature<Point>[], layer: EntityLayer): Feature<Point>[] {
+  const validFeatures: Array<{ feature: Feature<Point>; order: number }> = [];
+
+  for (const feature of clusterFeatures) {
+    if (!isFeatureVisible(feature, layer)) {
+      continue;
+    }
+
+    const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+    const order = instance?.order ?? 0;
+    validFeatures.push({ feature, order });
+  }
+
+  if (validFeatures.length === 0) {
+    return [];
+  }
+
+  validFeatures.sort((a, b) => b.order - a.order);
+  return validFeatures.map((item) => item.feature);
+}
+
+// ============================================================================
+// Hit Test Functions
+// ============================================================================
+
+/**
+ * 处理非聚簇实体图层（电线杆，自定义点）
+ * 使用空间索引快速查找最近特征
+ */
+function hitTestNonClusteredLayer(
+  input: EntityHitTestInput,
+  layer: ElectricPoleEntityLayer | CustomPointEntityLayer,
+  results: EntityHitTestResult[]
+): void {
+  const { coordinate, pixel, map } = input;
+  const source = layer.layer.getSource();
+
+  if (!source || !coordinate) {
+    return;
+  }
+
+  const closestFeature = source.getClosestFeatureToCoordinate(coordinate) as Feature<Point>;
+  if (!closestFeature) {
+    return;
+  }
+
+  const geometry = closestFeature.getGeometry();
+  if (!geometry) {
+    return;
+  }
+
+  const closestCoordinate = geometry.getCoordinates();
+  const [featurePx, featurePy] = map.getPixelFromCoordinate(closestCoordinate);
+  const dxPx = pixel[0] - featurePx;
+  const dyPx = pixel[1] - featurePy;
+
+  if (!isWithinHitBounds(dxPx, dyPx)) {
+    return;
+  }
+
+  const overlappedFeatures = source.getFeaturesAtCoordinate(closestCoordinate) as Feature<Point>[];
+  const selectedFeature = selectTopmostFeature(overlappedFeatures, layer);
+
+  if (selectedFeature) {
+    results.push({ features: [selectedFeature], layer });
+  }
+}
+
+/**
+ * 处理聚簇实体图层（通用点）
+ * 处理聚簇特征提取和排序
+ */
+function hitTestClusteredLayer(
+  input: EntityHitTestInput,
+  layer: CommonPointEntityLayer,
+  results: EntityHitTestResult[]
+): void {
+  const { coordinate, pixel, map } = input;
+  const source = layer.layer.getSource();
+
+  if (!source || !coordinate) {
+    return;
+  }
+
+  const closestClusterFeature = source.getClosestFeatureToCoordinate(coordinate) as Feature<Point>;
+  if (!closestClusterFeature) {
+    return;
+  }
+
+  const geometry = closestClusterFeature.getGeometry();
+  if (!geometry || geometry.getType() !== 'Point') {
+    return;
+  }
+
+  const closestCoordinate = (geometry as Point).getCoordinates();
+  const [featurePx, featurePy] = map.getPixelFromCoordinate(closestCoordinate);
+  const dxPx = pixel[0] - featurePx;
+  const dyPx = pixel[1] - featurePy;
+
+  if (!isWithinHitBounds(dxPx, dyPx)) {
+    return;
+  }
+
+  const clusterFeatures = closestClusterFeature.get('features') as Feature<Point>[] | undefined;
+  if (!clusterFeatures || clusterFeatures.length === 0) {
+    return;
+  }
+
+  const features = filterAndSortClusterFeatures(clusterFeatures, layer);
+
+  if (features.length > 0) {
+    results.push({ features, layer });
+  }
+}
+
+// ============================================================================
+// Public API
+// ============================================================================
+
+/**
+ * 选择多个击中测试结果中的最上层结果
+ * 优先级：图层 zIndex，图层在数组中的顺序
+ *
+ * @param results - 多个击中测试结果
+ * @returns 最上层结果，如果数组为空则返回 null
  */
 export function selectTopmostHitResult(results: EntityHitTestResult[]): EntityHitTestResult | null {
   if (results.length === 0) {
@@ -50,400 +291,32 @@ export function selectTopmostHitResult(results: EntityHitTestResult[]): EntityHi
   return results[topIndex];
 }
 
-export interface EntityHitTestOptions {
-  /**
-   * 是否启用基于 `layer.getFeatures(pixel)` 的高精度命中检测
-   * - `true`：使用像素级命中检测，命中顺序与实际渲染顺序一致（推荐用于 click / hover）
-   * - `false`/未传：使用几何近邻 + 包络盒命中（性能更好，但在复杂重叠情况下可能与渲染顺序不完全一致）
-   */
-  enableHitDetectionFallback?: boolean;
-}
-
 /**
- * 基于实体样式（圆 + 底部指示器）的几何关系，统一执行点击 / hover 的实体命中检测。
- * 命中区域与 CommonPointEntityLayer / ElectricPoleEntityLayer / CustomPointEntityLayer 的样式保持一致：
- * - 上方覆盖圆和装饰
- * - 下方只保留靠近锚点的一小段（底部指示器附近）
+ * 地图实体击中测试
+ * @param input - 包含坐标、像素和地图的击中测试输入
+ * @param electricPoleLayers - 非聚簇实体图层（电线杆，自定义点）
+ * @param entityLayers - 聚簇实体图层（通用点）
+ * @returns 地图实体击中测试结果
  */
-export async function hitTestEntitiesAt(
+export function hitTestEntitiesAt(
   input: EntityHitTestInput,
   electricPoleLayers: (ElectricPoleEntityLayer | CustomPointEntityLayer)[],
-  entityLayers: CommonPointEntityLayer[],
-  options?: EntityHitTestOptions
-): Promise<EntityHitTestResult[]> {
+  entityLayers: CommonPointEntityLayer[]
+): EntityHitTestResult[] {
   const { coordinate } = input;
 
   if (!coordinate) {
     return [];
   }
 
-  if (options?.enableHitDetectionFallback) {
-    return hitTestEntitiesByPixel(input, electricPoleLayers, entityLayers);
-  }
-
-  return hitTestEntitiesByGeometry(input, electricPoleLayers, entityLayers);
-}
-
-/**
- * 使用几何近邻 + 包络盒的快速命中检测（旧实现，性能较好）
- */
-function hitTestEntitiesByGeometry(
-  input: EntityHitTestInput,
-  electricPoleLayers: (ElectricPoleEntityLayer | CustomPointEntityLayer)[],
-  entityLayers: CommonPointEntityLayer[]
-): EntityHitTestResult[] {
-  const { coordinate, pixel, map } = input;
-
-  if (!coordinate) {
-    return [];
-  }
-
-  // 参考实体样式计算命中区域
-  const baseRadiusPx = DEFAULT_ICON_SIZE / 2;
-  const strokeWidthPx = DEFAULT_STROKE_WIDTH;
-  // 底部圆样式：radius = baseRadiusPx + strokeWidthPx，中心相对锚点位移 = baseRadiusPx + strokeWidthPx * 2
-  const circleRadiusPx = baseRadiusPx + strokeWidthPx;
-  const circleCenterOffsetYPx = baseRadiusPx + strokeWidthPx * 2;
-  const circleBottomFromAnchorPx = circleCenterOffsetYPx + circleRadiusPx; // 约 33px
-  // 底部三角指示器：中心位移 -1.5px，半径约 4px
-  const indicatorCenterOffsetYPx = -1.5;
-  const indicatorRadiusPx = 4;
-  const indicatorTopFromAnchorPx = indicatorCenterOffsetYPx - indicatorRadiusPx; // 约 -5.5px
-
-  // 先按样式坐标系得到一个包络盒，再根据屏幕坐标系（y 向下为正）反转，保证“上多下少”
-  const rawTopFromAnchorPx = indicatorTopFromAnchorPx - 2; // 再往上多给 2px
-  const rawBottomFromAnchorPx = circleBottomFromAnchorPx + 2; // 再往下多给 2px
-  // 样式里“上”是负、“下”是正；屏幕坐标 y 反向，所以这里反转一次：
-  const upwardOffsetPx = 5; // 整体向上偏移 5px
-  const visualTopFromAnchorPx = -rawBottomFromAnchorPx - upwardOffsetPx; // 大部分区域在锚点上方
-  const visualBottomFromAnchorPx = -rawTopFromAnchorPx - upwardOffsetPx; // 锚点下方保留一小段
-  const halfWidthPx = circleRadiusPx + 2; // 水平方向以圆半径为主，稍微放大一点
-
-  const [pointerPx, pointerPy] = pixel;
-
   const results: EntityHitTestResult[] = [];
 
-  // 处理电线杆（非聚合）- 使用空间索引
   for (const layer of electricPoleLayers) {
-    const source = layer.layer.getSource();
-    if (!source) continue;
-
-    const closestFeature = source.getClosestFeatureToCoordinate(coordinate) as Feature<Point>;
-    if (!closestFeature) continue;
-
-    const geometry = closestFeature.getGeometry();
-    if (!geometry) continue;
-
-    const closestCoordinate = geometry.getCoordinates();
-    const [featurePx, featurePy] = map.getPixelFromCoordinate(closestCoordinate);
-    const dxPx = pointerPx - featurePx;
-    const dyPx = pointerPy - featurePy;
-
-    // 垂直范围裁剪
-    if (dyPx < visualTopFromAnchorPx || dyPx > visualBottomFromAnchorPx) {
-      continue;
-    }
-
-    // 水平方向裁剪
-    if (Math.abs(dxPx) > halfWidthPx) {
-      continue;
-    }
-
-    // 在相同坐标上可能有多根电线杆（例如叠放），这里按 feature 的创建顺序选择“最上面”的一个
-    const overlappedFeatures = source.getFeaturesAtCoordinate(closestCoordinate) as Feature<Point>[];
-
-    let selectedFeature: Feature<Point> | null = null;
-    let maxOrder = -Infinity;
-
-    for (const candidate of overlappedFeatures) {
-      if (candidate.get(FeatureTypeKey) !== FeatureType.ENTITY) {
-        continue;
-      }
-      const instance = candidate.get(EntityInstanceKey) as MapFeature | undefined;
-
-      // 过滤不可见的自定义标点
-      if (instance && 'visible' in instance && instance.visible === false) {
-        continue;
-      }
-
-      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
-      const marked = instance?.marked ?? false;
-      const markable = instance?.markable ?? false;
-      if (
-        markable &&
-        'markedFilterMode' in layer &&
-        layer.markedFilterMode === MarkedFeatureFilterMode.Marked &&
-        !marked
-      ) {
-        continue;
-      }
-      if (
-        markable &&
-        'markedFilterMode' in layer &&
-        layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked &&
-        marked
-      ) {
-        continue;
-      }
-
-      const order = instance?.order ?? 0;
-      if (!selectedFeature || order > maxOrder) {
-        selectedFeature = candidate;
-        maxOrder = order;
-      }
-    }
-
-    if (selectedFeature) {
-      results.push({ features: [selectedFeature], layer });
-    }
+    hitTestNonClusteredLayer(input, layer, results);
   }
 
-  // 处理普通实体（聚合，使用 Cluster 源）
   for (const layer of entityLayers) {
-    const source = layer.layer.getSource();
-    if (!source) continue;
-
-    const closestClusterFeature = source.getClosestFeatureToCoordinate(coordinate) as Feature<Point>;
-    if (!closestClusterFeature) continue;
-
-    const geometry = closestClusterFeature.getGeometry();
-    if (!geometry || geometry.getType() !== 'Point') continue;
-
-    const closestCoordinate = (geometry as Point).getCoordinates();
-    const [featurePx, featurePy] = map.getPixelFromCoordinate(closestCoordinate);
-    const dxPx = pointerPx - featurePx;
-    const dyPx = pointerPy - featurePy;
-
-    if (dyPx < visualTopFromAnchorPx || dyPx > visualBottomFromAnchorPx) {
-      continue;
-    }
-
-    if (Math.abs(dxPx) > halfWidthPx) {
-      continue;
-    }
-
-    const clusterFeatures = closestClusterFeature.get('features') as Feature<Point>[] | undefined;
-    if (!clusterFeatures || clusterFeatures.length === 0) {
-      continue;
-    }
-
-    // 过滤出实体特征后，按创建顺序从“上到下”排序（order 越大越在上）
-    const features = clusterFeatures
-      .filter((feature) => {
-        if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
-          return false;
-        }
-        const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
-
-        // 过滤不可见的自定义标点
-        if (instance && 'visible' in instance && instance.visible === false) {
-          return false;
-        }
-
-        // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
-        const marked = instance?.marked ?? false;
-        const markable = instance?.markable ?? false;
-        if (
-          markable &&
-          'markedFilterMode' in layer &&
-          layer.markedFilterMode === MarkedFeatureFilterMode.Marked &&
-          !marked
-        ) {
-          return false;
-        }
-        if (
-          markable &&
-          'markedFilterMode' in layer &&
-          layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked &&
-          marked
-        ) {
-          return false;
-        }
-        return true;
-      })
-      .sort((a, b) => {
-        const aInstance = a.get(EntityInstanceKey) as { order?: number } | undefined;
-        const bInstance = b.get(EntityInstanceKey) as { order?: number } | undefined;
-        const aOrder = aInstance?.order ?? 0;
-        const bOrder = bInstance?.order ?? 0;
-        return bOrder - aOrder;
-      });
-
-    if (features.length > 0) {
-      results.push({ features, layer });
-    }
-  }
-
-  return results;
-}
-
-/**
- * 使用 `layer.getFeatures(pixel)` 的像素级命中检测
- * 命中顺序与实际渲染顺序一致，适合需要精确层叠顺序的场景
- */
-async function hitTestEntitiesByPixel(
-  input: EntityHitTestInput,
-  electricPoleLayers: (ElectricPoleEntityLayer | CustomPointEntityLayer)[],
-  entityLayers: CommonPointEntityLayer[]
-): Promise<EntityHitTestResult[]> {
-  const { pixel, map } = input;
-
-  // 参考实体样式计算命中区域
-  const baseRadiusPx = DEFAULT_ICON_SIZE / 2;
-  const strokeWidthPx = DEFAULT_STROKE_WIDTH;
-  const circleRadiusPx = baseRadiusPx + strokeWidthPx;
-  const circleCenterOffsetYPx = baseRadiusPx + strokeWidthPx * 2;
-  const circleBottomFromAnchorPx = circleCenterOffsetYPx + circleRadiusPx;
-  const indicatorCenterOffsetYPx = -1.5;
-  const indicatorRadiusPx = 4;
-  const indicatorTopFromAnchorPx = indicatorCenterOffsetYPx - indicatorRadiusPx;
-
-  const rawTopFromAnchorPx = indicatorTopFromAnchorPx - 2;
-  const rawBottomFromAnchorPx = circleBottomFromAnchorPx + 2;
-  const upwardOffsetPx = 5; // 整体向上偏移 5px
-  const visualTopFromAnchorPx = -rawBottomFromAnchorPx - upwardOffsetPx;
-  const visualBottomFromAnchorPx = -rawTopFromAnchorPx - upwardOffsetPx;
-  const halfWidthPx = circleRadiusPx + 2;
-
-  const [pointerPx, pointerPy] = pixel;
-
-  const results: EntityHitTestResult[] = [];
-
-  // 电线杆：直接基于像素命中结果过滤（顺序与渲染一致）
-  for (const layer of electricPoleLayers) {
-    const clickedFeatures = await layer.layer.getFeatures(pixel);
-    if (!clickedFeatures.length) {
-      continue;
-    }
-
-    const hitFeatures: Feature<Point>[] = [];
-
-    for (const feature of clickedFeatures) {
-      if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
-        continue;
-      }
-
-      const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
-
-      // 过滤不可见的自定义标点
-      if (instance && 'visible' in instance && instance.visible === false) {
-        continue;
-      }
-
-      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
-      const marked = instance?.marked ?? false;
-      const markable = instance?.markable ?? false;
-      if (
-        markable &&
-        'markedFilterMode' in layer &&
-        layer.markedFilterMode === MarkedFeatureFilterMode.Marked &&
-        !marked
-      ) {
-        continue;
-      }
-      if (
-        markable &&
-        'markedFilterMode' in layer &&
-        layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked &&
-        marked
-      ) {
-        continue;
-      }
-
-      const geometry = feature.getGeometry();
-      if (!geometry || geometry.getType() !== 'Point') {
-        continue;
-      }
-
-      const coordinate = (geometry as Point).getCoordinates();
-      const [featurePx, featurePy] = map.getPixelFromCoordinate(coordinate);
-      const dxPx = pointerPx - featurePx;
-      const dyPx = pointerPy - featurePy;
-
-      if (dyPx < visualTopFromAnchorPx || dyPx > visualBottomFromAnchorPx) {
-        continue;
-      }
-
-      if (Math.abs(dxPx) > halfWidthPx) {
-        continue;
-      }
-
-      hitFeatures.push(feature as Feature<Point>);
-    }
-
-    if (hitFeatures.length > 0) {
-      results.push({ features: hitFeatures, layer });
-    }
-  }
-
-  // 普通实体：基于 Cluster 图层的像素命中结果
-  for (const layer of entityLayers) {
-    const clickedClusterFeatures = await layer.layer.getFeatures(pixel);
-    if (!clickedClusterFeatures.length) {
-      continue;
-    }
-
-    // 只取渲染顺序中最上面的一个聚合要素
-    const topClusterFeature = clickedClusterFeatures[0];
-    const geometry = topClusterFeature.getGeometry();
-    if (!geometry || geometry.getType() !== 'Point') {
-      continue;
-    }
-
-    const [featurePx, featurePy] = map.getPixelFromCoordinate((geometry as Point).getCoordinates());
-    const dxPx = pointerPx - featurePx;
-    const dyPx = pointerPy - featurePy;
-
-    if (dyPx < visualTopFromAnchorPx || dyPx > visualBottomFromAnchorPx) {
-      continue;
-    }
-
-    if (Math.abs(dxPx) > halfWidthPx) {
-      continue;
-    }
-
-    const clusterFeatures = topClusterFeature.get('features') as Feature<Point>[] | undefined;
-    if (!clusterFeatures || clusterFeatures.length === 0) {
-      continue;
-    }
-
-    const entityFeatures = clusterFeatures.filter((feature) => {
-      if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
-        return false;
-      }
-      const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
-
-      // 过滤不可见的自定义标点
-      if (instance && 'visible' in instance && instance.visible === false) {
-        return false;
-      }
-
-      // 根据 layer 的 markedFilterMode 过滤（仅对支持的图层类型）
-      const marked = instance?.marked ?? false;
-      const markable = instance?.markable ?? false;
-
-      if (
-        markable &&
-        'markedFilterMode' in layer &&
-        layer.markedFilterMode === MarkedFeatureFilterMode.Marked &&
-        !marked
-      ) {
-        return false;
-      }
-      if (
-        markable &&
-        'markedFilterMode' in layer &&
-        layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked &&
-        marked
-      ) {
-        return false;
-      }
-      return true;
-    }) as Feature<Point>[];
-
-    if (entityFeatures.length > 0) {
-      results.push({ features: entityFeatures, layer });
-    }
+    hitTestClusteredLayer(input, layer, results);
   }
 
   return results;
