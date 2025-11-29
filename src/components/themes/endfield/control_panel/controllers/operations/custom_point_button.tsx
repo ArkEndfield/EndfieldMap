@@ -99,6 +99,7 @@ export const CustomPointButton = observer(({ portalRef }: { portalRef: React.Ref
         title={open ? t('operation.close_custom_point_manager') : t('operation.custom_point_manager')}
         subtitle="CUSTOM POINT MANAGER"
         onClick={onToggle}
+        active={open}
       />
       {portalContainer && createPortal(<CustomPointManager open={open} />, portalContainer)}
       <OperationTip open={isInOperateMode} onClose={onClose}>

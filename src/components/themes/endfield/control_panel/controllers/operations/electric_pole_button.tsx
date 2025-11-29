@@ -102,6 +102,7 @@ export const ElectricPoleButton = observer(({ portalRef }: { portalRef: React.Re
         title={open ? t('operation.close_electric_pole_manager') : t('operation.electric_pole_manager')}
         subtitle="ELECTRIC POLE MANAGER"
         onClick={onToggle}
+        active={open}
       />
       {portalContainer && createPortal(<ElectricPoleManager open={open} />, portalContainer)}
       <OperationTip open={dataService.electricPoleDataService.isInElectricOperateMode} onClose={onClose}>

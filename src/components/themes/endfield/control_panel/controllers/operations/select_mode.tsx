@@ -148,6 +148,7 @@ export const SelectModeOperation = observer(() => {
         <OperationButton
           title={isSelecting ? t('operation.cancel_operation') : t('operation.multi_operation')}
           subtitle="MULTI OPERATION"
+          active={isSelecting}
           onClick={toggleSelectMode}
         />
       )}
