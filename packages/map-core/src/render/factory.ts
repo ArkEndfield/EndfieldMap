@@ -159,9 +159,18 @@ export function createEntityBackgroundStyles(
   (['100', '50', '75'] as OpacityLevel[]).forEach((fillOpacity) => {
     (['100', '50', '75'] as OpacityLevel[]).forEach((strokeOpacity) => {
       const strokeColor = strokeColors[strokeOpacity];
+      const fillColor = fillColors[fillOpacity];
       const key = `${fillOpacity}-${strokeOpacity}`;
       result[key] = [
-        createCircleStyle(radius, fillColors[fillOpacity], strokeWidth, strokeColor),
+        // 外层描边
+        new Style({
+          image: new CircleStyle({
+            radius: radius + strokeWidth + 2,
+            stroke: new Stroke({ color: fillColor, width: strokeWidth }),
+            displacement: [0, radius + strokeWidth * 2],
+          }),
+        }),
+        createCircleStyle(radius, fillColor, strokeWidth, strokeColor),
         createDecoration(radius, 'left', strokeWidth, strokeColor),
         createDecoration(radius, 'right', strokeWidth, strokeColor),
         createBottomTriangleIndicator(strokeColor),
@@ -196,13 +205,13 @@ export function createClusterStyle({
     image: new CircleStyle({
       radius: radius * 0.4,
       fill: new Fill({ color: bgColor }),
-      displacement: [0, radius / 2 + 3],
+      displacement: [0, radius / 2 + 1],
     }),
     text: new Text({
       text: size.toString(),
       fill: new Fill({ color: textColor }),
-      font: '8px "Noto Sans SC"',
-      offsetY: -11,
+      font: 'bold 8px Outfit, "Noto Sans SC"',
+      offsetY: -6,
       stroke: new Stroke({ color: textStrokeColor, width: textStrokeWidth }),
     }),
   });
