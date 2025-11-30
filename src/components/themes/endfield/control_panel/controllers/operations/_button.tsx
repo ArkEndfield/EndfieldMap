@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/utils/style';
 
@@ -13,10 +12,8 @@ export interface OperationButtonProps {
 }
 
 export const OperationButton = ({ icon, subtitle, title, onClick, active }: OperationButtonProps) => {
-  const { i18n } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
   const [isClick, setIsClick] = useState(false);
-  const locale = i18n.language;
 
   return (
     <button
@@ -97,10 +94,7 @@ export const OperationButton = ({ icon, subtitle, title, onClick, active }: Oper
           </div>
         )}
         <div
-          className="grow text-center"
-          style={{
-            whiteSpace: locale.toLowerCase() !== 'en' ? 'nowrap' : 'normal',
-          }}
+          className="grow text-center whitespace-nowrap"
         >
           {title}
         </div>
