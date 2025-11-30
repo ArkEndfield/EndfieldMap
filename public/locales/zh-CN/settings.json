@@ -1,70 +1,90 @@
 {
-  "about": {
-    "community": "社区",
-    "discord": "Discord",
-    "qq_group": "QQ群 ({{group_number}})",
-    "subscrible": "关注"
-  },
-  "data": {
-    "cache": {
-      "clear": "清除缓存",
-      "failed": "缓存清除失败：{{reason}}",
-      "success": "缓存清除成功，刷新网页生效",
-      "title": "缓存"
-    },
-    "entity_data": {
-      "clear": "清除标点数据",
-      "description": "包括不同类型标点可见性筛选状态、所有标点标记状态，清除后所有标点状态将重置",
-      "failed": "清除标点数据失败：{{reason}}",
-      "success": "清除标点数据成功，刷新网页生效",
-      "title": "标点数据"
-    },
-    "state_data": {
-      "clear": "清除状态数据",
-      "description": "包括地图位置状态、当前查看地图状态、聚合设置、电线杆和自定义点位相关显示隐藏等非重要内容",
-      "failed": "清除状态数据失败：{{reason}}",
-      "success": "清除状态数据成功，刷新网页生效",
-      "title": "状态数据"
-    },
-    "storage_data": {
-      "clear": "清除储存数据",
-      "confirm": "[危险操作]确认要删除所有数据吗？删除后不可恢复！删除的数据包括状态数据、标点筛选数据、标记数据以及所有电线杆数据和自定义点位数据。",
-      "description": "[危险操作]删除所有存储数据，包括状态数据、标点筛选数据以及所有电线杆数据和自定义点位数据",
-      "failed": "清除所有储存数据失败：{{reason}}",
-      "success": "清除所有储存数据成功，刷新网页生效",
-      "title": "储存数据"
-    },
-    "title": "数据管理"
-  },
   "display": {
     "language": {
+      "title": "语言",
       "change_language": "切换语言",
-      "title": "语言"
+      "language_list": {
+        "zh-CN": "简体中文",
+        "zh-TW": "繁体中文",
+        "en-US": "英语",
+        "ja-JP": "日语",
+        "ko-KR": "韩语"
+      }
     },
     "layout": {
-      "dark_mode": {
-        "title": "深色模式"
-      },
+      "title": "布局展示",
       "popup": {
         "right_adjust": {
-          "description": "当展开弹窗并且弹窗超出屏幕外，自动调整地图视图位置",
-          "title": "弹窗调整"
+          "title": "弹窗调整",
+          "description": "当展开弹窗并且弹窗超出屏幕外，自动调整地图视图位置"
         }
       },
-      "title": "布局展示"
+      "dark_mode": {
+        "title": "深色模式",
+        "value": {
+          "auto": "自动",
+          "light": "浅色",
+          "dark": "深色"
+        }
+      }
     }
   },
   "map": {
-    "adjust_view": {
-      "description": "当标点或弹窗超出屏幕外时，自动调整地图视图位置以确保其可见",
-      "title": "视图自动调整"
-    },
+    "title": "地图",
     "cluster": "标点聚合",
-    "hover": {
-      "description": "鼠标在地图标点上的悬停检测响应时间，时间越短性能需求越高",
-      "title": "鼠标悬停检测响应时间"
-    },
     "move_center": "回到地图中心",
-    "title": "地图"
+    "hover": {
+      "title": "鼠标悬停检测响应时间",
+      "description": "鼠标在地图标点上的悬停检测响应时间，时间越短性能需求越高",
+      "value": {
+        "normal": "正常",
+        "slow": "慢",
+        "slower": "更慢",
+        "slowest": "最慢",
+        "off": "关闭"
+      }
+    },
+    "adjust_view": {
+      "title": "视图自动调整",
+      "description": "当标点或弹窗超出屏幕外时，自动调整地图视图位置以确保其可见"
+    }
+  },
+  "data": {
+    "title": "数据管理",
+    "cache": {
+      "title": "缓存",
+      "clear": "清除缓存",
+      "success": "缓存清除成功，刷新网页生效",
+      "failed": "缓存清除失败：{{reason}}"
+    },
+    "state_data": {
+      "title": "状态数据",
+      "clear": "清除状态数据",
+      "success": "清除状态数据成功，刷新网页生效",
+      "failed": "清除状态数据失败：{{reason}}",
+      "description": "包括地图位置状态、当前查看地图状态、聚合设置、电线杆和自定义点位相关显示隐藏等非重要内容"
+    },
+    "entity_data": {
+      "title": "标点数据",
+      "clear": "清除标点数据",
+      "success": "清除标点数据成功，刷新网页生效",
+      "failed": "清除标点数据失败：{{reason}}",
+      "description": "包括不同类型标点可见性筛选状态、所有标点标记状态，清除后所有标点状态将重置"
+    },
+    "storage_data": {
+      "title": "储存数据",
+      "clear": "清除储存数据",
+      "confirm": "[危险操作]确认要删除所有数据吗？删除后不可恢复！删除的数据包括状态数据、标点筛选数据、标记数据以及所有电线杆数据和自定义点位数据。",
+      "success": "清除所有储存数据成功，刷新网页生效",
+      "failed": "清除所有储存数据失败：{{reason}}",
+      "description": "[危险操作]删除所有存储数据，包括状态数据、标点筛选数据以及所有电线杆数据和自定义点位数据"
+    }
+  },
+  "about": {
+    "title": "关于",
+    "subscrible": "关注",
+    "community": "社区",
+    "qq_group": "QQ群 ({{group_number}})",
+    "discord": "Discord"
   }
 }
