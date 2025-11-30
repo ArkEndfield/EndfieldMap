@@ -1,3 +1,7 @@
+import TitleArrow from '@themes/endfield/control_panel/controllers/arrow';
+import EntityPanel from '@themes/endfield/control_panel/controllers/entity_panel';
+import { Filters } from '@themes/endfield/control_panel/controllers/filters';
+import { Operations } from '@themes/endfield/control_panel/controllers/operations';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useRef } from 'react';
@@ -5,11 +9,6 @@ import { useRef } from 'react';
 import { HeaderLogo } from '@/components/common/header_logo';
 import { ScrollArea } from '@/components/common/scroll_area';
 import uiManager from '@/services/ui_manager';
-
-import TitleArrow from './controllers/arrow';
-import EntityPanel from './controllers/entity_panel';
-import { Filters } from './controllers/filters';
-import { Operations } from './controllers/operations';
 
 const TopDeco = () => (
   <div

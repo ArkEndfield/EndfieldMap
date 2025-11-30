@@ -1,9 +1,8 @@
+import { MAP_EVENT } from '@endfieldmap/map-core/const';
+import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import Control from 'ol/control/Control';
 import type Map from 'ol/Map';
 import type View from 'ol/View';
-
-import { MAP_EVENT } from '../const';
-import mapEventEmitter from '../event/emitter';
 
 type ZoomChangeCallback = (zoom: number, minZoom: number, maxZoom: number) => void;
 

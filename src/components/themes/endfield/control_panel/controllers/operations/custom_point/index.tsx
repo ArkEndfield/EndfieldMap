@@ -1,3 +1,8 @@
+import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
+import { Toggle } from '@themes/endfield/control_panel/controllers/operations/components/toggle';
+import CustomPointList from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_list';
+import CustomPointPresetPanel from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_preset_panel';
+import CustomPointTypeSelector from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_type_selector';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { forwardRef, useRef, useState } from 'react';
@@ -12,12 +17,6 @@ import { type CustomPointMode,useCustomPointMode } from '@/hooks/use_custom_poin
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { dataService } from '@/services/data';
 import { cn } from '@/utils/style';
-
-import { OperatorToggleButton } from '../components/button';
-import { Toggle } from '../components/toggle';
-import CustomPointList from './custom_point_list';
-import CustomPointPresetPanel from './custom_point_preset_panel';
-import CustomPointTypeSelector from './custom_point_type_selector';
 
 const CustomPointManagerToolbar = observer(() => {
   const { changeMode, getCurrentMode, toggleMode } = useCustomPointMode();

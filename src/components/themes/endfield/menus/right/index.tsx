@@ -1,4 +1,5 @@
 import { LocalStorageDB, LocalStorageKey, MapIndex } from '@endfieldmap/tools';
+import { MapButton } from '@themes/endfield/menus/right/button';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useEffect,useRef, useState } from 'react';
@@ -9,8 +10,6 @@ import { SwitchIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
-
-import { MapButton } from './button';
 
 export const RightMenu: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'map']);

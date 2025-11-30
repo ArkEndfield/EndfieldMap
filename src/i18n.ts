@@ -3,8 +3,9 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 
+import { LoadingStageId } from '@/const/loading';
 import { isDev } from '@/services/env';
-import { loadingManager, LoadingStageId } from '@/services/loading';
+import { loadingManager } from '@/services/loading';
 
 const ns = ['common', 'header', 'map', 'popup', 'sidebar', 'settings'];
 i18n

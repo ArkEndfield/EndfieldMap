@@ -31,7 +31,9 @@
       "@/": ["./src"],
       "@/*": ["./src/*"],
       "@eftypes/": ["./src/@types"],
-      "@eftypes/*": ["./src/@types/*"]
+      "@eftypes/*": ["./src/@types/*"],
+      "@themes/": ["./src/components/themes"],
+      "@themes/*": ["./src/components/themes/*"]
     }
   },
   "include": ["src"]

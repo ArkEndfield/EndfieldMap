@@ -1,5 +1,5 @@
-import { LanguageSetting } from './language';
-import { UISetting } from './ui';
+import { LanguageSetting } from '@/components/common/settings/items/display/language';
+import { UISetting } from '@/components/common/settings/items/display/ui';
 
 export const DisplaySettings = () => {
   return (

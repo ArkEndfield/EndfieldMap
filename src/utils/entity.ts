@@ -1,8 +1,7 @@
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 
 import { assetsHost } from '@/services/env';
-
-import { getAssetUrls } from './url';
+import { getAssetUrls } from '@/utils/url';
 
 /**
  * 获取实体图标图片

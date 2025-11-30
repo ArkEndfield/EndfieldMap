@@ -1,8 +1,9 @@
-import { ProgressInterpolator } from './progress_interpolator';
-import { LoadingStageId, type LoadingState, type StageConfig } from './types';
+import type {  LoadingState, StageConfig } from '@eftypes/loading';
 
-export * from './progress_interpolator';
-export * from './types';
+import { LoadingStageId } from '@/const/loading';
+import { ProgressInterpolator } from '@/services/loading/progress_interpolator';
+
+export * from '@/services/loading/progress_interpolator';
 
 declare global {
   interface Window {

@@ -9,13 +9,12 @@ import {
 import { createEntityBackgroundStyles,createEntityIconStyles } from '@endfieldmap/map-core/render/factory';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { CustomPointSource } from '@endfieldmap/map-core/render/source/custom_point';
+import { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import type { CustomPointDataList } from '@endfieldmap/map-core/types';
 import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';
 import type Style from 'ol/style/Style';
-
-import { CustomPointFeature } from '../../source/feature/custom_point_feature';
 export interface CustomPointEntityLayerConfig {
   data: CustomPointDataList;
   icon: {

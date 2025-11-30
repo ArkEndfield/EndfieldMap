@@ -6,8 +6,7 @@ import { disablePageZoom } from '@endfieldmap/tools';
 import { createRoot } from 'react-dom/client';
 
 import App from '@/App.tsx';
-
-import { isDev } from './services/env';
+import { isDev } from '@/services/env';
 
 if (!isDev) disablePageZoom();
 

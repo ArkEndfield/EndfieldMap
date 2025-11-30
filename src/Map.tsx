@@ -3,12 +3,11 @@ import { observer } from 'mobx-react-lite';
 import { Suspense, useMemo,useRef, useState } from 'react';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
+import { SettingsPage } from '@/components/common/settings';
 import { getThemedComponents, type ThemeNames,themeNames } from '@/components/themes';
 import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
-
-import { SettingsPage } from './components/common/settings';
-import { cn } from './utils/style';
+import { cn } from '@/utils/style';
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;

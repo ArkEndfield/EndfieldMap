@@ -1,11 +1,10 @@
+import { RangeInput } from '@themes/endfield/zoom_controller/range_input';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef,useState } from 'react';
 
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
-
-import { RangeInput } from './range_input';
 
 const ZoomController: React.FC = observer(() => {
   const isMobile = useIsMobile();

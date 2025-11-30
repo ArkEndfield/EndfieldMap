@@ -1,4 +1,4 @@
-import type { IconProps } from '@/@types/icon';
+import type { IconProps } from '@eftypes/icon';
 
 export const HeaderLogo = (props: IconProps) => (
   <svg viewBox="0 0 352 152" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>

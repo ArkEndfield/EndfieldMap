@@ -6,11 +6,10 @@ import type {
 } from '@eftypes/reward';
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
 
+import { ItemDataService } from '@/services/data/item';
 import { assetsHost } from '@/services/env';
 import { isRewardWithCountType } from '@/utils/reward';
 import { getAssetUrls } from '@/utils/url';
-
-import { ItemDataService } from './item';
 
 export class ChestRewardDataService {
   private inited: boolean;

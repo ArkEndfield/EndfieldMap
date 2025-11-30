@@ -1,6 +1,6 @@
+import type { LanguageLocale } from '@eftypes/language';
 import { useTranslation } from 'react-i18next';
 
-import type { LanguageLocale } from '@/@types/language';
 import { languageConfig } from '@/const/language';
 
 export const useCurrentLanguage = () => {

@@ -1,9 +1,8 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { forwardRef,useEffect, useRef, useState } from 'react';
 
+import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
-
-import { ScrollArea } from '../../scroll_area';
 
 export interface EndfieldSelectItem<T extends string> {
   label: React.ReactNode;

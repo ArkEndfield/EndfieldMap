@@ -1,6 +1,5 @@
+import { Toggle } from '@themes/endfield/control_panel/controllers/operations/components/toggle';
 import { useTranslation } from 'react-i18next';
-
-import { Toggle } from '../../components/toggle';
 
 interface PresetSelectBarProps {
   total: number;

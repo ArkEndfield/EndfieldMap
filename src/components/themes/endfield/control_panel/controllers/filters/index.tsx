@@ -1,11 +1,10 @@
 import { MarkedFeatureFilterMode } from '@endfieldmap/map-core';
+import FilterToggle from '@themes/endfield/control_panel/controllers/filters/_toggle';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
 import { dataService } from '@/services/data';
-
-import FilterToggle from './_toggle';
 
 const filterModes = [
   { label: 'all', value: MarkedFeatureFilterMode.All },

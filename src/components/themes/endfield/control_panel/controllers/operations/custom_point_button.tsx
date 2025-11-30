@@ -1,3 +1,7 @@
+import { SideButton } from '@themes/endfield/control_panel/controllers/mobile/side_button';
+import { OperationButton } from '@themes/endfield/control_panel/controllers/operations/_button';
+import { OperationTip } from '@themes/endfield/control_panel/controllers/operations/_tip';
+import { CustomPointManager, CustomPointManagerMobile,CustomPointModeTip } from '@themes/endfield/control_panel/controllers/operations/custom_point';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef,useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -7,11 +11,6 @@ import type { SheetRef } from 'react-modal-sheet';
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { dataService } from '@/services/data';
 import uiManager from '@/services/ui_manager';
-
-import { SideButton } from '../mobile/side_button';
-import { OperationButton } from './_button';
-import { OperationTip } from './_tip';
-import { CustomPointManager, CustomPointManagerMobile,CustomPointModeTip } from './custom_point';
 
 const CustomPointButtonIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -1,7 +1,7 @@
-import deviceJudge from '@/components/common/device_judge';
+import MobilePopup from '@themes/endfield/popup/mobile';
+import PCPopup from '@themes/endfield/popup/pc';
 
-import MobilePopup from './mobile';
-import PCPopup from './pc';
+import deviceJudge from '@/components/common/device_judge';
 
 const Popup = deviceJudge(PCPopup, MobilePopup);
 

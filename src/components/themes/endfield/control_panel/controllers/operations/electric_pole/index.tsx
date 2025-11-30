@@ -1,3 +1,6 @@
+import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
+import { Toggle } from '@themes/endfield/control_panel/controllers/operations/components/toggle';
+import ElectricPolePresetPanel from '@themes/endfield/control_panel/controllers/operations/electric_pole/electric_pole_preset_panel';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { forwardRef, useRef } from 'react';
@@ -11,10 +14,6 @@ import { type ElectricMode,useElectricMode } from '@/hooks/use_electric_mode';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { dataService } from '@/services/data';
 import { cn } from '@/utils/style';
-
-import { OperatorToggleButton } from '../components/button';
-import { Toggle } from '../components/toggle';
-import ElectricPolePresetPanel from './electric_pole_preset_panel';
 
 const PoleManagerToolbar = observer(() => {
   const { changeMode, getCurrentMode, toggleMode } = useElectricMode();

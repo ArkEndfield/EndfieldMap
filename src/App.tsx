@@ -1,14 +1,14 @@
 import React, { Suspense } from 'react';
 
 import { LoadingScreen } from '@/components/common/loading_screen';
-import { loadingManager, LoadingStageId } from '@/services/loading';
+import { LoadingStageId } from '@/const/loading';
+import { loadingManager } from '@/services/loading';
 
-const EndfieldMap = React.lazy(() => {
+const EndfieldMap = React.lazy(async () => {
   loadingManager.updateStageProgress(LoadingStageId.COMPONENTS, 10);
-  return import('@/Map').then((module) => {
-    loadingManager.completeStage(LoadingStageId.COMPONENTS);
-    return module;
-  });
+  const module = await import('@/Map');
+  loadingManager.completeStage(LoadingStageId.COMPONENTS);
+  return module;
 });
 
 function App() {

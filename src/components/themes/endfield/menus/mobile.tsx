@@ -1,7 +1,7 @@
-import { cn } from '@/utils/style';
+import { HeaderMenuSettings } from '@themes/endfield/menus/left/settings';
+import { RightMenu } from '@themes/endfield/menus/right';
 
-import { HeaderMenuSettings } from './left/settings';
-import { RightMenu } from './right';
+import { cn } from '@/utils/style';
 
 export default function MobileMenus() {
   return (

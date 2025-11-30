@@ -1,13 +1,12 @@
 import type { Category, EntityInfoItemData } from '@endfieldmap/map-core';
+import EntityGroup from '@themes/endfield/control_panel/controllers/entity_panel/group';
+import EntityItem from '@themes/endfield/control_panel/controllers/entity_panel/item';
+import { Search } from '@themes/endfield/control_panel/controllers/entity_panel/search';
 import { observer } from 'mobx-react-lite';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
-
-import EntityGroup from './group';
-import EntityItem from './item';
-import { Search } from './search';
 
 interface EntityItemInfo extends EntityInfoItemData {
   markedCount: number;

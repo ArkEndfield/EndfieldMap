@@ -1,13 +1,12 @@
 import type { DealedRewardItem } from '@eftypes/reward';
 import type { EntityData } from '@endfieldmap/map-core';
+import { Item } from '@themes/endfield/components/item';
+import { RewardTitle } from '@themes/endfield/popup/right_content/reward_title';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { dataService } from '@/services/data';
 import { hasChestReward, isDealedRewardItemWithCount } from '@/utils/reward';
-
-import { Item } from '../../components/item';
-import { RewardTitle } from './reward_title';
 
 export const ChestReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<DealedRewardItem[]>([]);

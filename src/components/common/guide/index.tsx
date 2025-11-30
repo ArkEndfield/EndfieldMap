@@ -1,6 +1,6 @@
 import 'yet-another-react-lightbox/styles.css';
-import './captions.css';
-import './thumbnails.css';
+import '@/components/common/guide/captions.css';
+import '@/components/common/guide/thumbnails.css';
 
 import type { GuideInfoDetail, GuideNodeType } from '@eftypes/guide';
 import type { EntityData } from '@endfieldmap/map-core';
@@ -11,9 +11,8 @@ import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
 import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
+import { GuideNode } from '@/components/common/guide/node';
 import { dataService } from '@/services/data';
-
-import { GuideNode } from './node';
 
 const collectImages = (nodes: GuideNodeType[]) => {
   const slides: Slide[] = [];

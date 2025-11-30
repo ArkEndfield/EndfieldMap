@@ -2,13 +2,14 @@ import type { LanguageLocale } from '@eftypes/language';
 import { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { LoadingStageId } from '@/const/loading';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import i18n from '@/i18n';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
 import { dataService } from '@/services/data';
 import { assetsHost } from '@/services/env';
-import { loadingManager, LoadingStageId } from '@/services/loading';
+import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getLanguage } from '@/utils/language';
 import { getAssetUrls } from '@/utils/url';

@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
+import { Loading } from '@/components/common/settings/components/loading';
+import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { usePromiseState } from '@/hooks/use_promise_state';
-
-import { Loading } from '../../components/loading';
-import { SettingItem } from '../../components/setting_item';
 
 export const StateSetting = () => {
   const { t } = useTranslation('settings');

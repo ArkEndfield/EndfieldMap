@@ -2,6 +2,7 @@ import type { CustomPointIdKey } from '@endfieldmap/map-core';
 import { customPointTypes } from '@endfieldmap/map-core/data/custom_point';
 import { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import { ClipSquare, Deco } from '@themes/endfield/popup/deco';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
@@ -9,14 +10,12 @@ import { useTranslation } from 'react-i18next';
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { ZmdButton } from '@/components/common/endfield_components/button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
+import { Guide } from '@/components/common/guide';
 import { PowerIcon } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
-
-import { Guide } from '../../../common/guide';
-import { ClipSquare, Deco } from './deco';
 
 /** 描边 */
 const Border = () => (

@@ -3,18 +3,17 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { CloseButton } from '@/components/common/close_button';
+import { DataBaseIcon, LayoutAndLanguageIcon,MapIcon, QuestionIcon } from '@/components/common/icons';
+import { ScrollArea } from '@/components/common/scroll_area';
+import { AboutPage } from '@/components/common/settings/items/about';
+import { DataSettings } from '@/components/common/settings/items/data';
+import { DisplaySettings } from '@/components/common/settings/items/display';
+import { MapSettings } from '@/components/common/settings/items/map';
+import { type TabItem,TabList } from '@/components/common/settings/tabs';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
-
-import { CloseButton } from '../close_button';
-import { DataBaseIcon, LayoutAndLanguageIcon,MapIcon, QuestionIcon } from '../icons';
-import { ScrollArea } from '../scroll_area';
-import { AboutPage } from './items/about';
-import { DataSettings } from './items/data';
-import { DisplaySettings } from './items/display';
-import { MapSettings } from './items/map';
-import { type TabItem,TabList } from './tabs';
 
 export interface SettingsPageProps {
   open: boolean;

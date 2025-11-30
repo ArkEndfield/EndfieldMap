@@ -1,12 +1,11 @@
+import PresetHeader from '@themes/endfield/control_panel/controllers/operations/electric_pole/preset/preset_header';
+import PresetSelectBar from '@themes/endfield/control_panel/controllers/operations/electric_pole/preset/preset_select_bar';
+import PresetList from '@themes/endfield/control_panel/controllers/operations/preset/preset_list';
+import PresetToolbar from '@themes/endfield/control_panel/controllers/operations/preset/preset_toolbar';
 import { observer } from 'mobx-react-lite';
 
 import { ScrollArea } from '@/components/common/scroll_area';
 import { usePresetPanel } from '@/hooks/use_preset_panel';
-
-import PresetList from '../preset/preset_list';
-import PresetToolbar from '../preset/preset_toolbar';
-import PresetHeader from './preset/preset_header';
-import PresetSelectBar from './preset/preset_select_bar';
 
 /**
  * 电线杆预设管理面板

@@ -3,9 +3,8 @@ import { differenceArray } from '@endfieldmap/tools';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { useAdapter } from '@/hooks/use_adapter';
 import { dataService } from '@/services/data';
-
-import { useAdapter } from './use_adapter';
 
 const modes = ['isCreating', 'isConnecting', 'isDeleting', 'isDeletingConnection'] as const;
 

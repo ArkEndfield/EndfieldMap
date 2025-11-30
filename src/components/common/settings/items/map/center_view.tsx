@@ -4,9 +4,8 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
+import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { useAdapter } from '@/hooks/use_adapter';
-
-import { SettingItem } from '../../components/setting_item';
 
 export const CenterViewSetting = observer(() => {
   const { t } = useTranslation('settings');

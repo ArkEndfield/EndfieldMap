@@ -1,3 +1,6 @@
+import { StrokeSVGFilter } from '@themes/endfield/popup/deco';
+import { LeftContentContainer } from '@themes/endfield/popup/left';
+import { RightContentContainer } from '@themes/endfield/popup/right';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
@@ -6,10 +9,6 @@ import { createPortal } from 'react-dom';
 import { useAdapter } from '@/hooks/use_adapter';
 import { dataService } from '@/services/data';
 import uiManager from '@/services/ui_manager';
-
-import { StrokeSVGFilter } from './deco';
-import { LeftContentContainer } from './left';
-import { RightContentContainer } from './right';
 
 const PCPopup: React.FC = observer(() => {
   const { adapter } = useAdapter();

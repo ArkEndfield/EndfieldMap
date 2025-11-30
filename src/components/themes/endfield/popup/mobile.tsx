@@ -1,3 +1,5 @@
+import { LeftContent } from '@themes/endfield/popup/left';
+import { RightContent } from '@themes/endfield/popup/right';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
@@ -10,9 +12,6 @@ import { snapPoints } from '@/const/ui';
 import { useAdapter } from '@/hooks/use_adapter';
 import { dataService } from '@/services/data';
 import { hasReward } from '@/utils/reward';
-
-import { LeftContent } from './left';
-import { RightContent } from './right';
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
   const variants = {

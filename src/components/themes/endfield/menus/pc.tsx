@@ -1,7 +1,7 @@
-import { cn } from '@/utils/style';
+import { MenuListForPC } from '@themes/endfield/menus/left';
+import { RightMenu } from '@themes/endfield/menus/right';
 
-import { MenuListForPC } from './left';
-import { RightMenu } from './right';
+import { cn } from '@/utils/style';
 
 export default function PCMenus() {
   return (

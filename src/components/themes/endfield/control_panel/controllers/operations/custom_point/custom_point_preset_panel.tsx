@@ -1,12 +1,11 @@
+import PresetHeader from '@themes/endfield/control_panel/controllers/operations/custom_point/preset/preset_header';
+import PresetSelectBar from '@themes/endfield/control_panel/controllers/operations/electric_pole/preset/preset_select_bar';
+import PresetList from '@themes/endfield/control_panel/controllers/operations/preset/preset_list';
+import PresetToolbar from '@themes/endfield/control_panel/controllers/operations/preset/preset_toolbar';
 import { observer } from 'mobx-react-lite';
 
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useCustomPointPresetPanel } from '@/hooks/use_custom_point_preset_panel';
-
-import PresetSelectBar from '../electric_pole/preset/preset_select_bar';
-import PresetList from '../preset/preset_list';
-import PresetToolbar from '../preset/preset_toolbar';
-import PresetHeader from './preset/preset_header';
 
 /**
  * 自定义标点预设管理面板

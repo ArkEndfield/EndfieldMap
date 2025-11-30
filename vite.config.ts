@@ -33,6 +33,7 @@ export default defineConfig(({ command, mode }) => {
         ...(isDev ? alias : {}),
         '@': resolve(__dirname, './src'),
         '@eftypes': resolve(__dirname, './src/@types'),
+        '@themes': resolve(__dirname, './src/components/themes'),
       },
     },
     build: {

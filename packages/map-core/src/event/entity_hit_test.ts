@@ -9,12 +9,11 @@ import {
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import type { MapFeature } from '@endfieldmap/map-core/types';
 import type { Map as OlMap } from 'ol';
 import type { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Point } from 'ol/geom';
-
-import type { MapFeature } from '../types';
 
 // ============================================================================
 // Types

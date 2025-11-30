@@ -2,14 +2,13 @@ import { CustomPointKey } from '@endfieldmap/map-core/const/map';
 import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
 import type { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
+import EntityItem from '@themes/endfield/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { dataService } from '@/services/data';
-
-import EntityItem from '../../entity_panel/item';
 
 interface CustomPointTypeGroup {
   entityDataIdKey: string;

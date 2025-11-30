@@ -1,12 +1,4 @@
-export enum LoadingStageId {
-  INIT = 'INIT',
-  I18N = 'I18N',
-  STORAGE = 'STORAGE',
-  COMPONENTS = 'COMPONENTS',
-  MAP_ADAPTER = 'MAP_ADAPTER',
-  MAP_RENDER = 'MAP_RENDER',
-  ENTITY_RENDER = 'ENTITY_RENDER',
-}
+import type { LoadingStageId } from "@/const/loading";
 
 export interface LoadingState {
   totalProgress: number;

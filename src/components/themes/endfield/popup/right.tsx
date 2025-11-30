@@ -1,3 +1,6 @@
+import { ClipSquare } from '@themes/endfield/popup/deco';
+import { ChestReward } from '@themes/endfield/popup/right_content/chest_reward';
+import { DungeonReward } from '@themes/endfield/popup/right_content/dungeon_reward';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -6,10 +9,6 @@ import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { hasReward } from '@/utils/reward';
 import { cn } from '@/utils/style';
-
-import { ClipSquare } from './deco';
-import { ChestReward } from './right_content/chest_reward';
-import { DungeonReward } from './right_content/dungeon_reward';
 
 export interface RightContentProps {
   isExpand: boolean;

@@ -1,8 +1,7 @@
+import LocationIcon from '@themes/endfield/control_panel/controllers/entity_panel/location';
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-
-import LocationIcon from './location';
 
 interface EntityGroupProps {
   iconColor?: string;

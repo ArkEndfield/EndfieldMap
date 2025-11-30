@@ -1,12 +1,11 @@
+import EntityPanel from '@themes/endfield/control_panel/controllers/entity_panel';
+import { Filters } from '@themes/endfield/control_panel/controllers/filters';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sheet } from 'react-modal-sheet';
 
 import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
-
-import EntityPanel from '../entity_panel';
-import { Filters } from '../filters';
 
 const FilterButtonDeco = ({ className }: { className?: string }) => (
   <div className={cn('px-2 flex items-center justify-between h-full grow', className)}>

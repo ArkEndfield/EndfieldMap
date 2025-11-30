@@ -2,11 +2,10 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
+import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { dataService } from '@/services/data';
-
-import { SettingItem } from '../../components/setting_item';
 
 const options = [
   {

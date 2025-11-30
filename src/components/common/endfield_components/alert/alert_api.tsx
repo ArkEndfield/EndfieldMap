@@ -1,7 +1,7 @@
 import { createRoot, type Root } from 'react-dom/client';
 
-import { ZmdAlert, type ZmdAlertProps } from './alert';
-import { PromptInput } from './input';
+import { ZmdAlert, type ZmdAlertProps } from '@/components/common/endfield_components/alert/alert';
+import { PromptInput } from '@/components/common/endfield_components/alert/input';
 
 interface AlertInstance {
   destroy: () => void;

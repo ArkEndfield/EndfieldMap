@@ -1,13 +1,11 @@
 import { motion, useAnimate } from 'motion/react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-// import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
+import { ZmdButton } from '@/components/common/endfield_components/button';
+import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { cn } from '@/utils/style';
-
-import { ZmdButton } from '../button';
-import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '../icons';
 
 const ALERT_BG = '/images/bg/alert/alert_bg.png';
 const ALERT_BANNER_BG_LEFT = '/images/bg/alert/alert_banner_bg_left.png';

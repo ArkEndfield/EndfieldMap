@@ -1,6 +1,6 @@
-import { cn } from '@/utils/style';
+import { menus } from '@themes/endfield/menus/left/list';
 
-import { menus } from './list';
+import { cn } from '@/utils/style';
 
 const MenuContainer = ({ children, rightBorder }: { children: React.ReactNode; rightBorder?: boolean }) => (
   <div
