@@ -9,7 +9,7 @@ import { dataService } from '@/services/data';
 import { Loading } from '../../components/loading';
 import { SettingItem } from '../../components/setting_item';
 
-export const EntitySettings = () => {
+export const EntitySetting = () => {
   const { t } = useTranslation('settings');
   const { loading, execute } = usePromiseState({
     fun: () =>

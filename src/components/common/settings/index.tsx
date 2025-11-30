@@ -11,9 +11,9 @@ import { CloseButton } from '../close_button';
 import { DataBaseIcon, LayoutAndLanguageIcon,MapIcon, QuestionIcon } from '../icons';
 import { ScrollArea } from '../scroll_area';
 import { AboutPage } from './items/about';
-import { DataSetting } from './items/data';
+import { DataSettings } from './items/data';
 import { DisplaySettings } from './items/display';
-import { MapSetting } from './items/map';
+import { MapSettings } from './items/map';
 import { type TabItem,TabList } from './tabs';
 
 export interface SettingsPageProps {
@@ -33,7 +33,7 @@ const settingList = [
   {
     key: 'general',
     icon: <MapIcon />,
-    Component: MapSetting,
+    Component: MapSettings,
   },
   {
     key: 'display',
@@ -43,7 +43,7 @@ const settingList = [
   {
     key: 'data',
     icon: <DataBaseIcon />,
-    Component: DataSetting,
+    Component: DataSettings,
   },
   {
     key: 'about',

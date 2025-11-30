@@ -52,6 +52,10 @@ export enum LocalStorageKey {
   // 20251129
   // 鼠标悬停检测响应时间
   HOVER_TIME = 'hover_time',
+
+  // 20251130
+  // 是否开启调整视图防止超出屏幕
+  MAP_ADJUST_VIEW = 'map_adjust_view',
 }
 
 /** 加载状态枚举 */

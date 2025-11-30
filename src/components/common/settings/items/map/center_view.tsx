@@ -8,7 +8,7 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 import { SettingItem } from '../../components/setting_item';
 
-export const CenterViewSettings = observer(() => {
+export const CenterViewSetting = observer(() => {
   const { t } = useTranslation('settings');
   const { adapter } = useAdapter();
   const mapIndex = adapter.currentMapIndex;

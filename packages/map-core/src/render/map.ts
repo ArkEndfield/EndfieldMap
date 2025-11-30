@@ -16,6 +16,7 @@ import { HoverLayer } from '@endfieldmap/map-core/render/layers/hover';
 import { MapLayer } from '@endfieldmap/map-core/render/layers/map';
 import type { DisposeListener } from '@endfieldmap/map-core/types/event';
 import type { MapConfig } from '@endfieldmap/map-core/types/map';
+import { observable } from 'mobx';
 import type { Collection } from 'ol';
 import { Overlay, View } from 'ol';
 import Control from 'ol/control/Control';
@@ -23,6 +24,13 @@ import type { Interaction } from 'ol/interaction';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import Map from 'ol/Map';
 import { Projection } from 'ol/proj';
+
+const getPaddingPixels = (viewportWidth: number, viewportHeight: number) => ({
+  top: Math.max(viewportHeight * 0.25, 400),
+  right: Math.max(viewportWidth * 0.25, 400),
+  bottom: Math.max(viewportHeight * 0.25, 400),
+  left: Math.max(viewportWidth * 0.3, 500),
+});
 
 export class EndfieldMap {
   /** 配置 */
@@ -47,8 +55,12 @@ export class EndfieldMap {
   public hoverLayer: HoverLayer;
   /** Active图层 */
   public activeLayer: ActiveLayer;
+  /** 是否开启调整视图 */
+  @observable accessor adjustView: boolean;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
+  /** 地图视图调整监听器释放函数 */
+  private disposeAdjustViewListener?: DisposeListener;
 
   constructor(config: MapConfig) {
     this.config = {
@@ -98,6 +110,8 @@ export class EndfieldMap {
     this.interactions.push(this.selection.select);
     this.interactions.push(this.selection.dragBox);
 
+    this.adjustView = false;
+
     // 创建HoverLayer实例
     this.hoverLayer = new HoverLayer();
     // 将HoverLayer添加到地图，确保在entity和electric pole图层之上
@@ -112,86 +126,83 @@ export class EndfieldMap {
     this.registerHoverEventHandler();
     // 监听ACTIVE_FEATURE_CHANGE事件
     this.registerActiveEventHandler();
-    // 设置动态边界约束
-    this.setupDynamicConstraint();
   }
 
   /**
    * 设置动态边界约束，根据当前缩放级别限制拖动范围
    */
-  private setupDynamicConstraint(): void {
-    // 屏幕像素留白（不随缩放变化）
-    // 使用视口尺寸的比例，大屏幕会有更大的 padding
-    // 左侧 padding 稍大，让地图整体偏右显示
-    const getPaddingPixels = (viewportWidth: number, viewportHeight: number) => ({
-      top: Math.max(viewportHeight * 0.25, 400),
-      right: Math.max(viewportWidth * 0.25, 400),
-      bottom: Math.max(viewportHeight * 0.25, 400),
-      left: Math.max(viewportWidth * 0.3, 500),
-    });
+  private setDynamicConstraint(): void {
+    const resolution = this.view.getResolution();
+    const center = this.view.getCenter();
+    const size = this.map.getSize();
 
-    mapEventEmitter.on(MAP_EVENT.MAP_MOVE_END, () => {
-      const resolution = this.view.getResolution();
-      const center = this.view.getCenter();
-      const size = this.map.getSize();
+    if (!resolution || !center || !size) return;
 
-      if (!resolution || !center || !size) return;
+    const paddingPixels = getPaddingPixels(size[0], size[1]);
 
-      const paddingPixels = getPaddingPixels(size[0], size[1]);
+    // 计算视图在当前分辨率下的半宽和半高（地图坐标）
+    const viewHalfWidth = (size[0] / 2) * resolution;
+    const viewHalfHeight = (size[1] / 2) * resolution;
 
-      // 计算视图在当前分辨率下的半宽和半高（地图坐标）
-      const viewHalfWidth = (size[0] / 2) * resolution;
-      const viewHalfHeight = (size[1] / 2) * resolution;
+    // 转换 padding 为地图坐标
+    const paddingMap = {
+      left: paddingPixels.left * resolution,
+      right: paddingPixels.right * resolution,
+      bottom: paddingPixels.bottom * resolution,
+      top: paddingPixels.top * resolution,
+    };
 
-      // 转换 padding 为地图坐标
-      const paddingMap = {
-        left: paddingPixels.left * resolution,
-        right: paddingPixels.right * resolution,
-        bottom: paddingPixels.bottom * resolution,
-        top: paddingPixels.top * resolution,
-      };
+    const projectionExtent = this.projection.getExtent();
+    const mapCenterX = (projectionExtent[0] + projectionExtent[2]) / 2;
+    const mapCenterY = (projectionExtent[1] + projectionExtent[3]) / 2;
 
-      const projectionExtent = this.projection.getExtent();
-      const mapCenterX = (projectionExtent[0] + projectionExtent[2]) / 2;
-      const mapCenterY = (projectionExtent[1] + projectionExtent[3]) / 2;
+    // 计算允许的中心点范围
+    let minX = projectionExtent[0] + viewHalfWidth - paddingMap.left;
+    const minY = projectionExtent[1] + viewHalfHeight - paddingMap.bottom;
+    let maxX = projectionExtent[2] - viewHalfWidth + paddingMap.right;
+    const maxY = projectionExtent[3] - viewHalfHeight + paddingMap.top;
 
-      // 计算允许的中心点范围
-      let minX = projectionExtent[0] + viewHalfWidth - paddingMap.left;
-      const minY = projectionExtent[1] + viewHalfHeight - paddingMap.bottom;
-      let maxX = projectionExtent[2] - viewHalfWidth + paddingMap.right;
-      const maxY = projectionExtent[3] - viewHalfHeight + paddingMap.top;
+    // 计算偏移量，让地图内容整体偏右显示
+    // 地图中心点 X 减小 = 地图内容向右移动
+    const offsetX = (paddingMap.left - paddingMap.right) / 2;
 
-      // 计算偏移量，让地图内容整体偏右显示
-      // 地图中心点 X 减小 = 地图内容向右移动
-      const offsetX = (paddingMap.left - paddingMap.right) / 2;
+    let constrainedX: number;
+    let constrainedY: number;
 
-      let constrainedX: number;
-      let constrainedY: number;
+    // 当 minX > maxX 时（视口大于地图），锁定到偏移后的中心点
+    if (minX > maxX) {
+      constrainedX = mapCenterX - offsetX;
+    } else {
+      // 将整个约束范围向左偏移（让地图内容偏右）
+      minX -= offsetX;
+      maxX -= offsetX;
+      constrainedX = Math.max(minX, Math.min(center[0], maxX));
+    }
 
-      // 当 minX > maxX 时（视口大于地图），锁定到偏移后的中心点
-      if (minX > maxX) {
-        constrainedX = mapCenterX - offsetX;
-      } else {
-        // 将整个约束范围向左偏移（让地图内容偏右）
-        minX -= offsetX;
-        maxX -= offsetX;
-        constrainedX = Math.max(minX, Math.min(center[0], maxX));
-      }
+    if (minY > maxY) {
+      constrainedY = mapCenterY;
+    } else {
+      constrainedY = Math.max(minY, Math.min(center[1], maxY));
+    }
 
-      if (minY > maxY) {
-        constrainedY = mapCenterY;
-      } else {
-        constrainedY = Math.max(minY, Math.min(center[1], maxY));
-      }
+    // 如果中心点超出范围，使用动画过渡调整回合法位置
+    if (constrainedX !== center[0] || constrainedY !== center[1]) {
+      this.view.animate({
+        center: [constrainedX, constrainedY],
+        duration: 200,
+      });
+    }
+  }
 
-      // 如果中心点超出范围，使用动画过渡调整回合法位置
-      if (constrainedX !== center[0] || constrainedY !== center[1]) {
-        this.view.animate({
-          center: [constrainedX, constrainedY],
-          duration: 200,
-        });
-      }
-    });
+  public setAdjustView(adjust: boolean): void {
+    if (adjust) {
+      this.setDynamicConstraint();
+      this.disposeAdjustViewListener = mapEventEmitter.on(MAP_EVENT.MAP_MOVE_END, this.setDynamicConstraint.bind(this));
+    } else {
+      this.disposeAdjustViewListener?.();
+      this.disposeAdjustViewListener = undefined;
+    }
+    this.adjustView = adjust;
   }
 
   /**
@@ -247,5 +258,7 @@ export class EndfieldMap {
     this.hoverLayer.hideHover();
     // 隐藏active效果
     this.activeLayer.hideActive();
+    this.disposeAdjustViewListener?.();
+    this.disposeAdjustViewListener = undefined;
   }
 }

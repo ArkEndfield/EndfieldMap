@@ -73,6 +73,8 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
         adapter.current.mapController.setZoom(data.zoom);
         // 渲染地图
         adapter.current.renderMap(currentMap);
+        // 设置是否调整视图防止超出屏幕
+        adapter.current.mapController.mapRenderer.setAdjustView(data.adjustView);
 
         // LOADING
         loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 50);

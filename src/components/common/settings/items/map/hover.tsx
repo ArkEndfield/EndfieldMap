@@ -31,7 +31,7 @@ const options = [
   },
 ] as const;
 
-export const HoverSettings = observer(() => {
+export const HoverSetting = observer(() => {
   const { t } = useTranslation('settings');
   const { adapter } = useAdapter();
   const isMobile = useIsMobile();

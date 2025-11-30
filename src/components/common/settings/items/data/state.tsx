@@ -8,7 +8,7 @@ import { usePromiseState } from '@/hooks/use_promise_state';
 import { Loading } from '../../components/loading';
 import { SettingItem } from '../../components/setting_item';
 
-export const StateSettings = () => {
+export const StateSetting = () => {
   const { t } = useTranslation('settings');
   const { loading, execute } = usePromiseState({
     fun: () => LocalStorageDB.clear(),

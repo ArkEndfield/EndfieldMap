@@ -8,7 +8,7 @@ import { dataService } from '@/services/data';
 import { Loading } from '../../components/loading';
 import { SettingItem } from '../../components/setting_item';
 
-export const CacheSettings = () => {
+export const CacheSetting = () => {
   const { t } = useTranslation('settings');
   const { loading, execute } = usePromiseState({
     fun: () => dataService.storage.temporaryClear(),

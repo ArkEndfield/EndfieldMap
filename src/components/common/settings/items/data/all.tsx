@@ -27,7 +27,7 @@ const clearAll = (confirmText: string): Promise<boolean> => {
   });
 };
 
-export const AllStorageSettings = () => {
+export const AllStorageSetting = () => {
   const { t } = useTranslation('settings');
   const { loading, execute } = usePromiseState({
     fun: () => clearAll(t('data.storage_data.confirm')),

@@ -2,17 +2,19 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { SettingsZone } from '../../components/settings_zone';
-import { CenterViewSettings } from './center_view';
-import { ClusterSettings } from './cluster';
-import { HoverSettings } from './hover';
+import { AdjustViewSetting } from './adjust_view';
+import { CenterViewSetting } from './center_view';
+import { ClusterSetting } from './cluster';
+import { HoverSetting } from './hover';
 
-export const MapSetting = observer(() => {
+export const MapSettings = observer(() => {
   const { t } = useTranslation('settings');
   return (
     <SettingsZone title={t('map.title')}>
-      <ClusterSettings />
-      <CenterViewSettings />
-      <HoverSettings />
+      <ClusterSetting />
+      <CenterViewSetting />
+      <AdjustViewSetting />
+      <HoverSetting />
     </SettingsZone>
   );
 });

@@ -7,7 +7,7 @@ import { dataService } from '@/services/data';
 
 import { SettingItem } from '../../components/setting_item';
 
-export const ClusterSettings = observer(() => {
+export const ClusterSetting = observer(() => {
   const { t } = useTranslation('settings');
   const { adapter } = useAdapter();
   const enableCluster = !adapter.entityController.disableCluster;

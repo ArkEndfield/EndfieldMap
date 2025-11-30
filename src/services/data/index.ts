@@ -130,6 +130,11 @@ class DataService {
     );
   }
 
+  /**
+   * 设置地图视图中心点
+   * @param mapIndex 地图id
+   * @param center 中心点
+   */
   public setMapCenter(mapIndex: MapIndex, center: Coordinate) {
     const originData =
       LocalStorageDB.get<DataState<Coordinate>>(LocalStorageKey.MAP_VIEW_STATE) || ({} as DataState<Coordinate>);
@@ -137,21 +142,48 @@ class DataService {
     LocalStorageDB.set(LocalStorageKey.MAP_VIEW_STATE, originData);
   }
 
+  /**
+   * 设置地图缩放级别
+   * @param mapIndex 地图id
+   * @param zoom 缩放级别
+   */
   public setMapZoom(mapIndex: MapIndex, zoom: number) {
     const originData = LocalStorageDB.get<DataState<number>>(LocalStorageKey.MAP_ZOOM) || ({} as DataState<number>);
     originData[mapIndex] = zoom;
     LocalStorageDB.set(LocalStorageKey.MAP_ZOOM, originData);
   }
 
+  /**
+   * 设置是否开启调整视图防止超出屏幕
+   * @param adjust 是否开启
+   */
+  @action
+  public setAdjustView(adjust: boolean) {
+    this.adapter?.mapController.mapRenderer.setAdjustView(adjust);
+    LocalStorageDB.set(LocalStorageKey.MAP_ADJUST_VIEW, adjust);
+  }
+
+  /**
+   * 设置当前查看的地图
+   * @param mapIndex 地图id
+   */
   public setCurrentMap(mapIndex: MapIndex) {
     LocalStorageDB.set(LocalStorageKey.MAP_CURRENT_MAP, mapIndex);
   }
 
+  /**
+   * 设置是否开启聚合
+   * @param enable 是否开启
+   */
   public setEnableCluster(enable: boolean) {
     this.adapter?.setClusterEnable(enable);
     LocalStorageDB.set(LocalStorageKey.CLUSTER_ENABLED, enable);
   }
 
+  /**
+   * 设置鼠标悬停检测响应时间
+   * @param time 响应时间，单位毫秒，-1表示禁用悬停检测
+   */
   @action
   public setHoverTime(time: number) {
     if (time === -1) {
@@ -166,6 +198,10 @@ class DataService {
     LocalStorageDB.set(LocalStorageKey.HOVER_TIME, time);
   }
 
+  /**
+   * 设置标记筛选模式
+   * @param filterMode 筛选模式
+   */
   public setFilterMarkedMode(filterMode: MarkedFeatureFilterMode) {
     this.adapter?.entityController?.setMarkedFeatureFilter?.(filterMode);
     LocalStorageDB.set(LocalStorageKey.FILTER_MARKED, filterMode);
@@ -191,6 +227,9 @@ class DataService {
       LocalStorageDB.get<MarkedFeatureFilterMode>(LocalStorageKey.FILTER_MARKED) ?? MarkedFeatureFilterMode.All;
     const hoverTime = LocalStorageDB.get<number>(LocalStorageKey.HOVER_TIME) ?? 0;
 
+    // 20251130 新增
+    const adjustView = LocalStorageDB.get<boolean>(LocalStorageKey.MAP_ADJUST_VIEW) ?? true;
+
     return {
       zoom,
       center,
@@ -201,6 +240,7 @@ class DataService {
       displayCustomPoint,
       filterMarked,
       hoverTime,
+      adjustView,
     };
   }
 }
