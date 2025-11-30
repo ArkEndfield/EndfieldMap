@@ -127,7 +127,7 @@ interface Resources {
     },
     "map": {
       "adjust_view": {
-        "description": "当标点或弹窗超出屏幕外时，自动调整地图视图位置以确保其可见",
+        "description": "当地图出屏幕外时，自动调整地图视图位置以确保其可见",
         "title": "视图自动调整"
       },
       "cluster": "标点聚合",
