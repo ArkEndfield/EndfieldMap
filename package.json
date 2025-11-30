@@ -68,7 +68,8 @@
     },
     "onlyBuiltDependencies": [
       "@parcel/watcher",
-      "@swc/core"
+      "@swc/core",
+      "unrs-resolver"
     ]
   }
 }
