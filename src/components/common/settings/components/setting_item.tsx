@@ -93,7 +93,7 @@ export const SettingItem = ({
       </div>
       <div
         className={cn(
-          'flex shrink-0 grow-0 relative z-1 min-w-32 md:min-w-64',
+          'flex shrink-0 grow-0 relative min-w-32 md:min-w-64',
           isMobile && 'text-sm',
           classNames?.content
         )}
