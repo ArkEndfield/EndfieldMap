@@ -2,11 +2,11 @@
   "feedback": {
     "title": "反馈"
   },
-  "settings": {
-    "title": "设置"
-  },
   "map": {
     "change_map": "切换地图",
     "map_change": "地图切换"
+  },
+  "settings": {
+    "title": "设置"
   }
 }

@@ -1,4 +1,3 @@
-import type { LanguageLocale } from '@eftypes/language';
 import { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -111,7 +110,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
             console.error(e);
           });
         // 设置地图名称
-        adapter.current.renderAreaName(getLanguage(i18n.language as LanguageLocale));
+        adapter.current.renderAreaName(getLanguage(i18n.languages));
         // 渲染电线杆
         adapter.current.renderElectricPole(currentMap);
         // 渲染自定义标点
@@ -144,7 +143,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     // 监听语言变化
     i18n.on('languageChanged', () => {
       if (adapter.current) {
-        adapter.current.renderAreaName(getLanguage(i18n.language as LanguageLocale));
+        adapter.current.renderAreaName(getLanguage(i18n.languages));
       }
     });
     return () => {

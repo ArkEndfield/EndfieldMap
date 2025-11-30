@@ -1,0 +1,18 @@
+{
+  "custom_point": {
+    "change_type": "切换标点类型",
+    "rename_tip": "请输入自定义点位名称"
+  },
+  "electric_pole": {
+    "rename_tip": "请输入电线杆名称"
+  },
+  "entity": {
+    "title": "实体信息"
+  },
+  "reward": {
+    "chest": {
+      "title": "宝箱内容"
+    },
+    "title": "奖励"
+  }
+}

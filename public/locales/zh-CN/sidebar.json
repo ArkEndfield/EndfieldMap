@@ -1,0 +1,92 @@
+{
+  "filter": {
+    "search_placeholder": "搜索...",
+    "title": "筛选标点"
+  },
+  "fold": "折叠",
+  "operation": {
+    "cancel_operation": "取消操作",
+    "close_custom_point_manager": "关闭管理器",
+    "close_electric_pole_manager": "关闭管理器",
+    "custom_point": {
+      "create": {
+        "start": "创建"
+      },
+      "delete": {
+        "start": "删除"
+      },
+      "display": "显示自定义点位",
+      "no_data": "暂无自定义点位数据",
+      "preset": {
+        "create": "新建预设",
+        "create_default_name": "新预设",
+        "create_tip": "请输入新自定义点位预设名称",
+        "delete": {
+          "confirm": "确定要删除预设「{{name}}」吗？此操作不可恢复",
+          "fail_tip": "删除失败"
+        },
+        "import": {
+          "error_tip": "文件格式不合法或解析错误",
+          "failed": "自定义点位预设导入失败：{{reason}}",
+          "format_error": "文件内容格式不正确",
+          "success": "自定义点位预设导入成功"
+        },
+        "title": "自定义点位预设"
+      },
+      "select_type": "选择标点类型",
+      "tab": {
+        "list": "显示/隐藏",
+        "preset": "预设列表"
+      }
+    },
+    "custom_point_manager": "自定义点位",
+    "custom_point_operating_tip": "正在处于自定义点位操作状态，请先结束操作",
+    "electric_pole": {
+      "connect": {
+        "delete": {
+          "start": "删除连线"
+        },
+        "start": "连接"
+      },
+      "create": {
+        "auto_connect": "创建时自动连接",
+        "start": "创建"
+      },
+      "delete": {
+        "start": "删除"
+      },
+      "display": "显示电线杆",
+      "preset": {
+        "create": "新建预设",
+        "create_default_name": "新预设",
+        "create_tip": "请输入新电线杆预设名称",
+        "delete": {
+          "confirm": "确定要删除预设「{{name}}」吗？此操作不可恢复",
+          "fail_tip": "删除失败"
+        },
+        "export_select": "导出所选预设",
+        "import": {
+          "button": "导入预设",
+          "error_tip": "文件格式不合法或解析错误",
+          "failed": "电线杆预设导入失败：{{reason}}",
+          "format_error": "文件内容格式不正确",
+          "success": "电线杆预设导入成功"
+        },
+        "select_info": "共 {{total, number}} 个预设，已选 {{select, number}} 个",
+        "title": "电线杆预设"
+      },
+      "zone": {
+        "display": "显示电线杆范围"
+      }
+    },
+    "electric_pole_manager": "电线杆管理",
+    "electric_pole_operating_tip": "正在处于电线杆操作状态，请先结束操作",
+    "multi_operation": "批量操作",
+    "preset": {
+      "empty": "暂无预设，请先创建"
+    },
+    "selected_feature": "已选中 {{val, number}} 个标点",
+    "selecting_operating_tip": "正在处于批量操作状态，请先结束批量操作"
+  },
+  "unfold": "展开"
+}

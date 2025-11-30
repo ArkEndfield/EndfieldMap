@@ -1,11 +1,9 @@
-import type { LanguageLocale } from '@eftypes/language';
 import { useTranslation } from 'react-i18next';
 
-import { languageConfig } from '@/const/language';
+import { getLanguage } from '@/utils/language';
 
 export const useCurrentLanguage = () => {
   const { i18n } = useTranslation();
-  const currentLocales = i18n.languages as LanguageLocale[];
-  const currentLocale = currentLocales.find((locale) => languageConfig.some((item) => item.locale === locale)) || 'cn';
+  const currentLocale = getLanguage(i18n.languages);
   return currentLocale;
 };

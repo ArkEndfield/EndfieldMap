@@ -1,0 +1,12 @@
+{
+  "batch_delete": "批量删除",
+  "off": "关闭",
+  "on": "开启",
+  "operate": {
+    "clear_selection": "清空选择",
+    "mark": "标记",
+    "rename": "重命名",
+    "unmark": "取消标记"
+  },
+  "select_all": "全选"
+}

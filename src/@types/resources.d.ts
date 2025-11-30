@@ -99,11 +99,11 @@ interface Resources {
       "language": {
         "change_language": "切换语言",
         "language_list": {
-          "cn": "简体中文",
-          "en": "英语",
-          "jp": "日语",
-          "kr": "韩语",
-          "tc": "繁体中文"
+          "zh-CN": "简体中文",
+          "en-US": "英语",
+          "ja-JP": "日语",
+          "ko-KR": "韩语",
+          "zh-TW": "繁体中文"
         },
         "title": "语言"
       },

@@ -20,7 +20,7 @@ export const HeaderMenuFeedback = () => {
       <ZmdAlert open={open} onOpenChange={setOpen} hideCancel>
         <h1 className="text-lg font-bold text-center mb-2">{t('feedback.title')}</h1>
         <div className="px-4">
-          {['cn', 'tc'].includes(currentLocale) && (
+          {['zh-CN', 'zh-TW'].includes(currentLocale) && (
             <div>
               <div className="w-full flex justify-center">
                 <img

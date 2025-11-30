@@ -1,4 +1,4 @@
-import type { LanguageLocale } from '@eftypes/language';
+import type { Language } from '@endfieldmap/tools';
 import { useTranslation } from 'react-i18next';
 
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
@@ -13,12 +13,12 @@ export const LanguageSetting = () => {
   const { t, i18n } = useTranslation('settings');
   const currentLocale = useCurrentLanguage();
 
-  const changeLanguage = (locale: LanguageLocale) => {
+  const changeLanguage = (locale: Language) => {
     i18n.changeLanguage(locale);
   };
 
   const selectOptions = languageConfig.map((locale) => ({
-    value: locale.locale,
+    value: locale.code,
     label: locale.displayName,
     right: (active: boolean) => (
       <span
@@ -27,7 +27,7 @@ export const LanguageSetting = () => {
           'border-[#5f5d5d] text-[#5f5d5d]': !active,
         })}
       >
-        {t(`display.language.language_list.${locale.locale}`)}
+        {t(`display.language.language_list.${locale.code}`)}
       </span>
     ),
   }));
@@ -35,7 +35,7 @@ export const LanguageSetting = () => {
   return (
     <SettingsZone title={t('display.language.title')} icon={<TranslateIcon />}>
       <SettingItem title={t('display.language.change_language')}>
-        <EndfieldSelect<LanguageLocale>
+        <EndfieldSelect<Language>
           value={currentLocale}
           options={selectOptions}
           onChange={changeLanguage}

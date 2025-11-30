@@ -1,12 +1,7 @@
-import type { LanguageLocale } from '@eftypes/language';
-import type { Language } from '@endfieldmap/tools';
+import { Language } from "@endfieldmap/tools";
 
-import { LanguageMap, LanguageMapReverse } from '@/const/language';
+import { languageConfig } from "@/const/language";
 
-export const getLanguageLocale = (language: Language) => {
-  return LanguageMap[language];
-};
-
-export const getLanguage = (locale: LanguageLocale) => {
-  return LanguageMapReverse[locale];
-};
+export const getLanguage = (locale: readonly string[]): Language => {
+    return (locale.find((locale) => languageConfig.some((item) => item.code === locale)) || Language.ZH_CN) as Language;
+}
