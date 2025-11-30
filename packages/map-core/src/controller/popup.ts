@@ -1,4 +1,5 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import { DEFAULT_ICON_SIZE } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { DisposeListener } from '@endfieldmap/map-core/types/event';
@@ -6,7 +7,6 @@ import { logger } from '@endfieldmap/tools';
 import type { Map as OlMap } from 'ol';
 import type { Point } from 'ol/geom';
 import Overlay from 'ol/Overlay';
-import { DEFAULT_ICON_SIZE } from '@endfieldmap/map-core/const/map';
 
 export interface PopupControllerConfig {
   /** OpenLayers地图实例 */

@@ -35,5 +35,30 @@ export default defineConfig(({ command, mode }) => {
         '@eftypes': resolve(__dirname, './src/@types'),
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('/react/') || id.includes('/react-dom/')) {
+                return 'react-vendor';
+              }
+              if (id.includes('/mobx/') || id.includes('/mobx-react-lite/')) {
+                return 'state-vendor';
+              }
+              if (id.includes('/motion/') || id.includes('/gsap/') || id.includes('@gsap')) {
+                return 'ui-vendor';
+              }
+              if (id.includes('/i18next/') || id.includes('/react-i18next/') || id.includes('i18next-')) {
+                return 'i18n-vendor';
+              }
+              if (id.includes('/ol/')) {
+                return 'map-vendor';
+              }
+            }
+          },
+        },
+      },
+    },
   };
 });

@@ -1,19 +1,20 @@
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import {
   DEFAULT_ICON_SIZE,
-  LayerType,
-  LayerTypeKey,
   DEFAULT_STROKE_WIDTH,
   EntityInstanceKey,
+  LayerType,
+  LayerTypeKey,
 } from '@endfieldmap/map-core/const/map';
-import { createEntityIconStyles, createEntityBackgroundStyles } from '@endfieldmap/map-core/render/factory';
+import { createEntityBackgroundStyles,createEntityIconStyles } from '@endfieldmap/map-core/render/factory';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
+import { CustomPointSource } from '@endfieldmap/map-core/render/source/custom_point';
 import type { CustomPointDataList } from '@endfieldmap/map-core/types';
 import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';
 import type Style from 'ol/style/Style';
-import { CustomPointSource } from '@endfieldmap/map-core/render/source/custom_point';
+
 import { CustomPointFeature } from '../../source/feature/custom_point_feature';
 export interface CustomPointEntityLayerConfig {
   data: CustomPointDataList;

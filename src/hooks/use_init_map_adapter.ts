@@ -1,17 +1,17 @@
+import type { LanguageLocale } from '@eftypes/language';
+import { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { sentryReporter } from '@/services/logger';
-import { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
+import { useIsMobile } from '@/hooks/use_is_mobile';
+import i18n from '@/i18n';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
 import { dataService } from '@/services/data';
 import { assetsHost } from '@/services/env';
-import i18n from '@/i18n';
-import { getLanguage } from '@/utils/language';
-import type { LanguageLocale } from '@eftypes/language';
-import { getAssetUrls } from '@/utils/url';
-import { useIsMobile } from '@/hooks/use_is_mobile';
 import { loadingManager, LoadingStageId } from '@/services/loading';
+import { sentryReporter } from '@/services/logger';
+import { getLanguage } from '@/utils/language';
+import { getAssetUrls } from '@/utils/url';
 
 /**
  * 地图适配器 hook
@@ -58,7 +58,6 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
   const renderMap = useCallback((mapIdx?: MapIndex) => {
     if (adapter.current) {
-
       // LOADING
       loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 10);
       // 从 localStorage 获取数据
@@ -71,7 +70,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
       // LOADING
       loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 50);
-      
+
       // 设置是否聚合
       adapter.current.setClusterEnable(data.enableCluster);
       // 设置鼠标悬停检测响应时间
@@ -91,7 +90,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
             adapter.current.entityController.importMarkedFeatures(storedFeatureMarked);
           }
         }
-        
+
         // LOADING
         loadingManager.completeStage(LoadingStageId.MAP_RENDER);
         loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);

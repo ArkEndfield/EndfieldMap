@@ -1,10 +1,11 @@
-import { cn } from "@/utils/style";
-import { forwardRef } from "react";
+import { forwardRef } from 'react';
+
+import { cn } from '@/utils/style';
 
 export interface EndfieldFormButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    left?: React.ReactNode;
-    right?: React.ReactNode;
-    variant?: 'primary' | 'default' | 'warning' | 'danger';
+  left?: React.ReactNode;
+  right?: React.ReactNode;
+  variant?: 'primary' | 'default' | 'warning' | 'danger';
 }
 
 export const EndfieldFormButton = forwardRef<HTMLButtonElement, EndfieldFormButtonProps>((props, ref) => {
@@ -19,26 +20,36 @@ export const EndfieldFormButton = forwardRef<HTMLButtonElement, EndfieldFormButt
         'relative w-full z-1 text-center px-9.5',
         'py-1 px-3.5 rounded-full',
         !disabled && 'shadow-[0_0_3px_#00000044]',
-        disabled ? {
-            'bg-[#EDEBEC]/40 text-[#6e6d6e]': variant === 'default',
-            'bg-[#ffee34]/40 text-[#626262]/80': variant === 'primary',
-            'bg-[#ffdfb0]/40 text-[#e56300]/60': variant === 'warning',
-            'bg-[#ffe7e7]/40 text-[#f04343]/50 font-bold': variant === 'danger',
-        } : {
-            'bg-[#EDEBEC] hover:bg-[#e0e0e0] active:bg-[#EDEBEC] text-[#373537]': variant === 'default',
-            'bg-[#ffee34] hover:bg-[#eddd32] active:bg-[#ffee34] text-[#333]': variant === 'primary',
-            'bg-[#ffdfb0] hover:bg-[#f0d2a3] active:bg-[#ffdfb0] text-[#e56300]': variant === 'warning',
-            'bg-[#ffe7e7] hover:bg-[#dcc3c3] active:bg-[#ffe7e7] text-[#f04343] font-bold': variant === 'danger',
-        },
+        disabled
+          ? {
+              'bg-[#EDEBEC]/40 text-[#6e6d6e]': variant === 'default',
+              'bg-[#ffee34]/40 text-[#626262]/80': variant === 'primary',
+              'bg-[#ffdfb0]/40 text-[#e56300]/60': variant === 'warning',
+              'bg-[#ffe7e7]/40 text-[#f04343]/50 font-bold': variant === 'danger',
+            }
+          : {
+              'bg-[#EDEBEC] hover:bg-[#e0e0e0] active:bg-[#EDEBEC] text-[#373537]': variant === 'default',
+              'bg-[#ffee34] hover:bg-[#eddd32] active:bg-[#ffee34] text-[#333]': variant === 'primary',
+              'bg-[#ffdfb0] hover:bg-[#f0d2a3] active:bg-[#ffdfb0] text-[#e56300]': variant === 'warning',
+              'bg-[#ffe7e7] hover:bg-[#dcc3c3] active:bg-[#ffe7e7] text-[#f04343] font-bold': variant === 'danger',
+            },
         {
-            'bg-[url(/images/bg/button-texture.png)] bg-no-repeat bg-right bg-contain': variant === 'primary'
+          'bg-[url(/images/bg/button-texture.png)] bg-no-repeat bg-right bg-contain': variant === 'primary',
         },
         className
       )}
     >
-      {left && <div className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center">{left}</div>}
+      {left && (
+        <div className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center">
+          {left}
+        </div>
+      )}
       {children}
-      {right && <div className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center">{right}</div>}
+      {right && (
+        <div className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center">
+          {right}
+        </div>
+      )}
     </button>
   );
 });

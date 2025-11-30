@@ -1,5 +1,5 @@
-import type { EntityData } from '@endfieldmap/map-core/types/entity';
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import type { EntityData } from '@endfieldmap/map-core/types/entity';
 
 /**
  * entity 是否显示

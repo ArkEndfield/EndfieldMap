@@ -1,7 +1,4 @@
-import { HeaderMenuFeedback } from "./feedback";
-import { HeaderMenuSettings } from "./settings";
+import { HeaderMenuFeedback } from './feedback';
+import { HeaderMenuSettings } from './settings';
 
-export const menus = [
-    HeaderMenuFeedback,
-    HeaderMenuSettings,
-]
+export const menus = [HeaderMenuFeedback, HeaderMenuSettings];

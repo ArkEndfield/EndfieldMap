@@ -1,15 +1,17 @@
-import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
+import { useEffect, useRef,useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useState, useEffect, useRef } from 'react';
-import { ElectricModeTip, ElectricPoleManager, ElectricPoleManagerMobile } from './electric_pole';
-import { dataService } from '@/services/data';
 import { useTranslation } from 'react-i18next';
-import { SideButton } from '../mobile/side_button';
 import type { SheetRef } from 'react-modal-sheet';
+
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
-import { OperationTip } from './_tip';
+import { dataService } from '@/services/data';
 import uiManager from '@/services/ui_manager';
+
+import { SideButton } from '../mobile/side_button';
+import { OperationButton } from './_button';
+import { OperationTip } from './_tip';
+import { ElectricModeTip, ElectricPoleManager, ElectricPoleManagerMobile } from './electric_pole';
 
 const ElectricPoleButtonIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">

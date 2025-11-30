@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { SettingsZone } from '../../components/settings_zone';
+
 import { LayoutIcon } from '@/components/common/icons';
-import { PopupAdjustSetting } from './ui/pupup-adjust';
+
+import { SettingsZone } from '../../components/settings_zone';
 import { DarkModeSetting } from './ui/dark-mode';
+import { PopupAdjustSetting } from './ui/pupup-adjust';
 
 export const UISetting = () => {
   const { t } = useTranslation('settings');

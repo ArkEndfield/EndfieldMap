@@ -1,13 +1,13 @@
-import type { Coordinate } from 'ol/coordinate';
-import { FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { EntityData, EntityInfoData } from '@endfieldmap/map-core/types/entity';
+import { FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import { xyz2crd } from '@endfieldmap/tools';
-import { LineString, Point } from 'ol/geom';
-import { action, computed, observable, toJS } from 'mobx';
-import VectorSource from 'ol/source/Vector';
 import FeatureBase, { type BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
+import type { EntityData, EntityInfoData } from '@endfieldmap/map-core/types/entity';
+import { xyz2crd } from '@endfieldmap/tools';
+import { action, computed, observable, toJS } from 'mobx';
+import type { Coordinate } from 'ol/coordinate';
+import { LineString, Point } from 'ol/geom';
+import VectorSource from 'ol/source/Vector';
 
 export interface MapFeatureConfig extends BaseFeatureConfig {
   data: EntityData;

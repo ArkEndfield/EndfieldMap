@@ -1,16 +1,18 @@
 import { EntityInstanceKey, type MapFeature } from '@endfieldmap/map-core';
-import { OperationButton } from './_button';
 import { observer } from 'mobx-react-lite';
-import { dataService } from '@/services/data';
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
+
+import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import { SideButton } from '../mobile/side_button';
-import { OperationTip } from './_tip';
-import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
-import { AnimatePresence, motion } from 'motion/react';
+import { dataService } from '@/services/data';
 import uiManager from '@/services/ui_manager';
+
+import { SideButton } from '../mobile/side_button';
+import { OperationButton } from './_button';
+import { OperationTip } from './_tip';
 
 const MultiOperationIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 92" fill="none" xmlns="http://www.w3.org/2000/svg">

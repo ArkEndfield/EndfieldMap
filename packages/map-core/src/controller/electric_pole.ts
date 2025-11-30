@@ -1,15 +1,15 @@
-import { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import { ELECTRIC_ZONE_RADIUS, ElectricPoleIdKey, type MapIndex } from '@endfieldmap/map-core/const/map';
+import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
 import { ElectricPoleZoneLayer } from '@endfieldmap/map-core/render/layers/electric_pole_zone';
-import type { ElectricPoleData, ElectricPoleDataList, ElectricPoleMapData } from '@endfieldmap/map-core/types';
-import { ELECTRIC_ZONE_RADIUS, ElectricPoleIdKey, type MapIndex } from '@endfieldmap/map-core/const/map';
+import { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
+import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import type { ElectricPoleData, ElectricPoleDataList, ElectricPoleMapData } from '@endfieldmap/map-core/types';
+import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
-import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
-import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 
 export interface ElectricPoleControllerConfig {
   imagePath: string;
@@ -63,12 +63,12 @@ export class ElectricPoleController {
     this.entityLayer.set(mapIndex, entityLayer);
     this.connectionLayer.set(mapIndex, connectionLayer);
     this.zoneLayer.set(mapIndex, zoneLayer);
-    
+
     // 应用当前的可见性设置
     zoneLayer.setVisible(this.zoneVisible && this.electricPoleVisible);
     entityLayer.setVisible(this.electricPoleVisible);
     connectionLayer.setVisible(this.electricPoleVisible);
-    
+
     // 初始化时，根据数据中的 connections 信息补全连接状态与连线几何
     this.syncAllElectricPoleConnections(mapIndex);
     if (notifyChange) {
@@ -133,7 +133,7 @@ export class ElectricPoleController {
           properties: {
             ...pole.properties,
             connectTo: newConnectTo,
-          }
+          },
         };
       });
 
@@ -269,25 +269,27 @@ export class ElectricPoleController {
    */
   public createElectricPoleEntity(mapIndex: MapIndex, position: Coordinate) {
     const xyzPosition = crd2xyz(position, mapIndex);
-    
+
     // 检查半径 0.1 范围内是否已存在电线杆
     const entityLayer = this.entityLayer.get(mapIndex);
     if (entityLayer) {
       const features = entityLayer.entity.features;
       // TODO: 电线杆创建距离限制
       const duplicateRadius = 10;
-      
+
       for (const feature of features) {
         const existingPos = feature.data.position;
         const distance = calculateXYZDistance(xyzPosition, existingPos);
 
         if (distance < duplicateRadius) {
           // TODO: i18n
-          throw new Error(`[ElectricPoleController|createElectricPoleEntity] duplicate electric pole at ${position} (distance: ${distance})`)
+          throw new Error(
+            `[ElectricPoleController|createElectricPoleEntity] duplicate electric pole at ${position} (distance: ${distance})`
+          );
         }
       }
     }
-    
+
     const data: ElectricPoleData = {
       levelLogicId: this.generateLevelLogicId(),
       entityDataIdKey: ElectricPoleIdKey,
@@ -296,7 +298,7 @@ export class ElectricPoleController {
       position: xyzPosition,
       properties: {
         connectTo: null,
-      }
+      },
     };
     return this.addElectricPoleEntity(mapIndex, data);
   }
@@ -363,10 +365,7 @@ export class ElectricPoleController {
         });
       } else {
         // 若当前还未建立连接或连接目标不一致，则重建连接
-        if (
-          !feature.connectionTo ||
-          feature.connectionTo.data.levelLogicId !== connectTo
-        ) {
+        if (!feature.connectionTo || feature.connectionTo.data.levelLogicId !== connectTo) {
           feature.connectTo(toFeature);
         }
       }

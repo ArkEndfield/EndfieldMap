@@ -1,5 +1,6 @@
-import { AdapterContext } from "@/context/adapter";
-import { useContext } from "react";
+import { useContext } from 'react';
+
+import { AdapterContext } from '@/context/adapter';
 
 export function useAdapter() {
   const context = useContext(AdapterContext);

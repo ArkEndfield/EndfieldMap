@@ -1,13 +1,15 @@
-import { cn } from '@/utils/style';
-import { DoubleChevronRight } from '@/components/common/icons';
 import { observer } from 'mobx-react-lite';
+import { AnimatePresence, motion } from 'motion/react';
+
+import { DoubleChevronRight } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
+import { useAdapter } from '@/hooks/use_adapter';
+import { hasReward } from '@/utils/reward';
+import { cn } from '@/utils/style';
+
+import { ClipSquare } from './deco';
 import { ChestReward } from './right_content/chest_reward';
 import { DungeonReward } from './right_content/dungeon_reward';
-import { hasReward } from '@/utils/reward';
-import { ClipSquare } from './deco';
-import { useAdapter } from '@/hooks/use_adapter';
-import { AnimatePresence, motion } from 'motion/react';
 
 export interface RightContentProps {
   isExpand: boolean;

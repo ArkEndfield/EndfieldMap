@@ -1,7 +1,7 @@
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
-import type { Coordinate } from 'ol/coordinate';
 import { observable } from 'mobx';
+import { Feature } from 'ol';
+import type { Coordinate } from 'ol/coordinate';
+import { Point } from 'ol/geom';
 
 /**
  * 动画圆环Feature

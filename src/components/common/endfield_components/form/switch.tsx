@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
-import { cn } from '@/utils/style';
 import { useTranslation } from 'react-i18next';
+
+import { cn } from '@/utils/style';
 
 export interface EndfieldSwitchProps {
   checked: boolean;

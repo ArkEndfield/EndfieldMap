@@ -1,7 +1,8 @@
 import i18n from 'i18next';
-import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import Backend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
+
 import { isDev } from '@/services/env';
 import { loadingManager, LoadingStageId } from '@/services/loading';
 
@@ -33,15 +34,18 @@ i18n
   );
 
 // 监听每个命名空间的加载
-i18n.on('loaded', (loaded: {
+i18n.on(
+  'loaded',
+  (loaded: {
     [language: string]: {
-        [namespace: string]: boolean;
+      [namespace: string]: boolean;
     };
-}) => {
-  const loadedCount = Object.keys(loaded).length;
-  const progress = (loadedCount / ns.length) * 100;
-  // LOADING
-  loadingManager.updateStageProgress(LoadingStageId.I18N, progress);
-});
+  }) => {
+    const loadedCount = Object.keys(loaded).length;
+    const progress = (loadedCount / ns.length) * 100;
+    // LOADING
+    loadingManager.updateStageProgress(LoadingStageId.I18N, progress);
+  }
+);
 
 export default i18n;

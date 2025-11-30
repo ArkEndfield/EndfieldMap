@@ -1,6 +1,8 @@
-import { cn } from '@/utils/style';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef, useState, forwardRef } from 'react';
+import { forwardRef,useEffect, useRef, useState } from 'react';
+
+import { cn } from '@/utils/style';
+
 import { ScrollArea } from '../../scroll_area';
 
 export interface EndfieldSelectItem<T extends string> {
@@ -81,7 +83,9 @@ const Option = forwardRef<HTMLButtonElement, OptionProps>((props, ref) => {
         className
       )}
     >
-      {select && <div className='absolute left-[1.5px] w-[2.5px] rounded-full h-4.5 bg-white top-1/2 -translate-y-1/2'></div>}
+      {select && (
+        <div className="absolute left-[1.5px] w-[2.5px] rounded-full h-4.5 bg-white top-1/2 -translate-y-1/2"></div>
+      )}
       {leftContent && <div className="shrink-0 grow-0 ml-1">{leftContent}</div>}
       <span className="flex-1 mx-2">{children}</span>
       {rightContent && <div className="shrink-0 grow-0 mr-1">{rightContent}</div>}

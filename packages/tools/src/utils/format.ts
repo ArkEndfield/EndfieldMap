@@ -9,4 +9,4 @@ export const numberPadString = (val: number, padLength: number, place: number | 
   const str = String(val);
   const padChar = String(place);
   return str.length >= padLength ? str : padChar.repeat(padLength - str.length) + str;
-}
+};

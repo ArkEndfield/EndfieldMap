@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+
 import { Toggle } from '../../components/toggle';
 
 interface PresetSelectBarProps {

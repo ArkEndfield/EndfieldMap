@@ -1,7 +1,8 @@
+import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
+
 import { Tooltip } from '../../endfield_components/tooltip';
 import { QuestionIcon } from '../../icons';
-import { useIsMobile } from '@/hooks/use_is_mobile';
 
 export interface SettingItemProps {
   title: React.ReactNode;

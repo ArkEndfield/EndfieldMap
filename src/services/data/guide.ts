@@ -1,7 +1,8 @@
-import { assetsHost } from '@/services/env';
 import type { GuideInfoDetail } from '@eftypes/guide';
+import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
+
+import { assetsHost } from '@/services/env';
 import { getAssetUrls } from '@/utils/url';
-import { StorageKey, type JSONLoader, type StorageManager } from '@endfieldmap/tools';
 
 export class GuideDataService {
   private jsonLoader: JSONLoader;

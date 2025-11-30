@@ -21,10 +21,10 @@ import {
   createEntityBackgroundStyles,
   createEntityIconStyles,
 } from '@endfieldmap/map-core/render/factory';
+import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import { ClusterEntitySource } from '@endfieldmap/map-core/render/source/entity';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import type { EntityDataList, EntityInfoData, EntityInfoItemData } from '@endfieldmap/map-core/types';
 import { action, computed, observable } from 'mobx';
 import type { Feature } from 'ol';

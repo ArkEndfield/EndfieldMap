@@ -1,11 +1,13 @@
-import { cn } from "@/utils/style";
-import { menus } from "./list";
+import { cn } from '@/utils/style';
+
+import { menus } from './list';
 
 const MenuContainer = ({ children, rightBorder }: { children: React.ReactNode; rightBorder?: boolean }) => (
   <div
     className={cn(
       'relative px-4',
-      rightBorder && 'after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-3 after:bg-white/25',
+      rightBorder &&
+        'after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-3 after:bg-white/25'
     )}
   >
     {children}
@@ -20,7 +22,7 @@ const MenuListDeco = () => (
       WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
     }}
   ></div>
-)
+);
 
 export const MenuListForPC = () => {
   return (

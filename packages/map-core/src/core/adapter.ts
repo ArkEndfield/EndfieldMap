@@ -1,12 +1,16 @@
 import { LayerType, MapIndex } from '@endfieldmap/map-core/const';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/active_feature';
 import { AreaNameController } from '@endfieldmap/map-core/controller/area_name';
+import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
 import { DataController } from '@endfieldmap/map-core/controller/data';
+import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
 import { EntityController } from '@endfieldmap/map-core/controller/entity';
+import { EventController } from '@endfieldmap/map-core/controller/event';
 import { EndfieldMapLayerController } from '@endfieldmap/map-core/controller/layer';
 import { MapController } from '@endfieldmap/map-core/controller/map';
 import { MapLayerController } from '@endfieldmap/map-core/controller/map_layer';
 import { PopupController } from '@endfieldmap/map-core/controller/popup';
+import { ZoomController } from '@endfieldmap/map-core/controller/zoom';
 import type { EndfieldMapAssetConfig } from '@endfieldmap/map-core/data/asset';
 import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
@@ -16,10 +20,6 @@ import type { SimpleMapConfig } from '@endfieldmap/map-core/types/map';
 import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
-import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
-import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
-import { EventController } from '@endfieldmap/map-core/controller/event';
-import { ZoomController } from '@endfieldmap/map-core/controller/zoom';
 import type Control from 'ol/control/Control';
 
 export interface AdapterConfig {

@@ -1,13 +1,15 @@
+import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
-import EntityPanel from './controllers/entity_panel';
+import { useRef } from 'react';
+
 import { HeaderLogo } from '@/components/common/header_logo';
 import { ScrollArea } from '@/components/common/scroll_area';
-import { Operations } from './controllers/operations';
-import { useRef } from 'react';
-import { Filters } from './controllers/filters';
-import TitleArrow from './controllers/arrow';
 import uiManager from '@/services/ui_manager';
-import { observer } from 'mobx-react-lite';
+
+import TitleArrow from './controllers/arrow';
+import EntityPanel from './controllers/entity_panel';
+import { Filters } from './controllers/filters';
+import { Operations } from './controllers/operations';
 
 const TopDeco = () => (
   <div
@@ -56,6 +58,6 @@ const PCControlPanel = observer(() => {
       </div>
     </motion.div>
   );
-})
+});
 
 export default PCControlPanel;

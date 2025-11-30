@@ -20,14 +20,14 @@ import {
   createEntityBackgroundStyles,
   createEntityIconStyles,
 } from '@endfieldmap/map-core/render/factory';
-import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
+import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
+import { ElectricPoleSource } from '@endfieldmap/map-core/render/source/electric_pole';
 import type { ElectricPoleData, ElectricPoleDataList, EntityInfoItemData } from '@endfieldmap/map-core/types';
 import { action, computed, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';
 import type Style from 'ol/style/Style';
-import { ElectricPoleSource } from '@endfieldmap/map-core/render/source/electric_pole';
 
 const ENTITY_SIZE = DEFAULT_ICON_SIZE;
 const ENTITY_RADIUS = ENTITY_SIZE / 2;

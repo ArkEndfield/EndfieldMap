@@ -1,5 +1,6 @@
 import type { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
 import type { ReactNode } from 'react';
+
 import { AdapterContext } from '@/context/adapter';
 
 export interface AdapterProviderProps {

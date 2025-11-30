@@ -1,7 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 import { BilibiliIcon, DiscordIcon, QQIcon } from '@/components/common/icons';
 import ShuffleText from '@/components/common/shuffle_text';
 import { cn } from '@/utils/style';
-import { useTranslation } from 'react-i18next';
 
 const TextDeco = ({ className }: { className?: string }) => (
   <div className={cn('w-32 h-2 relative', className)}>

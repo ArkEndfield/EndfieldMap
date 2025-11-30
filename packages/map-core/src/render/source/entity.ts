@@ -1,12 +1,12 @@
 import { DEFAULT_CLUSTER_DISTANCE } from '@endfieldmap/map-core/const';
+import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { BaseSourceConfig, ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import SourceBase from '@endfieldmap/map-core/render/source/_base';
 import { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import { Cluster } from 'ol/source';
-import { action, observable } from 'mobx';
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { EntityDataList, EntityInfoData } from '@endfieldmap/map-core/types';
 import { debounce } from '@endfieldmap/tools';
+import { action, observable } from 'mobx';
+import { Cluster } from 'ol/source';
 
 export interface EntityFeatureConfig extends BaseSourceConfig {
   mapIndex: MapIndex;
@@ -50,12 +50,9 @@ export class ClusterEntitySource extends SingleEntitySource {
     });
 
     // 创建防抖函数，16ms延迟
-    this.debouncedClusterUpdate = debounce(
-      () => {
-        this.clusterSource.changed();
-      },
-      16
-    );
+    this.debouncedClusterUpdate = debounce(() => {
+      this.clusterSource.changed();
+    }, 16);
 
     // 为每个MapFeature设置onChange回调
     this.features.forEach((feature) => {

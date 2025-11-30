@@ -1,10 +1,12 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { motion, useAnimate } from 'motion/react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
-import { ZmdButton } from '../button';
-import { cn } from '@/utils/style';
 import { useTranslation } from 'react-i18next';
+
+import { cn } from '@/utils/style';
+
+import { ZmdButton } from '../button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '../icons';
 
 const ALERT_BG = '/images/bg/alert/alert_bg.png';
@@ -217,12 +219,12 @@ export const ZmdAlert = ({
   return createPortal(
     <dialog
       ref={dialogRef}
-      className={
-        cn(
-          "fixed top-0 left-0 w-screen h-screen inset-0 z-20 flex items-center bg-black/20 justify-center max-w-screen max-h-screen backdrop:bg-transparent",
-          classNames?.backdrop && typeof classNames.backdrop === 'function' ? classNames.backdrop(open) : classNames?.backdrop
-        )
-      }
+      className={cn(
+        'fixed top-0 left-0 w-screen h-screen inset-0 z-20 flex items-center bg-black/20 justify-center max-w-screen max-h-screen backdrop:bg-transparent',
+        classNames?.backdrop && typeof classNames.backdrop === 'function'
+          ? classNames.backdrop(open)
+          : classNames?.backdrop
+      )}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           handleDismiss();
@@ -231,12 +233,10 @@ export const ZmdAlert = ({
     >
       <motion.div
         ref={alertRef}
-        className={
-          cn(
-            "min-h-[10em] max-h-[calc(100vh-4em)] max-w-[calc(100vw-2em)] bg-[#fefefe] rounded-[0.2em] shadow-[0_0_0.4em_rgba(0,0,0,0.3)] flex flex-col pt-[1.7em] pb-4 px-0 m-4 relative bg-no-repeat bg-size-[90%_auto] bg-position-[bottom_right] md:max-w-[calc(100vw-0.2em)] md:pt-[1.7em] md:m-2",
-            classNames?.alert && typeof classNames.alert === 'function' ? classNames.alert(open) : classNames?.alert
-          )
-        }
+        className={cn(
+          'min-h-[10em] max-h-[calc(100vh-4em)] max-w-[calc(100vw-2em)] bg-[#fefefe] rounded-[0.2em] shadow-[0_0_0.4em_rgba(0,0,0,0.3)] flex flex-col pt-[1.7em] pb-4 px-0 m-4 relative bg-no-repeat bg-size-[90%_auto] bg-position-[bottom_right] md:max-w-[calc(100vw-0.2em)] md:pt-[1.7em] md:m-2',
+          classNames?.alert && typeof classNames.alert === 'function' ? classNames.alert(open) : classNames?.alert
+        )}
         style={{
           width,
           height,
@@ -259,12 +259,15 @@ export const ZmdAlert = ({
         </div>
 
         {/* Content */}
-        <div ref={contentRef} className={
-          cn(
-            "flex-1 flex flex-col min-h-0 mx-4 z-1 relative",
-            classNames?.content && typeof classNames.content === 'function' ? classNames.content(open) : classNames?.content
-          )
-        }>
+        <div
+          ref={contentRef}
+          className={cn(
+            'flex-1 flex flex-col min-h-0 mx-4 z-1 relative',
+            classNames?.content && typeof classNames.content === 'function'
+              ? classNames.content(open)
+              : classNames?.content
+          )}
+        >
           <div className="flex-1 py-4 text-[#2a2728] overflow-auto">{children}</div>
         </div>
 

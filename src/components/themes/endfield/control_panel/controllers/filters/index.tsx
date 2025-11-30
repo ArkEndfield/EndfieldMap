@@ -1,9 +1,11 @@
 import { MarkedFeatureFilterMode } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import FilterToggle from './_toggle';
 import { useTranslation } from 'react-i18next';
+
 import { useAdapter } from '@/hooks/use_adapter';
 import { dataService } from '@/services/data';
+
+import FilterToggle from './_toggle';
 
 const filterModes = [
   { label: 'all', value: MarkedFeatureFilterMode.All },
@@ -24,22 +26,20 @@ export const Filters = observer(() => {
 
   return (
     <div className="flex text-sm gap-2 w-full">
-      {
-        filterModes.map((mode) => (
-          <FilterToggle
-            key={mode.value}
-            className='flex-1'
-            checked={filterMode === mode.value}
-            onChange={(v) => {
-              if (v) {
-                setFilterMode(mode.value);
-              }
-            }}
-          >
-            {t(`filter.${mode.label}`)}
-          </FilterToggle>
-        ))
-      }
+      {filterModes.map((mode) => (
+        <FilterToggle
+          key={mode.value}
+          className="flex-1"
+          checked={filterMode === mode.value}
+          onChange={(v) => {
+            if (v) {
+              setFilterMode(mode.value);
+            }
+          }}
+        >
+          {t(`filter.${mode.label}`)}
+        </FilterToggle>
+      ))}
     </div>
   );
 });

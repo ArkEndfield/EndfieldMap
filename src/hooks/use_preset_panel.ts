@@ -1,6 +1,7 @@
+import { logger } from '@endfieldmap/tools';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { logger } from '@endfieldmap/tools';
+
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { dataService } from '@/services/data';
 
@@ -116,12 +117,10 @@ export const usePresetPanel = () => {
   const handleRenamePreset = async (id: string) => {
     const preset = presets.find((p) => p.id === id);
     const currentName = preset?.name ?? '';
-    const name = await alert.prompt(
-      {
-        content: t('sidebar:operation.electric_pole.preset.create_tip'),
-        defaultValue: currentName || t('sidebar:operation.electric_pole.preset.create_default_name')
-      }
-    );
+    const name = await alert.prompt({
+      content: t('sidebar:operation.electric_pole.preset.create_tip'),
+      defaultValue: currentName || t('sidebar:operation.electric_pole.preset.create_default_name'),
+    });
     if (!name) return;
     await service.renamePreset(id, name);
   };

@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+
 import { cn } from '@/utils/style';
 
 const ActiveDeco = () => (
@@ -121,9 +122,7 @@ export interface TabListProps<T extends string> {
 
 export const TabList = <T extends string>({ menus, activeTab, setActiveTab, className }: TabListProps<T>) => {
   return (
-    <div
-      className={cn('flex h-14 relative justify-center items-center px-10', className)}
-    >
+    <div className={cn('flex h-14 relative justify-center items-center px-10', className)}>
       <TabListDeco />
       {menus.map((menu, index) => (
         <TabContainer

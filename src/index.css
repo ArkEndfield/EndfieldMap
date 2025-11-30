@@ -3,8 +3,9 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-html, body {
-  font-family: "Noto Sans SC", "Outfit", "JetBrains Mono", sans-serif;
+html,
+body {
+  font-family: 'Noto Sans SC', 'Outfit', 'JetBrains Mono', sans-serif;
   position: fixed;
   touch-action: none;
   width: 100%;
@@ -18,11 +19,11 @@ html, body {
 }
 
 .font-serif {
-  font-family: "Noto Serif SC", serif;
+  font-family: 'Noto Serif SC', serif;
 }
 
 .font-sans {
-  font-family: "Noto Sans SC", sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
 }
 
 * {

@@ -1,9 +1,11 @@
-import { useTranslation } from 'react-i18next';
-import { SettingItem } from '../../components/setting_item';
-import { useAdapter } from '@/hooks/use_adapter';
-import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
+import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
+import { useAdapter } from '@/hooks/use_adapter';
 import { dataService } from '@/services/data';
+
+import { SettingItem } from '../../components/setting_item';
 
 export const ClusterSettings = observer(() => {
   const { t } = useTranslation('settings');

@@ -1,8 +1,10 @@
-import { useTranslation } from 'react-i18next';
-import { SettingItem } from '../../../components/setting_item';
 import { observer } from 'mobx-react-lite';
-import uiManager from '@/services/ui_manager';
+import { useTranslation } from 'react-i18next';
+
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
+import uiManager from '@/services/ui_manager';
+
+import { SettingItem } from '../../../components/setting_item';
 
 const DARK_MODE_OPTIONS = [
   { label: 'display.layout.dark_mode.value.auto', key: 0 },

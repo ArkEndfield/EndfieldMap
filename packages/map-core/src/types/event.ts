@@ -1,14 +1,14 @@
 import type { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
+import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
+import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
+import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import type { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { Feature, Map as OlMap, MapBrowserEvent, MapEvent } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
 import type { FeatureLike } from 'ol/Feature';
 import type { Point } from 'ol/geom';
-import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
-import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
-import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
-import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
 
 export interface ClusterEventDetail {
   features: Feature<Point>[];

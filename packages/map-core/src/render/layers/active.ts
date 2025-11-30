@@ -1,15 +1,15 @@
+import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
+import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { FeatureLike } from 'ol/Feature';
+import { Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import type Style from 'ol/style/Style';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
 import CircleStyle from 'ol/style/Circle';
 import Stroke from 'ol/style/Stroke';
+import type Style from 'ol/style/Style';
 import OlStyle from 'ol/style/Style';
-import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const';
 
 /**
  * 波纹动画状态

@@ -1,18 +1,20 @@
-import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import ElectricPolePresetPanel from './electric_pole_preset_panel';
-import { cn } from '@/utils/style';
-import { dataService } from '@/services/data';
-import { useAdapter } from '@/hooks/use_adapter';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { snapPoints } from '@/const/ui';
 import { forwardRef, useRef } from 'react';
-import { useElectricMode, type ElectricMode } from '@/hooks/use_electric_mode';
 import { useTranslation } from 'react-i18next';
-import { OperatorToggleButton } from '../components/button';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
+
 import { CloseIcon, PlusIcon } from '@/components/common/icons';
+import { snapPoints } from '@/const/ui';
+import { useAdapter } from '@/hooks/use_adapter';
+import { type ElectricMode,useElectricMode } from '@/hooks/use_electric_mode';
+import { useIsMobile } from '@/hooks/use_is_mobile';
+import { dataService } from '@/services/data';
+import { cn } from '@/utils/style';
+
+import { OperatorToggleButton } from '../components/button';
 import { Toggle } from '../components/toggle';
+import ElectricPolePresetPanel from './electric_pole_preset_panel';
 
 const PoleManagerToolbar = observer(() => {
   const { changeMode, getCurrentMode, toggleMode } = useElectricMode();

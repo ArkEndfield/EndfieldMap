@@ -1,10 +1,10 @@
-import { MapIndex } from '@endfieldmap/map-core/const/map';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import { MapIndex } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
 import type { CustomPointData, CustomPointMapData } from '@endfieldmap/map-core/types';
-import { action, computed, observable } from 'mobx';
 import { logger } from '@endfieldmap/tools';
+import { action, computed, observable } from 'mobx';
 
 export interface CustomPointControllerConfig {
   data?: CustomPointMapData;

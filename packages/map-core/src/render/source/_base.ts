@@ -1,10 +1,10 @@
+import type FeatureBase from '@endfieldmap/map-core/render/source/feature/_base';
 import type { MapIndex } from '@endfieldmap/tools';
+import { action, observable } from 'mobx';
 import type { Feature } from 'ol';
 import type { Geometry } from 'ol/geom';
 import type { Options } from 'ol/source/Cluster';
 import VectorSource from 'ol/source/Vector';
-import type FeatureBase from '@endfieldmap/map-core/render/source/feature/_base';
-import { action, observable } from 'mobx';
 
 export type ClusterOptions = Omit<Options<Feature<Geometry>>, 'source'>;
 

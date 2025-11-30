@@ -1,5 +1,5 @@
-import type { CustomPointIdKey, EntityInfoData } from '@endfieldmap/map-core/types';
 import { CustomPointKey } from '@endfieldmap/map-core/const/map';
+import type { CustomPointIdKey, EntityInfoData } from '@endfieldmap/map-core/types';
 
 /**
  * TODO: 自定义标点类型配置

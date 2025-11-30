@@ -21,7 +21,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Architecture & Structure
 
 ### Project Layout
+
 This is a monorepo structure managed with pnpm workspaces.
+
 - `src/`: Main React web application
   - `components/`: Reusable UI components
   - `hooks/`: Custom React hooks
@@ -35,6 +37,7 @@ This is a monorepo structure managed with pnpm workspaces.
 - `dist/`: Build output (do not edit)
 
 ### Tech Stack
+
 - **Framework**: React 19, Vite
 - **Language**: TypeScript
 - **State Management**:
@@ -45,6 +48,7 @@ This is a monorepo structure managed with pnpm workspaces.
 - **Linting/Formatting**: ESLint, Prettier
 
 ### Key Patterns
+
 - **Components**: Functional components with hooks. Use `PascalCase`.
 - **State**: Hooks-first state management. Stores are typically singletons or provided via context.
 - **Data**: Services in `src/services` handle data fetching and processing.

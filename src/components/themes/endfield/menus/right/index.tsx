@@ -1,14 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'motion/react';
-import { MapButton } from './button';
 import { LocalStorageDB, LocalStorageKey, MapIndex } from '@endfieldmap/tools';
-import { createPortal } from 'react-dom';
-import { SwitchIcon } from '@/components/common/icons';
 import { observer } from 'mobx-react-lite';
+import { motion } from 'motion/react';
+import { useEffect,useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
+
+import { SwitchIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
-import { cn } from '@/utils/style';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { cn } from '@/utils/style';
+
+import { MapButton } from './button';
 
 export const RightMenu: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'map']);
@@ -79,7 +81,9 @@ export const RightMenu: React.FC = observer(() => {
           <div
             className={cn(
               'font-extrabold',
-              isMobile ? 'w-full text-xl h-full text-center py-3 flex items-center justify-center gap-1.5' : 'text-2xl hover:text-[#fdfb55] cursor-pointer'
+              isMobile
+                ? 'w-full text-xl h-full text-center py-3 flex items-center justify-center gap-1.5'
+                : 'text-2xl hover:text-[#fdfb55] cursor-pointer'
             )}
             style={{ textShadow: '0 0 0.1em rgba(0,0,0,0.2)' }}
             onClick={togglePopover}

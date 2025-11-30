@@ -1,8 +1,9 @@
+import { numberPadString } from '@endfieldmap/tools';
+import { AnimatePresence, motion } from 'motion/react';
 import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AnimatePresence, motion } from 'motion/react';
+
 import { cn } from '@/utils/style';
-import { numberPadString } from '@endfieldmap/tools';
 
 export interface PresetListItemProps {
   index: number;

@@ -1,17 +1,17 @@
-import { EntityController } from '@endfieldmap/map-core/controller/entity';
-import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
-import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
-import { boundingExtent } from 'ol/extent';
-import type { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
+import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
+import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
+import { EntityController } from '@endfieldmap/map-core/controller/entity';
+import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import {
+  type EntityHitTestResult,
   hitTestEntitiesAt,
   selectTopmostHitResult,
-  type EntityHitTestResult,
 } from '@endfieldmap/map-core/event/entity_hit_test';
+import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
+import type { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
+import { boundingExtent } from 'ol/extent';
 
 export interface EventControllerConfig {
   entityController: EntityController;
@@ -36,7 +36,9 @@ export class EventController {
     // 点击事件
     mapEventEmitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
       const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter((layer) => layer.visible);
-      const customPointLayers = this.customPointController.layerContainer ? [this.customPointController.layerContainer].filter((layer) => layer.visible) : [];
+      const customPointLayers = this.customPointController.layerContainer
+        ? [this.customPointController.layerContainer].filter((layer) => layer.visible)
+        : [];
       const entityLayers = this.entityController.currentMapAllLayers.filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
@@ -100,7 +102,9 @@ export class EventController {
   private registerContextMenuEventHandlers() {
     mapEventEmitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
       const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter((layer) => layer.visible);
-      const customPointLayers = this.customPointController.layerContainer ? [this.customPointController.layerContainer].filter((layer) => layer.visible) : [];
+      const customPointLayers = this.customPointController.layerContainer
+        ? [this.customPointController.layerContainer].filter((layer) => layer.visible)
+        : [];
       const entityLayers = this.entityController.currentMapAllLayers.filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(

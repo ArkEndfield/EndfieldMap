@@ -1,12 +1,12 @@
+import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const';
 import { createHoverRingStyle } from '@endfieldmap/map-core/render/factory';
-import { AnimatedRingFeature } from '@endfieldmap/map-core/render/source/feature/animated_ring';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
+import { AnimatedRingFeature } from '@endfieldmap/map-core/render/source/feature/animated_ring';
 import type { Coordinate } from 'ol/coordinate';
 import type { FeatureLike } from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type Style from 'ol/style/Style';
-import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const';
 
 /**
  * Hover图层

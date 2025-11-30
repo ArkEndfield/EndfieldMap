@@ -1,6 +1,7 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { cn } from '@/utils/style';
+import { AnimatePresence,motion } from 'motion/react';
 import type { ButtonHTMLAttributes } from 'react';
+
+import { cn } from '@/utils/style';
 
 export interface ToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   checked: boolean;
@@ -22,7 +23,16 @@ const lineVariants = {
   exit: { scaleX: 0, opacity: 0, transition: { duration: 0.15, ease: 'easeIn' as const } },
 };
 
-export const Toggle: React.FC<ToggleProps> = ({ checked, label, onToggle, className, disabled, hideBorder, isIndeterminate, ...props }) => {
+export const Toggle: React.FC<ToggleProps> = ({
+  checked,
+  label,
+  onToggle,
+  className,
+  disabled,
+  hideBorder,
+  isIndeterminate,
+  ...props
+}) => {
   return (
     <button
       type="button"
@@ -33,7 +43,7 @@ export const Toggle: React.FC<ToggleProps> = ({ checked, label, onToggle, classN
       className={cn(
         'flex items-center gap-2 transition-colors',
         checked ? 'text-[#FDFB73]' : isIndeterminate ? 'text-[#e2e0ae]' : 'text-[#919191]',
-        !hideBorder && "rounded-full border px-1 pr-2 py-0.5",
+        !hideBorder && 'rounded-full border px-1 pr-2 py-0.5',
         !hideBorder && (checked ? 'border-[#FDFB73]' : isIndeterminate ? 'border-[#e2e0ae]' : 'border-[#444]'),
         disabled && 'opacity-50',
         className

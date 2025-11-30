@@ -1,13 +1,14 @@
+import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
+import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
+import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
+
+import Counter from '@/components/common/count_up';
 import { Tooltip } from '@/components/common/endfield_components/tooltip';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
-import { observer } from 'mobx-react-lite';
-import Counter from '@/components/common/count_up';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 
 interface EntityItemProps {
   hideCount?: boolean;

@@ -18,7 +18,7 @@ export class ElectricPoleSource extends SourceBase<ElectricPoleFeature, Electric
       const feature = new ElectricPoleFeature({
         data,
         mapIndex: this.config.mapIndex,
-        entityInfo: electricPoleEntityInfo
+        entityInfo: electricPoleEntityInfo,
       });
       // 当 ElectricPoleFeature 的状态（如 active/marked 等）变化时，通知 OL 重新渲染样式
       feature.setOnChange(() => {
@@ -32,7 +32,7 @@ export class ElectricPoleSource extends SourceBase<ElectricPoleFeature, Electric
     const feature = new ElectricPoleFeature({
       data,
       mapIndex: this.config.mapIndex,
-      entityInfo: electricPoleEntityInfo
+      entityInfo: electricPoleEntityInfo,
     });
     this.addFeature(feature);
     // 新增的电线杆实体同样需要在状态变化时触发样式更新

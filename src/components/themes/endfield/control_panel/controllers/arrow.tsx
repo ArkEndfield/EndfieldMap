@@ -1,5 +1,6 @@
-import { cn } from '@/utils/style';
 import { useTranslation } from 'react-i18next';
+
+import { cn } from '@/utils/style';
 
 interface ArrowProps {
   open: boolean;

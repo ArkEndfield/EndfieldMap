@@ -2,11 +2,11 @@
  * source code: https://reactbits.dev/text-animations/shuffle
  */
 
-import { useRef, useEffect, useState } from 'react';
+import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText as GSAPSplitText } from 'gsap/SplitText';
-import { useGSAP } from '@gsap/react';
+import { useEffect, useRef, useState } from 'react';
 
 gsap.registerPlugin(ScrollTrigger, GSAPSplitText);
 
@@ -59,7 +59,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
   colorTo,
   triggerOnce = true,
   respectReducedMotion = true,
-  triggerOnHover = true
+  triggerOnHover = true,
 }) => {
   const ref = useRef<HTMLElement | null>(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -113,7 +113,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
           tlRef.current = null;
         }
         if (wrappersRef.current.length) {
-          wrappersRef.current.forEach(wrap => {
+          wrappersRef.current.forEach((wrap) => {
             const inner = wrap.firstElementChild as HTMLElement | null;
             const orig = inner?.querySelector('[data-orig="1"]') as HTMLElement | null;
             if (orig && wrap.parentNode) wrap.parentNode.replaceChild(orig, wrap);
@@ -140,7 +140,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
           wordsClass: 'shuffle-word',
           linesClass: 'shuffle-line',
           smartWrap: true,
-          reduceWhiteSpace: false
+          reduceWhiteSpace: false,
         });
 
         const chars = (splitRef.current.chars || []) as HTMLElement[];
@@ -149,7 +149,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
         const rolls = Math.max(1, Math.floor(shuffleTimes));
         const rand = (set: string) => set.charAt(Math.floor(Math.random() * set.length)) || '';
 
-        chars.forEach(ch => {
+        chars.forEach((ch) => {
           const parent = ch.parentElement;
           if (!parent) return;
 
@@ -206,11 +206,11 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
         });
       };
 
-      const inners = () => wrappersRef.current.map(w => w.firstElementChild as HTMLElement);
+      const inners = () => wrappersRef.current.map((w) => w.firstElementChild as HTMLElement);
 
       const randomizeScrambles = () => {
         if (!scrambleCharset) return;
-        wrappersRef.current.forEach(w => {
+        wrappersRef.current.forEach((w) => {
           const strip = w.firstElementChild as HTMLElement;
           if (!strip) return;
           const kids = Array.from(strip.children) as HTMLElement[];
@@ -221,7 +221,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
       };
 
       const cleanupToStill = () => {
-        wrappersRef.current.forEach(w => {
+        wrappersRef.current.forEach((w) => {
           const strip = w.firstElementChild as HTMLElement;
           if (!strip) return;
           const real = strip.querySelector('[data-orig="1"]') as HTMLElement | null;
@@ -255,7 +255,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
               onShuffleComplete?.();
               armHover();
             }
-          }
+          },
         });
 
         const addTween = (targets: HTMLElement[], at: number) => {
@@ -266,7 +266,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
               duration,
               ease,
               force3D: true,
-              stagger: animationMode === 'evenodd' ? stagger : 0
+              stagger: animationMode === 'evenodd' ? stagger : 0,
             },
             at
           );
@@ -289,7 +289,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
                 x: parseFloat(strip.getAttribute('data-final-x') || '0'),
                 duration,
                 ease,
-                force3D: true
+                force3D: true,
               },
               d
             );
@@ -325,7 +325,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
         trigger: el,
         start,
         once: triggerOnce,
-        onEnter: create
+        onEnter: create,
       });
 
       return () => {
@@ -355,9 +355,9 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
         colorTo,
         triggerOnce,
         respectReducedMotion,
-        triggerOnHover
+        triggerOnHover,
       ],
-      scope: ref
+      scope: ref,
     }
   );
 
@@ -369,7 +369,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
   const commonStyle: React.CSSProperties = {
     textAlign,
     ...fallbackFont,
-    ...style
+    ...style,
   };
 
   const classes = `${baseTw} ${ready ? 'visible' : 'invisible'} ${className}`.trim();

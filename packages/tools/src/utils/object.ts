@@ -26,7 +26,7 @@ export function groupBy<T>(array: T[], key: keyof T): Record<string, T[]> {
  */
 export function unionObjectArray<T>(arr1: T[], arr2: T[], key: keyof T): T[] {
   const map = new Map<T[typeof key], T>();
-  [...arr1, ...arr2].forEach(item => {
+  [...arr1, ...arr2].forEach((item) => {
     map.set(item[key], item);
   });
   return Array.from(map.values());
@@ -37,33 +37,33 @@ export function unionObjectArray<T>(arr1: T[], arr2: T[], key: keyof T): T[] {
  */
 export function intersectionObjectArray<T>(arr1: T[], arr2: T[], key: keyof T): T[] {
   // 将 arr2 的 key 提取出来做成 Set，提高查找效率
-  const set2 = new Set(arr2.map(item => item[key]));
-  
+  const set2 = new Set(arr2.map((item) => item[key]));
+
   // 过滤 arr1，且需去重 (利用 Map)
   const resultMap = new Map<T[typeof key], T>();
-  arr1.forEach(item => {
-      // 这里的 key 需要转为 string 或 number 才能作为对象的 key，或者使用 Map
-      if (set2.has(item[key])) {
-          resultMap.set(item[key], item);
-      }
+  arr1.forEach((item) => {
+    // 这里的 key 需要转为 string 或 number 才能作为对象的 key，或者使用 Map
+    if (set2.has(item[key])) {
+      resultMap.set(item[key], item);
+    }
   });
-  return Array.from(resultMap.values())
+  return Array.from(resultMap.values());
 }
 
 /**
  * 对象数组求差集 (arr1 - arr2)
  */
 export function differenceObjectArray<T>(arr1: T[], arr2: T[], key: keyof T): T[] {
-  const set2 = new Set(arr2.map(item => item[key]));
-  
+  const set2 = new Set(arr2.map((item) => item[key]));
+
   // 使用 Map 去重 arr1 自身
   const map1 = new Map<T[typeof key], T>();
-  arr1.forEach(item => map1.set(item[key], item));
+  arr1.forEach((item) => map1.set(item[key], item));
   const result: T[] = [];
   map1.forEach((item, k) => {
-      if (!set2.has(k)) {
-          result.push(item);
-      }
+    if (!set2.has(k)) {
+      result.push(item);
+    }
   });
   return result;
 }
@@ -88,7 +88,7 @@ export function intersectionArray<T extends Primitive>(arr1: T[], arr2: T[]): T[
   // 将 arr2 转为 Set 以提高查找性能 (O(1))
   const set2 = new Set(arr2);
   // 对 arr1 去重后遍历，判断是否在 set2 中存在
-  return Array.from(new Set(arr1)).filter(item => set2.has(item));
+  return Array.from(new Set(arr1)).filter((item) => set2.has(item));
 }
 
 /**
@@ -98,7 +98,7 @@ export function intersectionArray<T extends Primitive>(arr1: T[], arr2: T[]): T[
 export function differenceArray<T extends Primitive>(arr1: T[], arr2: T[]): T[] {
   const set2 = new Set(arr2);
   // 对 arr1 去重后遍历，保留不在 set2 中的元素
-  return Array.from(new Set(arr1)).filter(item => !set2.has(item));
+  return Array.from(new Set(arr1)).filter((item) => !set2.has(item));
 }
 
 /**
@@ -108,9 +108,9 @@ export function differenceArray<T extends Primitive>(arr1: T[], arr2: T[]): T[] 
 export function symmetricDifferenceArray<T extends Primitive>(arr1: T[], arr2: T[]): T[] {
   const set1 = new Set(arr1);
   const set2 = new Set(arr2);
-  
-  const diff1 = Array.from(set1).filter(x => !set2.has(x));
-  const diff2 = Array.from(set2).filter(x => !set1.has(x));
-  
+
+  const diff1 = Array.from(set1).filter((x) => !set2.has(x));
+  const diff2 = Array.from(set2).filter((x) => !set1.has(x));
+
   return [...diff1, ...diff2];
 }

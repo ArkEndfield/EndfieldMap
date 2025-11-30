@@ -147,10 +147,10 @@ export class EndfieldSelectionInteraction {
   ) {
     this._map?.getAllLayers().forEach((layer) => {
       if (!('getSource' in layer)) return;
-      
+
       // Skip invisible layers
       if (!layer.getVisible()) return;
-      
+
       const layerSource = (layer as VectorLayer<VectorSource>).getSource();
       if (!layerSource?.getFeaturesInExtent) return;
 

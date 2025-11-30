@@ -1,10 +1,11 @@
+import { customPointTypes } from '@endfieldmap/map-core/data/custom_point';
+import type { CustomPointIdKey } from '@endfieldmap/map-core/types';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+
 import { dataService } from '@/services/data';
-import { customPointTypes } from '@endfieldmap/map-core/data/custom_point';
-import { cn } from '@/utils/style';
-import type { CustomPointIdKey } from '@endfieldmap/map-core/types';
 import { getEntityIcon } from '@/utils/entity';
+import { cn } from '@/utils/style';
 
 /**
  * 自定义标点类型选择器

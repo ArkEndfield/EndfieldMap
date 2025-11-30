@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
-import { cn } from '@/utils/style';
 import type { Key } from 'react';
+
+import { cn } from '@/utils/style';
 
 export interface ToggleOption<T extends Key> {
   key: T;

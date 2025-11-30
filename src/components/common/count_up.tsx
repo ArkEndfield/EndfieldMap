@@ -1,6 +1,7 @@
-import { cn } from '@/utils/style';
-import { AnimatePresence, MotionValue, motion, useSpring, useTransform } from 'motion/react';
+import { AnimatePresence, motion, MotionValue, useSpring, useTransform } from 'motion/react';
 import { useEffect } from 'react';
+
+import { cn } from '@/utils/style';
 
 interface NumberProps {
   mv: MotionValue<number>;

@@ -1,8 +1,9 @@
-import { themeNames, type ThemeNames } from '@/components/themes';
-import { UILocalStorageKey } from '@/const/storage';
-import { DARK_MODE } from '@/const/ui';
 import { LocalStorageDB } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
+
+import { type ThemeNames,themeNames } from '@/components/themes';
+import { UILocalStorageKey } from '@/const/storage';
+import { DARK_MODE } from '@/const/ui';
 
 class UIManager {
   private mediaQueryList: MediaQueryList | null = null;

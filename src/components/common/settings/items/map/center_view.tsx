@@ -1,10 +1,12 @@
-import { useTranslation } from 'react-i18next';
-import { SettingItem } from '../../components/setting_item';
-import { useAdapter } from '@/hooks/use_adapter';
-import { observer } from 'mobx-react-lite';
-import { getMapCenter } from '@endfieldmap/tools';
-import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { DEFAULT_ZOOM } from '@endfieldmap/map-core';
+import { getMapCenter } from '@endfieldmap/tools';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
+import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
+import { useAdapter } from '@/hooks/use_adapter';
+
+import { SettingItem } from '../../components/setting_item';
 
 export const CenterViewSettings = observer(() => {
   const { t } = useTranslation('settings');

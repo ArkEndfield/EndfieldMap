@@ -1,21 +1,21 @@
+import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import {
   DEFAULT_CENTER,
+  DEFAULT_ICON_SIZE,
   DEFAULT_MAX_ZOOM,
   DEFAULT_MIN_ZOOM,
   DEFAULT_PIXEL_RATIO,
   DEFAULT_ROTATION,
-  DEFAULT_ZOOM,
-  DEFAULT_ICON_SIZE,
   DEFAULT_STROKE_WIDTH,
+  DEFAULT_ZOOM,
 } from '@endfieldmap/map-core/const/map';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { EndfieldSelectionInteraction } from '@endfieldmap/map-core/event/selection';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import { MapLayer } from '@endfieldmap/map-core/render/layers/map';
-import { HoverLayer } from '@endfieldmap/map-core/render/layers/hover';
+import { EndfieldSelectionInteraction } from '@endfieldmap/map-core/event/selection';
 import { ActiveLayer } from '@endfieldmap/map-core/render/layers/active';
-import type { MapConfig } from '@endfieldmap/map-core/types/map';
+import { HoverLayer } from '@endfieldmap/map-core/render/layers/hover';
+import { MapLayer } from '@endfieldmap/map-core/render/layers/map';
 import type { DisposeListener } from '@endfieldmap/map-core/types/event';
+import type { MapConfig } from '@endfieldmap/map-core/types/map';
 import type { Collection } from 'ol';
 import { Overlay, View } from 'ol';
 import Control from 'ol/control/Control';

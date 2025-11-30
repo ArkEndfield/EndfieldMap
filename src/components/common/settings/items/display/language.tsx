@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { languageConfig } from '@/const/language';
+
 import type { LanguageLocale } from '@/@types/language';
-import { SettingsZone } from '../../components/settings_zone';
-import { SettingItem } from '../../components/setting_item';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
-import { cn } from '@/utils/style';
-import { useCurrentLanguage } from '@/hooks/use_current_language';
 import { TranslateIcon } from '@/components/common/icons';
+import { languageConfig } from '@/const/language';
+import { useCurrentLanguage } from '@/hooks/use_current_language';
+import { cn } from '@/utils/style';
+
+import { SettingItem } from '../../components/setting_item';
+import { SettingsZone } from '../../components/settings_zone';
 
 export const LanguageSetting = () => {
   const { t, i18n } = useTranslation('settings');

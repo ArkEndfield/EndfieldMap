@@ -3,10 +3,10 @@ import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { ElectricPoleZoneSource } from '@endfieldmap/map-core/render/source/electric_pole_zone';
 import type { ElectricPoleData, ElectricPoleDataList } from '@endfieldmap/map-core/types';
+import VectorLayer from 'ol/layer/Vector';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
-import VectorLayer from 'ol/layer/Vector';
 
 export interface ElectricPoleZoneLayerConfig {
   /** 电线杆数据列表 */

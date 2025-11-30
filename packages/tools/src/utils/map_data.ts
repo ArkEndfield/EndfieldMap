@@ -49,6 +49,9 @@ export const calculateDistance = (coordinate1: Coordinate, coordinate2: Coordina
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 };
 
-export const calculateXYZDistance = (xyz1: { x: number; y: number; z: number }, xyz2: { x: number; y: number; z: number }) => {
+export const calculateXYZDistance = (
+  xyz1: { x: number; y: number; z: number },
+  xyz2: { x: number; y: number; z: number }
+) => {
   return Math.sqrt(Math.pow(xyz1.x - xyz2.x, 2) + Math.pow(xyz1.z - xyz2.z, 2));
 };

@@ -1,12 +1,13 @@
 import type { Category, EntityInfoItemData } from '@endfieldmap/map-core';
-import { useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useAdapter } from '@/hooks/use_adapter';
 
 import EntityGroup from './group';
 import EntityItem from './item';
 import { Search } from './search';
-import { useAdapter } from '@/hooks/use_adapter';
 
 interface EntityItemInfo extends EntityInfoItemData {
   markedCount: number;
@@ -128,7 +129,7 @@ const EntityPanel = observer(() => {
         >
           {/* {categoryInfo.displayedEntities}/{categoryInfo.totalEntities} */}
           {/* 实体列表 */}
-          <div className='grid grid-cols-2 gap-2 py-2'>
+          <div className="grid grid-cols-2 gap-2 py-2">
             {categoryInfo.entities.map((entity) => (
               <EntityItem
                 key={entity.entityDataIdKey}

@@ -1,9 +1,11 @@
-import { ChestRewardDataService } from './chest_reward';
-import { assetsHost } from '@/services/env';
 import type { DungeonSeriesData } from '@eftypes/dungeon_series';
 import type { DealedRewardItem } from '@eftypes/reward';
+import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
+
+import { assetsHost } from '@/services/env';
 import { getAssetUrls } from '@/utils/url';
-import { StorageKey, type JSONLoader, type StorageManager } from '@endfieldmap/tools';
+
+import { ChestRewardDataService } from './chest_reward';
 
 export class DungeonSeriesDataService {
   private jsonLoader: JSONLoader;

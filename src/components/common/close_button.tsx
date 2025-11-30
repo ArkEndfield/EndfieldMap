@@ -1,6 +1,6 @@
-import { cn } from "@/utils/style";
+import { cn } from '@/utils/style';
 
-export const CloseButton = ({ onClose, className }: { onClose: () => void, className?: string }) => {
+export const CloseButton = ({ onClose, className }: { onClose: () => void; className?: string }) => {
   return (
     <button
       className={cn(

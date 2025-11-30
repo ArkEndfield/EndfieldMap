@@ -1,9 +1,11 @@
-import { Fragment, useCallback, useEffect, useState } from 'react';
-import { Item } from '../../components/item';
 import type { DealedRewardItem } from '@eftypes/reward';
-import { hasDungeonReward, isDealedRewardItemWithCount } from '@/utils/reward';
 import type { EntityData } from '@endfieldmap/map-core';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+
 import { dataService } from '@/services/data';
+import { hasDungeonReward, isDealedRewardItemWithCount } from '@/utils/reward';
+
+import { Item } from '../../components/item';
 import { RewardTitle } from './reward_title';
 
 export const DungeonReward = ({ entity }: { entity: EntityData }) => {

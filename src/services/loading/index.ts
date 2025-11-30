@@ -1,8 +1,8 @@
 import { ProgressInterpolator } from './progress_interpolator';
 import { LoadingStageId, type LoadingState, type StageConfig } from './types';
 
-export * from './types';
 export * from './progress_interpolator';
+export * from './types';
 
 declare global {
   interface Window {
@@ -28,11 +28,11 @@ class LoadingProgressManager {
   private interpolator: ProgressInterpolator;
   private lastTime: number = 0;
   private animationFrameId: number | null = null;
-  
+
   constructor() {
     this.stages = new Map();
     this.interpolator = new ProgressInterpolator();
-    
+
     // 初始化所有阶段
     for (const config of STAGE_CONFIGS) {
       this.stages.set(config.id, { progress: 0, completed: false });
@@ -40,12 +40,12 @@ class LoadingProgressManager {
 
     // 标记 INIT 阶段为完成（因为 React 已经加载）
     this.completeStage(LoadingStageId.INIT);
-    
+
     if (typeof window !== 'undefined') {
-        this.startAnimation();
+      this.startAnimation();
     }
   }
-  
+
   updateStageProgress(stageId: LoadingStageId, progress: number) {
     const stage = this.stages.get(stageId);
     if (stage) {
@@ -54,7 +54,7 @@ class LoadingProgressManager {
       this.syncToGlobal();
     }
   }
-  
+
   completeStage(stageId: LoadingStageId) {
     const stage = this.stages.get(stageId);
     if (stage) {
@@ -63,11 +63,11 @@ class LoadingProgressManager {
       this.syncToGlobal();
     }
   }
-  
+
   private calculateTotalProgress(): number {
     let totalWeightedProgress = 0;
     let totalWeight = 0;
-    
+
     for (const config of STAGE_CONFIGS) {
       const stage = this.stages.get(config.id);
       if (stage) {
@@ -75,14 +75,14 @@ class LoadingProgressManager {
         totalWeight += config.weight;
       }
     }
-    
+
     // 确保总权重不为0，防止除以0
     if (totalWeight === 0) return 0;
-    
+
     // 确保结果不超过 100
     return Math.min(100, (totalWeightedProgress / totalWeight) * 100);
   }
-  
+
   private getCurrentStage(): LoadingStageId {
     for (const config of STAGE_CONFIGS) {
       const stage = this.stages.get(config.id);
@@ -92,56 +92,56 @@ class LoadingProgressManager {
     }
     return LoadingStageId.ENTITY_RENDER;
   }
-  
+
   private startAnimation() {
     const animate = (timestamp: number) => {
       const deltaTime = this.lastTime ? (timestamp - this.lastTime) / 1000 : 0.016;
       this.lastTime = timestamp;
-      
+
       const targetProgress = this.calculateTotalProgress();
       const displayProgress = this.interpolator.update(targetProgress, deltaTime);
-      
+
       // 确保显示进度也不超过 100
       const clampedDisplayProgress = Math.min(100, displayProgress);
-      
+
       const state: LoadingState = {
         totalProgress: targetProgress,
         displayProgress: clampedDisplayProgress,
         currentStage: this.getCurrentStage(),
         isComplete: targetProgress >= 100,
       };
-      
+
       this.notifyListeners(state);
-      
+
       // 只有当总进度完成，且显示进度也接近100时才停止动画
       if (!state.isComplete || clampedDisplayProgress < 99.9) {
         this.animationFrameId = requestAnimationFrame(animate);
       } else {
         // 动画结束，确保最后发送一次100%的状态
         // 强制确保 displayProgress 是 100
-         const finalState: LoadingState = {
-            totalProgress: 100,
-            displayProgress: 100,
-            currentStage: this.getCurrentStage(),
-            isComplete: true,
-          };
-          this.notifyListeners(finalState);
-          this.animationFrameId = null;
+        const finalState: LoadingState = {
+          totalProgress: 100,
+          displayProgress: 100,
+          currentStage: this.getCurrentStage(),
+          isComplete: true,
+        };
+        this.notifyListeners(finalState);
+        this.animationFrameId = null;
       }
     };
-    
+
     this.animationFrameId = requestAnimationFrame(animate);
   }
 
   // 添加析构清理方法（如果需要）
   dispose() {
-      if (this.animationFrameId !== null) {
-          cancelAnimationFrame(this.animationFrameId);
-          this.animationFrameId = null;
-      }
-      this.listeners.clear();
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    this.listeners.clear();
   }
-  
+
   private syncToGlobal() {
     // 同步到 window.__LOADING_PROGRESS__
     if (typeof window !== 'undefined' && window.__LOADING_PROGRESS__) {
@@ -150,14 +150,14 @@ class LoadingProgressManager {
       }
     }
   }
-  
+
   subscribe(listener: (state: LoadingState) => void) {
     this.listeners.add(listener);
     return () => {
-        this.listeners.delete(listener);
-    }
+      this.listeners.delete(listener);
+    };
   }
-  
+
   private notifyListeners(state: LoadingState) {
     for (const listener of this.listeners) {
       listener(state);

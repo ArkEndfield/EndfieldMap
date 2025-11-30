@@ -1,11 +1,13 @@
-import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
-import { SettingItem } from '../../components/setting_item';
+import { StorageKey } from '@endfieldmap/tools';
 import { useTranslation } from 'react-i18next';
+
+import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { usePromiseState } from '@/hooks/use_promise_state';
 import { dataService } from '@/services/data';
+
 import { Loading } from '../../components/loading';
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
-import { StorageKey } from '@endfieldmap/tools';
+import { SettingItem } from '../../components/setting_item';
 
 export const EntitySettings = () => {
   const { t } = useTranslation('settings');

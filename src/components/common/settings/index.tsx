@@ -1,18 +1,20 @@
+import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { TabList, type TabItem } from './tabs';
+
+import { useIsMobile } from '@/hooks/use_is_mobile';
+import uiManager from '@/services/ui_manager';
+import { cn } from '@/utils/style';
+
+import { CloseButton } from '../close_button';
+import { DataBaseIcon, LayoutAndLanguageIcon,MapIcon, QuestionIcon } from '../icons';
 import { ScrollArea } from '../scroll_area';
-import { DataBaseIcon, MapIcon, QuestionIcon, LayoutAndLanguageIcon } from '../icons';
-import { DisplaySettings } from './items/display';
-import { MapSetting } from './items/map';
 import { AboutPage } from './items/about';
 import { DataSetting } from './items/data';
-import uiManager from '@/services/ui_manager';
-import { observer } from 'mobx-react-lite';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
-import { CloseButton } from '../close_button';
+import { DisplaySettings } from './items/display';
+import { MapSetting } from './items/map';
+import { type TabItem,TabList } from './tabs';
 
 export interface SettingsPageProps {
   open: boolean;

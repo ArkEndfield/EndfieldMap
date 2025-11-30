@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
+
 import LocationIcon from './location';
 
 interface EntityGroupProps {
@@ -57,7 +58,7 @@ export default function EntityGroup({
               'repeating-linear-gradient(135deg, transparent, transparent 0.1em, #4a4a4a89 0.15em, #4a4a4a89 0.2em)',
           }}
         />
-        
+
         {/* Bottom border */}
         <div
           className="absolute left-0 right-0 bottom-0 h-[0.35em] z-1"
@@ -67,17 +68,12 @@ export default function EntityGroup({
         />
 
         {/* Icon */}
-        <div
-          className="shrink-0 grow-0 text-[0.64em] -mb-[0.2em] z-1"
-          onClick={handleIconClick}
-        >
+        <div className="shrink-0 grow-0 text-[0.64em] -mb-[0.2em] z-1" onClick={handleIconClick}>
           <LocationIcon iconColor={iconColor} />
         </div>
 
         {/* Title */}
-        <div className="text-[1.6em] font-black mr-[0.2em] whitespace-nowrap z-1">
-          {title}
-        </div>
+        <div className="text-[1.6em] font-black mr-[0.2em] whitespace-nowrap z-1">{title}</div>
 
         {/* Subtitle */}
         {subtitle && (
@@ -113,21 +109,14 @@ export default function EntityGroup({
           transition={{ duration: 0.3 }}
         >
           {/* Yellow accent lines */}
-          <div
-            className="absolute left-[0.4em] top-[0.5em] w-[1.5px] h-[1.5px] bg-[#f9f853]"
-          />
-          <div
-            className="absolute left-[0.4em] top-[0.8em] bottom-[0.4em] w-[1.5px] bg-[#f9f853]"
-          />
+          <div className="absolute left-[0.4em] top-[0.5em] w-[1.5px] h-[1.5px] bg-[#f9f853]" />
+          <div className="absolute left-[0.4em] top-[0.8em] bottom-[0.4em] w-[1.5px] bg-[#f9f853]" />
 
           {/* 占位 */}
           <div className="h-2.5" />
 
           {/* Content */}
-          {children || (
-            <div className="text-center text-[0.8em]">...</div>
-          )}
-
+          {children || <div className="text-center text-[0.8em]">...</div>}
 
           <div className="h-1" />
         </motion.div>

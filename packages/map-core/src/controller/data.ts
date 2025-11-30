@@ -1,6 +1,6 @@
 import type { EntityController } from '@endfieldmap/map-core/controller/entity';
-import { logger } from '@endfieldmap/tools';
 import type { ExportedData } from '@endfieldmap/map-core/types/data';
+import { logger } from '@endfieldmap/tools';
 
 /**
  * 数据控制器配置

@@ -1,6 +1,7 @@
+import React from 'react';
+
 import { MinusIcon, PlusIcon } from '@/components/common/icons';
 import { cn } from '@/utils/style';
-import React from 'react';
 
 export interface RangeButtonProps {
   disabled?: boolean;
@@ -101,12 +102,12 @@ export const RangeBar: React.FC<RangeBarProps> = ({
 
       // Calculate new value
       let newValue = min + percentage * (max - min);
-      
+
       // Apply step only if snapToStep is enabled
       if (snapToStep) {
         newValue = Math.round(newValue / step) * step;
       }
-      
+
       newValue = Math.max(min, Math.min(max, newValue));
 
       handleChange(newValue, isDragging);
@@ -196,9 +197,7 @@ export const RangeBar: React.FC<RangeBarProps> = ({
   const isVertical = direction === 'vertical';
 
   return (
-    <div
-      className={`flex items-center justify-stretch ${isVertical ? 'flex-col h-full' : ''}`}
-    >
+    <div className={`flex items-center justify-stretch ${isVertical ? 'flex-col h-full' : ''}`}>
       <div className={`flex items-center gap-3 w-full ${isVertical ? 'flex-col h-full' : ''}`}>
         {/* Slider container - rotates 90deg in vertical mode */}
         <div
@@ -266,7 +265,9 @@ export const RangeBar: React.FC<RangeBarProps> = ({
                 isDragging ? 'cursor-grabbing scale-110' : ''
               }`}
               style={{
-                left: isVertical ? `${percentage > 0 ? 100 - percentage : 100}%` : `${percentage > 0 ? percentage : 0}%`,
+                left: isVertical
+                  ? `${percentage > 0 ? 100 - percentage : 100}%`
+                  : `${percentage > 0 ? percentage : 0}%`,
               }}
               onMouseDown={startDrag}
               onTouchStart={startDrag}
@@ -294,8 +295,7 @@ export const RangeBar: React.FC<RangeBarProps> = ({
                   top: '-50%',
                   rotate: '225deg',
                   transform: 'translateY(-50%)',
-                  clipPath:
-                    'polygon(100% 0, 0 50%, 100% 100%, 100% calc(100% - 0.25em), 0.25em 50%, 100% 0.25em)',
+                  clipPath: 'polygon(100% 0, 0 50%, 100% 100%, 100% calc(100% - 0.25em), 0.25em 50%, 100% 0.25em)',
                 }}
               ></div>
             </div>

@@ -1,23 +1,24 @@
-import type { CustomPointPresetStorage, CustomPointPreset, CustomPointPresetExportBundle } from '@eftypes/custom_point';
-import type { CustomPointMapData, EndfieldMapAdapter, StorageData, EntityVisibility } from '@endfieldmap/map-core';
-import { MAP_EVENT, CustomPointKey } from '@endfieldmap/map-core';
+import type { CustomPointPreset, CustomPointPresetExportBundle,CustomPointPresetStorage } from '@eftypes/custom_point';
+import type { CustomPointMapData, EndfieldMapAdapter, EntityVisibility,StorageData } from '@endfieldmap/map-core';
+import { CustomPointKey,MAP_EVENT } from '@endfieldmap/map-core';
+import { getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
 import type { CustomPointData, CustomPointIdKey } from '@endfieldmap/map-core/types';
 import type { Position } from '@endfieldmap/map-core/types/position';
 import {
+  calculateXYZDistance,
+  crd2xyz,
+  debounce,
+  LocalStorageDB,
+  LocalStorageKey,
+  logger,
   MapIndex,
   StorageKey,
   type StorageManager,
-  debounce,
-  crd2xyz,
-  logger,
-  calculateXYZDistance,
-  LocalStorageDB,
-  LocalStorageKey,
 } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction, toJS } from 'mobx';
-import { DEBOUNCE_INTERVAL } from '@/const/data';
-import { getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
+
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { DEBOUNCE_INTERVAL } from '@/const/data';
 
 /**
  * 自定义标点数据管理器
@@ -722,10 +723,7 @@ export class CustomPointDataService {
   private generateCustomPointId(mapIndex: MapIndex): number {
     if (!this.adapter) return Date.now();
     const existingIds =
-      this.adapter.customPointController.entityLayer
-        .get(mapIndex)
-        ?.entity.features
-        .map((f) => f.id) ?? [];
+      this.adapter.customPointController.entityLayer.get(mapIndex)?.entity.features.map((f) => f.id) ?? [];
     let newId = Date.now();
     while (existingIds.includes(newId)) {
       newId++;

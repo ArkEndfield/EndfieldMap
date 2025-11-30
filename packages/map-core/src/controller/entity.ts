@@ -1,16 +1,16 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { DEFAULT_CLUSTER_DISTANCE, MarkedFeatureFilterMode, type MapIndex } from '@endfieldmap/map-core/const/map';
+import { DEFAULT_CLUSTER_DISTANCE, type MapIndex,MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { CommonPointDataManager } from '@endfieldmap/map-core/data/entity/common_point';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
 import { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
+import type { ClusterOptions } from '@endfieldmap/map-core/render/source/_base';
+import type { EntityVisibility, FeatureMarked, StorageData } from '@endfieldmap/map-core/types/data';
 import type { EntityCategoryData, EntityData } from '@endfieldmap/map-core/types/entity';
+import type { EntityVisibilityChangeEventDetail } from '@endfieldmap/map-core/types/event';
 import type { JSONLoader } from '@endfieldmap/tools';
 import { groupBy, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
-import type { EntityVisibilityChangeEventDetail } from '@endfieldmap/map-core/types/event';
-import type { EntityVisibility, FeatureMarked, StorageData } from '@endfieldmap/map-core/types/data';
 
 export interface EntityControllerConfig {
   jsonLoader: JSONLoader;

@@ -1,13 +1,15 @@
+import { observer } from 'mobx-react-lite';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion } from 'motion/react';
-import { observer } from 'mobx-react-lite';
+
+import { useAdapter } from '@/hooks/use_adapter';
+import { dataService } from '@/services/data';
+import uiManager from '@/services/ui_manager';
+
 import { StrokeSVGFilter } from './deco';
 import { LeftContentContainer } from './left';
 import { RightContentContainer } from './right';
-import { dataService } from '@/services/data';
-import { useAdapter } from '@/hooks/use_adapter';
-import uiManager from '@/services/ui_manager';
 
 const PCPopup: React.FC = observer(() => {
   const { adapter } = useAdapter();

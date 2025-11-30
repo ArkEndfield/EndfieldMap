@@ -2,14 +2,14 @@ import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import {
+  type EntityHitTestResult,
   hitTestEntitiesAt,
   selectTopmostHitResult,
-  type EntityHitTestResult,
 } from '@endfieldmap/map-core/event/entity_hit_test';
-import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
-import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
+import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
 import { debounce, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';

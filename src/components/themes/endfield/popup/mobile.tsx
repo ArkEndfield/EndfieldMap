@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Sheet } from 'react-modal-sheet';
-import { dataService } from '@/services/data';
-import { useAdapter } from '@/hooks/use_adapter';
-import { snapPoints } from '@/const/ui';
-import { LeftContent } from './left';
-import { hasReward } from '@/utils/reward';
-import { ScrollArea } from '@/components/common/scroll_area';
-import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
-import { useTranslation } from 'react-i18next';
-import { RightContent } from './right';
 import { AnimatePresence, motion } from 'motion/react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Sheet } from 'react-modal-sheet';
+
+import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
+import { ScrollArea } from '@/components/common/scroll_area';
+import { snapPoints } from '@/const/ui';
+import { useAdapter } from '@/hooks/use_adapter';
+import { dataService } from '@/services/data';
+import { hasReward } from '@/utils/reward';
+
+import { LeftContent } from './left';
+import { RightContent } from './right';
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
   const variants = {
@@ -75,7 +77,10 @@ const MobilePopup: React.FC = observer(() => {
     adapter?.activeFeatureController.clearActiveFeature();
   };
 
-  const open = !!activeFeature && !dataService.electricPoleDataService.isInElectricOperateMode && !dataService.customPointDataService.isInCustomPointOperateMode;
+  const open =
+    !!activeFeature &&
+    !dataService.electricPoleDataService.isInElectricOperateMode &&
+    !dataService.customPointDataService.isInCustomPointOperateMode;
 
   const entity = activeFeature?.data;
   const showRewards = entity && hasReward(entity);

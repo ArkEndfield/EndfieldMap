@@ -1,7 +1,7 @@
 import type { LanguageLocale } from '@eftypes/language';
 import { Language } from '@endfieldmap/tools';
 
-export const languageConfig: { code: Language; locale: LanguageLocale, displayName: string }[] = [
+export const languageConfig: { code: Language; locale: LanguageLocale; displayName: string }[] = [
   { code: Language.ZH_CN, locale: 'cn', displayName: '简体中文' },
   { code: Language.ZH_TW, locale: 'tc', displayName: '繁体中文' },
   { code: Language.EN_US, locale: 'en', displayName: 'English' },

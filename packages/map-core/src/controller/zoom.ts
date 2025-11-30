@@ -1,8 +1,9 @@
 import Control from 'ol/control/Control';
 import type Map from 'ol/Map';
 import type View from 'ol/View';
-import mapEventEmitter from '../event/emitter';
+
 import { MAP_EVENT } from '../const';
+import mapEventEmitter from '../event/emitter';
 
 type ZoomChangeCallback = (zoom: number, minZoom: number, maxZoom: number) => void;
 
@@ -106,7 +107,7 @@ export class ZoomController extends Control {
     if (animate) {
       this.view.animate({
         zoom: zoom,
-        duration: 200
+        duration: 200,
       });
     } else {
       this.view.setZoom(zoom);

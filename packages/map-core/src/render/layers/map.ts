@@ -2,12 +2,12 @@ import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import { DEFAULT_OPACITY, LayerType, LayerTypeKey, MapType, MapTypeKey } from '@endfieldmap/map-core/const/map';
 import { MultiLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { ImagePool } from '@endfieldmap/tools';
+import { observable } from 'mobx';
 import type { Tile } from 'ol';
 import { ImageTile } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import type { Projection } from 'ol/proj';
 import { XYZ } from 'ol/source';
-import { observable } from 'mobx';
 
 const emptyImageBase64String = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 const emptyImage = new Image();

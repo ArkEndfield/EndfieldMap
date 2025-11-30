@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+
 import { ComponentType, type ThemedComponentsMap } from '@/components/themes/types';
 
 const Popup = lazy(() => import('./popup'));

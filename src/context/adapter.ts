@@ -7,4 +7,3 @@ export interface AdapterContextProps {
 }
 
 export const AdapterContext = createContext<AdapterContextProps | null>(null);
-

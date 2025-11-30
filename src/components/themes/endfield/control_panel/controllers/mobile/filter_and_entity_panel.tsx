@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Sheet } from 'react-modal-sheet';
-import EntityPanel from '../entity_panel';
+
 import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
-import { useTranslation } from 'react-i18next';
+
+import EntityPanel from '../entity_panel';
 import { Filters } from '../filters';
 
 const FilterButtonDeco = ({ className }: { className?: string }) => (

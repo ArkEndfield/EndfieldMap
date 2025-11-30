@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce } from '@endfieldmap/tools';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { cn } from '@/utils/style';
 
 type ScrollbarVisibility = 'hidden' | 'auto' | 'scrollbar';

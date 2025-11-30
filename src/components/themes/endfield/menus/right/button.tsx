@@ -29,9 +29,7 @@ export const MapButton: React.FC<ButtonProps> = ({ active = false, children, onC
       <div className="relative z-1 flex items-center justify-center gap-2">
         {/* Left border decoration */}
         <span className="ml-4 w-[0.25em] h-[1.2em] border-[0.15em] border-r-0 border-[#444444]" />
-        <div className='flex-1'>
-          {children}
-        </div>
+        <div className="flex-1">{children}</div>
         {/* Right border decoration */}
         <span className="mr-4 w-[0.25em] h-[1.2em] border-[0.15em] border-l-0 border-[#444444]" />
       </div>

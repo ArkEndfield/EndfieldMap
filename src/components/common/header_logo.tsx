@@ -105,13 +105,7 @@ export const HeaderLogo = (props: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M167.31 17.9883H150.438"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M167.31 17.9883H150.438" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     <path
       d="M146.885 17.9883H142.003"
       stroke="#747575"
@@ -133,13 +127,7 @@ export const HeaderLogo = (props: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M58.0875 17.9883H48.321"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M58.0875 17.9883H48.321" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     <path
       d="M44.7683 17.9883H34.9994"
       stroke="#747575"
@@ -161,13 +149,7 @@ export const HeaderLogo = (props: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M167.224 12.4073H161.46"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M167.224 12.4073H161.46" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     <path
       d="M151.502 12.4073H129.958"
       stroke="#747575"
@@ -175,13 +157,7 @@ export const HeaderLogo = (props: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M125.82 12.4073H62.4028"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M125.82 12.4073H62.4028" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     <path
       d="M62.4028 12.4073H39.9322"
       stroke="#747575"
@@ -224,20 +200,8 @@ export const HeaderLogo = (props: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M106.66 6.82867H90.5366"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M86.4378 6.82867H48.056"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M106.66 6.82867H90.5366" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M86.4378 6.82867H48.056" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     <path
       d="M44.0655 6.82867H34.9464"
       stroke="#747575"
@@ -245,36 +209,12 @@ export const HeaderLogo = (props: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M185.244 1.25H172.256"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M185.244 1.25H172.256" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M168.45 1.25H151.435" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path
-      d="M147.852 1.25H142.927"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M147.852 1.25H142.927" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M134.418 1.25H119.64" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path
-      d="M112.475 1.25H65.4579"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M58.2925 1.25H48.4408"
-      stroke="#747575"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M112.475 1.25H65.4579" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M58.2925 1.25H48.4408" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M44.858 1.25H35.0085" stroke="#747575" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );

@@ -1,4 +1,5 @@
 import { cn } from '@/utils/style';
+
 import { MenuListForPC } from './left';
 import { RightMenu } from './right';
 
@@ -18,7 +19,7 @@ export default function PCMenus() {
         <span className="absolute w-0.5 h-0.5 bg-[#FDFA85] left-1.5 top-0"></span>
       </div>
       <MenuListForPC />
-      <div className='ml-auto'>
+      <div className="ml-auto">
         <RightMenu />
       </div>
       <div className="absolute bottom-0 right-4 border-[1.5px] border-[#FDFA85] h-2 w-1 border-l-0"></div>

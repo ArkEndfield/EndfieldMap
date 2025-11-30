@@ -1,9 +1,11 @@
 import { observer } from 'mobx-react-lite';
-import { useEffect, useState, useRef } from 'react';
-import { RangeInput } from './range_input';
+import { useEffect, useRef,useState } from 'react';
+
+import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
-import { useAdapter } from '@/hooks/use_adapter';
+
+import { RangeInput } from './range_input';
 
 const ZoomController: React.FC = observer(() => {
   const isMobile = useIsMobile();
@@ -55,10 +57,7 @@ const ZoomController: React.FC = observer(() => {
   if (isMobile) return null;
 
   return (
-    <div
-      ref={containerRef}
-      className="fixed right-4 top-1/2 -translate-y-1/2"
-    >
+    <div ref={containerRef} className="fixed right-4 top-1/2 -translate-y-1/2">
       <RangeInput
         value={zoom}
         onChange={handleZoomChange}
