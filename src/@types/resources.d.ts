@@ -99,10 +99,10 @@ interface Resources {
       "language": {
         "change_language": "切换语言",
         "language_list": {
-          "zh-CN": "简体中文",
           "en-US": "英语",
           "ja-JP": "日语",
           "ko-KR": "韩语",
+          "zh-CN": "简体中文",
           "zh-TW": "繁体中文"
         },
         "title": "语言"

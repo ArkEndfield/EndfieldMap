@@ -8,9 +8,9 @@ import type { Coordinate } from 'ol/coordinate';
  */
 export const getMapCenter = (mapId?: MapIndex | null): Coordinate => {
   if (!mapId || !(mapId in DEFAULT_MAP_CENTERS)) {
-    return DEFAULT_MAP_CENTERS[MapIndex.MAP01];
+    return xyz2crd(DEFAULT_MAP_CENTERS[MapIndex.MAP01], MapIndex.MAP01);
   }
-  return DEFAULT_MAP_CENTERS[mapId];
+  return xyz2crd(DEFAULT_MAP_CENTERS[mapId], mapId);
 };
 
 /**
@@ -20,7 +20,7 @@ export const getMapCenter = (mapId?: MapIndex | null): Coordinate => {
  * @returns  OL坐标
  */
 export const xyz2crd = (pos: { x: number; y: number; z: number }, mapIndex: MapIndex) => {
-  const coords = mapIndex === MapIndex.MAP02 ? [pos.x / 8 + 80, pos.z / 8 + 224] : [pos.x / 8 + 128, pos.z / 8 + 160];
+  const coords = mapIndex === MapIndex.MAP02 ? [pos.x / 8 + 80, pos.z / 8 + 224] : [pos.x / 8 + 128, pos.z / 8 + 144];
 
   return coords;
 };
@@ -33,7 +33,7 @@ export const xyz2crd = (pos: { x: number; y: number; z: number }, mapIndex: MapI
  */
 export const crd2xyz = (coordinate: Coordinate, mapIndex: MapIndex) => {
   const x = mapIndex === MapIndex.MAP02 ? coordinate[0] - 80 : coordinate[0] - 128;
-  const z = mapIndex === MapIndex.MAP02 ? coordinate[1] - 224 : coordinate[1] - 160;
+  const z = mapIndex === MapIndex.MAP02 ? coordinate[1] - 224 : coordinate[1] - 144;
   return {
     x: x * 8,
     y: 0,
