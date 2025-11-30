@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState, useRef } from 'react';
-import { motion } from 'motion/react';
 import { RangeInput } from './range_input';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
@@ -52,17 +51,11 @@ const ZoomController: React.FC = observer(() => {
     adapter.zoomController?.setZoom(newZoom, true);
   };
 
-  const initial = isMobile ? { y: '100%' } : { x: '100%' };
-  const animate = isMobile ? { y: 0 } : { x: 0 };
-
   // TODO: mobile
   if (isMobile) return null;
 
   return (
-    <motion.div
-      initial={initial}
-      animate={animate}
-      transition={{ duration: 0.1, ease: 'easeOut' }}
+    <div
       ref={containerRef}
       className="fixed right-4 top-1/2 -translate-y-1/2"
     >
@@ -78,7 +71,7 @@ const ZoomController: React.FC = observer(() => {
         step={0.5}
         snapToStep={false}
       />
-    </motion.div>
+    </div>
   );
 });
 

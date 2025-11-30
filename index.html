@@ -13,6 +13,365 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- 初始加载界面，React 加载完成后移除 -->
+    <div id="initial-loader" class="initial-loader">
+      <div id="loader-bg" class="loader-bg"></div>
+      <div id="loader-wipe" class="loader-wipe"></div>
+      <div class="loader-content">
+        <!-- 去掉 Logo 展示 -->
+        <div class="loader-progress-container">
+          <div class="loader-progress-bar-wrapper"> <!-- 新增 wrapper 用于小屏布局 -->
+            <div class="loader-progress-bar">
+                <div class="loader-progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <!-- 新设计的文本容器，跟随进度条移动 -->
+            <div class="loader-text-container" id="progress-text-container">
+                <div class="loader-deco-line"></div>
+                <div class="loader-percent">
+                    <span id="progress-text">0</span>%
+                </div>
+                <div class="loader-status">
+                    <div class="loader-dots">
+                        <span></span><span></span>
+                    </div>
+                    <div class="loader-status-text">Updating...</div>
+                </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .initial-loader {
+        position: fixed;
+        inset: 0;
+        background: #141414;
+        z-index: 9999;
+        --loader-color: #FEFA53;
+        --loader-text-gray: #888;
+      }
+
+      .loader-bg {
+        position: absolute;
+        inset: 0;
+        background-image: url("/images/bg/page-bg-dark.jpg");
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+        filter: blur(20px);
+        transform: scale(1.1); /* 防止模糊边缘露底 */
+        transition: filter 0.1s linear;
+      }
+
+      .loader-wipe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background-color: var(--loader-color);
+        z-index: 10000;
+        transition: width 0.5s cubic-bezier(0.65, 0, 0.35, 1); /* 0.5s 展开 */
+      }
+
+      .initial-loader.wiping .loader-wipe {
+        width: 100%;
+      }
+
+      .initial-loader.fade-out {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease-out; /* 展开后淡出 */
+      }
+
+      .loader-content {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* 默认大屏幕样式：左侧竖向，贴边占满，从上到下 */
+      .loader-progress-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100vh; /* 占满高度 */
+        width: 10px; /* 增加粗细到 10px */
+        display: flex;
+        flex-direction: column; /* 从上到下 */
+      }
+
+      /* 统一使用 wrapper，确保高度和宽度在不同屏幕下行为一致 */
+      .loader-progress-bar-wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      .loader-progress-bar {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      .loader-progress-fill {
+        width: 100%;
+        height: 0%; /* 竖向高度变化 */
+        background: var(--loader-color);
+        transition: height 0.3s ease-out;
+        position: absolute;
+        top: 0; /* 从顶部开始 */
+        left: 0;
+      }
+
+      /* 新的文本容器样式 */
+      .loader-text-container {
+          position: absolute; /* 改为 absolute 以跟随父容器 */
+          left: 20px; /* PC 端初始左边距 */
+          top: 0%;
+          transform: translateY(-100%); /* 默认向上偏移 */
+          font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          pointer-events: none;
+          transition: top 0.3s ease-out; /* PC 端跟随动画 */
+      }
+
+      .loader-deco-line {
+          width: 2px;
+          height: 8px;
+          background-color: var(--loader-color);
+          margin-bottom: 2px;
+          border-radius: 1px;
+      }
+
+      .loader-percent {
+          font-size: 24px;
+          font-weight: bold;
+          color: var(--loader-color);
+          line-height: 1;
+          letter-spacing: -1px;
+      }
+
+      .loader-status {
+          margin-top: 3px;
+      }
+
+      .loader-dots {
+          display: flex;
+          gap: 2px;
+          margin-bottom: 2px;
+      }
+
+      .loader-dots span {
+          width: 3px;
+          height: 3px;
+          background-color: #666;
+          display: block;
+      }
+      
+      .loader-dots span:first-child {
+          background-color: #888;
+      }
+
+      .loader-status-text {
+          font-size: 10px;
+          color: var(--loader-text-gray);
+          letter-spacing: 0.5px;
+      }
+
+      /* 小屏幕适配：底部横向 */
+      @media (max-width: 768px) {
+        .loader-progress-container {
+          /* position: absolute; left: 0; display: flex; 继承自默认样式 */
+          top: auto;
+          bottom: 100px; /* 恢复原有的底部距离，避免贴底 */
+          width: 90vw; /* 恢复宽度限制 */
+          height: 14px;
+          flex-direction: row; /* 横向 */
+          align-items: center;
+        }
+
+        /* 进度条容器，留出右侧空间给文本，防止跟随的文本溢出屏幕 */
+        .loader-progress-bar-wrapper {
+          flex: 1;
+          height: 10px;
+          /* position: relative; 继承自默认样式 */
+          margin-right: 40px; /* 预留右侧空间 */
+          width: auto; /* 覆盖默认 */
+        }
+
+        /* .loader-progress-bar 样式完全继承自默认样式，无需重写 */
+
+        .loader-progress-fill {
+          width: 0%; /* 横向宽度变化 */
+          height: 100%;
+          /* position, top, left 继承自默认样式 */
+          transition: width 0.3s ease-out;
+        }
+        
+        .loader-text-container {
+            left: 0%;
+            top: 50%;
+            transform: translate(10px, -50%); /* 在进度条右侧，垂直居中 */
+            transition: left 0.3s ease-out; /* Mobile 端跟随动画 */
+        }
+        
+        .loader-percent {
+            font-size: 24px;
+        }
+      }
+
+    </style>
+
+    <script>
+      // 初始化进度（在 React 加载前就开始）
+      window.__LOADING_PROGRESS__ = {
+        current: 0,
+        target: 0,
+        stages: {},
+
+        update(stage, progress) {
+          this.stages[stage] = progress;
+          this.calculateTotal();
+        },
+
+        calculateTotal() {
+          // 简单的加权平均
+          const weights = {
+            INIT: 5,
+            I18N: 15,
+            STORAGE: 10,
+            COMPONENTS: 20,
+            MAP_ADAPTER: 15,
+            MAP_RENDER: 20,
+            ENTITY_RENDER: 15,
+          };
+          let total = 0;
+          // 总权重应为所有预定义权重的和：5+15+10+20+15+20+15 = 100
+          const totalPossibleWeight = 100;
+
+          for (const [stage, progress] of Object.entries(this.stages)) {
+            const weight = weights[stage] || 0;
+            total += (progress / 100) * weight;
+          }
+
+          this.target = Math.min(100, (total / totalPossibleWeight) * 100);
+          
+          // 防止初始计算过低
+          if (Object.keys(this.stages).length === 1 && this.stages.INIT) {
+             this.target = Math.max(5, this.target);
+          }
+        },
+
+        animate() {
+          const diff = this.target - this.current;
+          if (Math.abs(diff) > 0.1) {
+            this.current += diff * 0.1;
+            // 确保显示进度不超过 100
+            this.current = Math.min(100, this.current);
+            this.render();
+          } else if (this.target >= 100 && this.current < 100) {
+              // 强制完成
+              this.current = 100;
+              this.render();
+          }
+
+          // 如果未完成或需要继续渲染动画（例如淡出前最后一帧），继续循环
+          // 只有当完全结束并且 React 组件接管后调用 hide 才会真正停止
+          // 这里保持 loop 直到元素被移除
+          if (document.getElementById('initial-loader')) {
+            requestAnimationFrame(() => this.animate());
+          }
+        },
+
+        render() {
+          const fill = document.getElementById('progress-fill');
+          const text = document.getElementById('progress-text');
+          const textContainer = document.getElementById('progress-text-container');
+          const bg = document.getElementById('loader-bg');
+          const displayValue = Math.min(100, Math.round(this.current));
+          const isMobile = window.innerWidth <= 768;
+
+          if (bg) {
+            const maxBlur = 20;
+            const currentBlur = maxBlur * (1 - this.current / 100);
+            bg.style.filter = `blur(${currentBlur}px)`;
+          }
+
+          if (fill) {
+            if (isMobile) {
+                fill.style.width = this.current + '%';
+                fill.style.height = '100%';
+            } else {
+                // 大屏幕：从上到下，height 增加
+                fill.style.height = this.current + '%';
+                fill.style.width = '100%';
+            }
+          }
+          
+          if (text) {
+            text.textContent = displayValue;
+          }
+
+          if (textContainer) {
+            if (isMobile) {
+                // 小屏幕：文本跟随进度条末端
+                textContainer.style.left = this.current + '%';
+                textContainer.style.top = '50%';
+                textContainer.style.bottom = 'auto';
+                
+                // 简单的防溢出逻辑：当接近右侧时，改变变换基准
+                // (此处简化处理，因为新样式较小，不易溢出)
+            } else {
+                // 大屏幕：文本跟随进度条末端（从上往下）
+                textContainer.style.top = this.current + '%';
+                textContainer.style.left = '20px';
+                // 向上偏移，使文本位于进度条末端上方
+                textContainer.style.transform = 'translateY(-100%)';
+            }
+          }
+        },
+
+        hide() {
+          const loader = document.getElementById('initial-loader');
+          const progressFill = document.getElementById('progress-fill');
+          
+          if (loader && progressFill) {
+            // 获取 transition 时间，确保进度条跑完
+            const transitionDuration = parseFloat(getComputedStyle(progressFill).transitionDuration) * 1000;
+            const waitTime = Math.max(transitionDuration, 300);
+            
+            // 额外展示时间，让用户看清 100%
+            const displayTime = 500; 
+
+            setTimeout(() => {
+                // 第一阶段：开始 wipe 动画
+                loader.classList.add('wiping');
+                
+                // 第二阶段：wipe 动画完成后 (0.5s)，开始淡出
+                setTimeout(() => {
+                    loader.classList.add('fade-out');
+                    // 第三阶段：淡出完成后 (0.5s)，移除元素
+                    setTimeout(() => loader.remove(), 500);
+                }, 500); // wipe duration
+                
+            }, waitTime + displayTime);
+          } else if (loader) {
+             // 降级处理
+             loader.classList.add('fade-out');
+             setTimeout(() => loader.remove(), 500);
+          }
+        },
+      };
+
+      // 启动动画
+      window.__LOADING_PROGRESS__.animate();
+      // 初始阶段
+      window.__LOADING_PROGRESS__.update('INIT', 100);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

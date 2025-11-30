@@ -108,6 +108,14 @@ interface Resources {
         "title": "语言"
       },
       "layout": {
+        "dark_mode": {
+          "title": "深色模式",
+          "value": {
+            "auto": "自动",
+            "dark": "深色",
+            "light": "浅色"
+          }
+        },
         "popup": {
           "right_adjust": {
             "description": "当展开弹窗并且弹窗超出屏幕外，自动调整地图视图位置",

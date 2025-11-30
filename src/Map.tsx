@@ -7,6 +7,7 @@ import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import type { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { SettingsPage } from './components/common/settings';
+import { cn } from './utils/style';
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
@@ -61,7 +62,12 @@ function EndfieldMap() {
   return (
     <div className="relative w-full h-full overflow-hidden">
       {/* 地图容器 */}
-      <div ref={container} className="fixed w-full h-full"></div>
+      <div ref={container} className={
+        cn(
+          "fixed w-full h-full",
+          "dark:bg-[url('/images/bg/page-bg-dark.jpg')] bg-[url('/images/bg/page-bg-light.jpg')] bg-cover bg-center",
+        )
+      }></div>
 
       {/* 控制组件 */}
       {adapter && <Controllers adapter={adapter} renderMap={renderMap} />}

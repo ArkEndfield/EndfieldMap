@@ -1,14 +1,24 @@
 import React, { Suspense } from 'react';
 
-import PageLoading from '@/components/common/page_loading';
+import { LoadingScreen } from '@/components/common/loading_screen';
+import { loadingManager, LoadingStageId } from '@/services/loading';
 
-const EndfieldMap = React.lazy(() => import('@/Map'));
+const EndfieldMap = React.lazy(() => {
+  loadingManager.updateStageProgress(LoadingStageId.COMPONENTS, 10);
+  return import('@/Map').then((module) => {
+    loadingManager.completeStage(LoadingStageId.COMPONENTS);
+    return module;
+  });
+});
 
 function App() {
   return (
-    <Suspense fallback={<PageLoading />}>
-      <EndfieldMap />
-    </Suspense>
+    <>
+      <LoadingScreen />
+      <Suspense fallback={null}>
+        <EndfieldMap />
+      </Suspense>
+    </>
   );
 }
 

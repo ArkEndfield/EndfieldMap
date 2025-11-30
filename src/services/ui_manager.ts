@@ -1,21 +1,24 @@
 import { themeNames, type ThemeNames } from '@/components/themes';
 import { UILocalStorageKey } from '@/const/storage';
+import { DARK_MODE } from '@/const/ui';
 import { LocalStorageDB } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 
 class UIManager {
+  private mediaQueryList: MediaQueryList | null = null;
+
   @observable accessor sidebarCollapsed!: boolean;
   @observable accessor settingsShown: boolean;
   @observable accessor theme!: ThemeNames;
   @observable accessor electricPoleManagerOpen: boolean;
   @observable accessor customPointManagerOpen: boolean;
-  @observable accessor adjustPopup: boolean;
+  @observable accessor adjustPopup!: boolean;
+  @observable accessor darkMode!: DARK_MODE;
 
   constructor() {
     this.settingsShown = false;
     this.electricPoleManagerOpen = false;
     this.customPointManagerOpen = false;
-    this.adjustPopup = true;
     this.restoreDataFromLocalStorage();
   }
 
@@ -23,10 +26,13 @@ class UIManager {
     const sidebarCollapsed = LocalStorageDB.get<boolean>(UILocalStorageKey.SIDEBAR_COLLAPSED) ?? true;
     const theme = LocalStorageDB.get<ThemeNames>(UILocalStorageKey.THEME) ?? themeNames.ENDFIELD;
     const adjustPopup = LocalStorageDB.get<boolean>(UILocalStorageKey.ADJUST_POPUP) ?? true;
+    const darkMode = LocalStorageDB.get<DARK_MODE>(UILocalStorageKey.DARK_MODE) ?? DARK_MODE.AUTO;
+
     return {
       sidebarCollapsed,
       theme,
       adjustPopup,
+      darkMode,
     };
   }
 
@@ -35,6 +41,7 @@ class UIManager {
     this.setSidebarCollapsed(data.sidebarCollapsed);
     this.setTheme(data.theme);
     this.setAdjustPopupOpen(data.adjustPopup);
+    this.setDarkMode(data.darkMode);
   }
 
   // region: 主题
@@ -125,6 +132,37 @@ class UIManager {
   public toggleAdjustPopup() {
     this.setAdjustPopupOpen(!this.adjustPopup);
   }
+  // endregion
+
+  // region: dark mode
+  @action
+  public setDarkMode(mode: DARK_MODE) {
+    this.darkMode = mode;
+    LocalStorageDB.set(UILocalStorageKey.DARK_MODE, mode);
+
+    if (mode === DARK_MODE.AUTO) {
+      if (!this.mediaQueryList) {
+        this.mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
+      }
+      this.mediaQueryList.addEventListener('change', this.handleSystemThemeChange);
+      this.handleSystemThemeChange(this.mediaQueryList);
+    } else {
+      this.mediaQueryList?.removeEventListener('change', this.handleSystemThemeChange);
+      if (mode === DARK_MODE.DARK) {
+        document.body.classList.add('dark');
+      } else {
+        document.body.classList.remove('dark');
+      }
+    }
+  }
+
+  private handleSystemThemeChange = (e: MediaQueryList | MediaQueryListEvent) => {
+    if (e.matches) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  };
   // endregion
 }
 

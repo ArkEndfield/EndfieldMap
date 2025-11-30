@@ -11,6 +11,7 @@ import { getLanguage } from '@/utils/language';
 import type { LanguageLocale } from '@eftypes/language';
 import { getAssetUrls } from '@/utils/url';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { loadingManager, LoadingStageId } from '@/services/loading';
 
 /**
  * 地图适配器 hook
@@ -25,9 +26,14 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   const init = useCallback(async () => {
     if (adapter.current) return;
 
-    // 初始化数据服务
+    // LOADING 初始化数据服务
+    loadingManager.updateStageProgress(LoadingStageId.STORAGE, 10);
     await dataService.init();
+    // LOADING
+    loadingManager.completeStage(LoadingStageId.STORAGE);
 
+    // LOADING
+    loadingManager.updateStageProgress(LoadingStageId.MAP_ADAPTER, 20);
     adapter.current = new EndfieldMapAdapter({
       container: containerRef.current!,
       asset: getAssetUrls(assetsHost),
@@ -45,10 +51,16 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
     // 初始化鼠标指针样式监听器
     initCursorEventListeners(adapter.current);
+
+    // LOADING
+    loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
   }, [containerRef]);
 
   const renderMap = useCallback((mapIdx?: MapIndex) => {
     if (adapter.current) {
+
+      // LOADING
+      loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 10);
       // 从 localStorage 获取数据
       const data = dataService.getDataFromLocalStorage(mapIdx);
       const currentMap = data.currentMap;
@@ -56,6 +68,10 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       adapter.current.mapController.setZoom(data.zoom);
       // 渲染地图
       adapter.current.renderMap(currentMap);
+
+      // LOADING
+      loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 50);
+      
       // 设置是否聚合
       adapter.current.setClusterEnable(data.enableCluster);
       // 设置鼠标悬停检测响应时间
@@ -75,6 +91,10 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
             adapter.current.entityController.importMarkedFeatures(storedFeatureMarked);
           }
         }
+        
+        // LOADING
+        loadingManager.completeStage(LoadingStageId.MAP_RENDER);
+        loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);
       });
       // 设置地图名称
       adapter.current.renderAreaName(getLanguage(i18n.language as LanguageLocale));
