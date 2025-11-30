@@ -18,7 +18,7 @@ import {
 import { action, computed, observable, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
-import { DEBOUNCE_INTERVAL } from '@/const/data';
+import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/data';
 
 /**
  * 电线杆数据管理器
@@ -32,6 +32,9 @@ export class ElectricPoleDataService {
 
   /** 是否已经注册了 adapter */
   private adapterRegistered: boolean = false;
+
+  /** 当前数据版本 */
+  @observable accessor dataVersion: VersionType = '0.0.1';
 
   /** 预设存储结构 */
   @observable accessor presetStorage: ElectricPolePresetStorage = {
@@ -805,8 +808,17 @@ export class ElectricPoleDataService {
    * - 若导入的预设 ID 与现有预设重复，则为导入的预设生成新的 ID
    */
   public async importPresetBundle(bundle: ElectricPolePresetExportBundle) {
-    if (!bundle || bundle.type !== 'electric_pole_preset_bundle' || !Array.isArray(bundle.presets)) {
+    if (!bundle || bundle.type !== EXPORT_TYPE_KEY.ELECTRIC_POLE_PRESET || !Array.isArray(bundle.presets)) {
       throw new Error('Invalid electric pole preset bundle');
+    }
+
+    // 检查版本
+    if (bundle.version !== this.dataVersion) {
+      // TODO: 版本不匹配时的处理逻辑
+      logger.warn('[ElectricPoleDataService|importPresetBundle] Importing preset bundle version mismatch', {
+        expected: this.dataVersion,
+        actual: bundle.version,
+      });
     }
 
     const now = Date.now();
@@ -986,8 +998,8 @@ export class ElectricPoleDataService {
    */
   private async downloadPresetBundle(presets: ElectricPolePreset[]) {
     const bundle: ElectricPolePresetExportBundle = {
-      type: 'electric_pole_preset_bundle',
-      version: 1,
+      type: EXPORT_TYPE_KEY.ELECTRIC_POLE_PRESET,
+      version: this.dataVersion,
       exportedAt: Date.now(),
       presets: presets.map((p) => ({
         id: p.id,
