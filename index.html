@@ -32,11 +32,16 @@
               <div class="loader-deco-line"></div>
               <div class="loader-percent"><span id="progress-text">0</span>%</div>
               <div class="loader-status">
-                <div class="loader-dots"><span></span><span></span></div>
-                <div class="loader-status-text">Updating...</div>
+                <div class="loader-dots" id="loader-dots"><span></span><span></span></div>
+                <div class="loader-status-text" id="loader-status-text">Updating...</div>
               </div>
             </div>
           </div>
+        </div>
+        <div class="loader-error" id="loader-error" style="display: none">
+          <div class="loader-error-title">ERROR</div>
+          <div class="loader-error-msg" id="loader-error-msg"></div>
+          <div class="loader-error-action">Please refresh the page to try again</div>
         </div>
       </div>
     </div>
@@ -49,6 +54,7 @@
         z-index: 9999;
         --loader-color: #fefa53;
         --loader-text-gray: #888;
+        --loading-progress: 0;
       }
 
       .loader-bg {
@@ -58,7 +64,7 @@
         background-size: cover;
         background-position: center;
         z-index: 0;
-        filter: blur(20px);
+        filter: blur(calc(20px * (1 - var(--loading-progress) / 100)));
         transform: scale(1.1); /* 防止模糊边缘露底 */
         transition: filter 0.1s linear;
       }
@@ -116,7 +122,7 @@
 
       .loader-progress-fill {
         width: 100%;
-        height: 0%; /* 竖向高度变化 */
+        height: calc(var(--loading-progress) * 1%); /* 竖向高度变化 */
         background: var(--loader-color);
         transition: height 0.3s ease-out;
         position: absolute;
@@ -128,7 +134,7 @@
       .loader-text-container {
         position: absolute; /* 改为 absolute 以跟随父容器 */
         left: 20px; /* PC 端初始左边距 */
-        top: 0%;
+        top: calc(var(--loading-progress) * 1%);
         transform: translateY(-100%); /* 默认向上偏移 */
         font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         pointer-events: none;
@@ -178,6 +184,45 @@
         letter-spacing: 0.5px;
       }
 
+      .loader-error {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 500px;
+        padding: 24px;
+        background: rgba(20, 20, 20, 0.95);
+        border: 1px solid #ff4d4f;
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        z-index: 20000;
+        color: #ff4d4f;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        backdrop-filter: blur(10px);
+      }
+
+      .loader-error-title {
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+      }
+
+      .loader-error-msg {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-bottom: 4px;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+
+      .loader-error-action {
+        font-size: 10px;
+        opacity: 0.6;
+      }
+
       /* 小屏幕适配：底部横向 */
       @media (max-width: 768px) {
         .loader-progress-container {
@@ -202,14 +247,14 @@
         /* .loader-progress-bar 样式完全继承自默认样式，无需重写 */
 
         .loader-progress-fill {
-          width: 0%; /* 横向宽度变化 */
+          width: calc(var(--loading-progress) * 1%); /* 横向宽度变化 */
           height: 100%;
           /* position, top, left 继承自默认样式 */
           transition: width 0.3s ease-out;
         }
 
         .loader-text-container {
-          left: 0%;
+          left: calc(var(--loading-progress) * 1%);
           top: 50%;
           transform: translate(10px, -50%); /* 在进度条右侧，垂直居中 */
           transition: left 0.3s ease-out; /* Mobile 端跟随动画 */
@@ -229,8 +274,14 @@
         stages: {},
 
         update(stage, progress) {
+          if (this.error) return;
           this.stages[stage] = progress;
           this.calculateTotal();
+        },
+
+        fail(error) {
+          this.error = error;
+          this.renderError();
         },
 
         calculateTotal() {
@@ -283,50 +334,48 @@
         },
 
         render() {
-          const fill = document.getElementById('progress-fill');
+          if (this.error) return;
+
+          const loader = document.getElementById('initial-loader');
           const text = document.getElementById('progress-text');
-          const textContainer = document.getElementById('progress-text-container');
-          const bg = document.getElementById('loader-bg');
           const displayValue = Math.min(100, Math.round(this.current));
-          const isMobile = window.innerWidth <= 768;
 
-          if (bg) {
-            const maxBlur = 20;
-            const currentBlur = maxBlur * (1 - this.current / 100);
-            bg.style.filter = `blur(${currentBlur}px)`;
-          }
-
-          if (fill) {
-            if (isMobile) {
-              fill.style.width = this.current + '%';
-              fill.style.height = '100%';
-            } else {
-              // 大屏幕：从上到下，height 增加
-              fill.style.height = this.current + '%';
-              fill.style.width = '100%';
-            }
+          // 更新 CSS 变量，由 CSS 处理布局和样式
+          if (loader) {
+            loader.style.setProperty('--loading-progress', this.current);
           }
 
           if (text) {
             text.textContent = displayValue;
           }
+        },
 
-          if (textContainer) {
-            if (isMobile) {
-              // 小屏幕：文本跟随进度条末端
-              textContainer.style.left = this.current + '%';
-              textContainer.style.top = '50%';
-              textContainer.style.bottom = 'auto';
+        renderError() {
+          const fill = document.getElementById('progress-fill');
+          const percent = document.querySelector('.loader-percent');
+          const decoLine = document.querySelector('.loader-deco-line');
+          const dots = document.getElementById('loader-dots');
+          const statusText = document.getElementById('loader-status-text');
+          const errorDiv = document.getElementById('loader-error');
+          const errorMsg = document.getElementById('loader-error-msg');
 
-              // 简单的防溢出逻辑：当接近右侧时，改变变换基准
-              // (此处简化处理，因为新样式较小，不易溢出)
-            } else {
-              // 大屏幕：文本跟随进度条末端（从上往下）
-              textContainer.style.top = this.current + '%';
-              textContainer.style.left = '20px';
-              // 向上偏移，使文本位于进度条末端上方
-              textContainer.style.transform = 'translateY(-100%)';
-            }
+          if (fill) fill.style.backgroundColor = '#ff4d4f';
+          if (percent) percent.style.color = '#ff4d4f';
+          if (decoLine) decoLine.style.backgroundColor = '#ff4d4f';
+          
+          if (dots) {
+            const dotSpans = dots.querySelectorAll('span');
+            dotSpans.forEach(span => span.style.backgroundColor = '#ff4d4f');
+          }
+
+          if (statusText) {
+            statusText.textContent = 'Error';
+            statusText.style.color = '#ff4d4f';
+          }
+          
+          if (errorDiv && errorMsg && this.error) {
+            errorDiv.style.display = 'block';
+            errorMsg.textContent = this.error.message || String(this.error);
           }
         },
 

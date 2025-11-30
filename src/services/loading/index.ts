@@ -8,6 +8,7 @@ declare global {
   interface Window {
     __LOADING_PROGRESS__?: {
       update: (stageId: LoadingStageId, progress: number) => void;
+      fail: (error: Error) => void;
     };
   }
 }
@@ -28,6 +29,7 @@ class LoadingProgressManager {
   private interpolator: ProgressInterpolator;
   private lastTime: number = 0;
   private animationFrameId: number | null = null;
+  private error: Error | null = null;
 
   constructor() {
     this.stages = new Map();
@@ -61,6 +63,20 @@ class LoadingProgressManager {
       stage.progress = 100;
       stage.completed = true;
       this.syncToGlobal();
+    }
+  }
+
+  setError(error: Error) {
+    this.error = error;
+    this.notifyListeners({
+      totalProgress: this.calculateTotalProgress(),
+      displayProgress: this.interpolator.getCurrent(),
+      currentStage: this.getCurrentStage(),
+      isComplete: false,
+      error,
+    });
+    if (typeof window !== 'undefined' && window.__LOADING_PROGRESS__) {
+      window.__LOADING_PROGRESS__.fail(error);
     }
   }
 
@@ -109,9 +125,16 @@ class LoadingProgressManager {
         displayProgress: clampedDisplayProgress,
         currentStage: this.getCurrentStage(),
         isComplete: targetProgress >= 100,
+        error: this.error,
       };
 
       this.notifyListeners(state);
+
+      // 如果有错误，停止动画
+      if (this.error) {
+        this.animationFrameId = null;
+        return;
+      }
 
       // 只有当总进度完成，且显示进度也接近100时才停止动画
       if (!state.isComplete || clampedDisplayProgress < 99.9) {

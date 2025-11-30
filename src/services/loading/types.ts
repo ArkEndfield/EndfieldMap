@@ -13,6 +13,7 @@ export interface LoadingState {
   displayProgress: number;
   currentStage: LoadingStageId;
   isComplete: boolean;
+  error?: Error | null;
 }
 
 export interface StageConfig {

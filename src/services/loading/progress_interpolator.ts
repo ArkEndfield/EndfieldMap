@@ -8,6 +8,10 @@ export class ProgressInterpolator {
   private readonly DAMPING = 20; // 阻尼
   private readonly MASS = 1; // 质量
 
+  getCurrent() {
+    return this.currentValue;
+  }
+
   update(target: number, deltaTime: number): number {
     this.targetValue = target;
 
