@@ -4,4 +4,6 @@ export enum Language {
   JA_JP = 'ja-JP',
   KO_KR = 'ko-KR',
   ZH_TW = 'zh-TW',
+  RU_RU = 'ru-RU',
+  ES_MX = 'es-MX',
 }

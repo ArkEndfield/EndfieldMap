@@ -6,4 +6,6 @@ export const languageConfig: { code: Language; displayName: string }[] = [
   { code: Language.EN_US, displayName: 'English' },
   { code: Language.JA_JP, displayName: '日本語' },
   { code: Language.KO_KR, displayName: '한국어' },
+  { code: Language.RU_RU, displayName: 'Русский' },
+  { code: Language.ES_MX, displayName: 'Español (México)' },
 ];
