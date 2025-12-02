@@ -20,9 +20,11 @@ export const getMapCenter = (mapId?: MapIndex | null): Coordinate => {
  * @returns  OL坐标
  */
 export const xyz2crd = (pos: { x: number; y: number; z: number }, mapIndex: MapIndex) => {
-  const coords = mapIndex === MapIndex.MAP02 ? [pos.x / 8 + 80, pos.z / 8 + 224] : [pos.x / 8 + 128, pos.z / 8 + 144];
-
-  return coords;
+  if (mapIndex === MapIndex.MAP01) {
+    return [pos.x / 8 + 128, pos.z / 8 + 144];
+  } else {
+    return [pos.x / 16 + 104, pos.z / 16 + 232];
+  }
 };
 
 /**
@@ -32,8 +34,14 @@ export const xyz2crd = (pos: { x: number; y: number; z: number }, mapIndex: MapI
  * @returns xyz坐标
  */
 export const crd2xyz = (coordinate: Coordinate, mapIndex: MapIndex) => {
-  const x = mapIndex === MapIndex.MAP02 ? coordinate[0] - 80 : coordinate[0] - 128;
-  const z = mapIndex === MapIndex.MAP02 ? coordinate[1] - 224 : coordinate[1] - 144;
+  let x; let z;
+  if (mapIndex === MapIndex.MAP01) {
+    x = coordinate[0] - 128;
+    z = coordinate[1] - 144;
+  } else {
+    x = coordinate[0] - 104;
+    z = coordinate[1] - 232;
+  }
   return {
     x: x * 8,
     y: 0,
