@@ -4,10 +4,13 @@ import { Suspense, useMemo,useRef, useState } from 'react';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { SettingsPage } from '@/components/common/settings';
+import ZmdSwiper from '@/components/common/zmd_swiper';
 import { getThemedComponents, type ThemeNames,themeNames } from '@/components/themes';
 import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { cn } from '@/utils/style';
+
+import { DevTip } from './components/common/dev_tip';
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
@@ -51,6 +54,11 @@ const Controllers = observer(({ adapter, renderMap }: ControllersProps) => {
 
       {/* 设置页面 */}
       <SettingsPage />
+
+      {/* 轮播组件 */}
+      <ZmdSwiper />
+
+      <DevTip />
     </AdapterProvider>
   );
 });

@@ -27,6 +27,8 @@ import { EntityDataService } from '@/services/data/entity';
 import { GuideDataService } from '@/services/data/guide';
 import { ItemDataService } from '@/services/data/item';
 
+import { SwiperDataService } from './swiper';
+
 /**
  * 数据服务
  */
@@ -43,6 +45,7 @@ class DataService {
   public dungeonSeriesDataService: DungeonSeriesDataService;
   public chestRewardDataService: ChestRewardDataService;
   public guideDataService: GuideDataService;
+  public swiperDataService: SwiperDataService;
 
   constructor() {
     this.storage = new StorageManager({
@@ -65,6 +68,7 @@ class DataService {
       this.chestRewardDataService
     );
     this.guideDataService = new GuideDataService(this.jsonLoader, this.storage);
+    this.swiperDataService = new SwiperDataService();
 
     this.initDataServices();
   }

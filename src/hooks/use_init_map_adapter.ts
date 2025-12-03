@@ -7,7 +7,6 @@ import i18n from '@/i18n';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
 import { dataService } from '@/services/data';
-import { assetsHost } from '@/services/env';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getLanguage } from '@/utils/language';
@@ -37,7 +36,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       loadingManager.updateStageProgress(LoadingStageId.MAP_ADAPTER, 20);
       adapter.current = new EndfieldMapAdapter({
         container: containerRef.current!,
-        asset: getAssetUrls(assetsHost),
+        asset: getAssetUrls(),
         jsonLoader: dataService.jsonLoader,
         consolaReporter: sentryReporter,
       });

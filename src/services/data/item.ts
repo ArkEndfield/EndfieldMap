@@ -1,7 +1,6 @@
 import type { ItemData } from '@eftypes/item';
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
 
-import { assetsHost } from '@/services/env';
 import { getAssetUrls } from '@/utils/url';
 
 export class ItemDataService {
@@ -31,7 +30,7 @@ export class ItemDataService {
     }
 
     this.loadingPromise = (async () => {
-      const assetPath = getAssetUrls(assetsHost);
+      const assetPath = getAssetUrls();
       const itemData = await this.jsonLoader.loadJSON<Record<string, ItemData>>(`${assetPath.itemData}/item_data.json`);
       this.storage.permanentSet(StorageKey.ITEM_DATA, itemData);
       this.inited = true;
@@ -48,7 +47,7 @@ export class ItemDataService {
   }
 
   public async getItemIcon(item_id: string) {
-    const assetPath = getAssetUrls(assetsHost);
+    const assetPath = getAssetUrls();
     const itemData = await this.getItemDataById(item_id);
     if (itemData?.iconId) {
       const name = itemData.iconId;

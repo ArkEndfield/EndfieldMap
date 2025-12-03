@@ -1,7 +1,6 @@
 import type { GuideInfoDetail } from '@eftypes/guide';
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
 
-import { assetsHost } from '@/services/env';
 import { getAssetUrls } from '@/utils/url';
 
 export class GuideDataService {
@@ -31,7 +30,7 @@ export class GuideDataService {
     }
 
     this.loadingPromise = (async () => {
-      const assetPath = getAssetUrls(assetsHost);
+      const assetPath = getAssetUrls();
       const guidesData = await this.jsonLoader.loadJSON<Record<string, GuideInfoDetail>>(
         `${assetPath.entityData}/guide.json`
       );

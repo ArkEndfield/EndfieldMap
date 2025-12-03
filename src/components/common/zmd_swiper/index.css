@@ -1,0 +1,28 @@
+.zmd-swiper-custom {
+  --swiper-theme-color: #DFD54A;
+  --swiper-pagination-bullet-inactive-color: #818182;
+}
+
+.zmd-swiper-custom .swiper-pagination {
+  position: absolute;
+  bottom: 0 !important;
+  top: auto !important;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 3px;
+  z-index: 1;
+}
+
+.zmd-swiper-custom .swiper-pagination-bullet {
+  flex: 1;
+  height: 6px;
+  border-radius: 0;
+  background-color: var(--swiper-pagination-bullet-inactive-color);
+  opacity: 1;
+  margin: 0 !important;
+}
+
+.zmd-swiper-custom .swiper-pagination-bullet-active {
+  background-color: var(--swiper-theme-color);
+}

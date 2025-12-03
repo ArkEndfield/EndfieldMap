@@ -1,6 +1,5 @@
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 
-import { assetsHost } from '@/services/env';
 import { getAssetUrls } from '@/utils/url';
 
 /**
@@ -12,7 +11,7 @@ import { getAssetUrls } from '@/utils/url';
 export const getEntityIcon = (category?: string, pic?: string) => {
   if (!category || !pic) return '';
 
-  const assetPath = getAssetUrls(assetsHost);
+  const assetPath = getAssetUrls();
 
   if (category === CustomPointKey || category === ElectricPoleKey) return `${assetPath.entityImage}/custom/${pic}.png`;
 

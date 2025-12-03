@@ -7,7 +7,6 @@ import type {
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
 
 import { ItemDataService } from '@/services/data/item';
-import { assetsHost } from '@/services/env';
 import { isRewardWithCountType } from '@/utils/reward';
 import { getAssetUrls } from '@/utils/url';
 
@@ -40,7 +39,7 @@ export class ChestRewardDataService {
     }
 
     this.loadingPromise = (async () => {
-      const assetPath = getAssetUrls(assetsHost);
+      const assetPath = getAssetUrls();
       const rewardData = await this.jsonLoader.loadJSON<Record<string, RewardItem>>(
         `${assetPath.entityData}/chest_reward.json`
       );

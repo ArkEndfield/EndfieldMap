@@ -3,7 +3,6 @@ import type { DealedRewardItem } from '@eftypes/reward';
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
 
 import { ChestRewardDataService } from '@/services/data/chest_reward';
-import { assetsHost } from '@/services/env';
 import { getAssetUrls } from '@/utils/url';
 
 export class DungeonSeriesDataService {
@@ -35,7 +34,7 @@ export class DungeonSeriesDataService {
     }
 
     this.loadingPromise = (async () => {
-      const assetPath = getAssetUrls(assetsHost);
+      const assetPath = getAssetUrls();
       const dungeonSeriesData = await this.jsonLoader.loadJSON<Record<string, DungeonSeriesData>>(
         `${assetPath.entityData}/dungeon_series.json`
       );
