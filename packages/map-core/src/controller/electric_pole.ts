@@ -10,6 +10,7 @@ import type { ElectricPoleData, ElectricPoleDataList, ElectricPoleMapData } from
 import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
+import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 
 export interface ElectricPoleControllerConfig {
   imagePath: string;
@@ -308,21 +309,14 @@ export class ElectricPoleController {
    * @returns 逻辑ID
    */
   private generateLevelLogicId(usedIds?: Set<number>): number {
-    const maxId = 100_000_000;
     // 如果调用方传入了已使用 ID 集合，则在该集合基础上生成；
     // 否则默认使用当前地图已有的数据进行去重（兼容旧用法，例如 createElectricPoleEntity）。
     const existingSet = usedIds ?? new Set(this.currentData.map((data) => data.levelLogicId));
 
-    // 使用循环而不是递归，避免极端情况下的递归深度问题
-    // 在 maxId 足够大的前提下，出现碰撞的概率极低。
-    // 同时在 initElectricPoleData 中通过传入全局 usedIds，保证本次批量生成期间绝不重复。
-
-    while (true) {
-      const newId = Math.floor(Math.random() * maxId);
-      if (!existingSet.has(newId)) {
-        return newId;
-      }
-    }
+    // 电线杆 ID 范围：100,000,000 - 200,000,000
+    const MIN_ID = 100_000_000;
+    const MAX_ID = 200_000_000;
+    return IdGenerator.generate(existingSet, MIN_ID, MAX_ID);
   }
 
   /**

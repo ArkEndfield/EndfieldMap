@@ -1,12 +1,9 @@
-import type { CustomPointPreset, CustomPointPresetExportBundle,CustomPointPresetStorage } from '@eftypes/custom_point';
-import type { CustomPointMapData, EndfieldMapAdapter, EntityVisibility,StorageData } from '@endfieldmap/map-core';
-import { CustomPointKey,MAP_EVENT } from '@endfieldmap/map-core';
+import type { CustomPointPreset, CustomPointPresetExportBundle, CustomPointPresetStorage } from '@eftypes/custom_point';
+import type { CustomPointMapData, EndfieldMapAdapter, EntityVisibility, StorageData } from '@endfieldmap/map-core';
+import { CustomPointKey, MAP_EVENT } from '@endfieldmap/map-core';
 import { getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
-import type { CustomPointData, CustomPointIdKey } from '@endfieldmap/map-core/types';
-import type { Position } from '@endfieldmap/map-core/types/position';
+import type { CustomPointIdKey } from '@endfieldmap/map-core/types';
 import {
-  calculateXYZDistance,
-  crd2xyz,
   debounce,
   LocalStorageDB,
   LocalStorageKey,
@@ -191,7 +188,7 @@ export class CustomPointDataService {
    * 创建新的预设
    * @param name 预设名称
    * @param initialData 初始化数据，传入 true 则使用当前地图数据，传入数据对象则使用该数据，未传入则使用空数据
-   * @returns 
+   * @returns
    */
   public async createPreset(name: string, initialData?: CustomPointMapData | boolean) {
     const now = Date.now();
@@ -230,7 +227,7 @@ export class CustomPointDataService {
   /**
    * 切换预设
    * @param id 预设id
-   * @returns 
+   * @returns
    */
   public async switchPreset(id: string) {
     if (this.presetStorage.currentPresetId === id) return;
@@ -288,7 +285,7 @@ export class CustomPointDataService {
       } else {
         // 若已经没有任何预设，则清空所有地图上的自定义标点
         const emptyData = this.ensureMapData({} as CustomPointMapData);
-        this.adapter.customPointController.updateData(emptyData);
+        this.adapter.customPointController.initCustomPointData(emptyData);
         this.adapter.renderCustomPoint(this.adapter.currentMapIndex);
       }
     }
@@ -298,7 +295,7 @@ export class CustomPointDataService {
    * 重命名预设
    * @param id 预设id
    * @param name 新名称
-   * @returns 
+   * @returns
    */
   public async renamePreset(id: string, name: string) {
     const preset = this.presetStorage.presets.find((p) => p.id === id);
@@ -374,7 +371,7 @@ export class CustomPointDataService {
 
     try {
       const data = this.ensureMapData(preset.data);
-      this.adapter.customPointController.updateData(data);
+      this.adapter.customPointController.initCustomPointData(data);
       // 重新渲染当前地图上的自定义标点
       this.adapter.renderCustomPoint(this.adapter.currentMapIndex);
       // 应用存储的可见性设置
@@ -393,7 +390,7 @@ export class CustomPointDataService {
         content: `自定义标点预设 "${preset.name}" 数据已损坏，请检查并重新创建预设。`,
         onCancel: () => {
           const emptyData = this.ensureMapData({} as CustomPointMapData);
-          adapter?.customPointController.updateData(emptyData);
+          adapter?.customPointController.initCustomPointData(emptyData);
           adapter?.renderCustomPoint(adapter?.currentMapIndex);
         },
         cancelText: '删除损坏预设',
@@ -538,43 +535,18 @@ export class CustomPointDataService {
   /**
    * 创建新的自定义标点
    * @param mapIndex 地图索引
-   * @param position 位置
+   * @param coordinate 坐标
    */
-  public async createCustomPoint(mapIndex: MapIndex, position: Position) {
+  public async createCustomPoint(mapIndex: MapIndex, coordinate: number[]) {
     if (!this.adapter || !this.initialized) {
       throw new Error('CustomPointDataService not initialized');
     }
 
-    // 检查半径 10 范围内是否已存在标点（与电线杆相同的距离限制）
-    const customPointLayer = this.adapter.customPointController.entityLayer.get(mapIndex);
-    const duplicateRadius = 10;
-
-    // 检查与已有自定义标点的距离
-    if (customPointLayer) {
-      const features = customPointLayer.entity.features;
-      for (const feature of features) {
-        const existingPos = feature.data.position;
-        const distance = calculateXYZDistance(position, existingPos);
-
-        if (distance < duplicateRadius) {
-          // TODO: i18n
-          throw new Error(`自定义标点距离过近 (距离: ${distance.toFixed(2)})`);
-        }
-      }
-    }
-
-    const newId = this.generateCustomPointId(mapIndex);
-
-    const data: CustomPointData = {
-      levelLogicId: newId,
-      entityDataIdKey: this.selectedPointType,
-      templateId: '#custom_point',
-      entityType: '#CustomPoint',
-      position,
-      properties: {},
-    };
-
-    const feature = this.adapter.customPointController.addCustomPointEntity(mapIndex, data);
+    const feature = this.adapter.customPointController.createCustomPointEntity(
+      mapIndex,
+      coordinate,
+      this.selectedPointType
+    );
     return feature;
   }
 
@@ -593,7 +565,7 @@ export class CustomPointDataService {
   // endregion
 
   // region: 自定义标点事件初始化
-  /**  
+  /**
    * 初始化自定义标点数据变更事件监听
    */
   private initCustomPointChangeEvent() {
@@ -604,7 +576,7 @@ export class CustomPointDataService {
     this.eventListenerDisposers.push(dispose);
   }
 
-  /**  
+  /**
    * 初始化地图点击事件监听（用于创建自定义标点）
    */
   private initMapClickEvent() {
@@ -616,8 +588,7 @@ export class CustomPointDataService {
       if (!coordinate) return;
 
       try {
-        const position = crd2xyz(coordinate, mapIndex);
-        this.createCustomPoint(mapIndex, position);
+        this.createCustomPoint(mapIndex, coordinate);
         // 确保图层被添加到地图上
         this.adapter!.renderCustomPoint(mapIndex);
       } catch (error) {
@@ -630,7 +601,7 @@ export class CustomPointDataService {
     this.eventListenerDisposers.push(dispose);
   }
 
-  /**  
+  /**
    * 初始化自定义标点点击事件监听（用于删除自定义标点）
    */
   private initCustomPointClickEvent() {
@@ -673,17 +644,6 @@ export class CustomPointDataService {
 
   private generatePresetId(): string {
     return `preset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  private generateCustomPointId(mapIndex: MapIndex): number {
-    if (!this.adapter) return Date.now();
-    const existingIds =
-      this.adapter.customPointController.entityLayer.get(mapIndex)?.entity.features.map((f) => f.id) ?? [];
-    let newId = Date.now();
-    while (existingIds.includes(newId)) {
-      newId++;
-    }
-    return newId;
   }
 
   // region: 导入导出处理
