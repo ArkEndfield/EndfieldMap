@@ -7,10 +7,10 @@ import { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/ent
 import { MultiLayerContainer } from '@endfieldmap/map-core/render/layers/multi_layer_container';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import type { ElectricPoleData, ElectricPoleDataList, ElectricPoleMapData } from '@endfieldmap/map-core/types';
+import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
-import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 
 export interface ElectricPoleControllerConfig {
   imagePath: string;

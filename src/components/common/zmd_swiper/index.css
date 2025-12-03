@@ -16,7 +16,7 @@
 
 .zmd-swiper-custom .swiper-pagination-bullet {
   flex: 1;
-  height: 6px;
+  height: 4px;
   border-radius: 0;
   background-color: var(--swiper-pagination-bullet-inactive-color);
   opacity: 1;

@@ -3,4 +3,5 @@ export enum UILocalStorageKey {
   THEME = 'theme',
   ADJUST_POPUP = 'adjustPopup',
   DARK_MODE = 'darkMode',
+  SWIPER_OPEN = 'swiperOpen',
 }

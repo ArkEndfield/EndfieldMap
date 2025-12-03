@@ -36,7 +36,7 @@ const PCPopup: React.FC = observer(() => {
   useEffect(() => {
     if (!adapter?.popupController || !activeFeature) return;
 
-    if (uiManager.adjustPopup) {
+    if (uiManager.adjustPopup.value) {
       const timeoutId = window.setTimeout(() => {
         adapter.popupController?.updatePosition();
       }, 150);
@@ -52,7 +52,7 @@ const PCPopup: React.FC = observer(() => {
   const handleExpandButton = () => {
     setIsExpand((isExpand) => !isExpand);
     // 调整位置
-    if (uiManager.adjustPopup) {
+    if (uiManager.adjustPopup.value) {
       window.setTimeout(() => {
         adapter.popupController?.updatePosition();
       }, 200);

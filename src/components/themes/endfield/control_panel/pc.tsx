@@ -21,7 +21,7 @@ const TopDeco = () => (
 
 const PCControlPanel = observer(() => {
   const portalRef = useRef<HTMLDivElement>(null);
-  const isOpen = uiManager.sidebarCollapsed;
+  const isOpen = uiManager.sidebarCollapsed.value;
 
   return (
     <motion.div
@@ -33,7 +33,10 @@ const PCControlPanel = observer(() => {
       <TopDeco />
 
       <div className="absolute left-0 top-6 z-0">
-        <TitleArrow open={isOpen} onToggle={() => uiManager.toggleSidebar()} />
+        <TitleArrow
+          open={isOpen}
+          onToggle={() => (uiManager.sidebarCollapsed.value = !uiManager.sidebarCollapsed.value)}
+        />
       </div>
       <div className="absolute pl-8 pr-8 shrink-0 grow-0 w-full top-3 z-1">
         <HeaderLogo className="z-1 relative" />

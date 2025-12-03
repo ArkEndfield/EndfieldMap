@@ -144,6 +144,15 @@ export const CogIcon = (props: IconProps) => (
   </svg>
 );
 
+export const ChevronUp = (props: IconProps) => (
+  <svg width="1em" height="1em" viewBox="0 0 125 76" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path
+      d="M65.6787 28.3181L77.3359 16.6609L124.748 64.0734L113.091 75.7306L65.6787 28.3181ZM60.6687 0L72.9172 12.2421L12.2421 72.9172L0 60.6688L60.6687 0Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
 export const DoubleChevronLeft = (props: IconProps) => (
   <svg fill="currentColor" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
     <g>

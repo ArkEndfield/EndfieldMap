@@ -13,14 +13,14 @@ const DARK_MODE_OPTIONS = [
 
 export const DarkModeSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const darkMode = uiManager.darkMode;
+  const darkMode = uiManager.darkMode.value;
 
   return (
     <SettingItem title={t('display.layout.dark_mode.title')}>
       <EndfieldToggle
         options={DARK_MODE_OPTIONS.map((option) => ({ label: t(option.label), key: option.key }))}
         activeKey={darkMode}
-        onChange={(v) => uiManager.setDarkMode(v)}
+        onChange={(v) => (uiManager.darkMode.value = v)}
       />
     </SettingItem>
   );

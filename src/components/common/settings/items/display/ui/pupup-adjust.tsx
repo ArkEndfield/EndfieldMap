@@ -7,7 +7,7 @@ import uiManager from '@/services/ui_manager';
 
 export const PopupAdjustSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const isAdjust = uiManager.adjustPopup;
+  const isAdjust = uiManager.adjustPopup.value;
 
   return (
     <SettingItem

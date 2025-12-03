@@ -1,16 +1,17 @@
 import type { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import { Suspense, useMemo,useRef, useState } from 'react';
+import { Suspense, useMemo, useRef } from 'react';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { SettingsPage } from '@/components/common/settings';
 import ZmdSwiper from '@/components/common/zmd_swiper';
-import { getThemedComponents, type ThemeNames,themeNames } from '@/components/themes';
+import { getThemedComponents } from '@/components/themes';
 import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { cn } from '@/utils/style';
 
 import { DevTip } from './components/common/dev_tip';
+import uiManager from './services/ui_manager';
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
@@ -18,7 +19,7 @@ export interface ControllersProps {
 }
 
 const Controllers = observer(({ adapter, renderMap }: ControllersProps) => {
-  const [theme, _setTheme] = useState<ThemeNames>(themeNames.ENDFIELD);
+  const theme = uiManager.theme.value;
 
   const ThemedComponents = useMemo(() => {
     const components = getThemedComponents(theme);

@@ -193,6 +193,9 @@ importers:
       consola:
         specifier: ^3.4.2
         version: 3.4.2
+      mobx:
+        specifier: ^6.15.0
+        version: 6.15.0
     devDependencies:
       '@types/node':
         specifier: ^24.9.1
