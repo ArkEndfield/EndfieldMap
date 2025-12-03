@@ -34,18 +34,20 @@ export const xyz2crd = (pos: { x: number; y: number; z: number }, mapIndex: MapI
  * @returns xyz坐标
  */
 export const crd2xyz = (coordinate: Coordinate, mapIndex: MapIndex) => {
-  let x; let z;
+  let x, z, times;
   if (mapIndex === MapIndex.MAP01) {
     x = coordinate[0] - 128;
     z = coordinate[1] - 144;
+    times = 8;
   } else {
     x = coordinate[0] - 104;
     z = coordinate[1] - 232;
+    times = 16;
   }
   return {
-    x: x * 8,
+    x: x * times,
     y: 0,
-    z: z * 8,
+    z: z * times,
   };
 };
 
