@@ -1,18 +1,17 @@
-import type { EndfieldMapAdapter, MapIndex } from '@endfieldmap/map-core';
+import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import { Suspense, useMemo, useRef } from 'react';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
+import { DevTip } from '@/components/common/dev_tip';
 import { SettingsPage } from '@/components/common/settings';
 import ZmdSwiper from '@/components/common/zmd_swiper';
 import { getThemedComponents } from '@/components/themes';
 import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
+import { DataService } from '@/services/data';
+import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
-
-import { DevTip } from './components/common/dev_tip';
-import { DataService } from './services/data';
-import uiManager from './services/ui_manager';
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
