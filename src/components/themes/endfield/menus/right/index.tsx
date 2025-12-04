@@ -1,8 +1,8 @@
-import { LocalStorageDB, LocalStorageKey, MapIndex } from '@endfieldmap/tools';
+import { MapIndex } from '@endfieldmap/tools';
 import { MapButton } from '@themes/endfield/menus/right/button';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
-import { useEffect,useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -18,16 +18,15 @@ export const RightMenu: React.FC = observer(() => {
   const [showChangeAnimation, setShowChangeAnimation] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
-  const { adapter, renderMap } = useAdapter();
-  const mapIndex = adapter.currentMapIndex;
+  const { dataService } = useAdapter();
+  const mapIndex = dataService.mapStateDataService.currentMap.value;
 
   const togglePopover = () => {
     setShowPopover(!showPopover);
   };
 
   const changeMap = (mapIndex: MapIndex) => {
-    renderMap(mapIndex);
-    LocalStorageDB.set<MapIndex>(LocalStorageKey.MAP_CURRENT_MAP, mapIndex);
+    dataService.mapStateDataService.currentMap.value = mapIndex;
     setShowPopover(false);
     setShowChangeAnimation(true);
 

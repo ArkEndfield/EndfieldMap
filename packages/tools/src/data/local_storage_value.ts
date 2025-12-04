@@ -5,24 +5,30 @@ export interface LocalStorageValueConfig<T> {
   initialValue: T;
   storageKey: string;
   onValueChange?: (newValue: T, oldValue?: T) => void;
+  onInitFromLocalStorage?: (data: T) => void;
 }
 
 export class LocalStorageValue<T> {
   @observable accessor _value!: T;
   private storageKey: string;
   private onValueChange?: (newValue: T, oldValue?: T) => void;
+  private onInitFromLocalStorage?: (data: T) => void;
   private oldValue?: T;
 
   constructor(config: LocalStorageValueConfig<T>) {
     this.storageKey = config.storageKey;
     this.oldValue = config.initialValue;
     this.onValueChange = config.onValueChange;
+    this.onInitFromLocalStorage = config.onInitFromLocalStorage;
     this.initValueListener();
     this.restoreDataFromStorage(config.initialValue);
   }
 
   private restoreDataFromStorage(initialValue: T) {
     const data = LocalStorageDB.getItem<T>(this.storageKey);
+    if (data) {
+      this.onInitFromLocalStorage?.(data);
+    }
     this._value = data ?? initialValue;
   }
 

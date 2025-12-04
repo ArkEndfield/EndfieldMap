@@ -7,11 +7,14 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 export const AdjustViewSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { adapter, dataService } = useAdapter();
-  const enableAdjustView = adapter?.mapController.mapRenderer.adjustView;
+  const { dataService } = useAdapter();
+  const enableAdjustView = dataService.mapStateDataService.adjustView.value;
   return (
     <SettingItem title={t('map.adjust_view.title')} description={t('map.adjust_view.description')} tailDeco>
-      <EndfieldSwitch checked={enableAdjustView} onChange={(v) => dataService.setAdjustView(v)} />
+      <EndfieldSwitch
+        checked={enableAdjustView}
+        onChange={(v) => (dataService.mapStateDataService.adjustView.value = v)}
+      />
     </SettingItem>
   );
 });

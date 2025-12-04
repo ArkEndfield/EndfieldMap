@@ -1,5 +1,5 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { DEFAULT_CLUSTER_DISTANCE, type MapIndex,MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
+import { DEFAULT_CLUSTER_DISTANCE, type MapIndex, MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { CommonPointDataManager } from '@endfieldmap/map-core/data/entity/common_point';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
@@ -33,6 +33,10 @@ export class EntityController {
   private currentZoom: number = 3;
   /** 当前 marked feature 过滤模式 */
   @observable accessor markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
+  /** 待应用的图层可见性数据（用于延迟加载的地图） */
+  private pendingLayerVisibility: StorageData<EntityVisibility> | null = null;
+  /** 待应用的标记特征数据（用于延迟加载的地图） */
+  private pendingMarkedFeatures: StorageData<FeatureMarked> | null = null;
 
   constructor(config: EntityControllerConfig) {
     this.commonPointDataManager = new CommonPointDataManager({
@@ -181,6 +185,32 @@ export class EntityController {
         }
       }
       this.cachedLayer.set(mapIndex, layers);
+
+      // 应用待处理的图层可见性数据
+      if (this.pendingLayerVisibility && this.pendingLayerVisibility[mapIndex]) {
+        const layerVisibilityMap = this.pendingLayerVisibility[mapIndex];
+        currentLayers.forEach((layer) => {
+          const layerKey = layer.entityDataIdKey;
+          if (layerKey in layerVisibilityMap) {
+            layer.setVisible(layerVisibilityMap[layerKey]);
+          }
+        });
+      }
+
+      // 应用待处理的标记特征数据
+      if (this.pendingMarkedFeatures && this.pendingMarkedFeatures[mapIndex]) {
+        const markedLogicIdMap = this.pendingMarkedFeatures[mapIndex];
+        currentLayers.forEach((layer) => {
+          layer.entity.features.forEach((feature) => {
+            const levelLogicId = feature.data.levelLogicId;
+            const shouldBeMarked = markedLogicIdMap[levelLogicId] === true;
+            if (shouldBeMarked) {
+              feature.setMarked(true);
+            }
+          });
+        });
+      }
+
       return Array.from(layers.values()).flat();
     }
   }
@@ -553,6 +583,9 @@ export class EntityController {
         throw new Error('Invalid layer visibility data');
       }
 
+      // 保存待应用的数据，用于延迟加载的地图
+      this.pendingLayerVisibility = layerVisibility;
+
       let layerCount = 0;
       // 遍历所有缓存的地图层
       for (const [mapIndex, categoryMap] of this.cachedLayer.entries()) {
@@ -661,6 +694,9 @@ export class EntityController {
    */
   public importMarkedFeatures(markedFeatures: StorageData<FeatureMarked>): number {
     try {
+      // 保存待应用的数据，用于延迟加载的地图
+      this.pendingMarkedFeatures = markedFeatures;
+
       let markedCount = 0;
 
       // 遍历所有缓存的地图层

@@ -1,4 +1,12 @@
-import type { EntityData,EntityVisibility, FeatureMarked, MapIndex, StorageData } from '@endfieldmap/map-core';
+import { DEBOUNCE_INTERVAL } from '@/const/data';
+import type {
+  EndfieldMapAdapter,
+  EntityData,
+  EntityVisibility,
+  FeatureMarked,
+  MapIndex,
+  StorageData,
+} from '@endfieldmap/map-core';
 import { debounce, StorageKey, type StorageManager } from '@endfieldmap/tools';
 
 /**
@@ -8,15 +16,23 @@ export class EntityDataService {
   public entityVisibilityData: StorageData<EntityVisibility> = {};
   public featureMarkedData: StorageData<FeatureMarked> = {};
   private storage: StorageManager;
-  private DEBOUNCE_INTERVAL = 1000;
+  private adapter: EndfieldMapAdapter;
 
-  constructor(storage: StorageManager) {
+  constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
     this.storage = storage;
+    this.adapter = adapter;
   }
 
   public async initFromStorage() {
     this.entityVisibilityData = (await this.storage.permanentGet(StorageKey.LAYERS_VISIBILITY)) || {};
     this.featureMarkedData = (await this.storage.permanentGet(StorageKey.MARKED_FEATURES)) || {};
+
+    if (this.adapter.entityController.validateLayerVisibility(this.entityVisibilityData)) {
+      this.adapter.entityController.importLayerVisibility(this.entityVisibilityData);
+    }
+    if (this.adapter.entityController.validateMarkedFeatures(this.featureMarkedData)) {
+      this.adapter.entityController.importMarkedFeatures(this.featureMarkedData);
+    }
   }
 
   public async saveToStorage() {
@@ -51,10 +67,10 @@ export class EntityDataService {
   }
 
   get saveEntityVisibilityToStorageDebounced() {
-    return debounce(this.saveEntityVisibilityToStorage.bind(this), this.DEBOUNCE_INTERVAL);
+    return debounce(this.saveEntityVisibilityToStorage.bind(this), DEBOUNCE_INTERVAL);
   }
 
   get saveFeatureMarkedToStorageDebounced() {
-    return debounce(this.saveFeatureMarkedToStorage.bind(this), this.DEBOUNCE_INTERVAL);
+    return debounce(this.saveFeatureMarkedToStorage.bind(this), DEBOUNCE_INTERVAL);
   }
 }

@@ -7,11 +7,14 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 export const ClusterSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { adapter, dataService } = useAdapter();
-  const enableCluster = !adapter.entityController.disableCluster;
+  const { dataService } = useAdapter();
+  const enableCluster = dataService.mapStateDataService.enableCluster.value;
   return (
     <SettingItem title={t('map.cluster')} tailDeco>
-      <EndfieldSwitch checked={enableCluster} onChange={(v) => dataService.setEnableCluster(v)} />
+      <EndfieldSwitch
+        checked={enableCluster}
+        onChange={(v) => (dataService.mapStateDataService.enableCluster.value = v)}
+      />
     </SettingItem>
   );
 });

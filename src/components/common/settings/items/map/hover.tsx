@@ -31,17 +31,13 @@ const options = [
 
 export const HoverSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { adapter, dataService } = useAdapter();
+  const { dataService } = useAdapter();
   const isMobile = useIsMobile();
-  const hoverDebounceTime = !adapter.enableHover ? -1 : adapter.hoverDebounceTime;
+  const hoverDebounceTime = dataService.mapStateDataService.hoverTime.value;
 
   if (isMobile) {
     return null;
   }
-
-  const setHoverTime = (time: number) => {
-    dataService.setHoverTime(time);
-  };
 
   return (
     <SettingItem title={t('map.hover.title')} description={t('map.hover.description')} tailDeco>
@@ -52,7 +48,7 @@ export const HoverSetting = observer(() => {
           label: t(`map.hover.value.${option.label}`),
         }))}
         activeKey={hoverDebounceTime}
-        onChange={setHoverTime}
+        onChange={(v) => (dataService.mapStateDataService.hoverTime.value = v)}
       />
     </SettingItem>
   );

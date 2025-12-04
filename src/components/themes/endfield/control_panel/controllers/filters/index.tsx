@@ -12,15 +12,10 @@ const filterModes = [
 ] as const;
 
 export const Filters = observer(() => {
-  const { adapter, dataService } = useAdapter();
+  const { dataService } = useAdapter();
   const { t } = useTranslation('sidebar');
 
-  const filterMode = adapter.entityController.markedFilterMode;
-
-  const setFilterMode = (mode: MarkedFeatureFilterMode) => {
-    adapter.activeFeatureController.clearActiveFeature();
-    dataService.setFilterMarkedMode(mode);
-  };
+  const filterMode = dataService.mapStateDataService.filterMarked.value;
 
   return (
     <div className="flex text-sm gap-2 w-full">
@@ -31,7 +26,7 @@ export const Filters = observer(() => {
           checked={filterMode === mode.value}
           onChange={(v) => {
             if (v) {
-              setFilterMode(mode.value);
+              dataService.mapStateDataService.filterMarked.value = mode.value;
             }
           }}
         >
