@@ -16,11 +16,10 @@ import uiManager from './services/ui_manager';
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
-  renderMap: (mapIdx?: MapIndex | undefined) => void;
   dataService: DataService;
 }
 
-const Controllers = observer(({ adapter, renderMap, dataService }: ControllersProps) => {
+const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
   const theme = uiManager.theme.value;
 
   const ThemedComponents = useMemo(() => {
@@ -34,7 +33,7 @@ const Controllers = observer(({ adapter, renderMap, dataService }: ControllersPr
   }, [theme]);
 
   return (
-    <AdapterProvider adapter={adapter} dataService={dataService} renderMap={renderMap}>
+    <AdapterProvider adapter={adapter} dataService={dataService}>
       {/* 弹窗组件 */}
       <Suspense>
         <ThemedComponents.Popup />
@@ -68,7 +67,7 @@ const Controllers = observer(({ adapter, renderMap, dataService }: ControllersPr
 
 function EndfieldMap() {
   const container = useRef<HTMLDivElement>(null);
-  const { adapter, renderMap, dataService } = useMapAdapter(container);
+  const { adapter, dataService } = useMapAdapter(container);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -82,7 +81,7 @@ function EndfieldMap() {
       ></div>
 
       {/* 控制组件 */}
-      {adapter && dataService && <Controllers adapter={adapter} dataService={dataService} renderMap={renderMap} />}
+      {adapter && dataService && <Controllers adapter={adapter} dataService={dataService} />}
     </div>
   );
 }
