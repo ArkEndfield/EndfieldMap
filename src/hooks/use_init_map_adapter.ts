@@ -6,18 +6,20 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 import i18n from '@/i18n';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
-import { dataService } from '@/services/data';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getLanguage } from '@/utils/language';
 import { getAssetUrls } from '@/utils/url';
+import { DataService } from '@/services/data';
 
 /**
  * 地图适配器 hook
  */
 export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | null>) {
   const adapter = useRef<EndfieldMapAdapter | null>(null);
+  const dataService = useRef<DataService | null>(null);
   const [adapterReactive, setAdapterReactive] = useState<EndfieldMapAdapter | null>(null);
+  const [dataServiceReactive, setDataServiceReactive] = useState<DataService | null>(null);
   const isMobile = useIsMobile();
   /**
    * 初始化地图函数
@@ -28,26 +30,27 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     try {
       // LOADING 初始化数据服务
       loadingManager.updateStageProgress(LoadingStageId.STORAGE, 10);
-      await dataService.init();
+      await DataService.initStorage();
       // LOADING
       loadingManager.completeStage(LoadingStageId.STORAGE);
 
       // LOADING
       loadingManager.updateStageProgress(LoadingStageId.MAP_ADAPTER, 20);
+
       adapter.current = new EndfieldMapAdapter({
         container: containerRef.current!,
         asset: getAssetUrls(),
-        jsonLoader: dataService.jsonLoader,
+        jsonLoader: DataService.jsonLoader,
         consolaReporter: sentryReporter,
       });
 
-      setAdapterReactive(adapter.current);
+      dataService.current = await DataService.createInstance(adapter.current);
 
-      // 注册adapter data
-      dataService.registerAdapter(adapter.current);
+      setAdapterReactive(adapter.current);
+      setDataServiceReactive(dataService.current);
 
       // 初始化激活feature事件监听器，用于设置和清除激活的feature
-      initActiveFeatureEventListeners(adapter.current);
+      initActiveFeatureEventListeners(adapter.current, dataService.current);
 
       // 初始化鼠标指针样式监听器
       initCursorEventListeners(adapter.current);
@@ -66,7 +69,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
         // LOADING
         loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 10);
         // 从 localStorage 获取数据
-        const data = dataService.getDataFromLocalStorage(mapIdx);
+        const data = dataService.current!.getDataFromLocalStorage(mapIdx);
         const currentMap = data.currentMap;
         // 设置缩放
         adapter.current.mapController.setZoom(data.zoom);
@@ -81,7 +84,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
         // 设置是否聚合
         adapter.current.setClusterEnable(data.enableCluster);
         // 设置鼠标悬停检测响应时间
-        dataService.setHoverTime(data.hoverTime);
+        dataService.current!.setHoverTime(data.hoverTime);
         // 设置标记过滤参数
         adapter.current.entityController.setMarkedFeatureFilter(data.filterMarked);
         // 渲染实体
@@ -90,8 +93,8 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
           .then(() => {
             // 显示entity
             if (adapter.current) {
-              const storedEntityVisibility = dataService.entityDataService.entityVisibilityData;
-              const storedFeatureMarked = dataService.entityDataService.featureMarkedData;
+              const storedEntityVisibility = dataService.current!.entityDataService.entityVisibilityData;
+              const storedFeatureMarked = dataService.current!.entityDataService.featureMarkedData;
               if (adapter.current.entityController.validateLayerVisibility(storedEntityVisibility)) {
                 adapter.current.entityController.importLayerVisibility(storedEntityVisibility);
               }
@@ -159,5 +162,6 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   return {
     adapter: adapterReactive,
     renderMap,
+    dataService: dataServiceReactive,
   };
 }

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
-import { dataService } from '@/services/data';
 
 const modes = ['isCreating', 'isDeleting'] as const;
 
@@ -30,7 +29,7 @@ const modeTipText: Record<CustomPointMode, ModeTipTextKeys> = {
 };
 
 export const useCustomPointMode = () => {
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const service = dataService.customPointDataService;
   const { t } = useTranslation('sidebar');
 

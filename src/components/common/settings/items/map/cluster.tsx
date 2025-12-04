@@ -4,11 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { useAdapter } from '@/hooks/use_adapter';
-import { dataService } from '@/services/data';
 
 export const ClusterSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const enableCluster = !adapter.entityController.disableCluster;
   return (
     <SettingItem title={t('map.cluster')} tailDeco>

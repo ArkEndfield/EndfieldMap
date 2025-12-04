@@ -5,7 +5,6 @@ import { EndfieldToggle } from '@/components/common/endfield_components/form/tog
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import { dataService } from '@/services/data';
 
 const options = [
   {
@@ -32,7 +31,7 @@ const options = [
 
 export const HoverSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const isMobile = useIsMobile();
   const hoverDebounceTime = !adapter.enableHover ? -1 : adapter.hoverDebounceTime;
 

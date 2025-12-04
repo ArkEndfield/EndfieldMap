@@ -12,13 +12,15 @@ import { cn } from '@/utils/style';
 
 import { DevTip } from './components/common/dev_tip';
 import uiManager from './services/ui_manager';
+import { DataService } from './services/data';
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
   renderMap: (mapIdx?: MapIndex | undefined) => void;
+  dataService: DataService;
 }
 
-const Controllers = observer(({ adapter, renderMap }: ControllersProps) => {
+const Controllers = observer(({ adapter, renderMap, dataService }: ControllersProps) => {
   const theme = uiManager.theme.value;
 
   const ThemedComponents = useMemo(() => {
@@ -32,7 +34,7 @@ const Controllers = observer(({ adapter, renderMap }: ControllersProps) => {
   }, [theme]);
 
   return (
-    <AdapterProvider adapter={adapter} renderMap={renderMap}>
+    <AdapterProvider adapter={adapter} dataService={dataService} renderMap={renderMap}>
       {/* 弹窗组件 */}
       <Suspense>
         <ThemedComponents.Popup />
@@ -66,7 +68,7 @@ const Controllers = observer(({ adapter, renderMap }: ControllersProps) => {
 
 function EndfieldMap() {
   const container = useRef<HTMLDivElement>(null);
-  const { adapter, renderMap } = useMapAdapter(container);
+  const { adapter, renderMap, dataService } = useMapAdapter(container);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -80,7 +82,7 @@ function EndfieldMap() {
       ></div>
 
       {/* 控制组件 */}
-      {adapter && <Controllers adapter={adapter} renderMap={renderMap} />}
+      {adapter && dataService && <Controllers adapter={adapter} dataService={dataService} renderMap={renderMap} />}
     </div>
   );
 }

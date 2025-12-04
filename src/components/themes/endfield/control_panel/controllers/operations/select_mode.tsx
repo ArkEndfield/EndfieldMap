@@ -10,7 +10,6 @@ import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import { dataService } from '@/services/data';
 import uiManager from '@/services/ui_manager';
 
 const MultiOperationIcon = ({ children }: { children: React.ReactNode }) => (
@@ -113,7 +112,7 @@ const SelectOperator = observer(() => {
 });
 
 export const SelectModeOperation = observer(() => {
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const isSelecting = adapter.mapController.selection.isSelecting;
   const { t } = useTranslation('sidebar');
   const isMobile = useIsMobile();

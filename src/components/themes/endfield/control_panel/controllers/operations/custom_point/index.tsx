@@ -13,9 +13,8 @@ import { EndfieldSwitch } from '@/components/common/endfield_components/form/swi
 import { CloseIcon, PlusIcon } from '@/components/common/icons';
 import { snapPoints } from '@/const/ui';
 import { useAdapter } from '@/hooks/use_adapter';
-import { type CustomPointMode,useCustomPointMode } from '@/hooks/use_custom_point_mode';
+import { type CustomPointMode, useCustomPointMode } from '@/hooks/use_custom_point_mode';
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import { dataService } from '@/services/data';
 import { cn } from '@/utils/style';
 
 const CustomPointManagerToolbar = observer(() => {
@@ -119,7 +118,7 @@ export interface CustomPointManagerProps {
 }
 
 export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({ open }) => {
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const isMobile = useIsMobile();
   const { t } = useTranslation('sidebar');
   const { isInMode } = useCustomPointMode();

@@ -9,16 +9,17 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import ListTitle from '@/components/common/list_title';
-import { dataService } from '@/services/data';
 import { cn } from '@/utils/style';
 import { ChevronUp } from '@/components/common/icons';
 import { IconButton } from '@/components/common/endfield_components/icon_button';
 import uiManager from '@/services/ui_manager';
 import { observer } from 'mobx-react-lite';
+import { useAdapter } from '@/hooks/use_adapter';
 
 const ZmdSwiper = observer(() => {
   const expanded = uiManager.swiperOpen.value;
   const { t } = useTranslation('sidebar');
+  const { dataService } = useAdapter();
   const progressCircleRef = useRef<SVGSVGElement>(null);
   const progressContentRef = useRef<HTMLSpanElement>(null);
   const swiperRef = useRef<SwiperType>(null);

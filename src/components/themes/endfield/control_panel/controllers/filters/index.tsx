@@ -4,7 +4,6 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
-import { dataService } from '@/services/data';
 
 const filterModes = [
   { label: 'all', value: MarkedFeatureFilterMode.All },
@@ -13,7 +12,7 @@ const filterModes = [
 ] as const;
 
 export const Filters = observer(() => {
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const { t } = useTranslation('sidebar');
 
   const filterMode = adapter.entityController.markedFilterMode;

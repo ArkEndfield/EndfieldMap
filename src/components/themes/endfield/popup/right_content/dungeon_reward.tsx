@@ -4,11 +4,12 @@ import { Item } from '@themes/endfield/components/item';
 import { RewardTitle } from '@themes/endfield/popup/right_content/reward_title';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 
-import { dataService } from '@/services/data';
 import { hasDungeonReward, isDealedRewardItemWithCount } from '@/utils/reward';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export const DungeonReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<Record<string, DealedRewardItem[]>>({});
+  const { dataService } = useAdapter();
   const showRewards = hasDungeonReward(entity);
 
   const getRewadData = useCallback(async () => {

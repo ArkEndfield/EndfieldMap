@@ -21,11 +21,8 @@ import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/da
  * 自定义标点数据管理器
  */
 export class CustomPointDataService {
-  private adapter?: EndfieldMapAdapter;
+  private adapter: EndfieldMapAdapter;
   private storage: StorageManager;
-
-  private storageInitialized: boolean = false;
-  private adapterRegistered: boolean = false;
 
   @observable accessor dataVersion: VersionType = '0.0.1';
 
@@ -45,16 +42,13 @@ export class CustomPointDataService {
 
   private eventListenerDisposers: Array<() => void> = [];
 
-  constructor(storage: StorageManager) {
+  constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
     this.storage = storage;
+    this.adapter = adapter;
+    this.initAdapter();
   }
 
-  public registerAdapter(adapter: EndfieldMapAdapter) {
-    runInAction(() => {
-      this.adapter = adapter;
-      this.adapterRegistered = true;
-      this.updateInitializedFlag();
-    });
+  private initAdapter() {
     this.applyCurrentPresetToAdapter();
     this.initCustomPointChangeEvent();
     this.initMapClickEvent();
@@ -62,7 +56,7 @@ export class CustomPointDataService {
   }
 
   public async initFromStorage() {
-    if (this.storageInitialized) return;
+    if (this.initialized) return;
 
     const [stored, visibility, visibilityData] = await Promise.all([
       this.storage.permanentGet<CustomPointPresetStorage>(StorageKey.CUSTOM_POINT),
@@ -89,13 +83,8 @@ export class CustomPointDataService {
       }
       this.customPointVisibility = visibility ?? true;
       this.customPointVisibilityData = visibilityData || {};
-      this.storageInitialized = true;
-      this.updateInitializedFlag();
+      this.initialized = true;
     });
-  }
-
-  private updateInitializedFlag() {
-    this.initialized = this.storageInitialized && this.adapterRegistered;
   }
 
   private ensureMapData(data: Partial<CustomPointMapData>): CustomPointMapData {
@@ -196,7 +185,7 @@ export class CustomPointDataService {
     const useCurrentData = initialData === true;
     const baseData = useInitialData
       ? initialData
-      : this.adapter && this.initialized && useCurrentData
+      : this.initialized && useCurrentData
         ? this.adapter.customPointController.allData
         : ({} as CustomPointMapData);
     const ensuredData = this.ensureMapData(baseData);
@@ -217,9 +206,7 @@ export class CustomPointDataService {
 
     await this.savePresetStorage();
 
-    if (this.adapter) {
-      this.applyPresetToAdapter(newPreset);
-    }
+    this.applyPresetToAdapter(newPreset);
 
     return newPreset;
   }
@@ -244,9 +231,7 @@ export class CustomPointDataService {
 
     await this.savePresetStorage();
 
-    if (this.adapter) {
-      this.applyPresetToAdapter(toJS(preset));
-    }
+    this.applyPresetToAdapter(toJS(preset));
   }
 
   /**
@@ -279,7 +264,7 @@ export class CustomPointDataService {
     await this.savePresetStorage();
 
     // 仅当删除的是当前预设时，才更新地图上的自定义标点数据
-    if (this.adapter && isCurrent) {
+    if (isCurrent) {
       if (nextPreset) {
         this.applyPresetToAdapter(toJS(nextPreset));
       } else {
@@ -315,7 +300,7 @@ export class CustomPointDataService {
    * 内部方法-应用当前预设到适配器
    */
   private applyCurrentPresetToAdapter() {
-    if (!this.adapter || !this.storageInitialized) return;
+    if (!this.initialized) return;
     const preset = this.currentPreset;
     if (!preset) return;
     this.applyPresetToAdapter(toJS(preset));
@@ -336,7 +321,7 @@ export class CustomPointDataService {
    * 内部方法-防抖保存当前预设数据到存储
    */
   private saveCurrentPresetData = debounce(() => {
-    if (!this.adapter || !this.initialized) return;
+    if (!this.initialized) return;
 
     const currentData = this.adapter.customPointController.allData;
     const ensuredData = this.ensureMapData(currentData);
@@ -367,8 +352,6 @@ export class CustomPointDataService {
    * 内部方法-应用预设到适配器
    */
   private applyPresetToAdapter(preset: CustomPointPreset) {
-    if (!this.adapter) return;
-
     try {
       const data = this.ensureMapData(preset.data);
       this.adapter.customPointController.initCustomPointData(data);
@@ -404,7 +387,7 @@ export class CustomPointDataService {
    * 清除当前激活的 feature
    */
   public clearActiveFeature() {
-    this.adapter?.activeFeatureController?.clearActiveFeature?.();
+    this.adapter.activeFeatureController?.clearActiveFeature?.();
   }
 
   /**
@@ -470,7 +453,7 @@ export class CustomPointDataService {
    */
   @action
   public changeVisibility(visible: boolean) {
-    this.adapter?.customPointController?.setCustomPointVisible?.(visible);
+    this.adapter.customPointController?.setCustomPointVisible?.(visible);
     this.customPointVisibility = visible;
     LocalStorageDB.set(LocalStorageKey.CUSTOM_POINT_DISPLAY, visible);
   }
@@ -480,7 +463,7 @@ export class CustomPointDataService {
    */
   @action
   public toggleVisibility() {
-    const visible = !this.adapter?.customPointController?.customPointVisible;
+    const visible = !this.adapter.customPointController?.customPointVisible;
     this.changeVisibility(visible);
   }
 
@@ -513,8 +496,6 @@ export class CustomPointDataService {
    * 应用存储的可见性设置到自定义标点features
    */
   private applyStoredVisibility(mapIndex: MapIndex) {
-    if (!this.adapter) return;
-
     const visibilityData = this.customPointVisibilityData[mapIndex];
     if (!visibilityData) return;
 
@@ -538,7 +519,7 @@ export class CustomPointDataService {
    * @param coordinate 坐标
    */
   public async createCustomPoint(mapIndex: MapIndex, coordinate: number[]) {
-    if (!this.adapter || !this.initialized) {
+    if (!this.initialized) {
       throw new Error('CustomPointDataService not initialized');
     }
 
@@ -556,7 +537,7 @@ export class CustomPointDataService {
    * @param id 自定义标点ID
    */
   public async deleteCustomPoint(mapIndex: MapIndex, id: number) {
-    if (!this.adapter || !this.initialized) {
+    if (!this.initialized) {
       throw new Error('CustomPointDataService not initialized');
     }
 
@@ -569,7 +550,6 @@ export class CustomPointDataService {
    * 初始化自定义标点数据变更事件监听
    */
   private initCustomPointChangeEvent() {
-    if (!this.adapter) return;
     const dispose = this.adapter.event.on(MAP_EVENT.CUSTOM_POINT_CHANGED, () => {
       this.saveCurrentPresetData();
     });
@@ -580,17 +560,16 @@ export class CustomPointDataService {
    * 初始化地图点击事件监听（用于创建自定义标点）
    */
   private initMapClickEvent() {
-    if (!this.adapter) return;
     const dispose = this.adapter.event.on(MAP_EVENT.MAP_CLICK, (event) => {
       if (!this.isCreating) return;
-      const mapIndex = this.adapter!.currentMapIndex;
+      const mapIndex = this.adapter.currentMapIndex;
       const coordinate = event.coordinate;
       if (!coordinate) return;
 
       try {
         this.createCustomPoint(mapIndex, coordinate);
         // 确保图层被添加到地图上
-        this.adapter!.renderCustomPoint(mapIndex);
+        this.adapter.renderCustomPoint(mapIndex);
       } catch (error) {
         logger.error('[CustomPointDataService|initMapClickEvent] Failed to create custom point', error);
         alert.info({
@@ -612,11 +591,11 @@ export class CustomPointDataService {
       const isCustomPoint = instance.entityInfo.category === CustomPointKey;
       if (!isCustomPoint) return;
 
-      const mapIndex = this.adapter!.currentMapIndex;
+      const mapIndex = this.adapter.currentMapIndex;
       try {
         this.deleteCustomPoint(mapIndex, instance.id);
         // 清除 hover 状态
-        this.adapter?.mapController.hoverFeatureController.clearHoverFeature();
+        this.adapter.mapController.hoverFeatureController.clearHoverFeature();
       } catch (error) {
         logger.error('[CustomPointDataService|initCustomPointClickEvent] Failed to delete custom point', error);
         alert.info({
@@ -634,11 +613,7 @@ export class CustomPointDataService {
     // 清理所有事件监听器
     this.eventListenerDisposers.forEach((dispose) => dispose());
     this.eventListenerDisposers = [];
-
-    // 清除 adapter 引用
-    this.adapter = undefined;
-    this.adapterRegistered = false;
-    this.updateInitializedFlag();
+    this.initialized = false;
   }
   // endregion
 

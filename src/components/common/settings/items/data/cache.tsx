@@ -5,10 +5,12 @@ import { EndfieldFormButton } from '@/components/common/endfield_components/form
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { usePromiseState } from '@/hooks/use_promise_state';
-import { dataService } from '@/services/data';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export const CacheSetting = () => {
   const { t } = useTranslation('settings');
+  const { dataService } = useAdapter();
+
   const { loading, execute } = usePromiseState({
     fun: () => dataService.storage.temporaryClear(),
     onSuccess() {

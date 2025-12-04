@@ -3,9 +3,9 @@ import type { CustomPointIdKey } from '@endfieldmap/map-core/types';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
-import { dataService } from '@/services/data';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
+import { useAdapter } from '@/hooks/use_adapter';
 
 /**
  * 自定义标点类型选择器
@@ -13,6 +13,7 @@ import { cn } from '@/utils/style';
  */
 const CustomPointTypeSelector: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
+  const { dataService } = useAdapter();
   const selectedType = dataService.customPointDataService.selectedPointType;
 
   const handleSelectType = (pointType: CustomPointIdKey) => {

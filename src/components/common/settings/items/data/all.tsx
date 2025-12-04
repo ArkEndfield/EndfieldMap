@@ -6,9 +6,10 @@ import { EndfieldFormButton } from '@/components/common/endfield_components/form
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { usePromiseState } from '@/hooks/use_promise_state';
-import { dataService } from '@/services/data';
+import { useAdapter } from '@/hooks/use_adapter';
+import type { DataService } from '@/services/data';
 
-const clearAll = (confirmText: string): Promise<boolean> => {
+const clearAll = (confirmText: string, dataService: DataService): Promise<boolean> => {
   return new Promise((resolve) => {
     alert.confirm({
       content: confirmText,
@@ -28,8 +29,9 @@ const clearAll = (confirmText: string): Promise<boolean> => {
 
 export const AllStorageSetting = () => {
   const { t } = useTranslation('settings');
+  const { dataService } = useAdapter();
   const { loading, execute } = usePromiseState({
-    fun: () => clearAll(t('data.storage_data.confirm')),
+    fun: () => clearAll(t('data.storage_data.confirm'), dataService),
     onSuccess(cleared) {
       if (cleared) {
         alert.info({

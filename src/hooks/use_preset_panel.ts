@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
-import { dataService } from '@/services/data';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export interface PresetItem {
   id: string;
@@ -12,6 +12,7 @@ export interface PresetItem {
 
 export const usePresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
+  const { dataService } = useAdapter();
   const service = dataService.electricPoleDataService;
   const currentPresetId = service.currentPresetId ?? '';
   const presets = service.presetList;

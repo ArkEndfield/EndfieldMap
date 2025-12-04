@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
-import { dataService } from '@/services/data';
 
 interface CustomPointTypeGroup {
   entityDataIdKey: string;
@@ -24,7 +23,7 @@ interface CustomPointTypeGroup {
  */
 const CustomPointList: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
 
   // 获取当前地图的所有自定义标点features，并按类型分组
   const layer = adapter.customPointController.layerContainer;

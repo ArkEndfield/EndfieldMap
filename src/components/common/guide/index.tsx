@@ -12,7 +12,7 @@ import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { GuideNode } from '@/components/common/guide/node';
-import { dataService } from '@/services/data';
+import { useAdapter } from '@/hooks/use_adapter';
 
 const collectImages = (nodes: GuideNodeType[]) => {
   const slides: Slide[] = [];
@@ -47,6 +47,7 @@ export const Guide = ({ entity }: { entity: EntityData }) => {
   const [showImage, setShowImage] = useState(false);
   const [index, setIndex] = useState(0);
   const imageRef = useRef<ControllerRef>(null);
+  const { dataService } = useAdapter();
 
   const getGuideData = useCallback(async () => {
     const guides = await dataService.guideDataService.getGuide(entity.levelLogicId);

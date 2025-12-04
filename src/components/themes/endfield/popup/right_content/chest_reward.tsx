@@ -5,13 +5,14 @@ import { RewardTitle } from '@themes/endfield/popup/right_content/reward_title';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { dataService } from '@/services/data';
 import { hasChestReward, isDealedRewardItemWithCount } from '@/utils/reward';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export const ChestReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<DealedRewardItem[]>([]);
   const showRewards = hasChestReward(entity);
   const { t } = useTranslation(['popup', 'item']);
+  const { dataService } = useAdapter();
 
   const getRewadData = useCallback(async () => {
     if (showRewards) {
@@ -41,13 +42,7 @@ export const ChestReward = ({ entity }: { entity: EntityData }) => {
         {rewards.map((rwd) => (
           <Item
             key={rwd.id}
-            icon={
-              <img
-                src={rwd.icon}
-                alt={t(`item:${rwd.id}.name`)}
-                className="w-full h-full object-contain"
-              />
-            }
+            icon={<img src={rwd.icon} alt={t(`item:${rwd.id}.name`)} className="w-full h-full object-contain" />}
             count={isDealedRewardItemWithCount(rwd) ? rwd.count : undefined}
             name={t(`item:${rwd.id}.name`)}
           ></Item>

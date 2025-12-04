@@ -7,11 +7,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useAdapter } from '@/hooks/use_adapter';
-import { dataService } from '@/services/data';
 import uiManager from '@/services/ui_manager';
 
 const PCPopup: React.FC = observer(() => {
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
 
   const container = useMemo(() => {
     const div = document.createElement('div');

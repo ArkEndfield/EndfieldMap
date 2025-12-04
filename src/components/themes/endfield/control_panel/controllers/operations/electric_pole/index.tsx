@@ -10,9 +10,8 @@ import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { CloseIcon, PlusIcon } from '@/components/common/icons';
 import { snapPoints } from '@/const/ui';
 import { useAdapter } from '@/hooks/use_adapter';
-import { type ElectricMode,useElectricMode } from '@/hooks/use_electric_mode';
+import { type ElectricMode, useElectricMode } from '@/hooks/use_electric_mode';
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import { dataService } from '@/services/data';
 import { cn } from '@/utils/style';
 
 const PoleManagerToolbar = observer(() => {
@@ -78,7 +77,7 @@ export interface ElectricPoleManagerProps {
 }
 
 export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(({ open }) => {
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const isMobile = useIsMobile();
   const { t } = useTranslation('sidebar');
   const { isInMode } = useElectricMode();

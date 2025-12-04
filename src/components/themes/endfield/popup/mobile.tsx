@@ -10,7 +10,6 @@ import { EndfieldSwitch } from '@/components/common/endfield_components/form/swi
 import { ScrollArea } from '@/components/common/scroll_area';
 import { snapPoints } from '@/const/ui';
 import { useAdapter } from '@/hooks/use_adapter';
-import { dataService } from '@/services/data';
 import { hasReward } from '@/utils/reward';
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
@@ -66,7 +65,7 @@ const Content = ({ showEntityPage }: { showEntityPage: boolean }) => {
 };
 
 const MobilePopup: React.FC = observer(() => {
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const { t } = useTranslation('popup');
   const [showEntityPage, setShowEntityPage] = useState(true);
 

@@ -32,11 +32,18 @@ import { SwiperDataService } from './swiper';
 /**
  * 数据服务
  */
-class DataService {
-  public storage: StorageManager;
-  public jsonLoader: JSONLoader;
-  public initialized: boolean = false;
-  private adapter: EndfieldMapAdapter | null = null;
+export class DataService {
+  public static storage = new StorageManager({
+    name: 'endfieldmap',
+    version: 1,
+    description: 'EndfieldMap Storage',
+  });
+  public static jsonLoader = new JSONLoader({
+    storage: this.storage,
+  });
+  public static instance?: DataService;
+
+  private adapter: EndfieldMapAdapter;
 
   public entityDataService: EntityDataService;
   public electricPoleDataService: ElectricPoleDataService;
@@ -47,61 +54,59 @@ class DataService {
   public guideDataService: GuideDataService;
   public swiperDataService: SwiperDataService;
 
-  constructor() {
-    this.storage = new StorageManager({
-      name: 'endfieldmap',
-      version: 1,
-      description: 'EndfieldMap Storage',
-    });
-    this.jsonLoader = new JSONLoader({
-      storage: this.storage,
-    });
-    this.entityDataService = new EntityDataService(this.storage);
-    this.electricPoleDataService = new ElectricPoleDataService(this.storage);
-    this.customPointDataService = new CustomPointDataService(this.storage);
+  constructor(adapter: EndfieldMapAdapter) {
+    this.adapter = adapter;
+    this.entityDataService = new EntityDataService(DataService.storage);
+    this.electricPoleDataService = new ElectricPoleDataService(DataService.storage, adapter);
+    this.customPointDataService = new CustomPointDataService(DataService.storage, adapter);
 
-    this.itemDataService = new ItemDataService(this.jsonLoader, this.storage);
-    this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.storage, this.itemDataService);
+    this.itemDataService = new ItemDataService(DataService.jsonLoader, DataService.storage);
+    this.chestRewardDataService = new ChestRewardDataService(
+      DataService.jsonLoader,
+      DataService.storage,
+      this.itemDataService
+    );
     this.dungeonSeriesDataService = new DungeonSeriesDataService(
-      this.jsonLoader,
-      this.storage,
+      DataService.jsonLoader,
+      DataService.storage,
       this.chestRewardDataService
     );
-    this.guideDataService = new GuideDataService(this.jsonLoader, this.storage);
+    this.guideDataService = new GuideDataService(DataService.jsonLoader, DataService.storage);
     this.swiperDataService = new SwiperDataService();
-
-    this.initDataServices();
   }
 
-  private async initDataServices() {
-    this.itemDataService.getItemData();
-    this.chestRewardDataService.getRewardsData();
-    this.dungeonSeriesDataService.getDungeonSeriesData();
-    this.guideDataService.getGuidesData();
+  public static async initStorage() {
+    await DataService.storage.init();
+  }
+
+  public static async createInstance(adapter: EndfieldMapAdapter) {
+    if (DataService.instance) return DataService.instance;
+    const instance = new DataService(adapter);
+    await instance.init();
+    return instance;
   }
 
   public async init() {
-    if (this.initialized) return;
-    await this.storage.init();
-    await this.entityDataService.initFromStorage();
-    // 初始化电线杆预设数据（仅从 Storage 读取，不依赖 adapter）
-    await this.electricPoleDataService.initFromStorage();
-    // 初始化自定义标点预设数据（仅从 Storage 读取，不依赖 adapter）
-    await this.customPointDataService.initFromStorage();
-    this.initialized = true;
-  }
-
-  public registerAdapter(adapter: EndfieldMapAdapter) {
-    this.adapter = adapter;
+    await Promise.all([
+      // 初始化 entity 数据
+      this.entityDataService.initFromStorage(),
+      // 初始化电线杆预设数据
+      this.electricPoleDataService.initFromStorage(),
+      // 初始化自定义标点预设数据
+      this.customPointDataService.initFromStorage(),
+      // 初始化 item 数据（游戏物品）
+      this.itemDataService.getItemData(),
+      // 初始化宝箱奖励数据
+      this.chestRewardDataService.getRewardsData(),
+      // 初始化副本奖励数据
+      this.dungeonSeriesDataService.getDungeonSeriesData(),
+      // 初始化攻略数据
+      this.guideDataService.getGuidesData(),
+    ]);
     this.initDataEventListeners();
-    // 注册 electric pole 适配器，并在内部应用当前预设数据
-    this.electricPoleDataService.registerAdapter(adapter);
-    // 注册 custom point 适配器，并在内部应用当前预设数据
-    this.customPointDataService.registerAdapter(adapter);
   }
 
   public initDataEventListeners() {
-    if (!this.adapter) return;
     this.adapter.event.on(MAP_EVENT.ENTITY_VISIBILITY_CHANGE, (event: EntityVisibilityChangeEventDetail) => {
       const currentMap = this.adapter!.currentMapIndex;
       for (const layer of event.layers) {
@@ -163,7 +168,7 @@ class DataService {
    */
   @action
   public setAdjustView(adjust: boolean) {
-    this.adapter?.mapController.mapRenderer.setAdjustView(adjust);
+    this.adapter.mapController.mapRenderer.setAdjustView(adjust);
     LocalStorageDB.set(LocalStorageKey.MAP_ADJUST_VIEW, adjust);
   }
 
@@ -180,7 +185,7 @@ class DataService {
    * @param enable 是否开启
    */
   public setEnableCluster(enable: boolean) {
-    this.adapter?.setClusterEnable(enable);
+    this.adapter.setClusterEnable(enable);
     LocalStorageDB.set(LocalStorageKey.CLUSTER_ENABLED, enable);
   }
 
@@ -191,13 +196,13 @@ class DataService {
   @action
   public setHoverTime(time: number) {
     if (time === -1) {
-      this.adapter?.setHoverFeatureEnable(false);
-      this.adapter?.setHoverDebounceTime(0);
+      this.adapter.setHoverFeatureEnable(false);
+      this.adapter.setHoverDebounceTime(0);
     } else {
-      if (!this.adapter?.enableHover) {
-        this.adapter?.setHoverFeatureEnable(true);
+      if (!this.adapter.enableHover) {
+        this.adapter.setHoverFeatureEnable(true);
       }
-      this.adapter?.setHoverDebounceTime(time);
+      this.adapter.setHoverDebounceTime(time);
     }
     LocalStorageDB.set(LocalStorageKey.HOVER_TIME, time);
   }
@@ -207,7 +212,7 @@ class DataService {
    * @param filterMode 筛选模式
    */
   public setFilterMarkedMode(filterMode: MarkedFeatureFilterMode) {
-    this.adapter?.entityController?.setMarkedFeatureFilter?.(filterMode);
+    this.adapter.entityController?.setMarkedFeatureFilter?.(filterMode);
     LocalStorageDB.set(LocalStorageKey.FILTER_MARKED, filterMode);
   }
 
@@ -248,5 +253,3 @@ class DataService {
     };
   }
 }
-
-export const dataService = new DataService();

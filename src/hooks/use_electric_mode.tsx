@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
-import { dataService } from '@/services/data';
 
 const modes = ['isCreating', 'isConnecting', 'isDeleting', 'isDeletingConnection'] as const;
 
@@ -35,7 +34,7 @@ const modeTipText: Record<ElectricMode, ModeTipTextKeys> = {
 };
 
 export const useElectricMode = () => {
-  const { adapter } = useAdapter();
+  const { adapter, dataService } = useAdapter();
   const service = dataService.electricPoleDataService;
   const { t } = useTranslation('sidebar');
 

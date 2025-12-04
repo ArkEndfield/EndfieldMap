@@ -24,14 +24,8 @@ import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/da
  * 电线杆数据管理器
  */
 export class ElectricPoleDataService {
-  private adapter?: EndfieldMapAdapter;
+  private adapter: EndfieldMapAdapter;
   private storage: StorageManager;
-
-  /** 是否已经从 Storage 中加载了预设数据 */
-  private storageInitialized: boolean = false;
-
-  /** 是否已经注册了 adapter */
-  private adapterRegistered: boolean = false;
 
   /** 当前数据版本 */
   @observable accessor dataVersion: VersionType = '0.0.1';
@@ -42,7 +36,7 @@ export class ElectricPoleDataService {
     currentPresetId: null,
   };
 
-  /** 服务是否完全就绪（已加载存储 + 已注册 adapter） */
+  /** 服务是否完全就绪 */
   private initialized: boolean = false;
 
   /** 是否处于创建电线杆状态 */
@@ -60,21 +54,16 @@ export class ElectricPoleDataService {
   /** 是否处于删除连线状态 */
   @observable accessor isDeletingConnection: boolean = false;
 
-  constructor(storage: StorageManager) {
+  constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
     this.storage = storage;
+    this.adapter = adapter;
+    this.initAdapter();
   }
 
   /**
    * 注册地图适配器
    */
-  public registerAdapter(adapter: EndfieldMapAdapter) {
-    // 先设置状态为已注册并更新 initialized，再应用预设
-    runInAction(() => {
-      this.adapter = adapter;
-      this.adapterRegistered = true;
-      this.updateInitializedFlag();
-    });
-    // 当 adapter 注册后，如果已经有预设数据，则应用当前预设到地图
+  private initAdapter() {
     this.applyCurrentPresetToAdapter();
     this.initEntityClickEvent();
     this.initElecticPoleClickEvent();
@@ -88,7 +77,7 @@ export class ElectricPoleDataService {
    * - 仅使用 ElectricPolePresetStorage 结构，不再兼容旧的 ElectricPoleMapData 结构
    */
   public async initFromStorage() {
-    if (this.storageInitialized) return;
+    if (this.initialized) return;
 
     const stored = await this.storage.permanentGet<ElectricPolePresetStorage>(StorageKey.ELECTRIC_POLE);
 
@@ -110,8 +99,7 @@ export class ElectricPoleDataService {
         };
       }
 
-      this.storageInitialized = true;
-      this.updateInitializedFlag();
+      this.initialized = true;
     });
   }
 
@@ -158,9 +146,6 @@ export class ElectricPoleDataService {
     if (!this.initialized) {
       throw new Error('ElectricPoleDataService not initialized');
     }
-    if (!this.adapter) {
-      throw new Error('ElectricPoleDataService not registered adapter');
-    }
     return this.adapter.electricPoleController.allData;
   }
 
@@ -171,10 +156,6 @@ export class ElectricPoleDataService {
     if (!this.initialized) {
       throw new Error('ElectricPoleDataService not initialized');
     }
-    if (!this.adapter) {
-      throw new Error('ElectricPoleDataService not registered adapter');
-    }
-
     const ensuredData = this.ensureMapData(data);
 
     runInAction(() => {
@@ -207,7 +188,7 @@ export class ElectricPoleDataService {
   }
 
   public clearActiveFeature() {
-    this.adapter?.activeFeatureController?.clearActiveFeature?.();
+    this.adapter.activeFeatureController?.clearActiveFeature?.();
     this.connectingPole = null;
     this.isConnecting = false;
   }
@@ -253,41 +234,39 @@ export class ElectricPoleDataService {
   }
 
   private initEntityClickEvent() {
-    if (this.adapter) {
-      this.adapter.event.on(MAP_EVENT.MAP_CLICK, (event) => {
-        if (!this.isCreating) return;
-        const mapIndex = this.adapter!.currentMapIndex;
-        const coordinate = event.coordinate;
-        try {
-          const feature = this.adapter!.electricPoleController.createElectricPoleEntity(mapIndex, coordinate);
-          if (feature && this.autoConnect) {
-            if (this.connectingPole) {
-              try {
-                this.connectToPole(feature);
-              } catch (error) {
-                alert.show({
-                  // TODO: i18n
-                  content: `连接失败：${error instanceof Error ? error.message : String(error)}`,
-                  cancelText: '删除电线杆',
-                  onCancel: () => {
-                    this.deleteElectricPole(feature, true);
-                  },
-                  onConfirm: () => {
-                    this.setConnectingPole(feature);
-                  },
-                });
-              }
-            } else {
-              this.setConnectingPole(feature);
+    this.adapter.event.on(MAP_EVENT.MAP_CLICK, (event) => {
+      if (!this.isCreating) return;
+      const mapIndex = this.adapter!.currentMapIndex;
+      const coordinate = event.coordinate;
+      try {
+        const feature = this.adapter!.electricPoleController.createElectricPoleEntity(mapIndex, coordinate);
+        if (feature && this.autoConnect) {
+          if (this.connectingPole) {
+            try {
+              this.connectToPole(feature);
+            } catch (error) {
+              alert.show({
+                // TODO: i18n
+                content: `连接失败：${error instanceof Error ? error.message : String(error)}`,
+                cancelText: '删除电线杆',
+                onCancel: () => {
+                  this.deleteElectricPole(feature, true);
+                },
+                onConfirm: () => {
+                  this.setConnectingPole(feature);
+                },
+              });
             }
+          } else {
+            this.setConnectingPole(feature);
           }
-        } catch (error) {
-          alert.info({
-            content: `创建失败：${error instanceof Error ? error.message : String(error)}`,
-          });
         }
-      });
-    }
+      } catch (error) {
+        alert.info({
+          content: `创建失败：${error instanceof Error ? error.message : String(error)}`,
+        });
+      }
+    });
   }
 
   /**
@@ -296,7 +275,7 @@ export class ElectricPoleDataService {
    */
   @action
   public changeZoneVisibility(visible: boolean) {
-    this.adapter?.electricPoleController?.setZoneVisible?.(visible);
+    this.adapter.electricPoleController?.setZoneVisible?.(visible);
     LocalStorageDB.set(LocalStorageKey.ELECTRIC_POLE_RANGE_DISPLAY, visible);
   }
 
@@ -305,7 +284,7 @@ export class ElectricPoleDataService {
    */
   @action
   public toggleZoneVisibility() {
-    const visible = !this.adapter?.electricPoleController?.zoneVisible;
+    const visible = !this.adapter.electricPoleController?.zoneVisible;
     this.changeZoneVisibility(visible);
   }
 
@@ -314,7 +293,7 @@ export class ElectricPoleDataService {
    */
   @action
   public changeVisibility(visible: boolean) {
-    this.adapter?.electricPoleController?.setElectricPoleVisible?.(visible);
+    this.adapter.electricPoleController?.setElectricPoleVisible?.(visible);
     LocalStorageDB.set(LocalStorageKey.ELECTRIC_POLE_DISPLAY, visible);
   }
 
@@ -323,7 +302,7 @@ export class ElectricPoleDataService {
    */
   @action
   public toggleVisibility() {
-    const visible = !this.adapter?.electricPoleController?.electricPoleVisible;
+    const visible = !this.adapter.electricPoleController?.electricPoleVisible;
     this.changeVisibility(visible);
   }
 
@@ -353,13 +332,13 @@ export class ElectricPoleDataService {
   @action
   public deleteElectricPole(pole: ElectricPoleFeature, force = false) {
     if (!this.isDeleting && !force) return;
-    const mapIndex = this.adapter!.currentMapIndex;
-    this.adapter?.electricPoleController.deleteElectricPoleEntity(mapIndex, pole.id);
-    this.adapter?.mapController.hoverFeatureController.clearHoverFeature();
+    const mapIndex = this.adapter.currentMapIndex;
+    this.adapter.electricPoleController.deleteElectricPoleEntity(mapIndex, pole.id);
+    this.adapter.mapController.hoverFeatureController.clearHoverFeature();
   }
 
   private initElecticPoleClickEvent() {
-    this.adapter?.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
+    this.adapter.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
       if (!this.isDeleting) return;
       const instance = event.instance;
       const isElectricPole = instance.entityInfo.category === ElectricPoleKey;
@@ -400,18 +379,18 @@ export class ElectricPoleDataService {
     if (fromPole) {
       fromPole.clearConnectionTo();
     }
-    this.adapter?.mapController.hoverConnectionController.clearHoverConnection();
+    this.adapter.mapController.hoverConnectionController.clearHoverConnection();
   }
 
   private initConnectionClickEvent() {
-    this.adapter?.event.on(MAP_EVENT.CONNECTION_CLICK, (event) => {
+    this.adapter.event.on(MAP_EVENT.CONNECTION_CLICK, (event) => {
       if (!this.isDeletingConnection) return;
       this.deleteConnection(event.instance);
     });
   }
 
   private initElectricPoleChangeEvent() {
-    this.adapter?.event.on(
+    this.adapter.event.on(
       MAP_EVENT.ELECTRIC_POLE_CHANGED,
       debounce(() => {
         // 当电线杆连接关系发生变化时，自动保存数据
@@ -536,7 +515,7 @@ export class ElectricPoleDataService {
   /** 设置激活feature为正在连接的电线杆 */
   @action
   public setActiveFeatureToConnectingPole() {
-    const activeFeature = this.adapter?.activeFeatureController?.activeFeature;
+    const activeFeature = this.adapter.activeFeatureController?.activeFeature;
     if (!activeFeature || activeFeature.entityInfo.category !== ElectricPoleKey) return;
     this.setConnectingPole(activeFeature as ElectricPoleFeature);
   }
@@ -569,7 +548,7 @@ export class ElectricPoleDataService {
   public setConnectingPole(pole: ElectricPoleFeature) {
     this.connectingPole = pole;
     requestAnimationFrame(() => {
-      this.adapter?.activeFeatureController?.setActiveFeature?.(pole);
+      this.adapter.activeFeatureController?.setActiveFeature?.(pole);
     });
   }
 
@@ -622,7 +601,7 @@ export class ElectricPoleDataService {
     const useCurrentData = initialData === true;
     const baseData = useInitialData
       ? initialData
-      : this.adapter && this.initialized && useCurrentData
+      : this.initialized && useCurrentData
         ? this.adapter.electricPoleController.allData
         : ({} as ElectricPoleMapData);
     const ensuredData = this.ensureMapData(baseData);
@@ -643,10 +622,7 @@ export class ElectricPoleDataService {
 
     await this.savePresetStorage();
 
-    // 若已注册 adapter，则立即应用到地图
-    if (this.adapter) {
-      this.applyPresetToAdapter(newPreset);
-    }
+    this.applyPresetToAdapter(newPreset);
   }
 
   /**
@@ -658,7 +634,7 @@ export class ElectricPoleDataService {
     this.clearActiveFeature();
 
     // 在切换预设之前，先将当前地图中的电线杆数据保存到当前预设中
-    if (this.initialized && this.adapter && this.currentPreset) {
+    if (this.initialized && this.currentPreset) {
       try {
         await this.saveCurrentAdapterDataToStorage();
       } catch (error) {
@@ -676,9 +652,7 @@ export class ElectricPoleDataService {
     });
     await this.savePresetStorage();
 
-    if (this.adapter) {
-      this.applyPresetToAdapter(toJS(preset));
-    }
+    this.applyPresetToAdapter(toJS(preset));
   }
 
   /**
@@ -742,7 +716,7 @@ export class ElectricPoleDataService {
     await this.savePresetStorage();
 
     // 仅当删除的是当前预设时，才更新地图上的电线杆数据
-    if (this.adapter && isCurrent) {
+    if (isCurrent) {
       if (nextPreset) {
         this.applyPresetToAdapter(toJS(nextPreset));
       } else {
@@ -920,7 +894,7 @@ export class ElectricPoleDataService {
    * 将当前预设应用到 adapter 的 ElectricPoleController
    */
   private applyCurrentPresetToAdapter() {
-    if (!this.adapter || !this.storageInitialized) return;
+    if (!this.initialized) return;
     const preset = this.currentPreset;
     if (!preset) return;
     this.applyPresetToAdapter(toJS(preset));
@@ -930,8 +904,6 @@ export class ElectricPoleDataService {
    * 将指定预设应用到 adapter 的 ElectricPoleController
    */
   private applyPresetToAdapter(preset: ElectricPolePreset) {
-    if (!this.adapter) return;
-
     try {
       const data = this.ensureMapData(preset.data);
       this.adapter.electricPoleController.resetAllElectricPoleData(data);
@@ -949,9 +921,6 @@ export class ElectricPoleDataService {
       );
 
       // 如果应用预设失败，使用空数据作为后备方案
-      // const emptyData = this.ensureMapData({} as ElectricPoleMapData);
-      // this.adapter.electricPoleController.resetAllElectricPoleData(emptyData);
-      // this.adapter.renderElectricPole(this.adapter.currentMapIndex);
       const adapter = this.adapter;
       // 通知用户数据可能已损坏
       alert.info({
@@ -983,13 +952,6 @@ export class ElectricPoleDataService {
       currentPresetId: toJS(this.presetStorage.currentPresetId),
     };
     await this.storage.permanentSet(StorageKey.ELECTRIC_POLE, plain);
-  }
-
-  /**
-   * 根据 storage / adapter 状态更新 initialized 标记
-   */
-  private updateInitializedFlag() {
-    this.initialized = this.storageInitialized && this.adapterRegistered;
   }
 
   /**
