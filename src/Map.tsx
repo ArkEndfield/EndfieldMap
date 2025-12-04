@@ -11,8 +11,8 @@ import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { cn } from '@/utils/style';
 
 import { DevTip } from './components/common/dev_tip';
-import uiManager from './services/ui_manager';
 import { DataService } from './services/data';
+import uiManager from './services/ui_manager';
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;

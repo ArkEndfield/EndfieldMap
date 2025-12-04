@@ -4,8 +4,8 @@ import { Item } from '@themes/endfield/components/item';
 import { RewardTitle } from '@themes/endfield/popup/right_content/reward_title';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 
-import { hasDungeonReward, isDealedRewardItemWithCount } from '@/utils/reward';
 import { useAdapter } from '@/hooks/use_adapter';
+import { hasDungeonReward, isDealedRewardItemWithCount } from '@/utils/reward';
 
 export const DungeonReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<Record<string, DealedRewardItem[]>>({});

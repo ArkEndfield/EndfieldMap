@@ -6,17 +6,16 @@ import { EndfieldFormButton } from '@/components/common/endfield_components/form
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { usePromiseState } from '@/hooks/use_promise_state';
-import { useAdapter } from '@/hooks/use_adapter';
+import { DataService } from '@/services/data';
 
 export const EntitySetting = () => {
   const { t } = useTranslation('settings');
-  const { dataService } = useAdapter();
 
   const { loading, execute } = usePromiseState({
     fun: () =>
       Promise.all([
-        dataService.storage.permanentRemove(StorageKey.LAYERS_VISIBILITY),
-        dataService.storage.permanentRemove(StorageKey.MARKED_FEATURES),
+        DataService.storage.permanentRemove(StorageKey.LAYERS_VISIBILITY),
+        DataService.storage.permanentRemove(StorageKey.MARKED_FEATURES),
       ]),
     onSuccess() {
       alert.info({

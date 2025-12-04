@@ -6,11 +6,11 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 import i18n from '@/i18n';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
+import { DataService } from '@/services/data';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getLanguage } from '@/utils/language';
 import { getAssetUrls } from '@/utils/url';
-import { DataService } from '@/services/data';
 
 /**
  * 地图适配器 hook

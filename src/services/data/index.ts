@@ -13,8 +13,8 @@ import { ElectricPoleDataService } from '@/services/data/electric_pole';
 import { EntityDataService } from '@/services/data/entity';
 import { GuideDataService } from '@/services/data/guide';
 import { ItemDataService } from '@/services/data/item';
-import { SwiperDataService } from '@/services/data/swiper';
 import { MapStateDataService } from '@/services/data/map_state';
+import { SwiperDataService } from '@/services/data/swiper';
 
 /**
  * 数据服务

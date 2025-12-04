@@ -1,5 +1,5 @@
-import { action, computed, observable, observe } from 'mobx';
 import { LocalStorageDB } from '@endfieldmap/tools/storage';
+import { action, computed, observable, observe } from 'mobx';
 
 export interface LocalStorageValueConfig<T> {
   initialValue: T;

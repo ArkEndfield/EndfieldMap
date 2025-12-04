@@ -1,20 +1,20 @@
 import 'swiper/swiper.css';
 import './index.css';
 
+import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Swiper as SwiperType } from 'swiper';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { Autoplay, Navigation,Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import ListTitle from '@/components/common/list_title';
-import { cn } from '@/utils/style';
-import { ChevronUp } from '@/components/common/icons';
 import { IconButton } from '@/components/common/endfield_components/icon_button';
-import uiManager from '@/services/ui_manager';
-import { observer } from 'mobx-react-lite';
+import { ChevronUp } from '@/components/common/icons';
+import ListTitle from '@/components/common/list_title';
 import { useAdapter } from '@/hooks/use_adapter';
+import uiManager from '@/services/ui_manager';
+import { cn } from '@/utils/style';
 
 const ZmdSwiper = observer(() => {
   const expanded = uiManager.swiperOpen.value;

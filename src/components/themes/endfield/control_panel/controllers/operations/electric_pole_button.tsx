@@ -13,8 +13,8 @@ import { useTranslation } from 'react-i18next';
 import type { SheetRef } from 'react-modal-sheet';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
-import uiManager from '@/services/ui_manager';
 import { useAdapter } from '@/hooks/use_adapter';
+import uiManager from '@/services/ui_manager';
 
 const ElectricPoleButtonIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">

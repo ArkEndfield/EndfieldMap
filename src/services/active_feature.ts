@@ -1,5 +1,6 @@
 import { ElectricPoleKey, EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
 import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+
 import type { DataService } from '@/services/data';
 
 /**

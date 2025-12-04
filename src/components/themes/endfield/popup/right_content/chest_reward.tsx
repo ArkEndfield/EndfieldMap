@@ -5,8 +5,8 @@ import { RewardTitle } from '@themes/endfield/popup/right_content/reward_title';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { hasChestReward, isDealedRewardItemWithCount } from '@/utils/reward';
 import { useAdapter } from '@/hooks/use_adapter';
+import { hasChestReward, isDealedRewardItemWithCount } from '@/utils/reward';
 
 export const ChestReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<DealedRewardItem[]>([]);

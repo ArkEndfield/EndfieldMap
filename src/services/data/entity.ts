@@ -1,4 +1,3 @@
-import { DEBOUNCE_INTERVAL } from '@/const/data';
 import type {
   EndfieldMapAdapter,
   EntityData,
@@ -8,6 +7,8 @@ import type {
   StorageData,
 } from '@endfieldmap/map-core';
 import { debounce, StorageKey, type StorageManager } from '@endfieldmap/tools';
+
+import { DEBOUNCE_INTERVAL } from '@/const/data';
 
 /**
  * 实体数据管理器

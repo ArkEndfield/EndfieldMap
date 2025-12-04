@@ -6,15 +6,14 @@ import { EndfieldFormButton } from '@/components/common/endfield_components/form
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { usePromiseState } from '@/hooks/use_promise_state';
-import { useAdapter } from '@/hooks/use_adapter';
-import type { DataService } from '@/services/data';
+import { DataService } from '@/services/data';
 
-const clearAll = (confirmText: string, dataService: DataService): Promise<boolean> => {
+const clearAll = (confirmText: string): Promise<boolean> => {
   return new Promise((resolve) => {
     alert.confirm({
       content: confirmText,
       async onConfirm() {
-        await Promise.all([LocalStorageDB.clear(), dataService.storage.clearAll()]);
+        await Promise.all([LocalStorageDB.clear(), DataService.storage.clearAll()]);
         resolve(true);
       },
       onCancel() {
@@ -29,9 +28,8 @@ const clearAll = (confirmText: string, dataService: DataService): Promise<boolea
 
 export const AllStorageSetting = () => {
   const { t } = useTranslation('settings');
-  const { dataService } = useAdapter();
   const { loading, execute } = usePromiseState({
-    fun: () => clearAll(t('data.storage_data.confirm'), dataService),
+    fun: () => clearAll(t('data.storage_data.confirm')),
     onSuccess(cleared) {
       if (cleared) {
         alert.info({
