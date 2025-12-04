@@ -49,6 +49,17 @@
     "adjust_view": {
       "title": "视图自动调整",
       "description": "当地图出屏幕外时，自动调整地图视图位置以确保其可见"
+    },
+    "wasd_move_speed": {
+      "title": "WASD 控制移动速度",
+      "description": "WASD 移动速度，数值越大速度越快",
+      "value": {
+        "normal": "正常",
+        "slow": "慢",
+        "slower": "更慢",
+        "slowest": "最慢",
+        "off": "关闭"
+      }
     }
   },
   "data": {

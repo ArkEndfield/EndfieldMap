@@ -26,6 +26,7 @@ export class MapStateDataService {
   public displayEletricPoleRange!: LocalStorageValue<boolean>;
   public displayEletricPole!: LocalStorageValue<boolean>;
   public displayCustomPoint!: LocalStorageValue<boolean>;
+  public wasdMoveSpeed!: LocalStorageValue<number>;
 
   constructor(adapter: EndfieldMapAdapter) {
     this.adapter = adapter;
@@ -51,6 +52,14 @@ export class MapStateDataService {
       storageKey: LocalStorageKey.MAP_ADJUST_VIEW,
       onValueChange: (adjust) => {
         this.adapter.mapController.mapRenderer.setAdjustView(adjust);
+      },
+    });
+
+    this.wasdMoveSpeed = new LocalStorageValue<number>({
+      initialValue: 0.5,
+      storageKey: LocalStorageKey.WASD_MOVE_SPEED,
+      onValueChange: (value) => {
+        this.adapter.KeyboardMoveController?.setSpeed(value);
       },
     });
 

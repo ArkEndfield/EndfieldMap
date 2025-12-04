@@ -56,6 +56,9 @@ export enum LocalStorageKey {
   // 20251130
   // 是否开启调整视图防止超出屏幕
   MAP_ADJUST_VIEW = 'map_adjust_view',
+
+  // WASD_MOVE_SPEED 移动速度
+  WASD_MOVE_SPEED = 'wasd_move_speed',
 }
 
 /** 加载状态枚举 */

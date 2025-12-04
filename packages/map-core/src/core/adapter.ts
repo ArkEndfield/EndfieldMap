@@ -1,3 +1,4 @@
+import { KeyboardMoveController } from './../controller/keyboard';
 import { LayerType, MapIndex } from '@endfieldmap/map-core/const';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/active_feature';
 import { AreaNameController } from '@endfieldmap/map-core/controller/area_name';
@@ -66,6 +67,8 @@ export class EndfieldMapAdapter {
   public popupController: PopupController | null = null;
   /** 缩放控制器 */
   public zoomController: ZoomController | null = null;
+  /** 快捷键控制器 */
+  public KeyboardMoveController: KeyboardMoveController | null = null;
   /** 事件 */
   public event: EndfieldMapEmitter;
   /** 当前地图索引 */
@@ -148,6 +151,11 @@ export class EndfieldMapAdapter {
 
     this.layerController.addLayer(LayerType.AREA_NAME, this.areaNameController.areaNameLayer);
     this.layerController.addLayer(LayerType.MAP, this.mapLayerController.mapLayer);
+
+    this.KeyboardMoveController = new KeyboardMoveController({
+      map: this.mapController.mapRenderer.map,
+      speed: 0.5
+    });
   }
 
   /**

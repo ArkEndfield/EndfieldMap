@@ -7150,6 +7150,17 @@ interface Resources {
         "description": "当地图出屏幕外时，自动调整地图视图位置以确保其可见",
         "title": "视图自动调整"
       },
+      "wasd_move_speed": {
+        "title": "WASD 控制移动速度",
+        "description": "WASD 移动速度，数值越大速度越快",
+        "value": {
+          "normal": "正常",
+          "off": "关闭",
+          "slow": "慢",
+          "slower": "更慢",
+          "slowest": "最慢"
+        }
+      },
       "cluster": "标点聚合",
       "hover": {
         "description": "鼠标在地图标点上的悬停检测响应时间，时间越短性能需求越高",

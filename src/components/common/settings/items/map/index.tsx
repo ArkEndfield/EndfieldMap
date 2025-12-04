@@ -6,6 +6,7 @@ import { AdjustViewSetting } from '@/components/common/settings/items/map/adjust
 import { CenterViewSetting } from '@/components/common/settings/items/map/center_view';
 import { ClusterSetting } from '@/components/common/settings/items/map/cluster';
 import { HoverSetting } from '@/components/common/settings/items/map/hover';
+import { WasdSetting } from '@/components/common/settings/items/map/wasd_movespeed';
 
 export const MapSettings = observer(() => {
   const { t } = useTranslation('settings');
@@ -15,6 +16,7 @@ export const MapSettings = observer(() => {
       <CenterViewSetting />
       <AdjustViewSetting />
       <HoverSetting />
+      <WasdSetting />
     </SettingsZone>
   );
 });
