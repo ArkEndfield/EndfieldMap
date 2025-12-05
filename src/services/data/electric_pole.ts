@@ -101,6 +101,9 @@ export class ElectricPoleDataService {
 
       this.initialized = true;
     });
+
+    // 从存储加载数据后，将当前预设应用到地图
+    this.applyCurrentPresetToAdapter();
   }
 
   /**
