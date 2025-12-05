@@ -50,9 +50,6 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       // 初始化鼠标指针样式监听器
       initCursorEventListeners(adapter.current);
 
-      // 初始化hover事件监听器，用于设置和清除hover的feature
-      initHoverFeatureEventListeners(adapter.current);
-
       // LOADING
       loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
     } catch (e) {
@@ -72,6 +69,9 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
         loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);
         // 初始化激活feature事件监听器，用于设置和清除激活的feature
         initActiveFeatureEventListeners(adapter.current!, dataService.current);
+
+        // 初始化hover事件监听器，用于设置和清除hover的feature
+        initHoverFeatureEventListeners(adapter.current!, dataService.current);
       });
     }
   }, [init, containerRef]);
