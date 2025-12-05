@@ -516,7 +516,10 @@ export class ElectricPoleDataService {
   @action
   public setActiveFeatureToConnectingPole() {
     const activeFeature = this.adapter.activeFeatureController?.activeFeature;
-    if (!activeFeature || activeFeature.entityInfo.category !== ElectricPoleKey) return;
+    if (!activeFeature || activeFeature.entityInfo.category !== ElectricPoleKey) {
+      this.clearActiveFeature();
+      return;
+    }
     this.setConnectingPole(activeFeature as ElectricPoleFeature);
   }
 
