@@ -35,7 +35,9 @@ export class HoverConnectionController {
     this.getConnectionLayer = config.getConnectionLayer;
     this.disabled = config.disableHoverConnection ?? false;
     this.updateDebouncedHoverHandler();
-    this.registerEventHandlers();
+    if (!this.disabled) {
+      this.registerEventHandlers();
+    }
   }
 
   /**
@@ -56,35 +58,46 @@ export class HoverConnectionController {
     const { event } = detail;
     const coordinate = event.coordinate;
     if (!coordinate) {
-      if (this.hoverFeature !== null) {
-        this.setHoverConnection(null, null);
-      }
+      // 发出清除hover的事件
+      mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+        feature: null,
+        layer: null,
+        event,
+      });
       return;
     }
 
     const connectionLayer = this.getConnectionLayer();
     if (!connectionLayer || !connectionLayer.layer.getVisible()) {
-      if (this.hoverFeature !== null) {
-        this.setHoverConnection(null, null);
-      }
+      // 发出清除hover的事件
+      mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+        feature: null,
+        layer: null,
+        event,
+      });
       return;
     }
 
     const clickedFeatures = await connectionLayer.layer.getFeatures(event.pixel as [number, number]);
     if (clickedFeatures.length === 0) {
-      if (this.hoverFeature !== null) {
-        this.setHoverConnection(null, null);
-      }
+      // 发出清除hover的事件
+      mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+        feature: null,
+        layer: null,
+        event,
+      });
       return;
     }
 
     // 取第一个feature作为hover target
     const feature = clickedFeatures[0];
 
-    // 更新hover状态
-    if (feature !== this.hoverFeature) {
-      this.setHoverConnection(feature, connectionLayer);
-    }
+    // 发出CONNECTION_HOVER事件，由UI层处理设置hover状态
+    mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+      feature,
+      layer: connectionLayer,
+      event,
+    });
   }
 
   /**

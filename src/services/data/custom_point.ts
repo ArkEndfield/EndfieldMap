@@ -595,7 +595,7 @@ export class CustomPointDataService {
       try {
         this.deleteCustomPoint(mapIndex, instance.id);
         // 清除 hover 状态
-        this.adapter.mapController.hoverFeatureController.clearHoverFeature();
+        this.adapter.hoverFeatureController.clearHoverFeature();
       } catch (error) {
         logger.error('[CustomPointDataService|initCustomPointClickEvent] Failed to delete custom point', error);
         alert.info({

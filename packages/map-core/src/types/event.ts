@@ -92,6 +92,18 @@ export interface HoverFeatureChangeEventDetail {
   coordinate: Coordinate | null;
 }
 
+export interface EntityHoverEventDetail {
+  instance: MapFeature | null;
+  coordinate: Coordinate | null;
+  event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+}
+
+export interface ConnectionHoverEventDetail {
+  feature: FeatureLike | null;
+  layer: ElectricPoleConnectionLayer | null;
+  event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+}
+
 export interface ElectricPoleChangedEventDetail {
   mapIndex: string | null;
 }
@@ -114,8 +126,10 @@ export interface MapEventEmitter {
   // 高级封装的
   [MAP_EVENT.CLUSTER_CLICK]: ClusterEventDetail;
   [MAP_EVENT.ENTITY_CLICK]: EntityEventDetail;
+  [MAP_EVENT.ENTITY_HOVER]: EntityHoverEventDetail;
   [MAP_EVENT.ENTITY_CONTEXT_MENU]: EntityContextMenuEventDetail;
   [MAP_EVENT.CONNECTION_CLICK]: ConnectionClickEventDetail;
+  [MAP_EVENT.CONNECTION_HOVER]: ConnectionHoverEventDetail;
   [MAP_EVENT.CONNECTION_CONTEXT_MENU]: ConnectionContextMenuEventDetail;
   [MAP_EVENT.ENTITY_VISIBILITY_CHANGE]: EntityVisibilityChangeEventDetail;
   [MAP_EVENT.ACTIVE_FEATURE_CHANGE]: ActiveFeatureChangeEventDetail;

@@ -51,7 +51,9 @@ export class HoverFeatureController {
     this.getCustomPointLayers = config.getCustomPointLayers;
     this.disabled = config.disableHoverFeature ?? false;
     this.updateDebouncedHoverHandler();
-    this.registerEventHandlers();
+    if (!this.disabled) {
+      this.registerEventHandlers();
+    }
   }
 
   /**
@@ -72,9 +74,12 @@ export class HoverFeatureController {
     const { event } = detail;
     const coordinate = event.coordinate as Coordinate | undefined;
     if (!coordinate) {
-      if (this.hoverFeature !== null) {
-        this.setHoverFeature(null, null);
-      }
+      // 发出清除hover的事件
+      mapEventEmitter.fire(MAP_EVENT.ENTITY_HOVER, {
+        instance: null,
+        coordinate: null,
+        event,
+      });
       return;
     }
 
@@ -92,20 +97,24 @@ export class HoverFeatureController {
       entityLayers
     );
 
-    // 如果没有命中任何feature，清除hover状态
+    // 如果没有命中任何feature，发出清除hover的事件
     if (allHoveredFeatures.length === 0) {
-      if (this.hoverFeature !== null) {
-        this.setHoverFeature(null, null);
-      }
+      mapEventEmitter.fire(MAP_EVENT.ENTITY_HOVER, {
+        instance: null,
+        coordinate: null,
+        event,
+      });
       return;
     }
 
     // 选择最上层的 layer（基于 z-index 和添加顺序）
     const selectedLayerFeatures = selectTopmostHitResult(allHoveredFeatures);
     if (!selectedLayerFeatures) {
-      if (this.hoverFeature !== null) {
-        this.setHoverFeature(null, null);
-      }
+      mapEventEmitter.fire(MAP_EVENT.ENTITY_HOVER, {
+        instance: null,
+        coordinate: null,
+        event,
+      });
       return;
     }
     const features = selectedLayerFeatures.features;
@@ -131,10 +140,12 @@ export class HoverFeatureController {
       hoverCoordinate = mapFeature.coordinates;
     }
 
-    // 更新hover状态
-    if (mapFeature !== this.hoverFeature) {
-      this.setHoverFeature(mapFeature, hoverCoordinate);
-    }
+    // 发出ENTITY_HOVER事件，由UI层处理设置hover状态
+    mapEventEmitter.fire(MAP_EVENT.ENTITY_HOVER, {
+      instance: mapFeature,
+      coordinate: hoverCoordinate,
+      event,
+    });
   }
 
   /**

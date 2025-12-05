@@ -6,6 +6,7 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 import i18n from '@/i18n';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
+import { initHoverFeatureEventListeners } from '@/services/hover_feature';
 import { DataService } from '@/services/data';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
@@ -48,6 +49,9 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
       // 初始化鼠标指针样式监听器
       initCursorEventListeners(adapter.current);
+
+      // 初始化hover事件监听器，用于设置和清除hover的feature
+      initHoverFeatureEventListeners(adapter.current);
 
       // LOADING
       loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);

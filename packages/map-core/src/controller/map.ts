@@ -1,12 +1,6 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { HoverConnectionController } from '@endfieldmap/map-core/controller/hover_connection';
-import { HoverFeatureController } from '@endfieldmap/map-core/controller/hover_feature';
 import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
-import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
-import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
-import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
 import { EndfieldMap } from '@endfieldmap/map-core/render/map';
 import type { MapConfig } from '@endfieldmap/map-core/types/map';
 import type { Coordinate } from 'ol/coordinate';
@@ -16,33 +10,14 @@ export interface MapControllerConfig {
   asset: EndfieldMapAsset;
 }
 
-export interface MapControllerDependencies {
-  getEntityLayers: () => CommonPointEntityLayer[];
-  getElectricPoleLayers: () => ElectricPoleEntityLayer[];
-  getCustomPointLayers: () => CustomPointEntityLayer[];
-  getConnectionLayer: () => ElectricPoleConnectionLayer | null;
-}
-
 export class MapController {
   public mapRenderer: EndfieldMap;
-  public hoverFeatureController: HoverFeatureController;
-  public hoverConnectionController: HoverConnectionController;
 
-  constructor(config: MapControllerConfig, dependencies?: MapControllerDependencies) {
+  constructor(config: MapControllerConfig) {
     const { mapConfig, asset } = config;
     this.mapRenderer = new EndfieldMap({
       ...mapConfig,
       mapImageUrl: asset.mapImage,
-    });
-    this.hoverFeatureController = new HoverFeatureController({
-      getEntityLayers: dependencies?.getEntityLayers || (() => []),
-      getElectricPoleLayers: dependencies?.getElectricPoleLayers || (() => []),
-      getCustomPointLayers: dependencies?.getCustomPointLayers || (() => []),
-      disableHoverFeature: mapConfig.disableHoverFeature,
-    });
-    this.hoverConnectionController = new HoverConnectionController({
-      getConnectionLayer: dependencies?.getConnectionLayer || (() => null),
-      disableHoverConnection: mapConfig.disableHoverFeature,
     });
     this.registerEventHandler();
   }
@@ -94,7 +69,6 @@ export class MapController {
    * 销毁控制器，清理资源
    */
   public dispose() {
-    this.hoverFeatureController.dispose();
-    this.hoverConnectionController.dispose();
+    // 清理地图资源
   }
 }

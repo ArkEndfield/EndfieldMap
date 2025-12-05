@@ -7,6 +7,8 @@ import { DataController } from '@endfieldmap/map-core/controller/data';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
 import { EntityController } from '@endfieldmap/map-core/controller/entity';
 import { EventController } from '@endfieldmap/map-core/controller/event';
+import { HoverConnectionController } from '@endfieldmap/map-core/controller/hover_connection';
+import { HoverFeatureController } from '@endfieldmap/map-core/controller/hover_feature';
 import { EndfieldMapLayerController } from '@endfieldmap/map-core/controller/layer';
 import { MapController } from '@endfieldmap/map-core/controller/map';
 import { MapLayerController } from '@endfieldmap/map-core/controller/map_layer';
@@ -61,6 +63,10 @@ export class EndfieldMapAdapter {
   public eventController: EventController;
   /** 激活特征控制器 */
   public activeFeatureController: ActiveFeatureController;
+  /** Hover特征控制器 */
+  public hoverFeatureController: HoverFeatureController;
+  /** Hover连接控制器 */
+  public hoverConnectionController: HoverConnectionController;
   /** 数据控制器 */
   public dataController: DataController;
   /** Popup控制器 */
@@ -86,22 +92,13 @@ export class EndfieldMapAdapter {
     this.container = config.container;
     this.asset = new EndfieldMapAsset(config.asset);
     this.jsonLoader = config.jsonLoader;
-    this.mapController = new MapController(
-      {
-        asset: this.asset,
-        mapConfig: {
-          container: this.container,
-          ...(config.map || {}),
-        },
+    this.mapController = new MapController({
+      asset: this.asset,
+      mapConfig: {
+        container: this.container,
+        ...(config.map || {}),
       },
-      {
-        getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
-        getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
-        getCustomPointLayers: () =>
-          this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : [],
-        getConnectionLayer: () => this.electricPoleController?.currentConnectionLayer || null,
-      }
-    );
+    });
     this.eventManager = new EndfieldMapEvent(this.mapController.mapRenderer.map, this.mapController.mapRenderer.view);
     this.layerController = new EndfieldMapLayerController(this.mapController.mapRenderer.map);
     this.layerController.addLayer(LayerType.MAP, this.mapController.mapRenderer.mapLayer);
@@ -120,6 +117,17 @@ export class EndfieldMapAdapter {
     });
     this.activeFeatureController = new ActiveFeatureController({
       disableActiveFeature: config.map?.disableActiveFeature,
+    });
+    this.hoverFeatureController = new HoverFeatureController({
+      getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
+      getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
+      getCustomPointLayers: () =>
+        this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : [],
+      disableHoverFeature: config.map?.disableHoverFeature,
+    });
+    this.hoverConnectionController = new HoverConnectionController({
+      getConnectionLayer: () => this.electricPoleController?.currentConnectionLayer || null,
+      disableHoverConnection: config.map?.disableHoverFeature,
     });
     this.dataController = new DataController({
       entityController: this.entityController,
@@ -154,7 +162,7 @@ export class EndfieldMapAdapter {
 
     this.KeyboardMoveController = new KeyboardMoveController({
       map: this.mapController.mapRenderer.map,
-      speed: 0.5
+      speed: 0.5,
     });
   }
 
@@ -237,8 +245,8 @@ export class EndfieldMapAdapter {
   @action
   public setHoverFeatureEnable(enable: boolean) {
     this.enableHover = enable;
-    this.mapController.hoverFeatureController.setEnable(enable);
-    this.mapController.hoverConnectionController.setEnable(enable);
+    this.hoverFeatureController.setEnable(enable);
+    this.hoverConnectionController.setEnable(enable);
   }
 
   /**
@@ -248,8 +256,8 @@ export class EndfieldMapAdapter {
   @action
   public setHoverDebounceTime(time: number) {
     this.hoverDebounceTime = time;
-    this.mapController.hoverFeatureController.setDebounceTime(time);
-    this.mapController.hoverConnectionController.setDebounceTime(time);
+    this.hoverFeatureController.setDebounceTime(time);
+    this.hoverConnectionController.setDebounceTime(time);
   }
 
   /**

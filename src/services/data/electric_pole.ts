@@ -334,7 +334,7 @@ export class ElectricPoleDataService {
     if (!this.isDeleting && !force) return;
     const mapIndex = this.adapter.currentMapIndex;
     this.adapter.electricPoleController.deleteElectricPoleEntity(mapIndex, pole.id);
-    this.adapter.mapController.hoverFeatureController.clearHoverFeature();
+    this.adapter.hoverFeatureController.clearHoverFeature();
   }
 
   private initElecticPoleClickEvent() {
@@ -379,7 +379,7 @@ export class ElectricPoleDataService {
     if (fromPole) {
       fromPole.clearConnectionTo();
     }
-    this.adapter.mapController.hoverConnectionController.clearHoverConnection();
+    this.adapter.hoverConnectionController.clearHoverConnection();
   }
 
   private initConnectionClickEvent() {
