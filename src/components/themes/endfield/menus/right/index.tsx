@@ -99,7 +99,7 @@ export const RightMenu: React.FC = observer(() => {
           ref={popoverRef}
           className={cn(
             'absolute bg-[#222222] shadow-lg overflow-hidden top-full',
-            isMobile ? 'w-screen left-0' : 'right-0 w-64'
+            isMobile ? 'w-screen left-1/2 -translate-x-1/2' : 'right-0 w-64'
           )}
           animate={{
             opacity: showPopover ? 1 : 0,
