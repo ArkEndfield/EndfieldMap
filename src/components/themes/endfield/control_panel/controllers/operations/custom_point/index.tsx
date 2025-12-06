@@ -1,5 +1,5 @@
-import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
 import { Toggle } from '@themes/endfield/components/toggle';
+import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
 import CustomPointList from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_list';
 import CustomPointPresetPanel from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_preset_panel';
 import CustomPointTypeSelector from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_type_selector';

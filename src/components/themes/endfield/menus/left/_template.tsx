@@ -12,9 +12,12 @@ export const HeaderMenuTemplate: React.FC<HeaderMenuProps> = ({ children, icon, 
   const isMobile = useIsMobile();
   if (isMobile) {
     return (
-      <button className="text-xl text-[#e0e0e0] w-20 h-10 flex justify-center items-center" onClick={onClick}>
-        {icon}
-      </button>
+      <>
+        <button className="text-xl text-[#e0e0e0] w-20 h-10 flex justify-center items-center" onClick={onClick}>
+          {icon}
+        </button>
+        {children}
+      </>
     );
   }
   return (

@@ -1,4 +1,5 @@
 import { EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
+
 import type { DataService } from '@/services/data';
 
 /**

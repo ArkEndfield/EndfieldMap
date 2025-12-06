@@ -316,6 +316,7 @@ export class ElectricPoleDataService {
   @action
   public startDeleteElectricPole() {
     this.isDeleting = true;
+    this.clearActiveFeature();
   }
 
   @action
@@ -358,6 +359,7 @@ export class ElectricPoleDataService {
   public startDeleteConnection() {
     this.isDeletingConnection = true;
     this.initConnectionClickEvent();
+    this.clearActiveFeature();
   }
 
   @action

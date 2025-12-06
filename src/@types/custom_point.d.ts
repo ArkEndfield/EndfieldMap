@@ -1,5 +1,6 @@
-import type { EXPORT_TYPE_KEY } from '@/const/data';
 import type { CustomPointMapData } from '@endfieldmap/map-core';
+
+import type { EXPORT_TYPE_KEY } from '@/const/data';
 
 /**
  * 自定义标点预设

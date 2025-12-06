@@ -1,4 +1,3 @@
-import { KeyboardMoveController } from './../controller/keyboard';
 import { LayerType, MapIndex } from '@endfieldmap/map-core/const';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/active_feature';
 import { AreaNameController } from '@endfieldmap/map-core/controller/area_name';
@@ -24,6 +23,8 @@ import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type Control from 'ol/control/Control';
+
+import { KeyboardMoveController } from './../controller/keyboard';
 
 export interface AdapterConfig {
   container: HTMLElement;

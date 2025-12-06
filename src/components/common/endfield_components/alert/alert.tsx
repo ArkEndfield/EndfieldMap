@@ -52,7 +52,6 @@ export const ZmdAlert = ({
   onClose = () => {},
   onConfirm = () => {},
 }: ZmdAlertProps) => {
-  //   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [backdropVisible, setBackdropVisible] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);

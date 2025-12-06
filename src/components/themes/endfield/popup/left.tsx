@@ -2,9 +2,11 @@ import type { CustomPointIdKey } from '@endfieldmap/map-core';
 import { customPointTypes } from '@endfieldmap/map-core/data/custom_point';
 import { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import { Toggle } from '@themes/endfield/components/toggle';
 import { ClipSquare, Deco } from '@themes/endfield/popup/deco';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
@@ -16,8 +18,6 @@ import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
-import { useMemo } from 'react';
-import { Toggle } from '@themes/endfield/components/toggle';
 
 /** 描边 */
 const Border = () => (

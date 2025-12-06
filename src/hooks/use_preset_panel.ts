@@ -3,8 +3,8 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
-import { useAdapter } from '@/hooks/use_adapter';
 import { EXPORT_TYPE_KEY } from '@/const/data';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export interface PresetItem {
   id: string;
