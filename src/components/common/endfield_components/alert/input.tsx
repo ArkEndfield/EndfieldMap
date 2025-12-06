@@ -33,11 +33,11 @@ export const PromptInput = ({
       <input
         type={inputType}
         className={cn(
-          'px-4 mx-1 py-2 outline-none transition-all duration-200',
+          'px-4 mx-1 py-2 outline-none transition-all duration-200 text-sm',
           'bg-[#f2f1ef] text-[#2a2728] placeholder-[#a0a2a3]',
           'rounded-full',
           'shadow-[0_0_0_0.1em_#f2f1ef,0_0_0_0.1em_#a0a2a3_inset]',
-          'focus:shadow-[0_0_0_0.1em_#ffbb00,0_0_0_0.1em_#a0a2a3_inset]',
+          'focus:shadow-[0_0_0_1px_#FDFB73AA,0_0_8px_#FDFB73AA,0_0_0_0.1em_#a0a2a3_inset]',
           'focus:bg-[#fefcfc]',
           inputClassName
         )}

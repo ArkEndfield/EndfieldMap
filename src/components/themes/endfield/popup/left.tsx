@@ -11,12 +11,13 @@ import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { ZmdButton } from '@/components/common/endfield_components/button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { Guide } from '@/components/common/guide';
-import { PowerIcon } from '@/components/common/icons';
+import { EditIcon, PowerIcon } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
 import { useMemo } from 'react';
+import { Toggle } from '@themes/endfield/components/toggle';
 
 /** 描边 */
 const Border = () => (
@@ -112,6 +113,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const customPointTypeOptions = customPointTypes.map((type) => ({
     value: type.entityInfo.point,
     label: t(`custom_point.type.${type.entityInfo.point}`, { defaultValue: type.entityInfo.point }),
+    left: <img className="w-4 h-4" src={getEntityIcon(type.category, type.entityInfo.pic)} />,
   }));
 
   return (
@@ -151,20 +153,25 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           )}
 
           {/* 操作按钮 */}
-          <div className="mt-3 pt-3 shrink-0 flex gap-2">
+          <div className="mt-3 pt-3 shrink-0 flex gap-2 justify-end">
             {activeFeature.markable && (
-              <ZmdButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleToggleMarked();
-                }}
-                iconPosition={activeFeature.marked ? 'left' : 'right'}
-              >
-                {activeFeature.marked ? t('common:operate.unmark') : t('common:operate.mark')}
-              </ZmdButton>
+              <div className="bg-[#272727] rounded-full p-0.5">
+                <Toggle
+                  onToggle={() => {
+                    handleToggleMarked();
+                  }}
+                  checked={activeFeature.marked}
+                  label={activeFeature.marked ? t('common:operate.marked') : t('common:operate.mark')}
+                />
+              </div>
             )}
             {(isElectricPole || isCustomPoint) && (
               <ZmdButton
+                classNames={{
+                  text: 'text-sm',
+                  icon: 'text-sm p-0.5',
+                }}
+                icon={<EditIcon />}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRename();
@@ -195,8 +202,8 @@ export const LeftContentContainer: React.FC = observer(() => {
 
       <div
         className={cn(
-          'w-full bg-[#272827] text-white p-3 pt-0 shadow-[0_-2px_0_#272827] relative overflow-hidden',
-          'after:absolute after:z-0 after:left-0 after:h-32 after:bottom-0 after:w-54 after:bg-linear-to-tr after:from-white/25 after:via-white/0 after:to-black/0'
+          'w-full bg-[#272827] text-white p-3 pt-0 shadow-[0_-2px_0_#272827] relative',
+          'after:absolute after:z-0 after:left-0 after:h-32 after:bottom-0 after:w-54 after:bg-linear-to-tr after:from-white/25 after:via-white/0 after:to-black/0 after:pointer-events-none'
         )}
       >
         <Deco />

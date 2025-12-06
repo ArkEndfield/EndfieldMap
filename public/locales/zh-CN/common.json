@@ -9,6 +9,7 @@
   "batch_delete": "批量删除",
   "operate": {
     "mark": "标记",
+    "marked": "已标记",
     "unmark": "取消标记",
     "clear_selection": "清空选择",
     "rename": "重命名"

@@ -10,6 +10,7 @@ interface Resources {
     "operate": {
       "clear_selection": "清空选择",
       "mark": "标记",
+      "marked": "已标记",
       "rename": "重命名",
       "unmark": "取消标记"
     },

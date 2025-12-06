@@ -1,5 +1,5 @@
 import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
-import { Toggle } from '@themes/endfield/control_panel/controllers/operations/components/toggle';
+import { Toggle } from '@themes/endfield/components/toggle';
 import ElectricPolePresetPanel from '@themes/endfield/control_panel/controllers/operations/electric_pole/electric_pole_preset_panel';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
