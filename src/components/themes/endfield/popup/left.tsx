@@ -16,6 +16,7 @@ import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
+import { useMemo } from 'react';
 
 /** 描边 */
 const Border = () => (
@@ -49,17 +50,22 @@ const Header = ({ name, pic }: { name: string; pic: string }) => (
 
 export const LeftContent = observer(({ className }: { className?: string }) => {
   const { adapter } = useAdapter();
-  const { t } = useTranslation(['popup', 'common']);
+  const { t } = useTranslation(['popup', 'common', 'entity_info']);
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityData = activeFeature?.data;
 
   const isElectricPole = activeFeature instanceof ElectricPoleFeature;
   const isCustomPoint = activeFeature instanceof CustomPointFeature;
-  const displayName = isElectricPole
-    ? (activeFeature as ElectricPoleFeature).name
-    : isCustomPoint
-      ? (activeFeature as CustomPointFeature).name
-      : entityData?.entityInfo.entityInfo.point;
+  const displayName = useMemo(() => {
+    if (isElectricPole) {
+      return (activeFeature as ElectricPoleFeature).name;
+    } else if (isCustomPoint) {
+      return (activeFeature as CustomPointFeature).name;
+    }
+    return t(`entity_info:${entityData?.entityInfo.entityInfo.point}`, {
+      defaultValue: entityData?.entityInfo.entityInfo.point || '',
+    });
+  }, [entityData, isElectricPole, isCustomPoint]);
 
   const handleToggleMarked = () => {
     if (activeFeature) {
