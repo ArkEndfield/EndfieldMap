@@ -1,4 +1,4 @@
-import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey,MapIndex } from '@endfieldmap/map-core/const/map';
+import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey, MapIndex } from '@endfieldmap/map-core/const/map';
 import type { customPointTypeMap } from '@endfieldmap/map-core/data/custom_point';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
@@ -90,7 +90,7 @@ export type CustomPointDataList = CustomPointData[];
 
 // TODO: 希望做成自动化
 export type Category =
-  | 'chest'
+  | 'trchest'
   | 'dnarrative'
   | 'dungeon'
   | 'enemy'
