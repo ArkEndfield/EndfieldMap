@@ -1,3 +1,4 @@
+import type { EXPORT_TYPE_KEY } from '@/const/data';
 import type { CustomPointMapData } from '@endfieldmap/map-core';
 
 /**
@@ -23,7 +24,7 @@ export interface CustomPointPresetStorage {
  * 自定义标点预设导出包
  */
 export interface CustomPointPresetExportBundle {
-  type: 'custom_point_preset_bundle';
+  type: EXPORT_TYPE_KEY.CUSTOM_POINT_PRESET;
   version: string;
   exportedAt: number;
   presets: CustomPointPreset[];

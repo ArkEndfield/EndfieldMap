@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
+import { EXPORT_TYPE_KEY } from '@/const/data';
 
 export interface PresetItem {
   id: string;
@@ -139,7 +140,7 @@ export const useCustomPointPresetPanel = () => {
       const text = await file.text();
       const parsed = JSON.parse(text);
 
-      if (parsed && parsed.type === 'custom_point_preset_bundle' && Array.isArray(parsed.presets)) {
+      if (parsed && parsed.type === EXPORT_TYPE_KEY.CUSTOM_POINT_PRESET && Array.isArray(parsed.presets)) {
         await service.importPresetBundle(parsed);
         alert.info(t('sidebar:operation.custom_point.preset.import.success'));
       } else {

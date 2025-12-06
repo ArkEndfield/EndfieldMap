@@ -1,6 +1,6 @@
 import type { ElectricPoleMapData } from '@endfieldmap/map-core';
 
-import type { VersionType } from '@/const/data';
+import type { EXPORT_TYPE_KEY, VersionType } from '@/const/data';
 
 /**
  * 电线杆预设类型
@@ -26,7 +26,7 @@ export interface ElectricPolePresetStorage {
  * - 允许同时包含多个预设
  */
 export interface ElectricPolePresetExportBundle {
-  type: 'electric_pole_preset_bundle';
+  type: EXPORT_TYPE_KEY.ELECTRIC_POLE_PRESET;
   version: VersionType;
   exportedAt: number;
   presets: Array<Pick<ElectricPolePreset, 'id' | 'name' | 'data' | 'createdAt' | 'updatedAt'>>;
