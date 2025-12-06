@@ -8,6 +8,9 @@ import { isDev } from '@/services/env';
 import { loadingManager } from '@/services/loading';
 
 const ns = ['common', 'header', 'map', 'popup', 'sidebar', 'settings'];
+// 标志位：防止语言切换等情况导致进度回退
+let initialLoadComplete = false;
+
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -30,11 +33,12 @@ i18n
       i18n.loadNamespaces(ns).then(() => {
         // LOADING
         loadingManager.completeStage(LoadingStageId.I18N);
+        initialLoadComplete = true;
       });
     }
   );
 
-// 监听每个命名空间的加载
+// 监听每个命名空间的加载（仅在初次加载时更新进度）
 i18n.on(
   'loaded',
   (loaded: {
@@ -42,6 +46,9 @@ i18n.on(
       [namespace: string]: boolean;
     };
   }) => {
+    // 初次加载完成后不再更新进度，防止语言切换导致进度回退
+    if (initialLoadComplete) return;
+
     const loadedCount = Object.keys(loaded).length;
     const progress = (loadedCount / ns.length) * 100;
     // LOADING

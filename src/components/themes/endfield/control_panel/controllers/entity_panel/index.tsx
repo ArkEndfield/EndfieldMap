@@ -25,7 +25,7 @@ interface CategoryInfo {
  * 显示当前地图的所有实体，支持按分类显示/隐藏
  */
 const EntityPanel = observer(() => {
-  const { t } = useTranslation(['sidebar']);
+  const { t } = useTranslation(['sidebar', 'entity_info']);
   const { adapter } = useAdapter();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -46,7 +46,9 @@ const EntityPanel = observer(() => {
       // 如果有搜索条件，进行过滤
       if (lowerSearchQuery) {
         const entityIdKey = entity.entityDataIdKey.toLowerCase();
-        const translatedEntityName = String(t(entity.entityDataIdKey as never)).toLowerCase();
+        const translatedEntityName = t(`entity_info:${entity.entityDataIdKey}`, {
+          defaultValue: entity.entityInfo.point,
+        }).toLowerCase();
         const category = entity.category.toLowerCase();
         const translatedCategory = t(`sidebar:filter.category.${entity.category}`).toLowerCase();
 

@@ -23,7 +23,7 @@ interface EntityItemProps {
 
 const EntityItem = observer(
   ({ hideCount = false, entity, category, active = false, onClick, children, hideMarked = false }: EntityItemProps) => {
-    const { t } = useTranslation(['common', 'sidebar']);
+    const { t } = useTranslation(['common', 'sidebar', 'entity_info']);
     const isMobile = useIsMobile();
 
     const displayName = useMemo(() => {
@@ -38,7 +38,7 @@ const EntityItem = observer(
             defaultValue: entity.entityInfo.point,
           });
         }
-        return t(`entities.${entity.entityDataIdKey}`, { defaultValue: entity.entityInfo.point });
+        return t(`entity_info:${entity.entityDataIdKey}`, { defaultValue: entity.entityInfo.point });
       }
       return 'unnamed';
     }, [entity, t]);
@@ -94,14 +94,14 @@ const EntityItem = observer(
               )}
             >
               {children ||
-                (iconSrc && <img src={iconSrc} alt={String(displayName)} className="w-full h-full object-contain" />)}
+                (iconSrc && <img src={iconSrc} alt={displayName} className="w-full h-full object-contain" />)}
             </div>
           </div>
 
           <div className="py-1 pl-1 pr-1.5 flex flex-1 relative z-3 items-center justify-between overflow-hidden">
             <div
               className={cn(
-                'flex-1 text-[0.8em] mr-0.5 text-[#cccccc] whitespace-nowrap overflow-hidden text-ellipsis min-w-0',
+                'flex-1 text-[0.8em] mr-0.5 text-[#cccccc] whitespace-nowrap overflow-hidden text-ellipsis min-w-0 text-left',
                 active && 'text-[#fdfb55]',
                 !active && 'hover:text-[#dddddd]'
               )}
