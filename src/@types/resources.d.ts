@@ -7341,7 +7341,6 @@ interface Resources {
       "category": {
         "#custom_point": "自定义点位",
         "#electric_pole": "电线杆",
-        "chest": "宝箱",
         "dnarrative": "世界叙事回响",
         "dungeon": "副本点位",
         "enemy": "敌人",
@@ -7351,7 +7350,8 @@ interface Resources {
         "plant": "植物类素材",
         "settlement": "定居点",
         "spcstone": "稀有矿物",
-        "special": "特殊点位"
+        "special": "特殊点位",
+        "trchest": "宝箱"
       },
       "marked": "已标记",
       "search_placeholder": "搜索...",
