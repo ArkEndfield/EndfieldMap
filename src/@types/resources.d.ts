@@ -7326,11 +7326,11 @@ interface Resources {
         "description": "WASD 移动速度，数值越大速度越快",
         "title": "WASD 控制移动速度",
         "value": {
+          "fast": "快",
           "normal": "正常",
           "off": "关闭",
           "slow": "慢",
-          "slower": "更慢",
-          "slowest": "最慢"
+          "slower": "更慢"
         }
       }
     }

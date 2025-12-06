@@ -9,19 +9,19 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 const options = [
   {
     key: 0.75,
-    label: 'normal',
+    label: 'fast',
   },
   {
     key: 0.5,
-    label: 'slow',
+    label: 'normal',
   },
   {
     key: 0.25,
-    label: 'slower',
+    label: 'slow',
   },
   {
     key: 0.1,
-    label: 'slowest',
+    label: 'slower',
   },
   {
     key: 0,
