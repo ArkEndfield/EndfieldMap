@@ -1,5 +1,5 @@
 import type { CustomPointIdKey } from '@endfieldmap/map-core';
-import { customPointTypes } from '@endfieldmap/map-core/data/custom_point';
+import { customPointTypes } from '@endfieldmap/map-core/data/entity/custom_point';
 import { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
 import { Toggle } from '@themes/endfield/components/toggle';
@@ -112,7 +112,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
 
   const customPointTypeOptions = customPointTypes.map((type) => ({
     value: type.entityInfo.point,
-    label: t(`custom_point.type.${type.entityInfo.point}`, { defaultValue: type.entityInfo.point }),
+    label: t(`common:custom_point.type.${type.entityInfo.point}`, { defaultValue: type.entityInfo.point }),
     left: <img className="w-4 h-4" src={getEntityIcon(type.category, type.entityInfo.pic)} />,
   }));
 

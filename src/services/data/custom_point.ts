@@ -1,7 +1,7 @@
 import type { CustomPointPreset, CustomPointPresetExportBundle, CustomPointPresetStorage } from '@eftypes/custom_point';
 import type { CustomPointMapData, EndfieldMapAdapter, EntityVisibility, StorageData } from '@endfieldmap/map-core';
 import { CustomPointKey, MAP_EVENT } from '@endfieldmap/map-core';
-import { getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
+import { getDefaultCustomPointType } from '@endfieldmap/map-core/data/entity/custom_point';
 import type { CustomPointIdKey } from '@endfieldmap/map-core/types';
 import {
   debounce,

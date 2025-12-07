@@ -4,6 +4,17 @@ interface Resources {
     "batch_delete": "批量删除",
     "cancel": "取消",
     "confirm": "确认",
+    "custom_point": {
+      "type": {
+        "custom_point_1": "标点1",
+        "custom_point_2": "标点2",
+        "custom_point_3": "标点3",
+        "custom_point_4": "标点4",
+        "custom_point_5": "标点5",
+        "custom_point_6": "标点6",
+        "custom_point_7": "标点7"
+      }
+    },
     "delete": "删除",
     "off": "关闭",
     "on": "开启",
@@ -7212,13 +7223,7 @@ interface Resources {
   "popup": {
     "custom_point": {
       "change_type": "切换标点类型",
-      "rename_tip": "请输入自定义点位名称",
-      "type": {
-        "custom_point_flag": "旗帜",
-        "custom_point_marker": "标记",
-        "custom_point_pin": "图钉",
-        "custom_point_star": "星标"
-      }
+      "rename_tip": "请输入自定义点位名称"
     },
     "electric_pole": {
       "rename_tip": "请输入电线杆名称"
@@ -7402,12 +7407,6 @@ interface Resources {
         "tab": {
           "list": "显示/隐藏",
           "preset": "预设列表"
-        },
-        "type": {
-          "custom_point_flag": "旗帜",
-          "custom_point_marker": "标记",
-          "custom_point_pin": "图钉",
-          "custom_point_star": "星标"
         }
       },
       "custom_point_manager": "自定义点位",

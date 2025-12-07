@@ -1,4 +1,4 @@
-import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
+import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/entity/custom_point';
 import SourceBase, { type BaseSourceConfig } from '@endfieldmap/map-core/render/source/_base';
 import { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import type { CustomPointData, CustomPointDataList } from '@endfieldmap/map-core/types';

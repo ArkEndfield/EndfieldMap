@@ -6,10 +6,13 @@ import type { CustomPointIdKey, EntityInfoData } from '@endfieldmap/map-core/typ
  * 可以通过修改这个列表来添加新的自定义标点类型
  */
 export const customPointTypeMap = {
-  custom_point_marker: 'marker',
-  custom_point_flag: 'flag',
-  custom_point_star: 'star',
-  custom_point_pin: 'pin',
+  custom_point_1: 'icon_map_custom_mark_shadow_1',
+  custom_point_2: 'icon_map_custom_mark_shadow_2',
+  custom_point_3: 'icon_map_custom_mark_shadow_3',
+  custom_point_4: 'icon_map_custom_mark_shadow_4',
+  custom_point_5: 'icon_map_custom_mark_shadow_5',
+  custom_point_6: 'icon_map_custom_mark_shadow_6',
+  custom_point_7: 'icon_map_custom_mark_shadow_7',
 } as const;
 
 export const customPointTypes: EntityInfoData<CustomPointIdKey>[] = Object.entries(customPointTypeMap).map(

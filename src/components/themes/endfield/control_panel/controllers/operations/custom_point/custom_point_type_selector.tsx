@@ -1,4 +1,4 @@
-import { customPointTypes } from '@endfieldmap/map-core/data/custom_point';
+import { customPointTypes } from '@endfieldmap/map-core/data/entity/custom_point';
 import type { CustomPointIdKey } from '@endfieldmap/map-core/types';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { cn } from '@/utils/style';
  * 显示所有可用的自定义标点类型，用户可以选择要创建的类型
  */
 const CustomPointTypeSelector: React.FC = observer(() => {
-  const { t } = useTranslation('sidebar');
+  const { t } = useTranslation('common');
   const { dataService } = useAdapter();
   const selectedType = dataService.customPointDataService.selectedPointType;
 
@@ -35,13 +35,13 @@ const CustomPointTypeSelector: React.FC = observer(() => {
           >
             <div className="w-4 h-4 rounded-full bg-[#1d1d1d]">
               <img
-                className="w-full h-full"
+                className="w-full h-full object-center block"
                 src={getEntityIcon(type.category, type.entityInfo.pic)}
                 alt={type.entityInfo.point}
               />
             </div>
             <span className="text-sm">
-              {t(`operation.custom_point.type.${type.entityInfo.point}`, { defaultValue: type.entityInfo.point })}
+              {t(`custom_point.type.${type.entityInfo.point}`, { defaultValue: type.entityInfo.point })}
             </span>
           </button>
         );

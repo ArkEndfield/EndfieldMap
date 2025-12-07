@@ -1,5 +1,5 @@
 import { CustomPointKey } from '@endfieldmap/map-core/const/map';
-import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
+import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/entity/custom_point';
 import type { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
 import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
 import EntityItem from '@themes/endfield/control_panel/controllers/entity_panel/item';

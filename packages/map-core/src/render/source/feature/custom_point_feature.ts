@@ -1,6 +1,6 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
-import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/custom_point';
+import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/entity/custom_point';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
 import { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';

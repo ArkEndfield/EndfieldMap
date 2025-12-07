@@ -138,7 +138,7 @@ export class EndfieldMapAdapter {
     });
     this.customPointController = new CustomPointController({
       icon: {
-        imagePath: `${this.asset.entityImage}/custom`,
+        imagePath: `${this.asset.entityImage}`,
       },
     });
     this.eventController = new EventController({

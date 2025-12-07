@@ -34,7 +34,7 @@ const EntityItem = observer(
 
         // 检查是否是自定义标点类型（以 custom_point_ 开头）
         if (entity.category === CustomPointKey) {
-          return t(`sidebar:operation.custom_point.type.${entity.entityDataIdKey}`, {
+          return t(`common:custom_point.type.${entity.entityDataIdKey}`, {
             defaultValue: entity.entityInfo.point,
           });
         }

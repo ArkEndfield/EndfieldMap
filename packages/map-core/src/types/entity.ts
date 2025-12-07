@@ -1,5 +1,5 @@
 import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey, MapIndex } from '@endfieldmap/map-core/const/map';
-import type { customPointTypeMap } from '@endfieldmap/map-core/data/custom_point';
+import type { customPointTypeMap } from '@endfieldmap/map-core/data/entity/custom_point';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
 export interface EnityProperties {
