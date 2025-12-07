@@ -28,6 +28,7 @@ i18n
       ns: ns,
       defaultNS: 'common',
       debug: isDev,
+      returnEmptyString: false,
     },
     () => {
       i18n.loadNamespaces(ns).then(() => {

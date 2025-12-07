@@ -35,10 +35,10 @@ const EntityItem = observer(
         // 检查是否是自定义标点类型（以 custom_point_ 开头）
         if (entity.category === CustomPointKey) {
           return t(`common:custom_point.type.${entity.entityDataIdKey}`, {
-            defaultValue: entity.entityInfo.point,
+            defaultValue: entity.entityDataIdKey,
           });
         }
-        return t(`entity_info:${entity.entityDataIdKey}`, { defaultValue: entity.entityInfo.point });
+        return t(`entity_info:${entity.entityDataIdKey}`, { defaultValue: entity.entityDataIdKey });
       }
       return 'unnamed';
     }, [entity, t]);
