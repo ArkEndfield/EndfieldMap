@@ -15,5 +15,5 @@ export const getEntityIcon = (category?: string, pic?: string) => {
 
   if (category === CustomPointKey || category === ElectricPoleKey) return `${assetPath.entityImage}/custom/${pic}.png`;
 
-  return `${assetPath.entityImage}/${category}/${pic}.png`;
+  return `${assetPath.entityImage}/${pic}.png`;
 };

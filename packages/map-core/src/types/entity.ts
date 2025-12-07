@@ -100,6 +100,7 @@ export type Category =
   | 'plant'
   | 'settlement'
   | 'spcstone'
+  | 'system'
   | 'special';
 
 /**

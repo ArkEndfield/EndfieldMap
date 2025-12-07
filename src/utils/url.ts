@@ -1,4 +1,4 @@
-import { assetsHost, backendHost } from "@/services/env";
+import { assetsHost, backendHost } from '@/services/env';
 
 /**
  * 创建完整URL
@@ -24,13 +24,13 @@ export const getAssetUrls = () => {
     mapImage: createFullUrl(host, '/images/map'),
     areaName: createFullUrl(host, '/data/map/area_name'),
     entityData: createFullUrl(host, '/data/entity'),
-    entityImage: createFullUrl(host, '/images/entity'),
+    entityImage: createFullUrl(host, '/images/icon'),
     itemData: createFullUrl(host, '/data/item'),
-    itemImage: createFullUrl(host, '/images/item'),
+    itemImage: createFullUrl(host, '/images/icon'),
   };
 };
 
 export const getBackendUrl = (path: string) => {
   const host = backendHost;
   return createFullUrl(host, path);
-}
+};

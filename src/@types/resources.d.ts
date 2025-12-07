@@ -7352,6 +7352,7 @@ interface Resources {
         "settlement": "定居点",
         "spcstone": "稀有矿物",
         "special": "特殊点位",
+        "system": "日常副本",
         "trchest": "宝箱"
       },
       "marked": "已标记",

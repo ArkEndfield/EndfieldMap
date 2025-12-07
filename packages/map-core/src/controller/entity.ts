@@ -170,7 +170,7 @@ export class EntityController {
             name: infoData.entityInfo.pic,
             infoData: infoData,
             icon: {
-              url: `${this.imagePath}/${infoData.category}/${infoData.entityInfo.pic}.png`,
+              url: `${this.imagePath}/${infoData.entityInfo.pic}.png`,
             },
             data: entities,
             mapIndex: mapIndex,
