@@ -134,11 +134,11 @@ export class EndfieldMapAdapter {
       entityController: this.entityController,
     });
     this.electricPoleController = new ElectricPoleController({
-      imagePath: `${this.asset.entityImage}/custom`,
+      imagePath: this.asset.entityImage,
     });
     this.customPointController = new CustomPointController({
       icon: {
-        imagePath: `${this.asset.entityImage}`,
+        imagePath: this.asset.entityImage,
       },
     });
     this.eventController = new EventController({

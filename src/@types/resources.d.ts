@@ -7241,8 +7241,18 @@ interface Resources {
   "settings": {
     "about": {
       "community": "社区",
+      "contributors": "贡献者",
+      "contributors_tip": "顺序不分先后，每次打开都是随机排布",
       "discord": "Discord",
       "qq_group": "QQ群 ({{group_number}})",
+      "recruit": {
+        "description": "我们需要一些热爱游戏的计算机大🐮、UI设计。为了地图工具持续发展、优化用户体验，也为了在公测后开源保证代码质量，我们需要你的加入。",
+        "point1": "熟悉游戏数据分析，帮助我们更深入理解地图相关数据",
+        "point2": "熟悉后端开发、服务器运维、CICD",
+        "point3": "熟悉前端开发相关框架与工具，特别是React框架与OpenLayers",
+        "title": "招募"
+      },
+      "statement": "本网站是由《明日方舟：终末地》游戏爱好者，使用免费开源的 React 框架制作。网站所涉及的公司名称、商标、产品等均为其各自所有者的资产，仅供识别。网站内使用的游戏图片、动画、音频、文本原文，仅用于更好地表现游戏资料，其版权属于上海鹰角网络科技有限公司及其关联公司。除非另有声明，网站其他内容采用 <license>CC BY-NC-SA 4.0</license> 共享授权。",
       "subscrible": "关注",
       "title": "关于"
     },

@@ -125,7 +125,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className={cn('relative z-1 flex flex-col', className)}
+          className={cn('relative z-1 flex flex-col min-h-60', className)}
         >
           <Header
             name={displayName || ''}

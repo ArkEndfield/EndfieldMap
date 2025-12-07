@@ -25,18 +25,9 @@ export class SwiperDataService {
         list: [
           {
             cid: 1,
-            cover:
-              'https://i2.hdslb.com/bfs/archive/bc5adc7f91411ca17231ad00d980d932282f0c67.jpg@672w_378h_1c_!web-search-common-cover.avif',
-            link: 'https://www.bilibili.com/video/BV1knSGBcEWM',
-            title: '【明日方舟:终末地】带你了解终末地三测的养成与付费',
-            type: '1',
-          },
-          {
-            cid: 2,
-            cover:
-              'https://i2.hdslb.com/bfs/archive/bc5adc7f91411ca17231ad00d980d932282f0c67.jpg@672w_378h_1c_!web-search-common-cover.avif',
-            link: 'https://www.bilibili.com/video/BV1knSGBcEWM',
-            title: '【明日方舟:终末地】带你了解终末地三测的养成与付费',
+            cover: 'https://i2.hdslb.com/bfs/archive/6c175300d3a2d44fe319860f23ec690bd51c09cb.jpg',
+            link: 'https://www.bilibili.com/video/BV1rR29BMEEH',
+            title: '【三测全收集一条龙】明日方舟:终末地 四号谷地全收集(更新至源石副产物中心)宝箱丨醚质',
             type: '1',
           },
         ],
