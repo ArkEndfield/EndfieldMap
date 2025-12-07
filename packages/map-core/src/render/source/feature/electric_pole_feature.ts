@@ -1,4 +1,4 @@
-import { ELECTRIC_ZONE_RADIUS, EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
+import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
