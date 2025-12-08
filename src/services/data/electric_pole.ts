@@ -15,7 +15,7 @@ import {
   StorageKey,
   type StorageManager,
 } from '@endfieldmap/tools';
-import { action, computed, observable, runInAction, toJS } from 'mobx';
+import { action, computed, observable, reaction, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/endfield_components/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/data';
@@ -68,6 +68,17 @@ export class ElectricPoleDataService {
     this.initEntityClickEvent();
     this.initElecticPoleClickEvent();
     this.initElectricPoleChangeEvent();
+
+    // 监听地图切换，清除当正在连接的电线杆
+    reaction(
+      () => this.adapter.currentMapIndex,
+      () => {
+        if (this.connectingPole) {
+          this.connectingPole = null;
+          this.adapter.activeFeatureController.clearActiveFeature();
+        }
+      }
+    );
   }
 
   // region: 数据处理和获取
