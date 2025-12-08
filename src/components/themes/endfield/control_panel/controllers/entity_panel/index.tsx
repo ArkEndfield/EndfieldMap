@@ -91,8 +91,9 @@ const EntityPanel = observer(() => {
     });
 
     // 按 category 名称排序
-    result.sort((a, b) => a.category.localeCompare(b.category));
-
+    // result.sort((a, b) => a.category.localeCompare(b.category));
+    const hardCordOrder = ['other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative']
+    result.sort((a, b) => hardCordOrder.indexOf(a.category) - hardCordOrder.indexOf(b.category));
     return result;
   }, [entities, searchQuery, t]);
 
@@ -108,7 +109,7 @@ const EntityPanel = observer(() => {
   if (!currentMap) {
     return <div className="p-4 text-gray-500">初始化中...</div>;
   }
-
+  
   return (
     <div className="space-y-4">
       {/* 搜索输入框 */}
