@@ -1,6 +1,6 @@
 import path from 'path';
 import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
+import dts from 'unplugin-dts/vite';
 
 export default defineConfig({
   build: {
@@ -9,7 +9,7 @@ export default defineConfig({
       formats: ['es'],
       fileName: 'index',
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['consola', 'ol'],
       output: {
         preserveModules: true,
@@ -23,7 +23,7 @@ export default defineConfig({
   plugins: [
     dts({
       include: ['src/**/*'],
-      outDir: 'dist',
+      outDirs: 'dist',
       entryRoot: 'src',
       insertTypesEntry: true,
       cleanVueFileName: true,

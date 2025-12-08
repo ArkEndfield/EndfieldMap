@@ -1,13 +1,14 @@
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
+import dts from 'unplugin-dts/vite';
 
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
   const alias = {
     '@endfieldmap/map-core': path.resolve(__dirname, './src'),
-  };
+  } as Record<string, string>;
+
   if (isDev) {
     alias['@endfieldmap/tools'] = path.resolve(__dirname, '../tools/src');
   }
@@ -18,7 +19,7 @@ export default defineConfig(({ mode }) => {
         formats: ['es'],
         fileName: 'index',
       },
-      rollupOptions: {
+      rolldownOptions: {
         external: (id) => {
           // 将 ol 和所有子模块、@endfieldmap/tools 及其子模块标记为外部依赖
           return (
@@ -44,14 +45,14 @@ export default defineConfig(({ mode }) => {
         babel: {
           plugins: [
             ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-            ['@babel/plugin-proposal-class-properties', { loose: true }],
+            ['@babel/plugin-transform-class-properties', { loose: true }],
             ['@babel/plugin-transform-class-static-block'],
           ],
         },
       }),
       dts({
         include: ['src/**/*'],
-        outDir: 'dist',
+        outDirs: 'dist',
         entryRoot: 'src',
         insertTypesEntry: true,
         cleanVueFileName: true,
