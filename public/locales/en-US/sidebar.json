@@ -1,0 +1,126 @@
+{
+  "fold": "Fold",
+  "unfold": "Unfold",
+  "filter": {
+    "title": "Filter Markers",
+    "all": "All",
+    "marked": "Marked",
+    "unmarked": "Unmarked",
+    "search_placeholder": "Search...",
+    "category": {
+      "ether": "Ether",
+      "trchest": "Treasure Chest",
+      "mineral": "Mineral",
+      "enemy": "Enemy",
+      "settlement": "Settlement",
+      "spcstone": "Rare Mineral",
+      "special": "Special Point",
+      "plant": "Plant Material",
+      "narrative": "World Narrative Fragment",
+      "dnarrative": "World Narrative Echo",
+      "dungeon": "Dungeon Point",
+      "system": "Daily Dungeon",
+      "#electric_pole": "Electric Pole",
+      "#custom_point": "Custom Point"
+    }
+  },
+  "operation": {
+    "selected_feature": "{{val, number}} marker(s) selected",
+    "multi_operation": "Batch Operation",
+    "cancel_operation": "Cancel Operation",
+    "electric_pole_manager": "Electric Pole Manager",
+    "custom_point_manager": "Custom Point Manager",
+    "close_electric_pole_manager": "Close Manager",
+    "close_custom_point_manager": "Close Manager",
+    "electric_pole_operating_tip": "Electric pole operation in progress, please finish first",
+    "custom_point_operating_tip": "Custom point operation in progress, please finish first",
+    "selecting_operating_tip": "Batch operation in progress, please finish first",
+    "preset": {
+      "empty": "No presets available, please create one first"
+    },
+    "electric_pole": {
+      "display": "Show Electric Poles",
+      "create": {
+        "start": "Create",
+        "auto_connect": "Auto-connect on creation",
+        "in_mode": "Creating electric pole"
+      },
+      "connect": {
+        "start": "Connect",
+        "in_mode": "Connecting electric poles",
+        "delete": {
+          "start": "Delete Connection",
+          "in_mode": "Deleting connection"
+        }
+      },
+      "delete": {
+        "start": "Delete",
+        "in_mode": "Deleting electric pole"
+      },
+      "zone": {
+        "display": "Show Electric Pole Range"
+      },
+      "preset": {
+        "title": "Electric Pole Presets",
+        "create": "New Preset",
+        "create_tip": "Please enter new electric pole preset name",
+        "create_default_name": "New Preset",
+        "select_info": "{{total, number}} preset(s) total, {{select, number}} selected",
+        "export_select": "Export Selected Presets",
+        "current": "Current Preset",
+        "delete": {
+          "confirm": "Are you sure you want to delete preset \"{{name}}\"? This action cannot be undone",
+          "confirm_batch": "Are you sure you want to delete {{count, number}} selected electric pole preset(s)? This action cannot be undone.",
+          "batch_fail_tip": "{{count}} preset(s) failed to delete, IDs: {{ids}}",
+          "fail_tip": "Delete failed"
+        },
+        "import": {
+          "button": "Import Preset",
+          "success": "Electric pole preset imported successfully",
+          "failed": "Electric pole preset import failed: {{reason}}",
+          "format_error": "File content format is incorrect",
+          "error_tip": "Invalid file format or parsing error"
+        }
+      }
+    },
+    "custom_point": {
+      "display": "Show Custom Points",
+      "no_data": "No custom point data available",
+      "select_type": "Select marker type",
+      "tab": {
+        "list": "Show/Hide",
+        "preset": "Preset List"
+      },
+      "create": {
+        "start": "Create",
+        "in_mode": "Creating custom point"
+      },
+      "delete": {
+        "start": "Delete",
+        "in_mode": "Deleting custom point"
+      },
+      "preset": {
+        "title": "Custom Point Presets",
+        "create": "New Preset",
+        "create_tip": "Please enter new custom point preset name",
+        "create_default_name": "New Preset",
+        "select_info": "{{total, number}} preset(s) total, {{select, number}} selected",
+        "export_select": "Export Selected Presets",
+        "current": "Current Preset",
+        "delete": {
+          "confirm": "Are you sure you want to delete preset \"{{name}}\"? This action cannot be undone",
+          "confirm_batch": "Are you sure you want to delete {{count, number}} selected custom point preset(s)? This action cannot be undone.",
+          "batch_fail_tip": "{{count}} preset(s) failed to delete, IDs: {{ids}}",
+          "fail_tip": "Delete failed"
+        },
+        "import": {
+          "button": "Import Preset",
+          "success": "Custom point preset imported successfully",
+          "failed": "Custom point preset import failed: {{reason}}",
+          "format_error": "File content format is incorrect",
+          "error_tip": "Invalid file format or parsing error"
+        }
+      }
+    }
+  }
+}

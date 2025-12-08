@@ -1,0 +1,28 @@
+{
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "on": "On",
+  "off": "Off",
+  "select_all": "Select All",
+  "rename": "Rename",
+  "delete": "Delete",
+  "batch_delete": "Batch Delete",
+  "operate": {
+    "mark": "Mark",
+    "marked": "Marked",
+    "unmark": "Unmark",
+    "clear_selection": "Clear Selection",
+    "rename": "Rename"
+  },
+  "custom_point": {
+    "type": {
+      "custom_point_1": "Marker 1",
+      "custom_point_2": "Marker 2",
+      "custom_point_3": "Marker 3",
+      "custom_point_4": "Marker 4",
+      "custom_point_5": "Marker 5",
+      "custom_point_6": "Marker 6",
+      "custom_point_7": "Marker 7"
+    }
+  }
+}

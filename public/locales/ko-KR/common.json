@@ -1,0 +1,28 @@
+{
+  "confirm": "확인",
+  "cancel": "취소",
+  "on": "켜기",
+  "off": "끄기",
+  "select_all": "전체 선택",
+  "rename": "이름 변경",
+  "delete": "삭제",
+  "batch_delete": "일괄 삭제",
+  "operate": {
+    "mark": "표시",
+    "marked": "표시됨",
+    "unmark": "표시 해제",
+    "clear_selection": "선택 해제",
+    "rename": "이름 변경"
+  },
+  "custom_point": {
+    "type": {
+      "custom_point_1": "마커 1",
+      "custom_point_2": "마커 2",
+      "custom_point_3": "마커 3",
+      "custom_point_4": "마커 4",
+      "custom_point_5": "마커 5",
+      "custom_point_6": "마커 6",
+      "custom_point_7": "마커 7"
+    }
+  }
+}

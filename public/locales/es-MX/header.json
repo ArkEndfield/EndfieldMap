@@ -1,0 +1,12 @@
+{
+  "feedback": {
+    "title": "Comentarios"
+  },
+  "map": {
+    "change_map": "Cambiar mapa",
+    "map_change": "Cambio de mapa"
+  },
+  "settings": {
+    "title": "Configuración"
+  }
+}

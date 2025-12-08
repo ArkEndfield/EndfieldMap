@@ -1,0 +1,18 @@
+{
+  "entity": {
+    "title": "Información de entidad"
+  },
+  "reward": {
+    "title": "Recompensas",
+    "chest": {
+      "title": "Contenido del cofre"
+    }
+  },
+  "electric_pole": {
+    "rename_tip": "Por favor ingrese el nombre del poste eléctrico"
+  },
+  "custom_point": {
+    "rename_tip": "Por favor ingrese el nombre del punto personalizado",
+    "change_type": "Cambiar tipo de marcador"
+  }
+}

@@ -22,15 +22,7 @@ export const HeaderMenuFeedback = () => {
         <div className="px-4">
           {['zh-CN', 'zh-TW'].includes(currentLocale) && (
             <div>
-              <div className="w-full flex justify-center">
-                <img
-                  src="https://www.zmdmap.com/images/feedback/qq_group_qr_code.png"
-                  alt="qq_group_qr_code"
-                  className="w-32"
-                />
-              </div>
               <h3 className="text-lg font-bold text-center mb-2">
-                请使用微信扫码后填写，或
                 <a
                   className="text-blue-500"
                   href="https://doc.weixin.qq.com/smartsheet/form/1_wpnwIrLAAAcKWVEyT5ubQwEKcvi5O1oA_15824f"
@@ -38,6 +30,7 @@ export const HeaderMenuFeedback = () => {
                 >
                   点击链接
                 </a>
+                使用微信登录后填写，或在「设置-关于」中加入QQ群或者Discord群
               </h3>
             </div>
           )}

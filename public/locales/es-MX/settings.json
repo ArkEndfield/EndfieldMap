@@ -1,0 +1,114 @@
+{
+  "display": {
+    "language": {
+      "title": "Idioma",
+      "change_language": "Cambiar idioma",
+      "language_list": {
+        "zh-CN": "Chino simplificado",
+        "zh-TW": "Chino tradicional",
+        "en-US": "Inglés",
+        "ja-JP": "Japonés",
+        "ko-KR": "Coreano",
+        "ru-RU": "Ruso",
+        "es-MX": "Español"
+      }
+    },
+    "layout": {
+      "title": "Visualización de diseño",
+      "popup": {
+        "right_adjust": {
+          "title": "Ajuste de ventana emergente",
+          "description": "Cuando la ventana emergente se expande y se extiende más allá de la pantalla, ajustar automáticamente la posición de la vista del mapa"
+        }
+      },
+      "dark_mode": {
+        "title": "Modo oscuro",
+        "value": {
+          "auto": "Automático",
+          "light": "Claro",
+          "dark": "Oscuro"
+        }
+      }
+    }
+  },
+  "map": {
+    "title": "Mapa",
+    "cluster": "Agrupación de marcadores",
+    "move_center": "Volver al centro del mapa",
+    "hover": {
+      "title": "Tiempo de respuesta de detección de desplazamiento del mouse",
+      "description": "Tiempo de respuesta de detección de desplazamiento del mouse sobre los marcadores del mapa, menor tiempo requiere mayor rendimiento",
+      "value": {
+        "normal": "Normal",
+        "slow": "Lento",
+        "slower": "Más lento",
+        "slowest": "Más lento posible",
+        "off": "Desactivado"
+      }
+    },
+    "adjust_view": {
+      "title": "Ajuste automático de vista",
+      "description": "Cuando el mapa se extiende más allá de la pantalla, ajustar automáticamente la posición de la vista del mapa para garantizar la visibilidad"
+    },
+    "wasd_move_speed": {
+      "title": "Velocidad de movimiento de control WASD",
+      "description": "Velocidad de movimiento WASD, mayor valor significa mayor velocidad",
+      "value": {
+        "fast": "Rápido",
+        "normal": "Normal",
+        "slow": "Lento",
+        "slower": "Más lento",
+        "off": "Desactivado"
+      }
+    }
+  },
+  "data": {
+    "title": "Gestión de datos",
+    "cache": {
+      "title": "Caché",
+      "clear": "Limpiar caché",
+      "success": "Caché limpiado exitosamente, actualice la página para aplicar",
+      "failed": "Error al limpiar caché: {{reason}}"
+    },
+    "state_data": {
+      "title": "Datos de estado",
+      "clear": "Limpiar datos de estado",
+      "success": "Datos de estado limpiados exitosamente, actualice la página para aplicar",
+      "failed": "Error al limpiar datos de estado: {{reason}}",
+      "description": "Incluye estado de posición del mapa, estado de visualización del mapa actual, configuración de agrupación, configuración de visibilidad de postes eléctricos y puntos personalizados, y otro contenido no crítico"
+    },
+    "entity_data": {
+      "title": "Datos de marcadores",
+      "clear": "Limpiar datos de marcadores",
+      "success": "Datos de marcadores limpiados exitosamente, actualice la página para aplicar",
+      "failed": "Error al limpiar datos de marcadores: {{reason}}",
+      "description": "Incluye estados de filtro de visibilidad de diferentes tipos de marcadores, estados de marcado de todos los marcadores, todos los estados de marcadores se restablecerán después de limpiar"
+    },
+    "storage_data": {
+      "title": "Datos de almacenamiento",
+      "clear": "Limpiar datos de almacenamiento",
+      "confirm": "[Operación peligrosa] ¿Está seguro de que desea eliminar todos los datos? ¡Esta acción no se puede deshacer! Los datos eliminados incluyen datos de estado, datos de filtro de marcadores, datos de marcado, todos los datos de postes eléctricos y datos de puntos personalizados.",
+      "success": "Todos los datos de almacenamiento limpiados exitosamente, actualice la página para aplicar",
+      "failed": "Error al limpiar todos los datos de almacenamiento: {{reason}}",
+      "description": "[Operación peligrosa] Eliminar todos los datos almacenados, incluidos datos de estado, datos de filtro de marcadores, todos los datos de postes eléctricos y datos de puntos personalizados"
+    }
+  },
+  "about": {
+    "title": "Acerca de",
+    "subscrible": "Seguir",
+    "community": "Comunidad",
+    "qq_group": "Grupo QQ ({{group_number}})",
+    "discord": "Discord",
+    "statement": "Este sitio web fue creado por fanáticos del juego \"Arknights: Endfield\" utilizando el framework React gratuito y de código abierto. Los nombres de empresas, marcas comerciales y productos mencionados en este sitio web son activos de sus respectivos propietarios y se utilizan solo con fines de identificación. Las imágenes del juego, animaciones, audio y texto original utilizados en este sitio web son únicamente para una mejor presentación de los materiales del juego, y sus derechos de autor pertenecen a Shanghai Hypergryph Network Technology Co., Ltd. y sus empresas afiliadas. A menos que se indique lo contrario, el resto del contenido de este sitio web está licenciado bajo <license>CC BY-NC-SA 4.0</license>.",
+    "contributors": "Colaboradores",
+    "contributors_tip": "El orden es aleatorio, se mezcla cada vez que se abre la página",
+    "recruit": {
+      "title": "Reclutamiento",
+      "description": "Necesitamos algunos expertos en informática y diseñadores de UI que amen los juegos. Para garantizar el desarrollo continuo de la herramienta de mapas, optimizar la experiencia del usuario y garantizar la calidad del código después de hacerlo de código abierto durante la beta pública, necesitamos que te unas a nosotros.",
+      "point1": "Familiarizado con el análisis de datos de juegos para ayudarnos a comprender mejor los datos relacionados con el mapa",
+      "point2": "Familiarizado con desarrollo backend, operaciones de servidor, CI/CD",
+      "point3": "Familiarizado con frameworks y herramientas de desarrollo frontend, especialmente el framework React y OpenLayers",
+      "point4": "Dominio de traducción multilingüe"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "feedback": {
+    "title": "피드백"
+  },
+  "map": {
+    "change_map": "지도 전환",
+    "map_change": "지도 전환"
+  },
+  "settings": {
+    "title": "설정"
+  }
+}

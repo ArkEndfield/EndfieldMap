@@ -1,0 +1,18 @@
+{
+  "entity": {
+    "title": "エンティティ情報"
+  },
+  "reward": {
+    "title": "報酬",
+    "chest": {
+      "title": "宝箱の内容"
+    }
+  },
+  "electric_pole": {
+    "rename_tip": "電柱名を入力してください"
+  },
+  "custom_point": {
+    "rename_tip": "カスタムポイント名を入力してください",
+    "change_type": "マーカータイプを変更"
+  }
+}

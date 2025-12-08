@@ -1,0 +1,126 @@
+{
+  "fold": "Plegar",
+  "unfold": "Desplegar",
+  "filter": {
+    "title": "Filtrar marcadores",
+    "all": "Todos",
+    "marked": "Marcados",
+    "unmarked": "Sin marcar",
+    "search_placeholder": "Buscar...",
+    "category": {
+      "ether": "Éter",
+      "trchest": "Cofre del tesoro",
+      "mineral": "Mineral",
+      "enemy": "Enemigo",
+      "settlement": "Asentamiento",
+      "spcstone": "Mineral raro",
+      "special": "Punto especial",
+      "plant": "Material vegetal",
+      "narrative": "Fragmento narrativo del mundo",
+      "dnarrative": "Eco narrativo del mundo",
+      "dungeon": "Punto de mazmorra",
+      "system": "Mazmorra diaria",
+      "#electric_pole": "Poste eléctrico",
+      "#custom_point": "Punto personalizado"
+    }
+  },
+  "operation": {
+    "selected_feature": "{{val, number}} marcador(es) seleccionado(s)",
+    "multi_operation": "Operación en lote",
+    "cancel_operation": "Cancelar operación",
+    "electric_pole_manager": "Gestor de postes eléctricos",
+    "custom_point_manager": "Gestor de puntos personalizados",
+    "close_electric_pole_manager": "Cerrar gestor",
+    "close_custom_point_manager": "Cerrar gestor",
+    "electric_pole_operating_tip": "Operación de poste eléctrico en curso, por favor termine primero",
+    "custom_point_operating_tip": "Operación de punto personalizado en curso, por favor termine primero",
+    "selecting_operating_tip": "Operación en lote en curso, por favor termine primero",
+    "preset": {
+      "empty": "No hay preajustes disponibles, por favor cree uno primero"
+    },
+    "electric_pole": {
+      "display": "Mostrar postes eléctricos",
+      "create": {
+        "start": "Crear",
+        "auto_connect": "Conectar automáticamente al crear",
+        "in_mode": "Creando poste eléctrico"
+      },
+      "connect": {
+        "start": "Conectar",
+        "in_mode": "Conectando postes eléctricos",
+        "delete": {
+          "start": "Eliminar conexión",
+          "in_mode": "Eliminando conexión"
+        }
+      },
+      "delete": {
+        "start": "Eliminar",
+        "in_mode": "Eliminando poste eléctrico"
+      },
+      "zone": {
+        "display": "Mostrar rango de poste eléctrico"
+      },
+      "preset": {
+        "title": "Preajustes de postes eléctricos",
+        "create": "Nuevo preajuste",
+        "create_tip": "Por favor ingrese el nombre del nuevo preajuste de poste eléctrico",
+        "create_default_name": "Nuevo preajuste",
+        "select_info": "{{total, number}} preajuste(s) en total, {{select, number}} seleccionado(s)",
+        "export_select": "Exportar preajustes seleccionados",
+        "current": "Preajuste actual",
+        "delete": {
+          "confirm": "¿Está seguro de que desea eliminar el preajuste \"{{name}}\"? Esta acción no se puede deshacer",
+          "confirm_batch": "¿Está seguro de que desea eliminar {{count, number}} preajuste(s) de postes eléctricos seleccionados? Esta acción no se puede deshacer.",
+          "batch_fail_tip": "{{count}} preajuste(s) no se pudieron eliminar, IDs: {{ids}}",
+          "fail_tip": "Error al eliminar"
+        },
+        "import": {
+          "button": "Importar preajuste",
+          "success": "Preajuste de poste eléctrico importado exitosamente",
+          "failed": "Error al importar preajuste de poste eléctrico: {{reason}}",
+          "format_error": "El formato del contenido del archivo es incorrecto",
+          "error_tip": "Formato de archivo inválido o error de análisis"
+        }
+      }
+    },
+    "custom_point": {
+      "display": "Mostrar puntos personalizados",
+      "no_data": "No hay datos de puntos personalizados disponibles",
+      "select_type": "Seleccionar tipo de marcador",
+      "tab": {
+        "list": "Mostrar/Ocultar",
+        "preset": "Lista de preajustes"
+      },
+      "create": {
+        "start": "Crear",
+        "in_mode": "Creando punto personalizado"
+      },
+      "delete": {
+        "start": "Eliminar",
+        "in_mode": "Eliminando punto personalizado"
+      },
+      "preset": {
+        "title": "Preajustes de puntos personalizados",
+        "create": "Nuevo preajuste",
+        "create_tip": "Por favor ingrese el nombre del nuevo preajuste de punto personalizado",
+        "create_default_name": "Nuevo preajuste",
+        "select_info": "{{total, number}} preajuste(s) en total, {{select, number}} seleccionado(s)",
+        "export_select": "Exportar preajustes seleccionados",
+        "current": "Preajuste actual",
+        "delete": {
+          "confirm": "¿Está seguro de que desea eliminar el preajuste \"{{name}}\"? Esta acción no se puede deshacer",
+          "confirm_batch": "¿Está seguro de que desea eliminar {{count, number}} preajuste(s) de puntos personalizados seleccionados? Esta acción no se puede deshacer.",
+          "batch_fail_tip": "{{count}} preajuste(s) no se pudieron eliminar, IDs: {{ids}}",
+          "fail_tip": "Error al eliminar"
+        },
+        "import": {
+          "button": "Importar preajuste",
+          "success": "Preajuste de punto personalizado importado exitosamente",
+          "failed": "Error al importar preajuste de punto personalizado: {{reason}}",
+          "format_error": "El formato del contenido del archivo es incorrecto",
+          "error_tip": "Formato de archivo inválido o error de análisis"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "feedback": {
+    "title": "反饋"
+  },
+  "map": {
+    "change_map": "切換地圖",
+    "map_change": "地圖切換"
+  },
+  "settings": {
+    "title": "設定"
+  }
+}

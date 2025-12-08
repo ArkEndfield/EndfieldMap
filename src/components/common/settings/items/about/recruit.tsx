@@ -34,7 +34,12 @@ export const Recruit = observer(() => {
           <p className="text-center font-bold text-sm leading-relaxed px-4">{t('about.recruit.description')}</p>
           <div className="w-full h-px bg-[#ffffff]/20" />
           <div className="flex flex-col gap-2.5 text-xs text-white/90">
-            {[t('about.recruit.point1'), t('about.recruit.point2'), t('about.recruit.point3')].map((point, index) => (
+            {[
+              t('about.recruit.point1'),
+              t('about.recruit.point2'),
+              t('about.recruit.point3'),
+              t('about.recruit.point4'),
+            ].map((point, index) => (
               <div key={index} className="flex items-start gap-3 group">
                 <div className="mt-1.5 shrink-0 w-1.5 h-1.5 bg-[#fdde55] rotate-45 group-hover:bg-[#ea5781] transition-colors duration-300" />
                 <span className="leading-5">{point}</span>

@@ -1,0 +1,126 @@
+{
+  "fold": "折疊",
+  "unfold": "展開",
+  "filter": {
+    "title": "篩選標點",
+    "all": "全部",
+    "marked": "已標記",
+    "unmarked": "未標記",
+    "search_placeholder": "搜尋...",
+    "category": {
+      "ether": "醚質",
+      "trchest": "寶箱",
+      "mineral": "礦物",
+      "enemy": "敵人",
+      "settlement": "定居點",
+      "spcstone": "稀有礦物",
+      "special": "特殊點位",
+      "plant": "植物類素材",
+      "narrative": "世界敘事碎片",
+      "dnarrative": "世界敘事迴響",
+      "dungeon": "副本點位",
+      "system": "日常副本",
+      "#electric_pole": "電線桿",
+      "#custom_point": "自訂點位"
+    }
+  },
+  "operation": {
+    "selected_feature": "已選中 {{val, number}} 個標點",
+    "multi_operation": "批次操作",
+    "cancel_operation": "取消操作",
+    "electric_pole_manager": "電線桿管理",
+    "custom_point_manager": "自訂點位",
+    "close_electric_pole_manager": "關閉管理器",
+    "close_custom_point_manager": "關閉管理器",
+    "electric_pole_operating_tip": "正在處於電線桿操作狀態，請先結束操作",
+    "custom_point_operating_tip": "正在處於自訂點位操作狀態，請先結束操作",
+    "selecting_operating_tip": "正在處於批次操作狀態，請先結束批次操作",
+    "preset": {
+      "empty": "暫無預設，請先建立"
+    },
+    "electric_pole": {
+      "display": "顯示電線桿",
+      "create": {
+        "start": "建立",
+        "auto_connect": "建立時自動連接",
+        "in_mode": "正在建立電線桿"
+      },
+      "connect": {
+        "start": "連接",
+        "in_mode": "正在連接電線桿",
+        "delete": {
+          "start": "刪除連線",
+          "in_mode": "正在刪除連線"
+        }
+      },
+      "delete": {
+        "start": "刪除",
+        "in_mode": "正在刪除電線桿"
+      },
+      "zone": {
+        "display": "顯示電線桿範圍"
+      },
+      "preset": {
+        "title": "電線桿預設",
+        "create": "新建預設",
+        "create_tip": "請輸入新電線桿預設名稱",
+        "create_default_name": "新預設",
+        "select_info": "共 {{total, number}} 個預設，已選 {{select, number}} 個",
+        "export_select": "匯出所選預設",
+        "current": "目前預設",
+        "delete": {
+          "confirm": "確定要刪除預設「{{name}}」嗎？此操作不可復原",
+          "confirm_batch": "確定要刪除選中的 {{count, number}} 個電線桿預設嗎？此操作不可復原。",
+          "batch_fail_tip": "{{count}}個預設刪除失敗，id為{{ids}}",
+          "fail_tip": "刪除失敗"
+        },
+        "import": {
+          "button": "匯入預設",
+          "success": "電線桿預設匯入成功",
+          "failed": "電線桿預設匯入失敗：{{reason}}",
+          "format_error": "檔案內容格式不正確",
+          "error_tip": "檔案格式不合法或解析錯誤"
+        }
+      }
+    },
+    "custom_point": {
+      "display": "顯示自訂點位",
+      "no_data": "暫無自訂點位資料",
+      "select_type": "選擇標點類型",
+      "tab": {
+        "list": "顯示/隱藏",
+        "preset": "預設清單"
+      },
+      "create": {
+        "start": "建立",
+        "in_mode": "正在建立自訂點位"
+      },
+      "delete": {
+        "start": "刪除",
+        "in_mode": "正在刪除自訂點位"
+      },
+      "preset": {
+        "title": "自訂點位預設",
+        "create": "新建預設",
+        "create_tip": "請輸入新自訂點位預設名稱",
+        "create_default_name": "新預設",
+        "select_info": "共 {{total, number}} 個預設，已選 {{select, number}} 個",
+        "export_select": "匯出所選預設",
+        "current": "目前預設",
+        "delete": {
+          "confirm": "確定要刪除預設「{{name}}」嗎？此操作不可復原",
+          "confirm_batch": "確定要刪除選中的 {{count, number}} 個自訂點位預設嗎？此操作不可復原。",
+          "batch_fail_tip": "{{count}}個預設刪除失敗，id為{{ids}}",
+          "fail_tip": "刪除失敗"
+        },
+        "import": {
+          "button": "匯入預設",
+          "success": "自訂點位預設匯入成功",
+          "failed": "自訂點位預設匯入失敗：{{reason}}",
+          "format_error": "檔案內容格式不正確",
+          "error_tip": "檔案格式不合法或解析錯誤"
+        }
+      }
+    }
+  }
+}

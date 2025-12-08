@@ -1,0 +1,126 @@
+{
+  "fold": "折りたたむ",
+  "unfold": "展開",
+  "filter": {
+    "title": "マーカーフィルター",
+    "all": "すべて",
+    "marked": "マーク済み",
+    "unmarked": "未マーク",
+    "search_placeholder": "検索...",
+    "category": {
+      "ether": "エーテル",
+      "trchest": "宝箱",
+      "mineral": "鉱物",
+      "enemy": "敵",
+      "settlement": "集落",
+      "spcstone": "レア鉱物",
+      "special": "特殊ポイント",
+      "plant": "植物素材",
+      "narrative": "世界の物語の断片",
+      "dnarrative": "世界の物語の残響",
+      "dungeon": "ダンジョンポイント",
+      "system": "デイリーダンジョン",
+      "#electric_pole": "電柱",
+      "#custom_point": "カスタムポイント"
+    }
+  },
+  "operation": {
+    "selected_feature": "{{val, number}} 個のマーカーを選択中",
+    "multi_operation": "一括操作",
+    "cancel_operation": "操作をキャンセル",
+    "electric_pole_manager": "電柱管理",
+    "custom_point_manager": "カスタムポイント管理",
+    "close_electric_pole_manager": "マネージャーを閉じる",
+    "close_custom_point_manager": "マネージャーを閉じる",
+    "electric_pole_operating_tip": "電柱操作中です。先に操作を終了してください",
+    "custom_point_operating_tip": "カスタムポイント操作中です。先に操作を終了してください",
+    "selecting_operating_tip": "一括操作中です。先に一括操作を終了してください",
+    "preset": {
+      "empty": "プリセットがありません。まず作成してください"
+    },
+    "electric_pole": {
+      "display": "電柱を表示",
+      "create": {
+        "start": "作成",
+        "auto_connect": "作成時に自動接続",
+        "in_mode": "電柱を作成中"
+      },
+      "connect": {
+        "start": "接続",
+        "in_mode": "電柱を接続中",
+        "delete": {
+          "start": "接続を削除",
+          "in_mode": "接続を削除中"
+        }
+      },
+      "delete": {
+        "start": "削除",
+        "in_mode": "電柱を削除中"
+      },
+      "zone": {
+        "display": "電柱の範囲を表示"
+      },
+      "preset": {
+        "title": "電柱プリセット",
+        "create": "新規プリセット",
+        "create_tip": "新しい電柱プリセット名を入力してください",
+        "create_default_name": "新規プリセット",
+        "select_info": "合計 {{total, number}} 個のプリセット、{{select, number}} 個選択中",
+        "export_select": "選択したプリセットをエクスポート",
+        "current": "現在のプリセット",
+        "delete": {
+          "confirm": "プリセット「{{name}}」を削除してもよろしいですか？この操作は元に戻せません",
+          "confirm_batch": "選択した {{count, number}} 個の電柱プリセットを削除してもよろしいですか？この操作は元に戻せません。",
+          "batch_fail_tip": "{{count}}個のプリセット削除に失敗しました。ID: {{ids}}",
+          "fail_tip": "削除に失敗しました"
+        },
+        "import": {
+          "button": "プリセットをインポート",
+          "success": "電柱プリセットのインポートに成功しました",
+          "failed": "電柱プリセットのインポートに失敗しました: {{reason}}",
+          "format_error": "ファイル内容の形式が正しくありません",
+          "error_tip": "ファイル形式が無効または解析エラー"
+        }
+      }
+    },
+    "custom_point": {
+      "display": "カスタムポイントを表示",
+      "no_data": "カスタムポイントデータがありません",
+      "select_type": "マーカータイプを選択",
+      "tab": {
+        "list": "表示/非表示",
+        "preset": "プリセットリスト"
+      },
+      "create": {
+        "start": "作成",
+        "in_mode": "カスタムポイントを作成中"
+      },
+      "delete": {
+        "start": "削除",
+        "in_mode": "カスタムポイントを削除中"
+      },
+      "preset": {
+        "title": "カスタムポイントプリセット",
+        "create": "新規プリセット",
+        "create_tip": "新しいカスタムポイントプリセット名を入力してください",
+        "create_default_name": "新規プリセット",
+        "select_info": "合計 {{total, number}} 個のプリセット、{{select, number}} 個選択中",
+        "export_select": "選択したプリセットをエクスポート",
+        "current": "現在のプリセット",
+        "delete": {
+          "confirm": "プリセット「{{name}}」を削除してもよろしいですか？この操作は元に戻せません",
+          "confirm_batch": "選択した {{count, number}} 個のカスタムポイントプリセットを削除してもよろしいですか？この操作は元に戻せません。",
+          "batch_fail_tip": "{{count}}個のプリセット削除に失敗しました。ID: {{ids}}",
+          "fail_tip": "削除に失敗しました"
+        },
+        "import": {
+          "button": "プリセットをインポート",
+          "success": "カスタムポイントプリセットのインポートに成功しました",
+          "failed": "カスタムポイントプリセットのインポートに失敗しました: {{reason}}",
+          "format_error": "ファイル内容の形式が正しくありません",
+          "error_tip": "ファイル形式が無効または解析エラー"
+        }
+      }
+    }
+  }
+}

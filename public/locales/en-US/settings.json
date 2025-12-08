@@ -1,0 +1,114 @@
+{
+  "display": {
+    "language": {
+      "title": "Language",
+      "change_language": "Change Language",
+      "language_list": {
+        "zh-CN": "Simplified Chinese",
+        "zh-TW": "Traditional Chinese",
+        "en-US": "English",
+        "ja-JP": "Japanese",
+        "ko-KR": "Korean",
+        "ru-RU": "Russian",
+        "es-MX": "Spanish"
+      }
+    },
+    "layout": {
+      "title": "Layout Display",
+      "popup": {
+        "right_adjust": {
+          "title": "Popup Adjustment",
+          "description": "When popup is expanded and extends beyond screen, automatically adjust map view position"
+        }
+      },
+      "dark_mode": {
+        "title": "Dark Mode",
+        "value": {
+          "auto": "Auto",
+          "light": "Light",
+          "dark": "Dark"
+        }
+      }
+    }
+  },
+  "map": {
+    "title": "Map",
+    "cluster": "Marker Clustering",
+    "move_center": "Return to Map Center",
+    "hover": {
+      "title": "Mouse Hover Detection Response Time",
+      "description": "Mouse hover detection response time on map markers, shorter time requires higher performance",
+      "value": {
+        "normal": "Normal",
+        "slow": "Slow",
+        "slower": "Slower",
+        "slowest": "Slowest",
+        "off": "Off"
+      }
+    },
+    "adjust_view": {
+      "title": "Auto Adjust View",
+      "description": "When map extends beyond screen, automatically adjust map view position to ensure visibility"
+    },
+    "wasd_move_speed": {
+      "title": "WASD Control Movement Speed",
+      "description": "WASD movement speed, higher value means faster speed",
+      "value": {
+        "fast": "Fast",
+        "normal": "Normal",
+        "slow": "Slow",
+        "slower": "Slower",
+        "off": "Off"
+      }
+    }
+  },
+  "data": {
+    "title": "Data Management",
+    "cache": {
+      "title": "Cache",
+      "clear": "Clear Cache",
+      "success": "Cache cleared successfully, refresh page to take effect",
+      "failed": "Failed to clear cache: {{reason}}"
+    },
+    "state_data": {
+      "title": "State Data",
+      "clear": "Clear State Data",
+      "success": "State data cleared successfully, refresh page to take effect",
+      "failed": "Failed to clear state data: {{reason}}",
+      "description": "Includes map position state, current viewing map state, clustering settings, electric pole and custom point visibility settings, and other non-critical content"
+    },
+    "entity_data": {
+      "title": "Marker Data",
+      "clear": "Clear Marker Data",
+      "success": "Marker data cleared successfully, refresh page to take effect",
+      "failed": "Failed to clear marker data: {{reason}}",
+      "description": "Includes different marker type visibility filter states, all marker marking states, all marker states will be reset after clearing"
+    },
+    "storage_data": {
+      "title": "Storage Data",
+      "clear": "Clear Storage Data",
+      "confirm": "[Dangerous Operation] Are you sure you want to delete all data? This action cannot be undone! Deleted data includes state data, marker filter data, marking data, all electric pole data and custom point data.",
+      "success": "All storage data cleared successfully, refresh page to take effect",
+      "failed": "Failed to clear all storage data: {{reason}}",
+      "description": "[Dangerous Operation] Delete all stored data, including state data, marker filter data, all electric pole data and custom point data"
+    }
+  },
+  "about": {
+    "title": "About",
+    "subscrible": "Follow",
+    "community": "Community",
+    "qq_group": "QQ Group ({{group_number}})",
+    "discord": "Discord",
+    "statement": "This website is created by fans of the game \"Arknights: Endfield\" using the free and open-source React framework. Company names, trademarks, and products mentioned on this website are the assets of their respective owners and are used for identification purposes only. Game images, animations, audio, and original text used on this website are solely for better presentation of game materials, and their copyright belongs to Shanghai Hypergryph Network Technology Co., Ltd. and its affiliated companies. Unless otherwise stated, other content on this website is licensed under <license>CC BY-NC-SA 4.0</license>.",
+    "contributors": "Contributors",
+    "contributors_tip": "Order is random, shuffled each time the page is opened",
+    "recruit": {
+      "title": "Recruitment",
+      "description": "We need some game-loving computer experts and UI designers. To ensure the continuous development of the map tool, optimize user experience, and ensure code quality after open-sourcing during public beta, we need you to join us.",
+      "point1": "Familiar with game data analysis to help us better understand map-related data",
+      "point2": "Familiar with backend development, server operations, CI/CD",
+      "point3": "Familiar with frontend development frameworks and tools, especially React framework and OpenLayers",
+      "point4": "Proficient in multilingual translation"
+    }
+  }
+}

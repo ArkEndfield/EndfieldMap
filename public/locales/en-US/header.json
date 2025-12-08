@@ -1,0 +1,12 @@
+{
+  "feedback": {
+    "title": "Feedback"
+  },
+  "map": {
+    "change_map": "Switch Map",
+    "map_change": "Map Switch"
+  },
+  "settings": {
+    "title": "Settings"
+  }
+}

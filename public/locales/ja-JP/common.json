@@ -1,0 +1,28 @@
+{
+  "confirm": "確認",
+  "cancel": "キャンセル",
+  "on": "オン",
+  "off": "オフ",
+  "select_all": "すべて選択",
+  "rename": "名前変更",
+  "delete": "削除",
+  "batch_delete": "一括削除",
+  "operate": {
+    "mark": "マーク",
+    "marked": "マーク済み",
+    "unmark": "マーク解除",
+    "clear_selection": "選択解除",
+    "rename": "名前変更"
+  },
+  "custom_point": {
+    "type": {
+      "custom_point_1": "マーカー1",
+      "custom_point_2": "マーカー2",
+      "custom_point_3": "マーカー3",
+      "custom_point_4": "マーカー4",
+      "custom_point_5": "マーカー5",
+      "custom_point_6": "マーカー6",
+      "custom_point_7": "マーカー7"
+    }
+  }
+}

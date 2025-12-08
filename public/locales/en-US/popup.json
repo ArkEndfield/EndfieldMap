@@ -1,0 +1,18 @@
+{
+  "entity": {
+    "title": "Entity Information"
+  },
+  "reward": {
+    "title": "Rewards",
+    "chest": {
+      "title": "Chest Contents"
+    }
+  },
+  "electric_pole": {
+    "rename_tip": "Please enter electric pole name"
+  },
+  "custom_point": {
+    "rename_tip": "Please enter custom point name",
+    "change_type": "Change marker type"
+  }
+}

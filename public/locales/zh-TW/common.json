@@ -1,0 +1,28 @@
+{
+  "confirm": "確認",
+  "cancel": "取消",
+  "on": "開啟",
+  "off": "關閉",
+  "select_all": "全選",
+  "rename": "重新命名",
+  "delete": "刪除",
+  "batch_delete": "批次刪除",
+  "operate": {
+    "mark": "標記",
+    "marked": "已標記",
+    "unmark": "取消標記",
+    "clear_selection": "清空選擇",
+    "rename": "重新命名"
+  },
+  "custom_point": {
+    "type": {
+      "custom_point_1": "標點1",
+      "custom_point_2": "標點2",
+      "custom_point_3": "標點3",
+      "custom_point_4": "標點4",
+      "custom_point_5": "標點5",
+      "custom_point_6": "標點6",
+      "custom_point_7": "標點7"
+    }
+  }
+}

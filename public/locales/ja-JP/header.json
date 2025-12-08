@@ -1,0 +1,12 @@
+{
+  "feedback": {
+    "title": "フィードバック"
+  },
+  "map": {
+    "change_map": "マップ切替",
+    "map_change": "マップ切替"
+  },
+  "settings": {
+    "title": "設定"
+  }
+}

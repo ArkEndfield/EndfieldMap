@@ -1,0 +1,18 @@
+{
+  "entity": {
+    "title": "實體資訊"
+  },
+  "reward": {
+    "title": "獎勵",
+    "chest": {
+      "title": "寶箱內容"
+    }
+  },
+  "electric_pole": {
+    "rename_tip": "請輸入電線桿名稱"
+  },
+  "custom_point": {
+    "rename_tip": "請輸入自訂點位名稱",
+    "change_type": "切換標點類型"
+  }
+}

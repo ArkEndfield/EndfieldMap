@@ -1,0 +1,114 @@
+{
+  "display": {
+    "language": {
+      "title": "語言",
+      "change_language": "切換語言",
+      "language_list": {
+        "zh-CN": "簡體中文",
+        "zh-TW": "繁體中文",
+        "en-US": "英語",
+        "ja-JP": "日語",
+        "ko-KR": "韓語",
+        "ru-RU": "俄語",
+        "es-MX": "西班牙語"
+      }
+    },
+    "layout": {
+      "title": "佈局展示",
+      "popup": {
+        "right_adjust": {
+          "title": "彈窗調整",
+          "description": "當展開彈窗並且彈窗超出螢幕外，自動調整地圖視圖位置"
+        }
+      },
+      "dark_mode": {
+        "title": "深色模式",
+        "value": {
+          "auto": "自動",
+          "light": "淺色",
+          "dark": "深色"
+        }
+      }
+    }
+  },
+  "map": {
+    "title": "地圖",
+    "cluster": "標點聚合",
+    "move_center": "回到地圖中心",
+    "hover": {
+      "title": "滑鼠懸停檢測響應時間",
+      "description": "滑鼠在地圖標點上的懸停檢測響應時間，時間越短效能需求越高",
+      "value": {
+        "normal": "正常",
+        "slow": "慢",
+        "slower": "更慢",
+        "slowest": "最慢",
+        "off": "關閉"
+      }
+    },
+    "adjust_view": {
+      "title": "視圖自動調整",
+      "description": "當地圖出螢幕外時，自動調整地圖視圖位置以確保其可見"
+    },
+    "wasd_move_speed": {
+      "title": "WASD 控制移動速度",
+      "description": "WASD 移動速度，數值越大速度越快",
+      "value": {
+        "fast": "快",
+        "normal": "正常",
+        "slow": "慢",
+        "slower": "更慢",
+        "off": "關閉"
+      }
+    }
+  },
+  "data": {
+    "title": "資料管理",
+    "cache": {
+      "title": "快取",
+      "clear": "清除快取",
+      "success": "快取清除成功，重新整理網頁生效",
+      "failed": "快取清除失敗：{{reason}}"
+    },
+    "state_data": {
+      "title": "狀態資料",
+      "clear": "清除狀態資料",
+      "success": "清除狀態資料成功，重新整理網頁生效",
+      "failed": "清除狀態資料失敗：{{reason}}",
+      "description": "包括地圖位置狀態、目前檢視地圖狀態、聚合設定、電線桿和自訂點位相關顯示隱藏等非重要內容"
+    },
+    "entity_data": {
+      "title": "標點資料",
+      "clear": "清除標點資料",
+      "success": "清除標點資料成功，重新整理網頁生效",
+      "failed": "清除標點資料失敗：{{reason}}",
+      "description": "包括不同類型標點可見性篩選狀態、所有標點標記狀態，清除後所有標點狀態將重置"
+    },
+    "storage_data": {
+      "title": "儲存資料",
+      "clear": "清除儲存資料",
+      "confirm": "[危險操作]確認要刪除所有資料嗎？刪除後不可復原！刪除的資料包括狀態資料、標點篩選資料、標記資料以及所有電線桿資料和自訂點位資料。",
+      "success": "清除所有儲存資料成功，重新整理網頁生效",
+      "failed": "清除所有儲存資料失敗：{{reason}}",
+      "description": "[危險操作]刪除所有儲存資料，包括狀態資料、標點篩選資料以及所有電線桿資料和自訂點位資料"
+    }
+  },
+  "about": {
+    "title": "關於",
+    "subscrible": "關注",
+    "community": "社群",
+    "qq_group": "QQ群 ({{group_number}})",
+    "discord": "Discord",
+    "statement": "本網站是由《明日方舟：終末地》遊戲愛好者，使用免費開源的 React 框架製作。網站所涉及的公司名稱、商標、產品等均為其各自所有者的資產，僅供識別。網站內使用的遊戲圖片、動畫、音訊、文字原文，僅用於更好地表現遊戲資料，其版權屬於上海鷹角網路科技有限公司及其關聯公司。除非另有聲明，網站其他內容採用 <license>CC BY-NC-SA 4.0</license> 共享授權。",
+    "contributors": "貢獻者",
+    "contributors_tip": "順序不分先後，每次開啟都是隨機排布",
+    "recruit": {
+      "title": "招募",
+      "description": "我們需要一些熱愛遊戲的電腦大🐮、UI設計。為了地圖工具持續發展、最佳化使用者體驗，也為了在公測後開源保證程式碼品質，我們需要你的加入。",
+      "point1": "熟悉遊戲資料分析，幫助我們更深入理解地圖相關資料",
+      "point2": "熟悉後端開發、伺服器維運、CICD",
+      "point3": "熟悉前端開發相關框架與工具，特別是React框架與OpenLayers",
+      "point4": "精通多語言翻譯"
+    }
+  }
+}

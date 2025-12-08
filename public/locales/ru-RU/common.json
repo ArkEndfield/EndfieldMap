@@ -1,0 +1,28 @@
+{
+  "confirm": "Подтвердить",
+  "cancel": "Отмена",
+  "on": "Включить",
+  "off": "Выключить",
+  "select_all": "Выбрать все",
+  "rename": "Переименовать",
+  "delete": "Удалить",
+  "batch_delete": "Массовое удаление",
+  "operate": {
+    "mark": "Отметить",
+    "marked": "Отмечено",
+    "unmark": "Снять отметку",
+    "clear_selection": "Очистить выбор",
+    "rename": "Переименовать"
+  },
+  "custom_point": {
+    "type": {
+      "custom_point_1": "Метка 1",
+      "custom_point_2": "Метка 2",
+      "custom_point_3": "Метка 3",
+      "custom_point_4": "Метка 4",
+      "custom_point_5": "Метка 5",
+      "custom_point_6": "Метка 6",
+      "custom_point_7": "Метка 7"
+    }
+  }
+}

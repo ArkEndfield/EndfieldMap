@@ -1,0 +1,126 @@
+{
+  "fold": "접기",
+  "unfold": "펼치기",
+  "filter": {
+    "title": "마커 필터",
+    "all": "전체",
+    "marked": "표시됨",
+    "unmarked": "표시 안 됨",
+    "search_placeholder": "검색...",
+    "category": {
+      "ether": "에테르",
+      "trchest": "보물 상자",
+      "mineral": "광물",
+      "enemy": "적",
+      "settlement": "정착지",
+      "spcstone": "희귀 광물",
+      "special": "특수 포인트",
+      "plant": "식물 재료",
+      "narrative": "세계 서사 조각",
+      "dnarrative": "세계 서사 메아리",
+      "dungeon": "던전 포인트",
+      "system": "일일 던전",
+      "#electric_pole": "전신주",
+      "#custom_point": "사용자 지정 포인트"
+    }
+  },
+  "operation": {
+    "selected_feature": "{{val, number}} 개의 마커 선택됨",
+    "multi_operation": "일괄 작업",
+    "cancel_operation": "작업 취소",
+    "electric_pole_manager": "전신주 관리",
+    "custom_point_manager": "사용자 지정 포인트 관리",
+    "close_electric_pole_manager": "관리자 닫기",
+    "close_custom_point_manager": "관리자 닫기",
+    "electric_pole_operating_tip": "전신주 작업 중입니다. 먼저 작업을 종료하세요",
+    "custom_point_operating_tip": "사용자 지정 포인트 작업 중입니다. 먼저 작업을 종료하세요",
+    "selecting_operating_tip": "일괄 작업 중입니다. 먼저 일괄 작업을 종료하세요",
+    "preset": {
+      "empty": "프리셋이 없습니다. 먼저 생성하세요"
+    },
+    "electric_pole": {
+      "display": "전신주 표시",
+      "create": {
+        "start": "생성",
+        "auto_connect": "생성 시 자동 연결",
+        "in_mode": "전신주 생성 중"
+      },
+      "connect": {
+        "start": "연결",
+        "in_mode": "전신주 연결 중",
+        "delete": {
+          "start": "연결 삭제",
+          "in_mode": "연결 삭제 중"
+        }
+      },
+      "delete": {
+        "start": "삭제",
+        "in_mode": "전신주 삭제 중"
+      },
+      "zone": {
+        "display": "전신주 범위 표시"
+      },
+      "preset": {
+        "title": "전신주 프리셋",
+        "create": "새 프리셋",
+        "create_tip": "새 전신주 프리셋 이름을 입력하세요",
+        "create_default_name": "새 프리셋",
+        "select_info": "총 {{total, number}} 개의 프리셋, {{select, number}} 개 선택됨",
+        "export_select": "선택한 프리셋 내보내기",
+        "current": "현재 프리셋",
+        "delete": {
+          "confirm": "프리셋 \"{{name}}\"을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다",
+          "confirm_batch": "선택한 {{count, number}} 개의 전신주 프리셋을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+          "batch_fail_tip": "{{count}}개의 프리셋 삭제 실패, ID: {{ids}}",
+          "fail_tip": "삭제 실패"
+        },
+        "import": {
+          "button": "프리셋 가져오기",
+          "success": "전신주 프리셋 가져오기 성공",
+          "failed": "전신주 프리셋 가져오기 실패: {{reason}}",
+          "format_error": "파일 내용 형식이 올바르지 않습니다",
+          "error_tip": "잘못된 파일 형식 또는 구문 분석 오류"
+        }
+      }
+    },
+    "custom_point": {
+      "display": "사용자 지정 포인트 표시",
+      "no_data": "사용자 지정 포인트 데이터가 없습니다",
+      "select_type": "마커 유형 선택",
+      "tab": {
+        "list": "표시/숨기기",
+        "preset": "프리셋 목록"
+      },
+      "create": {
+        "start": "생성",
+        "in_mode": "사용자 지정 포인트 생성 중"
+      },
+      "delete": {
+        "start": "삭제",
+        "in_mode": "사용자 지정 포인트 삭제 중"
+      },
+      "preset": {
+        "title": "사용자 지정 포인트 프리셋",
+        "create": "새 프리셋",
+        "create_tip": "새 사용자 지정 포인트 프리셋 이름을 입력하세요",
+        "create_default_name": "새 프리셋",
+        "select_info": "총 {{total, number}} 개의 프리셋, {{select, number}} 개 선택됨",
+        "export_select": "선택한 프리셋 내보내기",
+        "current": "현재 프리셋",
+        "delete": {
+          "confirm": "프리셋 \"{{name}}\"을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다",
+          "confirm_batch": "선택한 {{count, number}} 개의 사용자 지정 포인트 프리셋을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+          "batch_fail_tip": "{{count}}개의 프리셋 삭제 실패, ID: {{ids}}",
+          "fail_tip": "삭제 실패"
+        },
+        "import": {
+          "button": "프리셋 가져오기",
+          "success": "사용자 지정 포인트 프리셋 가져오기 성공",
+          "failed": "사용자 지정 포인트 프리셋 가져오기 실패: {{reason}}",
+          "format_error": "파일 내용 형식이 올바르지 않습니다",
+          "error_tip": "잘못된 파일 형식 또는 구문 분석 오류"
+        }
+      }
+    }
+  }
+}

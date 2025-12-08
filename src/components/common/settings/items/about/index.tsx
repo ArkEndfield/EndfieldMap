@@ -5,31 +5,8 @@ import ShuffleText from '@/components/common/shuffle_text';
 import { AboutTitle } from '@/components/common/settings/items/about/title';
 import { CommunityCard } from '@/components/common/settings/items/about/community_card';
 import { ContributorCard } from '@/components/common/settings/items/about/contributor';
-import type { ContributorInfo } from '@/components/common/settings/items/about/contributor';
 import { Recruit } from '@/components/common/settings/items/about/recruit';
-import { getAssetUrls } from '@/utils/url';
-
-const avatarURL = getAssetUrls().avatar;
-
-const contributors: ContributorInfo[] = [
-  {
-    name: 'bietiaop',
-    avatar: 'https://i2.hdslb.com/bfs/face/32dcf0a7744d4e39da30d5c81db0d4c79610b9cd.jpg',
-    home: 'https://space.bilibili.com/152308001',
-    noReferrer: true,
-  },
-  {
-    name: 'qwerdvd',
-    avatar: `${avatarURL}/qwerdvd.jpg`,
-    home: 'https://space.bilibili.com/44495289',
-  },
-  {
-    name: 'skadiD',
-    avatar: `https://i2.hdslb.com/bfs/face/b8c2c0c2658355a50000bf97e4c7849f16d13f1f.webp`,
-    home: 'https://space.bilibili.com/9934999',
-    noReferrer: true,
-  },
-];
+import { contributors } from '@/const/contributor';
 
 export const AboutPage = () => {
   const { t } = useTranslation('settings');
@@ -86,7 +63,7 @@ export const AboutPage = () => {
         </div>
         <AboutTitle className="pt-8">{t('about.contributors')}</AboutTitle>
         <div className="text-xs text-[#cbcbcb] text-center mb-2">{t('about.contributors_tip')}</div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap justify-center">
           {contributors
             .sort(() => Math.random() - 0.5)
             .map((item) => (
