@@ -34,3 +34,5 @@ dist-ssr
 
 # pnpm store
 .pnpm-store
+# Sentry Config File
+.env.sentry-build-plugin

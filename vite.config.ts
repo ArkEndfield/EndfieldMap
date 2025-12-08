@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -27,6 +28,14 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
       tailwindcss(),
+      sentryVitePlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: 'bietiaop',
+        project: 'zmdmap',
+        sourcemaps: {
+          filesToDeleteAfterUpload: '**/*.js.map',
+        },
+      }),
     ],
     resolve: {
       alias: {
@@ -37,6 +46,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     build: {
+      sourcemap: 'hidden',
       rolldownOptions: {
         output: {
           manualChunks(id) {
