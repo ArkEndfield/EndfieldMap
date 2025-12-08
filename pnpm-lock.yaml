@@ -21,8 +21,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.13.0)(react@19.2.0)
       '@sentry/react':
-        specifier: ^10.27.0
-        version: 10.27.0(react@19.2.0)
+        specifier: ^10.29.0
+        version: 10.29.0(react@19.2.0)
       '@tailwindcss/vite':
         specifier: ^4.1.17
         version: 4.1.17(rolldown-vite@7.2.7(@types/node@24.10.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(yaml@2.8.1))
@@ -81,12 +81,12 @@ importers:
       '@babel/core':
         specifier: ^7.28.5
         version: 7.28.5
-      '@babel/plugin-proposal-class-properties':
-        specifier: ^7.18.6
-        version: 7.18.6(@babel/core@7.28.5)
       '@babel/plugin-proposal-decorators':
         specifier: ^7.28.0
         version: 7.28.0(@babel/core@7.28.5)
+      '@babel/plugin-transform-class-properties':
+        specifier: ^7.27.1
+        version: 7.27.1(@babel/core@7.28.5)
       '@babel/plugin-transform-class-static-block':
         specifier: ^7.28.3
         version: 7.28.3(@babel/core@7.28.5)
@@ -150,9 +150,6 @@ importers:
 
   packages/map-core:
     dependencies:
-      '@babel/plugin-transform-class-properties':
-        specifier: ^7.27.1
-        version: 7.27.1(@babel/core@7.28.5)
       '@endfieldmap/tools':
         specifier: workspace:*
         version: link:../tools
@@ -169,6 +166,9 @@ importers:
       '@babel/plugin-proposal-decorators':
         specifier: ^7.28.0
         version: 7.28.0(@babel/core@7.28.5)
+      '@babel/plugin-transform-class-properties':
+        specifier: ^7.27.1
+        version: 7.27.1(@babel/core@7.28.5)
       '@babel/plugin-transform-class-static-block':
         specifier: ^7.28.3
         version: 7.28.3(@babel/core@7.28.5)
@@ -304,13 +304,6 @@ packages:
     resolution: {integrity: sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
-
-  '@babel/plugin-proposal-class-properties@7.18.6':
-    resolution: {integrity: sha512-cumfXOF0+nzZrrN8Rf0t7M+tF6sZc7vhQwYQck9q1/5w2OExlD+b4v4RpMJFaV1Z7WcDRgO6FqvxqxGlwo+RHQ==}
-    engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-decorators@7.28.0':
     resolution: {integrity: sha512-zOiZqvANjWDUaUS9xMxbMcK/Zccztbe/6ikvUXaG9nsPH3w6qh5UaPGAnirI/WhIbZ8m3OHU0ReyPrknG+ZKeg==}
@@ -803,32 +796,32 @@ packages:
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
 
-  '@sentry-internal/browser-utils@10.27.0':
-    resolution: {integrity: sha512-17tO6AXP+rmVQtLJ3ROQJF2UlFmvMWp7/8RDT5x9VM0w0tY31z8Twc0gw2KA7tcDxa5AaHDUbf9heOf+R6G6ow==}
+  '@sentry-internal/browser-utils@10.29.0':
+    resolution: {integrity: sha512-M3kycMY6f3KY9a8jDYac+yG0E3ZgWVWSxlOEC5MhYyX+g7mqxkwrb3LFQyuxSm/m+CCgMTCaPOOaB2twXP6EQg==}
     engines: {node: '>=18'}
 
-  '@sentry-internal/feedback@10.27.0':
-    resolution: {integrity: sha512-UecsIDJcv7VBwycge/MDvgSRxzevDdcItE1i0KSwlPz00rVVxLY9kV28PJ4I2E7r6/cIaP9BkbWegCEcv09NuA==}
+  '@sentry-internal/feedback@10.29.0':
+    resolution: {integrity: sha512-Y7IRsNeS99cEONu1mZWZc3HvbjNnu59Hgymm0swFFKbdgbCgdT6l85kn2oLsuq4Ew8Dw/pL/Sgpwsl9UgYFpUg==}
     engines: {node: '>=18'}
 
-  '@sentry-internal/replay-canvas@10.27.0':
-    resolution: {integrity: sha512-inhsRYSVBpu3BI1kZphXj6uB59baJpYdyHeIPCiTfdFNBE5tngNH0HS/aedZ1g9zICw290lwvpuyrWJqp4VBng==}
+  '@sentry-internal/replay-canvas@10.29.0':
+    resolution: {integrity: sha512-typY4JrpAQQGPuSyd/BD8+nNCbvTV2UVvKzr+iKgI0m1qc4Dz8tHZ4Nfais2Z8eYn/pL1kqVQN5ERTmJoYFdIw==}
     engines: {node: '>=18'}
 
-  '@sentry-internal/replay@10.27.0':
-    resolution: {integrity: sha512-tKSzHq1hNzB619Ssrqo25cqdQJ84R3xSSLsUWEnkGO/wcXJvpZy94gwdoS+KmH18BB1iRRRGtnMxZcUkiPSesw==}
+  '@sentry-internal/replay@10.29.0':
+    resolution: {integrity: sha512-45NVw9PwB9TQ8z+xJ6G6Za+wmQ1RTA35heBSzR6U4bknj8LmA04k2iwnobvxCBEQXeLfcJEO1vFgagMoqMZMBw==}
     engines: {node: '>=18'}
 
-  '@sentry/browser@10.27.0':
-    resolution: {integrity: sha512-G8q362DdKp9y1b5qkQEmhTFzyWTOVB0ps1rflok0N6bVA75IEmSDX1pqJsNuY3qy14VsVHYVwQBJQsNltQLS0g==}
+  '@sentry/browser@10.29.0':
+    resolution: {integrity: sha512-XdbyIR6F4qoR9Z1JCWTgunVcTJjS9p2Th+v4wYs4ME+ZdLC4tuKKmRgYg3YdSIWCn1CBfIgdI6wqETSf7H6Njw==}
     engines: {node: '>=18'}
 
-  '@sentry/core@10.27.0':
-    resolution: {integrity: sha512-Zc68kdH7tWTDtDbV1zWIbo3Jv0fHAU2NsF5aD2qamypKgfSIMSbWVxd22qZyDBkaX8gWIPm/0Sgx6aRXRBXrYQ==}
+  '@sentry/core@10.29.0':
+    resolution: {integrity: sha512-olQ2DU9dA/Bwsz3PtA9KNXRMqBWRQSkPw+MxwWEoU1K1qtiM9L0j6lbEFb5iSY3d7WYD5MB+1d5COugjSBrHtw==}
     engines: {node: '>=18'}
 
-  '@sentry/react@10.27.0':
-    resolution: {integrity: sha512-xoIRBlO1IhLX/O9aQgVYW1F3Qhw8TdkOiZjh6mrPsnCpBLufsQ4aS1nDQi9miZuWeslW0s2zNy0ACBpICZR/sw==}
+  '@sentry/react@10.29.0':
+    resolution: {integrity: sha512-YGaEUXubzil7qssD1koh1fyt0aS8tHB61/6+oNShJ6xZPg03AB42bNMr2/y8fIFx36kb3MiCA5sFoH/ubF0LnQ==}
     engines: {node: '>=18'}
     peerDependencies:
       react: ^16.14.0 || 17.x || 18.x || 19.x
@@ -3337,14 +3330,6 @@ snapshots:
     dependencies:
       '@babel/types': 7.28.5
 
-  '@babel/plugin-proposal-class-properties@7.18.6(@babel/core@7.28.5)':
-    dependencies:
-      '@babel/core': 7.28.5
-      '@babel/helper-create-class-features-plugin': 7.28.5(@babel/core@7.28.5)
-      '@babel/helper-plugin-utils': 7.27.1
-    transitivePeerDependencies:
-      - supports-color
-
   '@babel/plugin-proposal-decorators@7.28.0(@babel/core@7.28.5)':
     dependencies:
       '@babel/core': 7.28.5
@@ -3791,38 +3776,38 @@ snapshots:
 
   '@sec-ant/readable-stream@0.4.1': {}
 
-  '@sentry-internal/browser-utils@10.27.0':
+  '@sentry-internal/browser-utils@10.29.0':
     dependencies:
-      '@sentry/core': 10.27.0
+      '@sentry/core': 10.29.0
 
-  '@sentry-internal/feedback@10.27.0':
+  '@sentry-internal/feedback@10.29.0':
     dependencies:
-      '@sentry/core': 10.27.0
+      '@sentry/core': 10.29.0
 
-  '@sentry-internal/replay-canvas@10.27.0':
+  '@sentry-internal/replay-canvas@10.29.0':
     dependencies:
-      '@sentry-internal/replay': 10.27.0
-      '@sentry/core': 10.27.0
+      '@sentry-internal/replay': 10.29.0
+      '@sentry/core': 10.29.0
 
-  '@sentry-internal/replay@10.27.0':
+  '@sentry-internal/replay@10.29.0':
     dependencies:
-      '@sentry-internal/browser-utils': 10.27.0
-      '@sentry/core': 10.27.0
+      '@sentry-internal/browser-utils': 10.29.0
+      '@sentry/core': 10.29.0
 
-  '@sentry/browser@10.27.0':
+  '@sentry/browser@10.29.0':
     dependencies:
-      '@sentry-internal/browser-utils': 10.27.0
-      '@sentry-internal/feedback': 10.27.0
-      '@sentry-internal/replay': 10.27.0
-      '@sentry-internal/replay-canvas': 10.27.0
-      '@sentry/core': 10.27.0
+      '@sentry-internal/browser-utils': 10.29.0
+      '@sentry-internal/feedback': 10.29.0
+      '@sentry-internal/replay': 10.29.0
+      '@sentry-internal/replay-canvas': 10.29.0
+      '@sentry/core': 10.29.0
 
-  '@sentry/core@10.27.0': {}
+  '@sentry/core@10.29.0': {}
 
-  '@sentry/react@10.27.0(react@19.2.0)':
+  '@sentry/react@10.29.0(react@19.2.0)':
     dependencies:
-      '@sentry/browser': 10.27.0
-      '@sentry/core': 10.27.0
+      '@sentry/browser': 10.29.0
+      '@sentry/core': 10.29.0
       hoist-non-react-statics: 3.3.2
       react: 19.2.0
 

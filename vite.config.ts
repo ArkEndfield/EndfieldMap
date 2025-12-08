@@ -21,7 +21,7 @@ export default defineConfig(({ command, mode }) => {
           plugins: [
             ['babel-plugin-react-compiler'],
             ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-            ['@babel/plugin-proposal-class-properties', { loose: true }],
+            ['@babel/plugin-transform-class-properties', { loose: true }],
             ['@babel/plugin-transform-class-static-block'],
           ],
         },
