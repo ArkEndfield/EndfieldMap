@@ -12,6 +12,7 @@ import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getLanguage } from '@/utils/language';
 import { getAssetUrls } from '@/utils/url';
+import { logger } from '@endfieldmap/tools';
 
 /**
  * 地图适配器 hook
@@ -54,7 +55,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
     } catch (e) {
       loadingManager.setError(e as Error);
-      console.error(e);
+      logger.error(e);
     }
   }, [containerRef]);
 

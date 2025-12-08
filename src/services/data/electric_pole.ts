@@ -657,7 +657,7 @@ export class ElectricPoleDataService {
       try {
         await this.saveCurrentAdapterDataToStorage();
       } catch (error) {
-        console.error('Failed to save current electric pole preset before switching:', error);
+        logger.error('Failed to save current electric pole preset before switching:', error);
       }
     }
 
