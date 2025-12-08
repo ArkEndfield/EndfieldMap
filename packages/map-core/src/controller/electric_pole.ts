@@ -1,5 +1,5 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { ELECTRIC_ZONE_RADIUS, ElectricPoleIdKey, type MapIndex } from '@endfieldmap/map-core/const/map';
+import { ElectricPoleIdKey, type MapIndex } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
 import { ElectricPoleZoneLayer } from '@endfieldmap/map-core/render/layers/electric_pole_zone';
@@ -55,7 +55,6 @@ export class ElectricPoleController {
     const zoneLayer = new ElectricPoleZoneLayer({
       data: data,
       mapIndex: mapIndex,
-      radius: ELECTRIC_ZONE_RADIUS,
     });
 
     entityLayer.entity.features.forEach((feature) => {

@@ -1,4 +1,5 @@
-export { MapIndex } from '@endfieldmap/tools';
+import { MapIndex } from '@endfieldmap/tools';
+export { MapIndex };
 
 /** 默认缩放 */
 export const DEFAULT_ZOOM = 3;
@@ -80,7 +81,10 @@ export const ElectricPoleKey = ElectricPoleIdKey;
 export const CustomPointKey = '#custom_point';
 
 /** TODO: 电线杆覆盖区域半径（地图坐标单位） */
-export const ELECTRIC_ZONE_RADIUS = 20;
+export const ELECTRIC_ZONE_RADIUS: Record<MapIndex, number> = {
+  [MapIndex.MAP01]: 10,
+  [MapIndex.MAP02]: 5,
+};
 
 /** 地图类型 */
 export const enum MapType {

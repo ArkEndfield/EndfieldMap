@@ -1,10 +1,10 @@
-import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
+import { ELECTRIC_ZONE_RADIUS, EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { BaseFeatureConfig } from '@endfieldmap/map-core/render/source/feature/_base';
 import { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { ElectricPoleData, EntityInfoData } from '@endfieldmap/map-core/types';
-import { xyz2crd } from '@endfieldmap/tools';
+import { calculateDistance, xyz2crd } from '@endfieldmap/tools';
 import { action, computed, observable, toJS } from 'mobx';
 import { Point } from 'ol/geom';
 
@@ -57,12 +57,12 @@ export class ElectricPoleFeature extends MapFeature {
 
   @action
   public connectTo(pole: ElectricPoleFeature) {
-    // const distance = calculateDistance(this.coordinates, pole.coordinates);
+    const distance = calculateDistance(this.coordinates, pole.coordinates);
     // TODO: 距离限制
-    // if (distance > ELECTRIC_ZONE_RADIUS) {
-    //   // TODO: i18n
-    //   throw new Error(`The distance between the two poles is too far: ${distance}`);
-    // }
+    if (distance > ELECTRIC_ZONE_RADIUS[this.mapIndex]) {
+      // TODO: i18n
+      throw new Error(`The distance between the two poles is too far: ${distance}`);
+    }
     // 直接修改 _data 而不是 data getter 返回的临时对象
     this._data.properties.connectTo = pole._data.levelLogicId;
     this.connectionTo = pole;

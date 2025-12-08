@@ -1,5 +1,5 @@
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
-import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
+import { ELECTRIC_ZONE_RADIUS, LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { ElectricPoleZoneSource } from '@endfieldmap/map-core/render/source/electric_pole_zone';
 import type { ElectricPoleData, ElectricPoleDataList } from '@endfieldmap/map-core/types';
@@ -13,8 +13,6 @@ export interface ElectricPoleZoneLayerConfig {
   data: ElectricPoleDataList;
   /** 地图索引 */
   mapIndex: MapIndex;
-  /** 区域半径（地图坐标单位） */
-  radius: number;
   /** 渲染缓冲区 */
   renderBuffer?: number;
 }
@@ -28,13 +26,16 @@ export class ElectricPoleZoneLayer extends SingleLayerBase {
   public layer: VectorLayer;
   /** 数据源 */
   public source: ElectricPoleZoneSource;
+  /** 当前地图索引 */
+  public currentMapIndex: MapIndex;
 
   constructor(config: ElectricPoleZoneLayerConfig) {
     super();
+    this.currentMapIndex = config.mapIndex;
     this.source = new ElectricPoleZoneSource({
       data: config.data,
       mapIndex: config.mapIndex,
-      radius: config.radius,
+      radius: ELECTRIC_ZONE_RADIUS[config.mapIndex],
     });
 
     this.layer = new VectorLayer({
