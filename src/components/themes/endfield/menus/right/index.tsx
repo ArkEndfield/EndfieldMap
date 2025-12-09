@@ -1,4 +1,4 @@
-import { MapIndex } from '@endfieldmap/tools';
+import { domEventListener, MapIndex } from '@endfieldmap/tools';
 import { MapButton } from '@themes/endfield/menus/right/button';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
@@ -50,10 +50,7 @@ export const RightMenu: React.FC = observer(() => {
       }
     };
 
-    document.addEventListener('click', clickOutside);
-    return () => {
-      document.removeEventListener('click', clickOutside);
-    };
+    return domEventListener(document, 'click', clickOutside);
   }, [showPopover]);
 
   return (

@@ -1,3 +1,4 @@
+import { domEventListener } from '@endfieldmap/tools';
 import type { Map as OlMap } from 'ol';
 import type View from 'ol/View';
 
@@ -19,12 +20,13 @@ export class KeyboardMoveController {
   private view: View;
   private speed: number;
   private enable: boolean;
+  private disposer?: () => void;
 
   private keyState = {
     w: false,
     a: false,
     s: false,
-    d: false
+    d: false,
   };
 
   private rafId: number | null = null;
@@ -40,13 +42,22 @@ export class KeyboardMoveController {
   }
 
   private bindEvents() {
-    window.addEventListener('keydown', this.handleKeyDown);
-    window.addEventListener('keyup', this.handleKeyUp);
+    if (this.disposer) {
+      this.disposer();
+    }
+    const disposer1 = domEventListener(window, 'keydown', this.handleKeyDown);
+    const disposer2 = domEventListener(window, 'keyup', this.handleKeyUp);
+    this.disposer = () => {
+      disposer1();
+      disposer2();
+    };
   }
 
   private unbindEvents() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-    window.removeEventListener('keyup', this.handleKeyUp);
+    if (this.disposer) {
+      this.disposer();
+      this.disposer = void 0;
+    }
   }
 
   private handleKeyDown = (e: KeyboardEvent) => {
@@ -107,10 +118,7 @@ export class KeyboardMoveController {
 
       const move = this.speed * resolution * 10;
 
-      this.view.setCenter([
-        center[0] + dx * move,
-        center[1] + dy * move
-      ]);
+      this.view.setCenter([center[0] + dx * move, center[1] + dy * move]);
 
       this.rafId = requestAnimationFrame(loop);
     };
@@ -140,7 +148,6 @@ export class KeyboardMoveController {
       this.rafId = null;
     }
   }
-
 
   private resetKeyState() {
     this.keyState.w = false;

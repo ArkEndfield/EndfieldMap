@@ -1,4 +1,4 @@
-import { debounce, throttle } from './optimization';
+import { debounce, throttle } from '@endfieldmap/tools/utils/optimization';
 
 export interface DomEventOptions extends AddEventListenerOptions {
   /** 防抖延迟时间 (ms) */
@@ -33,6 +33,16 @@ export function domEventListener<K extends keyof HTMLElementEventMap, E extends 
   dom: E,
   event: K,
   listener: (this: E, ev: HTMLElementEventMap[K]) => void,
+  options?: DomEventOptions
+): () => void;
+
+/**
+ * 通用事件监听器 overload，用于 custom event 或非标准 event (如 gesturestart)
+ */
+export function domEventListener(
+  dom: EventTarget,
+  event: string,
+  listener: EventListenerOrEventListenerObject,
   options?: DomEventOptions
 ): () => void;
 

@@ -3,6 +3,7 @@ import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
+import { domEventListener } from '@endfieldmap/tools';
 
 export interface EndfieldSelectItem<T extends string> {
   label: React.ReactNode;
@@ -143,10 +144,7 @@ export const EndfieldSelect = <T extends string>({
     }
   };
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return domEventListener(document, 'mousedown', handleClickOutside);
   }, []);
   return (
     <div className={cn('relative w-full text-[#373537]', open && 'z-3', className)}>

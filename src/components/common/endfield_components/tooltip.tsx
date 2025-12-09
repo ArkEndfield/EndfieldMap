@@ -1,8 +1,9 @@
-import { AnimatePresence,motion } from 'motion/react';
-import React, { createElement,useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '@/utils/style';
+import { domEventListener } from '@endfieldmap/tools';
 
 export type Placement = 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'right';
 
@@ -185,13 +186,13 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
         calculatePosition();
       }, 0);
 
-      window.addEventListener('scroll', calculatePosition, true);
-      window.addEventListener('resize', calculatePosition);
+      const unbindScroll = domEventListener(window, 'scroll', calculatePosition, { capture: true });
+      const unbindResize = domEventListener(window, 'resize', calculatePosition);
 
       return () => {
         clearTimeout(timer);
-        window.removeEventListener('scroll', calculatePosition, true);
-        window.removeEventListener('resize', calculatePosition);
+        unbindScroll();
+        unbindResize();
       };
     }
   }, [isOpen, calculatePosition]);

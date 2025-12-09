@@ -1,7 +1,9 @@
+import { domEventListener } from '@endfieldmap/tools/utils/dom';
+
 // 禁止网页缩放功能
 export const disablePageZoom = () => {
   // 阻止键盘缩放 (Ctrl + 加号/减号)
-  document.addEventListener('keydown', (e) => {
+  domEventListener(document, 'keydown', (e) => {
     if (
       (e.ctrlKey || e.metaKey) &&
       (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '_' || e.keyCode === 187 || e.keyCode === 189)
@@ -12,7 +14,8 @@ export const disablePageZoom = () => {
   });
 
   // 阻止鼠标滚轮缩放 (Ctrl + 滚轮)
-  document.addEventListener(
+  domEventListener(
+    document,
     'wheel',
     (e) => {
       if (e.ctrlKey || e.metaKey) {
@@ -24,18 +27,19 @@ export const disablePageZoom = () => {
   );
 
   // 阻止触摸板缩放手势
-  document.addEventListener('gesturestart', (e) => {
+  domEventListener(document, 'gesturestart', (e) => {
     e.preventDefault();
     return false;
   });
 
-  document.addEventListener('gesturechange', (e) => {
+  domEventListener(document, 'gesturechange', (e) => {
     e.preventDefault();
     return false;
   });
 
   // 阻止双指触摸缩放
-  document.addEventListener(
+  domEventListener(
+    document,
     'touchmove',
     (e) => {
       if (e.touches.length > 1) {

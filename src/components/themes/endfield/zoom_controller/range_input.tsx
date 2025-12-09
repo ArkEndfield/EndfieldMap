@@ -1,7 +1,8 @@
-import React from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
 import { MinusIcon, PlusIcon } from '@/components/common/icons';
 import { cn } from '@/utils/style';
+import { domEventListener } from '@endfieldmap/tools';
 
 export interface RangeButtonProps {
   disabled?: boolean;
@@ -62,15 +63,15 @@ export const RangeBar: React.FC<RangeBarProps> = ({
   direction = 'horizontal',
   snapToStep = false,
 }) => {
-  const [internalValue, setInternalValue] = React.useState(min);
-  const [isDragging, setIsDragging] = React.useState(false);
-  const trackRef = React.useRef<HTMLDivElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [internalValue, setInternalValue] = useState(min);
+  const [isDragging, setIsDragging] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const isControlled = controlledValue !== undefined;
   const value = isControlled ? controlledValue : internalValue;
 
-  const handleChange = React.useCallback(
+  const handleChange = useCallback(
     (newValue: number, isDragging?: boolean) => {
       if (!isControlled) {
         setInternalValue(newValue);
@@ -84,7 +85,7 @@ export const RangeBar: React.FC<RangeBarProps> = ({
   const percentage = ((value - min) / (max - min)) * 100;
 
   // Set value based on click/drag position
-  const setValue = React.useCallback(
+  const setValue = useCallback(
     (clientX: number, clientY: number, isDragging: boolean) => {
       if (!trackRef.current || disabled) return;
 
@@ -128,7 +129,7 @@ export const RangeBar: React.FC<RangeBarProps> = ({
   };
 
   // Handle drag
-  const onDrag = React.useCallback(
+  const onDrag = useCallback(
     (event: MouseEvent | TouchEvent) => {
       if (!isDragging) return;
 
@@ -147,29 +148,28 @@ export const RangeBar: React.FC<RangeBarProps> = ({
   );
 
   // Stop dragging
-  const stopDrag = React.useCallback(() => {
+  const stopDrag = useCallback(() => {
     setIsDragging(false);
   }, []);
 
-  // Setup and cleanup drag listeners
-  React.useEffect(() => {
+  useEffect(() => {
     if (isDragging) {
-      window.addEventListener('mousemove', onDrag);
-      window.addEventListener('touchmove', onDrag);
-      window.addEventListener('mouseup', stopDrag);
-      window.addEventListener('touchend', stopDrag);
+      const d1 = domEventListener(window, 'mousemove', onDrag);
+      const d2 = domEventListener(window, 'touchmove', onDrag);
+      const d3 = domEventListener(window, 'mouseup', stopDrag);
+      const d4 = domEventListener(window, 'touchend', stopDrag);
 
       return () => {
-        window.removeEventListener('mousemove', onDrag);
-        window.removeEventListener('touchmove', onDrag);
-        window.removeEventListener('mouseup', stopDrag);
-        window.removeEventListener('touchend', stopDrag);
+        d1();
+        d2();
+        d3();
+        d4();
       };
     }
   }, [isDragging, onDrag, stopDrag]);
 
   // Update track size in vertical mode
-  React.useEffect(() => {
+  useEffect(() => {
     if (direction === 'vertical' && containerRef.current && trackRef.current) {
       const updateTrackSize = () => {
         if (!containerRef.current) return;
@@ -323,7 +323,7 @@ export interface RangeInputProps {
   buttonClassName?: string;
 }
 
-export const RangeInput = React.forwardRef<HTMLDivElement, RangeInputProps>(
+export const RangeInput = forwardRef<HTMLDivElement, RangeInputProps>(
   (
     {
       value: controlledValue,
@@ -344,7 +344,7 @@ export const RangeInput = React.forwardRef<HTMLDivElement, RangeInputProps>(
     ref
   ) => {
     // Internal state for uncontrolled mode
-    const [internalValue, setInternalValue] = React.useState(min);
+    const [internalValue, setInternalValue] = useState(min);
 
     // Determine if controlled or uncontrolled
     const isControlled = controlledValue !== undefined;

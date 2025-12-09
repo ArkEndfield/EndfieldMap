@@ -1,4 +1,4 @@
-import { debounce } from '@endfieldmap/tools';
+import { debounce, domEventListener } from '@endfieldmap/tools';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/utils/style';
@@ -243,6 +243,8 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       const bar = (axis === 'x' ? thumbXRef : thumbYRef).current?.parentElement;
       if (!bar) return;
 
+      let dispose: (() => void) | undefined;
+
       const handleMouseMove = (moveEvent: MouseEvent) => {
         if (!contentRef.current || !bar) return;
 
@@ -292,12 +294,16 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           }
         });
 
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
+        dispose?.();
       };
 
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      const unlistenMove = domEventListener(document, 'mousemove', handleMouseMove);
+      const unlistenUp = domEventListener(document, 'mouseup', handleMouseUp);
+
+      dispose = () => {
+        unlistenMove();
+        unlistenUp();
+      };
     },
     [onScrollStart, onScrollEnd]
   );

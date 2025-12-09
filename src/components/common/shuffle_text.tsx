@@ -2,6 +2,7 @@
  * source code: https://reactbits.dev/text-animations/shuffle
  */
 
+import { domEventListener } from '@endfieldmap/tools';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -99,6 +100,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
       const mu = mm ? mm[2] || 'px' : 'px';
       const sign = mv === 0 ? '' : mv < 0 ? `-=${Math.abs(mv)}${mu}` : `+=${mv}${mu}`;
       const start = `top ${startPct}%${sign}`;
+      let disposer: () => void;
 
       const removeHover = () => {
         if (hoverHandlerRef.current && ref.current) {
@@ -310,7 +312,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
           play();
         };
         hoverHandlerRef.current = handler;
-        ref.current.addEventListener('mouseenter', handler);
+        disposer = domEventListener(document, 'mouseenter', handler);
       };
 
       const create = () => {
@@ -333,6 +335,7 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
         removeHover();
         teardown();
         setReady(false);
+        disposer?.();
       };
     },
     {
