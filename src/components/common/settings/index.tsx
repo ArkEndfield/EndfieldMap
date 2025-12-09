@@ -4,16 +4,18 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { CloseButton } from '@/components/common/close_button';
-import { DataBaseIcon, LayoutAndLanguageIcon,MapIcon, QuestionIcon } from '@/components/common/icons';
-import { ScrollArea } from '@/components/common/scroll_area';
+import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@/components/common/icons';
 import { AboutPage } from '@/components/common/settings/items/about';
 import { DataSettings } from '@/components/common/settings/items/data';
 import { DisplaySettings } from '@/components/common/settings/items/display';
 import { MapSettings } from '@/components/common/settings/items/map';
-import { type TabItem,TabList } from '@/components/common/settings/tabs';
+import { type TabItem, TabList } from '@/components/common/settings/tabs';
+import { BgDeco } from '@/components/common/settings/components/deco';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
+import { ContentWrapper } from './components/content_wrapper';
+import { domEventListener } from '@endfieldmap/tools';
 
 export interface SettingsPageProps {
   open: boolean;
@@ -51,51 +53,6 @@ const settingList = [
   },
 ] as const;
 
-const BgDeco = () => (
-  <div className="absolute -z-1 left-5 select-none">
-    <div className="relative w-30 h-25 -top-2 bg-no-repeat bg-contain opacity-10 bg-[url(/images/bg/deco_common_logo_bg.png)]"></div>
-    <div className="font-[Outfit] absolute top-2 left-2">
-      <svg
-        width="40"
-        height="10"
-        viewBox="0 0 40 10"
-        fill="none"
-        className="text-[#666]"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <text x="0" y="5" fill="currentColor" fontSize="4" fontFamily="Outfit" fontWeight="400">
-          绝命笋干JMSG
-        </text>
-        <text x="0" y="10" fill="currentColor" fontSize="4" fontFamily="Outfit" fontWeight="400">
-          ZMDMAP
-        </text>
-      </svg>
-      <div className="flex items-center">
-        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="14" x2="8" y2="0" stroke="currentColor" strokeWidth="2" />
-        </svg>
-        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="14" x2="8" y2="0" stroke="currentColor" strokeWidth="2" />
-        </svg>
-        <span className="ml-1">SETTINGS</span>
-      </div>
-    </div>
-  </div>
-);
-
-const ContentWrapper = ({ children, active }: { children: React.ReactNode; active?: boolean }) =>
-  active ? (
-    <motion.div
-      initial={{ opacity: 0.5 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0.5 }}
-      transition={{ duration: 0.3 }}
-      className="h-full"
-    >
-      <ScrollArea className="w-full h-full overflow-hidden">{children}</ScrollArea>
-    </motion.div>
-  ) : null;
-
 const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const isMobile = useIsMobile();
@@ -108,6 +65,19 @@ const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
       dialogRef.current?.close();
     }
   }, [open]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog) {
+      const dispose = domEventListener(dialog, 'keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          onClose();
+        }
+      });
+      return () => dispose();
+    }
+  }, [onClose]);
 
   return (
     <motion.dialog
