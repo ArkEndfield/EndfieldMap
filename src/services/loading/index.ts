@@ -1,4 +1,4 @@
-import type {  LoadingState, StageConfig } from '@eftypes/loading';
+import type { LoadingState, StageConfig } from '@eftypes/loading';
 
 import { LoadingStageId } from '@/const/loading';
 import { ProgressInterpolator } from '@/services/loading/progress_interpolator';
@@ -50,6 +50,9 @@ class LoadingProgressManager {
   }
 
   updateStageProgress(stageId: LoadingStageId, progress: number) {
+    if (this.calculateTotalProgress() >= 100) {
+      return;
+    }
     const stage = this.stages.get(stageId);
     if (stage) {
       // 确保单个阶段进度在 0-100 之间
@@ -59,6 +62,9 @@ class LoadingProgressManager {
   }
 
   completeStage(stageId: LoadingStageId) {
+    if (this.calculateTotalProgress() >= 100) {
+      return;
+    }
     const stage = this.stages.get(stageId);
     if (stage) {
       stage.progress = 100;
@@ -68,6 +74,9 @@ class LoadingProgressManager {
   }
 
   setError(error: Error) {
+    if (this.calculateTotalProgress() >= 100) {
+      return;
+    }
     this.error = error;
     this.notifyListeners({
       totalProgress: this.calculateTotalProgress(),

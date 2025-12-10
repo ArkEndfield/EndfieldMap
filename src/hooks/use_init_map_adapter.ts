@@ -55,7 +55,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
       loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
     } catch (e) {
       loadingManager.setError(e as Error);
-      logger.error(e);
+      logger.error('加载错误', e);
     }
   }, [containerRef]);
 

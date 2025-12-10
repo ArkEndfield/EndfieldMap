@@ -1,4 +1,4 @@
-import { type EndfieldMapAdapter,MAP_EVENT, MapIndex, MarkedFeatureFilterMode } from '@endfieldmap/map-core';
+import { type EndfieldMapAdapter, MAP_EVENT, MapIndex, MarkedFeatureFilterMode } from '@endfieldmap/map-core';
 import {
   type Coordinate,
   type DataState,
@@ -12,6 +12,7 @@ import {
 import { DEBOUNCE_INTERVAL } from '@/const/data';
 import i18n from '@/i18n';
 import { getLanguage } from '@/utils/language';
+import { loadingManager } from '../loading';
 
 export class MapStateDataService {
   private adapter: EndfieldMapAdapter;
@@ -177,6 +178,7 @@ export class MapStateDataService {
 
       // 渲染实体
       this.adapter.renderEntity(mapIndex).catch((e) => {
+        loadingManager.setError(e as Error);
         logger.error('[EndfieldMapAdapter | renderEntity] error, ', e);
       });
       // 设置地图名称
@@ -190,6 +192,7 @@ export class MapStateDataService {
       // 设置地图缩放
       this.adapter.mapController.setZoom(this.mapZoom.value[mapIndex]);
     } catch (e) {
+      loadingManager.setError(e as Error);
       logger.error('[EndfieldMapAdapter | renderMap] error, ', e);
     }
   }
