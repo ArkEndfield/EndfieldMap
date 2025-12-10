@@ -5,6 +5,7 @@ interface ViteTypeOptions {
 interface ImportMetaEnv {
   readonly VITE_ASSETS_HOST: string;
   readonly VITE_BACKEND_HOST: string;
+  readonly VITE_SENTRY_DSN: string;
 }
 
 interface ImportMeta {

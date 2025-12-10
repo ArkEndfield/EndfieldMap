@@ -28,14 +28,16 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
       tailwindcss(),
-      sentryVitePlugin({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: 'bietiaop',
-        project: 'zmdmap',
-        sourcemaps: {
-          filesToDeleteAfterUpload: '**/*.js.map',
-        },
-      }),
+      !!process.env.SENTRY_AUTH_TOKEN &&
+        sentryVitePlugin({
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+          org: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+          url: process.env.SENTRY_URL,
+          sourcemaps: {
+            filesToDeleteAfterUpload: '**/*.js.map',
+          },
+        }),
     ],
     resolve: {
       alias: {
