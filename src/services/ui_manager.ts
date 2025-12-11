@@ -143,10 +143,12 @@ class UIManager {
   get ThemedComponents() {
     const components = getThemedComponents(this.theme.value);
     return {
-      Popup: components.get(ComponentType.POPUP),
-      ZoomController: components.get(ComponentType.ZOOM_CONTROLLER),
-      Menus: components.get(ComponentType.MENUS),
-      ControlPanel: components.get(ComponentType.CONTROL_PANEL),
+      map: {
+        Popup: components.get(ComponentType.POPUP),
+        ZoomController: components.get(ComponentType.ZOOM_CONTROLLER),
+        Menus: components.get(ComponentType.MENUS),
+        ControlPanel: components.get(ComponentType.CONTROL_PANEL),
+      },
       alert: {
         Alert: components.get(ComponentType.ALERT),
         AlertFull: components.get(ComponentType.ALERT_FULL),

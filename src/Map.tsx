@@ -35,22 +35,22 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
     <AdapterProvider adapter={adapter} dataService={dataService}>
       {/* 弹窗组件 */}
       <Suspense>
-        <ThemedComponents.Popup />
+        <ThemedComponents.map.Popup />
       </Suspense>
 
       {/* 缩放组件 */}
       <Suspense>
-        <ThemedComponents.ZoomController />
+        <ThemedComponents.map.ZoomController />
       </Suspense>
 
       {/* 菜单组件 */}
       <Suspense>
-        <ThemedComponents.Menus />
+        <ThemedComponents.map.Menus />
       </Suspense>
 
       {/** 操作组件 */}
       <Suspense>
-        <ThemedComponents.ControlPanel />
+        <ThemedComponents.map.ControlPanel />
       </Suspense>
 
       {/* 设置页面 */}
