@@ -1,11 +1,11 @@
-import { useTranslation, Trans } from 'react-i18next';
+import { Trans,useTranslation } from 'react-i18next';
 
 import { BilibiliIcon, DiscordIcon, QQIcon } from '@/components/common/icons';
-import ShuffleText from '@/components/common/shuffle_text';
-import { AboutTitle } from '@/components/common/settings/items/about/title';
 import { CommunityCard } from '@/components/common/settings/items/about/community_card';
 import { ContributorCard } from '@/components/common/settings/items/about/contributor';
 import { Recruit } from '@/components/common/settings/items/about/recruit';
+import { AboutTitle } from '@/components/common/settings/items/about/title';
+import ShuffleText from '@/components/common/shuffle_text';
 import { contributors } from '@/const/contributor';
 
 export const AboutPage = () => {

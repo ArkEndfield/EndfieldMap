@@ -1,3 +1,4 @@
+import { domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
@@ -5,17 +6,17 @@ import { createPortal } from 'react-dom';
 
 import { CloseButton } from '@/components/common/close_button';
 import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@/components/common/icons';
+import { BgDeco } from '@/components/common/settings/components/deco';
 import { AboutPage } from '@/components/common/settings/items/about';
 import { DataSettings } from '@/components/common/settings/items/data';
 import { DisplaySettings } from '@/components/common/settings/items/display';
 import { MapSettings } from '@/components/common/settings/items/map';
 import { type TabItem, TabList } from '@/components/common/settings/tabs';
-import { BgDeco } from '@/components/common/settings/components/deco';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
+
 import { ContentWrapper } from './components/content_wrapper';
-import { domEventListener } from '@endfieldmap/tools';
 
 export interface SettingsPageProps {
   open: boolean;

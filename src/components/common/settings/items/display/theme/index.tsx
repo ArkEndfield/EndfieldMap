@@ -1,12 +1,11 @@
+import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { ThemeIcon } from '@/components/common/icons';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
-import { type ThemeNames, themeNames } from '@/components/themes';
-import { observer } from 'mobx-react-lite';
-import uiManager from '@/services/ui_manager';
-
 import { ThemeItem } from '@/components/common/settings/items/display/theme/item';
+import { type ThemeNames, themeNames } from '@/components/themes';
+import uiManager from '@/services/ui_manager';
 
 export const ThemeSetting = observer(() => {
   const { t } = useTranslation('settings');

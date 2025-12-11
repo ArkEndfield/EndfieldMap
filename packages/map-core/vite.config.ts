@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { defineConfig } from 'vite';
 import dts from 'unplugin-dts/vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';

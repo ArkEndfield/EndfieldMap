@@ -12,6 +12,7 @@ import {
 import { DEBOUNCE_INTERVAL } from '@/const/data';
 import i18n from '@/i18n';
 import { getLanguage } from '@/utils/language';
+
 import { loadingManager } from '../loading';
 
 export class MapStateDataService {

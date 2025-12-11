@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+
 import { ScrollArea } from '@/components/common/scroll_area';
 
 export const ContentWrapper = ({ children, active }: { children: React.ReactNode; active?: boolean }) =>

@@ -1,6 +1,6 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import { Suspense, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useMemo, useRef } from 'react';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
@@ -9,6 +9,7 @@ import ZmdSwiper from '@/components/common/zmd_swiper';
 import { getThemedComponents } from '@/components/themes';
 import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 import { DataService } from '@/services/data';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
@@ -20,6 +21,9 @@ export interface ControllersProps {
 
 const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
   const theme = uiManager.theme.value;
+  const isMobile = useIsMobile();
+  const enableHover = adapter.enableHover;
+  const hoverHitTestTime = dataService.mapStateDataService.hoverTime.value;
 
   const ThemedComponents = useMemo(() => {
     const components = getThemedComponents(theme);
@@ -30,6 +34,14 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
       ControlPanel: components.get(ComponentType.CONTROL_PANEL),
     };
   }, [theme]);
+
+  useEffect(() => {
+    if (isMobile && enableHover) {
+      adapter.setHoverFeatureEnable(false);
+    } else if (!enableHover && hoverHitTestTime !== -1) {
+      adapter.setHoverFeatureEnable(true);
+    }
+  }, [isMobile]);
 
   return (
     <AdapterProvider adapter={adapter} dataService={dataService}>

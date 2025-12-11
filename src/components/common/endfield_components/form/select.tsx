@@ -1,9 +1,9 @@
+import { domEventListener } from '@endfieldmap/tools';
 import { AnimatePresence, motion } from 'motion/react';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
-import { domEventListener } from '@endfieldmap/tools';
 
 export interface EndfieldSelectItem<T extends string> {
   label: React.ReactNode;

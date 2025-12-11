@@ -1,6 +1,6 @@
 import { LanguageSetting } from '@/components/common/settings/items/display/language';
-import { UISetting } from '@/components/common/settings/items/display/ui';
 import { ThemeSetting } from '@/components/common/settings/items/display/theme';
+import { UISetting } from '@/components/common/settings/items/display/ui';
 
 export const DisplaySettings = () => {
   return (

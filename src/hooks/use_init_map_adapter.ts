@@ -1,4 +1,5 @@
 import { EndfieldMapAdapter } from '@endfieldmap/map-core';
+import { logger } from '@endfieldmap/tools';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { LoadingStageId } from '@/const/loading';
@@ -12,7 +13,6 @@ import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getLanguage } from '@/utils/language';
 import { getAssetUrls } from '@/utils/url';
-import { logger } from '@endfieldmap/tools';
 
 /**
  * 地图适配器 hook

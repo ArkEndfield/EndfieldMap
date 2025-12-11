@@ -11,6 +11,7 @@ import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
+
 import { electricPoleEntityInfo } from '../const/entity';
 
 export interface ElectricPoleControllerConfig {

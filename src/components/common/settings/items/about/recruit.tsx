@@ -1,9 +1,10 @@
+import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+
 import { UserIcon } from '@/components/common/icons';
 import { AboutTitle } from '@/components/common/settings/items/about/title';
 import { cn } from '@/utils/style';
 import { getAssetUrls } from '@/utils/url';
-import { observer } from 'mobx-react-lite';
 
 const assetURLs = getAssetUrls();
 
