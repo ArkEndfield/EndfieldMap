@@ -2,7 +2,7 @@ import type Resources from '@eftypes/resources';
 import { differenceArray } from '@endfieldmap/tools';
 import { useTranslation } from 'react-i18next';
 
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { alert } from '@/components/common/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
 
 const modes = ['isCreating', 'isDeleting'] as const;

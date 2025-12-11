@@ -1,13 +1,11 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import { Suspense, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
 import { SettingsPage } from '@/components/common/settings';
 import ZmdSwiper from '@/components/common/zmd_swiper';
-import { getThemedComponents } from '@/components/themes';
-import { ComponentType } from '@/components/themes/types';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { DataService } from '@/services/data';
@@ -20,20 +18,10 @@ export interface ControllersProps {
 }
 
 const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
-  const theme = uiManager.theme.value;
   const isMobile = useIsMobile();
   const enableHover = adapter.enableHover;
   const hoverHitTestTime = dataService.mapStateDataService.hoverTime.value;
-
-  const ThemedComponents = useMemo(() => {
-    const components = getThemedComponents(theme);
-    return {
-      Popup: components.get(ComponentType.POPUP),
-      ZoomController: components.get(ComponentType.ZOOM_CONTROLLER),
-      Menus: components.get(ComponentType.MENUS),
-      ControlPanel: components.get(ComponentType.CONTROL_PANEL),
-    };
-  }, [theme]);
+  const ThemedComponents = uiManager.ThemedComponents;
 
   useEffect(() => {
     if (isMobile && enableHover) {

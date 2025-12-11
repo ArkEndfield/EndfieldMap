@@ -2,7 +2,7 @@ import { logger } from '@endfieldmap/tools';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { alert } from '@/components/common/alert/alert_api';
 import { EXPORT_TYPE_KEY } from '@/const/data';
 import { useAdapter } from '@/hooks/use_adapter';
 

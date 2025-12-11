@@ -1,7 +1,8 @@
+import { type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 
-import { ZmdAlert, type ZmdAlertProps } from '@/components/common/endfield_components/alert/alert';
-import { PromptInput } from '@/components/common/endfield_components/alert/input';
+import { ZmdAlert, type ZmdAlertProps } from '@/components/common/alert/alert';
+import { PromptInput } from '@/components/common/alert/input';
 
 interface AlertInstance {
   destroy: () => void;
@@ -9,11 +10,11 @@ interface AlertInstance {
 }
 
 interface AlertConfig extends Omit<ZmdAlertProps, 'open' | 'onOpenChange'> {
-  content?: React.ReactNode;
+  content?: ReactNode;
 }
 
 interface PromptConfig extends Omit<AlertConfig, 'content'> {
-  content?: React.ReactNode;
+  content?: ReactNode;
   placeholder?: string;
   defaultValue?: string;
   inputType?: 'text' | 'password' | 'number' | 'email' | 'url' | 'tel';

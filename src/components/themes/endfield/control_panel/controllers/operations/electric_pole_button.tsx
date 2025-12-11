@@ -12,7 +12,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { SheetRef } from 'react-modal-sheet';
 
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { alert } from '@/components/common/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
 

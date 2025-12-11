@@ -1,9 +1,10 @@
 import { LocalStorageValue } from '@endfieldmap/tools';
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 
-import { type ThemeNames,themeNames } from '@/components/themes';
+import { getThemedComponents, type ThemeNames, themeNames } from '@/components/themes';
 import { UILocalStorageKey } from '@/const/storage';
 import { DARK_MODE } from '@/const/ui';
+import { ComponentType } from '@/components/themes/types';
 
 class UIManager {
   private mediaQueryList: MediaQueryList | null = null;
@@ -134,6 +135,24 @@ class UIManager {
   @action
   public toggleAdjustPopup() {
     this.adjustPopup.value = !this.adjustPopup.value;
+  }
+  // endregion
+
+  // region: 主题
+  @computed
+  get ThemedComponents() {
+    const components = getThemedComponents(this.theme.value);
+    return {
+      Popup: components.get(ComponentType.POPUP),
+      ZoomController: components.get(ComponentType.ZOOM_CONTROLLER),
+      Menus: components.get(ComponentType.MENUS),
+      ControlPanel: components.get(ComponentType.CONTROL_PANEL),
+      alert: {
+        Alert: components.get(ComponentType.ALERT),
+        AlertFull: components.get(ComponentType.ALERT_FULL),
+        AlertPromptInput: components.get(ComponentType.ALERT_PROMPT_INPUT),
+      },
+    };
   }
   // endregion
 }

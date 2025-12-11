@@ -9,7 +9,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { alert } from '@/components/common/alert/alert_api';
 import { ZmdButton } from '@/components/common/endfield_components/button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { Guide } from '@/components/common/guide';

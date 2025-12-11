@@ -1,18 +1,7 @@
 import { useState } from 'react';
 
+import { type PromptInputProps } from '@/components/common/alert/types';
 import { cn } from '@/utils/style';
-
-export interface PromptInputProps {
-  placeholder?: string;
-  defaultValue?: string;
-  inputType?: string;
-  maxLength?: number;
-  minLength?: number;
-  pattern?: string;
-  inputClassName?: string;
-  onValueChange: (value: string) => void;
-  content?: React.ReactNode;
-}
 
 export const PromptInput = ({
   placeholder,
@@ -62,3 +51,5 @@ export const PromptInput = ({
     </div>
   );
 };
+
+export default PromptInput;

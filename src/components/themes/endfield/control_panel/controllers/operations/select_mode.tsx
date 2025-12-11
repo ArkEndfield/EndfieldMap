@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { alert } from '@/components/common/alert/alert_api';
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';

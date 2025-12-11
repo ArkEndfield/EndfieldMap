@@ -2,7 +2,7 @@ import { HeaderMenuTemplate } from '@themes/endfield/menus/left/_template';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ZmdAlert } from '@/components/common/endfield_components/alert/alert';
+import { ZmdAlert } from '@/components/common/alert/alert';
 import { FeedbackIcon } from '@/components/common/icons';
 import { useCurrentLanguage } from '@/hooks/use_current_language';
 

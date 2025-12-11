@@ -14,7 +14,7 @@ import {
 } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction, toJS } from 'mobx';
 
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/data';
 
 /**

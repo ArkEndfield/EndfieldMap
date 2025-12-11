@@ -1,7 +1,7 @@
 import { StorageKey } from '@endfieldmap/tools';
 import { useTranslation } from 'react-i18next';
 
-import { alert } from '@/components/common/endfield_components/alert/alert_api';
+import { alert } from '@/components/common/alert/alert_api';
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';

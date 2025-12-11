@@ -1,33 +1,17 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { type ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ZmdButton } from '@/components/common/endfield_components/button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
+import { type ZmdAlertFullProps } from '@/components/common/alert/types';
 import { cn } from '@/utils/style';
 
 const ALERT_BANNER_BG_LEFT = '/images/bg/alert/alert_banner_bg_left.png';
 const ALERT_BANNER_BG_RIGHT = '/images/bg/alert/alert_banner_bg_right.png';
 const DECO_COMMON_LOGO_BG = '/images/bg/deco_common_logo_bg.png';
-
-export interface ZmdAlertFullProps {
-  open: boolean;
-  onOpenChange?: (open: boolean) => void;
-  dismissible?: boolean;
-  hideCancel?: boolean;
-  cancelText?: string;
-  confirmText?: string;
-  loading?: boolean;
-  showIcon?: boolean;
-  height?: string;
-  children?: ReactNode;
-  onDismiss?: () => boolean | void | Promise<boolean | void>;
-  onCancel?: () => boolean | void | Promise<boolean | void>;
-  onClose?: () => boolean | void | Promise<boolean | void>;
-  onConfirm?: () => boolean | void | Promise<boolean | void>;
-}
 
 export const ZmdAlertFull = ({
   open,
@@ -242,3 +226,5 @@ export const ZmdAlertFull = ({
     document.body
   );
 };
+
+export default ZmdAlertFull;

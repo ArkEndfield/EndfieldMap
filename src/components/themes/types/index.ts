@@ -1,4 +1,6 @@
-import type { LazyExoticComponent } from 'react';
+import type { FC, LazyExoticComponent } from 'react';
+
+import type { PromptInputProps, ZmdAlertFullProps, ZmdAlertProps } from '@/components/common/alert/types';
 
 export enum ComponentType {
   POPUP = 'Popup',
@@ -6,6 +8,9 @@ export enum ComponentType {
   ELECTRIC_POLE_PRESET_PANEL = 'ElectricPolePresetPanel',
   ZOOM_CONTROLLER = 'ZoonController',
   MENUS = 'Menus',
+  ALERT = 'Alert',
+  ALERT_FULL = 'AlertFull',
+  ALERT_PROMPT_INPUT = 'AlertPromptInput',
 }
 
 export interface ThemedComponentProps {
@@ -13,13 +18,16 @@ export interface ThemedComponentProps {
   [ComponentType.CONTROL_PANEL]: object;
   [ComponentType.MENUS]: object;
   [ComponentType.ZOOM_CONTROLLER]: object;
+  [ComponentType.ALERT]: ZmdAlertProps;
+  [ComponentType.ALERT_FULL]: ZmdAlertFullProps;
+  [ComponentType.ALERT_PROMPT_INPUT]: PromptInputProps;
 }
 
 export type ThemedComponentsMap = Map<
   ComponentType,
-  LazyExoticComponent<React.FC<ThemedComponentProps[keyof ThemedComponentProps]>>
+  LazyExoticComponent<FC<ThemedComponentProps[keyof ThemedComponentProps]>>
 >;
 
 export type ThemedComponent<T extends ComponentType> = T extends keyof ThemedComponentProps
-  ? LazyExoticComponent<React.FC<ThemedComponentProps[T]>>
+  ? LazyExoticComponent<FC<ThemedComponentProps[T]>>
   : never;
