@@ -60,7 +60,7 @@ export const CustomPointButtonMobile = observer(() => {
   };
   return (
     <>
-      <SideButton onClick={() => setOpen(true)} position="right">
+      <SideButton onClick={() => setOpen(true)} position="left" level={1}>
         <CustomPointButtonIcon>
           {open ? t('operation.close_custom_point_manager') : t('operation.custom_point_manager')}
         </CustomPointButtonIcon>

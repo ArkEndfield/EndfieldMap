@@ -139,7 +139,7 @@ export const SelectModeOperation = observer(() => {
   return (
     <>
       {isMobile ? (
-        <SideButton onClick={toggleSelectMode}>
+        <SideButton onClick={toggleSelectMode} position="right">
           <MultiOperationIcon>
             {isSelecting ? t('operation.cancel_operation') : t('operation.multi_operation')}
           </MultiOperationIcon>

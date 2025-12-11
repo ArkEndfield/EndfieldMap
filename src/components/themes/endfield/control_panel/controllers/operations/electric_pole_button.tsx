@@ -65,7 +65,7 @@ export const ElectricPoleButtomMobile = observer(() => {
   };
   return (
     <>
-      <SideButton onClick={() => setOpen(true)} position="right">
+      <SideButton onClick={() => setOpen(true)} position="left" level={0}>
         <ElectricPoleButtonIcon>
           {open ? t('operation.close_electric_pole_manager') : t('operation.electric_pole_manager')}
         </ElectricPoleButtonIcon>
