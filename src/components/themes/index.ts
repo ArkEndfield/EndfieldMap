@@ -1,7 +1,7 @@
 import endfieldTheme from '@themes/endfield';
-import type { ComponentType, ThemedComponent, ThemedComponentsMap } from '@themes/types';
+import type { ComponentType, ThemedComponent, ThemedComponentMap } from '@themes/types';
 
-export const themes = new Map<string, ThemedComponentsMap>();
+export const themes = new Map<string, ThemedComponentMap>();
 
 export const themeNames = {
   ENDFIELD: 'endfield',
@@ -16,7 +16,7 @@ export const getThemedComponents = (themeName: (typeof themeNames)[keyof typeof 
 
   return {
     get<T extends ComponentType>(type: T): ThemedComponent<T> {
-      return componentMap.get(type) as ThemedComponent<T>;
+      return componentMap[type] as ThemedComponent<T>;
     },
   };
 };

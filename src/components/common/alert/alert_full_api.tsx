@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 
-import { ZmdAlertFull, type ZmdAlertFullProps } from '@/components/common/alert/alert_full';
+import { ZmdAlertFull } from '@/components/common/alert/alert_full';
+import type { ZmdAlertFullProps } from '@themes/types/alert';
 
 interface AlertFullInstance {
   destroy: () => void;

@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next';
 
 import { ZmdButton } from '@/components/common/endfield_components/button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
-import { type ZmdAlertProps } from '@/components/common/alert/types';
+import { type ZmdAlertProps } from '@/components/common/alert/alert';
 import { cn } from '@/utils/style';
 
 const ALERT_BG = '/images/bg/alert/alert_bg.png';
 const ALERT_BANNER_BG_LEFT = '/images/bg/alert/alert_banner_bg_left.png';
 const ALERT_BANNER_BG_RIGHT = '/images/bg/alert/alert_banner_bg_right.png';
 
-export const ZmdAlert = ({
+export const ZmdAlert: React.FC<ZmdAlertProps> = ({
   open,
   onOpenChange,
   dismissible = true,
@@ -29,7 +29,7 @@ export const ZmdAlert = ({
   onCancel = () => {},
   onClose = () => {},
   onConfirm = () => {},
-}: ZmdAlertProps) => {
+}) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [backdropVisible, setBackdropVisible] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);

@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 
-import { ComponentType, type ThemedComponentsMap } from '@/components/themes/types';
+import { ComponentType, type ThemedComponentMap } from '@/components/themes/types';
 
 const Popup = lazy(() => import('@themes/endfield/popup'));
 const ZoomController = lazy(() => import('@themes/endfield/zoom_controller'));
@@ -10,14 +10,14 @@ const Alert = lazy(() => import('@themes/endfield/components/alert/alert'));
 const AlertFull = lazy(() => import('@themes/endfield/components/alert/alert_full'));
 const AlertPromptInput = lazy(() => import('@themes/endfield/components/alert/input'));
 
-const endfieldTheme: ThemedComponentsMap = new Map([
-  [ComponentType.POPUP, Popup],
-  [ComponentType.CONTROL_PANEL, ControlPanel],
-  [ComponentType.ZOOM_CONTROLLER, ZoomController],
-  [ComponentType.MENUS, Menus],
-  [ComponentType.ALERT, Alert],
-  [ComponentType.ALERT_FULL, AlertFull],
-  [ComponentType.ALERT_PROMPT_INPUT, AlertPromptInput],
-]);
+const endfieldTheme: ThemedComponentMap = {
+  [ComponentType.POPUP]: Popup,
+  [ComponentType.CONTROL_PANEL]: ControlPanel,
+  [ComponentType.ZOOM_CONTROLLER]: ZoomController,
+  [ComponentType.MENUS]: Menus,
+  [ComponentType.ALERT]: Alert,
+  [ComponentType.ALERT_FULL]: AlertFull,
+  [ComponentType.ALERT_PROMPT_INPUT]: AlertPromptInput,
+};
 
 export default endfieldTheme;
