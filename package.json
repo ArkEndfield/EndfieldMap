@@ -36,8 +36,7 @@
     "swiper": "^12.0.3",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.17",
-    "yet-another-react-lightbox": "^3.25.0",
-    "zustand": "^5.0.8"
+    "yet-another-react-lightbox": "^3.25.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",

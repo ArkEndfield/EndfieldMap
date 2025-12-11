@@ -21,6 +21,8 @@ Sentry.init({
   },
 });
 
-export const sentryReporter = Sentry.createConsolaReporter();
+export const sentryReporter = isDev ? void 0 : Sentry.createConsolaReporter();
 
-logger.addReporter(sentryReporter);
+if (sentryReporter) {
+  logger.addReporter(sentryReporter);
+}

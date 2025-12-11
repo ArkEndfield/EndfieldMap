@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Noto+Sans+SC:wght@100..900&family=Noto+Serif+SC:wght@200..900&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Noto+Sans+SC:wght@100..900&family=Noto+Serif+SC:wght@200..900&family=Outfit:wght@100..900&family=Roboto:wght@300;400;500;700&display=swap');
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -27,7 +27,7 @@ body {
 }
 
 * {
-  cursor: url('/images/cursor/default.cur'), auto;
+  cursor: url('/images/cursor/default.cur'), auto !important;
 }
 
 /* 隐藏滚动条 */

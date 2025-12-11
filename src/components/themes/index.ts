@@ -1,5 +1,5 @@
 import endfieldTheme from '@themes/endfield';
-import type { ComponentType,ThemedComponent, ThemedComponentsMap } from '@themes/types';
+import type { ComponentType, ThemedComponent, ThemedComponentsMap } from '@themes/types';
 
 export const themes = new Map<string, ThemedComponentsMap>();
 

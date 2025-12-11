@@ -1,7 +1,7 @@
 import { LocalStorageValue } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 
-import { themeNames } from '@/components/themes';
+import { themeNames, type ThemeNames } from '@/components/themes';
 import { UILocalStorageKey } from '@/const/storage';
 import { DARK_MODE } from '@/const/ui';
 
@@ -50,7 +50,7 @@ class UIManager {
     initialValue: true,
     storageKey: UILocalStorageKey.SIDEBAR_COLLAPSED,
   });
-  public theme = new LocalStorageValue({
+  public theme = new LocalStorageValue<ThemeNames>({
     initialValue: themeNames.ENDFIELD,
     storageKey: UILocalStorageKey.THEME,
   });
