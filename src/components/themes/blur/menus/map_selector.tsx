@@ -100,9 +100,9 @@ export const MapSelector: React.FC = observer(() => {
             'absolute overflow-hidden top-full mt-2',
             'bg-black/40 rounded-xl shadow-xl shadow-black/20',
             'border border-white/20',
+            'backdrop-blur-[40px] transform-gpu',
             isMobile ? 'w-screen left-1/2 -translate-x-1/2' : 'right-0 w-56'
           )}
-          style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
           animate={{
             opacity: showPopover ? 1 : 0,
             y: showPopover ? 0 : -10,
@@ -159,9 +159,9 @@ export const MapSelector: React.FC = observer(() => {
               'mt-6 px-8 py-4 rounded-2xl',
               'bg-black/60',
               'border border-white/20',
-              'shadow-xl shadow-black/30'
+              'shadow-xl shadow-black/30',
+              'backdrop-blur-[40px] transform-gpu'
             )}
-            style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
             animate={{
               scale: showChangeAnimation ? 1 : 0.9,
               opacity: showChangeAnimation ? 1 : 0,

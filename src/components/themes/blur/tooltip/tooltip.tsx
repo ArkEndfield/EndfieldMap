@@ -241,15 +241,11 @@ const TooltipComponent = <T extends React.ElementType = 'div'>({
               <div
                 className={cn(
                   'px-3 py-2 text-white text-xs rounded-lg',
-                  'bg-black/40 backdrop-blur-2xl',
+                  'bg-black/40 backdrop-blur-[40px] transform-gpu',
                   'border border-white/20',
                   'shadow-lg shadow-black/20',
                   classNames?.content
                 )}
-                style={{
-                  backdropFilter: 'blur(40px)',
-                  WebkitBackdropFilter: 'blur(40px)',
-                }}
               >
                 {tooltip}
               </div>

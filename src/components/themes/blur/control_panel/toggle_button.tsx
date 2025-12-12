@@ -11,16 +11,14 @@ export default function ToggleButton({ open, onToggle }: ToggleButtonProps) {
       className={cn(
         'absolute left-full top-20 z-10',
         'w-8 h-16 rounded-r-2xl',
-        'bg-black/60 backdrop-blur-2xl',
+        'bg-black/60 backdrop-blur-[40px]',
         'border border-l-0 border-white/20',
         'shadow-xl shadow-black/20',
         'flex items-center justify-center',
         'text-white hover:text-white hover:bg-black/70',
         'transition-colors duration-200',
-        'active:scale-95 group',
-        'will-change-transform'
+        'active:scale-95 group'
       )}
-      style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
       onClick={onToggle}
     >
       <svg

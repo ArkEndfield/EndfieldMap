@@ -168,12 +168,11 @@ export const ElectricPoleManagerMobile = forwardRef<SheetRef, ElectricPoleManage
       dragVelocityThreshold={1500}
     >
       <Sheet.Container
-        style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(40px)',
-          WebkitBackdropFilter: 'blur(40px)',
-        }}
-        className={cn('border-t border-white/20', 'shadow-xl shadow-black/20')}
+        className={cn(
+          'bg-black/40 backdrop-blur-[40px] transform-gpu',
+          'border-t border-white/20',
+          'shadow-xl shadow-black/20'
+        )}
       >
         <Sheet.Header className="bg-transparent rounded-t-3xl">
           <div className="flex justify-center py-3">

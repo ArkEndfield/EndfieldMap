@@ -67,39 +67,52 @@ const PCPopup: React.FC = observer(() => {
         !dataService.customPointDataService.isInCustomPointOperateMode && (
           <motion.div
             key="desktop-popup"
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            initial={{ y: 10, scale: 0.95 }}
+            animate={{ y: 0, scale: 1 }}
+            exit={{ y: 10, scale: 0.95 }}
             transition={{ type: 'spring', bounce: 0.25, duration: 0.3 }}
             className="relative z-0"
           >
             <motion.div
               key={activeFeature.id}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ scale: 0.98 }}
+              animate={{ scale: 1 }}
               transition={{ type: 'spring', bounce: 0.25, duration: 0.25 }}
               className="w-auto flex pointer-events-auto relative z-0"
             >
               {/* Pointer arrow - positioned at left-39 like endfield */}
-              <div
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
                 className={cn(
                   'absolute left-39 -translate-x-1/2 top-full -mt-px',
                   'w-0 h-0 border-l-12 border-r-12 border-t-10',
-                  'border-l-transparent border-r-transparent border-t-white/20',
+                  'border-l-transparent border-r-transparent border-t-black/60',
                   'z-1'
                 )}
               />
 
               {/* Main content card */}
-              <div className={cn('w-80 rounded-2xl overflow-hidden relative', 'shadow-xl shadow-black/20')}>
-                {/* Background with blur */}
-                <div
-                  className="absolute inset-0 bg-black/40 border border-white/20 rounded-2xl"
-                  style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
+              <div className={cn('w-80 rounded-2xl overflow-hidden relative')}>
+                {/* Background with blur and shadow - 独立做 opacity 动画 */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 bg-black/40 border border-white/20 rounded-2xl backdrop-blur-[40px] shadow-xl shadow-black/20"
                 />
 
                 {/* Content */}
-                <div className="relative z-1">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative z-1"
+                >
                   {/* Close button */}
                   <button
                     className={cn(
@@ -121,7 +134,7 @@ const PCPopup: React.FC = observer(() => {
                       <LeftContent />
                     </ScrollArea>
                   </div>
-                </div>
+                </motion.div>
               </div>
 
               {/* Toggle button - attached to left card */}
@@ -129,15 +142,21 @@ const PCPopup: React.FC = observer(() => {
                 <div
                   className={cn(
                     'w-8 h-16 rounded-r-lg overflow-hidden shrink-0',
-                    'shadow-xl shadow-black/20',
                     'relative self-start mt-4'
                   )}
                 >
-                  <div
-                    className="absolute inset-0 bg-black/40 border border-l-0 border-white/20 rounded-r-lg"
-                    style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 bg-black/40 border border-l-0 border-white/20 rounded-r-lg backdrop-blur-[40px] shadow-xl shadow-black/20"
                   />
-                  <button
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
                     className={cn(
                       'relative z-1 w-full h-full',
                       'flex items-center justify-center',
@@ -150,7 +169,7 @@ const PCPopup: React.FC = observer(() => {
                     <DoubleChevronRight
                       className={cn('w-4 h-4 transition-transform duration-200', isExpand && 'rotate-180')}
                     />
-                  </button>
+                  </motion.button>
                 </div>
               )}
 
@@ -160,25 +179,33 @@ const PCPopup: React.FC = observer(() => {
                   initial={false}
                   animate={{
                     width: isExpand ? 256 : 0,
-                    opacity: isExpand ? 1 : 0,
                   }}
                   transition={{ type: 'spring', bounce: 0.25, duration: 0.3 }}
-                  className={cn('rounded-2xl overflow-hidden relative', 'shadow-xl shadow-black/20')}
+                  className={cn('rounded-2xl overflow-hidden relative')}
                 >
-                  {/* Background with blur */}
-                  <div
-                    className="absolute inset-0 bg-black/40 border border-white/20 rounded-2xl"
-                    style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
+                  {/* Background with blur and shadow */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isExpand ? 1 : 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 bg-black/40 border border-white/20 rounded-2xl backdrop-blur-[40px] shadow-xl shadow-black/20"
                   />
 
                   {/* Content */}
-                  <div className="relative z-1">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isExpand ? 1 : 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative z-1"
+                  >
                     <div className="p-4 w-64 text-white">
                       <ScrollArea className="max-h-60">
                         <RightContent />
                       </ScrollArea>
                     </div>
-                  </div>
+                  </motion.div>
                 </motion.div>
               )}
             </motion.div>

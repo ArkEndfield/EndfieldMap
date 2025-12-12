@@ -93,7 +93,12 @@ const MobilePopup: React.FC = observer(() => {
   return (
     <Sheet isOpen={open} onClose={handleClose} snapPoints={snapPoints} initialSnap={5}>
       <Sheet.Container
-        className={cn('bg-black/40 backdrop-blur-2xl', 'border-t border-white/20', 'shadow-xl shadow-black/20')}
+        className={cn(
+          'bg-black/40 backdrop-blur-2xl',
+          'border-t border-white/20',
+          'shadow-xl shadow-black/20',
+          'transform-gpu'
+        )}
       >
         <Sheet.Header className="bg-transparent rounded-t-3xl">
           <div className="flex justify-center py-3">
