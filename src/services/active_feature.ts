@@ -15,8 +15,10 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter, dat
 
     // 电线杆特殊处理：在操作模式下进行连接操作
     if (dataService.electricPoleDataService.isInElectricOperateMode) {
-      if (instance.entityInfo.category === ElectricPoleKey)
-        dataService.electricPoleDataService.connectElectricPole(instance as ElectricPoleFeature);
+      if (dataService.electricPoleDataService.isConnecting || dataService.electricPoleDataService.isCreating) {
+        if (instance.entityInfo.category === ElectricPoleKey)
+          dataService.electricPoleDataService.connectElectricPole(instance as ElectricPoleFeature);
+      }
       return;
     }
 
