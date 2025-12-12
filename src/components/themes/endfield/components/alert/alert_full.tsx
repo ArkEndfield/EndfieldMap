@@ -1,3 +1,4 @@
+import { type ZmdAlertFullProps } from '@themes/types/alert';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -6,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { ZmdButton } from '@/components/common/endfield_components/button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
-import { type ZmdAlertFullProps } from '@themes/types/alert';
 import { cn } from '@/utils/style';
 
 const ALERT_BANNER_BG_LEFT = '/images/bg/alert/alert_banner_bg_left.png';

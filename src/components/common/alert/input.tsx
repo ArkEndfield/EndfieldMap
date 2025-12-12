@@ -1,8 +1,8 @@
-import { Suspense } from 'react';
+import { type PromptInputProps } from '@themes/types/alert';
 import { observer } from 'mobx-react-lite';
+import { Suspense } from 'react';
 
 import uiManager from '@/services/ui_manager';
-import { type PromptInputProps } from '@themes/types/alert';
 
 const AlertPromptInputRenderer = observer((props: PromptInputProps) => {
   const PromptInputComponent = uiManager.ThemedComponents.alert.AlertPromptInput;

@@ -1,6 +1,6 @@
+import type { PromptInputProps } from '@themes/types/alert';
 import { useState } from 'react';
 
-import type { PromptInputProps } from '@themes/types/alert';
 import { cn } from '@/utils/style';
 
 export const PromptInput = ({

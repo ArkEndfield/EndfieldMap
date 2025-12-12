@@ -1,5 +1,5 @@
-import { Tooltip } from '@/components/common/endfield_components/tooltip';
 import { QuestionIcon } from '@/components/common/icons';
+import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
 

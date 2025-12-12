@@ -1,8 +1,8 @@
+import type { ZmdAlertProps } from '@themes/types/alert';
 import { type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 
 import { ZmdAlert } from '@/components/common/alert/alert';
-import type { ZmdAlertProps } from '@themes/types/alert';
 import { PromptInput } from '@/components/common/alert/input';
 
 interface AlertInstance {

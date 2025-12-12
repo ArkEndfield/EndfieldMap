@@ -1,4 +1,4 @@
-import { Tooltip } from '@/components/common/endfield_components/tooltip';
+import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 
 export interface HeaderMenuProps {

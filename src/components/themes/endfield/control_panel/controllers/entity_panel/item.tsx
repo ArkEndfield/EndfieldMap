@@ -5,7 +5,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Counter from '@/components/common/count_up';
-import { Tooltip } from '@/components/common/endfield_components/tooltip';
+import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';

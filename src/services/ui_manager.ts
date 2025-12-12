@@ -2,9 +2,9 @@ import { LocalStorageValue } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 
 import { getThemedComponents, type ThemeNames, themeNames } from '@/components/themes';
+import { ComponentType } from '@/components/themes/types';
 import { UILocalStorageKey } from '@/const/storage';
 import { DARK_MODE } from '@/const/ui';
-import { ComponentType } from '@/components/themes/types';
 
 class UIManager {
   private mediaQueryList: MediaQueryList | null = null;
@@ -153,6 +153,9 @@ class UIManager {
         Alert: components.get(ComponentType.ALERT),
         AlertFull: components.get(ComponentType.ALERT_FULL),
         AlertPromptInput: components.get(ComponentType.ALERT_PROMPT_INPUT),
+      },
+      tooltip: {
+        Tooltip: components.get(ComponentType.TOOLTIP),
       },
     };
   }

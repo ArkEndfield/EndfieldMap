@@ -1,8 +1,8 @@
-import { Suspense } from 'react';
+import { type ZmdAlertFullProps } from '@themes/types/alert';
 import { observer } from 'mobx-react-lite';
+import { Suspense } from 'react';
 
 import uiManager from '@/services/ui_manager';
-import { type ZmdAlertFullProps } from '@themes/types/alert';
 
 const AlertFullRenderer = observer((props: ZmdAlertFullProps) => {
   const AlertFullComponent = uiManager.ThemedComponents.alert.AlertFull;

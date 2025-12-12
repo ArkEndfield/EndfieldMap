@@ -9,6 +9,7 @@ const ControlPanel = lazy(() => import('@themes/endfield/control_panel'));
 const Alert = lazy(() => import('@themes/endfield/components/alert/alert'));
 const AlertFull = lazy(() => import('@themes/endfield/components/alert/alert_full'));
 const AlertPromptInput = lazy(() => import('@themes/endfield/components/alert/input'));
+const Tooltip = lazy(() => import('@themes/endfield/tooltip/tooltip'));
 
 const endfieldTheme: ThemedComponentMap = {
   [ComponentType.POPUP]: Popup,
@@ -18,6 +19,7 @@ const endfieldTheme: ThemedComponentMap = {
   [ComponentType.ALERT]: Alert,
   [ComponentType.ALERT_FULL]: AlertFull,
   [ComponentType.ALERT_PROMPT_INPUT]: AlertPromptInput,
+  [ComponentType.TOOLTIP]: Tooltip,
 };
 
 export default endfieldTheme;
