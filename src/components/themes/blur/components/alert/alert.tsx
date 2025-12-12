@@ -14,7 +14,7 @@ export const BlurAlert: React.FC<ZmdAlertProps> = ({
   cancelText,
   confirmText,
   loading = false,
-  width = '24rem',
+  width = '30em',
   height = 'auto',
   children,
   classNames,
@@ -127,20 +127,20 @@ export const BlurAlert: React.FC<ZmdAlertProps> = ({
         await alertAnimate(
           alertRef.current,
           {
-            scale: [0.9, 1],
+            scale: [1.05, 1],
             opacity: [0, 1],
           },
-          { duration: 0.2, type: 'spring', bounce: 0.25 }
+          { duration: 0.2, ease: [0.32, 0.72, 0, 1] }
         );
       } else if (backdropVisible) {
         if (alertRef.current) {
           await alertAnimate(
             alertRef.current,
             {
-              scale: 0.95,
+              scale: 1.05,
               opacity: 0,
             },
-            { duration: 0.15 }
+            { duration: 0.15, ease: [0.32, 0.72, 0, 1] }
           );
         }
 
@@ -167,7 +167,7 @@ export const BlurAlert: React.FC<ZmdAlertProps> = ({
       className={cn(
         'fixed top-0 left-0 w-screen h-screen inset-0 z-20',
         'flex items-center justify-center',
-        'bg-black/40 backdrop-blur-sm',
+        'bg-black/30',
         'max-w-screen max-h-screen backdrop:bg-transparent',
         classNames?.backdrop && typeof classNames.backdrop === 'function'
           ? classNames.backdrop(open)
@@ -182,19 +182,19 @@ export const BlurAlert: React.FC<ZmdAlertProps> = ({
       <motion.div
         ref={alertRef}
         className={cn(
-          'min-h-40 max-h-[calc(100vh-4rem)] max-w-[calc(100vw-2rem)]',
+          'max-h-[calc(100vh-4rem)] max-w-[calc(100vw-2rem)]',
           'rounded-2xl overflow-hidden',
-          'bg-white/90 backdrop-blur-2xl',
+          'bg-black/50 backdrop-blur-[40px]',
           'border border-white/20',
-          'shadow-2xl shadow-black/20',
-          'flex flex-col p-6',
+          'shadow-xl shadow-black/20',
+          'flex flex-col',
           'md:max-w-[calc(100vw-1rem)]',
           classNames?.alert && typeof classNames.alert === 'function' ? classNames.alert(open) : classNames?.alert
         )}
         style={{
           width,
           height,
-          transform: 'scale(0.9)',
+          transform: 'scale(1.05)',
           opacity: 0,
         }}
         initial={false}
@@ -202,49 +202,55 @@ export const BlurAlert: React.FC<ZmdAlertProps> = ({
         {/* Content */}
         <div
           className={cn(
-            'flex-1 flex flex-col min-h-0',
+            'flex-1 flex flex-col min-h-0 px-5 pt-5 pb-4',
             classNames?.content && typeof classNames.content === 'function'
               ? classNames.content(open)
               : classNames?.content
           )}
         >
-          <div className="flex-1 text-gray-800 overflow-auto">{children}</div>
+          <div className="flex-1 text-white overflow-auto text-center text-[15px] leading-[22px]">{children}</div>
         </div>
 
-        {/* Actions */}
-        <div className={cn('flex gap-3 pt-6', hideCancel ? 'justify-center' : 'justify-end')}>
+        {/* Divider */}
+        <div className="h-px bg-white/20" />
+
+        {/* Actions - Apple style buttons */}
+        <div className={cn('flex', hideCancel ? 'flex-col' : 'flex-row')}>
           {!hideCancel && (
-            <button
-              className={cn(
-                'px-6 py-2.5 rounded-xl',
-                'bg-white/50 hover:bg-white/70',
-                'text-gray-700 font-medium text-sm',
-                'transition-all duration-200',
-                'active:scale-95',
-                'disabled:opacity-50 disabled:cursor-not-allowed'
-              )}
-              disabled={isProcessing}
-              onClick={handleCancel}
-            >
-              {cancelText ?? t('cancel')}
-            </button>
+            <>
+              <button
+                className={cn(
+                  'flex-1 py-3 px-2',
+                  'text-base font-normal',
+                  'text-white/90',
+                  'transition-colors duration-150',
+                  'active:bg-white/10',
+                  'disabled:opacity-40 disabled:cursor-not-allowed'
+                )}
+                disabled={isProcessing}
+                onClick={handleCancel}
+              >
+                {cancelText ?? t('cancel')}
+              </button>
+              {/* Vertical divider between buttons */}
+              <div className="w-px bg-white/20" />
+            </>
           )}
           <button
             className={cn(
-              'px-6 py-2.5 rounded-xl',
-              'bg-blue-500 hover:bg-blue-600',
-              'text-white font-medium text-sm',
-              'transition-all duration-200',
-              'active:scale-95',
-              'disabled:opacity-50 disabled:cursor-not-allowed',
-              'shadow-lg shadow-blue-500/30'
+              'flex-1 py-3 px-2',
+              'text-base font-semibold',
+              'text-white',
+              'transition-colors duration-150',
+              'active:bg-white/10',
+              'disabled:opacity-40 disabled:cursor-not-allowed'
             )}
             disabled={isProcessing || loading}
             onClick={handleConfirm}
             data-alert-confirm
           >
             {isProcessing || loading ? (
-              <span className="flex items-center gap-2">
+              <span className="flex items-center justify-center gap-2">
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"
