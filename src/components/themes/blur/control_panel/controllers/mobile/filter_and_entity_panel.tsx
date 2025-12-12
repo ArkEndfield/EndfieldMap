@@ -52,7 +52,7 @@ export const FilterControl = () => {
       <Sheet isOpen={open} onClose={onClose}>
         <Sheet.Container
           className={cn(
-            'bg-black/40 backdrop-blur-[40px] transform-gpu',
+            'bg-black/60! backdrop-blur-2xl transform-gpu',
             'border-t border-white/20',
             'shadow-xl shadow-black/20'
           )}

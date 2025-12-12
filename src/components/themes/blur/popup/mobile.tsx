@@ -94,7 +94,7 @@ const MobilePopup: React.FC = observer(() => {
     <Sheet isOpen={open} onClose={handleClose} snapPoints={snapPoints} initialSnap={5}>
       <Sheet.Container
         className={cn(
-          'bg-black/40 backdrop-blur-2xl',
+          'bg-black/60! backdrop-blur-2xl',
           'border-t border-white/20',
           'shadow-xl shadow-black/20',
           'transform-gpu'
