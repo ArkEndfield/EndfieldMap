@@ -21,8 +21,9 @@ const MultiOperationIcon = ({ children }: { children: React.ReactNode }) => (
       fontSize="16"
       fontWeight="900"
       letterSpacing="0em"
+      textAnchor="middle"
     >
-      <tspan x="6" y="95">
+      <tspan x="50" y="90">
         {children}
       </tspan>
     </text>
