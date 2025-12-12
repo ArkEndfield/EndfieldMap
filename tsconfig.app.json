@@ -36,5 +36,5 @@
       "@themes/*": ["./src/components/themes/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "./env.d.ts"]
 }

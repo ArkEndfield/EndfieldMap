@@ -23,13 +23,16 @@ export class JSONLoader {
   }
 
   /**
-   * 给URL添加时间戳参数
+   * 给URL添加版本号或时间戳参数
    * @param url 原始URL
-   * @returns 添加了时间戳参数的URL
+   * @returns 添加了参数的URL
    */
-  private addTimestampToURL(url: string): string {
-    const timestamp = new Date().getTime();
+  private addVersionToURL(url: string): string {
     const separator = url.includes('?') ? '&' : '?';
+    if (typeof __COMMIT_HASH__ !== 'undefined' && __COMMIT_HASH__) {
+      return `${url}${separator}v=${__COMMIT_HASH__}`;
+    }
+    const timestamp = new Date().getTime();
     return `${url}${separator}t=${timestamp}`;
   }
 
@@ -53,9 +56,9 @@ export class JSONLoader {
 
     while (retries < maxRetries) {
       try {
-        // 使用添加了时间戳的URL进行请求
-        const timestampedURL = this.addTimestampToURL(url);
-        const response = await fetch(timestampedURL);
+        // 使用添加了版本号/时间戳的URL进行请求
+        const versionedURL = this.addVersionToURL(url);
+        const response = await fetch(versionedURL);
         if (!response.ok) {
           throw new JSONLoaderError(`HTTP error! status: ${response.status}`, url);
         }

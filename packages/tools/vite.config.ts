@@ -3,6 +3,9 @@ import dts from 'unplugin-dts/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  define: {
+    __COMMIT_HASH__: JSON.stringify(process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || ''),
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
