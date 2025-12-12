@@ -3,23 +3,17 @@ import * as Sentry from '@sentry/react';
 
 import { isDev, sentryDsn } from '@/services/env';
 
-Sentry.init({
-  dsn: sentryDsn,
-  // Setting this option to true will send default PII data to Sentry.
-  // For example, automatic IP address collection on events
-  // sendDefaultPii: true,
-  enableLogs: true,
-  beforeSendLog: (log) => {
-    if (isDev) {
-      return null;
-    }
-    // if (log.level === "info") {
-    //     Filter out all info logs
-    //     return null;
-    // }
-    return log;
-  },
-});
+if (!isDev) {
+  Sentry.init({
+    dsn: sentryDsn,
+    enableLogs: true,
+    sendDefaultPii: true,
+    integrations: [Sentry.replayIntegration()],
+    // Session Replay
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+  });
+}
 
 export const sentryReporter = isDev ? void 0 : Sentry.createConsolaReporter();
 
