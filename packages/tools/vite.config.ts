@@ -5,6 +5,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   define: {
     __COMMIT_HASH__: JSON.stringify(process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || ''),
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },
   build: {
     lib: {

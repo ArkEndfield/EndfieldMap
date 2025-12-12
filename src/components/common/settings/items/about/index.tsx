@@ -5,9 +5,9 @@ import { CommunityCard } from '@/components/common/settings/items/about/communit
 import { ContributorCard } from '@/components/common/settings/items/about/contributor';
 import { Recruit } from '@/components/common/settings/items/about/recruit';
 import { AboutTitle } from '@/components/common/settings/items/about/title';
+import { Version } from '@/components/common/settings/items/about/version';
 import ShuffleText from '@/components/common/shuffle_text';
 import { contributors } from '@/const/contributor';
-import { isDev } from '@/services/env';
 
 export const AboutPage = () => {
   const { t } = useTranslation('settings');
@@ -37,9 +37,7 @@ export const AboutPage = () => {
             </button>
           </a>
         </div>
-        <div className="text-xs text-[#cbcbcb] text-center mt-6 mb-6 font-[Outfit]">
-          {isDev ? 'Dev Mode' : (__COMMIT_HASH__ ?? 'Unknown')}
-        </div>
+        <Version />
         <AboutTitle className="mb-4">{t('about.community')}</AboutTitle>
         <div className="flex flex-col gap-2">
           <CommunityCard
