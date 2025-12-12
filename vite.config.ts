@@ -15,6 +15,9 @@ export default defineConfig(({ command, mode }) => {
   return {
     mode,
     command,
+    define: {
+      __COMMIT_HASH__: JSON.stringify(process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || ''),
+    },
     appType: 'mpa',
     plugins: [
       react({
