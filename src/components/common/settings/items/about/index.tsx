@@ -38,7 +38,7 @@ export const AboutPage = () => {
           </a>
         </div>
         <div className="text-xs text-[#cbcbcb] text-center mt-6 mb-6 font-[Outfit]">
-          {isDev ? 'Dev Mode' : __COMMIT_HASH__}
+          {isDev ? 'Dev Mode' : (__COMMIT_HASH__ ?? 'Unknown')}
         </div>
         <AboutTitle className="mb-4">{t('about.community')}</AboutTitle>
         <div className="flex flex-col gap-2">
