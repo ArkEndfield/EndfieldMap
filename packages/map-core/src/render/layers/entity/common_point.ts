@@ -1,4 +1,5 @@
-import { MapIndex, MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
+import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import {
   DEFAULT_FILL_COLOR,
   DEFAULT_FILL_COLOR_TRANSPARENT_50,
@@ -64,8 +65,6 @@ export class CommonPointEntityLayer extends SingleLayerBase {
   @observable accessor infoData: EntityInfoData;
   /** 是否可见 */
   @observable accessor visible: boolean = false;
-  /** marked feature 过滤模式 */
-  @observable accessor markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
 
   /** 样式缓存 */
   private styleCache: Map<string, Style[]> = new Map();
@@ -175,12 +174,15 @@ export class CommonPointEntityLayer extends SingleLayerBase {
    */
   @action
   public setMarkedFilterMode(mode: MarkedFeatureFilterMode) {
-    if (this.markedFilterMode === mode) {
-      return;
-    }
-    this.markedFilterMode = mode;
-    // 通知聚合源重新计算，以便样式函数按新过滤模式重绘
-    this.entity.clusterSource.changed();
+    this.entity.setMarkedFilterMode(mode);
+  }
+
+  /**
+   * 获取当前 marked feature 过滤模式
+   */
+  @computed
+  get markedFilterMode(): MarkedFeatureFilterMode {
+    return this.entity.markedFilterMode;
   }
 
   /**
