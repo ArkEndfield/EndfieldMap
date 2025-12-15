@@ -34,6 +34,13 @@ export class SwiperDataService {
         },
         {
           cid: 2,
+          cover: 'https://i0.hdslb.com/bfs/archive/c68efd867aad56e55680e6c338485b74943ab3a2.jpg',
+          link: 'https://www.lieyuan.top/Endaxis/',
+          title: 'Endaxis - 《明日方舟：终末地》排轴工具',
+          type: '1',
+        },
+        {
+          cid: 3,
           cover: 'https://i0.hdslb.com/bfs/archive/bc5adc7f91411ca17231ad00d980d932282f0c67.jpg',
           link: 'https://www.bilibili.com/video/BV1knSGBcEWM',
           title: '【明日方舟:终末地】带你了解终末地三测的养成与付费',
