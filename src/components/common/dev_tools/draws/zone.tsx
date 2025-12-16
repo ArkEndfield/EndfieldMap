@@ -3,8 +3,9 @@ import { xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
+import { ColorPicker } from '@/components/common/dev_tools/draws/components/color_picker';
 import { DevToolsCoordType, useCoordType } from '@/components/common/dev_tools/draws/hooks/use_coord_type';
-import { getDevLayer } from '@/components/common/dev_tools/draws/utils';
+import { useDrawHistory } from '@/components/common/dev_tools/draws/hooks/use_draw_history';
 import { useAdapter } from '@/hooks/use_adapter';
 
 export const ZoneDraw = observer(() => {
@@ -13,6 +14,7 @@ export const ZoneDraw = observer(() => {
   const currentMap = dataService.mapStateDataService.currentMap.value;
 
   const { coordType, CoordTypeSelector } = useCoordType();
+  const { addFeature } = useDrawHistory();
   const [coordInput, setCoordInput] = useState('');
   const [params, setParams] = useState({
     strokeColor: '#3388ff',
@@ -71,8 +73,7 @@ export const ZoneDraw = observer(() => {
 
     feature.setStyle(style);
 
-    const layer = getDevLayer(map);
-    layer.getSource()?.addFeature(feature);
+    addFeature(feature);
 
     setCoordInput('');
   };
@@ -99,43 +100,25 @@ export const ZoneDraw = observer(() => {
       </div>
 
       <div className="space-y-2 border-t border-white/10 pt-2">
-        <div className="flex gap-2">
-          <div className="flex-1 space-y-1">
-            <label className="text-gray-400">描边颜色</label>
-            <input
-              type="color"
-              className="w-full h-6 bg-transparent"
-              value={params.strokeColor}
-              onChange={(e) => setParams({ ...params, strokeColor: e.target.value })}
-            />
-          </div>
-          <div className="flex-1 space-y-1">
-            <label className="text-gray-400">描边尺寸</label>
-            <input
-              type="number"
-              className="w-full bg-black/40 border border-white/20 rounded px-2 py-1 outline-none"
-              value={params.strokeWidth}
-              onChange={(e) => setParams({ ...params, strokeWidth: Number(e.target.value) })}
-            />
-          </div>
-        </div>
+        <ColorPicker
+          label="描边颜色"
+          value={params.strokeColor}
+          onChange={(color) => setParams({ ...params, strokeColor: color })}
+        />
         <div className="space-y-1">
-          <label className="text-gray-400">填充色</label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              className="flex-1 bg-black/40 border border-white/20 rounded px-2 py-1 outline-none font-mono"
-              value={params.fillColor}
-              onChange={(e) => setParams({ ...params, fillColor: e.target.value })}
-            />
-            <input
-              type="color"
-              className="w-8 h-4 bg-transparent"
-              value={params.fillColor.startsWith('#') ? params.fillColor : '#3388ff'}
-              onChange={(e) => setParams({ ...params, fillColor: e.target.value })}
-            />
-          </div>
+          <label className="text-gray-400">描边宽度</label>
+          <input
+            type="number"
+            className="w-full bg-black/40 border border-white/20 rounded px-2 py-1 outline-none"
+            value={params.strokeWidth}
+            onChange={(e) => setParams({ ...params, strokeWidth: Number(e.target.value) })}
+          />
         </div>
+        <ColorPicker
+          label="填充颜色"
+          value={params.fillColor}
+          onChange={(color) => setParams({ ...params, fillColor: color })}
+        />
       </div>
 
       <button

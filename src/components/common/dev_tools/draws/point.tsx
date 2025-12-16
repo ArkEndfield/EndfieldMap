@@ -3,8 +3,9 @@ import { xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
+import { ColorPicker } from '@/components/common/dev_tools/draws/components/color_picker';
 import { DevToolsCoordType, useCoordType } from '@/components/common/dev_tools/draws/hooks/use_coord_type';
-import { getDevLayer } from '@/components/common/dev_tools/draws/utils';
+import { useDrawHistory } from '@/components/common/dev_tools/draws/hooks/use_draw_history';
 import { useAdapter } from '@/hooks/use_adapter';
 
 export const PointDraw = observer(() => {
@@ -13,6 +14,7 @@ export const PointDraw = observer(() => {
   const currentMap = dataService.mapStateDataService.currentMap.value;
 
   const { coordType, CoordTypeSelector } = useCoordType();
+  const { addFeature } = useDrawHistory();
   const [coords, setCoords] = useState({ x: 0, y: 0, z: 0 });
   const [config, setConfig] = useState({ size: 5, color: '#ff0000' });
 
@@ -40,8 +42,7 @@ export const PointDraw = observer(() => {
       })
     );
 
-    const layer = getDevLayer(map);
-    layer.getSource()?.addFeature(feature);
+    addFeature(feature);
 
     setCoords({ x: 0, y: 0, z: 0 });
   };
@@ -84,8 +85,8 @@ export const PointDraw = observer(() => {
         </div>
       </div>
 
-      <div className="flex gap-2">
-        <div className="flex-1">
+      <div className="space-y-2">
+        <div>
           <label className="block text-gray-400 mb-1">尺寸</label>
           <input
             type="number"
@@ -94,17 +95,7 @@ export const PointDraw = observer(() => {
             onChange={(e) => setConfig({ ...config, size: Number(e.target.value) })}
           />
         </div>
-        <div className="flex-1">
-          <label className="block text-gray-400 mb-1">颜色</label>
-          <div className="flex gap-2">
-            <input
-              type="color"
-              className="h-7 rounded bg-transparent w-full"
-              value={config.color}
-              onChange={(e) => setConfig({ ...config, color: e.target.value })}
-            />
-          </div>
-        </div>
+        <ColorPicker label="颜色" value={config.color} onChange={(color) => setConfig({ ...config, color })} />
       </div>
 
       <button
