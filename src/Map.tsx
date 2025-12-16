@@ -1,6 +1,6 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import { Suspense, useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
@@ -9,8 +9,11 @@ import ZmdSwiper from '@/components/common/zmd_swiper';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { DataService } from '@/services/data';
+import { isDev } from '@/services/env';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
+
+const DevTools = isDev ? lazy(() => import('@/components/common/dev_tools')) : null;
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
@@ -52,6 +55,9 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
       <Suspense>
         <ThemedComponents.map.ControlPanel />
       </Suspense>
+
+      {/* DevTools */}
+      {isDev && <Suspense>{DevTools && <DevTools />}</Suspense>}
 
       {/* 设置页面 */}
       <SettingsPage />

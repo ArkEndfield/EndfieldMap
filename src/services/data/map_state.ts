@@ -13,6 +13,12 @@ import { DEBOUNCE_INTERVAL } from '@/const/data';
 import i18n from '@/i18n';
 import { getLanguage } from '@/utils/language';
 
+export interface DevToolsState {
+  expanded: boolean;
+  position: { right: number; top: number };
+  showCursorPosition?: boolean;
+}
+
 import { loadingManager } from '../loading';
 
 export class MapStateDataService {
@@ -29,6 +35,7 @@ export class MapStateDataService {
   public displayEletricPole!: LocalStorageValue<boolean>;
   public displayCustomPoint!: LocalStorageValue<boolean>;
   public wasdMoveSpeed!: LocalStorageValue<number>;
+  public devToolsState!: LocalStorageValue<DevToolsState>;
 
   constructor(adapter: EndfieldMapAdapter) {
     this.adapter = adapter;
@@ -63,6 +70,15 @@ export class MapStateDataService {
       onValueChange: (value) => {
         this.adapter.KeyboardMoveController?.setSpeed(value);
       },
+    });
+
+    this.devToolsState = new LocalStorageValue<DevToolsState>({
+      initialValue: {
+        expanded: true,
+        position: { right: 20, top: 20 },
+        showCursorPosition: false,
+      },
+      storageKey: LocalStorageKey.DEV_TOOLS_STATE,
     });
 
     this.enableCluster = new LocalStorageValue<boolean>({

@@ -59,6 +59,8 @@ export enum LocalStorageKey {
 
   // WASD_MOVE_SPEED 移动速度
   WASD_MOVE_SPEED = 'wasd_move_speed',
+  // DevTools 状态
+  DEV_TOOLS_STATE = 'dev_tools_state',
 }
 
 /** 加载状态枚举 */
