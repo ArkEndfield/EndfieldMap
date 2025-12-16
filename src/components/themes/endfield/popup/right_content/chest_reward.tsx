@@ -11,7 +11,7 @@ import { hasChestReward, isDealedRewardItemWithCount } from '@/utils/reward';
 export const ChestReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<DealedRewardItem[]>([]);
   const showRewards = hasChestReward(entity);
-  const { t } = useTranslation(['popup', 'item']);
+  const { t } = useTranslation(['popup', 'lang']);
   const { dataService } = useAdapter();
 
   const getRewadData = useCallback(async () => {
@@ -42,9 +42,9 @@ export const ChestReward = ({ entity }: { entity: EntityData }) => {
         {rewards.map((rwd) => (
           <Item
             key={rwd.id}
-            icon={<img src={rwd.icon} alt={t(`item:${rwd.id}.name`)} className="w-full h-full object-contain" />}
+            icon={<img src={rwd.icon} alt={t(`lang:${rwd.name}`)} className="w-full h-full object-contain" />}
             count={isDealedRewardItemWithCount(rwd) ? rwd.count : undefined}
-            name={t(`item:${rwd.id}.name`)}
+            name={t(`lang:${rwd.name}`)}
           ></Item>
         ))}
       </div>

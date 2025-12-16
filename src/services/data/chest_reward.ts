@@ -62,22 +62,24 @@ export class ChestRewardDataService {
 
     if (isRewardWithCountType(rewardItem)) {
       const promises = rewardItem.itemBundles.map(async (itemBundle) => {
-        const icon = await this.itemDataService.getItemIcon(itemBundle.id);
+        const item = await this.itemDataService.getItemWithIcon(itemBundle.id);
         return {
           type: 'withCount' as const,
           id: itemBundle.id,
-          icon: icon || '',
+          name: item.name,
+          icon: item.iconId || '',
           count: itemBundle.count,
         } satisfies DealedRewardItemWithCount;
       });
       return Promise.all(promises);
     } else {
       const promises = rewardItem.itemIds.map(async (id) => {
-        const icon = await this.itemDataService.getItemIcon(id);
+        const item = await this.itemDataService.getItemWithIcon(id);
         return {
           type: 'withoutCount' as const,
           id,
-          icon: icon || '',
+          name: item.name,
+          icon: item.iconId || '',
         } satisfies DealedRewardItemWithoutCount;
       });
       return Promise.all(promises);

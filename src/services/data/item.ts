@@ -31,7 +31,7 @@ export class ItemDataService {
 
     this.loadingPromise = (async () => {
       const assetPath = getAssetUrls();
-      const itemData = await this.jsonLoader.loadJSON<Record<string, ItemData>>(`${assetPath.itemData}/item_data.json`);
+      const itemData = await this.jsonLoader.loadJSON<Record<string, ItemData>>(`${assetPath.itemData}/item_table.json`);
       this.storage.permanentSet(StorageKey.ITEM_DATA, itemData);
       this.inited = true;
       this.loadingPromise = null;
@@ -46,13 +46,13 @@ export class ItemDataService {
     return itemData[id];
   }
 
-  public async getItemIcon(item_id: string) {
+  public async getItemWithIcon(item_id: string) {
     const assetPath = getAssetUrls();
     const itemData = await this.getItemDataById(item_id);
     if (itemData?.iconId) {
       const name = itemData.iconId;
-      if (name) return `${assetPath.itemImage}/${name}.png`;
+      if (name) itemData.iconId = `${assetPath.itemImage}/${name}.png` ;
     }
-    return null;
+    return itemData
   }
 }

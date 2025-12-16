@@ -1,6 +1,8 @@
 import type Resources from "@eftypes/resources";
 
 type RewardId = keyof Resources['item'];
+type ItemId = keyof Resources['item'];
+
 export interface RewardItemWithCountItem {
   id: RewardId;
   count: number;
@@ -19,6 +21,7 @@ export type RewardItem = RewardItemWithCount | RewardItemWitoutCount;
 export interface BaseDealedRewardItem {
   type: 'withCount' | 'withoutCount';
   id: RewardId;
+  name: ItemId;
   icon: string;
 }
 

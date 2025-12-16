@@ -50,8 +50,8 @@ const Header = ({ name, pic }: { name: string; pic: string }) => (
 );
 
 export const LeftContent = observer(({ className }: { className?: string }) => {
-  const { adapter } = useAdapter();
-  const { t } = useTranslation(['popup', 'common', 'entity_info']);
+  const { adapter, dataService } = useAdapter();
+  const { t } = useTranslation(['popup', 'common', 'lang']);
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityData = activeFeature?.data;
 
@@ -63,7 +63,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
     } else if (isCustomPoint) {
       return (activeFeature as CustomPointFeature).name;
     }
-    return t(`entity_info:${entityData?.entityInfo.entityInfo.point}`, {
+    return t(`lang:${dataService.langHashDataService.getHash(entityData?.entityInfo.entityInfo.point)}`, {
       defaultValue: entityData?.entityInfo.entityInfo.point || '',
     });
   }, [entityData, isElectricPole, isCustomPoint]);

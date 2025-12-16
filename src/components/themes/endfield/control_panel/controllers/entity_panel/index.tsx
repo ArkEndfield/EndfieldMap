@@ -25,8 +25,8 @@ interface CategoryInfo {
  * 显示当前地图的所有实体，支持按分类显示/隐藏
  */
 const EntityPanel = observer(() => {
-  const { t } = useTranslation(['sidebar', 'entity_info']);
-  const { adapter } = useAdapter();
+  const { t } = useTranslation(['sidebar', 'lang']);
+  const { adapter, dataService } = useAdapter();
   const [searchQuery, setSearchQuery] = useState('');
 
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
@@ -46,7 +46,7 @@ const EntityPanel = observer(() => {
       // 如果有搜索条件，进行过滤
       if (lowerSearchQuery) {
         const entityIdKey = entity.entityDataIdKey.toLowerCase();
-        const translatedEntityName = t(`entity_info:${entity.entityDataIdKey}`, {
+        const translatedEntityName = t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
           defaultValue: entity.entityInfo.point,
         }).toLowerCase();
         const category = entity.category.toLowerCase();

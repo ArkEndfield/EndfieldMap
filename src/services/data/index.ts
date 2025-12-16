@@ -13,6 +13,7 @@ import { ElectricPoleDataService } from '@/services/data/electric_pole';
 import { EntityDataService } from '@/services/data/entity';
 import { GuideDataService } from '@/services/data/guide';
 import { ItemDataService } from '@/services/data/item';
+import { LangHashDataService } from '@/services/data/lang_hash';
 import { MapStateDataService } from '@/services/data/map_state';
 import { SwiperDataService } from '@/services/data/swiper';
 
@@ -39,6 +40,7 @@ export class DataService {
   public dungeonSeriesDataService: DungeonSeriesDataService;
   public chestRewardDataService: ChestRewardDataService;
   public guideDataService: GuideDataService;
+  public langHashDataService: LangHashDataService;
   public mapStateDataService: MapStateDataService;
   public swiperDataService: SwiperDataService;
 
@@ -60,6 +62,7 @@ export class DataService {
       this.chestRewardDataService
     );
     this.guideDataService = new GuideDataService(DataService.jsonLoader, DataService.storage);
+    this.langHashDataService = new LangHashDataService(DataService.jsonLoader, DataService.storage);
     this.mapStateDataService = new MapStateDataService(adapter);
     this.swiperDataService = new SwiperDataService();
   }
@@ -91,6 +94,8 @@ export class DataService {
       this.dungeonSeriesDataService.getDungeonSeriesData(),
       // 初始化攻略数据
       this.guideDataService.getGuidesData(),
+      // 初始化语言哈希数据
+      this.langHashDataService.getLangHashData(),
     ]);
     this.initDataEventListeners();
   }

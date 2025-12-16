@@ -26,6 +26,8 @@ export enum StorageKey {
   DUNGEON_SERIES = 'dungeon_series',
   /** Guide */
   GUIDE = 'guide',
+  /** LangHash */
+  LANG_HASH = 'lang_hash'
 }
 
 // local storage type enum

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import Counter from '@/components/common/count_up';
 import { Tooltip } from '@/components/common/tooltip/tooltip';
+import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
@@ -23,7 +24,8 @@ interface EntityItemProps {
 
 const EntityItem = observer(
   ({ hideCount = false, entity, category, active = false, onClick, children, hideMarked = false }: EntityItemProps) => {
-    const { t } = useTranslation(['common', 'sidebar', 'entity_info']);
+    const { dataService } = useAdapter();
+    const { t } = useTranslation(['common', 'sidebar', 'lang']);
     const isMobile = useIsMobile();
 
     const displayName = useMemo(() => {
@@ -38,7 +40,7 @@ const EntityItem = observer(
             defaultValue: entity.entityDataIdKey,
           });
         }
-        return t(`entity_info:${entity.entityDataIdKey}`, { defaultValue: entity.entityDataIdKey });
+        return t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, { defaultValue: entity.entityDataIdKey });
       }
       return 'unnamed';
     }, [entity, t]);

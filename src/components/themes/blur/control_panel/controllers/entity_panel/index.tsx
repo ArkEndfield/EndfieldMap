@@ -21,13 +21,13 @@ interface CategoryInfo {
 }
 
 const EntityPanel = observer(() => {
-  const { t } = useTranslation(['sidebar', 'entity_info']);
-  const { adapter } = useAdapter();
+  const { t } = useTranslation(['sidebar', 'lang']);
+  const { adapter, dataService } = useAdapter();
   const [searchQuery, setSearchQuery] = useState('');
 
   const entities = adapter.entityController.currentEntityInfoList;
   const currentMap = adapter.currentMapIndex;
-
+  
   const categorizedEntities = useMemo<CategoryInfo[]>(() => {
     if (!entities.length) return [];
 
@@ -38,7 +38,7 @@ const EntityPanel = observer(() => {
     entities.forEach((entity) => {
       if (lowerSearchQuery) {
         const entityIdKey = entity.entityDataIdKey.toLowerCase();
-        const translatedEntityName = t(`entity_info:${entity.entityDataIdKey}`, {
+        const translatedEntityName = t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
           defaultValue: entity.entityInfo.point,
         }).toLowerCase();
         const category = entity.category.toLowerCase();
