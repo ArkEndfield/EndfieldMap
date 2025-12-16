@@ -1,7 +1,7 @@
 /**
  * 是否为开发环境
  */
-export const isDev = import.meta.env.DEV;
+export const isDev = import.meta.env.DEV || new URLSearchParams(window.location.search).get('__DEV__') === 'true';
 
 /**
  * 资源地址host
