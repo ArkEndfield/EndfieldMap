@@ -22,4 +22,8 @@ export interface MapConfig extends SimpleMapConfig {
   container: HTMLElement;
   /** 静态资源地址 */
   mapImageUrl: string;
+  /** 最大缩放 */
+  maxZoom: number;
+  /** 最小缩放 */
+  minZoom: number;
 }

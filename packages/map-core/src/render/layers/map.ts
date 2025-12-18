@@ -22,6 +22,8 @@ export interface MapLayerConfig {
   cacheSize?: number;
   /** 瓦片URL */
   tileUrl: string;
+  /** 最大缩放 */
+  maxZoom: number;
 }
 
 /** 地图图层 */
@@ -94,12 +96,13 @@ export class MapLayer extends MultiLayerBase {
    * @param mapIndex 地图索引
    * @returns 基础瓦片源
    */
-  public createBaseTileSource(mapIndex: MapIndex): XYZ {
+  private createBaseTileSource(mapIndex: MapIndex): XYZ {
     return new XYZ({
       projection: this.config.projection,
       url: `${this.config.tileUrl}/${mapIndex}/{z}/{y}/{x}.png`,
       tileLoadFunction: this.tileLoadFunction,
       cacheSize: this.config.cacheSize ?? 500,
+      maxZoom: this.config.maxZoom,
     });
   }
 

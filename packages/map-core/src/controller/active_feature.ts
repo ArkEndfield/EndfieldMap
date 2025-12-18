@@ -1,10 +1,18 @@
+import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import { ActiveLayer } from '@endfieldmap/map-core/render/layers/active';
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
+import type Map from 'ol/Map';
+
+export interface ActiveFeatureControllerConfig {
+  map: Map;
+  disableActiveFeature?: boolean;
+}
 
 /**
  * ActiveFeatureController
@@ -15,12 +23,22 @@ export class ActiveFeatureController {
   @observable accessor activeFeature: MapFeature | null = null;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
-
   /** 是否禁用 */
   private disabled: boolean = false;
+  /** Active图层 */
+  public activeLayer: ActiveLayer;
+  /** 地图实例 */
+  private map: Map;
 
-  constructor(config?: { disableActiveFeature?: boolean }) {
-    this.disabled = config?.disableActiveFeature ?? false;
+  constructor(config: ActiveFeatureControllerConfig) {
+    this.map = config.map;
+    this.disabled = config.disableActiveFeature ?? false;
+
+    // 创建ActiveLayer实例
+    this.activeLayer = new ActiveLayer();
+    // 将ActiveLayer添加到地图
+    this.map.addLayer(this.activeLayer.layer);
+
     if (!this.disabled) {
       this.registerEventHandlers();
     }
@@ -115,11 +133,21 @@ export class ActiveFeatureController {
 
     this.activeFeature = feature;
 
+    const coordinate = feature ? feature.coordinates : null;
+
+    // 更新active图层效果
+    if (feature && coordinate) {
+      const radius = DEFAULT_ICON_SIZE / 2 + DEFAULT_STROKE_WIDTH;
+      this.activeLayer.showActive(coordinate, radius);
+    } else {
+      this.activeLayer.hideActive();
+    }
+
     // 发出激活feature变化事件
     mapEventEmitter.fire(MAP_EVENT.ACTIVE_FEATURE_CHANGE, {
       oldFeature,
       newFeature: feature,
-      coordinate: feature ? feature.coordinates : null,
+      coordinate,
     });
   }
 
@@ -134,12 +162,13 @@ export class ActiveFeatureController {
   /**
    * 销毁控制器，清理事件监听器
    */
-  /**
-   * 销毁控制器，清理事件监听器
-   */
   public dispose() {
     this.unregisterEventHandlers();
     this.clearActiveFeature();
+    // 隐藏active效果
+    this.activeLayer.hideActive();
+    // 从地图中移除active图层
+    this.map.removeLayer(this.activeLayer.layer);
   }
 
   /**

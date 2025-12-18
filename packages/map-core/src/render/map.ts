@@ -1,19 +1,7 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import {
-  DEFAULT_CENTER,
-  DEFAULT_ICON_SIZE,
-  DEFAULT_MAX_ZOOM,
-  DEFAULT_MIN_ZOOM,
-  DEFAULT_PIXEL_RATIO,
-  DEFAULT_ROTATION,
-  DEFAULT_STROKE_WIDTH,
-  DEFAULT_ZOOM,
-} from '@endfieldmap/map-core/const/map';
+import { DEFAULT_CENTER, DEFAULT_PIXEL_RATIO, DEFAULT_ROTATION, DEFAULT_ZOOM } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { EndfieldSelectionInteraction } from '@endfieldmap/map-core/event/selection';
-import { ActiveLayer } from '@endfieldmap/map-core/render/layers/active';
-import { HoverLayer } from '@endfieldmap/map-core/render/layers/hover';
-import { MapLayer } from '@endfieldmap/map-core/render/layers/map';
 import type { DisposeListener } from '@endfieldmap/map-core/types/event';
 import type { MapConfig } from '@endfieldmap/map-core/types/map';
 import { observable } from 'mobx';
@@ -49,24 +37,16 @@ export class EndfieldMap {
   public overlay: Overlay;
   /** 选择 */
   public selection: EndfieldSelectionInteraction;
-  /** 地图图层 */
-  public mapLayer: MapLayer;
-  /** Hover图层 */
-  public hoverLayer: HoverLayer;
-  /** Active图层 */
-  public activeLayer: ActiveLayer;
   /** 是否开启调整视图 */
   @observable accessor adjustView: boolean;
-  /** 事件监听器释放函数 */
-  private disposeListeners: DisposeListener[] = [];
   /** 地图视图调整监听器释放函数 */
   private disposeAdjustViewListener?: DisposeListener;
 
   constructor(config: MapConfig) {
     this.config = {
       ...config,
-      minZoom: config.minZoom ?? DEFAULT_MIN_ZOOM,
-      maxZoom: config.maxZoom ?? DEFAULT_MAX_ZOOM,
+      minZoom: config.minZoom,
+      maxZoom: config.maxZoom,
       pixelRatio: config.pixelRatio ?? DEFAULT_PIXEL_RATIO,
     };
     this.control = new Control({
@@ -88,7 +68,8 @@ export class EndfieldMap {
       projection: this.projection,
       center: DEFAULT_CENTER,
       zoom: DEFAULT_ZOOM,
-      maxZoom: this.config.maxZoom,
+      // TODO: 视图的最大缩放
+      maxZoom: this.config.maxZoom + 3,
       minZoom: this.config.minZoom,
       rotation: DEFAULT_ROTATION,
       enableRotation: false,
@@ -100,10 +81,6 @@ export class EndfieldMap {
       controls: [this.control],
       overlays: [this.overlay],
     });
-    this.mapLayer = new MapLayer({
-      tileUrl: this.config.mapImageUrl,
-      projection: this.projection,
-    });
     // this.map.addInteraction(this.selection.select);
     // this.map.addInteraction(this.selection.dragBox);
     this.selection = new EndfieldSelectionInteraction(this.map);
@@ -111,21 +88,6 @@ export class EndfieldMap {
     this.interactions.push(this.selection.dragBox);
 
     this.adjustView = false;
-
-    // 创建HoverLayer实例
-    this.hoverLayer = new HoverLayer();
-    // 将HoverLayer添加到地图，确保在entity和electric pole图层之上
-    this.map.addLayer(this.hoverLayer.layer);
-
-    // 创建ActiveLayer实例
-    this.activeLayer = new ActiveLayer();
-    // 将ActiveLayer添加到地图
-    this.map.addLayer(this.activeLayer.layer);
-
-    // 监听HOVER_FEATURE_CHANGE事件
-    this.registerHoverEventHandler();
-    // 监听ACTIVE_FEATURE_CHANGE事件
-    this.registerActiveEventHandler();
   }
 
   /**
@@ -206,58 +168,9 @@ export class EndfieldMap {
   }
 
   /**
-   * 注册hover事件处理器
-   */
-  private registerHoverEventHandler(): void {
-    const disposeHoverChange = mapEventEmitter.on(MAP_EVENT.HOVER_FEATURE_CHANGE, (event) => {
-      const { newFeature, coordinate } = event;
-
-      if (newFeature && coordinate) {
-        // 显示hover效果，使用事件中提供的坐标（对于聚合feature是聚合中心坐标）
-        // 使用底部圆的实际半径（图标半径 + 描边宽度）
-        const radius = DEFAULT_ICON_SIZE / 2 + DEFAULT_STROKE_WIDTH;
-        this.hoverLayer.showHover(coordinate, radius);
-      } else {
-        // 隐藏hover效果
-        this.hoverLayer.hideHover();
-      }
-    });
-
-    this.disposeListeners.push(disposeHoverChange);
-  }
-
-  /**
-   * 注册active事件处理器
-   */
-  private registerActiveEventHandler(): void {
-    const disposeActiveChange = mapEventEmitter.on(MAP_EVENT.ACTIVE_FEATURE_CHANGE, (event) => {
-      const { newFeature, coordinate } = event;
-
-      if (newFeature && coordinate) {
-        // 显示active效果
-        const radius = DEFAULT_ICON_SIZE / 2 + DEFAULT_STROKE_WIDTH;
-        this.activeLayer.showActive(coordinate, radius);
-      } else {
-        // 隐藏active效果
-        this.activeLayer.hideActive();
-      }
-    });
-
-    this.disposeListeners.push(disposeActiveChange);
-  }
-
-  /**
    * 销毁地图，清理资源
    */
   public dispose(): void {
-    // 清理事件监听器
-    this.disposeListeners.forEach((dispose) => dispose());
-    this.disposeListeners = [];
-
-    // 隐藏hover效果
-    this.hoverLayer.hideHover();
-    // 隐藏active效果
-    this.activeLayer.hideActive();
     this.disposeAdjustViewListener?.();
     this.disposeAdjustViewListener = undefined;
   }

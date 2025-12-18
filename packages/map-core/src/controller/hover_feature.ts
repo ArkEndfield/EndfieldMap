@@ -1,3 +1,4 @@
+import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
@@ -9,14 +10,17 @@ import {
 import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
 import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
 import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
+import { HoverLayer } from '@endfieldmap/map-core/render/layers/hover';
 import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
 import { debounce, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 import type { Point } from 'ol/geom';
+import type Map from 'ol/Map';
 
 export interface HoverFeatureControllerConfig {
+  map: Map;
   getEntityLayers: () => CommonPointEntityLayer[];
   getElectricPoleLayers: () => ElectricPoleEntityLayer[];
   getCustomPointLayers: () => CustomPointEntityLayer[];
@@ -44,13 +48,24 @@ export class HoverFeatureController {
   private getCustomPointLayers: () => CustomPointEntityLayer[];
   /** 防抖后的hover处理函数 */
   private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
+  /** Hover图层 */
+  public hoverLayer: HoverLayer;
+  /** 地图实例 */
+  private map: Map;
 
   constructor(config: HoverFeatureControllerConfig) {
+    this.map = config.map;
     this.getEntityLayers = config.getEntityLayers;
     this.getElectricPoleLayers = config.getElectricPoleLayers;
     this.getCustomPointLayers = config.getCustomPointLayers;
     this.disabled = config.disableHoverFeature ?? false;
     this.updateDebouncedHoverHandler();
+
+    // 创建HoverLayer实例
+    this.hoverLayer = new HoverLayer();
+    // 将HoverLayer添加到地图
+    this.map.addLayer(this.hoverLayer.layer);
+
     if (!this.disabled) {
       this.registerEventHandlers();
     }
@@ -266,11 +281,21 @@ export class HoverFeatureController {
 
     this.hoverFeature = feature;
 
+    const hoverCoordinate = coordinate || (feature ? feature.coordinates : null);
+
+    // 更新hover图层效果
+    if (feature && hoverCoordinate) {
+      const radius = DEFAULT_ICON_SIZE / 2 + DEFAULT_STROKE_WIDTH;
+      this.hoverLayer.showHover(hoverCoordinate, radius);
+    } else {
+      this.hoverLayer.hideHover();
+    }
+
     // 发出hover feature变化事件
     mapEventEmitter.fire(MAP_EVENT.HOVER_FEATURE_CHANGE, {
       oldFeature,
       newFeature: feature,
-      coordinate: coordinate || (feature ? feature.coordinates : null),
+      coordinate: hoverCoordinate,
     });
   }
 
@@ -288,6 +313,10 @@ export class HoverFeatureController {
   public dispose() {
     this.unregisterEventHandlers();
     this.clearHoverFeature();
+    // 隐藏hover效果
+    this.hoverLayer.hideHover();
+    // 从地图中移除hover图层
+    this.map.removeLayer(this.hoverLayer.layer);
   }
 
   /**

@@ -1,4 +1,4 @@
-import { LayerType, MapIndex } from '@endfieldmap/map-core/const';
+import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, LayerType, MapIndex } from '@endfieldmap/map-core/const';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/active_feature';
 import { AreaNameController } from '@endfieldmap/map-core/controller/area_name';
 import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
@@ -89,6 +89,11 @@ export class EndfieldMapAdapter {
     if (config.consolaReporter) {
       logger.addReporter(config.consolaReporter);
     }
+    const mapConfig: SimpleMapConfig & { maxZoom: number; minZoom: number } = {
+      ...(config.map || {}),
+      maxZoom: config.map?.maxZoom ?? DEFAULT_MAX_ZOOM,
+      minZoom: config.map?.minZoom ?? DEFAULT_MIN_ZOOM,
+    };
     this.event = mapEventEmitter;
     this.container = config.container;
     this.asset = new EndfieldMapAsset(config.asset);
@@ -97,15 +102,15 @@ export class EndfieldMapAdapter {
       asset: this.asset,
       mapConfig: {
         container: this.container,
-        ...(config.map || {}),
+        ...mapConfig,
       },
     });
     this.eventManager = new EndfieldMapEvent(this.mapController.mapRenderer.map, this.mapController.mapRenderer.view);
     this.layerController = new EndfieldMapLayerController(this.mapController.mapRenderer.map);
-    this.layerController.addLayer(LayerType.MAP, this.mapController.mapRenderer.mapLayer);
     this.mapLayerController = new MapLayerController({
       tileUrl: this.asset.mapImage,
       projection: this.mapController.mapRenderer.projection,
+      maxZoom: mapConfig.maxZoom,
     });
     this.areaNameController = new AreaNameController({
       jsonLoader: this.jsonLoader,
@@ -117,9 +122,11 @@ export class EndfieldMapAdapter {
       imagePath: this.asset.entityImage,
     });
     this.activeFeatureController = new ActiveFeatureController({
+      map: this.mapController.mapRenderer.map,
       disableActiveFeature: config.map?.disableActiveFeature,
     });
     this.hoverFeatureController = new HoverFeatureController({
+      map: this.mapController.mapRenderer.map,
       getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
       getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
       getCustomPointLayers: () =>
