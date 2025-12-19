@@ -1,5 +1,4 @@
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
-import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
 import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,11 +10,27 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
 
+/**
+ * EntityItem 通用属性类型
+ * 兼容 EntityInfoStats 和手动构造的数据
+ */
+interface EntityItemData {
+  category: string;
+  entityDataIdKey: string;
+  entityInfo: {
+    point: string;
+    pic: string;
+  };
+  count: number;
+  markedCount?: number;
+  visible?: boolean;
+}
+
 interface EntityItemProps {
   hideCount?: boolean;
   hideMarked?: boolean;
   markCount?: number;
-  entity?: EntityInfoItemData;
+  entity?: EntityItemData;
   category?: string;
   active?: boolean;
   onClick?: () => void;
@@ -40,10 +55,12 @@ const EntityItem = observer(
             defaultValue: entity.entityDataIdKey,
           });
         }
-        return t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, { defaultValue: entity.entityDataIdKey });
+        return t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
+          defaultValue: entity.entityDataIdKey,
+        });
       }
       return 'unnamed';
-    }, [entity, t]);
+    }, [dataService.langHashDataService, entity, t]);
 
     const progressWidth = useMemo(() => {
       if (entity && entity.count > 0) {

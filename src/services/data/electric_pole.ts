@@ -3,9 +3,8 @@ import type {
   ElectricPolePresetExportBundle,
   ElectricPolePresetStorage,
 } from '@eftypes/electric_pole';
-import type { ElectricPoleConnectionFeature, ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
-import { ElectricPoleKey, MAP_EVENT } from '@endfieldmap/map-core';
-import type { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import type { ElectricPoleMapData, EndfieldMapAdapter } from '@endfieldmap/map-core';
+import { ElectricPoleDataInstance, ElectricPoleKey, MAP_EVENT } from '@endfieldmap/map-core';
 import {
   debounce,
   LocalStorageDB,
@@ -15,7 +14,7 @@ import {
   StorageKey,
   type StorageManager,
 } from '@endfieldmap/tools';
-import { action, computed, observable, reaction, runInAction, toJS } from 'mobx';
+import { action, autorun, computed, observable, reaction, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/data';
@@ -26,6 +25,7 @@ import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/da
 export class ElectricPoleDataService {
   private adapter: EndfieldMapAdapter;
   private storage: StorageManager;
+  private reactionDisposers: Array<() => void> = [];
 
   /** 当前数据版本 */
   @observable accessor dataVersion: VersionType = '0.0.1';
@@ -46,7 +46,7 @@ export class ElectricPoleDataService {
 
   /** 是否处于连接电线杆状态 */
   @observable accessor isConnecting: boolean = false;
-  private connectingPole: ElectricPoleFeature | null = null;
+  private connectingPole: ElectricPoleDataInstance | null = null;
 
   /** 是否处于删除电线杆状态 */
   @observable accessor isDeleting: boolean = false;
@@ -67,7 +67,7 @@ export class ElectricPoleDataService {
     this.applyCurrentPresetToAdapter();
     this.initEntityClickEvent();
     this.initElecticPoleClickEvent();
-    this.initElectricPoleChangeEvent();
+    this.initAutoSaveReaction();
 
     // 监听地图切换，清除当正在连接的电线杆
     reaction(
@@ -85,7 +85,6 @@ export class ElectricPoleDataService {
 
   /**
    * 从 Storage 中初始化电线杆预设数据
-   * - 仅使用 ElectricPolePresetStorage 结构，不再兼容旧的 ElectricPoleMapData 结构
    */
   public async initFromStorage() {
     if (this.initialized) return;
@@ -160,16 +159,15 @@ export class ElectricPoleDataService {
     if (!this.initialized) {
       throw new Error('ElectricPoleDataService not initialized');
     }
-    return this.adapter.electricPoleController.allData;
+    return this.adapter.electricPoleController.dataManager.allData;
   }
 
   /**
    * 将给定数据保存到当前预设中，并写入 Storage
    */
-  public async saveDataToStorage(data: ElectricPoleMapData) {
-    if (!this.initialized) {
-      throw new Error('ElectricPoleDataService not initialized');
-    }
+  private saveDataToStorage(data: ElectricPoleMapData) {
+    if (!this.initialized) return;
+
     const ensuredData = this.ensureMapData(data);
 
     runInAction(() => {
@@ -178,7 +176,7 @@ export class ElectricPoleDataService {
         const now = Date.now();
         const newPreset: ElectricPolePreset = {
           id: this.generatePresetId(),
-          name: '默认预设',
+          name: 'Default Preset',
           data: ensuredData,
           createdAt: now,
           updatedAt: now,
@@ -191,15 +189,10 @@ export class ElectricPoleDataService {
       }
     });
 
-    await this.savePresetStorage();
+    this.savePresetStorage();
   }
 
-  /**
-   * 将当前 adapter 中的电线杆数据保存到当前预设
-   */
-  public async saveCurrentAdapterDataToStorage() {
-    return this.saveDataToStorage(this.temporaryData);
-  }
+  private debouncedSave = debounce(this.saveDataToStorage.bind(this), DEBOUNCE_INTERVAL);
 
   public clearActiveFeature() {
     this.adapter.activeFeatureController?.clearActiveFeature?.();
@@ -253,7 +246,7 @@ export class ElectricPoleDataService {
       const mapIndex = this.adapter!.currentMapIndex;
       const coordinate = event.coordinate;
       try {
-        const feature = this.adapter!.electricPoleController.createElectricPoleEntity(mapIndex, coordinate);
+        const feature = this.adapter!.electricPoleController.createElectricPole(mapIndex, coordinate);
         if (feature && this.autoConnect) {
           if (this.connectingPole) {
             try {
@@ -345,10 +338,10 @@ export class ElectricPoleDataService {
   }
 
   @action
-  public deleteElectricPole(pole: ElectricPoleFeature, force = false) {
+  public deleteElectricPole(pole: ElectricPoleDataInstance, force = false) {
     if (!this.isDeleting && !force) return;
     const mapIndex = this.adapter.currentMapIndex;
-    this.adapter.electricPoleController.deleteElectricPoleEntity(mapIndex, pole.id);
+    this.adapter.electricPoleController.deleteElectricPole(mapIndex, pole.id);
     this.adapter.hoverFeatureController.clearHoverFeature();
   }
 
@@ -356,9 +349,9 @@ export class ElectricPoleDataService {
     this.adapter.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
       if (!this.isDeleting) return;
       const instance = event.instance;
-      const isElectricPole = instance.entityInfo.category === ElectricPoleKey;
+      const isElectricPole = instance.entityInfo?.category === ElectricPoleKey;
       if (!isElectricPole) return;
-      this.deleteElectricPole(instance as ElectricPoleFeature);
+      this.deleteElectricPole(instance as unknown as ElectricPoleDataInstance);
     });
   }
 
@@ -388,12 +381,11 @@ export class ElectricPoleDataService {
   }
 
   @action
-  public deleteConnection(connectionFeature: ElectricPoleConnectionFeature) {
+  public deleteConnection(poleInstance: ElectricPoleDataInstance) {
     if (!this.isDeletingConnection) return;
     // 获取连接的起始电线杆并清除其连接
-    const fromPole = connectionFeature.from as ElectricPoleFeature;
-    if (fromPole) {
-      fromPole.clearConnectionTo();
+    if (poleInstance) {
+      poleInstance.clearConnectionTo();
     }
     this.adapter.hoverConnectionController.clearHoverConnection();
   }
@@ -405,16 +397,32 @@ export class ElectricPoleDataService {
     });
   }
 
-  private initElectricPoleChangeEvent() {
-    this.adapter.event.on(
-      MAP_EVENT.ELECTRIC_POLE_CHANGED,
-      debounce(() => {
-        // 当电线杆连接关系发生变化时，自动保存数据
-        this.saveCurrentAdapterDataToStorage().catch((error) => {
-          logger.error('Failed to save electric pole data after connection change:', error);
-        });
-      }, DEBOUNCE_INTERVAL)
-    );
+  /**
+   * 使用 MobX reaction 监听电线杆数据变化并自动保存
+   */
+  private initAutoSaveReaction() {
+    // reaction(
+    //   () => {
+    //     // 通过 JSON 序列化追踪数据变化
+    //     const manager = this.adapter.electricPoleController.dataManager;
+    //     const data = manager.allData;
+    //     return JSON.stringify(data);
+    //   },
+    //   debounce(() => {
+    //     logger.debug('[ElectricPoleDataService] Auto-saving due to data change');
+    //     this.saveDataToStorage(this.temporaryData).catch((error) => {
+    //       logger.error('Failed to save electric pole data:', error);
+    //     });
+    //   }, DEBOUNCE_INTERVAL),
+    //   {
+    //     delay: 100,
+    //   }
+    // );
+    const dispose = autorun(() => {
+      const data = this.adapter.electricPoleController.dataManager.allData;
+      this.debouncedSave(data);
+    });
+    this.reactionDisposers.push(dispose);
   }
 
   // endregion
@@ -422,7 +430,7 @@ export class ElectricPoleDataService {
   // region: 电线杆连接
 
   @action
-  public connectToPole(pole: ElectricPoleFeature) {
+  public connectToPole(pole: ElectricPoleDataInstance) {
     if (this.connectingPole) {
       // 前置检测
       if (this.connectingPole === pole) return;
@@ -455,7 +463,7 @@ export class ElectricPoleDataService {
    * @param to 目标电线杆
    * @returns 是否成功建立连接
    */
-  private tryConnect(from: ElectricPoleFeature, to: ElectricPoleFeature): boolean {
+  private tryConnect(from: ElectricPoleDataInstance, to: ElectricPoleDataInstance): boolean {
     // 情况1: from 的 to 位置空闲，直接连接 from->to
     if (!from.connectionTo) {
       from.connectTo(to);
@@ -498,7 +506,7 @@ export class ElectricPoleDataService {
    * @param pole 要反转的电线杆（作为连接链的起点）
    * @returns 是否成功反转
    */
-  private reverseConnectionChain(pole: ElectricPoleFeature): boolean {
+  private reverseConnectionChain(pole: ElectricPoleDataInstance): boolean {
     const next = pole.connectionTo;
     if (!next) return true; // 没有下一个节点，无需反转
 
@@ -532,11 +540,11 @@ export class ElectricPoleDataService {
   @action
   public setActiveFeatureToConnectingPole() {
     const activeFeature = this.adapter.activeFeatureController?.activeFeature;
-    if (!activeFeature || activeFeature.entityInfo.category !== ElectricPoleKey) {
+    if (!activeFeature || activeFeature.entityInfo?.category !== ElectricPoleKey) {
       this.clearActiveFeature();
       return;
     }
-    this.setConnectingPole(activeFeature as ElectricPoleFeature);
+    this.setConnectingPole(activeFeature as unknown as ElectricPoleDataInstance);
   }
 
   /** 开始连接电线杆 */
@@ -564,7 +572,7 @@ export class ElectricPoleDataService {
   }
 
   @action
-  public setConnectingPole(pole: ElectricPoleFeature) {
+  public setConnectingPole(pole: ElectricPoleDataInstance) {
     this.connectingPole = pole;
     requestAnimationFrame(() => {
       this.adapter.activeFeatureController?.setActiveFeature?.(pole);
@@ -572,7 +580,7 @@ export class ElectricPoleDataService {
   }
 
   /** 电线杆连接操作 */
-  public connectElectricPole(pole: ElectricPoleFeature) {
+  public connectElectricPole(pole: ElectricPoleDataInstance) {
     if (!this.isConnecting) return;
     if (this.connectingPole) {
       try {
@@ -621,7 +629,7 @@ export class ElectricPoleDataService {
     const baseData = useInitialData
       ? initialData
       : this.initialized && useCurrentData
-        ? this.adapter.electricPoleController.allData
+        ? this.temporaryData
         : ({} as ElectricPoleMapData);
     const ensuredData = this.ensureMapData(baseData);
 
@@ -655,7 +663,7 @@ export class ElectricPoleDataService {
     // 在切换预设之前，先将当前地图中的电线杆数据保存到当前预设中
     if (this.initialized && this.currentPreset) {
       try {
-        await this.saveCurrentAdapterDataToStorage();
+        await this.saveDataToStorage(this.temporaryData);
       } catch (error) {
         logger.error('Failed to save current electric pole preset before switching:', error);
       }

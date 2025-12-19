@@ -1,4 +1,4 @@
-import type { Category, EntityInfoItemData } from '@endfieldmap/map-core';
+import type { Category, EntityInfoStats } from '@endfieldmap/map-core';
 import EntityGroup from '@themes/endfield/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/control_panel/controllers/entity_panel/item';
 import { Search } from '@themes/endfield/control_panel/controllers/entity_panel/search';
@@ -8,13 +8,9 @@ import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
 
-interface EntityItemInfo extends EntityInfoItemData {
-  markedCount: number;
-}
-
 interface CategoryInfo {
   category: Category;
-  entities: EntityItemInfo[];
+  entities: EntityInfoStats[];
   totalEntities: number;
   displayedEntities: number;
   allDisplayed: boolean;
@@ -30,7 +26,7 @@ const EntityPanel = observer(() => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
-  const entities = adapter.entityController.currentEntityInfoList;
+  const entities = adapter.entityController.currentStats;
   const currentMap = adapter.currentMapIndex;
 
   // 计算每个实体的 marked 数量并按分类分组
@@ -40,7 +36,7 @@ const EntityPanel = observer(() => {
     const lowerSearchQuery = searchQuery.toLowerCase().trim();
 
     // 构建实体信息映射
-    const entityInfoMap = new Map<string, EntityItemInfo>();
+    const entityInfoMap = new Map<string, EntityInfoStats>();
 
     entities.forEach((entity) => {
       // 如果有搜索条件，进行过滤
@@ -65,7 +61,7 @@ const EntityPanel = observer(() => {
     });
 
     // 按 category 分组
-    const categoryMap = new Map<Category, EntityItemInfo[]>();
+    const categoryMap = new Map<Category, EntityInfoStats[]>();
     entityInfoMap.forEach((entity) => {
       const category = entity.category as Category;
       if (!categoryMap.has(category)) {
@@ -92,10 +88,10 @@ const EntityPanel = observer(() => {
 
     // 按 category 名称排序
     // result.sort((a, b) => a.category.localeCompare(b.category));
-    const hardCordOrder = ['other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative']
+    const hardCordOrder = ['other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative'];
     result.sort((a, b) => hardCordOrder.indexOf(a.category) - hardCordOrder.indexOf(b.category));
     return result;
-  }, [entities, searchQuery, t]);
+  }, [dataService.langHashDataService, entities, searchQuery, t]);
 
   // 切换分类显示/隐藏
   const handleCategoryClick = (category: Category, allDisplayed: boolean) => {
@@ -109,7 +105,7 @@ const EntityPanel = observer(() => {
   if (!currentMap) {
     return <div className="p-4 text-gray-500">初始化中...</div>;
   }
-  
+
   return (
     <div className="space-y-4">
       {/* 搜索输入框 */}

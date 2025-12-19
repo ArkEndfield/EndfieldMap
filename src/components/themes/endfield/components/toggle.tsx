@@ -1,4 +1,4 @@
-import { AnimatePresence,motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import type { ButtonHTMLAttributes } from 'react';
 
 import { cn } from '@/utils/style';

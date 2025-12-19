@@ -1,4 +1,6 @@
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import type { ElectricPoleMapData } from '@endfieldmap/map-core/data/electric_pole';
+import type { CustomPointMapData } from '@endfieldmap/map-core/types/entity';
 import type { EntityData } from '@endfieldmap/map-core/types/entity';
 
 /**
@@ -26,4 +28,10 @@ export interface ExportedData {
   timestamp: number;
   /** feature 的marked情况 */
   markedFeatures: StorageData<FeatureMarked>;
+  /** entity可见性 */
+  entityVisibility?: StorageData<EntityVisibility>;
+  /** 电线杆数据 */
+  electricPoleData?: ElectricPoleMapData;
+  /** 自定义标点数据 */
+  customPointData?: CustomPointMapData;
 }

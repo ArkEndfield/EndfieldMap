@@ -1,10 +1,7 @@
-import type { CustomPointIdKey } from '@endfieldmap/map-core';
-import { customPointTypes } from '@endfieldmap/map-core/data/entity/custom_point';
-import { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
-import { ElectricPoleFeature } from '@endfieldmap/map-core/render/source/feature/electric_pole_feature';
+import type { CustomPointTypeId } from '@endfieldmap/map-core';
+import { CustomPointDataInstance, CustomPointKey, customPointTypes, ElectricPoleKey } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -31,9 +28,8 @@ const BlurSelect = ({
   options,
   onChange,
 }: {
-  value: CustomPointIdKey;
-  options: Array<{ value: CustomPointIdKey; label: string; left: React.ReactNode }>;
-  onChange: (value: CustomPointIdKey) => void;
+  value: CustomPointTypeId;
+  options: Array<{ value: CustomPointTypeId; label: string; left: React.ReactNode }>;  onChange: (value: CustomPointTypeId) => void;
 }) => {
   return (
     <div className="flex flex-wrap gap-2">
@@ -61,72 +57,63 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const { adapter, dataService } = useAdapter();
   const { t } = useTranslation(['popup', 'common', 'lang']);
   const activeFeature = adapter.activeFeatureController.activeFeature;
-  const entityData = activeFeature?.data;
+  const entityInfo = activeFeature?.entityInfo;
 
-  const isElectricPole = activeFeature instanceof ElectricPoleFeature;
-  const isCustomPoint = activeFeature instanceof CustomPointFeature;
-  const displayName = useMemo(() => {
-    if (isElectricPole) {
-      return (activeFeature as ElectricPoleFeature).name;
-    } else if (isCustomPoint) {
-      return (activeFeature as CustomPointFeature).name;
+  const isElectricPole = entityInfo?.category === ElectricPoleKey;
+  const isCustomPoint = entityInfo?.category === CustomPointKey;
+  const displayName = (() => {
+    if (isElectricPole && activeFeature) {
+      return activeFeature.name;
+    } else if (isCustomPoint && activeFeature) {
+      return activeFeature.name;
     }
-    return t(`lang:${dataService.langHashDataService.getHash(entityData?.entityInfo.entityInfo.point)}`, {
-      defaultValue: entityData?.entityInfo.entityInfo.point || '',
+    return t(`lang:${dataService.langHashDataService.getHash(entityInfo?.entityInfo.point)}`, {
+      defaultValue: entityInfo?.entityInfo.point || '',
     });
-  }, [entityData, isElectricPole, isCustomPoint, t]);
+  })();
 
   const handleToggleMarked = () => {
-    if (activeFeature) {
+    if (activeFeature?.toggleMarked) {
       activeFeature.toggleMarked();
     }
   };
 
   const handleRename = async () => {
-    if (!activeFeature) return;
+    if (!activeFeature || !activeFeature.rename) return;
 
-    if (isElectricPole) {
-      const electricPole = activeFeature as ElectricPoleFeature;
-      const currentName = electricPole.name;
+    const currentName = activeFeature.name;
+    const content = isElectricPole
+      ? t('popup:electric_pole.rename_tip')
+      : t('popup:custom_point.rename_tip');
 
-      const newName = await alert.prompt({
-        content: t('popup:electric_pole.rename_tip'),
-        defaultValue: currentName,
-      });
+    const newName = await alert.prompt({
+      content,
+      defaultValue: currentName,
+    });
 
-      if (newName && newName !== currentName) {
-        electricPole.rename(newName);
-      }
-    } else if (isCustomPoint) {
-      const customPoint = activeFeature as CustomPointFeature;
-      const currentName = customPoint.name;
-
-      const newName = await alert.prompt({
-        content: t('popup:custom_point.rename_tip'),
-        defaultValue: currentName,
-      });
-
-      if (newName && newName !== currentName) {
-        customPoint.rename(newName);
-      }
+    if (newName && newName !== currentName) {
+      activeFeature.rename(newName);
     }
   };
 
-  const handleChangePointType = (newType: CustomPointIdKey) => {
+  const handleChangePointType = (newType: CustomPointTypeId) => {
     if (!activeFeature || !isCustomPoint) return;
-    const customPoint = activeFeature as CustomPointFeature;
-    customPoint.changePointType(newType);
+    
+    // 使用 DataInstance 的 changeType API
+    if ('changeType' in activeFeature && typeof activeFeature.changeType === 'function') {
+      activeFeature.changeType(newType);
+    }
   };
 
   const customPointTypeOptions = customPointTypes.map((type) => ({
-    value: type.entityInfo.point,
-    label: t(`common:custom_point.type.${type.entityInfo.point}`, { defaultValue: type.entityInfo.point }),
-    left: <img className="w-4 h-4" src={getEntityIcon(type.category, type.entityInfo.pic)} />,
+    value: type.id,
+    label: t(`common:custom_point.type.${type.id}`, { defaultValue: type.id }),
+    left: <img className="w-4 h-4" src={getEntityIcon(CustomPointKey, type.icon)} />,
   }));
 
   return (
     <AnimatePresence mode="wait">
-      {activeFeature && entityData && (
+      {activeFeature && entityInfo && (
         <motion.div
           key={activeFeature.id}
           initial={{ opacity: 0 }}
@@ -137,13 +124,13 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
         >
           <Header
             name={displayName || ''}
-            pic={getEntityIcon(entityData.entityInfo.category, entityData.entityInfo.entityInfo.pic)}
+            pic={getEntityIcon(entityInfo.category, entityInfo.entityInfo.pic)}
           />
 
-          <div className="mb-3 text-xs text-white/50 shrink-0">ID: {entityData.levelLogicId}</div>
+          <div className="mb-3 text-xs text-white/50 shrink-0">ID: {activeFeature.id}</div>
 
           <ScrollArea className="flex-1 min-h-0 mb-3">
-            <Guide entity={entityData} />
+            <Guide entity={activeFeature.data} />
           </ScrollArea>
 
           {/* 自定义标点类型选择 */}
@@ -151,7 +138,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
             <div className="mb-3 shrink-0">
               <div className="text-xs text-white/60 mb-2">{t('popup:custom_point.change_type')}</div>
               <BlurSelect
-                value={(activeFeature as CustomPointFeature).pointType}
+                value={(activeFeature as CustomPointDataInstance).typeId}
                 options={customPointTypeOptions}
                 onChange={handleChangePointType}
               />
@@ -160,7 +147,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
 
           {/* 操作按钮 */}
           <div className="shrink-0 flex gap-2 justify-end">
-            {activeFeature.markable && (
+            {activeFeature.markable === true && (
               <button
                 onClick={handleToggleMarked}
                 className={cn(

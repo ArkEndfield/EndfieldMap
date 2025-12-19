@@ -1,5 +1,5 @@
 import { domEventListener } from '@endfieldmap/tools';
-import { type Position,type TooltipProps } from '@themes/types/tooltip';
+import { type Position, type TooltipProps } from '@themes/types/tooltip';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';

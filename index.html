@@ -362,17 +362,17 @@
           if (fill) fill.style.backgroundColor = '#ff4d4f';
           if (percent) percent.style.color = '#ff4d4f';
           if (decoLine) decoLine.style.backgroundColor = '#ff4d4f';
-          
+
           if (dots) {
             const dotSpans = dots.querySelectorAll('span');
-            dotSpans.forEach(span => span.style.backgroundColor = '#ff4d4f');
+            dotSpans.forEach((span) => (span.style.backgroundColor = '#ff4d4f'));
           }
 
           if (statusText) {
             statusText.textContent = 'Error';
             statusText.style.color = '#ff4d4f';
           }
-          
+
           if (errorDiv && errorMsg && this.error) {
             errorDiv.style.display = 'block';
             errorMsg.textContent = this.error.message || String(this.error);

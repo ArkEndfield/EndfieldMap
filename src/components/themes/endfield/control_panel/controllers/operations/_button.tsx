@@ -93,11 +93,7 @@ export const OperationButton = ({ icon, subtitle, title, onClick, active }: Oper
             {icon}
           </div>
         )}
-        <div
-          className="grow text-center whitespace-nowrap"
-        >
-          {title}
-        </div>
+        <div className="grow text-center whitespace-nowrap">{title}</div>
       </div>
 
       {/* Subtitle */}

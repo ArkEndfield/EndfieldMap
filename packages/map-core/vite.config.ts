@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   if (isDev) {
     alias['@endfieldmap/tools'] = path.resolve(__dirname, '../tools/src');
   }
+
   return {
     build: {
       lib: {
@@ -35,6 +36,8 @@ export default defineConfig(({ mode }) => {
           preserveModules: true,
           preserveModulesRoot: 'src',
           entryFileNames: '[name].js',
+          // 保留所有导出
+          exports: 'named',
         },
       },
       outDir: 'dist',
@@ -52,12 +55,14 @@ export default defineConfig(({ mode }) => {
       }),
       dts({
         include: ['src/**/*'],
+        tsconfigPath: 'tsconfig.build.json',
         outDirs: 'dist',
         entryRoot: 'src',
         insertTypesEntry: true,
         cleanVueFileName: true,
         copyDtsFiles: false,
         aliasesExclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
+        exclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
       }),
     ],
     resolve: {

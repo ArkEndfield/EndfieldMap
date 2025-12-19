@@ -1,5 +1,5 @@
 import { domEventListener } from '@endfieldmap/tools';
-import { type Position,type TooltipProps } from '@themes/types/tooltip';
+import { type Position, type TooltipProps } from '@themes/types/tooltip';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -207,11 +207,7 @@ const TooltipComponent = <T extends React.ElementType = 'div'>({
             className={cn('max-w-96', classNames?.toolTipContainer)}
           >
             <div
-              className={cn(
-                'px-3 py-2 text-white text-xs rounded-lg',
-                'border border-white/20',
-                classNames?.content
-              )}
+              className={cn('px-3 py-2 text-white text-xs rounded-lg', 'border border-white/20', classNames?.content)}
             >
               {tooltip}
             </div>
@@ -241,7 +237,7 @@ const TooltipComponent = <T extends React.ElementType = 'div'>({
               <div
                 className={cn(
                   'px-3 py-2 text-white text-xs rounded-lg',
-                  'bg-black/40 backdrop-blur-[40px] transform-gpu',
+                  'bg-black/40 backdrop-blur-2xl transform-gpu',
                   'border border-white/20',
                   'shadow-lg shadow-black/20',
                   classNames?.content

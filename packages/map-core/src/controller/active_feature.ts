@@ -2,9 +2,7 @@ import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH } from '@endfieldmap/map-core/c
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { ActiveLayer } from '@endfieldmap/map-core/render/layers/active';
-import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
-import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import type { DisposeListener } from '@endfieldmap/map-core/types/event';
+import type { DataInstance, DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type Map from 'ol/Map';
@@ -20,7 +18,7 @@ export interface ActiveFeatureControllerConfig {
  */
 export class ActiveFeatureController {
   /** 当前激活的feature */
-  @observable accessor activeFeature: MapFeature | null = null;
+  @observable accessor activeFeature: DataInstance | null = null;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
   /** 是否禁用 */
@@ -48,40 +46,6 @@ export class ActiveFeatureController {
    * 注册事件处理器
    */
   private registerEventHandlers() {
-    // 监听实体可见性变化事件
-    const disposeVisibilityChange = mapEventEmitter.on(MAP_EVENT.ENTITY_VISIBILITY_CHANGE, (event) => {
-      if (!this.activeFeature) return;
-
-      // 检查是否有layer被隐藏
-      let hiddenLayers: CommonPointEntityLayer[] = [];
-
-      if (event.batch) {
-        // 批量操作
-        if ('layers' in event && event.layers) {
-          // 直接隐藏layers的情况
-          if (!event.visible) {
-            hiddenLayers = event.layers;
-          }
-        } else if ('changes' in event && event.changes) {
-          // toggle操作，从changes中找出被隐藏的layers
-          hiddenLayers = event.changes
-            .filter((c: { layer: CommonPointEntityLayer; visible: boolean }) => !c.visible)
-            .map((c: { layer: CommonPointEntityLayer; visible: boolean }) => c.layer);
-        }
-      } else {
-        // 非批量操作，从layers数组中找出被隐藏的layer
-        if (!event.visible && event.layers && event.layers.length > 0) {
-          hiddenLayers = event.layers;
-        }
-      }
-
-      // 检查active feature是否属于被隐藏的layer
-      if (hiddenLayers.some((layer) => this.isFeatureInLayer(this.activeFeature!, layer))) {
-        logger.debug('[ActiveFeatureController] Clearing active feature because layer was hidden');
-        this.clearActiveFeature();
-      }
-    });
-
     // 监听选择开始事件
     const disposeSelectionStart = mapEventEmitter.on(MAP_EVENT.SELECTION_START, () => {
       if (this.activeFeature) {
@@ -90,18 +54,7 @@ export class ActiveFeatureController {
       }
     });
 
-    this.disposeListeners.push(disposeVisibilityChange, disposeSelectionStart);
-  }
-
-  /**
-   * 检查feature是否属于指定的layer
-   * @param feature 要检查的feature
-   * @param layer 图层
-   * @returns 是否属于该layer
-   */
-  private isFeatureInLayer(feature: MapFeature, layer: CommonPointEntityLayer): boolean {
-    // 通过检查layer的entity feature列表来判断
-    return layer.entity.features.some((f) => f === feature);
+    this.disposeListeners.push(disposeSelectionStart);
   }
 
   /**
@@ -109,7 +62,7 @@ export class ActiveFeatureController {
    * @param feature 要激活的feature，传入null则清除激活状态
    */
   @action
-  public setActiveFeature(feature: MapFeature | null) {
+  public setActiveFeature(feature: DataInstance | null) {
     // 如果被禁用或新旧feature相同，不做任何处理
     if (this.disabled || this.activeFeature === feature) {
       return;

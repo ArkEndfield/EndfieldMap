@@ -76,6 +76,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
   /** 滚动结束事件 */
   onScrollEnd,
 }) => {
+  const disposeFnRef = useRef<(() => void) | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const thumbXRef = useRef<HTMLDivElement>(null);
@@ -243,8 +244,6 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       const bar = (axis === 'x' ? thumbXRef : thumbYRef).current?.parentElement;
       if (!bar) return;
 
-      let dispose: (() => void) | undefined;
-
       const handleMouseMove = (moveEvent: MouseEvent) => {
         if (!contentRef.current || !bar) return;
 
@@ -294,13 +293,13 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           }
         });
 
-        dispose?.();
+        disposeFnRef.current?.();
       };
 
       const unlistenMove = domEventListener(document, 'mousemove', handleMouseMove);
       const unlistenUp = domEventListener(document, 'mouseup', handleMouseUp);
 
-      dispose = () => {
+      disposeFnRef.current = () => {
         unlistenMove();
         unlistenUp();
       };

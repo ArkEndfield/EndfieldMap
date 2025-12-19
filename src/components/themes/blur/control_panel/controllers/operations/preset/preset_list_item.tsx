@@ -92,12 +92,7 @@ export const PresetListItem = ({
       </button>
 
       {/* 序号 */}
-      <div
-        className={cn(
-          'text-xs font-mono font-semibold shrink-0 w-6',
-          active ? 'text-white' : 'text-white/50'
-        )}
-      >
+      <div className={cn('text-xs font-mono font-semibold shrink-0 w-6', active ? 'text-white' : 'text-white/50')}>
         {numberPadString(index, 2)}
       </div>
 

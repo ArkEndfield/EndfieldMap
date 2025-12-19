@@ -26,9 +26,7 @@ export const OperatorToggleButton: React.FC<OperatorToggleButtonProps> = ({
         'relative flex items-center justify-center gap-1 py-1.5 px-2 grow shrink',
         'text-xs font-medium rounded-lg transition-all duration-200 select-none',
         'border border-white/10',
-        !isActive &&
-          !isDisabled &&
-          'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white active:scale-95',
+        !isActive && !isDisabled && 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white active:scale-95',
         isActive && !isDisabled && 'bg-blue-500/20 text-white border-blue-500/30 shadow-sm shadow-blue-500/20',
         isDisabled && 'opacity-40 bg-white/5 text-white/30 cursor-not-allowed',
         className

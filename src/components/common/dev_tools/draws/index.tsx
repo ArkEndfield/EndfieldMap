@@ -1,7 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
-import { DrawHistoryProvider, useDrawHistory } from '@/components/common/dev_tools/draws/hooks/use_draw_history';
+import { DrawHistoryProvider } from '@/components/common/dev_tools/draws/components/draw_history';
+import { useDrawHistory } from '@/components/common/dev_tools/draws/hooks/use_draw_history';
 import { PointDraw } from '@/components/common/dev_tools/draws/point';
 import { ShapeDraw } from '@/components/common/dev_tools/draws/shape';
 import { ZoneDraw } from '@/components/common/dev_tools/draws/zone';

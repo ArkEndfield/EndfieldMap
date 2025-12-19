@@ -1,8 +1,13 @@
 import type { CustomPointPreset, CustomPointPresetExportBundle, CustomPointPresetStorage } from '@eftypes/custom_point';
-import type { CustomPointMapData, EndfieldMapAdapter, EntityVisibility, StorageData } from '@endfieldmap/map-core';
-import { CustomPointKey, MAP_EVENT } from '@endfieldmap/map-core';
-import { getDefaultCustomPointType } from '@endfieldmap/map-core/data/entity/custom_point';
-import type { CustomPointIdKey } from '@endfieldmap/map-core/types';
+import type {
+  CustomPointData,
+  CustomPointMapData,
+  EndfieldMapAdapter,
+  EntityVisibility,
+  StorageData,
+} from '@endfieldmap/map-core';
+import type { CustomPointTypeId } from '@endfieldmap/map-core';
+import { CustomPointKey, getDefaultCustomPointType, MAP_EVENT } from '@endfieldmap/map-core';
 import {
   debounce,
   LocalStorageDB,
@@ -12,7 +17,7 @@ import {
   StorageKey,
   type StorageManager,
 } from '@endfieldmap/tools';
-import { action, computed, observable, runInAction, toJS } from 'mobx';
+import { action, autorun, computed, observable, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/data';
@@ -38,9 +43,10 @@ export class CustomPointDataService {
 
   @observable accessor isCreating: boolean = false;
   @observable accessor isDeleting: boolean = false;
-  @observable accessor selectedPointType: CustomPointIdKey = getDefaultCustomPointType().entityInfo.point;
+  @observable accessor selectedPointType: CustomPointTypeId = getDefaultCustomPointType().id;
 
   private eventListenerDisposers: Array<() => void> = [];
+  private reactionDisposers: Array<() => void> = [];
 
   constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
     this.storage = storage;
@@ -50,7 +56,7 @@ export class CustomPointDataService {
 
   private initAdapter() {
     this.applyCurrentPresetToAdapter();
-    this.initCustomPointChangeEvent();
+    this.initAutoSaveReaction();
     this.initMapClickEvent();
     this.initCustomPointClickEvent();
   }
@@ -189,7 +195,7 @@ export class CustomPointDataService {
     const baseData = useInitialData
       ? initialData
       : this.initialized && useCurrentData
-        ? this.adapter.customPointController.allData
+        ? this.adapter.customPointController.dataManager.allData
         : ({} as CustomPointMapData);
     const ensuredData = this.ensureMapData(baseData);
 
@@ -321,12 +327,11 @@ export class CustomPointDataService {
   }
 
   /**
-   * 内部方法-防抖保存当前预设数据到存储
+   * 内部方法-防抖保存预设存储结构到存储
    */
-  private saveCurrentPresetData = debounce(() => {
+  private debouncedSave = debounce((currentData: Partial<Record<MapIndex, CustomPointData[]>>) => {
     if (!this.initialized) return;
 
-    const currentData = this.adapter.customPointController.allData;
     const ensuredData = this.ensureMapData(currentData);
 
     runInAction(() => {
@@ -335,7 +340,7 @@ export class CustomPointDataService {
         const now = Date.now();
         const newPreset: CustomPointPreset = {
           id: this.generatePresetId(),
-          name: '默认预设',
+          name: 'Default Preset',
           data: ensuredData,
           createdAt: now,
           updatedAt: now,
@@ -403,9 +408,6 @@ export class CustomPointDataService {
     if (creating) {
       // 进入创建模式时清除 active feature
       this.clearActiveFeature();
-    } else {
-      // 退出创建模式时保存数据
-      this.saveCurrentPresetData();
     }
   }
 
@@ -445,7 +447,7 @@ export class CustomPointDataService {
    * 设置选中的自定义标点类型
    */
   @action
-  public setSelectedPointType(pointType: CustomPointIdKey) {
+  public setSelectedPointType(pointType: CustomPointTypeId) {
     this.selectedPointType = pointType;
   }
   // endregion
@@ -502,14 +504,15 @@ export class CustomPointDataService {
     const visibilityData = this.customPointVisibilityData[mapIndex];
     if (!visibilityData) return;
 
-    const layer = this.adapter.customPointController.layerContainer;
-    if (!layer) return;
+    const dataManager = this.adapter.customPointController.dataManager;
+    const manager = dataManager.getMapManager(mapIndex);
+    if (!manager) return;
 
-    const features = layer.entity.features;
-    features.forEach((feature) => {
-      const entityDataIdKey = feature.data.entityDataIdKey;
+    const instances = manager.instances;
+    instances.forEach((instance) => {
+      const entityDataIdKey = instance.data.entityDataIdKey;
       if (entityDataIdKey in visibilityData) {
-        feature.setVisible(visibilityData[entityDataIdKey]);
+        instance.setVisible(visibilityData[entityDataIdKey]);
       }
     });
   }
@@ -526,11 +529,7 @@ export class CustomPointDataService {
       throw new Error('CustomPointDataService not initialized');
     }
 
-    const feature = this.adapter.customPointController.createCustomPointEntity(
-      mapIndex,
-      coordinate,
-      this.selectedPointType
-    );
+    const feature = this.adapter.customPointController.createCustomPoint(mapIndex, coordinate, this.selectedPointType);
     return feature;
   }
 
@@ -544,19 +543,20 @@ export class CustomPointDataService {
       throw new Error('CustomPointDataService not initialized');
     }
 
-    return this.adapter.customPointController.deleteCustomPointEntity(mapIndex, id);
+    return this.adapter.customPointController.deleteCustomPoint(mapIndex, id);
   }
   // endregion
 
   // region: 自定义标点事件初始化
   /**
-   * 初始化自定义标点数据变更事件监听
+   * 使用 MobX reaction 监听数据变化并自动保存
    */
-  private initCustomPointChangeEvent() {
-    const dispose = this.adapter.event.on(MAP_EVENT.CUSTOM_POINT_CHANGED, () => {
-      this.saveCurrentPresetData();
+  private initAutoSaveReaction() {
+    const dispose = autorun(() => {
+      const data = this.adapter.customPointController.dataManager.allData;
+      this.debouncedSave(data);
     });
-    this.eventListenerDisposers.push(dispose);
+    this.reactionDisposers.push(dispose);
   }
 
   /**

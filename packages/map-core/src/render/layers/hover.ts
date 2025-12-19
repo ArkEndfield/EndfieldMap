@@ -1,7 +1,7 @@
 import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const';
 import { createHoverRingStyle } from '@endfieldmap/map-core/render/factory';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
-import { AnimatedRingFeature } from '@endfieldmap/map-core/render/source/feature/animated_ring';
+import { AnimatedRingFeature } from '@endfieldmap/map-core/render/renderer/animated_ring';
 import type { Coordinate } from 'ol/coordinate';
 import type { FeatureLike } from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';

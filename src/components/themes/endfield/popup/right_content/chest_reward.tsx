@@ -19,7 +19,7 @@ export const ChestReward = ({ entity }: { entity: EntityData }) => {
       const rewards = await dataService.chestRewardDataService.getRewards(entity.properties.reward_id);
       return rewards;
     }
-  }, [entity, showRewards]);
+  }, [dataService.chestRewardDataService, entity, showRewards]);
 
   useEffect(() => {
     getRewadData().then((data) => {
@@ -42,9 +42,13 @@ export const ChestReward = ({ entity }: { entity: EntityData }) => {
         {rewards.map((rwd) => (
           <Item
             key={rwd.id}
-            icon={<img src={rwd.icon} alt={t(`lang:${rwd.name}`)} className="w-full h-full object-contain" />}
+            icon={<img src={rwd.icon} alt={t(`lang:${rwd.name}`, {
+              defaultValue: rwd.name,
+            })} className="w-full h-full object-contain" />}
             count={isDealedRewardItemWithCount(rwd) ? rwd.count : undefined}
-            name={t(`lang:${rwd.name}`)}
+            name={t(`lang:${rwd.name}`, {
+              defaultValue: rwd.name,
+            })}
           ></Item>
         ))}
       </div>

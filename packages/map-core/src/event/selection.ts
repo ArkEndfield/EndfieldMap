@@ -1,7 +1,7 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
+import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { DisposeListener, EntityEventDetail } from '@endfieldmap/map-core/types/event';
 import { action, observable } from 'mobx';
 import type { Feature } from 'ol';
@@ -100,9 +100,9 @@ export class EndfieldSelectionInteraction {
       if (!source?.getFeatures) return;
 
       source.getFeatures().forEach((feature: Feature<Geometry>) => {
-        const mapFeature = feature.get(EntityInstanceKey) as MapFeature | undefined;
-        if (mapFeature && typeof mapFeature.setIsSelected === 'function') {
-          mapFeature.setIsSelected(selectedSingleFeatures.has(feature));
+        const dataInstance = feature.get(EntityInstanceKey) as DataInstance | undefined;
+        if (dataInstance && typeof dataInstance.setSelected === 'function') {
+          dataInstance.setSelected(selectedSingleFeatures.has(feature));
         }
       });
     });

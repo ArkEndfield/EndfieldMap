@@ -40,7 +40,7 @@ export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter, data
     )
       return;
 
-    const { feature, layer } = event;
+    const { feature, renderer } = event;
 
     const lastHoveredConnection = adapter.hoverConnectionController.hoverFeature;
 
@@ -49,8 +49,8 @@ export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter, data
       return;
     }
 
-    if (feature && layer) {
-      adapter.hoverConnectionController.setHoverConnection(feature, layer);
+    if (feature && renderer) {
+      adapter.hoverConnectionController.setHoverConnection(feature, renderer);
     } else {
       adapter.hoverConnectionController.clearHoverConnection();
     }

@@ -4,10 +4,8 @@ import {
   FeatureTypeKey,
   MarkedFeatureFilterMode,
 } from '@endfieldmap/map-core/const/map';
-import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
-import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
-import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
-import type { MapFeature } from '@endfieldmap/map-core/types';
+import type { HitTestableLayer } from '@endfieldmap/map-core/types';
+import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { Map as OlMap } from 'ol';
 import type { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
@@ -25,7 +23,7 @@ export interface EntityHitTestInput {
 
 export interface EntityHitTestResult {
   features: Feature<Point>[];
-  layer: CommonPointEntityLayer | ElectricPoleEntityLayer | CustomPointEntityLayer;
+  layer: HitTestableLayer;
 }
 
 export interface EntityHitTestOptions {
@@ -37,7 +35,7 @@ export interface EntityHitTestOptions {
   debounceDelay?: number;
 }
 
-type EntityLayer = CommonPointEntityLayer | ElectricPoleEntityLayer | CustomPointEntityLayer;
+type EntityLayer = HitTestableLayer;
 
 // ============================================================================
 // Utility Functions
@@ -52,7 +50,7 @@ function isFeatureVisible(feature: Feature<Point>, layer: EntityLayer): boolean 
     return false;
   }
 
-  const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+  const instance = feature.get(EntityInstanceKey) as DataInstance | undefined;
 
   if (instance && 'visible' in instance && instance.visible === false) {
     return false;
@@ -107,7 +105,7 @@ function filterAndSortClusterFeatures(clusterFeatures: Feature<Point>[], layer: 
  */
 function hitTestNonClusteredLayer(
   input: EntityHitTestInput,
-  layer: ElectricPoleEntityLayer | CustomPointEntityLayer,
+  layer: HitTestableLayer,
   results: EntityHitTestResult[]
 ): void {
   const { pixel, map } = input;
@@ -147,7 +145,7 @@ function hitTestNonClusteredLayer(
  */
 function hitTestClusteredLayer(
   input: EntityHitTestInput,
-  layer: CommonPointEntityLayer,
+  layer: HitTestableLayer,
   results: EntityHitTestResult[]
 ): void {
   const { pixel, map } = input;
@@ -235,8 +233,8 @@ export function selectTopmostHitResult(results: EntityHitTestResult[]): EntityHi
  */
 export function hitTestEntitiesAt(
   input: EntityHitTestInput,
-  electricPoleLayers: (ElectricPoleEntityLayer | CustomPointEntityLayer)[],
-  entityLayers: CommonPointEntityLayer[]
+  electricPoleLayers: HitTestableLayer[],
+  entityLayers: HitTestableLayer[]
 ): EntityHitTestResult[] {
   const { coordinate } = input;
 

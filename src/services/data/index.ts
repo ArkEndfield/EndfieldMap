@@ -1,9 +1,4 @@
-import {
-  type EndfieldMapAdapter,
-  type EntityVisibilityChangeEventDetail,
-  type FeatureStateChangeEventDetail,
-  MAP_EVENT,
-} from '@endfieldmap/map-core';
+import { type EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { JSONLoader, StorageManager } from '@endfieldmap/tools';
 
 import { ChestRewardDataService } from '@/services/data/chest_reward';
@@ -31,8 +26,6 @@ export class DataService {
   });
   public static instance?: DataService;
 
-  private adapter: EndfieldMapAdapter;
-
   public entityDataService: EntityDataService;
   public electricPoleDataService: ElectricPoleDataService;
   public customPointDataService: CustomPointDataService;
@@ -45,7 +38,6 @@ export class DataService {
   public swiperDataService: SwiperDataService;
 
   constructor(adapter: EndfieldMapAdapter) {
-    this.adapter = adapter;
     this.entityDataService = new EntityDataService(DataService.storage, adapter);
     this.electricPoleDataService = new ElectricPoleDataService(DataService.storage, adapter);
     this.customPointDataService = new CustomPointDataService(DataService.storage, adapter);
@@ -97,22 +89,5 @@ export class DataService {
       // 初始化语言哈希数据
       this.langHashDataService.getLangHashData(),
     ]);
-    this.initDataEventListeners();
-  }
-
-  public initDataEventListeners() {
-    this.adapter.event.on(MAP_EVENT.ENTITY_VISIBILITY_CHANGE, (event: EntityVisibilityChangeEventDetail) => {
-      const currentMap = this.adapter!.currentMapIndex;
-      for (const layer of event.layers) {
-        this.entityDataService.updateEntityVisibility(currentMap, layer.entityDataIdKey, layer.visible);
-      }
-    });
-
-    this.adapter.event.on(MAP_EVENT.FEATURE_STATE_CHANGE, (event: FeatureStateChangeEventDetail) => {
-      const currentMap = this.adapter!.currentMapIndex;
-      if (event.property === 'marked') {
-        this.entityDataService.updateFeatureMarked(currentMap, event.feature.data.levelLogicId, event.newValue);
-      }
-    });
   }
 }

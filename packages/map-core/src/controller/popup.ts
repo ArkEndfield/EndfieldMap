@@ -1,11 +1,10 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { DEFAULT_ICON_SIZE } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
-import type { DisposeListener } from '@endfieldmap/map-core/types/event';
+import type { DataInstance, DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
 import type { Map as OlMap } from 'ol';
-import type { Point } from 'ol/geom';
+import type { Coordinate } from 'ol/coordinate';
 import Overlay from 'ol/Overlay';
 
 export interface PopupControllerConfig {
@@ -24,7 +23,7 @@ export class PopupController {
   /** 桌面端Overlay */
   private overlay: Overlay | null = null;
   /** 当前激活的feature */
-  private currentFeature: MapFeature | null = null;
+  private currentFeature: DataInstance | null = null;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
 
@@ -39,11 +38,11 @@ export class PopupController {
   private registerEventHandlers() {
     // 监听激活feature变化事件，更新Overlay位置
     const disposeActiveFeatureChange = mapEventEmitter.on(MAP_EVENT.ACTIVE_FEATURE_CHANGE, (event) => {
-      const { newFeature } = event;
+      const { newFeature, coordinate } = event;
       this.currentFeature = newFeature;
 
-      if (newFeature) {
-        this.updateOverlayPosition(newFeature);
+      if (newFeature && coordinate) {
+        this.updateOverlayPosition(coordinate);
       } else {
         this.clearOverlayPosition();
       }
@@ -54,14 +53,10 @@ export class PopupController {
 
   /**
    * 更新Overlay位置
-   * @param feature feature实例
+   * @param coordinate 坐标
    */
-  private updateOverlayPosition(feature: MapFeature) {
+  private updateOverlayPosition(coordinate: Coordinate) {
     if (!this.overlay) return;
-
-    const geometry = feature.feature.getGeometry() as Point;
-    const coordinate = geometry?.getCoordinates();
-    if (!coordinate) return;
 
     this.overlay.setPosition(coordinate);
     logger.debug('[PopupController] Updated overlay position', coordinate);
@@ -103,7 +98,7 @@ export class PopupController {
 
     // 如果有当前feature，立即更新位置
     if (this.currentFeature) {
-      this.updateOverlayPosition(this.currentFeature);
+      this.updateOverlayPosition(this.currentFeature.coordinates);
     }
 
     logger.debug('[PopupController] Overlay element set');
@@ -112,7 +107,7 @@ export class PopupController {
   /**
    * 获取当前feature
    */
-  public get feature(): MapFeature | null {
+  public get feature(): DataInstance | null {
     return this.currentFeature;
   }
 

@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Swiper as SwiperType } from 'swiper';
-import { Autoplay, Navigation,Pagination } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { IconButton } from '@/components/common/endfield_components/icon_button';

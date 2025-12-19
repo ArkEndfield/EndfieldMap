@@ -1,13 +1,13 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
+import type { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer/electric_pole_renderer';
 import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
 import { debounce, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 
 export interface HoverConnectionControllerConfig {
-  getConnectionLayer: () => ElectricPoleConnectionLayer | null;
+  getConnectionLayer: () => ElectricPoleRenderer | null;
   disableHoverConnection?: boolean;
 }
 
@@ -18,8 +18,8 @@ export interface HoverConnectionControllerConfig {
 export class HoverConnectionController {
   /** 当前hover的connection feature */
   @observable accessor hoverFeature: FeatureLike | null = null;
-  /** 当前hover的connection所属layer */
-  @observable accessor hoverLayer: ElectricPoleConnectionLayer | null = null;
+  /** 当前hover的connection所属renderer */
+  @observable accessor hoverRenderer: ElectricPoleRenderer | null = null;
   /** 是否开启防抖 */
   @observable accessor debounceTime: number = 0;
   /** 是否禁用 */
@@ -27,7 +27,7 @@ export class HoverConnectionController {
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
   /** 获取连接图层的函数 */
-  private getConnectionLayer: () => ElectricPoleConnectionLayer | null;
+  private getConnectionLayer: () => ElectricPoleRenderer | null;
   /** 防抖后的hover处理函数 */
   private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
 
@@ -61,29 +61,29 @@ export class HoverConnectionController {
       // 发出清除hover的事件
       mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
         feature: null,
-        layer: null,
+        renderer: null,
         event,
       });
       return;
     }
 
-    const connectionLayer = this.getConnectionLayer();
-    if (!connectionLayer || !connectionLayer.layer.getVisible()) {
+    const connectionRenderer = this.getConnectionLayer();
+    if (!connectionRenderer || !connectionRenderer.getConnectionVisible()) {
       // 发出清除hover的事件
       mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
         feature: null,
-        layer: null,
+        renderer: null,
         event,
       });
       return;
     }
 
-    const clickedFeatures = await connectionLayer.layer.getFeatures(event.pixel as [number, number]);
+    const clickedFeatures = await connectionRenderer.connectionLayer.getFeatures(event.pixel as [number, number]);
     if (clickedFeatures.length === 0) {
       // 发出清除hover的事件
       mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
         feature: null,
-        layer: null,
+        renderer: null,
         event,
       });
       return;
@@ -95,7 +95,7 @@ export class HoverConnectionController {
     // 发出CONNECTION_HOVER事件，由UI层处理设置hover状态
     mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
       feature,
-      layer: connectionLayer,
+      renderer: connectionRenderer,
       event,
     });
   }
@@ -133,31 +133,23 @@ export class HoverConnectionController {
       }
     });
 
-    // 监听电线杆变化事件
-    const disposeElectricPoleChanged = mapEventEmitter.on(MAP_EVENT.ELECTRIC_POLE_CHANGED, () => {
-      if (this.hoverFeature) {
-        logger.debug('[HoverConnectionController] Clearing hover connection because electric pole changed');
-        this.clearHoverConnection();
-      }
-    });
-
-    this.disposeListeners.push(disposeHover, disposeSelectionStart, disposeZoomChange, disposeElectricPoleChanged);
+    this.disposeListeners.push(disposeHover, disposeSelectionStart, disposeZoomChange);
   }
 
   /**
    * 设置hover的connection
    * @param feature 要hover的connection feature，传入null则清除hover状态
-   * @param layer 连接所属的图层
+   * @param renderer 连接所属的渲染器
    */
   @action
-  public setHoverConnection(feature: FeatureLike | null, layer: ElectricPoleConnectionLayer | null) {
+  public setHoverConnection(feature: FeatureLike | null, renderer: ElectricPoleRenderer | null) {
     // 如果新旧feature相同，不做任何处理
     if (this.hoverFeature === feature) {
       return;
     }
 
     const oldFeature = this.hoverFeature;
-    const oldLayer = this.hoverLayer;
+    const oldRenderer = this.hoverRenderer;
 
     if (oldFeature) {
       logger.debug('[HoverConnectionController] Unhovered connection');
@@ -168,23 +160,23 @@ export class HoverConnectionController {
     }
 
     this.hoverFeature = feature;
-    this.hoverLayer = layer;
+    this.hoverRenderer = renderer;
 
-    // 更新旧图层的hover状态
-    if (oldLayer && oldFeature) {
-      oldLayer.setHoveredFeature(null);
+    // 更新旧渲染器的hover状态
+    if (oldRenderer && oldFeature) {
+      oldRenderer.setHoveredFeature(null);
     }
 
-    // 更新新图层的hover状态
-    if (layer && feature) {
-      layer.setHoveredFeature(feature);
+    // 更新新渲染器的hover状态
+    if (renderer && feature) {
+      renderer.setHoveredFeature(feature);
     }
 
     // 发出hover connection变化事件
     mapEventEmitter.fire(MAP_EVENT.HOVER_CONNECTION_CHANGE, {
       oldFeature,
       newFeature: feature,
-      layer,
+      renderer,
     });
   }
 

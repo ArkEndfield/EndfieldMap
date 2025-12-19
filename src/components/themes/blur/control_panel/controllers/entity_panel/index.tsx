@@ -1,4 +1,4 @@
-import type { Category, EntityInfoItemData } from '@endfieldmap/map-core';
+import type { Category, EntityInfoStats } from '@endfieldmap/map-core';
 import EntityGroup from '@themes/blur/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/blur/control_panel/controllers/entity_panel/item';
 import { Search } from '@themes/blur/control_panel/controllers/entity_panel/search';
@@ -8,13 +8,9 @@ import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
 
-interface EntityItemInfo extends EntityInfoItemData {
-  markedCount: number;
-}
-
 interface CategoryInfo {
   category: Category;
-  entities: EntityItemInfo[];
+  entities: EntityInfoStats[];
   totalEntities: number;
   displayedEntities: number;
   allDisplayed: boolean;
@@ -25,15 +21,15 @@ const EntityPanel = observer(() => {
   const { adapter, dataService } = useAdapter();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const entities = adapter.entityController.currentEntityInfoList;
+  const entities = adapter.entityController.currentStats;
   const currentMap = adapter.currentMapIndex;
-  
+
   const categorizedEntities = useMemo<CategoryInfo[]>(() => {
     if (!entities.length) return [];
 
     const lowerSearchQuery = searchQuery.toLowerCase().trim();
 
-    const entityInfoMap = new Map<string, EntityItemInfo>();
+    const entityInfoMap = new Map<string, EntityInfoStats>();
 
     entities.forEach((entity) => {
       if (lowerSearchQuery) {
@@ -56,7 +52,7 @@ const EntityPanel = observer(() => {
       entityInfoMap.set(entity.entityDataIdKey, entity);
     });
 
-    const categoryMap = new Map<Category, EntityItemInfo[]>();
+    const categoryMap = new Map<Category, EntityInfoStats[]>();
     entityInfoMap.forEach((entity) => {
       const category = entity.category as Category;
       if (!categoryMap.has(category)) {
@@ -83,7 +79,7 @@ const EntityPanel = observer(() => {
     const hardCordOrder = ['other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative'];
     result.sort((a, b) => hardCordOrder.indexOf(a.category) - hardCordOrder.indexOf(b.category));
     return result;
-  }, [entities, searchQuery, t]);
+  }, [dataService.langHashDataService, entities, searchQuery, t]);
 
   const handleCategoryClick = (category: Category, allDisplayed: boolean) => {
     if (allDisplayed) {

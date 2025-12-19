@@ -93,16 +93,16 @@ const MobilePopup: React.FC = observer(() => {
         <Sheet.Header className="bg-[#272727] rounded-t-md" />
         <Sheet.Content disableDrag disableScroll className="bg-[#272727] text-white">
           <div className="w-full h-full flex flex-col">
-            {showRewards && (
+            {showRewards ? (
               <div className="shrink-0 grow-0 mx-5 mb-3">
                 <EndfieldSwitch
                   checked={showEntityPage}
                   onChange={setShowEntityPage}
-                  onText={t('entity.title')}
-                  offText={t('reward.title')}
+                  onText={t('entity.title') as string}
+                  offText={t('reward.title') as string}
                 />
               </div>
-            )}
+            ) : null}
             <Content showEntityPage={showEntityPage} />
           </div>
         </Sheet.Content>

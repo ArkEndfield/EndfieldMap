@@ -32,7 +32,7 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
     } else if (!enableHover && hoverHitTestTime !== -1) {
       adapter.setHoverFeatureEnable(true);
     }
-  }, [isMobile]);
+  }, [adapter, enableHover, hoverHitTestTime, isMobile]);
 
   return (
     <AdapterProvider adapter={adapter} dataService={dataService}>

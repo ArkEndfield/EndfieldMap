@@ -1,4 +1,4 @@
-import type { LoadingStageId } from "@/const/loading";
+import type { LoadingStageId } from '@/const/loading';
 
 export interface LoadingState {
   totalProgress: number;

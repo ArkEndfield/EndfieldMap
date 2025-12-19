@@ -27,7 +27,7 @@ export enum StorageKey {
   /** Guide */
   GUIDE = 'guide',
   /** LangHash */
-  LANG_HASH = 'lang_hash'
+  LANG_HASH = 'lang_hash',
 }
 
 // local storage type enum

@@ -1,12 +1,11 @@
 import type {
   EndfieldMapAdapter,
-  EntityData,
   EntityVisibility,
   FeatureMarked,
-  MapIndex,
   StorageData,
 } from '@endfieldmap/map-core';
 import { debounce, StorageKey, type StorageManager } from '@endfieldmap/tools';
+import { autorun } from 'mobx';
 
 import { DEBOUNCE_INTERVAL } from '@/const/data';
 
@@ -14,64 +13,77 @@ import { DEBOUNCE_INTERVAL } from '@/const/data';
  * 实体数据管理器
  */
 export class EntityDataService {
-  public entityVisibilityData: StorageData<EntityVisibility> = {};
-  public featureMarkedData: StorageData<FeatureMarked> = {};
   private storage: StorageManager;
   private adapter: EndfieldMapAdapter;
+  private reactionDisposers: Array<() => void> = [];
 
   constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
     this.storage = storage;
     this.adapter = adapter;
+    this.initAutoSaveReaction();
   }
 
   public async initFromStorage() {
-    this.entityVisibilityData = (await this.storage.permanentGet(StorageKey.LAYERS_VISIBILITY)) || {};
-    this.featureMarkedData = (await this.storage.permanentGet(StorageKey.MARKED_FEATURES)) || {};
+    const entityVisibilityData = (await this.storage.permanentGet(StorageKey.LAYERS_VISIBILITY)) || {};
+    const featureMarkedData = (await this.storage.permanentGet(StorageKey.MARKED_FEATURES)) || {};
 
-    if (this.adapter.entityController.validateLayerVisibility(this.entityVisibilityData)) {
-      this.adapter.entityController.importLayerVisibility(this.entityVisibilityData);
+    // 直接导入数据，新版 API 内部会处理数据验证
+    if (Object.keys(entityVisibilityData).length > 0) {
+      await this.adapter.entityController.importVisibility(entityVisibilityData);
     }
-    if (this.adapter.entityController.validateMarkedFeatures(this.featureMarkedData)) {
-      this.adapter.entityController.importMarkedFeatures(this.featureMarkedData);
+    if (Object.keys(featureMarkedData).length > 0) {
+      await this.adapter.entityController.importMarked(featureMarkedData);
     }
   }
 
-  public async saveToStorage() {
-    await Promise.all([
-      this.storage.permanentSet(StorageKey.LAYERS_VISIBILITY, this.entityVisibilityData),
-      this.storage.permanentSet(StorageKey.MARKED_FEATURES, this.featureMarkedData),
-    ]);
+  public async saveEntityVisibilityToStorage(data: StorageData<EntityVisibility>) {
+    return await this.storage.permanentSet(StorageKey.LAYERS_VISIBILITY, data);
   }
 
-  public updateEntityVisibility(mapIndex: MapIndex, entityDataIdKey: EntityData['entityDataIdKey'], visible: boolean) {
-    if (!this.entityVisibilityData[mapIndex]) {
-      this.entityVisibilityData[mapIndex] = {};
-    }
-    this.entityVisibilityData[mapIndex][entityDataIdKey] = visible;
-    this.saveEntityVisibilityToStorageDebounced();
+  public async saveFeatureMarkedToStorage(data: StorageData<FeatureMarked>) {
+    return await this.storage.permanentSet(StorageKey.MARKED_FEATURES, data);
   }
 
-  public updateFeatureMarked(mapIndex: MapIndex, levelLogicId: EntityData['levelLogicId'], marked: boolean) {
-    if (!this.featureMarkedData[mapIndex]) {
-      this.featureMarkedData[mapIndex] = {};
-    }
-    this.featureMarkedData[mapIndex][levelLogicId] = marked;
-    this.saveFeatureMarkedToStorageDebounced();
+  /**
+   * 使用 MobX autorun 监听数据变化并自动保存
+   */
+  private initAutoSaveReaction() {
+    // 监听可见性数据变化
+    const visibilityDispose = autorun(() => {
+      const visibilityData = JSON.stringify(this.adapter.entityController.dataManager.visibilityData);
+      this.debouncedSaveVisibility(visibilityData);
+    });
+
+    // 监听标记数据变化
+    const markedDispose = autorun(() => {
+      const markedData = JSON.stringify(this.adapter.entityController.dataManager.markedData);
+      this.debouncedSaveMarked(markedData);
+    });
+
+    this.reactionDisposers.push(visibilityDispose, markedDispose);
   }
 
-  public async saveEntityVisibilityToStorage() {
-    return await this.storage.permanentSet(StorageKey.LAYERS_VISIBILITY, this.entityVisibilityData);
-  }
+  /**
+   * 防抖保存可见性数据
+   */
+  private debouncedSaveVisibility = debounce((_serializedData: string) => {
+    const visibilityData = this.adapter.entityController.dataManager.visibilityData;
+    this.saveEntityVisibilityToStorage(visibilityData);
+  }, DEBOUNCE_INTERVAL);
 
-  public async saveFeatureMarkedToStorage() {
-    return await this.storage.permanentSet(StorageKey.MARKED_FEATURES, this.featureMarkedData);
-  }
+  /**
+   * 防抖保存标记数据
+   */
+  private debouncedSaveMarked = debounce((_serializedData: string) => {
+    const markedData = this.adapter.entityController.dataManager.markedData;
+    this.saveFeatureMarkedToStorage(markedData);
+  }, DEBOUNCE_INTERVAL);
 
-  get saveEntityVisibilityToStorageDebounced() {
-    return debounce(this.saveEntityVisibilityToStorage.bind(this), DEBOUNCE_INTERVAL);
-  }
-
-  get saveFeatureMarkedToStorageDebounced() {
-    return debounce(this.saveFeatureMarkedToStorage.bind(this), DEBOUNCE_INTERVAL);
+  /**
+   * 清理资源
+   */
+  public dispose() {
+    this.reactionDisposers.forEach((dispose) => dispose());
+    this.reactionDisposers = [];
   }
 }

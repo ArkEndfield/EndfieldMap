@@ -1,16 +1,16 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
-import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
-import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
-import { EntityController } from '@endfieldmap/map-core/controller/entity';
+import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point_controller';
+import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole_controller';
+import { EntityController } from '@endfieldmap/map-core/controller/entity_controller';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
+import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import {
   type EntityHitTestResult,
   hitTestEntitiesAt,
   selectTopmostHitResult,
 } from '@endfieldmap/map-core/event/entity_hit_test';
-import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
-import type { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
 import { boundingExtent } from 'ol/extent';
 
 export interface EventControllerConfig {
@@ -35,11 +35,13 @@ export class EventController {
   private registerClickEventHandlers() {
     // 点击事件
     mapEventEmitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
-      const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter((layer) => layer.visible);
+      const electricPoleLayers = this.electricPoleController.currentRenderer?.visible
+        ? [this.electricPoleController.currentRenderer]
+        : [];
       const customPointLayers = this.customPointController.layerContainer
         ? [this.customPointController.layerContainer].filter((layer) => layer.visible)
         : [];
-      const entityLayers = this.entityController.currentMapAllLayers.filter((layer) => layer.visible);
+      const entityLayers = this.entityController.currentRenderers.filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
         {
@@ -53,17 +55,17 @@ export class EventController {
 
       // 如果没有命中实体，尝试命中电线连接
       if (allClickedFeatures.length === 0) {
-        const connectionLayer = this.electricPoleController.currentConnectionLayer;
-        if (!connectionLayer || !connectionLayer.layer.getVisible()) return;
+        const renderer = this.electricPoleController.currentRenderer;
+        if (!renderer || !renderer.getConnectionVisible()) return;
 
-        const clickedFeatures = await connectionLayer.layer.getFeatures(event.pixel as [number, number]);
+        const clickedFeatures = await renderer.getConnectionFeatures(event.pixel as [number, number]);
         if (clickedFeatures.length === 0) return;
         const feature = clickedFeatures[0];
-        const instance = feature.get(EntityInstanceKey) as ConnectionFeature;
+        const instance = feature.get(EntityInstanceKey) as ElectricPoleDataInstance;
         mapEventEmitter.fire(MAP_EVENT.CONNECTION_CLICK, {
           feature: feature,
           instance,
-          layer: connectionLayer as ElectricPoleConnectionLayer,
+          renderer,
           event,
         });
         return;
@@ -78,7 +80,7 @@ export class EventController {
         // 处理聚合点击
         const coordinates = features.map((r) => r.getGeometry()?.getCoordinates?.()).filter((coord) => !!coord);
         const extent = boundingExtent(coordinates);
-        const instances = features.map((r) => r.get(EntityInstanceKey) as MapFeature);
+        const instances = features.map((r) => r.get(EntityInstanceKey) as EntityDataInstance);
         mapEventEmitter.fire(MAP_EVENT.CLUSTER_CLICK, {
           features,
           instances,
@@ -89,7 +91,7 @@ export class EventController {
       } else {
         // 处理单个实体点击
         const feature = features[0];
-        const instance = feature.get(EntityInstanceKey) as MapFeature;
+        const instance = feature.get(EntityInstanceKey) as EntityDataInstance;
         mapEventEmitter.fire(MAP_EVENT.ENTITY_CLICK, {
           instance,
           feature,
@@ -101,11 +103,13 @@ export class EventController {
 
   private registerContextMenuEventHandlers() {
     mapEventEmitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
-      const electricPoleLayers = this.electricPoleController.currentMapAllEntityLayers.filter((layer) => layer.visible);
+      const electricPoleLayers = this.electricPoleController.currentRenderer?.visible
+        ? [this.electricPoleController.currentRenderer]
+        : [];
       const customPointLayers = this.customPointController.layerContainer
         ? [this.customPointController.layerContainer].filter((layer) => layer.visible)
         : [];
-      const entityLayers = this.entityController.currentMapAllLayers.filter((layer) => layer.visible);
+      const entityLayers = this.entityController.currentRenderers.filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
         {
@@ -119,15 +123,15 @@ export class EventController {
 
       // 如果没有命中实体，尝试命中电线连接
       if (allClickedFeatures.length === 0) {
-        const connectionLayer = this.electricPoleController.currentConnectionLayer;
-        if (!connectionLayer || !connectionLayer.layer.getVisible()) return;
+        const renderer = this.electricPoleController.currentRenderer;
+        if (!renderer || !renderer.getConnectionVisible()) return;
 
-        const clickedFeatures = await connectionLayer.layer.getFeatures(detail.pixel);
+        const clickedFeatures = await renderer.getConnectionFeatures(detail.pixel);
         if (clickedFeatures.length === 0) return;
 
         mapEventEmitter.fire(MAP_EVENT.CONNECTION_CONTEXT_MENU, {
           feature: clickedFeatures[0],
-          layer: connectionLayer as ElectricPoleConnectionLayer,
+          renderer,
           event: detail,
         });
         return;
@@ -140,7 +144,7 @@ export class EventController {
 
       // 右键只针对单个实体触发上下文菜单，如果命中多个，选择第一个
       const feature = features[0];
-      const instance = feature.get(EntityInstanceKey) as MapFeature;
+      const instance = feature.get(EntityInstanceKey) as EntityDataInstance;
 
       mapEventEmitter.fire(MAP_EVENT.ENTITY_CONTEXT_MENU, {
         instance,

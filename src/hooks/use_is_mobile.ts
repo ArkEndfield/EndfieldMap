@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const mediaQuery = window.matchMedia('(max-width: 768px)');
 

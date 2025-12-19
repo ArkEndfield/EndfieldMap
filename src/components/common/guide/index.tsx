@@ -52,7 +52,7 @@ export const Guide = ({ entity }: { entity: EntityData }) => {
   const getGuideData = useCallback(async () => {
     const guides = await dataService.guideDataService.getGuide(entity.levelLogicId);
     return guides;
-  }, [entity]);
+  }, [dataService.guideDataService, entity.levelLogicId]);
 
   const { slides, imageIndexMap } = collectImages(guide?.nodes ?? []);
 

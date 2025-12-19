@@ -206,7 +206,9 @@ const CursorPositionDisplay = observer(() => {
 
   useEffect(() => {
     const map = adapter.mapController.mapRenderer.map;
-    const listener = (e: any) => {
+    const listener = (e: {
+      coordinate: number[];
+    }) => {
       const [x, y] = e.coordinate;
       setCoords(`${x.toFixed(2)}, ${y.toFixed(2)}`);
     };

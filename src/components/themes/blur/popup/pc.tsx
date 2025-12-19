@@ -102,7 +102,7 @@ const PCPopup: React.FC = observer(() => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0 bg-black/40 border border-white/20 rounded-2xl backdrop-blur-[40px] shadow-xl shadow-black/20"
+                  className="absolute inset-0 bg-black/40 border border-white/20 rounded-2xl backdrop-blur-2xl shadow-xl shadow-black/20"
                 />
 
                 {/* Content */}
@@ -139,18 +139,13 @@ const PCPopup: React.FC = observer(() => {
 
               {/* Toggle button - attached to left card */}
               {showRewards && (
-                <div
-                  className={cn(
-                    'w-8 h-16 rounded-r-lg overflow-hidden shrink-0',
-                    'relative self-start mt-4'
-                  )}
-                >
+                <div className={cn('w-8 h-16 rounded-r-lg overflow-hidden shrink-0', 'relative self-start mt-4')}>
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute inset-0 bg-black/40 border border-l-0 border-white/20 rounded-r-lg backdrop-blur-[40px] shadow-xl shadow-black/20"
+                    className="absolute inset-0 bg-black/40 border border-l-0 border-white/20 rounded-r-lg backdrop-blur-2xl shadow-xl shadow-black/20"
                   />
                   <motion.button
                     initial={{ opacity: 0 }}
@@ -189,7 +184,7 @@ const PCPopup: React.FC = observer(() => {
                     animate={{ opacity: isExpand ? 1 : 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute inset-0 bg-black/40 border border-white/20 rounded-2xl backdrop-blur-[40px] shadow-xl shadow-black/20"
+                    className="absolute inset-0 bg-black/40 border border-white/20 rounded-2xl backdrop-blur-2xl shadow-xl shadow-black/20"
                   />
 
                   {/* Content */}

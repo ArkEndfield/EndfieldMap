@@ -1,4 +1,4 @@
-import { EntityInstanceKey, type MapFeature } from '@endfieldmap/map-core';
+import { type DataInstance,EntityInstanceKey } from '@endfieldmap/map-core';
 import { SideButton } from '@themes/endfield/control_panel/controllers/mobile/side_button';
 import { OperationButton } from '@themes/endfield/control_panel/controllers/operations/_button';
 import { OperationTip } from '@themes/endfield/control_panel/controllers/operations/_tip';
@@ -72,7 +72,7 @@ const SelectOperator = observer(() => {
 
   const markFeatures = (marked: boolean) => {
     selectedFeatures.forEach((feature) => {
-      const instance = feature.get(EntityInstanceKey) as MapFeature | undefined;
+      const instance = feature.get(EntityInstanceKey) as DataInstance | undefined;
       if (instance && typeof instance.setMarked === 'function') {
         instance.setMarked(marked);
       }

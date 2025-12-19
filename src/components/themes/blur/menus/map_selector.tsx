@@ -23,9 +23,7 @@ const MapButton = ({
     className={cn(
       'px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
       'hover:bg-white/10',
-      active
-        ? 'bg-white/20 text-white shadow-sm'
-        : 'text-white/70 hover:text-white active:bg-white/15 active:scale-95'
+      active ? 'bg-white/20 text-white shadow-sm' : 'text-white/70 hover:text-white active:bg-white/15 active:scale-95'
     )}
     onClick={onClick}
   >
@@ -86,7 +84,9 @@ export const MapSelector: React.FC = observer(() => {
             'border border-white/20',
             'shadow-lg shadow-black/20',
             'hover:bg-black/50 active:bg-black/60 active:scale-95',
-            isMobile ? 'w-full justify-center text-lg font-semibold h-12 rounded-full' : 'w-32 justify-center h-14 rounded-lg'
+            isMobile
+              ? 'w-full justify-center text-lg font-semibold h-12 rounded-full'
+              : 'w-32 justify-center h-14 rounded-lg'
           )}
           onClick={togglePopover}
         >
@@ -100,7 +100,7 @@ export const MapSelector: React.FC = observer(() => {
             'absolute overflow-hidden top-full mt-2',
             'bg-black/40 rounded-xl shadow-xl shadow-black/20',
             'border border-white/20',
-            'backdrop-blur-[40px] transform-gpu',
+            'backdrop-blur-2xl transform-gpu',
             isMobile ? 'w-screen left-1/2 -translate-x-1/2' : 'right-0 w-56'
           )}
           animate={{
@@ -160,7 +160,7 @@ export const MapSelector: React.FC = observer(() => {
               'bg-black/60',
               'border border-white/20',
               'shadow-xl shadow-black/30',
-              'backdrop-blur-[40px] transform-gpu'
+              'backdrop-blur-2xl transform-gpu'
             )}
             animate={{
               scale: showChangeAnimation ? 1 : 0.9,
@@ -176,12 +176,8 @@ export const MapSelector: React.FC = observer(() => {
               opacity: 0,
             }}
           >
-            <div className="text-2xl font-semibold text-white text-center mb-1">
-              {t(`map:${mapIndex}`)}
-            </div>
-            <div className="text-xs text-white/60 text-center">
-              {t('header:map.map_change')}
-            </div>
+            <div className="text-2xl font-semibold text-white text-center mb-1">{t(`map:${mapIndex}`)}</div>
+            <div className="text-xs text-white/60 text-center">{t('header:map.map_change')}</div>
           </motion.div>
         </motion.div>,
         document.body

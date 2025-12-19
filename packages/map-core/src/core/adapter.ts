@@ -1,13 +1,14 @@
 import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, LayerType, MapIndex } from '@endfieldmap/map-core/const';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/active_feature';
 import { AreaNameController } from '@endfieldmap/map-core/controller/area_name';
-import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point';
-import { DataController } from '@endfieldmap/map-core/controller/data';
-import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole';
-import { EntityController } from '@endfieldmap/map-core/controller/entity';
+import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point_controller';
+import { DataController } from '@endfieldmap/map-core/controller/data_controller';
+import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole_controller';
+import { EntityController } from '@endfieldmap/map-core/controller/entity_controller';
 import { EventController } from '@endfieldmap/map-core/controller/event';
 import { HoverConnectionController } from '@endfieldmap/map-core/controller/hover_connection';
 import { HoverFeatureController } from '@endfieldmap/map-core/controller/hover_feature';
+import { KeyboardMoveController } from '@endfieldmap/map-core/controller/keyboard';
 import { EndfieldMapLayerController } from '@endfieldmap/map-core/controller/layer';
 import { MapController } from '@endfieldmap/map-core/controller/map';
 import { MapLayerController } from '@endfieldmap/map-core/controller/map_layer';
@@ -23,8 +24,6 @@ import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type Control from 'ol/control/Control';
-
-import { KeyboardMoveController } from './../controller/keyboard';
 
 export interface AdapterConfig {
   container: HTMLElement;
@@ -121,25 +120,6 @@ export class EndfieldMapAdapter {
       dataPath: this.asset.entityData,
       imagePath: this.asset.entityImage,
     });
-    this.activeFeatureController = new ActiveFeatureController({
-      map: this.mapController.mapRenderer.map,
-      disableActiveFeature: config.map?.disableActiveFeature,
-    });
-    this.hoverFeatureController = new HoverFeatureController({
-      map: this.mapController.mapRenderer.map,
-      getEntityLayers: () => this.entityController?.currentMapAllLayers || [],
-      getElectricPoleLayers: () => this.electricPoleController?.currentMapAllEntityLayers || [],
-      getCustomPointLayers: () =>
-        this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : [],
-      disableHoverFeature: config.map?.disableHoverFeature,
-    });
-    this.hoverConnectionController = new HoverConnectionController({
-      getConnectionLayer: () => this.electricPoleController?.currentConnectionLayer || null,
-      disableHoverConnection: config.map?.disableHoverFeature,
-    });
-    this.dataController = new DataController({
-      entityController: this.entityController,
-    });
     this.electricPoleController = new ElectricPoleController({
       imagePath: this.asset.entityImage,
     });
@@ -147,6 +127,28 @@ export class EndfieldMapAdapter {
       icon: {
         imagePath: this.asset.entityImage,
       },
+    });
+    this.activeFeatureController = new ActiveFeatureController({
+      map: this.mapController.mapRenderer.map,
+      disableActiveFeature: config.map?.disableActiveFeature,
+    });
+    this.hoverFeatureController = new HoverFeatureController({
+      map: this.mapController.mapRenderer.map,
+      getEntityLayers: () => this.entityController?.currentRenderers || [],
+      getElectricPoleLayers: () =>
+        this.electricPoleController?.currentRenderer ? [this.electricPoleController.currentRenderer] : [],
+      getCustomPointLayers: () =>
+        this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : [],
+      disableHoverFeature: config.map?.disableHoverFeature,
+    });
+    this.hoverConnectionController = new HoverConnectionController({
+      getConnectionLayer: () => this.electricPoleController?.currentRenderer || null,
+      disableHoverConnection: config.map?.disableHoverFeature,
+    });
+    this.dataController = new DataController({
+      entityController: this.entityController,
+      electricPoleController: this.electricPoleController,
+      customPointController: this.customPointController,
     });
     this.eventController = new EventController({
       entityController: this.entityController,
@@ -203,8 +205,8 @@ export class EndfieldMapAdapter {
   @action
   public async renderEntity(mapIndex: MapIndex) {
     this.layerController.removeLayer(LayerType.ENTITY);
-    await this.entityController.switchMapLayers(mapIndex);
-    const entityLayer = this.entityController.entityLayerContainer;
+    await this.entityController.switchMap(mapIndex);
+    const entityLayer = this.entityController.layerContainer;
     if (entityLayer) {
       this.layerController.addLayer(LayerType.ENTITY, entityLayer);
     }
@@ -216,7 +218,7 @@ export class EndfieldMapAdapter {
    */
   @action
   public renderElectricPole(mapIndex: MapIndex) {
-    this.electricPoleController.switchMapElectricPoleLayers(mapIndex);
+    this.electricPoleController.switchMap(mapIndex);
     const electricPoleLayer = this.electricPoleController.layerContainer;
     if (electricPoleLayer) {
       this.layerController.addLayer(LayerType.ELECTRIC_POLE, electricPoleLayer);
@@ -229,7 +231,7 @@ export class EndfieldMapAdapter {
    */
   @action
   public renderCustomPoint(mapIndex: MapIndex) {
-    this.customPointController.switchMapCustomPointLayers(mapIndex);
+    this.customPointController.switchMap(mapIndex);
     const customPointLayer = this.customPointController.layerContainer;
     if (customPointLayer) {
       // 先移除旧图层，再添加新图层

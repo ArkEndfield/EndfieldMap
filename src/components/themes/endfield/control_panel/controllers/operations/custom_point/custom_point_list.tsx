@@ -1,7 +1,5 @@
-import { CustomPointKey } from '@endfieldmap/map-core/const/map';
-import { getCustomPointEntityInfo, getDefaultCustomPointType } from '@endfieldmap/map-core/data/entity/custom_point';
-import type { CustomPointFeature } from '@endfieldmap/map-core/render/source/feature/custom_point_feature';
-import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
+import type { CustomPointDataInstance, CustomPointTypeId } from '@endfieldmap/map-core';
+import { CustomPointKey, getCustomPointEntityInfo, isValidCustomPointType } from '@endfieldmap/map-core';
 import EntityItem from '@themes/endfield/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +9,7 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 interface CustomPointTypeGroup {
   entityDataIdKey: string;
-  features: CustomPointFeature[];
+  instances: CustomPointDataInstance[];
   allVisible: boolean;
   count: number;
   visibleCount: number;
@@ -25,32 +23,35 @@ const CustomPointList: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
   const { adapter, dataService } = useAdapter();
 
-  // 获取当前地图的所有自定义标点features，并按类型分组
-  const layer = adapter.customPointController.layerContainer;
-  const features = layer?.entity.features || [];
+  // 从 DataManager 获取当前地图的所有自定义标点实例
+  const dataManager = adapter.customPointController.dataManager;
+  const currentManager = dataManager.currentManager;
+  const instances = currentManager?.instances ?? [];
+
+  // 按类型分组
   const customPointGroups: CustomPointTypeGroup[] = (() => {
-    if (features.length === 0) return [];
+    if (instances.length === 0) return [];
 
     // 按 entityDataIdKey 分组
-    const groupMap = new Map<string, CustomPointFeature[]>();
-    features.forEach((feature) => {
-      const key = feature.data.entityDataIdKey;
+    const groupMap = new Map<string, CustomPointDataInstance[]>();
+    instances.forEach((instance) => {
+      const key = instance.typeId;
       if (!groupMap.has(key)) {
         groupMap.set(key, []);
       }
-      groupMap.get(key)!.push(feature);
+      groupMap.get(key)!.push(instance);
     });
 
     // 转换为数组并计算统计信息
     const groups: CustomPointTypeGroup[] = [];
-    groupMap.forEach((features, entityDataIdKey) => {
-      // 访问 feature.visible 会被 MobX observer 追踪
-      const visibleCount = features.filter((f) => f.visible).length;
+    groupMap.forEach((groupInstances, entityDataIdKey) => {
+      // 访问 instance.visible 会被 MobX observer 追踪
+      const visibleCount = groupInstances.filter((i) => i.visible).length;
       groups.push({
         entityDataIdKey,
-        features,
-        allVisible: visibleCount === features.length,
-        count: features.length,
+        instances: groupInstances,
+        allVisible: visibleCount === groupInstances.length,
+        count: groupInstances.length,
         visibleCount,
       });
     });
@@ -61,8 +62,8 @@ const CustomPointList: React.FC = observer(() => {
   // 切换某个类型的所有自定义标点的显示/隐藏
   const handleToggleTypeVisible = (group: CustomPointTypeGroup) => {
     const newVisible = !group.allVisible;
-    group.features.forEach((feature) => {
-      feature.setVisible(newVisible);
+    group.instances.forEach((instance) => {
+      instance.setVisible(newVisible);
     });
     // 保存可见性状态
     dataService.customPointDataService.updateCustomPointVisibility(
@@ -84,21 +85,19 @@ const CustomPointList: React.FC = observer(() => {
     <ScrollArea className="flex-1">
       <div className="grid grid-cols-2 gap-2 py-2 px-3">
         {customPointGroups.map((group) => {
-          // 获取该类型的完整 EntityInfoData（包含正确的 pic）
-          const typeEntityInfo = getCustomPointEntityInfo(group.entityDataIdKey) || getDefaultCustomPointType();
+          // 获取该类型的完整 EntityInfo（包含正确的 pic）
+          const typeEntityInfo = isValidCustomPointType(group.entityDataIdKey)
+            ? getCustomPointEntityInfo(group.entityDataIdKey as CustomPointTypeId)
+            : getCustomPointEntityInfo('custom_point_1');
 
-          // 构造 EntityInfoItemData 用于 EntityItem 组件
-          const entityInfo: EntityInfoItemData = {
-            uniqueKey: `custom-point-${group.entityDataIdKey}`,
+          // 构造 EntityItem 需要的数据
+          const entityInfo = {
             category: CustomPointKey,
             entityDataIdKey: group.entityDataIdKey,
             entityInfo: typeEntityInfo.entityInfo,
-            visible: group.allVisible,
-            data: group.features.map((f) => f.data),
-            mapIndex: adapter.currentMapIndex!,
             count: group.count,
             markedCount: 0, // 自定义标点不支持标记
-            selectedCount: 0,
+            visible: group.allVisible,
           };
 
           return (

@@ -11,6 +11,8 @@ import { contributors } from '@/const/contributor';
 
 export const AboutPage = () => {
   const { t } = useTranslation('settings');
+  // eslint-disable-next-line react-hooks/purity
+  const randomNum = Math.random();
 
   return (
     <div className="space-y-2 pb-6">
@@ -67,7 +69,7 @@ export const AboutPage = () => {
         <div className="text-xs text-[#cbcbcb] text-center mb-2">{t('about.contributors_tip')}</div>
         <div className="flex gap-2 flex-wrap justify-center">
           {contributors
-            .sort(() => Math.random() - 0.5)
+            .sort(() => randomNum - 0.5)
             .map((item) => (
               <ContributorCard key={item.home} info={item} />
             ))}

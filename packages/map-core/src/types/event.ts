@@ -1,25 +1,31 @@
 import type { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { ElectricPoleConnectionLayer } from '@endfieldmap/map-core/render/layers/electric_pole_connection';
-import type { CommonPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/common_point';
-import type { CustomPointEntityLayer } from '@endfieldmap/map-core/render/layers/entity/custom_point';
-import type { ElectricPoleEntityLayer } from '@endfieldmap/map-core/render/layers/entity/electric_pole';
-import type { ConnectionFeature, MapFeature } from '@endfieldmap/map-core/render/source/feature/feature';
+import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
+import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
+import type { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer/electric_pole_renderer';
+import type { HitTestableLayer } from '@endfieldmap/map-core/types/layer';
 import type { Feature, Map as OlMap, MapBrowserEvent, MapEvent } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
 import type { FeatureLike } from 'ol/Feature';
 import type { Point } from 'ol/geom';
 
+/**
+ * 数据实例联合类型
+ * 所有可能的 DataInstance 类型
+ */
+export type DataInstance = EntityDataInstance | CustomPointDataInstance | ElectricPoleDataInstance;
+
 export interface ClusterEventDetail {
   features: Feature<Point>[];
-  instances: MapFeature[];
+  instances: EntityDataInstance[];
   coordinates: Coordinate[];
   extent: Extent;
   event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 }
 
 export interface EntityEventDetail {
-  instance: MapFeature;
+  instance: DataInstance;
   feature: FeatureLike;
   event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 }
@@ -32,29 +38,30 @@ export interface MapContextMenuEventDetail {
 }
 
 export interface EntityContextMenuEventDetail {
-  instance: MapFeature;
+  instance: DataInstance;
   feature: FeatureLike;
-  layer: CommonPointEntityLayer | ElectricPoleEntityLayer | CustomPointEntityLayer;
+  layer: HitTestableLayer;
   event: MapContextMenuEventDetail;
 }
 
 export interface ConnectionClickEventDetail {
   feature: FeatureLike;
-  instance: ConnectionFeature;
-  layer: ElectricPoleConnectionLayer;
+  /** 电线杆数据实例（连接的起始点） */
+  instance: ElectricPoleDataInstance;
+  renderer?: ElectricPoleRenderer;
   event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 }
 
 export interface ConnectionContextMenuEventDetail {
   feature: FeatureLike;
-  layer: ElectricPoleConnectionLayer;
+  renderer?: ElectricPoleRenderer;
   event: MapContextMenuEventDetail;
 }
 
 export interface HoverConnectionChangeEventDetail {
   oldFeature: FeatureLike | null;
   newFeature: FeatureLike | null;
-  layer: ElectricPoleConnectionLayer | null;
+  renderer?: ElectricPoleRenderer | null;
 }
 
 export interface FeatureSelectEventDetail {
@@ -66,50 +73,39 @@ export interface MapHoverEventDetail {
   event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 }
 
-export interface EntityVisibilityChangeEventDetail {
-  batch: boolean;
-  visible: boolean;
-  layers: CommonPointEntityLayer[];
-  changes: Array<{ layer: CommonPointEntityLayer; visible: boolean }>;
-}
-
-export interface FeatureStateChangeEventDetail {
-  feature: MapFeature;
-  property: 'marked' | 'isSelected' | 'active' | 'hovered';
-  oldValue: boolean;
-  newValue: boolean;
-}
-
 export interface ActiveFeatureChangeEventDetail {
-  oldFeature: MapFeature | null;
-  newFeature: MapFeature | null;
+  oldFeature: DataInstance | null;
+  newFeature: DataInstance | null;
   coordinate: Coordinate | null;
 }
 
 export interface HoverFeatureChangeEventDetail {
-  oldFeature: MapFeature | null;
-  newFeature: MapFeature | null;
+  oldFeature: DataInstance | null;
+  newFeature: DataInstance | null;
   coordinate: Coordinate | null;
 }
 
 export interface EntityHoverEventDetail {
-  instance: MapFeature | null;
+  instance: DataInstance | null;
   coordinate: Coordinate | null;
   event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 }
 
 export interface ConnectionHoverEventDetail {
   feature: FeatureLike | null;
-  layer: ElectricPoleConnectionLayer | null;
+  renderer?: ElectricPoleRenderer | null;
   event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 }
 
-export interface ElectricPoleChangedEventDetail {
-  mapIndex: string | null;
-}
-
-export interface CustomPointChangedEventDetail {
-  mapIndex: string | null;
+export interface MapEventEmitter {
+  /** 数据实例ID */
+  id: number;
+  /** 变化的属性名 */
+  property: 'marked' | 'selected' | 'active' | 'visible';
+  /** 旧值 */
+  oldValue: boolean;
+  /** 新值 */
+  newValue: boolean;
 }
 
 export interface MapEventEmitter {
@@ -120,7 +116,6 @@ export interface MapEventEmitter {
   [MAP_EVENT.MAP_CENTER_CHANGE]: Coordinate | undefined;
   [MAP_EVENT.MAP_CONTEXT_MENU]: MapContextMenuEventDetail;
   [MAP_EVENT.FEATURE_SELECT]: FeatureSelectEventDetail;
-  [MAP_EVENT.FEATURE_STATE_CHANGE]: FeatureStateChangeEventDetail;
   [MAP_EVENT.MAP_MOVE_END]: MapEvent;
 
   // 高级封装的
@@ -131,13 +126,10 @@ export interface MapEventEmitter {
   [MAP_EVENT.CONNECTION_CLICK]: ConnectionClickEventDetail;
   [MAP_EVENT.CONNECTION_HOVER]: ConnectionHoverEventDetail;
   [MAP_EVENT.CONNECTION_CONTEXT_MENU]: ConnectionContextMenuEventDetail;
-  [MAP_EVENT.ENTITY_VISIBILITY_CHANGE]: EntityVisibilityChangeEventDetail;
   [MAP_EVENT.ACTIVE_FEATURE_CHANGE]: ActiveFeatureChangeEventDetail;
   [MAP_EVENT.HOVER_FEATURE_CHANGE]: HoverFeatureChangeEventDetail;
   [MAP_EVENT.HOVER_CONNECTION_CHANGE]: HoverConnectionChangeEventDetail;
   [MAP_EVENT.SELECTION_START]: void;
-  [MAP_EVENT.ELECTRIC_POLE_CHANGED]: ElectricPoleChangedEventDetail;
-  [MAP_EVENT.CUSTOM_POINT_CHANGED]: CustomPointChangedEventDetail;
 }
 
 export type MapEventListener<T extends keyof MapEventEmitter> = (event: MapEventEmitter[T]) => void;

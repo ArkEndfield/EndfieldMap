@@ -1,4 +1,5 @@
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
+
 import { getAssetUrls } from '@/utils/url';
 
 export class LangHashDataService {

@@ -1,6 +1,35 @@
 import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey, MapIndex } from '@endfieldmap/map-core/const/map';
-import type { customPointTypeMap } from '@endfieldmap/map-core/data/entity/custom_point';
 import type { Position } from '@endfieldmap/map-core/types/position';
+
+/**
+ * 自定义标点类型ID
+ */
+export type CustomPointTypeId =
+  | 'custom_point_1'
+  | 'custom_point_2'
+  | 'custom_point_3'
+  | 'custom_point_4'
+  | 'custom_point_5'
+  | 'custom_point_6'
+  | 'custom_point_7';
+
+/**
+ * 基础实体数据接口（用于泛型约束）
+ */
+export interface BaseEntityData {
+  /** 逻辑ID */
+  levelLogicId: number;
+  /** 实体数据ID */
+  entityDataIdKey: string;
+  /** 模板ID */
+  templateId: string;
+  /** 实体类型 */
+  entityType: string;
+  /** 位置 */
+  position: Position;
+  /** 属性 */
+  properties: Record<string, unknown>;
+}
 
 export interface EnityProperties {
   /** 在完成任务后隐藏 */
@@ -21,6 +50,8 @@ export interface EnityProperties {
   reward_id?: string;
   /** 副本奖励ID */
   dungeion_series_id?: string;
+  /** 允许任意其他属性 */
+  [key: string]: unknown;
 }
 
 /**
@@ -49,7 +80,7 @@ export interface EntityData {
 export interface ElectricPoleData extends EntityData {
   entityDataIdKey: typeof ElectricPoleIdKey;
   entityType: '#ElectricPole';
-  templateId: typeof ElectricPoleIdKey;
+  templateId: typeof ElectricPoleKey;
   properties: EnityProperties & {
     connectTo: EntityData['levelLogicId'] | null;
     name?: string;
@@ -57,15 +88,10 @@ export interface ElectricPoleData extends EntityData {
 }
 
 /**
- * 自定义标点ID
- */
-export type CustomPointIdKey = keyof typeof customPointTypeMap;
-
-/**
  * 自定义标点数据
  */
 export interface CustomPointData extends EntityData {
-  entityDataIdKey: CustomPointIdKey;
+  entityDataIdKey: CustomPointTypeId;
   entityType: '#CustomPoint';
   templateId: typeof CustomPointKey;
   properties: EnityProperties & {
@@ -155,8 +181,9 @@ export type EntityInfoDataJson = Record<EntityInfoKey, EntityInfoData>;
 
 /**
  * 实体信息项数据，用于EntityLayer的数据返回
+ * T 泛型支持 EntityData、ElectricPoleData、CustomPointData
  */
-export interface EntityInfoItemData<T extends EntityData | ElectricPoleData | CustomPointData = EntityData> {
+export interface EntityInfoItemData<T extends BaseEntityData = EntityData> {
   uniqueKey: string;
   category: EntityCategoryData['category'] | typeof ElectricPoleKey | typeof CustomPointKey;
   entityDataIdKey: T['entityDataIdKey'];
@@ -169,6 +196,98 @@ export interface EntityInfoItemData<T extends EntityData | ElectricPoleData | Cu
   selectedCount: number;
 }
 
-export type ElectricPoleMapData = Record<MapIndex, ElectricPoleDataList>;
+/**
+ * Entity数据实例配置
+ */
+export interface EntityDataInstanceConfig {
+  data: EntityData;
+  mapIndex: MapIndex;
+  entityInfo: EntityInfoData;
+}
 
-export type CustomPointMapData = Record<MapIndex, CustomPointDataList>;
+/**
+ * 自定义标点数据实例配置
+ */
+export interface CustomPointDataInstanceConfig {
+  data: CustomPointData;
+  mapIndex: MapIndex;
+  entityInfo: EntityInfoData;
+}
+
+/**
+ * 电线杆数据实例配置
+ */
+export interface ElectricPoleDataInstanceConfig {
+  data: ElectricPoleData;
+  mapIndex: MapIndex;
+  entityInfo: EntityInfoData;
+}
+
+/**
+ * Entity数据管理器配置（新架构）
+ */
+export interface EntityDataManagerConfig {
+  mapIndex: MapIndex;
+  entityInfo: EntityInfoData;
+}
+
+/**
+ * 自定义标点数据管理器配置
+ */
+export interface CustomPointDataManagerConfig {
+  mapIndex: MapIndex;
+  initialData?: CustomPointData[];
+}
+
+/**
+ * 电线杆数据管理器配置
+ */
+export interface ElectricPoleDataManagerConfig {
+  mapIndex: MapIndex;
+  initialData?: ElectricPoleData[];
+}
+
+/**
+ * Entity组数据管理器配置
+ * 管理同一entityDataIdKey的所有entity
+ */
+export interface EntityGroupManagerConfig {
+  mapIndex: MapIndex;
+  entityDataIdKey: string;
+  entityInfo: EntityInfoData;
+  category: Category;
+  initialData?: EntityData[];
+}
+
+/**
+ * Entity信息统计（新架构）
+ */
+export interface EntityInfoStats {
+  uniqueKey: string;
+  category: Category;
+  entityDataIdKey: string;
+  entityInfo: EntityInfoData['entityInfo'];
+  visible: boolean;
+  count: number;
+  markedCount: number;
+  selectedCount: number;
+  mapIndex: MapIndex;
+}
+
+/**
+ * 自定义标点地图数据类型
+ */
+export type CustomPointMapData = Partial<Record<MapIndex, CustomPointData[]>>;
+
+/**
+ * 电线杆地图数据类型
+ */
+export type ElectricPoleMapData = Partial<Record<MapIndex, ElectricPoleData[]>>;
+
+/**
+ * 自定义标点类型配置
+ */
+export interface CustomPointTypeConfig {
+  id: CustomPointTypeId;
+  icon: string;
+}

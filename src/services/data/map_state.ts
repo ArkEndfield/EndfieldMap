@@ -110,7 +110,7 @@ export class MapStateDataService {
       storageKey: LocalStorageKey.FILTER_MARKED,
       onValueChange: (mode) => {
         this.adapter.activeFeatureController.clearActiveFeature();
-        this.adapter.entityController.setMarkedFeatureFilter(mode);
+        this.adapter.entityController.setMarkedFilterMode(mode);
       },
     });
 

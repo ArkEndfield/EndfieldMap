@@ -284,7 +284,12 @@ export const RangeInput = forwardRef<HTMLDivElement, RangeInputProps>(
           {incrementIcon || <PlusIcon className="w-4 h-4" />}
         </RangeButton>
 
-        <div className={cn('flex items-center justify-center', isVertical ? 'flex-1 h-full w-8 py-1' : 'flex-1 w-full h-8 px-1')}>
+        <div
+          className={cn(
+            'flex items-center justify-center',
+            isVertical ? 'flex-1 h-full w-8 py-1' : 'flex-1 w-full h-8 px-1'
+          )}
+        >
           <RangeBar
             value={value}
             onChange={handleChange}

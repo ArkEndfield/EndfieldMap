@@ -1,5 +1,4 @@
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
-import type { EntityInfoItemData } from '@endfieldmap/map-core/types/entity';
 import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,11 +9,28 @@ import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
+
+/**
+ * EntityItem 通用属性类型
+ * 兼容 EntityInfoStats 和手动构造的数据
+ */
+interface EntityItemData {
+  category: string;
+  entityDataIdKey: string;
+  entityInfo: {
+    point: string;
+    pic: string;
+  };
+  count: number;
+  markedCount?: number;
+  visible?: boolean;
+}
+
 interface EntityItemProps {
   hideCount?: boolean;
   hideMarked?: boolean;
   markCount?: number;
-  entity?: EntityInfoItemData;
+  entity?: EntityItemData;
   category?: string;
   active?: boolean;
   onClick?: () => void;
@@ -26,7 +42,7 @@ const EntityItem = observer(
     const { t } = useTranslation(['common', 'sidebar', 'lang']);
     const isMobile = useIsMobile();
     const { dataService } = useAdapter();
-    
+
     const displayName = useMemo(() => {
       if (entity) {
         if (entity.category === ElectricPoleKey) {
@@ -38,11 +54,13 @@ const EntityItem = observer(
             defaultValue: entity.entityDataIdKey,
           });
         }
-        
-        return t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, { defaultValue: entity.entityDataIdKey });
+
+        return t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
+          defaultValue: entity.entityDataIdKey,
+        });
       }
       return 'unnamed';
-    }, [entity, t]);
+    }, [dataService.langHashDataService, entity, t]);
 
     const progressWidth = useMemo(() => {
       if (entity && entity.count > 0) {
@@ -77,9 +95,7 @@ const EntityItem = observer(
             'relative z-1 rounded-xl grow overflow-hidden flex items-center',
             'transition-all duration-200',
             'border border-white/10',
-            active
-              ? 'bg-white/20 shadow-sm shadow-blue-500/20'
-              : 'bg-white/5 hover:bg-white/10 active:scale-[0.98]'
+            active ? 'bg-white/20 shadow-sm shadow-blue-500/20' : 'bg-white/5 hover:bg-white/10 active:scale-[0.98]'
           )}
         >
           <div className="w-8 h-8 flex justify-center items-center shrink-0 ml-2 my-1.5">
@@ -90,8 +106,7 @@ const EntityItem = observer(
                 active ? 'bg-white/20' : 'bg-white/10'
               )}
             >
-              {children ||
-                (iconSrc && <img src={iconSrc} alt={displayName} className="w-5 h-5 object-contain" />)}
+              {children || (iconSrc && <img src={iconSrc} alt={displayName} className="w-5 h-5 object-contain" />)}
             </div>
           </div>
 
@@ -108,7 +123,7 @@ const EntityItem = observer(
             {!hideCount && entity && (
               <div
                 className={cn(
-                  'shrink-0 w-fit font-medium px-2 py-0.5 rounded-md min-w-[2rem] grow-0',
+                  'shrink-0 w-fit font-medium px-2 py-0.5 rounded-md min-w-8 grow-0',
                   'text-center inline-flex items-center justify-center leading-none relative overflow-hidden',
                   'border border-white/10',
                   active ? 'bg-white/20 text-white' : 'bg-white/5 text-white/60'
