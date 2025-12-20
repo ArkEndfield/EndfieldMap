@@ -1,8 +1,8 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
-import { CustomPointController } from '@endfieldmap/map-core/controller/custom_point_controller';
-import { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole_controller';
-import { EntityController } from '@endfieldmap/map-core/controller/entity_controller';
+import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
+import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
+import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';

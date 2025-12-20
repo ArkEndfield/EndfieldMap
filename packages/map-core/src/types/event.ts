@@ -132,6 +132,14 @@ export interface MapEventEmitter {
   [MAP_EVENT.SELECTION_START]: void;
 }
 
+/**
+ * 事件监听器选项
+ */
+export interface ListenerOptions {
+  /** 是否只执行一次 */
+  once?: boolean;
+}
+
 export type MapEventListener<T extends keyof MapEventEmitter> = (event: MapEventEmitter[T]) => void;
 
 export type MapEventListenerUnion = MapEventListener<keyof MapEventEmitter>;

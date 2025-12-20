@@ -1,6 +1,6 @@
-import type { CustomPointController } from '@endfieldmap/map-core/controller/custom_point_controller';
-import type { ElectricPoleController } from '@endfieldmap/map-core/controller/electric_pole_controller';
-import type { EntityController } from '@endfieldmap/map-core/controller/entity_controller';
+import type { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
+import type { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
+import type { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
 import type { ElectricPoleMapData } from '@endfieldmap/map-core/data/electric_pole';
 import type { CustomPointMapData } from '@endfieldmap/map-core/types';
 import type { ExportedData } from '@endfieldmap/map-core/types/data';
