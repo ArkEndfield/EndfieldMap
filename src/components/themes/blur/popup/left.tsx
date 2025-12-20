@@ -29,7 +29,8 @@ const BlurSelect = ({
   onChange,
 }: {
   value: CustomPointTypeId;
-  options: Array<{ value: CustomPointTypeId; label: string; left: React.ReactNode }>;  onChange: (value: CustomPointTypeId) => void;
+  options: Array<{ value: CustomPointTypeId; label: string; left: React.ReactNode }>;
+  onChange: (value: CustomPointTypeId) => void;
 }) => {
   return (
     <div className="flex flex-wrap gap-2">
@@ -80,9 +81,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
     if (!activeFeature?.rename) return;
 
     const currentName = activeFeature.name;
-    const content = isElectricPole
-      ? t('popup:electric_pole.rename_tip')
-      : t('popup:custom_point.rename_tip');
+    const content = isElectricPole ? t('popup:electric_pole.rename_tip') : t('popup:custom_point.rename_tip');
 
     const newName = await alert.prompt({
       content,
@@ -96,9 +95,9 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
 
   const handleChangePointType = (newType: CustomPointTypeId) => {
     if (!activeFeature || !isCustomPoint) return;
-    
+
     // 使用 DataInstance 的 changeType API
-    activeFeature.changeType?.(newType);
+    (activeFeature as CustomPointDataInstance).changeType?.(newType);
   };
 
   const customPointTypeOptions = customPointTypes.map((type) => ({
@@ -118,10 +117,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           transition={{ duration: 0.15 }}
           className={cn('relative z-1 flex flex-col', className)}
         >
-          <Header
-            name={displayName || ''}
-            pic={getEntityIcon(entityInfo.category, entityInfo.entityInfo.pic)}
-          />
+          <Header name={displayName || ''} pic={getEntityIcon(entityInfo.category, entityInfo.entityInfo.pic)} />
 
           <div className="mb-3 text-xs text-white/50 shrink-0">ID: {activeFeature.id}</div>
 
