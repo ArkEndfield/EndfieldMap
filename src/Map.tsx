@@ -29,7 +29,7 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
   useEffect(() => {
     if (isMobile && enableHover) {
       adapter.setHoverFeatureEnable(false);
-    } else if (!enableHover && hoverHitTestTime !== -1) {
+    } else if (!isMobile && !enableHover && hoverHitTestTime !== -1) {
       adapter.setHoverFeatureEnable(true);
     }
   }, [adapter, enableHover, hoverHitTestTime, isMobile]);
