@@ -126,6 +126,7 @@ export class EndfieldMapAdapter {
     this.customPointController = new CustomPointController({
       icon: {
         imagePath: this.asset.entityImage,
+        size: 20,
       },
     });
     this.activeFeatureController = new ActiveFeatureController({

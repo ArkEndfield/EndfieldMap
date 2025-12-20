@@ -1,5 +1,5 @@
 import { CustomPointKey, type MapIndex } from '@endfieldmap/map-core/const/map';
-import type { CustomPointData,CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point';
+import type { CustomPointData, CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point';
 import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/custom_point';
 import { CustomPointRenderer } from '@endfieldmap/map-core/render/renderer';
 import type { CustomPointMapData } from '@endfieldmap/map-core/types';
@@ -7,7 +7,7 @@ import type { FeatureMarked, StorageData } from '@endfieldmap/map-core/types/dat
 import type { CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { crd2xyz, logger } from '@endfieldmap/tools';
-import { action, type IReactionDisposer,observable } from 'mobx';
+import { action, type IReactionDisposer, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 /**
@@ -80,7 +80,7 @@ export class CustomPointController {
       renderer = new CustomPointRenderer({
         dataManager: manager,
         iconBasePath: this.iconConfig.imagePath,
-        iconSize: this.iconConfig.size ?? 40,
+        iconSize: this.iconConfig.size,
       });
 
       this.rendererCache.set(mapIndex, renderer);
@@ -287,8 +287,6 @@ export class CustomPointController {
   }
 
   // #endregion
-
-
 
   // #region 数据导入导出
 

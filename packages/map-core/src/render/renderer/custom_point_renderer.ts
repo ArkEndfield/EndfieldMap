@@ -10,7 +10,7 @@ import {
 } from '@endfieldmap/map-core/const/map';
 import type { CustomPointDataInstance, CustomPointDataManager } from '@endfieldmap/map-core/data/custom_point';
 import { createEntityBackgroundStyles, createEntityIconStyles } from '@endfieldmap/map-core/render/factory';
-import { type IReactionDisposer,reaction } from 'mobx';
+import { type IReactionDisposer, reaction } from 'mobx';
 import { Feature } from 'ol';
 import type { FeatureLike } from 'ol/Feature';
 import { Point } from 'ol/geom';
