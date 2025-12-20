@@ -52,7 +52,7 @@ function isFeatureVisible(feature: Feature<Point>, layer: EntityLayer): boolean 
 
   const instance = feature.get(EntityInstanceKey) as DataInstance | undefined;
 
-  if (instance && 'visible' in instance && instance.visible === false) {
+  if (!instance?.visible) {
     return false;
   }
 

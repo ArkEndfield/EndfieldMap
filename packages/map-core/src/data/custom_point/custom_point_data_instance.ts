@@ -19,10 +19,10 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
   @observable
   private accessor _entityInfo: EntityInfo;
 
-  /** 是否可激活 */
-  public readonly activable: boolean = true;
   /** 是否可标记（自定义标点不支持标记） */
   public readonly markable: boolean = false;
+  /** 是否可选择 */
+  public readonly selectable: boolean = false;
 
   constructor(config: CustomPointDataInstanceConfig) {
     super({

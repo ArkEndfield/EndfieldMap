@@ -15,6 +15,13 @@ export abstract class BaseDataInstance<T extends EntityData> {
   /** 地图索引 */
   public readonly mapIndex: MapIndex;
 
+  /** 是否可激活 */
+  public readonly activable: boolean = true;
+  /** 是否可标记 */
+  public readonly markable: boolean = true;
+  /** 是否可选择 */
+  public readonly selectable: boolean = true;
+
   /** 原始数据 - 深度响应式 */
   @observable.deep
   protected accessor _data: T;

@@ -73,13 +73,11 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   })();
 
   const handleToggleMarked = () => {
-    if (activeFeature?.toggleMarked) {
-      activeFeature.toggleMarked();
-    }
+    activeFeature?.toggleMarked?.();
   };
 
   const handleRename = async () => {
-    if (!activeFeature || !activeFeature.rename) return;
+    if (!activeFeature?.rename) return;
 
     const currentName = activeFeature.name;
     const content = isElectricPole
@@ -100,9 +98,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
     if (!activeFeature || !isCustomPoint) return;
     
     // 使用 DataInstance 的 changeType API
-    if ('changeType' in activeFeature && typeof activeFeature.changeType === 'function') {
-      activeFeature.changeType(newType);
-    }
+    activeFeature.changeType?.(newType);
   };
 
   const customPointTypeOptions = customPointTypes.map((type) => ({

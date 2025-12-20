@@ -17,11 +17,6 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
   @observable
   accessor entityInfo: EntityInfoData;
 
-  /** 是否可激活 */
-  public readonly activable: boolean = true;
-  /** 是否可标记 */
-  public readonly markable: boolean = true;
-
   constructor(config: EntityDataInstanceConfig) {
     super({
       data: config.data,

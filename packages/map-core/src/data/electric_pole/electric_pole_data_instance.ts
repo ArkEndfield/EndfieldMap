@@ -15,10 +15,10 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
   @observable
   accessor entityInfo: EntityInfo;
 
-  /** 是否可激活 */
-  public readonly activable: boolean = true;
   /** 是否可标记（电线杆不支持标记） */
   public readonly markable: boolean = false;
+  /** 是否可选择 */
+  public readonly selectable: boolean = false;
 
   /** 连接来源（指向当前电线杆的电线杆） */
   @observable

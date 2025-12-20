@@ -73,9 +73,7 @@ const SelectOperator = observer(() => {
   const markFeatures = (marked: boolean) => {
     selectedFeatures.forEach((feature) => {
       const instance = feature.get(EntityInstanceKey) as DataInstance | undefined;
-      if (instance && typeof instance.setMarked === 'function') {
-        instance.setMarked(marked);
-      }
+      instance?.setMarked?.(marked);
     });
   };
 

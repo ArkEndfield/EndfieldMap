@@ -1,5 +1,5 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
+import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { DisposeListener, EntityEventDetail } from '@endfieldmap/map-core/types/event';
@@ -101,9 +101,7 @@ export class EndfieldSelectionInteraction {
 
       source.getFeatures().forEach((feature: Feature<Geometry>) => {
         const dataInstance = feature.get(EntityInstanceKey) as DataInstance | undefined;
-        if (dataInstance && typeof dataInstance.setSelected === 'function') {
-          dataInstance.setSelected(selectedSingleFeatures.has(feature));
-        }
+        dataInstance?.setSelected?.(selectedSingleFeatures.has(feature));
       });
     });
   }
@@ -148,22 +146,39 @@ export class EndfieldSelectionInteraction {
     this._map?.getAllLayers().forEach((layer) => {
       if (!('getSource' in layer)) return;
 
-      // Skip invisible layers
+      // 跳过不可见的图层
       if (!layer.getVisible()) return;
 
       const layerSource = (layer as VectorLayer<VectorSource>).getSource();
       if (!layerSource?.getFeaturesInExtent) return;
 
-      // Get features from the layer source (might be cluster features)
+      // 从图层数据源获取 features（可能是聚簇 features）
       const boxFeatures = layerSource.getFeaturesInExtent(extent).filter((feature: Feature<Geometry>) => {
         const geometry = feature.getGeometry();
-        return geometry?.intersectsExtent?.(extent);
+        if (!geometry?.intersectsExtent?.(extent)) return false;
+
+        // 检查是否有底层 feature 可选择
+        const underlyingFeatures = feature.get('features') as Feature<Geometry>[] | undefined;
+        if (underlyingFeatures) {
+          // 聚簇 feature：检查聚簇中是否有任何可选择的 feature
+          return underlyingFeatures.some((f) => {
+            // 必须是 ENTITY 类型
+            if (f.get(FeatureTypeKey) !== FeatureType.ENTITY) return false;
+            const dataInstance = f.get(EntityInstanceKey) as DataInstance | undefined;
+            return !dataInstance || !!dataInstance.selectable;
+          });
+        } else {
+          // 单个 feature：必须是 ENTITY 类型且可选择
+          if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) return false;
+          const dataInstance = feature.get(EntityInstanceKey) as DataInstance | undefined;
+          return !dataInstance || !!dataInstance.selectable;
+        }
       });
 
       if (oblique) {
         this.selectObliqueFeatures(boxFeatures, rotation, world, worldWidth);
       } else {
-        // addFeatureToSelection will handle expanding cluster features
+        // addFeatureToSelection 会处理展开聚簇 features
         boxFeatures.forEach((f) => this.addFeatureToSelection(f));
       }
     });
@@ -193,10 +208,17 @@ export class EndfieldSelectionInteraction {
    */
   private addFeatureToSelection(feature: Feature<Geometry>) {
     const underlyingFeatures = this.getUnderlyingFeatures(feature);
-    // Only add features that aren't already selected
+    // 只有添加未被选中的且可选择的 features
     const selectedArray = this.select.getFeatures().getArray();
     underlyingFeatures.forEach((f) => {
       if (!selectedArray.includes(f)) {
+        // 必须是 ENTITY 类型
+        if (f.get(FeatureTypeKey) !== FeatureType.ENTITY) return;
+        
+        const dataInstance = f.get(EntityInstanceKey) as DataInstance | undefined;
+        // 检查是否可选择
+        if (!dataInstance?.selectable) return;
+        
         this.select.getFeatures().push(f);
       }
     });
@@ -266,11 +288,19 @@ export class EndfieldSelectionInteraction {
   }
 
   /**
-   * 切换feature的选中状态
+   * 切换 feature 的选中状态
+   * 只处理可选择的 ENTITY feature
    */
   @action
   public toggleFeatureSelection(feature: Feature<Geometry>, multi: boolean = false) {
     if (!this.isSelecting) return;
+
+    // 必须是 ENTITY 类型
+    if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) return;
+
+    // 检查是否可选择
+    const dataInstance = feature.get(EntityInstanceKey) as DataInstance | undefined;
+    if (!dataInstance?.selectable) return;
 
     const selectedFeatures = this.select.getFeatures();
     const matched = this.findSelectedFeature(feature);
@@ -292,11 +322,19 @@ export class EndfieldSelectionInteraction {
   }
 
   /**
-   * 选中feature
+   * 选中 feature
+   * 只处理可选择的 ENTITY feature
    */
   @action
   public selectFeature(feature: Feature<Geometry>, clearOthers: boolean = true) {
     if (!this.isSelecting) return;
+
+    // 必须是 ENTITY 类型
+    if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) return;
+
+    // 检查是否可选择
+    const dataInstance = feature.get(EntityInstanceKey) as DataInstance | undefined;
+    if (!dataInstance?.selectable) return;
 
     const selectedFeatures = this.select.getFeatures();
     if (clearOthers) {
