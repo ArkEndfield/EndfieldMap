@@ -1,5 +1,5 @@
 import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const';
-import { createHoverRingStyle } from '@endfieldmap/map-core/render/factory';
+import { createHoverCornerStyle } from '@endfieldmap/map-core/render/factory';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { AnimatedRingFeature } from '@endfieldmap/map-core/render/renderer/animated_ring';
 import type { Coordinate } from 'ol/coordinate';
@@ -153,7 +153,7 @@ export class HoverLayer extends SingleLayerBase {
     if (this.animatedRing && feature === this.animatedRing.feature) {
       const currentRadius = this.animatedRing.getCurrentRadius();
       const opacity = this.animatedRing.getOpacity();
-      const style = createHoverRingStyle(currentRadius, this.baseRadius, 2, `rgba(255, 255, 255, ${opacity * 0.6})`);
+      const style = createHoverCornerStyle(currentRadius, this.baseRadius, 2, `rgba(255, 255, 255, ${opacity * 0.6})`);
       return [style];
     }
 
@@ -162,7 +162,7 @@ export class HoverLayer extends SingleLayerBase {
       if (feature === ring.feature) {
         const currentRadius = ring.getCurrentRadius();
         const opacity = ring.getOpacity();
-        const style = createHoverRingStyle(currentRadius, baseRadius, 2, `rgba(255, 255, 255, ${opacity * 0.6})`);
+        const style = createHoverCornerStyle(currentRadius, baseRadius, 2, `rgba(255, 255, 255, ${opacity * 0.6})`);
         return [style];
       }
     }

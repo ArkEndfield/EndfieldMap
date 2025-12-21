@@ -21,6 +21,7 @@ export interface HoverFeatureControllerConfig {
   getEntityLayers: () => HitTestableLayer[];
   getElectricPoleLayers: () => HitTestableLayer[];
   getCustomPointLayers: () => HitTestableLayer[];
+  checkIsActive?: (instance: DataInstance) => boolean;
   disableHoverFeature?: boolean;
 }
 
@@ -43,6 +44,8 @@ export class HoverFeatureController {
   private getElectricPoleLayers: () => HitTestableLayer[];
   /** 获取自定义标点图层的函数 */
   private getCustomPointLayers: () => HitTestableLayer[];
+  /** 检查 feature 是否激活的函数 */
+  private checkIsActive?: (instance: DataInstance) => boolean;
   /** 防抖后的hover处理函数 */
   private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
   /** Hover图层 */
@@ -55,6 +58,7 @@ export class HoverFeatureController {
     this.getEntityLayers = config.getEntityLayers;
     this.getElectricPoleLayers = config.getElectricPoleLayers;
     this.getCustomPointLayers = config.getCustomPointLayers;
+    this.checkIsActive = config.checkIsActive;
     this.disabled = config.disableHoverFeature ?? false;
     this.updateDebouncedHoverHandler();
 
@@ -198,11 +202,20 @@ export class HoverFeatureController {
       }
     });
 
+    // 监听激活特征变化事件：如果当前 hover 的实体被激活，则立即清除 hover 效果
+    const disposeActiveFeatureChange = mapEventEmitter.on(MAP_EVENT.ACTIVE_FEATURE_CHANGE, ({ newFeature }) => {
+      if (newFeature && newFeature === this.hoverFeature) {
+        logger.debug('[HoverFeatureController] Clearing hover feature because it was activated');
+        this.clearHoverFeature();
+      }
+    });
+
     this.disposeListeners.push(
       disposeHover,
       disposeSelectionStart,
       disposeClusterClick,
-      disposeZoomChange
+      disposeZoomChange,
+      disposeActiveFeatureChange
     );
   }
 
@@ -225,6 +238,11 @@ export class HoverFeatureController {
     }
 
     if (feature) {
+      // 如果 feature 已经激活，则不设置 hover
+      if (this.checkIsActive?.(feature)) {
+        this.clearHoverFeature();
+        return;
+      }
       logger.debug('[HoverFeatureController] Hovered feature', feature.data);
     }
 

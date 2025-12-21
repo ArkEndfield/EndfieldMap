@@ -140,6 +140,7 @@ export class EndfieldMapAdapter {
         this.electricPoleController?.currentRenderer ? [this.electricPoleController.currentRenderer] : [],
       getCustomPointLayers: () =>
         this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : [],
+      checkIsActive: (instance) => this.activeFeatureController.activeFeature === instance,
       disableHoverFeature: config.map?.disableHoverFeature,
     });
     this.hoverConnectionController = new HoverConnectionController({

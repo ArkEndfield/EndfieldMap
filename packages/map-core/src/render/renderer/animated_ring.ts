@@ -33,7 +33,7 @@ export class AnimatedRingFeature {
   @observable accessor opacity: number = 1;
 
   /** 动画持续时间（毫秒） */
-  private duration: number = 500;
+  private duration: number = 400; // 稍微慢一点以便看清
 
   /** 淡入动画持续时间（毫秒） */
   private fadeInDuration: number = 200;
@@ -56,8 +56,8 @@ export class AnimatedRingFeature {
   constructor(coordinate: Coordinate, iconRadius: number) {
     // 计算目标半径和起始半径
     this.targetRadius = iconRadius + 4;
-    this.startRadius = this.targetRadius * 1.2;
-    this.endRadius = this.targetRadius * 1.2; // 淡出时扩散到的半径
+    this.startRadius = this.targetRadius * 1.3; // 稍微收紧收缩范围
+    this.endRadius = this.targetRadius * 1.3; // 稍微收紧发散范围
     this.currentRadius = this.startRadius;
 
     // 初始透明度为0，用于淡入效果
@@ -98,17 +98,17 @@ export class AnimatedRingFeature {
       const elapsed = timestamp - this.startTime;
       this.progress = Math.min(elapsed / this.duration, 1);
 
-      // 使用ease-out缓动函数
-      const easedProgress = this.easeOut(this.progress);
+      // 使用 cubic ease-out
+      const easedProgress = this.easeOutCubic(this.progress);
 
       // 计算当前半径（从起始半径收缩到目标半径）
       this.currentRadius = this.startRadius - (this.startRadius - this.targetRadius) * easedProgress;
 
-      // 淡入效果：在前fadeInDuration毫秒内，透明度从0增加到1
+      // 淡入效果
       const fadeInProgress = Math.min(elapsed / this.fadeInDuration, 1);
       this.opacity = fadeInProgress;
 
-      return false; // 收缩动画不会自动结束，需要等待淡出
+      return false; // 收缩动画不会自动结束
     }
   }
 
@@ -125,12 +125,21 @@ export class AnimatedRingFeature {
   }
 
   /**
-   * ease-out缓动函数
-   * @param t 进度 (0-1)
-   * @returns 缓动后的进度
+   * cubic ease-out
    */
-  private easeOut(t: number): number {
+  private easeOutCubic(t: number): number {
     return 1 - Math.pow(1 - t, 3);
+  }
+
+  /**
+   * quadratic ease-out
+   */
+  private easeOutQuad(t: number): number {
+    return 1 - (1 - t) * (1 - t);
+  }
+
+  private easeOut(t: number): number {
+    return this.easeOutCubic(t);
   }
 
   /**
