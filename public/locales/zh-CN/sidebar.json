@@ -40,9 +40,19 @@
     },
     "electric_pole": {
       "display": "显示电线杆",
+      "no_data": "暂无电线杆数据",
       "create": {
         "start": "创建",
         "auto_connect": "创建时自动连接",
+        "device_type": {
+          "label": "创建类型",
+          "options": {
+            "pole": "电线杆(50m)",
+            "repeater": "中继器(80m)",
+            "zipline_80": "滑索(80m)",
+            "zipline_100": "滑索(100m)"
+          }
+        },
         "in_mode": "正在创建电线杆"
       },
       "connect": {
@@ -59,6 +69,10 @@
       },
       "zone": {
         "display": "显示电线杆范围"
+      },
+      "tab": {
+        "list": "显示/隐藏",
+        "preset": "预设列表"
       },
       "preset": {
         "title": "电线杆预设",

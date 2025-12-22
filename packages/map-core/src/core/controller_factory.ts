@@ -1,3 +1,4 @@
+import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { CustomPointControllerConfig } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
@@ -59,8 +60,8 @@ export class ElectricPoleControllerWithHistory {
   /**
    * 创建电线杆（带历史记录）
    */
-  create(mapIndex: MapIndex, position: Coordinate): ElectricPoleDataInstance | null {
-    const command = new CreateElectricPoleCommand(this.controller, mapIndex, position);
+  create(mapIndex: MapIndex, position: Coordinate, deviceKey?: ElectricPoleDeviceKey): ElectricPoleDataInstance | null {
+    const command = new CreateElectricPoleCommand(this.controller, mapIndex, position, deviceKey);
     historyManager.execute(command);
     const instances = this.controller.dataManager.getMapManager(mapIndex).instances;
     return instances[instances.length - 1] ?? null;
@@ -78,8 +79,8 @@ export class ElectricPoleControllerWithHistory {
   /**
    * 批量创建电线杆（带历史记录）
    */
-  batchCreate(mapIndex: MapIndex, positions: Coordinate[]): ElectricPoleDataInstance[] {
-    const command = new BatchCreateElectricPolesCommand(this.controller, mapIndex, positions);
+  batchCreate(mapIndex: MapIndex, positions: Coordinate[], deviceKey?: ElectricPoleDeviceKey): ElectricPoleDataInstance[] {
+    const command = new BatchCreateElectricPolesCommand(this.controller, mapIndex, positions, deviceKey);
     historyManager.execute(command);
     // 返回创建的实例
     const manager = this.controller.dataManager.getMapManager(mapIndex);

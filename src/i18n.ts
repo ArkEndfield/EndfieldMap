@@ -7,7 +7,7 @@ import { LoadingStageId } from '@/const/loading';
 import { isDev } from '@/services/env';
 import { loadingManager } from '@/services/loading';
 
-const ns = ['common', 'header', 'map', 'popup', 'sidebar', 'settings'];
+const ns = ['common', 'error', 'header', 'lang', 'map', 'popup', 'sidebar', 'settings'];
 // 标志位：防止语言切换等情况导致进度回退
 let initialLoadComplete = false;
 

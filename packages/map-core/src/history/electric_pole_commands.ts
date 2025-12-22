@@ -1,7 +1,9 @@
+import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import type { ElectricPoleData, ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
 import type { Command } from '@endfieldmap/map-core/history/command';
+import { logger } from '@endfieldmap/tools';
 import type { Coordinate } from 'ol/coordinate';
 
 /**
@@ -14,13 +16,14 @@ export class CreateElectricPoleCommand implements Command {
   constructor(
     private readonly controller: ElectricPoleController,
     private readonly mapIndex: MapIndex,
-    private readonly position: Coordinate
+    private readonly position: Coordinate,
+    private readonly deviceKey?: ElectricPoleDeviceKey
   ) {
     this.description = `创建电线杆 at [${position[0].toFixed(2)}, ${position[1].toFixed(2)}]`;
   }
 
   execute(): void {
-    this.createdInstance = this.controller.createElectricPole(this.mapIndex, this.position);
+    this.createdInstance = this.controller.createElectricPole(this.mapIndex, this.position, this.deviceKey);
   }
 
   undo(): void {
@@ -37,7 +40,8 @@ export class CreateElectricPoleCommand implements Command {
 export class DeleteElectricPoleCommand implements Command {
   readonly description: string;
   private deletedData: ElectricPoleData | null = null;
-  private connectionToId: number | null = null;
+  private outgoingTargetIds: number[] = [];
+  private incomingSourceIds: number[] = [];
 
   constructor(
     private readonly controller: ElectricPoleController,
@@ -47,7 +51,8 @@ export class DeleteElectricPoleCommand implements Command {
     this.description = `删除电线杆 #${instance.id}`;
     // 保存删除前的数据用于恢复
     this.deletedData = { ...instance.data } as ElectricPoleData;
-    this.connectionToId = instance.connectionTo?.id ?? null;
+    this.outgoingTargetIds = [...instance.outgoingConnectionIds];
+    this.incomingSourceIds = instance.incomingConnections.map((p) => p.id);
   }
 
   execute(): void {
@@ -60,11 +65,37 @@ export class DeleteElectricPoleCommand implements Command {
       const manager = this.controller.dataManager.getMapManager(this.mapIndex);
       const restored = manager.addWithConnection(this.deletedData);
 
-      // 恢复连接关系
-      if (this.connectionToId !== null && restored) {
-        const target = manager.getById(this.connectionToId);
+      if (!restored) return;
+
+      // 恢复：由 restored 发出的连线
+      for (const targetId of this.outgoingTargetIds) {
+        const target = manager.getById(targetId);
         if (target) {
-          restored.connectTo(target);
+          try {
+            restored.connectTo(target);
+          } catch (error) {
+            logger.warn('[DeleteElectricPoleCommand] Failed to restore outgoing connection', {
+              from: restored.id,
+              to: targetId,
+              error: error instanceof Error ? error.message : String(error),
+            });
+          }
+        }
+      }
+
+      // 恢复：由其他节点发出到 restored 的连线
+      for (const sourceId of this.incomingSourceIds) {
+        const source = manager.getById(sourceId);
+        if (source) {
+          try {
+            source.connectTo(restored);
+          } catch (error) {
+            logger.warn('[DeleteElectricPoleCommand] Failed to restore incoming connection', {
+              from: sourceId,
+              to: restored.id,
+              error: error instanceof Error ? error.message : String(error),
+            });
+          }
         }
       }
     }
@@ -81,7 +112,8 @@ export class BatchCreateElectricPolesCommand implements Command {
   constructor(
     private readonly controller: ElectricPoleController,
     private readonly mapIndex: MapIndex,
-    private readonly positions: Coordinate[]
+    private readonly positions: Coordinate[],
+    private readonly deviceKey?: ElectricPoleDeviceKey
   ) {
     this.description = `批量创建 ${positions.length} 个电线杆`;
   }
@@ -90,12 +122,16 @@ export class BatchCreateElectricPolesCommand implements Command {
     this.createdInstances = [];
     for (const position of this.positions) {
       try {
-        const instance = this.controller.createElectricPole(this.mapIndex, position);
+        const instance = this.controller.createElectricPole(this.mapIndex, position, this.deviceKey);
         if (instance) {
           this.createdInstances.push(instance);
         }
-      } catch {
-        // 忽略重复位置错误
+      } catch (error) {
+        // 忽略重复位置等错误，但记录日志
+        logger.debug('[BatchCreateElectricPolesCommand] Failed to create pole at position', {
+          position,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
   }
@@ -115,7 +151,8 @@ export class BatchDeleteElectricPolesCommand implements Command {
   readonly description: string;
   private deletedData: Array<{
     data: ElectricPoleData;
-    connectionToId: number | null;
+    outgoingTargetIds: number[];
+    incomingSourceIds: number[];
   }> = [];
 
   constructor(
@@ -135,7 +172,8 @@ export class BatchDeleteElectricPolesCommand implements Command {
       if (instance) {
         this.deletedData.push({
           data: { ...instance.data } as ElectricPoleData,
-          connectionToId: instance.connectionTo?.id ?? null,
+          outgoingTargetIds: [...instance.outgoingConnectionIds],
+          incomingSourceIds: instance.incomingConnections.map((p) => p.id),
         });
         this.controller.deleteElectricPole(this.mapIndex, id);
       }
@@ -145,12 +183,47 @@ export class BatchDeleteElectricPolesCommand implements Command {
   undo(): void {
     const manager = this.controller.dataManager.getMapManager(this.mapIndex);
 
-    for (const { data, connectionToId } of this.deletedData) {
+    // 第一阶段：先恢复所有电线杆实例
+    const restoredMap = new Map<number, ElectricPoleDataInstance>();
+    for (const { data } of this.deletedData) {
       const restored = manager.addWithConnection(data);
-      if (connectionToId !== null && restored) {
-        const target = manager.getById(connectionToId);
+      if (restored) {
+        restoredMap.set(data.levelLogicId, restored);
+      }
+    }
+
+    // 第二阶段：恢复所有连接关系（此时所有电线杆都已恢复）
+    for (const { data, outgoingTargetIds, incomingSourceIds } of this.deletedData) {
+      const restored = restoredMap.get(data.levelLogicId);
+      if (!restored) continue;
+
+      for (const targetId of outgoingTargetIds) {
+        const target = manager.getById(targetId);
         if (target) {
-          restored.connectTo(target);
+          try {
+            restored.connectTo(target);
+          } catch (error) {
+            logger.warn('[BatchDeleteElectricPolesCommand] Failed to restore outgoing connection', {
+              from: restored.id,
+              to: targetId,
+              error: error instanceof Error ? error.message : String(error),
+            });
+          }
+        }
+      }
+
+      for (const sourceId of incomingSourceIds) {
+        const source = manager.getById(sourceId);
+        if (source) {
+          try {
+            source.connectTo(restored);
+          } catch (error) {
+            logger.warn('[BatchDeleteElectricPolesCommand] Failed to restore incoming connection', {
+              from: sourceId,
+              to: restored.id,
+              error: error instanceof Error ? error.message : String(error),
+            });
+          }
         }
       }
     }

@@ -64,34 +64,83 @@ export class ElectricPoleDataManager extends BaseDataManager<
    */
   @action
   public syncAllConnections(): void {
+    const byId = new Map<number, ElectricPoleDataInstance>();
     for (const instance of this.instances) {
-      this.syncConnection(instance);
+      byId.set(instance.id, instance);
+    }
+
+    const outgoingRefs = new Map<number, ElectricPoleDataInstance[]>();
+    const incomingRefs = new Map<number, ElectricPoleDataInstance[]>();
+    for (const instance of this.instances) {
+      outgoingRefs.set(instance.id, []);
+      incomingRefs.set(instance.id, []);
+    }
+
+    for (const instance of this.instances) {
+      const normalizedTargetIds = this.normalizeOutgoingConnectionIds(instance, byId);
+
+      // 写回规范化数据（并清理 legacy 字段）
+      instance.setOutgoingConnectionIds(normalizedTargetIds);
+
+      for (const targetId of normalizedTargetIds) {
+        const targetInstance = byId.get(targetId);
+        if (!targetInstance) {
+          continue;
+        }
+        outgoingRefs.get(instance.id)!.push(targetInstance);
+        incomingRefs.get(targetInstance.id)!.push(instance);
+      }
+    }
+
+    for (const instance of this.instances) {
+      instance.setOutgoingConnections(outgoingRefs.get(instance.id) ?? []);
+      instance.setIncomingConnections(incomingRefs.get(instance.id) ?? []);
     }
   }
 
   /**
-   * 同步单个电线杆的连接关系
+   * 规范化单个实例的发出连线 ID 列表
    */
   @action
-  private syncConnection(instance: ElectricPoleDataInstance): void {
-    const connectToId = instance.connectToId;
-    if (connectToId === null) {
-      return;
+  private normalizeOutgoingConnectionIds(
+    instance: ElectricPoleDataInstance,
+    byId: Map<number, ElectricPoleDataInstance>
+  ): number[] {
+    const raw = instance.data.properties.connections;
+    const legacy = instance.data.properties.connectTo;
+
+    const merged: number[] = [];
+    if (Array.isArray(raw)) {
+      for (const id of raw) {
+        if (typeof id === 'number' && Number.isFinite(id)) merged.push(id);
+      }
+    }
+    if (typeof legacy === 'number' && Number.isFinite(legacy)) {
+      merged.push(legacy);
     }
 
-    const targetInstance = this.getById(connectToId);
-    if (!targetInstance) {
-      logger.warn('[ElectricPoleDataManager] Connection target not found', {
-        mapIndex: this.mapIndex,
-        from: instance.id,
-        to: connectToId,
-      });
-      return;
+    const seen = new Set<number>();
+    const result: number[] = [];
+    for (const targetId of merged) {
+      if (targetId === instance.id) {
+        continue;
+      }
+      if (seen.has(targetId)) {
+        continue;
+      }
+      if (!byId.has(targetId)) {
+        logger.warn('[ElectricPoleDataManager] Connection target not found', {
+          mapIndex: this.mapIndex,
+          from: instance.id,
+          to: targetId,
+        });
+        continue;
+      }
+      seen.add(targetId);
+      result.push(targetId);
     }
 
-    // 建立连接关系（不修改data，只设置引用）
-    instance.connectionTo = targetInstance;
-    targetInstance.setConnectionFrom(instance);
+    return result;
   }
 
   /**
@@ -100,7 +149,7 @@ export class ElectricPoleDataManager extends BaseDataManager<
   @action
   public addWithConnection(data: ElectricPoleData): ElectricPoleDataInstance {
     const instance = this.add(data);
-    this.syncConnection(instance);
+    this.syncAllConnections();
     return instance;
   }
 
@@ -114,7 +163,7 @@ export class ElectricPoleDataManager extends BaseDataManager<
       return false;
     }
 
-    // 清理连接关系
+    // 清理连接关系（已经更新了所有相关实例的引用，无需再 syncAllConnections）
     instance.clearAllConnections();
 
     return this.remove(id);
@@ -129,7 +178,9 @@ export class ElectricPoleDataManager extends BaseDataManager<
       ...instance.data,
       properties: {
         ...instance.data.properties,
-        connectTo: instance.connectionTo?.id ?? null,
+        // 兼容：保留 connectTo 字段为空，连接关系统一以 connections 表示
+        connectTo: null,
+        connections: instance.outgoingConnectionIds,
       },
     }));
   }

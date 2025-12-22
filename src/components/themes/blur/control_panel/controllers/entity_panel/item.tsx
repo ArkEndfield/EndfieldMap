@@ -46,7 +46,9 @@ const EntityItem = observer(
     const displayName = useMemo(() => {
       if (entity) {
         if (entity.category === ElectricPoleKey) {
-          return '';
+          return t(`sidebar:operation.electric_pole.create.device_type.options.${entity.entityDataIdKey}`, {
+            defaultValue: entity.entityDataIdKey,
+          });
         }
 
         if (entity.category === CustomPointKey) {

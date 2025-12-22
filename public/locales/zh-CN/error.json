@@ -1,0 +1,15 @@
+{
+  "electric_pole": {
+    "connect_to_self": "不能连接到自身",
+    "different_connection_type": "不能连接不同类型的设备",
+    "already_connected": "两个设备已经连接",
+    "source_slots_full": "当前设备的连接槽位已满",
+    "target_slots_full": "目标设备的连接槽位已满",
+    "distance_too_far": "两个设备之间的距离太远",
+    "connect_failed": "连接失败：{{message}}",
+    "connect_failed_with_switch": "连接失败：{{message}}，点击切换将当前连接的电线杆切换为点击的电线杆",
+    "create_failed": "创建失败：{{message}}",
+    "delete_pole": "删除电线杆",
+    "switch": "切换"
+  }
+}

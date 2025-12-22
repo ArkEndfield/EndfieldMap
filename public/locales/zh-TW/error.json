@@ -1,0 +1,15 @@
+{
+  "electric_pole": {
+    "connect_to_self": "不能連接到自身",
+    "different_connection_type": "不能連接不同類型的設備",
+    "already_connected": "兩個設備已經連接",
+    "source_slots_full": "當前設備的連接槽位已滿",
+    "target_slots_full": "目標設備的連接槽位已滿",
+    "distance_too_far": "兩個設備之間的距離太遠",
+    "connect_failed": "連接失敗：{{message}}",
+    "connect_failed_with_switch": "連接失敗：{{message}}，點擊切換將當前連接的電線桿切換為點擊的電線桿",
+    "create_failed": "創建失敗：{{message}}",
+    "delete_pole": "刪除電線桿",
+    "switch": "切換"
+  }
+}

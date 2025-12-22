@@ -1,5 +1,5 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
+import { ConnectionTargetIdKey, EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
@@ -62,9 +62,12 @@ export class EventController {
         if (clickedFeatures.length === 0) return;
         const feature = clickedFeatures[0];
         const instance = feature.get(EntityInstanceKey) as ElectricPoleDataInstance;
+        const targetId = feature.get(ConnectionTargetIdKey);
+        if (typeof targetId !== 'number') return;
         mapEventEmitter.fire(MAP_EVENT.CONNECTION_CLICK, {
           feature: feature,
           instance,
+          targetId,
           renderer,
           event,
         });

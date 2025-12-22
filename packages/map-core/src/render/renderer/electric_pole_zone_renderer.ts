@@ -1,4 +1,4 @@
-import { ELECTRIC_ZONE_RADIUS, type MapIndex } from '@endfieldmap/map-core/const/map';
+import { type MapIndex } from '@endfieldmap/map-core/const/map';
 import type { ElectricPoleDataInstance, ElectricPoleDataManager } from '@endfieldmap/map-core/data/electric_pole';
 import { type IReactionDisposer,reaction } from 'mobx';
 import { Feature } from 'ol';
@@ -90,13 +90,6 @@ export class ElectricPoleZoneRenderer {
   }
 
   /**
-   * 获取区域半径
-   */
-  private getZoneRadius(): number {
-    return ELECTRIC_ZONE_RADIUS[this.mapIndex] ?? 10;
-  }
-
-  /**
    * 初始化所有features
    */
   private initializeFeatures(): void {
@@ -110,14 +103,17 @@ export class ElectricPoleZoneRenderer {
    */
   private addFeatureForInstance(dataInstance: ElectricPoleDataInstance): void {
     const feature = new Feature();
-    const coordinates = dataInstance.coordinates;
-    const radius = this.getZoneRadius();
-    feature.setGeometry(new CircleGeom(coordinates, radius));
+    feature.setGeometry(dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined);
 
     // 设置位置变化监听（如果位置可以改变的话）
     const disposer = reaction(
-      () => dataInstance.visible,
+      () => ({
+        visible: dataInstance.visible,
+        coordinates: dataInstance.coordinates,
+        radius: dataInstance.zoneRadius,
+      }),
       () => {
+        feature.setGeometry(dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined);
         feature.changed();
       }
     );

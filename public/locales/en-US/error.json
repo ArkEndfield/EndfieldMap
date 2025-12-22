@@ -1,0 +1,15 @@
+{
+  "electric_pole": {
+    "connect_to_self": "Cannot connect to self",
+    "different_connection_type": "Cannot connect devices of different connection types",
+    "already_connected": "The two devices are already connected",
+    "source_slots_full": "The device connection slots are full",
+    "target_slots_full": "The target device connection slots are full",
+    "distance_too_far": "The distance between the two devices is too far",
+    "connect_failed": "Connection failed: {{message}}",
+    "connect_failed_with_switch": "Connection failed: {{message}}. Click switch to change the current connecting pole to the clicked one",
+    "create_failed": "Creation failed: {{message}}",
+    "delete_pole": "Delete pole",
+    "switch": "Switch"
+  }
+}

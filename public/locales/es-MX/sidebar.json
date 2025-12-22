@@ -40,9 +40,19 @@
     },
     "electric_pole": {
       "display": "Mostrar postes eléctricos",
+      "no_data": "No hay datos de postes eléctricos disponibles",
       "create": {
         "start": "Crear",
         "auto_connect": "Conectar automáticamente al crear",
+        "device_type": {
+          "label": "Tipo de dispositivo",
+          "options": {
+            "pole": "Poste (50m)",
+            "repeater": "Repetidor (80m)",
+            "zipline_80": "Tirolina (80m)",
+            "zipline_100": "Tirolina (100m)"
+          }
+        },
         "in_mode": "Creando poste eléctrico"
       },
       "connect": {
@@ -59,6 +69,10 @@
       },
       "zone": {
         "display": "Mostrar rango de poste eléctrico"
+      },
+      "tab": {
+        "list": "Mostrar/Ocultar",
+        "preset": "Preajustes"
       },
       "preset": {
         "title": "Preajustes de postes eléctricos",

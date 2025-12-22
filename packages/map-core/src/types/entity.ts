@@ -1,3 +1,4 @@
+import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey, MapIndex } from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
@@ -82,7 +83,15 @@ export interface ElectricPoleData extends EntityData {
   entityType: '#ElectricPole';
   templateId: typeof ElectricPoleKey;
   properties: EnityProperties & {
-    connectTo: EntityData['levelLogicId'] | null;
+    /** 电线杆子类型 key（电线杆 / 中继器 / 滑索等） */
+    deviceKey?: ElectricPoleDeviceKey;
+    /**
+     * 发出的连线（目标对象 ID 列表）
+     * - 用于根据“谁发出”来计算距离限制
+     */
+    connections?: Array<EntityData['levelLogicId']>;
+    /** @deprecated 旧结构：单一 connectTo */
+    connectTo?: EntityData['levelLogicId'] | null;
     name?: string;
   };
 }

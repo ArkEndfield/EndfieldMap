@@ -1,0 +1,15 @@
+{
+  "electric_pole": {
+    "connect_to_self": "自分自身に接続できません",
+    "different_connection_type": "異なる接続タイプのデバイスは接続できません",
+    "already_connected": "2つのデバイスは既に接続されています",
+    "source_slots_full": "デバイスの接続スロットがいっぱいです",
+    "target_slots_full": "対象デバイスの接続スロットがいっぱいです",
+    "distance_too_far": "2つのデバイス間の距離が遠すぎます",
+    "connect_failed": "接続失敗：{{message}}",
+    "connect_failed_with_switch": "接続失敗：{{message}}。切り替えをクリックして、現在接続中の電柱をクリックしたものに変更します",
+    "create_failed": "作成失敗：{{message}}",
+    "delete_pole": "電柱を削除",
+    "switch": "切り替え"
+  }
+}

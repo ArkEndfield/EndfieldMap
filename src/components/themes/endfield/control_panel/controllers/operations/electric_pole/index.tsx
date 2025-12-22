@@ -1,12 +1,15 @@
 import { Toggle } from '@themes/endfield/components/toggle';
 import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
+import ElectricPoleList from '@themes/endfield/control_panel/controllers/operations/electric_pole/electric_pole_list';
 import ElectricPolePresetPanel from '@themes/endfield/control_panel/controllers/operations/electric_pole/electric_pole_preset_panel';
+import ElectricPoleTypeSelector from '@themes/endfield/control_panel/controllers/operations/electric_pole/electric_pole_type_selector';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 
+import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { CloseIcon, PlusIcon } from '@/components/common/icons';
 import { snapPoints } from '@/const/ui';
 import { useAdapter } from '@/hooks/use_adapter';
@@ -72,6 +75,54 @@ export const ElectricModeTip = observer(() => {
   return t(`operation.electric_pole.${displayText}.in_mode`);
 });
 
+const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
+  const variants = {
+    enter: {
+      x: direction === 'left' ? -300 : 300,
+      opacity: 0,
+    },
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: {
+      x: direction === 'left' ? -300 : 300,
+      opacity: 0,
+    },
+  };
+
+  return (
+    <motion.div
+      className="w-full h-full flex-1 flex flex-col overflow-hidden"
+      variants={variants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{
+        duration: 0.1,
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+const TabContent = ({ showListTab }: { showListTab: boolean }) => {
+  return (
+    <AnimatePresence mode="wait">
+      {showListTab ? (
+        <AnimationWrapper key="list" direction="left">
+          <ElectricPoleList />
+        </AnimationWrapper>
+      ) : (
+        <AnimationWrapper key="preset" direction="right">
+          <ElectricPolePresetPanel />
+        </AnimationWrapper>
+      )}
+    </AnimatePresence>
+  );
+};
+
 export interface ElectricPoleManagerProps {
   open: boolean;
 }
@@ -81,6 +132,7 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
   const isMobile = useIsMobile();
   const { t } = useTranslation('sidebar');
   const { isInMode } = useElectricMode();
+  const [showListTab, setShowListTab] = useState(true);
 
   const isAutoConnect = dataService.electricPoleDataService.autoConnect;
   const isZoneVisible = adapter.electricPoleController.zoneVisible;
@@ -132,8 +184,10 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
             transition={{ duration: 0.15, ease: 'easeInOut' }}
             className="overflow-hidden shrink-0"
           >
-            <div className="p-1 rounded-full border border-[#444] w-fit mt-1 ml-0.5 relative">
+            <div className="p-2 rounded-xl border border-[#444] w-fit mt-1 ml-0.5 relative">
               <div className="absolute -top-2.5 left-4 w-0 h-0 border-5 rotate-90 border-transparent border-r-[#444]" />
+              <div className="text-xs text-white/80 px-1 pb-1">{t('operation.electric_pole.create.device_type.label')}</div>
+              <ElectricPoleTypeSelector />
               <Toggle
                 className="w-auto"
                 checked={isAutoConnect}
@@ -145,7 +199,16 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
         )}
       </AnimatePresence>
 
-      <ElectricPolePresetPanel />
+      <div className="shrink-0 grow-0 mx-3 my-3 text-sm">
+        <EndfieldSwitch
+          checked={showListTab}
+          onChange={setShowListTab}
+          onText={t('operation.electric_pole.tab.list')}
+          offText={t('operation.electric_pole.tab.preset')}
+        />
+      </div>
+
+      <TabContent showListTab={showListTab} />
     </div>
   );
 });

@@ -1,4 +1,8 @@
-import { electricPoleEntityInfo } from '@endfieldmap/map-core/const/entity';
+import {
+  DEFAULT_ELECTRIC_POLE_DEVICE_KEY,
+  type ElectricPoleDeviceKey,
+  getElectricPoleDeviceConfig,
+} from '@endfieldmap/map-core/const/electric_pole';
 import { ElectricPoleIdKey, ElectricPoleKey, type MapIndex } from '@endfieldmap/map-core/const/map';
 import type { ElectricPoleData, ElectricPoleDataInstance, ElectricPoleMapData } from '@endfieldmap/map-core/data/electric_pole';
 import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/electric_pole';
@@ -7,7 +11,7 @@ import { ElectricPoleRenderer, ElectricPoleZoneRenderer } from '@endfieldmap/map
 import type { FeatureMarked, StorageData } from '@endfieldmap/map-core/types/data';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { calculateXYZDistance, crd2xyz, logger } from '@endfieldmap/tools';
-import { action, type IReactionDisposer,observable } from 'mobx';
+import { action, type IReactionDisposer, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 /**
@@ -82,7 +86,7 @@ export class ElectricPoleController {
 
       renderer = new ElectricPoleRenderer({
         dataManager: manager,
-        iconPath: `${this.imagePath}/${electricPoleEntityInfo.entityInfo.pic}.png`,
+        imagePath: this.imagePath,
         iconSize: 52,
       });
 
@@ -165,17 +169,22 @@ export class ElectricPoleController {
       const remappedList: ElectricPoleData[] = poleList.map((pole) => {
         const oldId = pole.levelLogicId;
         const newId = idMap.get(oldId)!;
+        const connectionsRaw = Array.isArray(pole.properties.connections) ? pole.properties.connections : [];
+        const legacyConnectTo = pole.properties.connectTo != null ? [pole.properties.connectTo] : [];
+        const merged = [...connectionsRaw, ...legacyConnectTo].filter(
+          (id): id is number => typeof id === 'number' && Number.isFinite(id)
+        );
 
-        let newConnectTo: number | null = null;
-        if (pole.properties.connectTo != null) {
-          const mapped = idMap.get(pole.properties.connectTo);
+        const mappedConnections: number[] = [];
+        for (const toId of merged) {
+          const mapped = idMap.get(toId);
           if (mapped != null) {
-            newConnectTo = mapped;
+            mappedConnections.push(mapped);
           } else {
-            logger.warn('[ElectricPoleController] connectTo target not found after remap', {
+            logger.warn('[ElectricPoleController] Connection target not found after remap', {
               mapIndex,
               from: oldId,
-              to: pole.properties.connectTo,
+              to: toId,
             });
           }
         }
@@ -185,7 +194,8 @@ export class ElectricPoleController {
           levelLogicId: newId,
           properties: {
             ...pole.properties,
-            connectTo: newConnectTo,
+            connectTo: null,
+            connections: mappedConnections,
           },
         };
       });
@@ -244,30 +254,18 @@ export class ElectricPoleController {
    */
   private syncConnectionsForMap(mapIndex: MapIndex): void {
     const manager = this.dataManager.getMapManager(mapIndex);
-
-    for (const instance of manager.instances) {
-      const connectToId = instance.data.properties.connectTo;
-      if (connectToId != null) {
-        const targetInstance = manager.getById(connectToId);
-        if (targetInstance) {
-          instance.connectionTo = targetInstance;
-          targetInstance.setConnectionFrom(instance);
-        } else {
-          logger.warn('[ElectricPoleController] Connection target not found', {
-            mapIndex,
-            from: instance.id,
-            to: connectToId,
-          });
-        }
-      }
-    }
+    manager.syncAllConnections();
   }
 
   /**
    * 创建电线杆
    */
   @action
-  public createElectricPole(mapIndex: MapIndex, position: Coordinate): ElectricPoleDataInstance | null {
+  public createElectricPole(
+    mapIndex: MapIndex,
+    position: Coordinate,
+    deviceKey: ElectricPoleDeviceKey = DEFAULT_ELECTRIC_POLE_DEVICE_KEY
+  ): ElectricPoleDataInstance | null {
     const xyzPosition = crd2xyz(position, mapIndex);
 
     // 检查是否存在重复（0.5 单位内认为是重复点击）
@@ -285,6 +283,14 @@ export class ElectricPoleController {
     const existingIds = new Set(manager.instances.map((instance) => instance.id));
     const levelLogicId = this.generateLevelLogicId(existingIds);
 
+    const createLimit = getElectricPoleDeviceConfig(deviceKey).createLimit;
+    if (typeof createLimit === 'number' && Number.isFinite(createLimit)) {
+      const count = manager.instances.filter((i) => i.deviceKey === deviceKey).length;
+      if (count >= createLimit) {
+        throw new Error(`[ElectricPoleController] Create limit reached for deviceKey=${deviceKey} (limit: ${createLimit})`);
+      }
+    }
+
     // 创建数据
     const data: ElectricPoleData = {
       levelLogicId,
@@ -293,6 +299,8 @@ export class ElectricPoleController {
       entityType: '#ElectricPole',
       position: xyzPosition,
       properties: {
+        deviceKey,
+        connections: [],
         connectTo: null,
       },
     };
@@ -316,14 +324,8 @@ export class ElectricPoleController {
       return false;
     }
 
-    // 清理连接关系
-    instance.clearConnectionTo();
-    instance.clearConnectionFrom();
-
-    // 从管理器中移除
-    manager.remove(id);
-
-    return true;
+    // 清理连接关系 + 从管理器中移除
+    return manager.removeWithCleanup(id);
   }
 
   /**

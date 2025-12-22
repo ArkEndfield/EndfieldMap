@@ -1,4 +1,4 @@
-
+import { DEFAULT_ELECTRIC_POLE_DEVICE_KEY, type ElectricPoleDeviceKey,getElectricPoleDeviceConfig } from '@endfieldmap/map-core/const/electric_pole';
 import { ElectricPoleIdKey, ElectricPoleKey, type MapIndex } from '@endfieldmap/map-core/const/map';
 import { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole/electric_pole_data_instance';
 import { ElectricPoleDataManager } from '@endfieldmap/map-core/data/electric_pole/electric_pole_data_manager';
@@ -134,17 +134,22 @@ export class ElectricPoleMapDataManager {
       // 重映射数据
       const remappedList: ElectricPoleData[] = poleList.map((pole) => {
         const newId = idMap.get(pole.levelLogicId)!;
-        let newConnectTo: number | null = null;
+        const connectionsRaw = Array.isArray(pole.properties.connections) ? pole.properties.connections : [];
+        const legacyConnectTo = pole.properties.connectTo != null ? [pole.properties.connectTo] : [];
+        const merged = [...connectionsRaw, ...legacyConnectTo].filter(
+          (id): id is number => typeof id === 'number' && Number.isFinite(id)
+        );
 
-        if (pole.properties.connectTo !== null) {
-          const mappedTo = idMap.get(pole.properties.connectTo);
+        const mappedConnections: number[] = [];
+        for (const toId of merged) {
+          const mappedTo = idMap.get(toId);
           if (mappedTo !== undefined) {
-            newConnectTo = mappedTo;
+            mappedConnections.push(mappedTo);
           } else {
-            logger.warn('[ElectricPoleMapDataManager] connectTo target not found after remap', {
+            logger.warn('[ElectricPoleMapDataManager] Connection target not found after remap', {
               mapIndex,
               from: pole.levelLogicId,
-              to: pole.properties.connectTo,
+              to: toId,
             });
           }
         }
@@ -154,7 +159,8 @@ export class ElectricPoleMapDataManager {
           levelLogicId: newId,
           properties: {
             ...pole.properties,
-            connectTo: newConnectTo,
+            connectTo: null,
+            connections: mappedConnections,
           },
         };
       });
@@ -266,7 +272,11 @@ export class ElectricPoleMapDataManager {
    * 创建电线杆
    */
   @action
-  public createElectricPole(mapIndex: MapIndex, position: Coordinate): ElectricPoleDataInstance {
+  public createElectricPole(
+    mapIndex: MapIndex,
+    position: Coordinate,
+    deviceKey: ElectricPoleDeviceKey = DEFAULT_ELECTRIC_POLE_DEVICE_KEY
+  ): ElectricPoleDataInstance {
     const manager = this.getOrCreateManager(mapIndex);
     const xyzPosition = crd2xyz(position, mapIndex);
 
@@ -279,6 +289,14 @@ export class ElectricPoleMapDataManager {
       }
     }
 
+    const createLimit = getElectricPoleDeviceConfig(deviceKey).createLimit;
+    if (typeof createLimit === 'number' && Number.isFinite(createLimit)) {
+      const count = manager.instances.filter((i) => i.deviceKey === deviceKey).length;
+      if (count >= createLimit) {
+        throw new Error(`Create limit reached for deviceKey=${deviceKey} (limit: ${createLimit})`);
+      }
+    }
+
     const data: ElectricPoleData = {
       levelLogicId: this.generateId(),
       entityDataIdKey: ElectricPoleIdKey,
@@ -286,6 +304,8 @@ export class ElectricPoleMapDataManager {
       entityType: '#ElectricPole',
       position: xyzPosition,
       properties: {
+        deviceKey,
+        connections: [],
         connectTo: null,
       },
     };

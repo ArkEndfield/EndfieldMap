@@ -1,0 +1,15 @@
+{
+  "electric_pole": {
+    "connect_to_self": "No se puede conectar a sí mismo",
+    "different_connection_type": "No se pueden conectar dispositivos de diferentes tipos de conexión",
+    "already_connected": "Los dos dispositivos ya están conectados",
+    "source_slots_full": "Las ranuras de conexión del dispositivo están llenas",
+    "target_slots_full": "Las ranuras de conexión del dispositivo de destino están llenas",
+    "distance_too_far": "La distancia entre los dos dispositivos es demasiado grande",
+    "connect_failed": "Conexión fallida: {{message}}",
+    "connect_failed_with_switch": "Conexión fallida: {{message}}. Haz clic en cambiar para cambiar el poste actual por el que hiciste clic",
+    "create_failed": "Creación fallida: {{message}}",
+    "delete_pole": "Eliminar poste",
+    "switch": "Cambiar"
+  }
+}

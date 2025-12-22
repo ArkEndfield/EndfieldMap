@@ -48,6 +48,8 @@ export interface ConnectionClickEventDetail {
   feature: FeatureLike;
   /** 电线杆数据实例（连接的起始点） */
   instance: ElectricPoleDataInstance;
+  /** 连线目标 ID（由 instance 发出） */
+  targetId: number;
   renderer?: ElectricPoleRenderer;
   event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 }

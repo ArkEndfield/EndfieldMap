@@ -1,4 +1,7 @@
+import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
+import { getElectricPoleDeviceConfig } from '@endfieldmap/map-core/const/electric_pole';
 import {
+  ConnectionTargetIdKey,
   DEFAULT_FILL_COLOR,
   DEFAULT_FILL_COLOR_TRANSPARENT_50,
   DEFAULT_FILL_COLOR_TRANSPARENT_75,
@@ -38,8 +41,8 @@ const ENTITY_RADIUS = ENTITY_SIZE / 2;
 export interface ElectricPoleRendererConfig {
   /** 数据管理器 */
   dataManager: ElectricPoleDataManager;
-  /** 图标路径 */
-  iconPath: string;
+  /** 图片路径（用于拼接 iconPic） */
+  imagePath: string;
   /** 图标大小 */
   iconSize?: number;
   /** 渲染缓冲区 */
@@ -54,8 +57,8 @@ export interface ElectricPoleRendererConfig {
 interface FeatureMapping {
   /** 点feature */
   pointFeature: Feature;
-  /** 连线feature */
-  connectionFeature: Feature;
+  /** 连线features（targetId -> feature） */
+  connectionFeatures: Map<number, Feature>;
   /** 数据实例 */
   dataInstance: ElectricPoleDataInstance;
   /** reaction disposer */
@@ -109,10 +112,16 @@ export class ElectricPoleRenderer {
   private styleCache: Map<string, Style[]> = new Map();
 
   /** 图标样式缓存 */
-  private iconStyleCache: Style | null = null;
+  private iconStyleCache: Map<string, Style> = new Map();
 
   /** 是否启用阴影 */
   private enableShadow: boolean;
+
+  /** 图片路径 */
+  private imagePath: string;
+
+  /** 图标大小 */
+  private iconSize: number;
 
   /** MobX disposers */
   private disposers: IReactionDisposer[] = [];
@@ -156,6 +165,7 @@ export class ElectricPoleRenderer {
     this.dataManager = config.dataManager;
     this.mapIndex = config.dataManager.mapIndex;
     this.enableShadow = config.enableShadow ?? false;
+    this.imagePath = config.imagePath;
 
     // 初始化数据源
     this.entitySource = new VectorSource();
@@ -182,14 +192,8 @@ export class ElectricPoleRenderer {
       zIndex: 4,
     });
 
-    // 初始化图标样式
-    const iconSize = config.iconSize ?? DEFAULT_ICON_SIZE;
-    this.iconStyleCache = createEntityIconStyles({
-      url: config.iconPath,
-      size: iconSize,
-      radius: ENTITY_RADIUS,
-      borderWidth: 3,
-    });
+    this.iconSize = config.iconSize ?? DEFAULT_ICON_SIZE;
+    // iconStyleCache 按 deviceKey 延迟创建
 
     // 初始化阴影样式
     if (this.enableShadow) {
@@ -223,49 +227,74 @@ export class ElectricPoleRenderer {
     pointFeature.set(FeatureTypeKey, FeatureType.ENTITY);
     pointFeature.set(EntityInstanceKey, dataInstance);
 
-    // 创建连线feature
-    const connectionFeature = new Feature();
-    connectionFeature.set(FeatureTypeKey, FeatureType.CONNECTION);
-    connectionFeature.set(EntityInstanceKey, dataInstance);
-
-    // 更新连线几何
-    this.updateConnectionGeometry(dataInstance, connectionFeature);
+    // 创建连线 features
+    const connectionFeatures = new Map<number, Feature>();
+    this.syncConnectionFeatures(dataInstance, connectionFeatures);
 
     // 设置状态变化监听
     const disposer = reaction(
       () => ({
         active: dataInstance.active,
         visible: dataInstance.visible,
-        connectionTo: dataInstance.connectionTo,
+        outgoingIds: dataInstance.outgoingConnections.map((p) => p.id),
       }),
       () => {
         pointFeature.changed();
-        this.updateConnectionGeometry(dataInstance, connectionFeature);
+        this.syncConnectionFeatures(dataInstance, connectionFeatures);
       }
     );
 
     this.featureMappings.set(dataInstance.id, {
       pointFeature,
-      connectionFeature,
+      connectionFeatures,
       dataInstance,
       disposer,
     });
 
     this.entitySource.addFeature(pointFeature);
-    this.connectionSource.addFeature(connectionFeature);
   }
 
   /**
-   * 更新连线几何
+   * 同步单个实例的所有连线 features（只渲染“发出”的连线）
    */
-  private updateConnectionGeometry(dataInstance: ElectricPoleDataInstance, feature: Feature): void {
-    const targetInstance = dataInstance.connectionTo;
-    if (targetInstance) {
-      const fromCoords = dataInstance.coordinates;
-      const toCoords = targetInstance.coordinates;
-      feature.setGeometry(new LineString([fromCoords, toCoords]));
-    } else {
-      feature.setGeometry(undefined);
+  private syncConnectionFeatures(dataInstance: ElectricPoleDataInstance, featureMap: Map<number, Feature>): void {
+    const fromCoords = dataInstance.coordinates;
+    const currentTargets = new Set<number>(
+      dataInstance.visible ? dataInstance.outgoingConnections.filter((p) => p.visible).map((p) => p.id) : []
+    );
+
+    // remove missing
+    for (const [targetId, feature] of featureMap.entries()) {
+      if (!currentTargets.has(targetId)) {
+        if (this.hoveredFeature === feature) {
+          this.hoveredFeature = null;
+        }
+        this.connectionSource.removeFeature(feature);
+        featureMap.delete(targetId);
+      }
+    }
+
+    // add/update current
+    for (const target of dataInstance.outgoingConnections) {
+      if (!dataInstance.visible || !target.visible) {
+        continue;
+      }
+      const targetId = target.id;
+      const toCoords = target.coordinates;
+
+      const existing = featureMap.get(targetId);
+      if (existing) {
+        existing.setGeometry(new LineString([fromCoords, toCoords]));
+        continue;
+      }
+
+      const connectionFeature = new Feature();
+      connectionFeature.set(FeatureTypeKey, FeatureType.CONNECTION);
+      connectionFeature.set(EntityInstanceKey, dataInstance);
+      connectionFeature.set(ConnectionTargetIdKey, targetId);
+      connectionFeature.setGeometry(new LineString([fromCoords, toCoords]));
+      featureMap.set(targetId, connectionFeature);
+      this.connectionSource.addFeature(connectionFeature);
     }
   }
 
@@ -277,7 +306,12 @@ export class ElectricPoleRenderer {
     if (mapping) {
       mapping.disposer();
       this.entitySource.removeFeature(mapping.pointFeature);
-      this.connectionSource.removeFeature(mapping.connectionFeature);
+      for (const feature of mapping.connectionFeatures.values()) {
+        if (this.hoveredFeature === feature) {
+          this.hoveredFeature = null;
+        }
+        this.connectionSource.removeFeature(feature);
+      }
       this.featureMappings.delete(id);
     }
   }
@@ -313,8 +347,12 @@ export class ElectricPoleRenderer {
   /**
    * 生成样式缓存键
    */
-  private generateStyleCacheKey(fillOpacity: '50' | '75' | '100', state: 'active' | 'normal'): string {
-    return `${fillOpacity}-${state}`;
+  private generateStyleCacheKey(
+    deviceKey: ElectricPoleDeviceKey,
+    fillOpacity: '50' | '75' | '100',
+    state: 'active' | 'normal'
+  ): string {
+    return `${deviceKey}-${fillOpacity}-${state}`;
   }
 
   /**
@@ -325,6 +363,9 @@ export class ElectricPoleRenderer {
     if (!dataInstance) {
       return [];
     }
+    if (!dataInstance.visible) {
+      return [];
+    }
 
     // 根据状态计算透明度
     let fillOpacity: '50' | '75' | '100' = '100';
@@ -333,7 +374,7 @@ export class ElectricPoleRenderer {
     }
 
     const state: 'active' | 'normal' = dataInstance.active ? 'active' : 'normal';
-    const cacheKey = this.generateStyleCacheKey(fillOpacity, state);
+    const cacheKey = this.generateStyleCacheKey(dataInstance.deviceKey, fillOpacity, state);
 
     const cachedStyle = this.styleCache.get(cacheKey);
     if (cachedStyle) {
@@ -341,12 +382,28 @@ export class ElectricPoleRenderer {
     }
 
     const bgStyles = ElectricPoleRenderer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
+    const iconStyle = this.getOrCreateIconStyle(dataInstance.deviceKey);
     const styles: Style[] = this.enableShadow
-      ? [...ElectricPoleRenderer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!]
-      : [...bgStyles, this.iconStyleCache!];
+      ? [...ElectricPoleRenderer.BASE_BACKDROP_STYLE, ...bgStyles, iconStyle]
+      : [...bgStyles, iconStyle];
 
     this.styleCache.set(cacheKey, styles);
     return styles;
+  }
+
+  private getOrCreateIconStyle(deviceKey: ElectricPoleDeviceKey): Style {
+    const cached = this.iconStyleCache.get(deviceKey);
+    if (cached) return cached;
+
+    const { iconPic } = getElectricPoleDeviceConfig(deviceKey);
+    const style = createEntityIconStyles({
+      url: `${this.imagePath}/${iconPic}.png`,
+      size: this.iconSize,
+      radius: ENTITY_RADIUS,
+      borderWidth: 3,
+    });
+    this.iconStyleCache.set(deviceKey, style);
+    return style;
   }
 
   /**

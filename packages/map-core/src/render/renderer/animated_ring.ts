@@ -134,10 +134,6 @@ export class AnimatedRingFeature {
   /**
    * quadratic ease-out
    */
-  private easeOutQuad(t: number): number {
-    return 1 - (1 - t) * (1 - t);
-  }
-
   private easeOut(t: number): number {
     return this.easeOutCubic(t);
   }

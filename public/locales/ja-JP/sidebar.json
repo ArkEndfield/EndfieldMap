@@ -40,9 +40,19 @@
     },
     "electric_pole": {
       "display": "電柱を表示",
+      "no_data": "電柱データがありません",
       "create": {
         "start": "作成",
         "auto_connect": "作成時に自動接続",
+        "device_type": {
+          "label": "種類",
+          "options": {
+            "pole": "電柱 (50m)",
+            "repeater": "中継器 (80m)",
+            "zipline_80": "ジップライン (80m)",
+            "zipline_100": "ジップライン (100m)"
+          }
+        },
         "in_mode": "電柱を作成中"
       },
       "connect": {
@@ -59,6 +69,10 @@
       },
       "zone": {
         "display": "電柱の範囲を表示"
+      },
+      "tab": {
+        "list": "表示/非表示",
+        "preset": "プリセット"
       },
       "preset": {
         "title": "電柱プリセット",

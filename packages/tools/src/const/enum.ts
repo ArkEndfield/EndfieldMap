@@ -13,6 +13,8 @@ export enum StorageKey {
 
   /** 电线杆数据 */
   ELECTRIC_POLE = 'electric_pole',
+  /** 电线杆类型可见性 */
+  ELECTRIC_POLE_VISIBILITY = 'electric_pole_visibility',
   /** 自定义标点数据 */
   CUSTOM_POINT = 'custom_point',
   /** 自定义标点类型可见性 */

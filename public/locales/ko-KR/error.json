@@ -1,0 +1,15 @@
+{
+  "electric_pole": {
+    "connect_to_self": "자기 자신에 연결할 수 없습니다",
+    "different_connection_type": "다른 연결 유형의 장치는 연결할 수 없습니다",
+    "already_connected": "두 장치가 이미 연결되어 있습니다",
+    "source_slots_full": "장치의 연결 슬롯이 가득 찼습니다",
+    "target_slots_full": "대상 장치의 연결 슬롯이 가득 찼습니다",
+    "distance_too_far": "두 장치 사이의 거리가 너무 멉니다",
+    "connect_failed": "연결 실패: {{message}}",
+    "connect_failed_with_switch": "연결 실패: {{message}}. 전환을 클릭하여 현재 연결 중인 전신주를 클릭한 것으로 변경합니다",
+    "create_failed": "생성 실패: {{message}}",
+    "delete_pole": "전신주 삭제",
+    "switch": "전환"
+  }
+}

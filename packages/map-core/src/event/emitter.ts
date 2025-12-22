@@ -119,7 +119,7 @@ export class EndfieldMapEmitter {
       this.listenerCounts.set(event, 0);
     } else {
       // 移除所有事件的监听器
-      for (const [listener, info] of this.listenerMap.entries()) {
+      for (const [listener, _info] of this.listenerMap.entries()) {
         // 由于我们不知道具体的事件名，需要遍历所有可能的事件
         this.listenerMap.delete(listener);
       }

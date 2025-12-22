@@ -40,9 +40,19 @@
     },
     "electric_pole": {
       "display": "顯示電線桿",
+      "no_data": "暫無電線桿資料",
       "create": {
         "start": "建立",
         "auto_connect": "建立時自動連接",
+        "device_type": {
+          "label": "建立類型",
+          "options": {
+            "pole": "電線桿(50m)",
+            "repeater": "中繼器(80m)",
+            "zipline_80": "滑索(80m)",
+            "zipline_100": "滑索(100m)"
+          }
+        },
         "in_mode": "正在建立電線桿"
       },
       "connect": {
@@ -59,6 +69,10 @@
       },
       "zone": {
         "display": "顯示電線桿範圍"
+      },
+      "tab": {
+        "list": "顯示/隱藏",
+        "preset": "預設列表"
       },
       "preset": {
         "title": "電線桿預設",

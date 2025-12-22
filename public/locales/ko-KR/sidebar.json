@@ -40,9 +40,19 @@
     },
     "electric_pole": {
       "display": "전신주 표시",
+      "no_data": "전신주 데이터가 없습니다",
       "create": {
         "start": "생성",
         "auto_connect": "생성 시 자동 연결",
+        "device_type": {
+          "label": "유형",
+          "options": {
+            "pole": "전신주(50m)",
+            "repeater": "중계기(80m)",
+            "zipline_80": "짚라인(80m)",
+            "zipline_100": "짚라인(100m)"
+          }
+        },
         "in_mode": "전신주 생성 중"
       },
       "connect": {
@@ -59,6 +69,10 @@
       },
       "zone": {
         "display": "전신주 범위 표시"
+      },
+      "tab": {
+        "list": "표시/숨김",
+        "preset": "프리셋"
       },
       "preset": {
         "title": "전신주 프리셋",

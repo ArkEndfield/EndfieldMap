@@ -46,7 +46,9 @@ const EntityItem = observer(
     const displayName = useMemo(() => {
       if (entity) {
         if (entity.category === ElectricPoleKey) {
-          return '';
+          return t(`sidebar:operation.electric_pole.create.device_type.options.${entity.entityDataIdKey}`, {
+            defaultValue: entity.entityDataIdKey,
+          });
         }
 
         // 检查是否是自定义标点类型（以 custom_point_ 开头）

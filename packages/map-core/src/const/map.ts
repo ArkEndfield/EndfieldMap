@@ -67,6 +67,9 @@ export const FeatureTypeKey = 'featureType';
 /** 实体实例键 */
 export const EntityInstanceKey = 'entityInstance';
 
+/** 连线目标 ID 键（用于区分同一实体的多条连线） */
+export const ConnectionTargetIdKey = 'connectionTargetId';
+
 /** 图层类型键 */
 export const LayerTypeKey = 'layerType';
 
