@@ -7,3 +7,4 @@ export * from '@endfieldmap/map-core/types/event';
 export * from '@endfieldmap/map-core/types/layer';
 export * from '@endfieldmap/map-core/types/map';
 export * from '@endfieldmap/map-core/types/position';
+export * from '@endfieldmap/map-core/types/dev_tools';

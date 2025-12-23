@@ -1,20 +1,17 @@
-import { MapOL } from '@endfieldmap/map-core';
 import { xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
 import { ColorPicker } from '@/components/common/dev_tools/draws/components/color_picker';
 import { DevToolsCoordType, useCoordType } from '@/components/common/dev_tools/draws/hooks/use_coord_type';
-import { useDrawHistory } from '@/components/common/dev_tools/draws/hooks/use_draw_history';
 import { useAdapter } from '@/hooks/use_adapter';
 
 export const ShapeDraw = observer(() => {
   const { adapter, dataService } = useAdapter();
-  const map = adapter.mapController.mapRenderer.map;
+  const devToolsController = adapter.devToolsController;
   const currentMap = dataService.mapStateDataService.currentMap.value;
 
   const { coordType, CoordTypeSelector } = useCoordType();
-  const { addFeature } = useDrawHistory();
   const [coordInput, setCoordInput] = useState('');
   const [params, setParams] = useState({
     strokeColor: '#3388ff',
@@ -22,7 +19,7 @@ export const ShapeDraw = observer(() => {
   });
 
   const handleDraw = () => {
-    if (!map || !coordInput.trim()) return;
+    if (!devToolsController || !coordInput.trim()) return;
 
     const lines = coordInput.trim().split('\n');
     const coords: [number, number][] = [];
@@ -49,25 +46,17 @@ export const ShapeDraw = observer(() => {
 
     if (coords.length < 2) return;
 
-    const geometry = new MapOL.geom.LineString(coords);
-
-    const feature = new MapOL.Feature({
-      geometry,
+    devToolsController.drawLine(coords, {
+      strokeColor: params.strokeColor,
+      strokeWidth: params.strokeWidth,
     });
-
-    const style = new MapOL.style.Style({
-      stroke: new MapOL.style.Stroke({
-        color: params.strokeColor,
-        width: params.strokeWidth,
-      }),
-    });
-
-    feature.setStyle(style);
-
-    addFeature(feature);
 
     setCoordInput('');
   };
+
+  if (!devToolsController) {
+    return null;
+  }
 
   return (
     <div className="text-xs text-white space-y-3 w-64">
@@ -75,7 +64,7 @@ export const ShapeDraw = observer(() => {
 
       <div className="space-y-1">
         <label className="block text-gray-400">
-          点位集合
+          点位集合（PolyLine）
           <span className="block text-[10px] text-gray-500">
             {coordType === DevToolsCoordType.Game ? '格式: x, y, z' : '格式: x, y'}
           </span>
@@ -112,7 +101,7 @@ export const ShapeDraw = observer(() => {
         onClick={handleDraw}
         disabled={!coordInput.trim()}
       >
-        绘制线条
+        绘制 PolyLine
       </button>
     </div>
   );

@@ -1,25 +1,22 @@
-import { MapOL } from '@endfieldmap/map-core';
 import { xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
 import { ColorPicker } from '@/components/common/dev_tools/draws/components/color_picker';
 import { DevToolsCoordType, useCoordType } from '@/components/common/dev_tools/draws/hooks/use_coord_type';
-import { useDrawHistory } from '@/components/common/dev_tools/draws/hooks/use_draw_history';
 import { useAdapter } from '@/hooks/use_adapter';
 
 export const PointDraw = observer(() => {
   const { adapter, dataService } = useAdapter();
-  const map = adapter.mapController.mapRenderer.map;
+  const devToolsController = adapter.devToolsController;
   const currentMap = dataService.mapStateDataService.currentMap.value;
 
   const { coordType, CoordTypeSelector } = useCoordType();
-  const { addFeature } = useDrawHistory();
   const [coords, setCoords] = useState({ x: 0, y: 0, z: 0 });
   const [config, setConfig] = useState({ size: 5, color: '#ff0000' });
 
   const handleDraw = () => {
-    if (!map) return;
+    if (!devToolsController) return;
 
     let finalCoords: [number, number];
     if (coordType === DevToolsCoordType.Game) {
@@ -29,23 +26,17 @@ export const PointDraw = observer(() => {
       finalCoords = [coords.x, coords.y];
     }
 
-    const feature = new MapOL.Feature({
-      geometry: new MapOL.geom.Point(finalCoords),
+    devToolsController.drawPoint(finalCoords, {
+      radius: config.size,
+      fillColor: config.color,
     });
-
-    feature.setStyle(
-      new MapOL.style.Style({
-        image: new MapOL.style.Circle({
-          radius: config.size,
-          fill: new MapOL.style.Fill({ color: config.color }),
-        }),
-      })
-    );
-
-    addFeature(feature);
 
     setCoords({ x: 0, y: 0, z: 0 });
   };
+
+  if (!devToolsController) {
+    return null;
+  }
 
   return (
     <div className="text-xs text-white space-y-3 w-64">

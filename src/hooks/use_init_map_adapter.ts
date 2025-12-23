@@ -8,6 +8,7 @@ import i18n from '@/i18n';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
 import { DataService } from '@/services/data';
+import { isDev } from '@/services/env';
 import { initHoverFeatureEventListeners } from '@/services/hover_feature';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
@@ -44,6 +45,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
         asset: getAssetUrls(),
         jsonLoader: DataService.jsonLoader,
         consolaReporter: sentryReporter,
+        isDev: isDev,
       });
 
       setAdapterReactive(adapter.current);

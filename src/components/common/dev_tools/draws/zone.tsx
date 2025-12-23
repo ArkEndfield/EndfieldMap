@@ -1,20 +1,17 @@
-import { MapOL } from '@endfieldmap/map-core';
 import { xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
 import { ColorPicker } from '@/components/common/dev_tools/draws/components/color_picker';
 import { DevToolsCoordType, useCoordType } from '@/components/common/dev_tools/draws/hooks/use_coord_type';
-import { useDrawHistory } from '@/components/common/dev_tools/draws/hooks/use_draw_history';
 import { useAdapter } from '@/hooks/use_adapter';
 
 export const ZoneDraw = observer(() => {
   const { adapter, dataService } = useAdapter();
-  const map = adapter.mapController.mapRenderer.map;
+  const devToolsController = adapter.devToolsController;
   const currentMap = dataService.mapStateDataService.currentMap.value;
 
   const { coordType, CoordTypeSelector } = useCoordType();
-  const { addFeature } = useDrawHistory();
   const [coordInput, setCoordInput] = useState('');
   const [params, setParams] = useState({
     strokeColor: '#3388ff',
@@ -23,7 +20,7 @@ export const ZoneDraw = observer(() => {
   });
 
   const handleDraw = () => {
-    if (!map || !coordInput.trim()) return;
+    if (!devToolsController || !coordInput.trim()) return;
 
     const lines = coordInput.trim().split('\n');
     const coords: [number, number][] = [];
@@ -48,35 +45,20 @@ export const ZoneDraw = observer(() => {
       }
     });
 
-    if (coords.length < 2) return;
+    if (coords.length < 3) return;
 
-    const start = coords[0];
-    const end = coords[coords.length - 1];
-    if (start[0] !== end[0] || start[1] !== end[1]) {
-      coords.push(start);
-    }
-    const geometry = new MapOL.geom.Polygon([coords]);
-
-    const feature = new MapOL.Feature({
-      geometry,
+    devToolsController.drawPolygon(coords, {
+      strokeColor: params.strokeColor,
+      strokeWidth: params.strokeWidth,
+      fillColor: params.fillColor,
     });
-
-    const style = new MapOL.style.Style({
-      stroke: new MapOL.style.Stroke({
-        color: params.strokeColor,
-        width: params.strokeWidth,
-      }),
-      fill: new MapOL.style.Fill({
-        color: params.fillColor,
-      }),
-    });
-
-    feature.setStyle(style);
-
-    addFeature(feature);
 
     setCoordInput('');
   };
+
+  if (!devToolsController) {
+    return null;
+  }
 
   return (
     <div className="text-xs text-white space-y-3 w-64">

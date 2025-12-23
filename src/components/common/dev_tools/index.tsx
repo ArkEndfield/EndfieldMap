@@ -2,13 +2,13 @@ import { crd2xyz, domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
-import { Draws } from '@/components/common/dev_tools/draws';
-import { CogIcon, MinusIcon } from '@/components/common/icons';
+import { DevToolsDrawPanel } from '@/components/common/dev_tools/draw_panel';
+import { CogIcon, EditIcon, MinusIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
 
 // 开发工具面板
-const DevTools = observer(() => {
+const DevToolsPanel = observer(() => {
   const { dataService } = useAdapter();
   const devToolsState = dataService.mapStateDataService.devToolsState;
 
@@ -54,7 +54,7 @@ const DevTools = observer(() => {
 
     const timer = setTimeout(updatePosition, 0);
     return () => clearTimeout(timer);
-  }, [devToolsState?.value?.position, devToolsState?.value?.expanded, windowSize, isDragging]);
+  }, [devToolsState?.value?.position, devToolsState?.value?.panelCollapsed, windowSize, isDragging]);
 
   const dragStartMousePos = useRef({ x: 0, y: 0 });
   const hasMoved = useRef(false);
@@ -128,18 +128,17 @@ const DevTools = observer(() => {
     }
   }, [isDragging, position, devToolsState]);
 
-  const toggleExpand = () => {
-    if (devToolsState) {
-      devToolsState.value = {
-        ...devToolsState.value,
-        expanded: !devToolsState.value.expanded,
-      };
-    }
+  const toggleCollapse = () => {
+    if (!devToolsState) return;
+    devToolsState.value = {
+      ...devToolsState.value,
+      panelCollapsed: !(devToolsState.value.panelCollapsed ?? false),
+    };
   };
 
   if (!devToolsState) return null;
 
-  const expanded = devToolsState.value.expanded;
+  const collapsed = devToolsState.value.panelCollapsed ?? false;
 
   return (
     <div
@@ -151,36 +150,36 @@ const DevTools = observer(() => {
       style={{
         right: position.right,
         top: position.top,
-        width: expanded ? 'auto' : '40px',
-        height: expanded ? 'auto' : '40px',
+        width: collapsed ? '40px' : 'auto',
+        height: collapsed ? '40px' : 'auto',
       }}
       onMouseDown={handleMouseDown}
     >
-      <div className="flex items-center justify-between p-2 select-none h-10">
-        {expanded && <span className="text-xs font-bold ml-1">DevTools</span>}
+      <div className={cn('flex items-center justify-between p-2 select-none h-10', collapsed ? 'p-0 h-10' : '')}>
+        {!collapsed && <span className="text-xs font-bold ml-1">DevTools</span>}
         <div
           className={cn(
             'cursor-pointer hover:bg-white/20 rounded-sm p-1 flex items-center justify-center transition-colors',
-            expanded ? '' : 'w-full h-full'
+            collapsed ? 'w-full h-full' : ''
           )}
           onClick={(e) => {
             e.stopPropagation();
             if (!hasMoved.current) {
-              toggleExpand();
+              toggleCollapse();
             }
           }}
         >
-          {expanded ? <MinusIcon className="text-sm" /> : <CogIcon className="text-lg" />}
+          {collapsed ? <CogIcon className="text-lg" /> : <MinusIcon className="text-sm" />}
         </div>
       </div>
 
-      {expanded && (
+      {!collapsed && (
         <div
           className="p-4 border-t text-xs text-gray-300 border-white/10 space-y-2"
           onMouseDown={(e) => e.stopPropagation()}
         >
-          <div className="border border-white/10 rounded-md p-1 space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="border border-white/10 rounded-md p-2 space-y-2">
+            <div className="flex items-center justify-between gap-3">
               <span>显示鼠标坐标</span>
               <input
                 type="checkbox"
@@ -192,8 +191,22 @@ const DevTools = observer(() => {
               />
             </div>
             {devToolsState.value.showCursorPosition && <CursorPositionDisplay />}
+            <button
+              className={cn(
+                'w-full flex items-center justify-center gap-2 px-2 py-1.5 rounded text-xs border border-white/10 transition-colors',
+                devToolsState.value.drawPanelOpen
+                  ? 'bg-white/15 text-white hover:bg-white/20'
+                  : 'bg-white/5 hover:bg-white/10'
+              )}
+              type="button"
+              onClick={() => {
+                devToolsState.value = { ...devToolsState.value, drawPanelOpen: !(devToolsState.value.drawPanelOpen ?? false) };
+              }}
+            >
+              <EditIcon className="text-sm" />
+              {devToolsState.value.drawPanelOpen ? '隐藏绘制面板' : '显示绘制面板'}
+            </button>
           </div>
-          <Draws />
         </div>
       )}
     </div>
@@ -230,6 +243,15 @@ const CursorPositionDisplay = observer(() => {
         {'}'}
       </div>
     </div>
+  );
+});
+
+const DevTools = observer(() => {
+  return (
+    <>
+      <DevToolsPanel />
+      <DevToolsDrawPanel />
+    </>
   );
 });
 

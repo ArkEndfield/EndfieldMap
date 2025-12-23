@@ -1,16 +1,28 @@
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
-import { DrawHistoryProvider } from '@/components/common/dev_tools/draws/components/draw_history';
-import { useDrawHistory } from '@/components/common/dev_tools/draws/hooks/use_draw_history';
 import { PointDraw } from '@/components/common/dev_tools/draws/point';
+import { RuleShapesDraw } from '@/components/common/dev_tools/draws/rule_shapes';
 import { ShapeDraw } from '@/components/common/dev_tools/draws/shape';
 import { ZoneDraw } from '@/components/common/dev_tools/draws/zone';
 import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
 
-const DrawToolbar = () => {
-  const { canUndo, canRedo, featureCount, undo, redo, clear } = useDrawHistory();
+const DrawToolbar = observer(() => {
+  const { adapter } = useAdapter();
+  const devToolsController = adapter.devToolsController;
+
+  if (!devToolsController) {
+    return null;
+  }
+
+  const canUndo = devToolsController.canUndo;
+  const canRedo = devToolsController.canRedo;
+  const featureCount = devToolsController.featureCount;
+
+  const handleUndo = () => devToolsController.undo();
+  const handleRedo = () => devToolsController.redo();
+  const handleClear = () => devToolsController.clear();
 
   return (
     <div className="flex items-center justify-between gap-2 px-2 py-1.5 border-b border-white/10 bg-white/5">
@@ -20,7 +32,7 @@ const DrawToolbar = () => {
             'px-2 py-1 rounded text-xs transition-colors',
             canUndo ? 'text-white hover:bg-white/20' : 'text-gray-500 cursor-not-allowed'
           )}
-          onClick={undo}
+          onClick={handleUndo}
           disabled={!canUndo}
           title="撤销 (Undo)"
         >
@@ -31,7 +43,7 @@ const DrawToolbar = () => {
             'px-2 py-1 rounded text-xs transition-colors',
             canRedo ? 'text-white hover:bg-white/20' : 'text-gray-500 cursor-not-allowed'
           )}
-          onClick={redo}
+          onClick={handleRedo}
           disabled={!canRedo}
           title="重做 (Redo)"
         >
@@ -45,7 +57,7 @@ const DrawToolbar = () => {
             'px-2 py-1 rounded text-xs transition-colors',
             featureCount > 0 ? 'text-red-400 hover:bg-red-500/20' : 'text-gray-500 cursor-not-allowed'
           )}
-          onClick={clear}
+          onClick={handleClear}
           disabled={featureCount === 0}
           title="清空所有"
         >
@@ -54,10 +66,10 @@ const DrawToolbar = () => {
       </div>
     </div>
   );
-};
+});
 
 const DrawTabs = () => {
-  const [activeTab, setActiveTab] = useState<'point' | 'zone' | 'shape'>('point');
+  const [activeTab, setActiveTab] = useState<'point' | 'polyline' | 'zone' | 'rules'>('point');
 
   return (
     <>
@@ -72,11 +84,11 @@ const DrawTabs = () => {
         </button>
         <button
           className={`px-3 py-1 rounded text-xs transition-colors ${
-            activeTab === 'shape' ? 'bg-white/20 text-white' : 'text-gray-400 hover:text-white hover:bg-white/10'
+            activeTab === 'polyline' ? 'bg-white/20 text-white' : 'text-gray-400 hover:text-white hover:bg-white/10'
           }`}
-          onClick={() => setActiveTab('shape')}
+          onClick={() => setActiveTab('polyline')}
         >
-          形状绘制
+          PolyLine
         </button>
         <button
           className={`px-3 py-1 rounded text-xs transition-colors ${
@@ -86,12 +98,21 @@ const DrawTabs = () => {
         >
           区域绘制
         </button>
+        <button
+          className={`px-3 py-1 rounded text-xs transition-colors ${
+            activeTab === 'rules' ? 'bg-white/20 text-white' : 'text-gray-400 hover:text-white hover:bg-white/10'
+          }`}
+          onClick={() => setActiveTab('rules')}
+        >
+          规则形状
+        </button>
       </div>
 
       <div className="p-2">
         {activeTab === 'point' && <PointDraw />}
-        {activeTab === 'shape' && <ShapeDraw />}
+        {activeTab === 'polyline' && <ShapeDraw />}
         {activeTab === 'zone' && <ZoneDraw />}
+        {activeTab === 'rules' && <RuleShapesDraw />}
       </div>
     </>
   );
@@ -99,14 +120,15 @@ const DrawTabs = () => {
 
 export const Draws = observer(() => {
   const { adapter } = useAdapter();
-  const map = adapter.mapController.mapRenderer.map;
+
+  if (!adapter.devToolsController) {
+    return null;
+  }
 
   return (
-    <DrawHistoryProvider map={map}>
-      <div className="flex flex-col gap-0 border border-white/10 rounded-md">
-        <DrawToolbar />
-        <DrawTabs />
-      </div>
-    </DrawHistoryProvider>
+    <div className="flex flex-col gap-0 border border-white/10 rounded-md">
+      <DrawToolbar />
+      <DrawTabs />
+    </div>
   );
 });

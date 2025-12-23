@@ -4,6 +4,7 @@ import { EndfieldMapLayerController } from '@endfieldmap/map-core/controller/cor
 import { MapController } from '@endfieldmap/map-core/controller/core/map';
 import { MapLayerController } from '@endfieldmap/map-core/controller/core/map_layer';
 import { ZoomController } from '@endfieldmap/map-core/controller/core/zoom';
+import { DevToolsController } from '@endfieldmap/map-core/controller/dev_tools';
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
 import { DataController } from '@endfieldmap/map-core/controller/entity/data_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
@@ -34,6 +35,8 @@ export interface AdapterConfig {
   popup?: {
     enabled?: boolean;
   };
+  /** 是否为开发模式（启用 DevTools） */
+  isDev?: boolean;
 }
 
 export class EndfieldMapAdapter {
@@ -75,6 +78,8 @@ export class EndfieldMapAdapter {
   public zoomController: ZoomController | null = null;
   /** 快捷键控制器 */
   public KeyboardMoveController: KeyboardMoveController | null = null;
+  /** DevTools 控制器（仅开发模式） */
+  public devToolsController: DevToolsController | null = null;
   /** 事件 */
   public event: EndfieldMapEmitter;
   /** 当前地图索引 */
@@ -176,6 +181,13 @@ export class EndfieldMapAdapter {
       map: this.mapController.mapRenderer.map,
       speed: 0.5,
     });
+
+    // 开发模式下初始化 DevTools 控制器
+    if (config.isDev) {
+      this.devToolsController = new DevToolsController({
+        map: this.mapController.mapRenderer.map,
+      });
+    }
   }
 
   /**
@@ -304,6 +316,10 @@ export class EndfieldMapAdapter {
     if (this.zoomController) {
       this.mapController.mapRenderer.map.removeControl(this.zoomController);
       this.zoomController.dispose();
+    }
+    // 清理 DevTools 控制器
+    if (this.devToolsController) {
+      this.devToolsController.dispose();
     }
     // 清理地图控制器
     this.mapController.dispose();

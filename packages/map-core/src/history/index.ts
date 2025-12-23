@@ -11,4 +11,12 @@ export {
   CreateElectricPoleCommand,
   DeleteElectricPoleCommand,
 } from '@endfieldmap/map-core/history/electric_pole_commands';
+export {
+  AddDevToolsFeatureCommand,
+  BatchAddDevToolsFeaturesCommand,
+  BatchRemoveDevToolsFeaturesCommand,
+  ClearDevToolsFeaturesCommand,
+  type DevToolsControllerInterface,
+  RemoveDevToolsFeatureCommand,
+} from '@endfieldmap/map-core/history/dev_tools_commands';
 export { HistoryManager, historyManager } from '@endfieldmap/map-core/history/history_manager';

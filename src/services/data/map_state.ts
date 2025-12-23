@@ -14,9 +14,11 @@ import i18n from '@/i18n';
 import { getLanguage } from '@/utils/language';
 
 export interface DevToolsState {
-  expanded: boolean;
   position: { right: number; top: number };
+  panelCollapsed?: boolean;
   showCursorPosition?: boolean;
+  drawPanelOpen?: boolean;
+  drawPanelPosition?: { right: number; top: number };
 }
 
 import { loadingManager } from '../loading';
@@ -74,9 +76,11 @@ export class MapStateDataService {
 
     this.devToolsState = new LocalStorageValue<DevToolsState>({
       initialValue: {
-        expanded: true,
         position: { right: 20, top: 20 },
+        panelCollapsed: false,
         showCursorPosition: false,
+        drawPanelOpen: false,
+        drawPanelPosition: { right: 20, top: 80 },
       },
       storageKey: LocalStorageKey.DEV_TOOLS_STATE,
     });
