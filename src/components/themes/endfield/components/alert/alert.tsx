@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 import { type ZmdAlertProps } from '@/components/common/alert/alert';
-import { ZmdButton } from '@/components/common/endfield_components/button';
+import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { cn } from '@/utils/style';
 
@@ -256,7 +256,7 @@ export const ZmdAlert: React.FC<ZmdAlertProps> = ({
           )}
         >
           {!hideCancel && (
-            <ZmdButton
+            <ZmdRoundButton
               type="default"
               text={cancelText ?? t('cancel')}
               showIcon={showIcon}
@@ -268,7 +268,7 @@ export const ZmdAlert: React.FC<ZmdAlertProps> = ({
               }}
             />
           )}
-          <ZmdButton
+          <ZmdRoundButton
             type="primary"
             text={confirmText ?? t('confirm')}
             showIcon={showIcon}

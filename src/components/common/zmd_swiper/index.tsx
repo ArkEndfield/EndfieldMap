@@ -9,7 +9,7 @@ import type { Swiper as SwiperType } from 'swiper';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { IconButton } from '@/components/common/endfield_components/icon_button';
+import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { ChevronUp } from '@/components/common/icons';
 import ListTitle from '@/components/common/list_title';
 import { useAdapter } from '@/hooks/use_adapter';
@@ -121,18 +121,18 @@ const ZmdSwiper = observer(() => {
                 </div>
               </Swiper>
             </div>
-            <IconButton
+            <ZmdRoundIconButton
               className="absolute -left-3 top-1/2 -translate-y-1/2 z-1"
               onClick={() => swiperRef.current?.slidePrev()}
             >
               <ChevronUp className="rotate-270 text-xs -ml-0.5" />
-            </IconButton>
-            <IconButton
+            </ZmdRoundIconButton>
+            <ZmdRoundIconButton
               className="absolute -right-3 top-1/2 -translate-y-1/2 z-1"
               onClick={() => swiperRef.current?.slideNext()}
             >
               <ChevronUp className="rotate-90 text-xs -mr-0.5" />
-            </IconButton>
+            </ZmdRoundIconButton>
           </motion.div>
         )}
       </AnimatePresence>

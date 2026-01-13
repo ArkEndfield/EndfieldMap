@@ -1,6 +1,6 @@
 export * from '@endfieldmap/map-core/const';
 export * from '@endfieldmap/map-core/controller';
-export { EndfieldMapAdapter, type AdapterConfig } from '@endfieldmap/map-core/core/adapter';
+export { type AdapterConfig,EndfieldMapAdapter } from '@endfieldmap/map-core/core/adapter';
 export {
   CustomPointControllerWithHistory,
   DefaultControllerFactory,

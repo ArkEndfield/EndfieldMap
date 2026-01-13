@@ -1,12 +1,7 @@
 import { forwardRef } from 'react';
 
+import type { EndfieldFormButtonProps } from '@/components/common/endfield_components/types/form';
 import { cn } from '@/utils/style';
-
-export interface EndfieldFormButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  left?: React.ReactNode;
-  right?: React.ReactNode;
-  variant?: 'primary' | 'default' | 'warning' | 'danger';
-}
 
 export const EndfieldFormButton = forwardRef<HTMLButtonElement, EndfieldFormButtonProps>((props, ref) => {
   const { children, className, disabled, left, right, variant = 'default', ...rest } = props;

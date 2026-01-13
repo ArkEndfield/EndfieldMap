@@ -1,10 +1,8 @@
 import { SideButton } from '@themes/endfield/control_panel/controllers/mobile/side_button';
 import { OperationButton } from '@themes/endfield/control_panel/controllers/operations/_button';
-import { OperationTip } from '@themes/endfield/control_panel/controllers/operations/_tip';
 import {
   CustomPointManager,
   CustomPointManagerMobile,
-  CustomPointModeTip,
 } from '@themes/endfield/control_panel/controllers/operations/custom_point';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
@@ -93,13 +91,6 @@ export const CustomPointButton = observer(({ portalRef }: { portalRef: React.Ref
     }
     uiManager.toggleCustomPointManager();
   };
-
-  const onClose = () => {
-    dataService.customPointDataService.stopAllOperation();
-  };
-
-  const isInOperateMode = dataService.customPointDataService.isInCustomPointOperateMode;
-
   return (
     <>
       <OperationButton
@@ -109,9 +100,6 @@ export const CustomPointButton = observer(({ portalRef }: { portalRef: React.Ref
         active={open}
       />
       {portalContainer && createPortal(<CustomPointManager open={open} />, portalContainer)}
-      <OperationTip open={isInOperateMode} onClose={onClose}>
-        <CustomPointModeTip />
-      </OperationTip>
     </>
   );
 });

@@ -20,6 +20,7 @@
       "dnarrative": "World Narrative Echo",
       "dungeon": "Dungeon Point",
       "system": "Daily Dungeon",
+      "other": "Other",
       "#electric_pole": "Electric Pole",
       "#custom_point": "Custom Point"
     }

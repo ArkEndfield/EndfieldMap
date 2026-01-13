@@ -1,8 +1,6 @@
 import { SideButton } from '@themes/endfield/control_panel/controllers/mobile/side_button';
 import { OperationButton } from '@themes/endfield/control_panel/controllers/operations/_button';
-import { OperationTip } from '@themes/endfield/control_panel/controllers/operations/_tip';
 import {
-  ElectricModeTip,
   ElectricPoleManager,
   ElectricPoleManagerMobile,
 } from '@themes/endfield/control_panel/controllers/operations/electric_pole';
@@ -99,10 +97,6 @@ export const ElectricPoleButton = observer(({ portalRef }: { portalRef: React.Re
     uiManager.toggleElectricPoleManager();
   };
 
-  const onClose = () => {
-    dataService.electricPoleDataService.stopAllOperation();
-  };
-
   return (
     <>
       <OperationButton
@@ -112,9 +106,6 @@ export const ElectricPoleButton = observer(({ portalRef }: { portalRef: React.Re
         active={open}
       />
       {portalContainer && createPortal(<ElectricPoleManager open={open} />, portalContainer)}
-      <OperationTip open={dataService.electricPoleDataService.isInElectricOperateMode} onClose={onClose}>
-        <ElectricModeTip />
-      </OperationTip>
     </>
   );
 });

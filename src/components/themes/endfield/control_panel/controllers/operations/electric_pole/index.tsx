@@ -5,7 +5,7 @@ import ElectricPolePresetPanel from '@themes/endfield/control_panel/controllers/
 import ElectricPoleTypeSelector from '@themes/endfield/control_panel/controllers/operations/electric_pole/electric_pole_type_selector';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { forwardRef, useRef, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 
@@ -58,21 +58,6 @@ const PoleManagerToolbar = observer(() => {
       ))}
     </div>
   );
-});
-
-export const ElectricModeTip = observer(() => {
-  const { getCurrentModeTipText } = useElectricMode();
-  const { t } = useTranslation('sidebar');
-  const tipText = getCurrentModeTipText();
-  const lastTipTextRef = useRef(tipText);
-
-  if (tipText) {
-    lastTipTextRef.current = tipText;
-  }
-
-  const displayText = tipText ?? lastTipTextRef.current;
-  if (!displayText) return null;
-  return t(`operation.electric_pole.${displayText}.in_mode`);
 });
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
@@ -186,7 +171,9 @@ export const ElectricPoleManager: React.FC<ElectricPoleManagerProps> = observer(
           >
             <div className="p-2 rounded-xl border border-[#444] w-fit mt-1 ml-0.5 relative">
               <div className="absolute -top-2.5 left-4 w-0 h-0 border-5 rotate-90 border-transparent border-r-[#444]" />
-              <div className="text-xs text-white/80 px-1 pb-1">{t('operation.electric_pole.create.device_type.label')}</div>
+              <div className="text-xs text-white/80 px-1 pb-1">
+                {t('operation.electric_pole.create.device_type.label')}
+              </div>
               <ElectricPoleTypeSelector />
               <Toggle
                 className="w-auto"

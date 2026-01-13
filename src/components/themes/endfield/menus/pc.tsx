@@ -13,11 +13,6 @@ export default function PCMenus() {
         'w-full h-14 items-center left-0 top-0 bg-black/80 py-0 pl-5 pb-1.5 rounded-none'
       )}
     >
-      <div className="block absolute top-1 left-2">
-        <span className="absolute w-0.5 h-[0.6rem] -rotate-45 bg-[#FDFA85] origin-bottom-right left-1.5 -top-0.5"></span>
-        <span className="absolute w-2 h-0.5 bg-[#FDFA85] left-0 top-2"></span>
-        <span className="absolute w-0.5 h-0.5 bg-[#FDFA85] left-1.5 top-0"></span>
-      </div>
       <MenuListForPC />
       <div className="ml-auto">
         <RightMenu />

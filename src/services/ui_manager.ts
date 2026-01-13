@@ -145,6 +145,7 @@ class UIManager {
     return {
       map: {
         Popup: components.get(ComponentType.POPUP),
+        OperationTip: components.get(ComponentType.OPERATION_TIP),
         ZoomController: components.get(ComponentType.ZOOM_CONTROLLER),
         Menus: components.get(ComponentType.MENUS),
         ControlPanel: components.get(ComponentType.CONTROL_PANEL),
@@ -157,6 +158,7 @@ class UIManager {
       tooltip: {
         Tooltip: components.get(ComponentType.TOOLTIP),
       },
+      RootProvider: components.get(ComponentType.ROOT_PROVIDER),
     };
   }
   // endregion

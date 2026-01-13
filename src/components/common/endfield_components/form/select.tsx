@@ -2,38 +2,16 @@ import { domEventListener } from '@endfieldmap/tools';
 import { AnimatePresence, motion } from 'motion/react';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
+import type {
+  EndfieldSelectItem,
+  EndfieldSelectOptionProps,
+  EndfieldSelectProps,
+  EndfieldSelectTriggerProps,
+} from '@/components/common/endfield_components/types/form';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
 
-export interface EndfieldSelectItem<T extends string> {
-  label: React.ReactNode;
-  value: T;
-  left?: React.ReactNode | ((active: boolean) => React.ReactNode);
-  right?: React.ReactNode | ((active: boolean) => React.ReactNode);
-  disabled?: boolean;
-  hidden?: boolean;
-  description?: React.ReactNode;
-}
-
-export interface EndfieldSelectProps<T extends string> {
-  options: readonly EndfieldSelectItem<T>[];
-  value: T;
-  disabled?: boolean;
-  className?: string;
-  onChange: (value: T) => void;
-}
-
-export interface TriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  expand?: boolean;
-}
-
-export interface OptionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  left?: React.ReactNode | ((active: boolean) => React.ReactNode);
-  right?: React.ReactNode | ((active: boolean) => React.ReactNode);
-  select?: boolean;
-}
-
-const Trigger = forwardRef<HTMLButtonElement, TriggerProps>((props, ref) => {
+const Trigger = forwardRef<HTMLButtonElement, EndfieldSelectTriggerProps>((props, ref) => {
   const { children, className, disabled, expand, ...rest } = props;
 
   return (
@@ -68,7 +46,7 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>((props, ref) => {
   );
 });
 
-const Option = forwardRef<HTMLButtonElement, OptionProps>((props, ref) => {
+const Option = forwardRef<HTMLButtonElement, EndfieldSelectOptionProps>((props, ref) => {
   const { children, className, left, right, select, disabled, ...rest } = props;
   const leftContent = typeof left === 'function' ? left(!!select) : left;
   const rightContent = typeof right === 'function' ? right(!!select) : right;

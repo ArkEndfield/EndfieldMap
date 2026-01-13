@@ -90,4 +90,13 @@ export class DataService {
       this.langHashDataService.getLangHashData(),
     ]);
   }
+
+  /**
+   * 停止所有操作
+   * TODO: 更新补充
+   */
+  public stopAllOperation() {
+    this.customPointDataService.stopAllOperation();
+    this.electricPoleDataService.stopAllOperation();
+  }
 }

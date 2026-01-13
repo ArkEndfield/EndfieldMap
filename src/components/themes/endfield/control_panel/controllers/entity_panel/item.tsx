@@ -1,6 +1,6 @@
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import React, { useMemo } from 'react';
+import React, { useEffect,useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Counter from '@/components/common/count_up';
@@ -42,6 +42,8 @@ const EntityItem = observer(
     const { dataService } = useAdapter();
     const { t } = useTranslation(['common', 'sidebar', 'lang']);
     const isMobile = useIsMobile();
+    const textRef = useRef<HTMLDivElement>(null);
+    const [isOverflowing, setIsOverflowing] = useState(false);
 
     const displayName = useMemo(() => {
       if (entity) {
@@ -63,6 +65,29 @@ const EntityItem = observer(
       }
       return 'unnamed';
     }, [dataService.langHashDataService, entity, t]);
+
+    const checkOverflow = React.useCallback(() => {
+      const el = textRef.current;
+      if (el) {
+        setIsOverflowing(el.scrollWidth > el.clientWidth);
+      }
+    }, []);
+
+    useLayoutEffect(() => {
+      checkOverflow();
+    }, [displayName, checkOverflow]);
+
+    useEffect(() => {
+      const el = textRef.current;
+      if (!el) return;
+
+      const observer = new ResizeObserver(checkOverflow);
+      observer.observe(el);
+
+      return () => {
+        observer.disconnect();
+      };
+    }, [checkOverflow]);
 
     const progressWidth = useMemo(() => {
       if (entity && entity.count > 0) {
@@ -90,28 +115,33 @@ const EntityItem = observer(
         asProps={{
           onClick,
           className: cn(
-            'flex items-center relative overflow-hidden select-none cursor-pointer w-full',
-            'filter-[drop-shadow(0_0_0.2em_rgba(0,0,0,0.6))]',
-            active && 'filter-[drop-shadow(0_0_0.3em_rgba(253,251,85,0.3))]'
+            'select-none w-full rounded-full grow overflow-hidden flex items-center',
+            'p-px relative text-xs'
           ),
         }}
       >
         <div
           className={cn(
-            'bg-[#1d1d1d] relative z-1 rounded-full grow overflow-hidden flex items-center',
-            'shadow-[0_0_0_0.1em_#242424_inset]',
-            active && 'bg-[#252525] shadow-[0_0_0_0.1em_rgba(253,251,85,0.4)_inset]',
-            !active && 'hover:bg-[#222222]'
+            'absolute left-0 top-0 h-full',
+            'transition-[width] duration-300 ease-in-out',
+            active ? 'bg-white' : 'bg-[#fffa00]/30'
+          )}
+          style={{ width: progressWidth }}
+        />
+        <div
+          className={cn(
+            'flex items-center gap-1 p-1 overflow-hidden w-full bg-[#1d1d1d] rounded-full relative z-1 text-[#cccccc]',
+            active && 'bg-[#fffa00] text-[#4c4c4c]',
+            !active && 'hover:bg-[#222222]',
+            'border-[0.5px] border-[#898989]/30'
           )}
         >
-          <div className="w-6 h-6 flex justify-center items-center shrink-0 ml-1 my-1">
+          <div className="w-6 h-5 flex justify-center items-center shrink-0">
             <div
               className={cn(
-                'w-full h-full rounded-full bg-[#2a2a2a] p-0.5 flex items-center justify-center',
-                'shadow-[0_0_0.1em_rgba(0,0,0,0.5),0_0_0_1px_#1a1a1a_inset]',
+                'w-full h-full rounded-full flex items-center justify-center',
                 'transition-all duration-200',
-                active && 'bg-[#333333] shadow-[0_0_0.3em_rgba(253,251,85,0.3),0_0_0_1px_rgba(253,251,85,0.2)_inset]',
-                !active && 'hover:bg-[#303030]'
+                active ? 'bg-black/5' : 'bg-white/5'
               )}
             >
               {children ||
@@ -119,35 +149,50 @@ const EntityItem = observer(
             </div>
           </div>
 
-          <div className="py-1 pl-1 pr-1.5 flex flex-1 relative z-3 items-center justify-between overflow-hidden">
+          <div className="flex flex-1 relative items-center justify-between overflow-hidden">
             <div
-              className={cn(
-                'flex-1 text-[0.8em] mr-0.5 text-[#cccccc] whitespace-nowrap overflow-hidden text-ellipsis min-w-0 text-left',
-                active && 'text-[#fdfb55]',
-                !active && 'hover:text-[#dddddd]'
-              )}
+              ref={textRef}
+              className={cn('flex-1 mr-0.5 min-w-0 text-left overflow-hidden', !isOverflowing && 'whitespace-nowrap')}
+              style={
+                isOverflowing
+                  ? {
+                      maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+                      WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+                    }
+                  : undefined
+              }
             >
-              {displayName}
+              {isOverflowing ? (
+                <div className="flex w-fit animate-marquee">
+                  <span className="whitespace-nowrap pr-8">{displayName}</span>
+                  <span className="whitespace-nowrap pr-8">{displayName}</span>
+                </div>
+              ) : (
+                displayName
+              )}
             </div>
 
             {!hideCount && entity && (
               <div
                 className={cn(
-                  'shrink-0 w-fit font-medium bg-[#2a2a2a] text-[#aaaaaa] px-[0.3em] py-[0.15em] rounded-full min-w-[1.2em] grow-0',
-                  'text-center shadow-[0_0_0_1px_#333333] inline-flex items-center justify-center leading-none ml-[0.1em] relative overflow-hidden',
-                  active && 'bg-[rgba(253,251,85,0.15)] text-[#fdfb55]',
-                  !active && 'hover:bg-[#333333] hover:text-[#bbbbbb]'
+                  'shrink-0 w-fit grow-0 font-[Outfit] pr-1',
+                  'text-center flex items-end justify-center leading-none relative overflow-hidden',
+                  active ? 'text-[#707070]' : 'text-[#959595]'
                 )}
               >
-                <div
-                  className="absolute left-0 top-0 h-full bg-[rgba(253,251,85,0.2)] transition-[width] duration-300 ease-in-out"
-                  style={{ width: progressWidth }}
-                />
-                <div className="relative z-1 text-[10px] font-[JetBrains_Mono] leading-none inline-flex items-center">
-                  {!hideMarked && <Counter value={entity.markedCount || 0} />}
-                  {!hideMarked && <span>/</span>}
-                  <span>{entity.count}</span>
-                </div>
+                {!hideMarked && <Counter value={entity.markedCount || 0} />}
+                {!hideMarked && <span className="leading-none">/</span>}
+                <span
+                  className="leading-none tabular-nums relative inline-block overflow-visible"
+                  style={{
+                    width: `${entity.count.toString().length * 0.7}ch`,
+                    height: '1em',
+                  }}
+                >
+                  <span className="absolute left-0 bottom-0 origin-bottom-left" style={{ transform: 'scale(0.7)' }}>
+                    {entity.count}
+                  </span>
+                </span>
               </div>
             )}
           </div>

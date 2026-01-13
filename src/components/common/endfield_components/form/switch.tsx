@@ -1,16 +1,8 @@
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
+import type { EndfieldSwitchProps } from '@/components/common/endfield_components/types/form';
 import { cn } from '@/utils/style';
-
-export interface EndfieldSwitchProps {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  disabled?: boolean;
-  className?: string;
-  onText?: React.ReactNode;
-  offText?: React.ReactNode;
-}
 
 export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText, offText }: EndfieldSwitchProps) => {
   const { t } = useTranslation('common');

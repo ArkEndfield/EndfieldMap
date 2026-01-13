@@ -109,7 +109,7 @@ const EntityPanel = observer(() => {
   return (
     <div className="space-y-4">
       {/* 搜索输入框 */}
-      <div className="px-2 pt-1">
+      <div className="px-1 pt-2">
         <Search
           value={searchQuery}
           onValueChange={(v) => setSearchQuery(v)}
@@ -117,30 +117,34 @@ const EntityPanel = observer(() => {
         />
       </div>
 
-      {categorizedEntities.map((categoryInfo) => (
-        <EntityGroup
-          key={categoryInfo.category}
-          title={t(`filter.category.${categoryInfo.category}`)}
-          subtitle={categoryInfo.category}
-          onIconClick={() => handleCategoryClick(categoryInfo.category, categoryInfo.allDisplayed)}
-          iconColor={categoryInfo.allDisplayed ? '#f9f853' : '#ffffff'}
-        >
-          {/* {categoryInfo.displayedEntities}/{categoryInfo.totalEntities} */}
-          {/* 实体列表 */}
-          <div className="grid grid-cols-2 gap-2 py-2">
-            {categoryInfo.entities.map((entity) => (
-              <EntityItem
-                key={entity.entityDataIdKey}
-                entity={entity}
-                category={categoryInfo.category}
-                active={entity.visible}
-                onClick={() => adapter.entityController.toggleEntityVisible(entity.entityDataIdKey)}
-                hideCount={false}
-              />
-            ))}
-          </div>
-        </EntityGroup>
-      ))}
+      <div>
+        {categorizedEntities.map((categoryInfo) => (
+          <EntityGroup
+            key={categoryInfo.category}
+            title={t(`filter.category.${categoryInfo.category}`)}
+            subtitle={categoryInfo.category}
+            onIconClick={() => handleCategoryClick(categoryInfo.category, categoryInfo.allDisplayed)}
+            iconColor={categoryInfo.allDisplayed ? '#f9f853' : '#ffffff'}
+            totalCount={categoryInfo.entities.reduce((acc, entity) => acc + entity.count, 0)}
+            markedCount={categoryInfo.entities.reduce((acc, entity) => acc + entity.markedCount, 0)}
+          >
+            {/* {categoryInfo.displayedEntities}/{categoryInfo.totalEntities} */}
+            {/* 实体列表 */}
+            <div className="grid grid-cols-2 gap-x-1 gap-y-1.5 py-2">
+              {categoryInfo.entities.map((entity) => (
+                <EntityItem
+                  key={entity.entityDataIdKey}
+                  entity={entity}
+                  category={categoryInfo.category}
+                  active={entity.visible}
+                  onClick={() => adapter.entityController.toggleEntityVisible(entity.entityDataIdKey)}
+                  hideCount={false}
+                />
+              ))}
+            </div>
+          </EntityGroup>
+        ))}
+      </div>
     </div>
   );
 });

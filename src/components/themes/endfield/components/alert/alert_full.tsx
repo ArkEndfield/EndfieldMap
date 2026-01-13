@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
-import { ZmdButton } from '@/components/common/endfield_components/button';
+import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
@@ -193,7 +193,7 @@ export const ZmdAlertFull = ({
                     {!hideCancel && (
                       <div className="relative flex-1 flex">
                         <div className="absolute top-1/2 left-[-0.24em] right-[-0.24em] bottom-[-0.24em] rounded-b-full bg-[#fefefe] -z-1" />
-                        <ZmdButton
+                        <ZmdRoundButton
                           type="default"
                           text={cancelText ?? t('cancel')}
                           showIcon={showIcon}
@@ -205,7 +205,7 @@ export const ZmdAlertFull = ({
                     )}
                     <div className="relative flex-1 flex">
                       <div className="absolute top-1/2 left-[-0.24em] right-[-0.24em] bottom-[-0.24em] rounded-b-full bg-[#fefefe] -z-1" />
-                      <ZmdButton
+                      <ZmdRoundButton
                         type="primary"
                         text={confirmText ?? t('confirm')}
                         showIcon={showIcon}

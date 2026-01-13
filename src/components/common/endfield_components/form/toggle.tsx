@@ -1,23 +1,9 @@
 import { motion } from 'motion/react';
-import type { Key } from 'react';
 
+import type { EndfieldToggleProps } from '@/components/common/endfield_components/types/form';
 import { cn } from '@/utils/style';
 
-export interface ToggleOption<T extends Key> {
-  key: T;
-  label: React.ReactNode;
-  icon?: React.ReactNode;
-}
-
-export interface EndfieldToggleProps<T extends Key> {
-  options: readonly ToggleOption<T>[];
-  activeKey: T;
-  onChange: (key: T) => void;
-  disabled?: boolean;
-  className?: string;
-}
-
-export const EndfieldToggle = <T extends Key>({
+export const EndfieldToggle = <T extends React.Key>({
   options,
   activeKey,
   onChange,

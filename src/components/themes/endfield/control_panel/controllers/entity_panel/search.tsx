@@ -14,9 +14,9 @@ export const Search: React.FC<SearchProps> = ({ value, placeholder, onValueChang
   };
 
   return (
-    <div className={cn('relative px-1 mr-1', className)}>
+    <div className={cn('relative px-1', className)}>
       {/* Search icon */}
-      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 border-[2.5px] border-[#5a5a5a] rounded-full transition-all duration-300 z-1 peer-focus:border-[#a0a0a0]" />
+      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 border-[0.1rem] border-[#5a5a5a] rounded-full transition-all duration-300 z-1 peer-focus:border-[#a0a0a0]" />
 
       {/* Input */}
       <input
@@ -24,7 +24,7 @@ export const Search: React.FC<SearchProps> = ({ value, placeholder, onValueChang
         value={value}
         placeholder={placeholder}
         onChange={(e) => onValueChange?.(e.target.value)}
-        className="peer w-full py-1 px-4 pl-7 bg-[rgba(40,40,40,0.95)] text-[#e0e0e0] rounded-md text-[0.8em] outline-none transition-all duration-250 ease-in-out tracking-[0.5px] border border-[#3a3a3a] border-t-[#333333] border-l-[#333333] shadow-[0_0_0.3em_rgba(0,0,0,0.3),inset_0_0_8px_rgba(0,0,0,0.2)] placeholder:text-[#888888] placeholder:italic placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out focus:bg-[rgba(45,45,45,0.98)] focus:border-[#444444] focus:border-t-[#3a3a3a] focus:border-l-[#3a3a3a] focus:shadow-[0_0_15px_rgba(50,50,50,0.3),inset_0_0_10px_rgba(60,60,60,0.2)] focus:placeholder:text-[#999999] focus:placeholder:translate-x-[5px]"
+        className="w-full py-1.5 px-4 pl-7 bg-[rgba(40,40,40,0.95)] text-[#e0e0e0] text-[0.7rem] outline-none transition-all duration-250 ease-in-out tracking-[0.5px] border border-[#3a3a3a] border-t-[#333333] border-l-[#333333] shadow-[0_0_0.3em_rgba(0,0,0,0.3),inset_0_0_8px_rgba(0,0,0,0.3)] placeholder:text-[#888888] placeholder:italic placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out focus:bg-[rgba(45,45,45,0.98)] focus:border-[#444444] focus:border-t-[#3a3a3a] focus:border-l-[#3a3a3a] focus:shadow-[0_0_15px_rgba(50,50,50,0.3),inset_0_0_10px_rgba(60,60,60,0.2)] focus:placeholder:text-[#999999] focus:placeholder:translate-x-[5px]"
       />
 
       {/* Clear button */}

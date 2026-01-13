@@ -10,8 +10,8 @@ export default function LocationIcon({
   rotationEnabled = false,
 }: LocationIconProps) {
   return (
-    <div className="block">
-      <div className="block relative w-[2.5em] aspect-[0.75]">
+    <div className="h-full flex items-center">
+      <div className="block relative w-[2.5em]">
         <div className="relative w-full h-full shrink-0 flex flex-col items-center">
           <div
             className={`w-full h-full flex flex-col items-center relative ${
@@ -21,7 +21,7 @@ export default function LocationIcon({
           >
             {/* Ring */}
             <div
-              className="w-[1.5em] h-[1.5em] shrink-0 rounded-full border-[0.4em] bg-transparent relative z-3"
+              className="w-3.5 h-3.5 shrink-0 rounded-full border-3 bg-transparent relative"
               style={{
                 borderColor: iconColor,
                 backfaceVisibility: 'visible',
@@ -30,7 +30,7 @@ export default function LocationIcon({
 
             {/* Triangle */}
             <div
-              className="w-[1.25em] h-[1.25em] relative -top-[10%] z-2"
+              className="w-2.5 h-2.5 relative -top-0.5"
               style={{
                 backgroundColor: iconColor,
                 clipPath: 'polygon(50% 100%, 0 0, 100% 0)',
@@ -41,7 +41,7 @@ export default function LocationIcon({
 
           {/* Shadow */}
           <div
-            className="w-[2em] h-[0.7em] rounded-full absolute bottom-[0.6em] z-1"
+            className="w-4 h-1.5 rounded-full absolute bottom-0"
             style={{
               backgroundColor: shadowColor,
             }}

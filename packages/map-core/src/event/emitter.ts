@@ -1,5 +1,3 @@
-import { logger } from '@endfieldmap/tools';
-
 import type {
   DisposeListener,
   ListenerOptions,
@@ -7,6 +5,7 @@ import type {
   MapEventListener,
   MapEventListenerUnion,
 } from '@endfieldmap/map-core/types/event';
+import { logger } from '@endfieldmap/tools';
 
 /**
  * 内部监听器信息

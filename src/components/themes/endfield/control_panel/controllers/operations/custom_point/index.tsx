@@ -5,7 +5,7 @@ import CustomPointPresetPanel from '@themes/endfield/control_panel/controllers/o
 import CustomPointTypeSelector from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_type_selector';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { forwardRef, useRef, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 
@@ -48,21 +48,6 @@ const CustomPointManagerToolbar = observer(() => {
       ))}
     </div>
   );
-});
-
-export const CustomPointModeTip = observer(() => {
-  const { getCurrentModeTipText } = useCustomPointMode();
-  const { t } = useTranslation('sidebar');
-  const tipText = getCurrentModeTipText();
-  const lastTipTextRef = useRef(tipText);
-
-  if (tipText) {
-    lastTipTextRef.current = tipText;
-  }
-
-  const displayText = tipText ?? lastTipTextRef.current;
-  if (!displayText) return null;
-  return t(`operation.custom_point.${displayText}.in_mode`);
 });
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {

@@ -5044,6 +5044,7 @@ interface Resources {
         "ether": "醚质",
         "mineral": "矿物",
         "narrative": "世界叙事碎片",
+        "other": "其他",
         "plant": "植物类素材",
         "settlement": "定居点",
         "spcstone": "稀有矿物",

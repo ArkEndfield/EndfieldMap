@@ -36,36 +36,45 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
 
   return (
     <AdapterProvider adapter={adapter} dataService={dataService}>
-      {/* 弹窗组件 */}
       <Suspense>
-        <ThemedComponents.map.Popup />
+        <ThemedComponents.RootProvider dataService={dataService}>
+          {/* 弹窗组件 */}
+          <Suspense>
+            <ThemedComponents.map.Popup />
+          </Suspense>
+
+          {/* 操作提示组件 */}
+          <Suspense>
+            <ThemedComponents.map.OperationTip />
+          </Suspense>
+
+          {/* 缩放组件 */}
+          <Suspense>
+            <ThemedComponents.map.ZoomController />
+          </Suspense>
+
+          {/* 菜单组件 */}
+          <Suspense>
+            <ThemedComponents.map.Menus />
+          </Suspense>
+
+          {/** 操作组件 */}
+          <Suspense>
+            <ThemedComponents.map.ControlPanel />
+          </Suspense>
+
+          {/* DevTools */}
+          {isDev && <Suspense>{DevTools && <DevTools />}</Suspense>}
+
+          {/* 设置页面 */}
+          <SettingsPage />
+
+          {/* 轮播组件 */}
+          <ZmdSwiper />
+
+          <DevTip />
+        </ThemedComponents.RootProvider>
       </Suspense>
-
-      {/* 缩放组件 */}
-      <Suspense>
-        <ThemedComponents.map.ZoomController />
-      </Suspense>
-
-      {/* 菜单组件 */}
-      <Suspense>
-        <ThemedComponents.map.Menus />
-      </Suspense>
-
-      {/** 操作组件 */}
-      <Suspense>
-        <ThemedComponents.map.ControlPanel />
-      </Suspense>
-
-      {/* DevTools */}
-      {isDev && <Suspense>{DevTools && <DevTools />}</Suspense>}
-
-      {/* 设置页面 */}
-      <SettingsPage />
-
-      {/* 轮播组件 */}
-      <ZmdSwiper />
-
-      <DevTip />
     </AdapterProvider>
   );
 });

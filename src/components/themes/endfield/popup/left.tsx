@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ZmdButton } from '@/components/common/endfield_components/button';
+import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { Guide } from '@/components/common/guide';
 import { EditIcon, PowerIcon } from '@/components/common/icons';
@@ -145,7 +145,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
               </div>
             )}
             {(isElectricPole || isCustomPoint) && (
-              <ZmdButton
+              <ZmdRoundButton
                 classNames={{
                   text: 'text-sm',
                   icon: 'text-sm p-0.5',
@@ -157,7 +157,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
                 }}
               >
                 {t('common:operate.rename')}
-              </ZmdButton>
+              </ZmdRoundButton>
             )}
           </div>
         </motion.div>
