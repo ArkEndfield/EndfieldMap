@@ -61,6 +61,7 @@ export class EndfieldUIManager {
       this.currentOperatePanel.value = CurrentOperatePanel.NONE;
     } else {
       this.currentOperatePanel.value = panel;
+      this.operatePanelOpen.value = true;
     }
   }
 }

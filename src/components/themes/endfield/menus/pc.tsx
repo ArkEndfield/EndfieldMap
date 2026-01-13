@@ -1,23 +1,47 @@
 import { MenuListForPC } from '@themes/endfield/menus/left';
-import { RightMenu } from '@themes/endfield/menus/right';
 
 import { cn } from '@/utils/style';
+import { OperateList } from '@themes/endfield/menus/center/operate_list';
+
+const Deco = ({ className, reverse }: { className?: string; reverse?: boolean }) => (
+  <div
+    className={cn(
+      'w-full h-full top-0 ',
+      'bg-[linear-gradient(-45deg,#3a3a3a_0,#3a3a3a_12.5%,#3a3a3a00_12.5%,#3a3a3a00_37.5%,#3a3a3a_37.5%,#3a3a3a_62.5%,#3a3a3a00_62.5%,#3a3a3a00_87.5%,#3a3a3a_87.5%,#3a3a3a_100%)]',
+      'bg-repeat bg-size-[0.3em_0.3em]',
+      reverse
+        ? 'mask-[linear-gradient(to_left,black_40%,transparent)]'
+        : 'mask-[linear-gradient(to_right,black_40%,transparent)]',
+      className
+    )}
+  />
+);
+
+const Deco2 = () => {
+  return (
+    <div className="absolute bottom-0 h-1 flex items-stretch left-4 right-4">
+      <div className="w-48 h-full bg-[#ff1aac]"></div>
+      <div className="flex-1 h-full bg-[#fffa00]"></div>
+      <div className="w-48 h-full bg-[#01ffa2]"></div>
+    </div>
+  );
+};
 
 export default function PCMenus() {
   return (
     <div
       className={cn(
         'fixed flex justify-start gap-8 text-white select-none z-10',
-        'before:absolute before:-z-1 before:left-0 before:top-0 before:bottom-0 before:w-24 before:bg-linear-to-tr before:from-white/25 before:via-white/0 before:to-black/0',
-        'after:absolute after:-z-1 after:left-0 after:right-6 after:bottom-0 after:h-1.5 after:bg-linear-to-r after:from-[#FDFA85]/0 after:via-[#FDFA85] after:to-[#FDFA85]',
-        'w-full h-14 items-center left-0 top-0 bg-black/80 py-0 pl-5 pb-1.5 rounded-none'
+        'w-full h-11 items-center left-0 top-0 bg-black/80 rounded-none pb-1'
       )}
     >
+      <Deco className="absolute w-48 left-0 top-0 opacity-50" />
+
       <MenuListForPC />
-      <div className="ml-auto">
-        <RightMenu />
-      </div>
-      <div className="absolute bottom-0 right-4 border-[1.5px] border-[#FDFA85] h-2 w-1 border-l-0"></div>
+      <OperateList />
+
+      <Deco className="absolute w-48 right-0 top-0 opacity-50" reverse />
+      <Deco2 />
     </div>
   );
 }

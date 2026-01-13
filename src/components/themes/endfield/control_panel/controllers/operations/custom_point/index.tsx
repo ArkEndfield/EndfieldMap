@@ -98,11 +98,7 @@ const TabContent = ({ showListTab }: { showListTab: boolean }) => {
   );
 };
 
-export interface CustomPointManagerProps {
-  open: boolean;
-}
-
-export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({ open }) => {
+export const CustomPointManager: React.FC = observer(() => {
   const { adapter, dataService } = useAdapter();
   const isMobile = useIsMobile();
   const { t } = useTranslation('sidebar');
@@ -115,8 +111,7 @@ export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({
     <div
       className={cn(
         'top-0 left-0 h-full w-full pt-1 overflow-hidden transition-all bg-[#272727] z-2 flex flex-col',
-        isMobile ? 'relative' : 'absolute z-5',
-        isMobile || open ? 'translate-x-0' : '-translate-x-full'
+        isMobile ? 'relative' : 'absolute z-5'
       )}
     >
       <div className="flex gap-2 w-full shrink-0 px-1 mb-3 overflow-hidden">
@@ -148,7 +143,7 @@ export const CustomPointManager: React.FC<CustomPointManagerProps> = observer(({
         )}
       </AnimatePresence>
 
-      <div className="shrink-0 grow-0 mx-3 my-3 text-sm">
+      <div className="shrink-0 grow-0 mx-3 mt-3 text-sm">
         <EndfieldSwitch
           checked={showListTab}
           onChange={setShowListTab}
@@ -181,7 +176,7 @@ export const CustomPointManagerMobile = forwardRef<SheetRef, CustomPointManagerM
       <Sheet.Container>
         <Sheet.Header className="bg-[#272727] rounded-t-md" />
         <Sheet.Content disableDrag className="text-white">
-          <CustomPointManager open />
+          <CustomPointManager />
         </Sheet.Content>
       </Sheet.Container>
       {dismissable && <Sheet.Backdrop onClick={onClose} />}

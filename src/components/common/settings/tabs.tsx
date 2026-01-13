@@ -19,7 +19,7 @@ const ActiveDeco = () => (
     transition={{
       duration: 0.1,
     }}
-    className="absolute drop-shadow-md z-2 bg-[#ffee34] bg-[url(/images/bg/pag-button-texture.png)] bg-no-repeat bg-cover bg-bottom-right top-0 -left-px right-0 rounded-b-md before:absolute before:left-0 before:top-0 before:w-[6px] before:h-[6px] before:-translate-x-full before:bg-[radial-gradient(circle_at_bottom_left,transparent_6px,#FCF150_6px)] after:absolute after:right-0 after:top-0 after:w-[6px] after:h-[6px] after:translate-x-full after:bg-[radial-gradient(circle_at_bottom_right,transparent_6px,#FCF150_6px)]"
+    className="absolute drop-shadow-md z-2 bg-[#ffee34] bg-[url(/images/bg/pag-button-texture.png)] bg-no-repeat bg-cover bg-bottom-right top-0 -left-px right-0 rounded-b-md before:absolute before:left-0 before:top-0 before:w-1.5 before:h-1.5 before:-translate-x-full before:bg-[radial-gradient(circle_at_bottom_left,transparent_6px,#FCF150_6px)] after:absolute after:right-0 after:top-0 after:w-1.5 after:h-1.5 after:translate-x-full after:bg-[radial-gradient(circle_at_bottom_right,transparent_6px,#FCF150_6px)]"
   />
 );
 

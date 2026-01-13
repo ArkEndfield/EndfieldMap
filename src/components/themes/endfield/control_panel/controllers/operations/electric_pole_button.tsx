@@ -1,18 +1,12 @@
 import { SideButton } from '@themes/endfield/control_panel/controllers/mobile/side_button';
-import { OperationButton } from '@themes/endfield/control_panel/controllers/operations/_button';
-import {
-  ElectricPoleManager,
-  ElectricPoleManagerMobile,
-} from '@themes/endfield/control_panel/controllers/operations/electric_pole';
+import { ElectricPoleManagerMobile } from '@themes/endfield/control_panel/controllers/operations/electric_pole';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SheetRef } from 'react-modal-sheet';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
-import uiManager from '@/services/ui_manager';
 
 const ElectricPoleButtonIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,38 +68,6 @@ export const ElectricPoleButtomMobile = observer(() => {
         onClose={onClose}
         dismissable={!dataService.electricPoleDataService.isInElectricOperateMode}
       />
-    </>
-  );
-});
-
-export const ElectricPoleButton = observer(({ portalRef }: { portalRef: React.RefObject<HTMLDivElement | null> }) => {
-  const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
-  const { t } = useTranslation('sidebar');
-  const { dataService } = useAdapter();
-  const open = uiManager.electricPoleManagerOpen;
-
-  useEffect(() => {
-    if (portalRef.current) {
-      setPortalContainer(portalRef.current);
-    }
-  }, [portalRef]);
-
-  const onToggle = () => {
-    if (dataService.electricPoleDataService.isInElectricOperateMode) {
-      dataService.electricPoleDataService.stopAllOperation();
-    }
-    uiManager.toggleElectricPoleManager();
-  };
-
-  return (
-    <>
-      <OperationButton
-        title={open ? t('operation.close_electric_pole_manager') : t('operation.electric_pole_manager')}
-        subtitle="ELECTRIC POLE MANAGER"
-        onClick={onToggle}
-        active={open}
-      />
-      {portalContainer && createPortal(<ElectricPoleManager open={open} />, portalContainer)}
     </>
   );
 });

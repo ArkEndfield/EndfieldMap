@@ -35,14 +35,14 @@ const Deco = ({ withTail }: { withTail?: boolean }) => (
         maskImage: 'linear-gradient(to right, black, black 60%, transparent)',
         WebkitMaskImage: 'linear-gradient(to right, black 10%, black 60%, transparent)',
       }}
-    ></div>
+    />
     <div
       className="h-full -ml-2 flex-1 bg-no-repeat bg-size-[auto_100%] bg-left bg-[url(/images/bg/deco_settings_bg_contour.png)]"
       style={{
         maskImage: 'linear-gradient(to bottom right, transparent, black 5em, black)',
         WebkitMaskImage: 'linear-gradient(to bottom right, transparent, black 5em, black)',
       }}
-    ></div>
+    />
     {withTail && (
       <div
         className="h-full shrink-0 grow-0 w-64 rounded-l-sm bg-[linear-gradient(-45deg,#555_0,#555_12.5%,#5550_12.5%,#5550_37.5%,#555_37.5%,#555_62.5%,#5550_62.5%,#5550_87.5%,#555_87.5%,#555_100%)] bg-repeat bg-size-[0.2em_0.2em]"
@@ -50,7 +50,7 @@ const Deco = ({ withTail }: { withTail?: boolean }) => (
           maskImage: 'linear-gradient(to left, black, black 60%, transparent)',
           WebkitMaskImage: 'linear-gradient(to left, black 10%, black 60%, transparent)',
         }}
-      ></div>
+      />
     )}
   </div>
 );

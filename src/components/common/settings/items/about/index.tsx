@@ -75,6 +75,11 @@ export const AboutPage = () => {
             ))}
         </div>
         <Recruit />
+        <div className="shrink-0 grow-0 p-2 text-sm text-center text-[#b9b9b9]">
+          <a href="https://beian.miit.gov.cn/" target="_blank">
+            黑ICP备2025036958号-1
+          </a>
+        </div>
       </div>
     </div>
   );

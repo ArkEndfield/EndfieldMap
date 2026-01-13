@@ -46,7 +46,7 @@ const CustomPointPresetPanel: React.FC = observer(() => {
         />
       </div>
 
-      <ScrollArea className="flex-1 px-3">
+      <ScrollArea className="flex-1 px-1">
         <PresetList
           presets={presets}
           currentPresetId={currentPresetId}

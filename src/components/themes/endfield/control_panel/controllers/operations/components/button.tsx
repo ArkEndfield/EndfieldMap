@@ -1,6 +1,6 @@
 import { cn } from '@/utils/style';
 
-interface CustomPointButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface OperatorToggleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** 按钮显示的标签文本 */
   label: string;
   /** 激活状态的点击事件 */
@@ -13,7 +13,7 @@ interface CustomPointButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   isDisabled?: boolean;
 }
 
-export const OperatorToggleButton: React.FC<CustomPointButtonProps> = ({
+export const OperatorToggleButton: React.FC<OperatorToggleButtonProps> = ({
   label,
   icon,
   isActive = false,

@@ -1,18 +1,12 @@
 import { SideButton } from '@themes/endfield/control_panel/controllers/mobile/side_button';
-import { OperationButton } from '@themes/endfield/control_panel/controllers/operations/_button';
-import {
-  CustomPointManager,
-  CustomPointManagerMobile,
-} from '@themes/endfield/control_panel/controllers/operations/custom_point';
+import { CustomPointManagerMobile } from '@themes/endfield/control_panel/controllers/operations/custom_point';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SheetRef } from 'react-modal-sheet';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
-import uiManager from '@/services/ui_manager';
 
 const CustomPointButtonIcon = ({ children }: { children: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -69,37 +63,6 @@ export const CustomPointButtonMobile = observer(() => {
         onClose={onClose}
         dismissable={!dataService.customPointDataService.isInCustomPointOperateMode}
       />
-    </>
-  );
-});
-
-export const CustomPointButton = observer(({ portalRef }: { portalRef: React.RefObject<HTMLDivElement | null> }) => {
-  const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
-  const { t } = useTranslation('sidebar');
-  const { dataService } = useAdapter();
-  const open = uiManager.customPointManagerOpen;
-
-  useEffect(() => {
-    if (portalRef.current) {
-      setPortalContainer(portalRef.current);
-    }
-  }, [portalRef]);
-
-  const onToggle = () => {
-    if (dataService.customPointDataService.isInCustomPointOperateMode) {
-      dataService.customPointDataService.stopAllOperation();
-    }
-    uiManager.toggleCustomPointManager();
-  };
-  return (
-    <>
-      <OperationButton
-        title={open ? t('operation.close_custom_point_manager') : t('operation.custom_point_manager')}
-        subtitle="CUSTOM POINT MANAGER"
-        onClick={onToggle}
-        active={open}
-      />
-      {portalContainer && createPortal(<CustomPointManager open={open} />, portalContainer)}
     </>
   );
 });
