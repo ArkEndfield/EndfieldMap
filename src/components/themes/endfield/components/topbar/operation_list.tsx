@@ -17,25 +17,24 @@ export const OperationList = ({
     <AnimatePresence>
       {open && (
         <motion.div
-          className={cn(
-            'fixed left-1/2 -translate-x-1/2 top-13 w-full md:w-[90%] pointer-events-none',
-            'flex items-center justify-center gap-1 overflow-hidden *:pointer-events-auto',
-            className
-          )}
+          className={cn('fixed left-1/2 -translate-x-1/2 top-13 pointer-events-none overflow-hidden')}
           initial={{
-            clipPath: 'inset(0 50% 0 50% round 0px)',
+            width: 0,
             opacity: 0,
           }}
           animate={{
-            clipPath: 'inset(0 0% 0 0% round 0px)',
+            width: 'auto',
             opacity: 1,
+            transition: { duration: 0.3, ease: 'easeInOut' },
           }}
           exit={{
-            clipPath: 'inset(0 50% 0 50% round 0px)',
+            width: 0,
             opacity: 0,
           }}
         >
-          {children}
+          <div className={cn('flex items-center justify-center gap-1 *:pointer-events-auto', 'min-w-max', className)}>
+            {children}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>,
