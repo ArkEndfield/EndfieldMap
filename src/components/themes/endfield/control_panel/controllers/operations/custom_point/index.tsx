@@ -1,6 +1,5 @@
 import CustomPointList from '@/components/themes/endfield/control_panel/controllers/operations/custom_point/filter_list';
 import CustomPointPresetPanel from '@/components/themes/endfield/control_panel/controllers/operations/custom_point/preset/panel';
-import CustomPointTypeSelector from '@/components/themes/endfield/control_panel/controllers/operations/custom_point/type_selector';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { forwardRef, useState } from 'react';
@@ -9,7 +8,6 @@ import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { snapPoints } from '@/const/ui';
-import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
 
@@ -64,7 +62,6 @@ const TabContent = ({ showListTab }: { showListTab: boolean }) => {
 export const CustomPointManager: React.FC = observer(() => {
   const isMobile = useIsMobile();
   const { t } = useTranslation('sidebar');
-  const { isInMode } = useCustomPointMode();
   const [showListTab, setShowListTab] = useState(true);
 
   return (
@@ -74,24 +71,6 @@ export const CustomPointManager: React.FC = observer(() => {
         isMobile ? 'relative' : 'absolute z-5'
       )}
     >
-      <AnimatePresence initial={false}>
-        {isInMode('isCreating') && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.15, ease: 'easeInOut' }}
-            className="overflow-hidden shrink-0"
-          >
-            <div className="p-2 rounded-lg border border-[#444] w-full mt-1 ml-1 mr-1 relative">
-              <div className="absolute -top-2.5 left-4 w-0 h-0 border-5 rotate-90 border-transparent border-r-[#444]" />
-              <div className="text-xs text-[#aaaaaa] mb-2">{t('operation.custom_point.select_type')}</div>
-              <CustomPointTypeSelector />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <div className="shrink-0 grow-0 mx-3 mt-3 text-sm">
         <EndfieldSwitch
           checked={showListTab}

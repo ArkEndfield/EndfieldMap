@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
 import { getEntityIcon } from '@/utils/entity';
+import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
+import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
 import { cn } from '@/utils/style';
 
 /**
@@ -12,7 +14,7 @@ import { cn } from '@/utils/style';
  * 显示所有可用的自定义标点类型，用户可以选择要创建的类型
  */
 const CustomPointTypeSelector: React.FC = observer(() => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'sidebar']);
   const { dataService } = useAdapter();
   const selectedType = dataService.customPointDataService.selectedPointType;
 
@@ -21,32 +23,32 @@ const CustomPointTypeSelector: React.FC = observer(() => {
   };
 
   return (
-    <div className="grid grid-cols-4 gap-1 w-full">
-      {customPointTypes.map((type) => {
-        const isSelected = selectedType === type.id;
-        return (
-          <button
-            key={type.id}
-            onClick={() => handleSelectType(type.id)}
-            className={cn(
-              'flex items-center gap-2 px-2 py-1 rounded transition-colors',
-              isSelected ? 'bg-[#fdfb55] text-[#1d1d1d]' : 'bg-[#2a2a2a] text-[#cccccc] hover:bg-[#333333]'
-            )}
-          >
-            <div className="w-4 h-4 rounded-full bg-[#1d1d1d]">
+    <OperationContainer>
+      <OperationItem
+        actions={customPointTypes.map((type) => ({
+          key: type.id,
+          label: t(`custom_point.type.${type.id}`, { defaultValue: type.id }),
+          icon: (
+            <div
+              className={cn(
+                'w-7 h-7 border rounded-xs shrink-0',
+                selectedType === type.id ? 'border-[#FCF250]' : 'border-[#1d1d1d]'
+              )}
+            >
               <img
                 className="w-full h-full object-center block"
                 src={getEntityIcon(CustomPointKey, type.icon)}
                 alt={type.id}
               />
             </div>
-            <span className="text-sm">
-              {t(`custom_point.type.${type.id}`, { defaultValue: type.id })}
-            </span>
-          </button>
-        );
-      })}
-    </div>
+          ),
+          onClick: () => handleSelectType(type.id),
+          active: selectedType === type.id,
+        }))}
+      >
+        <OperationItemTitle title={t('sidebar:operation.custom_point.select_type')} />
+      </OperationItem>
+    </OperationContainer>
   );
 });
 

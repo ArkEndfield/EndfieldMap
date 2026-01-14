@@ -1,40 +1,37 @@
-import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
-import { type CustomPointMode, useCustomPointMode } from '@/hooks/use_custom_point_mode';
-import { PlusIcon } from '@/components/common/icons';
-import { CloseIcon } from '@/components/common/icons';
-import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
+import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
+import { EditAddIcon, EditDeleteIcon } from '@/components/common/icons';
+import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
+import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
 
 export const CustomPointManagerToolbar = observer(() => {
-  const { changeMode, getCurrentMode, toggleMode } = useCustomPointMode();
+  const { toggleMode, getCurrentMode } = useCustomPointMode();
   const { t } = useTranslation('sidebar');
   const currentMode = getCurrentMode();
+
   // 配置按钮数据
-  const tools: { key: CustomPointMode; label: string; icon: React.ReactNode }[] = [
+  const tools = [
     {
       key: 'isCreating',
       label: t('operation.custom_point.create.start'),
-      icon: <PlusIcon />,
+      icon: <EditAddIcon />,
+      active: currentMode === 'isCreating',
+      onClick: () => toggleMode('isCreating'),
     },
     {
       key: 'isDeleting',
       label: t('operation.custom_point.delete.start'),
-      icon: <CloseIcon />,
+      icon: <EditDeleteIcon />,
+      active: currentMode === 'isDeleting',
+      onClick: () => toggleMode('isDeleting'),
     },
   ];
+
   return (
-    <div className="flex gap-1 px-1 shrink-0">
-      {tools.map((tool) => (
-        <OperatorToggleButton
-          key={tool.key}
-          label={tool.label}
-          icon={tool.icon}
-          isActive={currentMode === tool.key}
-          onClick={() => changeMode(tool.key)}
-          onActiveClick={() => toggleMode(tool.key)}
-        />
-      ))}
-    </div>
+    <OperationContainer className="flex gap-2">
+      <OperationItem actions={tools} classNames={{ actions: 'gap-4 pl-2' }} />
+    </OperationContainer>
   );
 });
