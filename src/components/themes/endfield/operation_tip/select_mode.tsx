@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'motion/react';
 import { type DataInstance, EntityInstanceKey } from '@endfieldmap/map-core';
 
-import { OperationTip } from '@/components/themes/endfield/control_panel/components/operation_tip';
+import { OperationTip } from '@/components/themes/endfield/components/topbar/operation_tip';
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { useAdapter } from '@/hooks/use_adapter';
 

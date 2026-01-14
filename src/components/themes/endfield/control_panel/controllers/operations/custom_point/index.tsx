@@ -1,8 +1,6 @@
-import { Toggle } from '@themes/endfield/components/toggle';
-import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
-import CustomPointList from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_list';
-import CustomPointPresetPanel from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_preset_panel';
-import CustomPointTypeSelector from '@themes/endfield/control_panel/controllers/operations/custom_point/custom_point_type_selector';
+import CustomPointList from '@/components/themes/endfield/control_panel/controllers/operations/custom_point/filter_list';
+import CustomPointPresetPanel from '@/components/themes/endfield/control_panel/controllers/operations/custom_point/preset/panel';
+import CustomPointTypeSelector from '@/components/themes/endfield/control_panel/controllers/operations/custom_point/type_selector';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { forwardRef, useState } from 'react';
@@ -10,45 +8,10 @@ import { useTranslation } from 'react-i18next';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
-import { CloseIcon, PlusIcon } from '@/components/common/icons';
 import { snapPoints } from '@/const/ui';
-import { useAdapter } from '@/hooks/use_adapter';
-import { type CustomPointMode, useCustomPointMode } from '@/hooks/use_custom_point_mode';
+import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
-
-const CustomPointManagerToolbar = observer(() => {
-  const { changeMode, getCurrentMode, toggleMode } = useCustomPointMode();
-  const { t } = useTranslation('sidebar');
-  const currentMode = getCurrentMode();
-  // 配置按钮数据
-  const tools: { key: CustomPointMode; label: string; icon: React.ReactNode }[] = [
-    {
-      key: 'isCreating',
-      label: t('operation.custom_point.create.start'),
-      icon: <PlusIcon />,
-    },
-    {
-      key: 'isDeleting',
-      label: t('operation.custom_point.delete.start'),
-      icon: <CloseIcon />,
-    },
-  ];
-  return (
-    <div className="flex gap-1 px-1 shrink-0">
-      {tools.map((tool) => (
-        <OperatorToggleButton
-          key={tool.key}
-          label={tool.label}
-          icon={tool.icon}
-          isActive={currentMode === tool.key}
-          onClick={() => changeMode(tool.key)}
-          onActiveClick={() => toggleMode(tool.key)}
-        />
-      ))}
-    </div>
-  );
-});
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
   const variants = {
@@ -99,13 +62,10 @@ const TabContent = ({ showListTab }: { showListTab: boolean }) => {
 };
 
 export const CustomPointManager: React.FC = observer(() => {
-  const { adapter, dataService } = useAdapter();
   const isMobile = useIsMobile();
   const { t } = useTranslation('sidebar');
   const { isInMode } = useCustomPointMode();
   const [showListTab, setShowListTab] = useState(true);
-
-  const isCustomPointVisible = adapter.customPointController.customPointVisible;
 
   return (
     <div
@@ -114,17 +74,6 @@ export const CustomPointManager: React.FC = observer(() => {
         isMobile ? 'relative' : 'absolute z-5'
       )}
     >
-      <div className="flex gap-2 w-full shrink-0 px-1 mb-3 overflow-hidden">
-        <Toggle
-          className="w-full"
-          checked={isCustomPointVisible}
-          label={t('operation.custom_point.display')}
-          onToggle={() => dataService.customPointDataService.changeVisibility(!isCustomPointVisible)}
-        />
-      </div>
-
-      <CustomPointManagerToolbar />
-
       <AnimatePresence initial={false}>
         {isInMode('isCreating') && (
           <motion.div

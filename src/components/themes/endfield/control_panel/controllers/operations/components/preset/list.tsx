@@ -1,4 +1,4 @@
-import { PresetListItem } from '@themes/endfield/control_panel/controllers/operations/preset/preset_list_item';
+import { PresetListItem } from '@themes/endfield/control_panel/controllers/operations/components/preset/list_item';
 import { useTranslation } from 'react-i18next';
 
 import type { PresetItem } from '@/hooks/use_preset_panel';

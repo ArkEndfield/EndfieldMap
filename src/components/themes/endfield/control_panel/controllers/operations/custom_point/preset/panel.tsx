@@ -1,16 +1,17 @@
-import PresetHeader from '@themes/endfield/control_panel/controllers/operations/electric_pole/preset/preset_header';
-import PresetSelectBar from '@themes/endfield/control_panel/controllers/operations/electric_pole/preset/preset_select_bar';
-import PresetList from '@themes/endfield/control_panel/controllers/operations/preset/preset_list';
-import PresetToolbar from '@themes/endfield/control_panel/controllers/operations/preset/preset_toolbar';
+import PresetHeader from '@/components/themes/endfield/control_panel/controllers/operations/custom_point/preset/header';
+import PresetSelectBar from '@/components/themes/endfield/control_panel/controllers/operations/electric_pole/preset/select_bar';
+
 import { observer } from 'mobx-react-lite';
 
 import { ScrollArea } from '@/components/common/scroll_area';
-import { usePresetPanel } from '@/hooks/use_preset_panel';
+import { useCustomPointPresetPanel } from '@/hooks/use_custom_point_preset_panel';
+import PresetList from '@themes/endfield/control_panel/controllers/operations/components/preset/list';
+import PresetToolbar from '@themes/endfield/control_panel/controllers/operations/components/preset/toolbar';
 
 /**
- * 电线杆预设管理面板
+ * 自定义标点预设管理面板
  */
-const ElectricPolePresetPanel: React.FC = observer(() => {
+const CustomPointPresetPanel: React.FC = observer(() => {
   const {
     presets,
     currentPresetId,
@@ -28,7 +29,7 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
     handleRenamePreset,
     handleClickImport,
     handleImportFileChange,
-  } = usePresetPanel();
+  } = useCustomPointPresetPanel();
 
   return (
     <div className="flex-1 overflow-hidden py-3 flex flex-col gap-2">
@@ -78,4 +79,4 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
   );
 });
 
-export default ElectricPolePresetPanel;
+export default CustomPointPresetPanel;

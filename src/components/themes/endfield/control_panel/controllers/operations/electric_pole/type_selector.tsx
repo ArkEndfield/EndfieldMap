@@ -1,0 +1,92 @@
+import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core';
+import { ELECTRIC_POLE_DEVICE_CONFIGS } from '@endfieldmap/map-core';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
+import { useAdapter } from '@/hooks/use_adapter';
+
+import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
+import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
+import {
+  ElectricPoleIcon_Pole,
+  ElectricPoleIcon_Repeater,
+  ElectricPoleIcon_Zipline_80,
+  ElectricPoleIcon_Zipline_110,
+} from '@/components/common/icons';
+
+const ElectricPoleTypeSelector: React.FC = observer(() => {
+  const { t } = useTranslation('sidebar');
+  const { dataService } = useAdapter();
+  const selectedType = dataService.electricPoleDataService.creatingDeviceKey;
+
+  const handleSelectType = (deviceKey: ElectricPoleDeviceKey) => {
+    dataService.electricPoleDataService.setCreatingDeviceKey(deviceKey);
+  };
+
+  return (
+    <OperationContainer>
+      <OperationItem
+        rightBorder
+        actions={[
+          {
+            key: 'pole',
+            icon: <ElectricPoleIcon_Pole />,
+            onClick: () => handleSelectType('pole'),
+            active: selectedType === 'pole',
+          },
+        ]}
+      >
+        <OperationItemTitle
+          title={t(`operation.electric_pole.create.device_type.options.pole`)}
+          subTitle={ELECTRIC_POLE_DEVICE_CONFIGS.pole.rangeMeters + 'M'}
+        />
+      </OperationItem>
+
+      <OperationItem
+        rightBorder
+        actions={[
+          {
+            key: 'repeater',
+            icon: <ElectricPoleIcon_Repeater />,
+            onClick: () => handleSelectType('repeater'),
+            active: selectedType === 'repeater',
+          },
+        ]}
+      >
+        <OperationItemTitle
+          title={t(`operation.electric_pole.create.device_type.options.repeater`)}
+          subTitle={ELECTRIC_POLE_DEVICE_CONFIGS.repeater.rangeMeters + 'M'}
+        />
+      </OperationItem>
+
+      <OperationItem
+        actions={[
+          {
+            key: 'zipline_80',
+            icon: <ElectricPoleIcon_Zipline_80 />,
+            onClick: () => handleSelectType('zipline_80'),
+            active: selectedType === 'zipline_80',
+          },
+          {
+            key: 'zipline_110',
+            icon: <ElectricPoleIcon_Zipline_110 />,
+            onClick: () => handleSelectType('zipline_110'),
+            active: selectedType === 'zipline_110',
+          },
+        ]}
+      >
+        <OperationItemTitle
+          title={t(`operation.electric_pole.create.device_type.options.zipline`)}
+          subTitle={
+            ELECTRIC_POLE_DEVICE_CONFIGS.zipline_80.rangeMeters +
+            '/' +
+            ELECTRIC_POLE_DEVICE_CONFIGS.zipline_110.rangeMeters +
+            'M'
+          }
+        />
+      </OperationItem>
+    </OperationContainer>
+  );
+});
+
+export default ElectricPoleTypeSelector;

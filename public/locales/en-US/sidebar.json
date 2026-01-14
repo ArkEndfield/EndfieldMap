@@ -44,14 +44,15 @@
       "no_data": "No electric pole data available",
       "create": {
         "start": "Create",
-        "auto_connect": "Auto-connect on creation",
+        "auto_connect": "Auto Connect",
         "device_type": {
           "label": "Device type",
           "options": {
-            "pole": "Pole (50m)",
-            "repeater": "Repeater (80m)",
+            "pole": "Pole",
+            "repeater": "Repeater",
+            "zipline": "Zipline",
             "zipline_80": "Zipline (80m)",
-            "zipline_100": "Zipline (100m)"
+            "zipline_110": "Zipline (110m)"
           }
         },
         "in_mode": "Creating electric pole"

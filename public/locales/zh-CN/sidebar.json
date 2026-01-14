@@ -44,14 +44,15 @@
       "no_data": "暂无电线杆数据",
       "create": {
         "start": "创建",
-        "auto_connect": "创建时自动连接",
+        "auto_connect": "自动连接",
         "device_type": {
           "label": "创建类型",
           "options": {
-            "pole": "电线杆(50m)",
-            "repeater": "中继器(80m)",
+            "pole": "电线杆",
+            "repeater": "中继器",
+            "zipline": "滑索",
             "zipline_80": "滑索(80m)",
-            "zipline_100": "滑索(100m)"
+            "zipline_110": "滑索(110m)"
           }
         },
         "in_mode": "正在创建电线杆"

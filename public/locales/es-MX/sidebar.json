@@ -44,14 +44,15 @@
       "no_data": "No hay datos de postes eléctricos disponibles",
       "create": {
         "start": "Crear",
-        "auto_connect": "Conectar automáticamente al crear",
+        "auto_connect": "Conectar automáticamente",
         "device_type": {
           "label": "Tipo de dispositivo",
           "options": {
-            "pole": "Poste (50m)",
-            "repeater": "Repetidor (80m)",
+            "pole": "Poste",
+            "repeater": "Repetidor",
+            "zipline": "Tirolina",
             "zipline_80": "Tirolina (80m)",
-            "zipline_100": "Tirolina (100m)"
+            "zipline_110": "Tirolina (110m)"
           }
         },
         "in_mode": "Creando poste eléctrico"

@@ -10,7 +10,7 @@ import { ELECTRIC_ZONE_RADIUS, type MapIndex } from '@endfieldmap/map-core/const
 /** 用于换算的基准米数（当前 ELECTRIC_ZONE_RADIUS 表示 80m） */
 export const ELECTRIC_RANGE_BASE_METERS = 80;
 
-export type ElectricPoleDeviceKey = 'pole' | 'repeater' | 'zipline_80' | 'zipline_100';
+export type ElectricPoleDeviceKey = 'pole' | 'repeater' | 'zipline_80' | 'zipline_110';
 
 export type ElectricPoleConnectionType = 'electric' | 'zipline';
 
@@ -69,11 +69,11 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     maxConnections: false,
     connectionType: 'zipline',
   },
-  zipline_100: {
-    key: 'zipline_100',
-    name: '滑索(100m)',
+  zipline_110: {
+    key: 'zipline_110',
+    name: '滑索(110m)',
     iconPic: 'icon_map_big_pole',
-    rangeMeters: 100,
+    rangeMeters: 110,
     createLimit: false,
     maxConnections: false,
     connectionType: 'zipline',

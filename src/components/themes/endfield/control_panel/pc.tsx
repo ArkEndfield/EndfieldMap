@@ -21,11 +21,14 @@ const PCControlPanel = observer(() => {
   return (
     <>
       <FoldButton
-        className={cn('fixed top-18 left-0 transition-transform', isNoneCurrentPanel && '-translate-x-full delay-250')}
+        className={cn(
+          'fixed top-18 left-0 transition-transform z-5',
+          isNoneCurrentPanel && '-translate-x-full delay-250'
+        )}
         open={isOpen}
         onToggle={() => (uiManager.operatePanelOpen.value = !isOpen)}
       />
-      <div className={cn('fixed top-23 left-4 text-white')}>
+      <div className={cn('fixed top-23 left-4 text-white z-5')}>
         <div
           className={cn(
             'relative grid',

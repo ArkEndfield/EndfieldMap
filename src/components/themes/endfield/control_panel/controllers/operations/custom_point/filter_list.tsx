@@ -82,37 +82,35 @@ const CustomPointList: React.FC = observer(() => {
   }
 
   return (
-    <ScrollArea className="flex-1">
-      <div className="grid grid-cols-2 gap-2 py-2 px-3">
-        {customPointGroups.map((group) => {
-          // 获取该类型的完整 EntityInfo（包含正确的 pic）
-          const typeEntityInfo = isValidCustomPointType(group.entityDataIdKey)
-            ? getCustomPointEntityInfo(group.entityDataIdKey as CustomPointTypeId)
-            : getCustomPointEntityInfo('custom_point_1');
+    <ScrollArea className="flex-1" contentClassName="grid grid-cols-2 gap-2 py-2 px-3 items-start content-start">
+      {customPointGroups.map((group) => {
+        // 获取该类型的完整 EntityInfo（包含正确的 pic）
+        const typeEntityInfo = isValidCustomPointType(group.entityDataIdKey)
+          ? getCustomPointEntityInfo(group.entityDataIdKey as CustomPointTypeId)
+          : getCustomPointEntityInfo('custom_point_1');
 
-          // 构造 EntityItem 需要的数据
-          const entityInfo = {
-            category: CustomPointKey,
-            entityDataIdKey: group.entityDataIdKey,
-            entityInfo: typeEntityInfo.entityInfo,
-            count: group.count,
-            markedCount: 0, // 自定义标点不支持标记
-            visible: group.allVisible,
-          };
+        // 构造 EntityItem 需要的数据
+        const entityInfo = {
+          category: CustomPointKey,
+          entityDataIdKey: group.entityDataIdKey,
+          entityInfo: typeEntityInfo.entityInfo,
+          count: group.count,
+          markedCount: 0, // 自定义标点不支持标记
+          visible: group.allVisible,
+        };
 
-          return (
-            <EntityItem
-              key={group.entityDataIdKey}
-              entity={entityInfo}
-              category={CustomPointKey}
-              active={group.allVisible}
-              onClick={() => handleToggleTypeVisible(group)}
-              hideCount={false}
-              hideMarked
-            />
-          );
-        })}
-      </div>
+        return (
+          <EntityItem
+            key={group.entityDataIdKey}
+            entity={entityInfo}
+            category={CustomPointKey}
+            active={group.allVisible}
+            onClick={() => handleToggleTypeVisible(group)}
+            hideCount={false}
+            hideMarked
+          />
+        );
+      })}
     </ScrollArea>
   );
 });

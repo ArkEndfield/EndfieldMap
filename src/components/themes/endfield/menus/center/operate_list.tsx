@@ -5,12 +5,14 @@ import { useAdapter } from '@/hooks/use_adapter';
 import { OperateMenu } from '@themes/endfield/menus/center/operate_menu';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
+import { VisibleIcon, InVisibleIcon } from '@/components/common/icons';
 
 export const OperateList = observer(() => {
   const { adapter, dataService } = useAdapter();
   const uiManager = useEndfieldUIManager();
   const currentTab = uiManager.currentOperatePanel.value;
   const isElecricPoleVisible = adapter.electricPoleController.electricPoleVisible;
+  const isCustomPointVisible = adapter.customPointController.customPointVisible;
 
   return (
     <div className="flex items-stretch absolute top-0 bottom-0 left-1/2 -translate-x-1/2 z-1">
@@ -33,7 +35,7 @@ export const OperateList = observer(() => {
                 dataService.electricPoleDataService.toggleVisibility();
               }}
             >
-              👀
+              <VisibleIcon />
             </div>
           ) : (
             <div
@@ -42,7 +44,7 @@ export const OperateList = observer(() => {
                 dataService.electricPoleDataService.toggleVisibility();
               }}
             >
-              ❌
+              <InVisibleIcon />
             </div>
           )
         }
@@ -55,6 +57,27 @@ export const OperateList = observer(() => {
       </OperateMenu>
       <OperateMenu
         active={currentTab === CurrentOperatePanel.CUSTOM_POINT}
+        startIcon={
+          isCustomPointVisible ? (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                dataService.customPointDataService.toggleVisibility();
+              }}
+            >
+              <VisibleIcon />
+            </div>
+          ) : (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                dataService.customPointDataService.toggleVisibility();
+              }}
+            >
+              <InVisibleIcon />
+            </div>
+          )
+        }
         onToggle={() => {
           uiManager.togglePanel(CurrentOperatePanel.CUSTOM_POINT);
         }}

@@ -86,12 +86,19 @@ export const useCustomPointMode = () => {
     return isInMode(...otherModes);
   };
 
+  const stopAllModes = () => {
+    service.setCreating(false);
+    service.setDeleting(false);
+  };
+
   const toggleMode = (mode: CustomPointMode) => {
     if (!checkCanOperate()) return;
 
     // 这里会调用 isInMode -> getModeValue -> service.property
     // 保证了判断的是最新状态
-    if (isInOtherCustomPointMode(mode)) return;
+    if (isInOtherCustomPointMode(mode)) {
+      stopAllModes();
+    }
 
     adapter.activeFeatureController.clearActiveFeature();
 
@@ -117,11 +124,6 @@ export const useCustomPointMode = () => {
         service.setDeleting(true);
         break;
     }
-  };
-
-  const stopAllModes = () => {
-    service.setCreating(false);
-    service.setDeleting(false);
   };
 
   return {

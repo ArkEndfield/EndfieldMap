@@ -44,14 +44,15 @@
       "no_data": "電柱データがありません",
       "create": {
         "start": "作成",
-        "auto_connect": "作成時に自動接続",
+        "auto_connect": "自動接続",
         "device_type": {
           "label": "種類",
           "options": {
-            "pole": "電柱 (50m)",
-            "repeater": "中継器 (80m)",
+            "pole": "電柱",
+            "repeater": "中継器",
+            "zipline": "ジップライン",
             "zipline_80": "ジップライン (80m)",
-            "zipline_100": "ジップライン (100m)"
+            "zipline_110": "ジップライン (110m)"
           }
         },
         "in_mode": "電柱を作成中"

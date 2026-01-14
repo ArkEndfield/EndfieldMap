@@ -5113,13 +5113,14 @@ interface Resources {
           "start": "连接"
         },
         "create": {
-          "auto_connect": "创建时自动连接",
+          "auto_connect": "自动连接",
           "device_type": {
             "label": "创建类型",
             "options": {
-              "pole": "电线杆(50m)",
-              "repeater": "中继器(80m)",
-              "zipline_100": "滑索(100m)",
+              "pole": "电线杆",
+              "repeater": "中继器",
+              "zipline": "滑索",
+              "zipline_110": "滑索(110m)",
               "zipline_80": "滑索(80m)"
             }
           },

@@ -44,14 +44,15 @@
       "no_data": "전신주 데이터가 없습니다",
       "create": {
         "start": "생성",
-        "auto_connect": "생성 시 자동 연결",
+        "auto_connect": "자동 연결",
         "device_type": {
           "label": "유형",
           "options": {
-            "pole": "전신주(50m)",
-            "repeater": "중계기(80m)",
+            "pole": "전신주",
+            "repeater": "중계기",
+            "zipline": "짚라인",
             "zipline_80": "짚라인(80m)",
-            "zipline_100": "짚라인(100m)"
+            "zipline_110": "짚라인(110m)"
           }
         },
         "in_mode": "전신주 생성 중"

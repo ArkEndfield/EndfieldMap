@@ -28,15 +28,15 @@ export const OperationTip = ({
             className
           )}
           initial={{
-            width: 0,
+            clipPath: 'inset(0 50% 0 50% round 9999px)',
             opacity: 0,
           }}
           animate={{
-            width: 'auto',
+            clipPath: 'inset(0 0% 0 0% round 9999px)',
             opacity: 1,
           }}
           exit={{
-            width: 0,
+            clipPath: 'inset(0 50% 0 50% round 9999px)',
             opacity: 0,
           }}
         >

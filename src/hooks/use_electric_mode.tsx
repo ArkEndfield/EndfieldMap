@@ -102,7 +102,9 @@ export const useElectricMode = () => {
 
     // 这里会调用 isInMode -> getModeValue -> service.property
     // 保证了判断的是最新状态
-    if (isInOtherElectricPoleMode(mode)) return;
+    if (isInOtherElectricPoleMode(mode)) {
+      service.stopAllOperation();
+    }
 
     adapter.activeFeatureController.clearActiveFeature();
 

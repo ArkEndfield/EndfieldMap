@@ -8,8 +8,9 @@ import { alert } from '@/components/common/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import uiManager from '@/services/ui_manager';
+import { MultiOperationIcon } from '@/components/common/icons';
 
-const MultiOperationIcon = ({ children }: { children?: React.ReactNode }) => (
+const MultiOperationIconMobile = ({ children }: { children?: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 92" fill="none" xmlns="http://www.w3.org/2000/svg">
     <mask
       id="path-1-outside-1_390_28"
@@ -85,13 +86,13 @@ export const SelectModeOperation = observer(() => {
     <>
       {isMobile ? (
         <SideButton onClick={toggleSelectMode} position="right">
-          <MultiOperationIcon>
+          <MultiOperationIconMobile>
             {isSelecting ? t('operation.cancel_operation') : t('operation.multi_operation')}
-          </MultiOperationIcon>
+          </MultiOperationIconMobile>
         </SideButton>
       ) : (
         <Tooltip tooltip={t('operation.multi_operation')} placement="top">
-          <ToggleButton value={isSelecting} className="text-lg w-8 h-8" onChange={toggleSelectMode}>
+          <ToggleButton value={isSelecting} className="w-8 h-8" onChange={toggleSelectMode}>
             <MultiOperationIcon />
           </ToggleButton>
         </Tooltip>

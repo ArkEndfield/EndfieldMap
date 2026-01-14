@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
 
-import { OperationTip } from '@/components/themes/endfield/control_panel/components/operation_tip';
+import { OperationTip } from '@/components/themes/endfield/components/topbar/operation_tip';
 import { useAdapter } from '@/hooks/use_adapter';
 
 const TipText = observer(() => {

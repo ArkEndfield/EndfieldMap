@@ -44,14 +44,15 @@
       "no_data": "暫無電線桿資料",
       "create": {
         "start": "建立",
-        "auto_connect": "建立時自動連接",
+        "auto_connect": "自動連接",
         "device_type": {
           "label": "建立類型",
           "options": {
-            "pole": "電線桿(50m)",
-            "repeater": "中繼器(80m)",
+            "pole": "電線桿",
+            "repeater": "中繼器",
+            "zipline": "滑索",
             "zipline_80": "滑索(80m)",
-            "zipline_100": "滑索(100m)"
+            "zipline_110": "滑索(110m)"
           }
         },
         "in_mode": "正在建立電線桿"
