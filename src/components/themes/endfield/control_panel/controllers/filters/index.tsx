@@ -7,12 +7,12 @@ import { observer } from 'mobx-react-lite';
 
 import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
-import { CheckCircleIcon, CloseSquareIcon } from '@/components/common/icons';
+import { FilterMarked, FilterUnMarked } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 
 const filterModes = [
-  { label: 'marked', value: MarkedFeatureFilterMode.Marked, icon: CheckCircleIcon },
-  { label: 'unmarked', value: MarkedFeatureFilterMode.Unmarked, icon: CloseSquareIcon },
+  { label: 'marked', value: MarkedFeatureFilterMode.Marked, icon: FilterMarked },
+  { label: 'unmarked', value: MarkedFeatureFilterMode.Unmarked, icon: FilterUnMarked },
 ] as const;
 
 export const Filters = observer(({ className, extra }: { className?: string; extra?: React.ReactNode }) => {
@@ -28,7 +28,7 @@ export const Filters = observer(({ className, extra }: { className?: string; ext
   return (
     <div className={cn('flex gap-2 justify-between items-center p-2', className)}>
       <ZmdSquareButton type="default" className="flex-1" icon={<RefreshIcon />} onClick={clearFilterSelect}>
-        重置
+        {t('filter.reset')}
       </ZmdSquareButton>
       {filterModes.map((mode) => (
         <Tooltip tooltip={t(`filter.${mode.label}`)} placement="top" key={mode.value}>

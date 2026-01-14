@@ -6,6 +6,7 @@
     "all": "すべて",
     "marked": "マーク済み",
     "unmarked": "未マーク",
+    "reset": "リセット",
     "search_placeholder": "検索...",
     "category": {
       "ether": "エーテル",

@@ -1,4 +1,5 @@
-import LocationIcon from '@themes/endfield/control_panel/controllers/entity_panel/location';
+import { DecoTriTriangle, VisibleWithDeco } from '@/components/common/icons';
+import { cn } from '@/utils/style';
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
@@ -46,29 +47,28 @@ export default function EntityGroup({
     >
       {/* Header */}
       <button
-        className="flex items-center sticky w-full top-0 z-1 pl-2 py-1 border-b-2 border-[#191919]"
+        className={cn(
+          'flex overflow-hidden items-center sticky w-full top-0 z-1 pl-3 py-1 border-b-2 border-[#191919]',
+          'before:absolute before:left-0 before:right-0 before:-top-0.5 before:-bottom-1.5 before:z-1 before:bg-[url(/images/bg/tex_6tri.png)] before:bg-no-repeat before:bg-contain before:opacity-10',
+          'after:absolute after:left-0 after:right-0 after:top-0 after:bottom-0 after:z-0 after:bg-[repeating-linear-gradient(135deg,transparent,transparent_0.1em,rgba(255,255,255,0.01)_0.15em,rgba(255,255,255,0.01)_0.2em),linear-gradient(to_right,#3d3d3d,#272727)]'
+        )}
         onClick={toggleContent}
       >
-        {/* Background with pattern */}
-        <div
-          className="absolute left-0 right-0 bottom-0 h-full z-1"
+        {/* Icon */}
+        <VisibleWithDeco
+          className="shrink-0 grow-0 text-lg mr-2.5 z-2"
+          onClick={handleIconClick}
           style={{
-            background:
-              'repeating-linear-gradient(135deg, transparent, transparent 0.1em, rgba(255,255,255,0.01) 0.15em, rgba(255,255,255,0.01) 0.2em), linear-gradient(to right, #3d3d3d, #272727)',
+            color: iconColor,
           }}
         />
 
-        {/* Icon */}
-        <div className="shrink-0 grow-0 text-[0.5rem] z-1" onClick={handleIconClick}>
-          <LocationIcon iconColor={iconColor} />
-        </div>
-
         {/* Title */}
-        <div className="text-lg mr-[0.2rem] whitespace-nowrap z-1 truncate text-left">{title}</div>
+        <div className="text-lg mr-[0.2rem] whitespace-nowrap z-2 truncate text-left">{title}</div>
 
         {/* Subtitle */}
         {subtitle && (
-          <div className="z-1 flex items-end self-stretch shrink-0 grow-0 w-auto">
+          <div className="z-2 flex items-end self-stretch shrink-0 grow-0 w-auto">
             <svg height="8" viewBox={`0 0 ${subtitle.toString().length * 20} 22`} preserveAspectRatio="xMinYMid meet">
               <text
                 x="0"
@@ -85,7 +85,9 @@ export default function EntityGroup({
           </div>
         )}
 
-        <div className="z-1 ml-auto shrink-0 grow-0 mr-2">1</div>
+        <div className="z-2 ml-auto shrink-0 grow-0 mr-4">
+          <DecoTriTriangle className={cn('transition-transform text-sm', isOpen ? 'rotate-180' : '')} />
+        </div>
       </button>
 
       {/* Content Container */}

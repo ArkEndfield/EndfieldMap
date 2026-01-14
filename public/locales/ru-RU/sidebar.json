@@ -6,6 +6,7 @@
     "all": "Все",
     "marked": "Отмеченные",
     "unmarked": "Неотмеченные",
+    "reset": "Сбросить",
     "search_placeholder": "Поиск...",
     "category": {
       "ether": "Эфир",

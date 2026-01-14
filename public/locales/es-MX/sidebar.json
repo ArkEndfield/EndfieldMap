@@ -6,6 +6,7 @@
     "all": "Todos",
     "marked": "Marcados",
     "unmarked": "Sin marcar",
+    "reset": "Reiniciar",
     "search_placeholder": "Buscar...",
     "category": {
       "ether": "Éter",

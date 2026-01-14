@@ -5053,6 +5053,7 @@ interface Resources {
         "trchest": "宝箱"
       },
       "marked": "已标记",
+      "reset": "重置",
       "search_placeholder": "搜索...",
       "title": "筛选标点",
       "unmarked": "未标记"
