@@ -1,28 +1,18 @@
 .zmd-swiper-custom {
   --swiper-theme-color: #dfd54a;
-  --swiper-pagination-bullet-inactive-color: #818182;
 }
 
-.zmd-swiper-custom .swiper-pagination {
+.zmd-pagination-container > div {
+  --progress: 0;
+}
+
+.zmd-pagination-container > div::before {
+  content: '';
   position: absolute;
-  bottom: 0 !important;
-  top: auto !important;
+  top: 0;
   left: 0;
-  right: 0;
-  display: flex;
-  gap: 3px;
-  z-index: 1;
-}
-
-.zmd-swiper-custom .swiper-pagination-bullet {
-  flex: 1;
-  height: 4px;
-  border-radius: 0;
-  background-color: var(--swiper-pagination-bullet-inactive-color);
-  opacity: 1;
-  margin: 0 !important;
-}
-
-.zmd-swiper-custom .swiper-pagination-bullet-active {
-  background-color: var(--swiper-theme-color);
+  height: 100%;
+  background-color: #dfd54a;
+  transition: width 0.1s linear;
+  width: calc(var(--progress) * 100%);
 }

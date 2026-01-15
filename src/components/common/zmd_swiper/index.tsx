@@ -4,38 +4,54 @@ import './index.css';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import type { Swiper as SwiperType } from 'swiper';
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
-import { ChevronUp } from '@/components/common/icons';
-import ListTitle from '@/components/common/list_title';
+import { ChevronUp, ChevronUpTriangle } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
 
 const ZmdSwiper = observer(() => {
   const expanded = uiManager.swiperOpen.value;
-  const { t } = useTranslation('sidebar');
   const { dataService } = useAdapter();
-  const progressCircleRef = useRef<SVGSVGElement>(null);
-  const progressContentRef = useRef<HTMLSpanElement>(null);
   const swiperRef = useRef<SwiperType>(null);
+  const paginationContainerRef = useRef<HTMLDivElement>(null);
   const swiperConfig = dataService.swiperDataService.swiperConfig;
 
+  const updatePaginationProgress = useCallback((swiper: SwiperType, progress: number) => {
+    if (!paginationContainerRef.current) return;
+    const activeIndex = swiper.realIndex;
+    const bullets = paginationContainerRef.current.children;
+
+    // 更新所有分页条
+    for (let i = 0; i < bullets.length; i++) {
+      const bullet = bullets[i] as HTMLElement;
+      if (i < activeIndex) {
+        // 当前索引之前的分页条，填充满（100%）
+        bullet.classList.remove('active');
+        bullet.style.setProperty('--progress', '1');
+      } else if (i === activeIndex) {
+        // 当前激活的分页条，显示进度
+        bullet.classList.add('active');
+        bullet.style.setProperty('--progress', String(1 - progress));
+      } else {
+        // 当前索引之后的分页条，保持空（0%）
+        bullet.classList.remove('active');
+        bullet.style.setProperty('--progress', '0');
+      }
+    }
+  }, []);
+
   const onAutoplayTimeLeft = useCallback(
-    (_: SwiperType, time: number, progress: number) => {
+    (swiper: SwiperType, _time: number, progress: number) => {
       if (swiperConfig.list.length <= 1) return;
-      if (progressCircleRef.current) {
-        progressCircleRef.current.style.setProperty('--progress', String(1 - progress));
-      }
-      if (progressContentRef.current) {
-        progressContentRef.current.textContent = String(Math.ceil(time / 1000));
-      }
+      // 更新分页条进度
+      updatePaginationProgress(swiper, progress);
     },
-    [swiperConfig.list.length]
+    [swiperConfig.list.length, updatePaginationProgress]
   );
 
   if (!swiperConfig.enable || swiperConfig.list.length === 0) {
@@ -43,61 +59,52 @@ const ZmdSwiper = observer(() => {
   }
 
   return (
-    <div className="fixed right-4 bottom-18 md:bottom-12">
-      <ListTitle
-        color="#1F1F20"
-        className="w-auto drop-shadow-[0_0_0.1rem_#FDFD5999]"
-        solid={false}
-        titleFontSize="1rem"
-        backTitleFontSize="1.25rem"
-        bracket
-        backTitle="ENDFIELD"
-        right={
-          <button
-            className={cn(
-              'bg-[#FDFD59] text-[#272727] hover:bg-[#FDFD59] active:bg-[#f2f27a]',
-              'rounded-full transition-all duration-200',
-              'text-xs font-bold',
-              'flex items-center gap-1',
-              'px-2 py-0.5 ml-1 mb-1'
-            )}
-            onClick={() => (uiManager.swiperOpen.value = !uiManager.swiperOpen.value)}
-          >
-            <div>{t(expanded ? 'fold' : 'unfold')}</div>
-          </button>
-        }
-      >
-        BREAKING NEWS
-      </ListTitle>
-
+    <div className="fixed right-0 h-40 bottom-18 md:bottom-12">
       <AnimatePresence>
         {expanded && (
           <motion.div
-            initial={{ height: 0, width: '5rem', opacity: 0 }}
+            initial={{ width: 0, opacity: 0, paddingRight: 0 }}
             animate={{
-              height: '9rem',
               width: '16rem',
               opacity: 1,
+              paddingRight: '1rem',
               transition: { duration: 0.5, type: 'spring', bounce: 0.25 },
             }}
-            exit={{ height: 0, width: '5rem', opacity: 0, transition: { duration: 0.3 } }}
-            className="relative ml-auto"
+            exit={{ width: 0, opacity: 0, paddingRight: 0, transition: { duration: 0.3 } }}
+            className="relative ml-auto flex flex-col h-full"
           >
-            <div className="overflow-hidden h-full w-full">
+            <div className="flex-1 overflow-hidden">
               <Swiper
                 spaceBetween={30}
-                modules={[Pagination, Autoplay, Navigation]}
+                modules={[Autoplay, Navigation]}
                 loop
-                pagination
-                onSwiper={(instance) => (swiperRef.current = instance)}
+                onSwiper={(instance) => {
+                  swiperRef.current = instance;
+                  // 初始化第一个分页条为激活状态
+                  if (paginationContainerRef.current?.children[0]) {
+                    (paginationContainerRef.current.children[0] as HTMLElement).classList.add('active');
+                  }
+                }}
+                onSlideChange={(swiper) => {
+                  const activeIndex = swiper.realIndex;
+                  // 如果是循环回到第一张（索引0），重置所有分页条
+                  if (activeIndex === 0 && paginationContainerRef.current) {
+                    const bullets = paginationContainerRef.current.children;
+                    for (let i = 0; i < bullets.length; i++) {
+                      (bullets[i] as HTMLElement).style.setProperty('--progress', '0');
+                    }
+                  }
+                  // 切换幻灯片时更新分页条，初始进度设为0（即填充为100%，因为是1-progress）
+                  updatePaginationProgress(swiper, 0);
+                }}
                 autoplay={{ delay: 2500, disableOnInteraction: false }}
                 onAutoplayTimeLeft={onAutoplayTimeLeft}
-                className="h-36 bg-[#1F1F20] shadow-lg text-white overflow-hidden rounded-md zmd-swiper-custom"
+                className="h-full bg-[#1F1F20] shadow-lg text-white border border-[#ffffff] zmd-swiper-custom"
               >
                 {swiperConfig.list.map((data, index) => (
                   <SwiperSlide
                     key={`${data.cover}-${index}`}
-                    className="flex items-center justify-center text-2xl font-bold"
+                    className="flex items-center justify-center text-2xl font-bold overflow-hidden"
                   >
                     <a href={data.link} target="_blank" rel="noopener noreferrer">
                       <img
@@ -109,33 +116,39 @@ const ZmdSwiper = observer(() => {
                     </a>
                   </SwiperSlide>
                 ))}
-                <div className="zmd-swiper-autoplay-progress absolute right-2 bottom-4 z-1 w-6 h-6 flex items-center justify-center font-bold text-(--swiper-theme-color)">
-                  <svg
-                    viewBox="0 0 48 48"
-                    ref={progressCircleRef}
-                    className="absolute left-0 top-0 w-full h-full stroke-[0.4em] stroke-(--swiper-theme-color) fill-none [stroke-dasharray:125.6] [stroke-dashoffset:calc(var(--progress)*125.6)] -rotate-90"
-                  >
-                    <circle cx="24" cy="24" r="20"></circle>
-                  </svg>
-                  <span ref={progressContentRef} className="text-[0.75em]"></span>
+
+                <div className="absolute right-2 bottom-2 z-1 flex items-center gap-4 bg-black/60 rounded-full p-0.5">
+                  <ZmdRoundIconButton onClick={() => swiperRef.current?.slidePrev()}>
+                    <ChevronUp className="rotate-270 text-xs -ml-0.5" />
+                  </ZmdRoundIconButton>
+                  <ZmdRoundIconButton onClick={() => swiperRef.current?.slideNext()}>
+                    <ChevronUp className="rotate-90 text-xs -mr-0.5" />
+                  </ZmdRoundIconButton>
                 </div>
               </Swiper>
             </div>
-            <ZmdRoundIconButton
-              className="absolute -left-3 top-1/2 -translate-y-1/2 z-1"
-              onClick={() => swiperRef.current?.slidePrev()}
-            >
-              <ChevronUp className="rotate-270 text-xs -ml-0.5" />
-            </ZmdRoundIconButton>
-            <ZmdRoundIconButton
-              className="absolute -right-3 top-1/2 -translate-y-1/2 z-1"
-              onClick={() => swiperRef.current?.slideNext()}
-            >
-              <ChevronUp className="rotate-90 text-xs -mr-0.5" />
-            </ZmdRoundIconButton>
+            {/* 自定义分页条 */}
+            <div className="flex gap-0.5 mt-0.5 zmd-pagination-container" ref={paginationContainerRef}>
+              {swiperConfig.list.map((_, index) => (
+                <div
+                  key={index}
+                  className="flex-1 h-1 bg-[#818182] relative overflow-hidden cursor-pointer"
+                  onClick={() => swiperRef.current?.slideToLoop(index)}
+                  data-index={index}
+                />
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 收缩/展开按钮 */}
+      <ZmdRoundIconButton
+        className="absolute right-full mr-1 top-1/2 -translate-y-1/2 z-1 w-4 h-12"
+        onClick={() => (uiManager.swiperOpen.value = !uiManager.swiperOpen.value)}
+      >
+        <ChevronUpTriangle className={cn('transition-transform rotate-270 text-xs', expanded && 'rotate-90')} />
+      </ZmdRoundIconButton>
     </div>
   );
 });
