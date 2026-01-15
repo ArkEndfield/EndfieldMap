@@ -3,7 +3,7 @@ import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
 import { observer } from 'mobx-react-lite';
 
-import { InVisibleIcon,VisibleIcon } from '@/components/common/icons';
+import { InVisibleIcon, VisibleIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 
 export const OperateList = observer(() => {
@@ -14,7 +14,7 @@ export const OperateList = observer(() => {
   const isCustomPointVisible = adapter.customPointController.customPointVisible;
 
   return (
-    <div className="flex items-stretch absolute top-0 bottom-0 left-1/2 -translate-x-1/2 z-1">
+    <div className="flex items-stretch absolute top-0 bottom-0 left-1/2 -translate-x-1/2 z-2">
       <OperateMenu
         active={currentTab === CurrentOperatePanel.FILTER}
         rightBorder
