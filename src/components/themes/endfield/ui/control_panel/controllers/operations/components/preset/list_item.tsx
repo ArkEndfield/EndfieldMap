@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 export interface PresetListItemProps {
@@ -85,7 +86,7 @@ export const PresetListItem = ({
           <div className="pt-0.5 w-full">
             <div className="relative z-1 flex items-center w-full">
               <div className="absolute -z-1 left-9 top-1/2 -translate-1/2 rounded-full w-7 h-7 bg-linear-270 from-white/10 via-[#fcfb1e]_51.92% to-[#fcfb1e]" />
-              <button
+              <ButtonWithAudio
                 className="absolute -translate-1/2 top-1/2 w-4 h-4 bg-[#676767] border border-[#EEEEEE] shadow-[0_0_0_1px_#C5C5C5] rounded-full flex items-center justify-center"
                 onClick={getHandledFunction(onToggleSelect)}
               >
@@ -112,7 +113,7 @@ export const PresetListItem = ({
                     </motion.svg>
                   ) : null}
                 </AnimatePresence>
-              </button>
+              </ButtonWithAudio>
               <div className="realative font-[Outfit] font-bold ml-2.5 text-2xl shrink-0 min-w-7">
                 {numberPadString(index, 2)}
               </div>
@@ -129,18 +130,18 @@ export const PresetListItem = ({
             <div className="flex-1 h-px bg-[#d9d9d9]/30" />
           </div>
 
-          <button
+          <ButtonWithAudio
             onClick={getHandledFunction(onRename)}
             className="bg-[#323232] hover:bg-[#282828] active:bg-[#323232] rounded-full text-[#fcfb1e] py-1 px-2 text-xs w-14"
           >
             {t('rename')}
-          </button>
-          <button
+          </ButtonWithAudio>
+          <ButtonWithAudio
             onClick={getHandledFunction(onDelete)}
             className="bg-[#323232] hover:bg-[#282828] active:bg-[#323232] rounded-full text-[#fcfb1e] py-1 px-2 text-xs w-14"
           >
             {t('delete')}
-          </button>
+          </ButtonWithAudio>
         </div>
       </div>
     </div>

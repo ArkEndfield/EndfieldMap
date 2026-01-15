@@ -1,5 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { BilibiliIcon, DiscordIcon, QQIcon } from '@/components/common/icons';
 import { CommunityCard } from '@/components/common/settings/items/about/community_card';
 import { ContributorCard } from '@/components/common/settings/items/about/contributor';
@@ -7,6 +8,7 @@ import { Recruit } from '@/components/common/settings/items/about/recruit';
 import { AboutTitle } from '@/components/common/settings/items/about/title';
 import { Version } from '@/components/common/settings/items/about/version';
 import ShuffleText from '@/components/common/shuffle_text';
+import { SoundType } from '@/const/audio_config';
 import { contributors } from '@/const/contributor';
 
 export const AboutPage = () => {
@@ -33,10 +35,13 @@ export const AboutPage = () => {
             loopDelay={1}
           />
           <a href="https://space.bilibili.com/432131619" target="_blank">
-            <button className="py-1 px-3 rounded-full bg-[#fdde55] hover:bg-[#e8cc4f] active:bg-[#fdde55] text-[#333] flex items-center gap-2">
+            <ButtonWithAudio
+              soundType={SoundType.CLAIM}
+              className="py-1 px-3 rounded-full bg-[#fdde55] hover:bg-[#e8cc4f] active:bg-[#fdde55] text-[#333] flex items-center gap-2"
+            >
               <BilibiliIcon className="text-[#ea5781]" />
               <span>{t('about.subscrible')}</span>
-            </button>
+            </ButtonWithAudio>
           </a>
         </div>
         <Version />

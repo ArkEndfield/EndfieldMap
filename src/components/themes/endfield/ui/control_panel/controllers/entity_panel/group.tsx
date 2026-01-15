@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { DecoTriTriangle, VisibleWithDeco } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 
@@ -47,7 +48,7 @@ export default function EntityGroup({
       style={{ opacity: isOpen ? 1 : 0.4 }}
     >
       {/* Header */}
-      <button
+      <ButtonWithAudio
         className={cn(
           'flex overflow-hidden items-center sticky w-full top-0 z-1 pl-3 py-1 border-b-2 border-[#191919]',
           'before:absolute before:left-0 before:right-0 before:-top-0.5 before:-bottom-1.5 before:z-1 before:bg-[url(/images/bg/tex_6tri.png)] before:bg-no-repeat before:bg-contain before:opacity-10',
@@ -89,7 +90,7 @@ export default function EntityGroup({
         <div className="z-2 ml-auto shrink-0 grow-0 mr-4">
           <DecoTriTriangle className={cn('transition-transform text-sm', isOpen ? 'rotate-180' : '')} />
         </div>
-      </button>
+      </ButtonWithAudio>
 
       {/* Content Container */}
       <div className="bg-[#1b1b1b] relative mx-1 z-0">

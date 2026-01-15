@@ -17,7 +17,7 @@ export const OperationList = ({
     <AnimatePresence>
       {open && (
         <motion.div
-          className={cn('fixed left-1/2 -translate-x-1/2 top-13 pointer-events-none overflow-hidden')}
+          className={cn('fixed left-1/2 -translate-x-1/2 top-13 pointer-events-none overflow-hidden z-2')}
           initial={{
             width: 0,
             opacity: 0,

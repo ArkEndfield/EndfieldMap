@@ -4,6 +4,7 @@ import { DungeonReward } from '@themes/endfield/ui/popup/right_content/dungeon_r
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { DoubleChevronRight } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
@@ -32,7 +33,7 @@ const Border = () => (
 
 /** 折叠/展开按钮 */
 const ToggleButton = ({ onClick, isExpand }: { onClick: () => void; isExpand: boolean }) => (
-  <button className="shirnk-0 grow-0 flex flex-col w-6 h-full -ml-px" onClick={onClick}>
+  <ButtonWithAudio className="shirnk-0 grow-0 flex flex-col w-6 h-full -ml-px" onClick={onClick}>
     <ClipSquare className="bg-[#3E3E3E]" />
     <div className="bg-[#3E3E3E] py-1.5 relative shadow-[0_-2px_0_#3E3E3E]">
       <div className="h-1 bg-[#4C4C4C] mr-1"></div>
@@ -44,7 +45,7 @@ const ToggleButton = ({ onClick, isExpand }: { onClick: () => void; isExpand: bo
         })}
       />
     </div>
-  </button>
+  </ButtonWithAudio>
 );
 
 export const RightContent = () => {

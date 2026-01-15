@@ -1,3 +1,4 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { CloseIcon } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 
@@ -29,12 +30,12 @@ export const Search: React.FC<SearchProps> = ({ value, placeholder, onValueChang
 
       {/* Clear button */}
       {value && (
-        <button
+        <ButtonWithAudio
           onClick={handleClear}
           className="absolute right-[1.2em] top-1/2 -translate-y-1/2 w-[1.6em] h-[1.6em] flex items-center justify-center rounded-[3px] bg-linear-to-br from-[#1a1a1a] to-[#2a2a2a] text-[#a0a0a0] text-[0.9em] transition-all duration-200 border border-[#3a3a3a] hover:bg-linear-to-br hover:from-[#2a2a2a] hover:to-[#3a3a3a] hover:text-[#e0e0e0] hover:shadow-[0_0_10px_rgba(60,60,60,0.5)] active:bg-linear-to-br active:from-[#1a1a1a] active:to-[#2a2a2a] active:scale-[0.92] active:shadow-[0_0_5px_rgba(40,40,40,0.3)]"
         >
           <CloseIcon />
-        </button>
+        </ButtonWithAudio>
       )}
 
       {/* Edge glow effect */}

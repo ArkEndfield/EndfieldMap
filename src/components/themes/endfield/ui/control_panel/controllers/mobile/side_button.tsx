@@ -1,3 +1,4 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 export const SideButton = ({
@@ -16,7 +17,7 @@ export const SideButton = ({
   const bottomOffset = 8 + level * 52; // 8px 基础 + 52px * level
 
   return (
-    <button
+    <ButtonWithAudio
       onClick={onClick}
       className={cn(
         'fixed z-2 w-11 h-11 flex flex-col items-center justify-center rounded-sm bg-[#3E3E3C] shadow-[0_0_5px_#00000099] text-xs border-box p-1 text-white',
@@ -26,6 +27,6 @@ export const SideButton = ({
     >
       <div className="absolute -left-[3px] -right-[3px] -bottom-[3px] -top-[3px] rounded-md border-2 border-[#3E3E3C] z-[-1] shadow-sm"></div>
       {children}
-    </button>
+    </ButtonWithAudio>
   );
 };

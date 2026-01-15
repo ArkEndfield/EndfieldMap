@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ChevronUpTriangle } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 
@@ -14,7 +15,7 @@ export const FoldButton = ({
 }) => {
   const { t } = useTranslation('sidebar');
   return (
-    <button onClick={onToggle} className={cn('flex items-stretch h-5 text-xs text-[#3c3c3c]', className)}>
+    <ButtonWithAudio onClick={onToggle} className={cn('flex items-stretch h-5 text-xs text-[#3c3c3c]', className)}>
       {/* 文本 */}
       <div className={cn('bg-[#eee] flex justify-center items-center transition-all', open ? 'w-32' : 'w-24')}>
         <ChevronUpTriangle className={cn('transition-transform', open && 'rotate-180')} />
@@ -38,6 +39,6 @@ export const FoldButton = ({
           )}
         />
       </div>
-    </button>
+    </ButtonWithAudio>
   );
 };

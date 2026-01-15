@@ -1,10 +1,11 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import type { ZmdIconButtonProps } from '@/components/common/endfield_components/types/button';
 import { cn } from '@/utils/style';
 
 export const ZmdRoundIconButton = (props: ZmdIconButtonProps) => {
   const { className, children, disabled, ...rest } = props;
   return (
-    <button
+    <ButtonWithAudio
       disabled={disabled}
       className={cn(
         'rounded-full w-6 h-6 flex items-center justify-center relative shadow-[0_0_.625rem_rgba(2,2,2,.3)]',
@@ -26,6 +27,6 @@ export const ZmdRoundIconButton = (props: ZmdIconButtonProps) => {
         )}
       />
       {children}
-    </button>
+    </ButtonWithAudio>
   );
 };

@@ -1,3 +1,4 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { QuestionIcon } from '@/components/common/icons';
 import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { useIsMobile } from '@/hooks/use_is_mobile';
@@ -80,9 +81,9 @@ export const SettingItem = ({
                 className: cn('text-sm', classNames?.left?.title?.question?.tooltip),
               }}
             >
-              <button className={cn('text-sm', classNames?.left?.title?.question?.button)}>
+              <ButtonWithAudio className={cn('text-sm', classNames?.left?.title?.question?.button)}>
                 <QuestionIcon />
-              </button>
+              </ButtonWithAudio>
             </Tooltip>
           )}
         </div>

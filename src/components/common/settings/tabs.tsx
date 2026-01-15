@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 const ActiveDeco = () => (
@@ -83,7 +84,7 @@ const TabContainer = ({
   className?: string;
   onClick?: () => void;
 }) => (
-  <button
+  <ButtonWithAudio
     className={cn(
       'relative px-4 z-1 flex items-center justify-center w-16 h-14 font-bold',
       rightBorder &&
@@ -95,7 +96,7 @@ const TabContainer = ({
     {active && <ActiveDeco />}
     {active && <ActiveIcon>{children}</ActiveIcon>}
     {!active && <Icon>{children}</Icon>}
-  </button>
+  </ButtonWithAudio>
 );
 
 const TabListDeco = () => (

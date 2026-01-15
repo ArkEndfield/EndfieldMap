@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
+
 interface ButtonProps {
   active?: boolean;
   children: React.ReactNode;
@@ -8,7 +10,7 @@ interface ButtonProps {
 
 export const MapButton: React.FC<ButtonProps> = ({ active = false, children, onClick }) => {
   return (
-    <button
+    <ButtonWithAudio
       onClick={onClick}
       className={`
         relative block py-2 text-lg font-black
@@ -33,6 +35,6 @@ export const MapButton: React.FC<ButtonProps> = ({ active = false, children, onC
         {/* Right border decoration */}
         <span className="mr-4 w-[0.25em] h-[1.2em] border-[0.15em] border-l-0 border-[#444444]" />
       </div>
-    </button>
+    </ButtonWithAudio>
   );
 };

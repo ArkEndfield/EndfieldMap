@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 interface PresetToolbarProps {
@@ -14,7 +15,7 @@ const PresetToolbar: React.FC<PresetToolbarProps> = ({ hasSelection, onExport, o
 
   return (
     <div className="flex items-center justify-between gap-1.5 pt-1 shrink-0 font-bold">
-      <button
+      <ButtonWithAudio
         onClick={onExport}
         className={cn(
           'flex-1 text-xs py-1 px-1.5 rounded transition-colors',
@@ -27,8 +28,8 @@ const PresetToolbar: React.FC<PresetToolbarProps> = ({ hasSelection, onExport, o
         <div className="flex-1 h-[1.5px] bg-[#E2E2E2]"></div>
         <div className="shrink-0">{t('sidebar:operation.electric_pole.preset.export_select')}</div>
         <div className="flex-1 h-[1.5px] bg-[#E2E2E2]"></div>
-      </button>
-      <button
+      </ButtonWithAudio>
+      <ButtonWithAudio
         onClick={onDelete}
         className={cn(
           'text-xs py-1 px-4 rounded transition-colors',
@@ -38,13 +39,13 @@ const PresetToolbar: React.FC<PresetToolbarProps> = ({ hasSelection, onExport, o
         disabled={!hasSelection}
       >
         {t('batch_delete')}
-      </button>
-      <button
+      </ButtonWithAudio>
+      <ButtonWithAudio
         onClick={onImport}
         className="bg-[#FCFB1E] hover:bg-[#ecec20] text-[#404040] text-xs py-1 px-4 rounded transition-colors"
       >
         {t('sidebar:operation.electric_pole.preset.import.button')}
-      </button>
+      </ButtonWithAudio>
     </div>
   );
 };

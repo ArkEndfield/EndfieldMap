@@ -1,6 +1,7 @@
 import Tooltip from '@themes/endfield/components/tooltip';
 import type React from 'react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 export interface OperationConfig {
@@ -39,7 +40,7 @@ export const OperationItem = ({ children, rightBorder, actions, className, class
         {actions.map((action) => {
           return (
             <Tooltip
-              as="button"
+              as={ButtonWithAudio}
               key={action.key}
               tooltip={action.label}
               placement="bottom"

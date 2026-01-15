@@ -1,8 +1,9 @@
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import React, { useEffect,useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import Counter from '@/components/common/count_up';
 import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { useAdapter } from '@/hooks/use_adapter';
@@ -111,7 +112,7 @@ const EntityItem = observer(
         offset={0}
         disabled={isMobile}
         keepOnHover={false}
-        as="button"
+        as={ButtonWithAudio}
         asProps={{
           onClick,
           className: cn(

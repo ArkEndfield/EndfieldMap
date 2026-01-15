@@ -1,3 +1,5 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { SoundType } from '@/const/audio_config';
 import { cn } from '@/utils/style';
 
 export interface ContributorInfo {
@@ -13,7 +15,8 @@ export interface ContributorCardProps {
 
 export const ContributorCard = ({ info }: ContributorCardProps) => (
   <a href={info.home} target="_blank" className="block group">
-    <button
+    <ButtonWithAudio
+      soundType={SoundType.CLAIM}
       className={cn(
         'bg-[url(/images/bg/button-texture.png)] bg-no-repeat bg-center bg-cover',
         'flex flex-col items-center relative gap-3 text-[#191919] pt-6 pb-2 px-3 rounded-xs shadow-[0_0_.75rem_rgba(0,0,0,.4)]',
@@ -50,6 +53,6 @@ export const ContributorCard = ({ info }: ContributorCardProps) => (
       <div className="flex items-center justify-center w-full">
         <div className="text-center font-bold text-sm truncate w-full px-1">{info.name}</div>
       </div>
-    </button>
+    </ButtonWithAudio>
   </a>
 );

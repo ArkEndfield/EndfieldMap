@@ -1,4 +1,6 @@
 import { MapIndex } from '@endfieldmap/tools';
+import { useMapChange } from '@themes/endfield/hooks/map_change';
+import { MapChangeAnimation } from '@themes/endfield/ui/menus/map_menu/map_change_animation';
 import { MapButton } from '@themes/endfield/ui/menus/right/button';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
@@ -6,10 +8,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SwitchIcon } from '@/components/common/icons';
-
-import { useClickOutside } from '../../../../../../hooks/use_click_outside';
-import { useMapChange } from '../../../hooks/map_change';
-import { MapChangeAnimation } from '../../map_menu/map_change_animation';
+import { useClickOutside } from '@/hooks/use_click_outside';
 
 export const RightMenu: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'map']);

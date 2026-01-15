@@ -2,6 +2,7 @@ import { domEventListener } from '@endfieldmap/tools';
 import { AnimatePresence, motion } from 'motion/react';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import type {
   EndfieldSelectItem,
   EndfieldSelectOptionProps,
@@ -9,13 +10,14 @@ import type {
   EndfieldSelectTriggerProps,
 } from '@/components/common/endfield_components/types/form';
 import { ScrollArea } from '@/components/common/scroll_area';
+import { SoundType } from '@/const/audio_config';
 import { cn } from '@/utils/style';
 
 const Trigger = forwardRef<HTMLButtonElement, EndfieldSelectTriggerProps>((props, ref) => {
   const { children, className, disabled, expand, ...rest } = props;
 
   return (
-    <button
+    <ButtonWithAudio
       {...rest}
       ref={ref}
       disabled={disabled}
@@ -42,7 +44,7 @@ const Trigger = forwardRef<HTMLButtonElement, EndfieldSelectTriggerProps>((props
           ></path>
         </svg>
       </div>
-    </button>
+    </ButtonWithAudio>
   );
 });
 
@@ -51,8 +53,9 @@ const Option = forwardRef<HTMLButtonElement, EndfieldSelectOptionProps>((props, 
   const leftContent = typeof left === 'function' ? left(!!select) : left;
   const rightContent = typeof right === 'function' ? right(!!select) : right;
   return (
-    <button
+    <ButtonWithAudio
       {...rest}
+      soundType={SoundType.TICK}
       ref={ref}
       className={cn(
         'relative flex w-full z-1 text-left items-center',
@@ -82,7 +85,7 @@ const Option = forwardRef<HTMLButtonElement, EndfieldSelectOptionProps>((props, 
           </svg>
         )}
       </div>
-    </button>
+    </ButtonWithAudio>
   );
 });
 

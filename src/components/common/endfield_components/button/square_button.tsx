@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import type { ZmdButtonProps } from '@/components/common/endfield_components/types/button';
+import { Deco7Dots } from '@/components/common/icons';
 import { cn } from '@/utils/style';
-
-import { Deco7Dots } from '../../icons';
 
 export const ZmdSquareButton = ({
   type = 'primary',
@@ -47,7 +47,7 @@ export const ZmdSquareButton = ({
     ));
 
   return (
-    <button
+    <ButtonWithAudio
       disabled={isDisabled}
       className={cn(
         'flex items-center justify-center rounded-md min-w-28 box-border relative m-[0.05em] transition-colors text-sm',
@@ -86,6 +86,6 @@ export const ZmdSquareButton = ({
         {children || text}
       </div>
       {!isIconLeft && iconElement}
-    </button>
+    </ButtonWithAudio>
   );
 };

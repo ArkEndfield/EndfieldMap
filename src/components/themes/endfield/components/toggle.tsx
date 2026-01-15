@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import type { ButtonHTMLAttributes } from 'react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 export interface ToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -34,7 +35,7 @@ export const Toggle: React.FC<ToggleProps> = ({
   ...props
 }) => {
   return (
-    <button
+    <ButtonWithAudio
       type="button"
       role="switch"
       aria-checked={checked}
@@ -90,6 +91,6 @@ export const Toggle: React.FC<ToggleProps> = ({
         </AnimatePresence>
       </span>
       <span className="flex-1 text-left text-sm">{label}</span>
-    </button>
+    </ButtonWithAudio>
   );
 };

@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { Guide } from '@/components/common/guide';
@@ -31,9 +32,9 @@ const Border = () => (
 
 /** 关闭按钮 */
 export const CloseButton = ({ onClick }: { onClick?: () => void }) => (
-  <button className="no-underline absolute top-3 right-5 text-3xl text-[#ece065] z-2" onClick={onClick}>
+  <ButtonWithAudio className="no-underline absolute top-3 right-5 text-3xl text-[#ece065] z-2" onClick={onClick}>
     <PowerIcon />
-  </button>
+  </ButtonWithAudio>
 );
 
 /** 顶部图标和标题 */

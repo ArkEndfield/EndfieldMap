@@ -1,16 +1,17 @@
 import { MapIndex } from '@endfieldmap/tools';
 import { useMapChange } from '@themes/endfield/hooks/map_change';
+import { MapChangeAnimation } from '@themes/endfield/ui/map_menu/map_change_animation';
 import { MapButton } from '@themes/endfield/ui/menus/right/button';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ChangeMapIcon, Deco7Dots, SwitchIcon } from '@/components/common/icons';
+import { SoundType } from '@/const/audio_config';
 import { useClickOutside } from '@/hooks/use_click_outside';
 import { cn } from '@/utils/style';
-
-import { MapChangeAnimation } from './map_change_animation';
 
 export const ChangeMapPC: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'map']);
@@ -45,7 +46,8 @@ export const ChangeMapPC: React.FC = observer(() => {
           'bg-repeat bg-size-[0.3em_0.3em]'
         )}
       >
-        <button
+        <ButtonWithAudio
+          soundType={SoundType.CLAIM}
           ref={triggerRef}
           onClick={togglePopover}
           className="flex w-full p-2 gap-1 hover:text-[#fdfb55] items-start"
@@ -68,7 +70,7 @@ export const ChangeMapPC: React.FC = observer(() => {
             <SwitchIcon className="text-[#313131] w-full" />
             <Deco7Dots className="text-[#313131]/30 w-full mx-1" />
           </div>
-        </button>
+        </ButtonWithAudio>
 
         <motion.div
           ref={popoverRef}

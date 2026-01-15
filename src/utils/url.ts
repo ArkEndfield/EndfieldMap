@@ -30,6 +30,7 @@ export const getAssetUrls = () => {
     itemImage: createFullUrl(host, '/images/icon'),
     avatar: createFullUrl(host, '/images/avatar'),
     misc: createFullUrl(host, '/images/misc'),
+    audio: createFullUrl(host, '/audio'),
   };
 };
 

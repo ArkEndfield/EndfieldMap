@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import type { EndfieldFormButtonProps } from '@/components/common/endfield_components/types/form';
 import { cn } from '@/utils/style';
 
@@ -7,7 +8,7 @@ export const EndfieldFormButton = forwardRef<HTMLButtonElement, EndfieldFormButt
   const { children, className, disabled, left, right, variant = 'default', ...rest } = props;
 
   return (
-    <button
+    <ButtonWithAudio
       {...rest}
       ref={ref}
       disabled={disabled}
@@ -45,6 +46,6 @@ export const EndfieldFormButton = forwardRef<HTMLButtonElement, EndfieldFormButt
           {right}
         </div>
       )}
-    </button>
+    </ButtonWithAudio>
   );
 });

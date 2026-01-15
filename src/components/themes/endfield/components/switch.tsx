@@ -1,3 +1,4 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { Deco7Dots } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 
@@ -17,7 +18,7 @@ export const EndfieldSquareSwitch = ({
   labelPosition = 'left',
 }: EndfieldSwitchProps) => {
   return (
-    <div className={cn('flex items-center gap-2', className)}>
+    <ButtonWithAudio className={cn('flex items-center gap-2', className)}>
       {labelPosition === 'left' && label && (
         <label className="text-xs" onClick={() => onValueChange(!value)}>
           {label}
@@ -40,6 +41,6 @@ export const EndfieldSquareSwitch = ({
           {label}
         </label>
       )}
-    </div>
+    </ButtonWithAudio>
   );
 };

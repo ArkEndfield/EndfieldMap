@@ -1,5 +1,6 @@
 import { motion, useAnimate } from 'motion/react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import type { ZmdButtonProps } from '@/components/common/endfield_components/types/button';
 import { cn } from '@/utils/style';
 
@@ -109,7 +110,7 @@ export const ZmdRoundButton = ({
   );
 
   return (
-    <button
+    <ButtonWithAudio
       disabled={isDisabled}
       className={cn(
         'flex items-center justify-center rounded-full min-w-28',
@@ -140,6 +141,6 @@ export const ZmdRoundButton = ({
         {children || text}
       </div>
       {!isIconLeft && iconElement}
-    </button>
+    </ButtonWithAudio>
   );
 };

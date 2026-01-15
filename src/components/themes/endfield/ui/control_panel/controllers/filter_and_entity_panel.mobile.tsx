@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sheet } from 'react-modal-sheet';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
 
@@ -35,7 +36,7 @@ export const FilterAndEntityPanelMobile = () => {
   const onClose = () => setOpen(false);
   return (
     <>
-      <button
+      <ButtonWithAudio
         onClick={onOpen}
         className={cn(
           'fixed block bottom-2 p-3 font-black shadow-sm left-20 right-20 rounded-xl h-11',
@@ -46,7 +47,7 @@ export const FilterAndEntityPanelMobile = () => {
         <FilterButtonDeco />
         <span className="px-1 shrink-0">{t('filter.title')}</span>
         <FilterButtonDeco className="rotate-180" />
-      </button>
+      </ButtonWithAudio>
       <Sheet isOpen={open} onClose={onClose}>
         <Sheet.Container>
           <Sheet.Header className="bg-[#272727] rounded-t-md" />

@@ -21,7 +21,7 @@ export interface DevToolsState {
   drawPanelPosition?: { right: number; top: number };
 }
 
-import { loadingManager } from '../loading';
+import { loadingManager } from '@/services/loading';
 
 export class MapStateDataService {
   private adapter: EndfieldMapAdapter;

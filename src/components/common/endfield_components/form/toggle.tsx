@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import type { EndfieldToggleProps } from '@/components/common/endfield_components/types/form';
 import { cn } from '@/utils/style';
 
@@ -45,7 +46,7 @@ export const EndfieldToggle = <T extends React.Key>({
       {options.map((option) => {
         const isActive = option.key === activeKey;
         return (
-          <button
+          <ButtonWithAudio
             key={option.key}
             onClick={() => changeValue(option.key)}
             disabled={disabled}
@@ -58,7 +59,7 @@ export const EndfieldToggle = <T extends React.Key>({
               <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#373537]">{option.icon}</div>
             )}
             {option.label}
-          </button>
+          </ButtonWithAudio>
         );
       })}
     </div>

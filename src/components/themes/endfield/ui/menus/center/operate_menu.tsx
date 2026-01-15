@@ -1,3 +1,4 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 export interface OperateMenuProps {
@@ -11,7 +12,7 @@ export interface OperateMenuProps {
 
 export const OperateMenu = ({ startIcon, endIcon, children, active, rightBorder, onToggle }: OperateMenuProps) => {
   return (
-    <button
+    <ButtonWithAudio
       className={cn(
         'relative h-full',
         active && 'bg-[#fffa00] text-[#313131]',
@@ -33,6 +34,6 @@ export const OperateMenu = ({ startIcon, endIcon, children, active, rightBorder,
         <div className="flex-1">{children}</div>
         {endIcon}
       </div>
-    </button>
+    </ButtonWithAudio>
   );
 };

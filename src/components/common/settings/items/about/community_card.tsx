@@ -1,3 +1,4 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 export const CommunityCard = ({
@@ -15,7 +16,7 @@ export const CommunityCard = ({
 
   return (
     <a href={link} target="_blank">
-      <button
+      <ButtonWithAudio
         className={cn(
           'bg-[url(/images/bg/button-texture.png)] bg-no-repeat bg-right bg-cover',
           'flex items-center relative gap-2 text-[#191919] p-2 pr-4 rounded-xs shadow-[0_0_.75rem_rgba(0,0,0,.4)]',
@@ -60,7 +61,7 @@ export const CommunityCard = ({
             ></path>
           </svg>
         </div>
-      </button>
+      </ButtonWithAudio>
     </a>
   );
 };

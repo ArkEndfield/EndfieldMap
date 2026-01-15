@@ -1,8 +1,9 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 export const CloseButton = ({ onClose, className }: { onClose: () => void; className?: string }) => {
   return (
-    <button
+    <ButtonWithAudio
       className={cn(
         'shrink-0 grow-0 top-4 w-6.5 h-6.5',
         'text-[#FFFEFE] hover:text-[#c9c9c9]',
@@ -18,6 +19,6 @@ export const CloseButton = ({ onClose, className }: { onClose: () => void; class
           fill="currentColor"
         />
       </svg>
-    </button>
+    </ButtonWithAudio>
   );
 };

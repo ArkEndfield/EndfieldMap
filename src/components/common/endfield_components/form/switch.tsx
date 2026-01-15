@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import type { EndfieldSwitchProps } from '@/components/common/endfield_components/types/form';
 import { cn } from '@/utils/style';
 
@@ -37,7 +38,7 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText,
           damping: 30,
         }}
       ></motion.div>
-      <button
+      <ButtonWithAudio
         onClick={() => changeValue(true)}
         disabled={disabled}
         className={cn(
@@ -46,8 +47,8 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText,
         )}
       >
         {onText ?? t('on')}
-      </button>
-      <button
+      </ButtonWithAudio>
+      <ButtonWithAudio
         onClick={() => changeValue(false)}
         disabled={disabled}
         className={cn(
@@ -56,7 +57,7 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText,
         )}
       >
         {offText ?? t('off')}
-      </button>
+      </ButtonWithAudio>
     </div>
   );
 };

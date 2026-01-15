@@ -1,3 +1,4 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
 
 export interface OperatorToggleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -24,7 +25,7 @@ export const OperatorToggleButton: React.FC<OperatorToggleButtonProps> = ({
   ...props
 }) => {
   return (
-    <button
+    <ButtonWithAudio
       disabled={isDisabled}
       onClick={isActive ? onActiveClick : onClick}
       className={cn(
@@ -57,6 +58,6 @@ export const OperatorToggleButton: React.FC<OperatorToggleButtonProps> = ({
         )}
         aria-hidden="true"
       />
-    </button>
+    </ButtonWithAudio>
   );
 };

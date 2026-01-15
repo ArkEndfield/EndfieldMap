@@ -1,5 +1,7 @@
 import type { ThemeNames } from '@themes/index';
 
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { SoundType } from '@/const/audio_config';
 import { cn } from '@/utils/style';
 
 export interface ThemeItemProps {
@@ -11,7 +13,8 @@ export interface ThemeItemProps {
 
 export const ThemeItem = ({ name, active, className, onClick }: ThemeItemProps) => {
   return (
-    <button
+    <ButtonWithAudio
+      soundType={SoundType.PRIZE_CONFIRM}
       className={cn(
         'relative flex items-center justify-center p-3 border-[1.5px] rounded-sm transition-all',
         'min-w-[120px] cursor-pointer',
@@ -24,6 +27,6 @@ export const ThemeItem = ({ name, active, className, onClick }: ThemeItemProps) 
       onClick={() => onClick?.(name)}
     >
       <span className="font-bold text-sm uppercase">{name}</span>
-    </button>
+    </ButtonWithAudio>
   );
 };
