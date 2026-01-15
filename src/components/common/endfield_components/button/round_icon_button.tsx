@@ -2,15 +2,18 @@ import type { ZmdIconButtonProps } from '@/components/common/endfield_components
 import { cn } from '@/utils/style';
 
 export const ZmdRoundIconButton = (props: ZmdIconButtonProps) => {
-  const { className, children, ...rest } = props;
+  const { className, children, disabled, ...rest } = props;
   return (
     <button
+      disabled={disabled}
       className={cn(
         'rounded-full w-6 h-6 flex items-center justify-center relative shadow-[0_0_.625rem_rgba(2,2,2,.3)]',
-        'bg-[#fafafa] hover:bg-[#fffa00] active:bg-[#eeea00] text-[#3c3c3c] transition-colors',
+        'bg-[#fafafa] text-[#3c3c3c] transition-colors',
         'before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:rounded-full',
         'before:bg-[url(/images/bg/pag-button-texture.png)] before:bg-cover before:bg-center before:bg-no-repeat',
-        'before:opacity-40 before:transition-opacity hover:before:opacity-100',
+        'before:opacity-40 before:transition-opacity',
+        !disabled && 'hover:bg-[#fffa00] active:bg-[#eeea00] hover:before:opacity-100 cursor-pointer',
+        disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
       {...rest}

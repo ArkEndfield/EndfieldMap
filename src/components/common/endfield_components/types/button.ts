@@ -16,6 +16,6 @@ export interface ZmdButtonProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export interface ZmdIconButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
-  children: React.ReactElement;
+export interface ZmdIconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
 }

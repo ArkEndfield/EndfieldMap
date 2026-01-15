@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
 
 const ZoomController: React.FC = observer(() => {
   const isMobile = useIsMobile();
@@ -62,8 +61,7 @@ const ZoomController: React.FC = observer(() => {
         onChange={handleZoomChange}
         onIncrement={handleIncrement}
         onDecrement={handleDecrement}
-        direction={isMobile ? 'horizontal' : 'vertical'}
-        className={cn(isMobile ? 'w-40' : 'h-40')}
+        className="h-64"
         min={minZoom}
         max={maxZoom}
         step={0.5}
