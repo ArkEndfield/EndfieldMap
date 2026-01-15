@@ -1,4 +1,4 @@
-import type { EndfieldUIManager } from '@themes/endfield/ui_manager';
+import type { EndfieldUIManager } from '@/components/themes/endfield/ui/ui_manager';
 import { createContext } from 'react';
 
 import type { DataService } from '@/services/data';
