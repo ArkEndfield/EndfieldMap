@@ -1,6 +1,6 @@
 import { MapIndex } from '@endfieldmap/tools';
 import { useMapChange } from '@themes/endfield/hooks/map_change';
-import { MapChangeAnimation } from '@themes/endfield/ui/menus/map_menu/map_change_animation';
+import { MapChangeAnimation } from '@themes/endfield/ui/map_menu/map_change_animation';
 import { MapButton } from '@themes/endfield/ui/menus/right/button';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
