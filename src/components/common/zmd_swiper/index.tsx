@@ -59,7 +59,7 @@ const ZmdSwiper = observer(() => {
   }
 
   return (
-    <div className="fixed right-0 h-40 bottom-18 md:bottom-12">
+    <div className="fixed right-0 h-36 bottom-18 md:bottom-12">
       <AnimatePresence>
         {expanded && (
           <motion.div
