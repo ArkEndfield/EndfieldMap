@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeIcon } from '@/components/common/icons';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { ThemeItem } from '@/components/common/settings/items/display/theme/item';
-import { type ThemeNames, themeNames } from '@/components/themes';
+import { type ThemeNames, themeNames } from '@themes';
 import uiManager from '@/services/ui_manager';
 
 export const ThemeSetting = observer(() => {

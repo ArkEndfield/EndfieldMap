@@ -1,8 +1,8 @@
 import { LocalStorageValue } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 
-import { getThemedComponents, type ThemeNames, themeNames } from '@/components/themes';
-import { ComponentType } from '@/components/themes/types';
+import { getThemedComponents, type ThemeNames, themeNames } from '@themes';
+import { ComponentType } from '@themes/types';
 import { UILocalStorageKey } from '@/const/storage';
 import { DARK_MODE } from '@/const/ui';
 

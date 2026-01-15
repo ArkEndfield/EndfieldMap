@@ -1,4 +1,4 @@
-import type { ThemeNames } from '@/components/themes';
+import type { ThemeNames } from '@themes';
 import { cn } from '@/utils/style';
 
 export interface ThemeItemProps {
