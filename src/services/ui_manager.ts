@@ -5,6 +5,7 @@ import { action, computed, observable } from 'mobx';
 
 import { UILocalStorageKey } from '@/const/storage';
 import { DARK_MODE } from '@/const/ui';
+import audioService from '@/services/audio_service';
 
 class UIManager {
   private mediaQueryList: MediaQueryList | null = null;
@@ -68,11 +69,21 @@ class UIManager {
     storageKey: UILocalStorageKey.DARK_MODE,
     onValueChange: this.onDarkModeChange.bind(this),
   });
+  public audioEnabled = new LocalStorageValue({
+    initialValue: true,
+    storageKey: UILocalStorageKey.AUDIO_ENABLED,
+    onValueChange: (enabled) => {
+      audioService.setEnabled(enabled);
+    },
+  });
 
   constructor() {
     this.settingsShown = false;
     this.electricPoleManagerOpen = false;
     this.customPointManagerOpen = false;
+
+    // Sync audio service with saved setting
+    audioService.setEnabled(this.audioEnabled.value);
   }
 
   // region: 设置
@@ -135,6 +146,13 @@ class UIManager {
   @action
   public toggleAdjustPopup() {
     this.adjustPopup.value = !this.adjustPopup.value;
+  }
+  // endregion
+
+  // region: 音效
+  @action
+  public toggleAudio() {
+    this.audioEnabled.value = !this.audioEnabled.value;
   }
   // endregion
 

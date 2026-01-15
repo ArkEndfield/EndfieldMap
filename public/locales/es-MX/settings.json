@@ -28,6 +28,10 @@
           "light": "Claro",
           "dark": "Oscuro"
         }
+      },
+      "audio": {
+        "title": "Efectos de sonido",
+        "description": "Habilitar o deshabilitar los efectos de sonido de la interfaz"
       }
     }
   },

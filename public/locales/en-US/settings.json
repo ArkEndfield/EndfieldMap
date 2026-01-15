@@ -28,6 +28,10 @@
           "light": "Light",
           "dark": "Dark"
         }
+      },
+      "audio": {
+        "title": "Sound Effects",
+        "description": "Enable or disable interface sound effects"
       }
     }
   },

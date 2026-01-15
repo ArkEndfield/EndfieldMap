@@ -4980,6 +4980,10 @@ interface Resources {
         "title": "语言"
       },
       "layout": {
+        "audio": {
+          "description": "开启或关闭界面交互音效",
+          "title": "音效"
+        },
         "dark_mode": {
           "title": "深色模式",
           "value": {

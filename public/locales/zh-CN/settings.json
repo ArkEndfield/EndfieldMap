@@ -28,6 +28,10 @@
           "light": "浅色",
           "dark": "深色"
         }
+      },
+      "audio": {
+        "title": "音效",
+        "description": "开启或关闭界面交互音效"
       }
     },
     "theme": {
