@@ -40,7 +40,7 @@ export const ChangeMapPC: React.FC = observer(() => {
           bounce: 0.2,
         }}
         className={cn(
-          'fixed top-12 right-4 text-white bg-[#242421]/70 z-1',
+          'fixed top-16 right-4 text-white bg-[#242421]/70 z-1',
           'bg-[linear-gradient(-45deg,#3a3a3a_0,#3a3a3a_12.5%,#3a3a3a00_12.5%,#3a3a3a00_37.5%,#3a3a3a_37.5%,#3a3a3a_62.5%,#3a3a3a00_62.5%,#3a3a3a00_87.5%,#3a3a3a_87.5%,#3a3a3a_100%)]',
           'bg-repeat bg-size-[0.3em_0.3em]'
         )}
