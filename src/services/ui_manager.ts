@@ -1,7 +1,7 @@
 import { LocalStorageValue } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 
-import { getThemedComponents, type ThemeNames, themeNames } from '@themes';
+import { getThemedComponents, type ThemeNames, themeNames } from '@themes/index';
 import { ComponentType } from '@themes/types';
 import { UILocalStorageKey } from '@/const/storage';
 import { DARK_MODE } from '@/const/ui';
@@ -149,6 +149,7 @@ class UIManager {
         ZoomController: components.get(ComponentType.ZOOM_CONTROLLER),
         Menus: components.get(ComponentType.MENUS),
         ControlPanel: components.get(ComponentType.CONTROL_PANEL),
+        MapIndexMenu: components.get(ComponentType.MAP_INDEX_MENU),
       },
       alert: {
         Alert: components.get(ComponentType.ALERT),

@@ -8,6 +8,7 @@ export enum ComponentType {
   OPERATION_TIP = 'OperationTip',
   CONTROL_PANEL = 'ControlPanel',
   ZOOM_CONTROLLER = 'ZoonController',
+  MAP_INDEX_MENU = 'MapIndexMenu',
   MENUS = 'Menus',
   ALERT = 'Alert',
   ALERT_FULL = 'AlertFull',
@@ -20,6 +21,7 @@ export interface ThemedComponentMap {
   [ComponentType.POPUP]: LazyExoticComponent<FC<object>>;
   [ComponentType.OPERATION_TIP]: LazyExoticComponent<FC<object>>;
   [ComponentType.CONTROL_PANEL]: LazyExoticComponent<FC<object>>;
+  [ComponentType.MAP_INDEX_MENU]: LazyExoticComponent<FC<object>>;
   [ComponentType.MENUS]: LazyExoticComponent<FC<object>>;
   [ComponentType.ZOOM_CONTROLLER]: LazyExoticComponent<FC<object>>;
   [ComponentType.ALERT]: LazyExoticComponent<FC<ZmdAlertProps>>;

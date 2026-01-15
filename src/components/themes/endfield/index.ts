@@ -5,6 +5,7 @@ import { ComponentType, type ThemedComponentMap } from '@themes/types';
 const Popup = lazy(() => import('@themes/endfield/ui/popup'));
 const OperationTip = lazy(() => import('@themes/endfield/ui/operation_tip'));
 const ZoomController = lazy(() => import('@themes/endfield/ui/zoom_controller'));
+const MapIndexMenu = lazy(() => import('@themes/endfield/ui/map_menu'));
 const Menus = lazy(() => import('@themes/endfield/ui/menus'));
 const ControlPanel = lazy(() => import('@themes/endfield/ui/control_panel'));
 const Alert = lazy(() => import('@themes/endfield/components/alert/alert'));
@@ -18,6 +19,7 @@ const endfieldTheme: ThemedComponentMap = {
   [ComponentType.OPERATION_TIP]: OperationTip,
   [ComponentType.CONTROL_PANEL]: ControlPanel,
   [ComponentType.ZOOM_CONTROLLER]: ZoomController,
+  [ComponentType.MAP_INDEX_MENU]: MapIndexMenu,
   [ComponentType.MENUS]: Menus,
   [ComponentType.ALERT]: Alert,
   [ComponentType.ALERT_FULL]: AlertFull,
