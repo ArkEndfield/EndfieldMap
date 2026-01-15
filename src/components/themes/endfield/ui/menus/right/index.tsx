@@ -7,9 +7,9 @@ import { useTranslation } from 'react-i18next';
 
 import { SwitchIcon } from '@/components/common/icons';
 
-import { MapChangeAnimation } from '../../map_menu/map_change_animation';
 import { useClickOutside } from '../../../../../../hooks/use_click_outside';
 import { useMapChange } from '../../../hooks/map_change';
+import { MapChangeAnimation } from '../../map_menu/map_change_animation';
 
 export const RightMenu: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'map']);

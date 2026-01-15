@@ -1,9 +1,9 @@
-import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
-import { AnimatePresence, motion } from 'motion/react';
 import { type DataInstance, EntityInstanceKey } from '@endfieldmap/map-core';
-
 import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
+import { observer } from 'mobx-react-lite';
+import { AnimatePresence, motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
+
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { useAdapter } from '@/hooks/use_adapter';
 

@@ -1,11 +1,10 @@
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
+import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { FoldButton } from '@themes/endfield/ui/control_panel/components/fold_button';
 import { Panel } from '@themes/endfield/ui/control_panel/components/panel';
 import { FilterAndEntityPanelPC } from '@themes/endfield/ui/control_panel/controllers/filter_and_entity_panel.pc';
-import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
 import { CustomPointManager } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point';
-
-import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
+import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
 import { observer } from 'mobx-react-lite';
 
 import { cn } from '@/utils/style';

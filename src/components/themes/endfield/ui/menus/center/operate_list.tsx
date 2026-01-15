@@ -1,11 +1,10 @@
+import { CurrentOperatePanel } from '@themes/endfield/const/ui';
+import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
+import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
 import { observer } from 'mobx-react-lite';
 
+import { InVisibleIcon,VisibleIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
-
-import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
-import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
-import { CurrentOperatePanel } from '@themes/endfield/const/ui';
-import { VisibleIcon, InVisibleIcon } from '@/components/common/icons';
 
 export const OperateList = observer(() => {
   const { adapter, dataService } = useAdapter();

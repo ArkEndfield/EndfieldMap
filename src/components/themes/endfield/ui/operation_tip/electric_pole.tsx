@@ -1,17 +1,17 @@
-import { useRef } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { OperationList } from '@themes/endfield/components/topbar/operation_list';
+import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
+import { CurrentOperatePanel } from '@themes/endfield/const/ui';
+import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
+import { PoleManagerToolbar } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/toolbar';
+import ElectricPoleTypeSelector from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/type_selector';
 import { observer } from 'mobx-react-lite';
+import { AnimatePresence, motion } from 'motion/react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useElectricMode } from '@/hooks/use_electric_mode';
-import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
-import { useAdapter } from '@/hooks/use_adapter';
-import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
-import { CurrentOperatePanel } from '@themes/endfield/const/ui';
-import { OperationList } from '@themes/endfield/components/topbar/operation_list';
 import deviceJudge from '@/components/common/device_judge';
-import ElectricPoleTypeSelector from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/type_selector';
-import { PoleManagerToolbar } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/toolbar';
+import { useAdapter } from '@/hooks/use_adapter';
+import { useElectricMode } from '@/hooks/use_electric_mode';
 
 const TipText = observer(() => {
   const { getCurrentModeTipText } = useElectricMode();

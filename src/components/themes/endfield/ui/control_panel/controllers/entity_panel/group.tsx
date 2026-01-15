@@ -1,8 +1,9 @@
-import { DecoTriTriangle, VisibleWithDeco } from '@/components/common/icons';
-import { cn } from '@/utils/style';
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+
+import { DecoTriTriangle, VisibleWithDeco } from '@/components/common/icons';
+import { cn } from '@/utils/style';
 
 interface EntityGroupProps {
   iconColor?: string;

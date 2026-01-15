@@ -1,6 +1,5 @@
-import { lazy } from 'react';
-
 import { ComponentType, type ThemedComponentMap } from '@themes/types';
+import { lazy } from 'react';
 
 const Popup = lazy(() => import('@themes/endfield/ui/popup'));
 const OperationTip = lazy(() => import('@themes/endfield/ui/operation_tip'));

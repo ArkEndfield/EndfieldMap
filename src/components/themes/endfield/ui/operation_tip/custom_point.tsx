@@ -1,18 +1,17 @@
-import { useRef } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
-
-import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
-import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
-import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
-import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { OperationList } from '@themes/endfield/components/topbar/operation_list';
-import deviceJudge from '@/components/common/device_judge';
-import { useAdapter } from '@/hooks/use_adapter';
-
+import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
+import { CurrentOperatePanel } from '@themes/endfield/const/ui';
+import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { CustomPointManagerToolbar as Toolbar } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point/toolbar';
 import CustomPointTypeSelector from '@themes/endfield/ui/control_panel/controllers/operations/custom_point/type_selector';
+import { observer } from 'mobx-react-lite';
+import { AnimatePresence, motion } from 'motion/react';
+import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import deviceJudge from '@/components/common/device_judge';
+import { useAdapter } from '@/hooks/use_adapter';
+import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
 
 const TipText = observer(() => {
   const { getCurrentModeTipText } = useCustomPointMode();

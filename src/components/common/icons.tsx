@@ -707,7 +707,7 @@ export const VisibleWithDeco = (props: IconProps) => (
   </svg>
 );
 
-export const ElectricPoleIcon_Pole = (props: IconProps) => (
+export const ElectricPoleIconPole = (props: IconProps) => (
   <svg
     fill="currentColor"
     width="1em"
@@ -721,7 +721,7 @@ export const ElectricPoleIcon_Pole = (props: IconProps) => (
   </svg>
 );
 
-export const ElectricPoleIcon_Repeater = (props: IconProps) => (
+export const ElectricPoleIconRepeater = (props: IconProps) => (
   <svg
     fill="currentColor"
     width="1em"
@@ -735,7 +735,7 @@ export const ElectricPoleIcon_Repeater = (props: IconProps) => (
   </svg>
 );
 
-export const ElectricPoleIcon_Zipline_80 = (props: IconProps) => (
+export const ElectricPoleIconZipline80 = (props: IconProps) => (
   <svg
     fill="currentColor"
     width="1em"
@@ -749,7 +749,7 @@ export const ElectricPoleIcon_Zipline_80 = (props: IconProps) => (
   </svg>
 );
 
-export const ElectricPoleIcon_Zipline_110 = (props: IconProps) => (
+export const ElectricPoleIconZipline110 = (props: IconProps) => (
   <svg
     fill="currentColor"
     width="1em"

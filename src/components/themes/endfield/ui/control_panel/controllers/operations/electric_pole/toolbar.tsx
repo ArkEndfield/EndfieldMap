@@ -1,13 +1,13 @@
-import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
-
-import { useElectricMode } from '@/hooks/use_electric_mode';
-import { EditAddIcon, EditDeleteIcon, EditConnectIcon, EditDisconnectIcon } from '@/components/common/icons';
+import { EndfieldSquareSwitch } from '@themes/endfield/components/switch';
 // import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
-import { EndfieldSquareSwitch } from '@themes/endfield/components/switch';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
+import { EditAddIcon, EditConnectIcon, EditDeleteIcon, EditDisconnectIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
+import { useElectricMode } from '@/hooks/use_electric_mode';
 
 export const PoleManagerToolbar = observer(() => {
   const { t } = useTranslation('sidebar');

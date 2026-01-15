@@ -1,18 +1,17 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core';
 import { ELECTRIC_POLE_DEVICE_CONFIGS } from '@endfieldmap/map-core';
+import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
+import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
-import { useAdapter } from '@/hooks/use_adapter';
-
-import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
-import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
 import {
-  ElectricPoleIcon_Pole,
-  ElectricPoleIcon_Repeater,
-  ElectricPoleIcon_Zipline_80,
-  ElectricPoleIcon_Zipline_110,
+  ElectricPoleIconPole,
+  ElectricPoleIconRepeater,
+  ElectricPoleIconZipline80,
+  ElectricPoleIconZipline110,
 } from '@/components/common/icons';
+import { useAdapter } from '@/hooks/use_adapter';
 
 const ElectricPoleTypeSelector: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
@@ -30,7 +29,7 @@ const ElectricPoleTypeSelector: React.FC = observer(() => {
         actions={[
           {
             key: 'pole',
-            icon: <ElectricPoleIcon_Pole />,
+            icon: <ElectricPoleIconPole />,
             onClick: () => handleSelectType('pole'),
             active: selectedType === 'pole',
           },
@@ -47,7 +46,7 @@ const ElectricPoleTypeSelector: React.FC = observer(() => {
         actions={[
           {
             key: 'repeater',
-            icon: <ElectricPoleIcon_Repeater />,
+            icon: <ElectricPoleIconRepeater />,
             onClick: () => handleSelectType('repeater'),
             active: selectedType === 'repeater',
           },
@@ -63,13 +62,13 @@ const ElectricPoleTypeSelector: React.FC = observer(() => {
         actions={[
           {
             key: 'zipline_80',
-            icon: <ElectricPoleIcon_Zipline_80 />,
+            icon: <ElectricPoleIconZipline80 />,
             onClick: () => handleSelectType('zipline_80'),
             active: selectedType === 'zipline_80',
           },
           {
             key: 'zipline_110',
-            icon: <ElectricPoleIcon_Zipline_110 />,
+            icon: <ElectricPoleIconZipline110 />,
             onClick: () => handleSelectType('zipline_110'),
             active: selectedType === 'zipline_110',
           },

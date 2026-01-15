@@ -1,16 +1,16 @@
 import { MapIndex } from '@endfieldmap/tools';
+import { useMapChange } from '@themes/endfield/hooks/map_change';
 import { MapButton } from '@themes/endfield/ui/menus/right/button';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/utils/style';
 
 import { ChangeMapIcon, Deco7Dots, SwitchIcon } from '@/components/common/icons';
+import { useClickOutside } from '@/hooks/use_click_outside';
+import { cn } from '@/utils/style';
 
 import { MapChangeAnimation } from './map_change_animation';
-import { useClickOutside } from '@/hooks/use_click_outside';
-import { useMapChange } from '@themes/endfield/hooks/map_change';
 
 export const ChangeMapPC: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'map']);

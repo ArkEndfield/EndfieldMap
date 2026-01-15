@@ -1,14 +1,14 @@
-import { SideButton } from '@themes/endfield/ui/control_panel/controllers/mobile/side_button';
-import ToggleButton from '@themes/endfield/ui/control_panel/components/toggle_button';
 import Tooltip from '@themes/endfield/components/tooltip';
+import ToggleButton from '@themes/endfield/ui/control_panel/components/toggle_button';
+import { SideButton } from '@themes/endfield/ui/control_panel/controllers/mobile/side_button';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
+import { MultiOperationIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import uiManager from '@/services/ui_manager';
-import { MultiOperationIcon } from '@/components/common/icons';
 
 const MultiOperationIconMobile = ({ children }: { children?: React.ReactNode }) => (
   <svg width="100%" viewBox="0 0 100 92" fill="none" xmlns="http://www.w3.org/2000/svg">
