@@ -64,7 +64,7 @@ export default function EntityGroup({
         />
 
         {/* Title */}
-        <div className="text-lg mr-[0.2rem] whitespace-nowrap z-2 truncate text-left">{title}</div>
+        <div className="text-lg mr-[0.2rem] whitespace-nowrap z-2 truncate text-left font-bold">{title}</div>
 
         {/* Subtitle */}
         {subtitle && (

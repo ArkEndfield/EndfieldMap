@@ -2,6 +2,7 @@ import { MenuListForPC } from '@themes/endfield/ui/menus/left';
 
 import { cn } from '@/utils/style';
 import { OperateList } from '@themes/endfield/ui/menus/center/operate_list';
+import { IconVersion } from '@themes/endfield/ui/menus/right/icon_version';
 
 const Deco = ({ className, reverse }: { className?: string; reverse?: boolean }) => (
   <div
@@ -31,7 +32,7 @@ export default function PCMenus() {
   return (
     <div
       className={cn(
-        'fixed flex justify-start gap-8 text-white select-none z-10',
+        'fixed flex justify-start gap-8 text-white select-none z-10 pr-4',
         'w-full h-11 items-center left-0 top-0 bg-black/80 rounded-none pb-1'
       )}
     >
@@ -39,6 +40,7 @@ export default function PCMenus() {
 
       <MenuListForPC />
       <OperateList />
+      <IconVersion />
 
       <Deco className="absolute w-48 right-0 top-0 opacity-50" reverse />
       <Deco2 />

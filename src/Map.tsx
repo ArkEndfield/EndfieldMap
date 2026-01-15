@@ -58,6 +58,11 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
             <ThemedComponents.map.Menus />
           </Suspense>
 
+          {/* 地图索引菜单 */}
+          <Suspense>
+            <ThemedComponents.map.MapIndexMenu />
+          </Suspense>
+
           {/** 操作组件 */}
           <Suspense>
             <ThemedComponents.map.ControlPanel />
