@@ -27,4 +27,10 @@ export const contributors: ContributorInfo[] = [
     home: 'https://space.bilibili.com/45248782',
     noReferrer: true,
   },
+  {
+    name: 'DisLido',
+    avatar: 'https://oss.dislido.cn/static/DisLido_avatar.jpg',
+    home: 'https://space.bilibili.com/781911',
+    noReferrer: true,
+  },
 ];
