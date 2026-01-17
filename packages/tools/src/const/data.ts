@@ -13,7 +13,7 @@ export const enum MapIndex {
  */
 export const DEFAULT_MAP_CENTERS: Record<MapIndex, { x: number; y: number; z: number }> = {
   // [MapIndex.MAP01]: [100, 152],
-  // [MapIndex.MAP02]: [50, 188],
+  // [MapIndex.MAP02]: [16, 185],
   [MapIndex.MAP01]: { x: -224, y: 0, z: -64 },
-  [MapIndex.MAP02]: { x: -1088, y: 0, z: -288 },
+  [MapIndex.MAP02]: { x: -1408, y: 0, z: -752 },
 };
