@@ -9,6 +9,7 @@ import { CustomPointController } from '@endfieldmap/map-core/controller/entity/c
 import { DataController } from '@endfieldmap/map-core/controller/entity/data_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
+import { TierController } from '@endfieldmap/map-core/controller/tier';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/feature/active_feature';
 import { HoverConnectionController } from '@endfieldmap/map-core/controller/feature/hover_connection';
 import { HoverFeatureController } from '@endfieldmap/map-core/controller/feature/hover_feature';
@@ -60,9 +61,8 @@ export class EndfieldMapAdapter {
   public entityController: EntityController;
   /** 电线杆数据管理器 */
   public electricPoleController: ElectricPoleController;
-  /** 自定义标点数据管理器 */
   public customPointController: CustomPointController;
-  /** 事件控制器 */
+  public tierController: TierController;
   public eventController: EventController;
   /** 激活特征控制器 */
   public activeFeatureController: ActiveFeatureController;
@@ -134,6 +134,9 @@ export class EndfieldMapAdapter {
         size: 20,
       },
     });
+    this.tierController = new TierController({
+      projection: this.mapController.mapRenderer.projection,
+    });
     this.activeFeatureController = new ActiveFeatureController({
       map: this.mapController.mapRenderer.map,
       disableActiveFeature: config.map?.disableActiveFeature,
@@ -176,6 +179,8 @@ export class EndfieldMapAdapter {
 
     this.layerController.addLayer(LayerType.AREA_NAME, this.areaNameController.areaNameLayer);
     this.layerController.addLayer(LayerType.MAP, this.mapLayerController.mapLayer);
+    this.layerController.addLayer(LayerType.TIER_OVERLAY_MASK, this.tierController.tierOverlayMaskLayer);
+    this.layerController.addLayer(LayerType.TIER, this.tierController.tierLayer);
 
     this.KeyboardMoveController = new KeyboardMoveController({
       map: this.mapController.mapRenderer.map,
@@ -252,6 +257,16 @@ export class EndfieldMapAdapter {
       this.layerController.removeLayer(LayerType.CUSTOM_POINT);
       this.layerController.addLayer(LayerType.CUSTOM_POINT, customPointLayer);
     }
+  }
+
+  @action
+  public renderTier(mapIndex: MapIndex, x: number, y: number, level: number): Promise<void> {
+    return this.tierController.renderTier(mapIndex, x, y, level);
+  }
+
+  @action
+  public clearTier(mapIndex: MapIndex, x: number, y: number): void {
+    this.tierController.clearTier(mapIndex, x, y);
   }
 
   /**

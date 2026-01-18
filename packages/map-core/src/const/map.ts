@@ -98,6 +98,8 @@ export const enum MapType {
 /** 图层类型 */
 export const enum LayerType {
   MAP = 'map',
+  TIER = 'tier',
+  TIER_OVERLAY_MASK = 'tierOverlayMask',
   AREA_NAME = 'areaName',
   ENTITY = 'entity',
   ELECTRIC_POLE = 'electricPole',
