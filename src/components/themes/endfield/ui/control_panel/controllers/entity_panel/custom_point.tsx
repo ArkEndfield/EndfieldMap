@@ -84,6 +84,8 @@ const CustomPointList: React.FC = observer(() => {
     return { customPointGroups: groups, totalCount: total };
   })();
 
+  const allDisplayed = customPointGroups.every((g) => g.allVisible);
+
   // 切换某个类型的所有自定义标点的显示/隐藏
   const handleToggleTypeVisible = (group: CustomPointTypeGroup) => {
     const newVisible = !group.allVisible;
@@ -100,8 +102,28 @@ const CustomPointList: React.FC = observer(() => {
     );
   };
 
+  const handleToggleAll = () => {
+    const newVisible = !allDisplayed;
+    customPointGroups.forEach((group) => {
+      if (group.instances.length > 0) {
+        group.instances.forEach((instance) => instance.setVisible(newVisible));
+      }
+      dataService.customPointDataService.updateCustomPointVisibility(
+        adapter.currentMapIndex,
+        group.entityDataIdKey,
+        newVisible
+      );
+    });
+  };
+
   return (
-    <EntityGroup title={t('filter.category.#custom_point')} subtitle="CUSTOM POINT" totalCount={totalCount}>
+    <EntityGroup
+      title={t('filter.category.#custom_point')}
+      subtitle="CUSTOM POINT"
+      totalCount={totalCount}
+      onIconClick={handleToggleAll}
+      iconColor={allDisplayed ? '#f9f853' : '#ffffff'}
+    >
       <div className="grid grid-cols-2 gap-x-1 gap-y-1.5 py-2">
         {customPointGroups.map((group) => {
           // 获取该类型的完整 EntityInfo（包含正确的 pic）

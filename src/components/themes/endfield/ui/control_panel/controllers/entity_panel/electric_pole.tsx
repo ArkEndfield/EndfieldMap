@@ -74,6 +74,8 @@ const ElectricPoleList: React.FC = observer(() => {
     return { groups: result, totalCount: total };
   })();
 
+  const allDisplayed = groups.every((g) => g.allVisible);
+
   const handleToggleTypeVisible = (group: ElectricPoleTypeGroup) => {
     const newVisible = !group.allVisible;
     if (group.instances.length > 0) {
@@ -82,8 +84,24 @@ const ElectricPoleList: React.FC = observer(() => {
     dataService.electricPoleDataService.updateDeviceVisibility(adapter.currentMapIndex, group.deviceKey, newVisible);
   };
 
+  const handleToggleAll = () => {
+    const newVisible = !allDisplayed;
+    groups.forEach((group) => {
+      if (group.instances.length > 0) {
+        group.instances.forEach((instance) => instance.setVisible(newVisible));
+      }
+      dataService.electricPoleDataService.updateDeviceVisibility(adapter.currentMapIndex, group.deviceKey, newVisible);
+    });
+  };
+
   return (
-    <EntityGroup title={t('filter.category.#electric_pole')} subtitle="ELECTRIC POLE" totalCount={totalCount}>
+    <EntityGroup
+      title={t('filter.category.#electric_pole')}
+      subtitle="ELECTRIC POLE"
+      totalCount={totalCount}
+      onIconClick={handleToggleAll}
+      iconColor={allDisplayed ? '#f9f853' : '#ffffff'}
+    >
       <div className="grid grid-cols-2 gap-x-1 gap-y-1.5 py-2">
         {groups.map((group) => {
           const { iconPic } = getElectricPoleDeviceConfig(group.deviceKey);
