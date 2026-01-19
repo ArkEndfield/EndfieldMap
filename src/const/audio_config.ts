@@ -12,6 +12,10 @@ export enum SoundType {
   CLAIM = 'claim',
   TICK = 'tick',
   PRIZE_CONFIRM = 'prizeConfirm',
+  RESERVE_CLICK = 'reserveClick',
+  CLOSE_CLICK = 'closeClick',
+  NEWS_CATE_CLICK = 'newsCateClick',
+  CHAR_LIST_ENTER = 'charListEnter',
 
   EXPLORING_GACHA_INTERFACE = 'exploringGachaInterface',
 }
@@ -47,10 +51,30 @@ export const AUDIO_CONFIG: Record<SoundType, AudioConfig> = {
     volume: 1,
     preload: true,
   },
+  [SoundType.RESERVE_CLICK]: {
+    path: `${audioUrl}/reserve_click.mp3`,
+    volume: 1,
+    preload: true,
+  },
+  [SoundType.CLOSE_CLICK]: {
+    path: `${audioUrl}/close_click.mp3`,
+    volume: 1,
+    preload: true,
+  },
+  [SoundType.NEWS_CATE_CLICK]: {
+    path: `${audioUrl}/news_cate_click.mp3`,
+    volume: 1,
+    preload: true,
+  },
+  [SoundType.CHAR_LIST_ENTER]: {
+    path: `${audioUrl}/char_list_enter.mp3`,
+    volume: 1,
+    preload: true,
+  },
   [SoundType.EXPLORING_GACHA_INTERFACE]: {
     path: `${audioUrl}/exploring_gacha_interface.mp3`,
     volume: 1,
-    preload: true,
+    preload: false,
   },
 };
 

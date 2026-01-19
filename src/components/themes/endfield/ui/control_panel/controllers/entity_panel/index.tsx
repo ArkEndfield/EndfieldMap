@@ -2,6 +2,10 @@ import type { Category, EntityInfoStats } from '@endfieldmap/map-core';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { Search } from '@themes/endfield/ui/control_panel/controllers/entity_panel/search';
+
+import CustomPointList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/custom_point';
+import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
+
 import { observer } from 'mobx-react-lite';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -118,6 +122,8 @@ const EntityPanel = observer(() => {
       </div>
 
       <div>
+        <CustomPointList />
+        <ElectricPoleList />
         {categorizedEntities.map((categoryInfo) => (
           <EntityGroup
             key={categoryInfo.category}

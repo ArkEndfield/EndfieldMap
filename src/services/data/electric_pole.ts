@@ -69,7 +69,7 @@ export class ElectricPoleDataService {
   @observable accessor autoConnect: boolean = true;
 
   /** 电线杆类型可见性数据（按地图维度） */
-  public deviceVisibilityData: StorageData<Partial<Record<ElectricPoleDeviceKey, boolean>>> = {};
+  @observable accessor deviceVisibilityData: StorageData<Partial<Record<ElectricPoleDeviceKey, boolean>>> = {};
 
   /** 是否处于连接电线杆状态 */
   @observable accessor isConnecting: boolean = false;
@@ -301,7 +301,10 @@ export class ElectricPoleDataService {
     return await this.storage.permanentSet(StorageKey.ELECTRIC_POLE_VISIBILITY, this.deviceVisibilityData);
   }
 
-  private saveDeviceVisibilityToStorageDebounced = debounce(this.saveDeviceVisibilityToStorage.bind(this), DEBOUNCE_INTERVAL);
+  private saveDeviceVisibilityToStorageDebounced = debounce(
+    this.saveDeviceVisibilityToStorage.bind(this),
+    DEBOUNCE_INTERVAL
+  );
 
   private applyStoredVisibility(mapIndex: MapIndex) {
     const visibilityData = this.deviceVisibilityData[mapIndex];
@@ -327,7 +330,11 @@ export class ElectricPoleDataService {
       const mapIndex = this.adapter!.currentMapIndex;
       const coordinate = event.coordinate;
       try {
-        const feature = this.adapter!.electricPoleController.createElectricPole(mapIndex, coordinate, this.creatingDeviceKey);
+        const feature = this.adapter!.electricPoleController.createElectricPole(
+          mapIndex,
+          coordinate,
+          this.creatingDeviceKey
+        );
         if (feature && this.autoConnect) {
           if (this.connectingPole) {
             try {

@@ -107,10 +107,13 @@ export default function EntityGroup({
       </div>
 
       {/* 收集进度条 */}
-      {totalCount && (
+      {!!totalCount && (
         <div className="relative font-[Outfit] pb-2">
           <div className="w-full h-0.5 bg-[#898989]">
-            <div className="h-full bg-[#fffa00]" style={{ width: `${((markedCount ?? 0) / totalCount) * 100}%` }} />
+            <div
+              className="h-full bg-[#fffa00]"
+              style={{ width: `${((markedCount ?? 0) / ((totalCount ?? 1) > 0 ? totalCount : 1)) * 100}%` }}
+            />
           </div>
           <div className="text-xs flex relative opacity-0 group-hover:opacity-100 transition-opacity">
             <div

@@ -37,7 +37,7 @@ export class CustomPointDataService {
   };
 
   @observable accessor customPointVisibility: boolean = true;
-  public customPointVisibilityData: StorageData<EntityVisibility> = {};
+  @observable accessor customPointVisibilityData: StorageData<EntityVisibility> = {};
 
   private initialized: boolean = false;
 
