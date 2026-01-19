@@ -2,6 +2,7 @@ import type { EntityData } from '@endfieldmap/map-core';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { useDeltaRobot } from '@/hooks/use_delta_robot';
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { cn } from '@/utils/style';
 
 interface DeltaRobotProps {
   entity: EntityData;
@@ -83,10 +84,10 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
     <div>
       {/* 关卡选择 */}
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2 text-gray-300">选择关卡</label>
+        <label className="block text-sm font-semibold mb-2 text-gray-300">选择关卡（共 {levelList.length} 关）</label>
         <EndfieldSelect
           value={selectedLevel}
-          options={levelList.map((id) => ({ value: id, label: id }))}
+          options={levelList.map((id, index) => ({ value: id, label: `第 ${index + 1} 关` }))}
           onChange={(val) => setSelectedLevel(val)}
           className="w-full"
         />
@@ -95,19 +96,19 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
       {/* 库存列表 */}
       {levelData && (
         <div className="mb-6">
-          <h3 className="text-sm font-semibold mb-2 text-gray-300">拼图库存 ({levelData.pieces.length} 个)</h3>
-          <div className="max-h-[300px] overflow-y-auto space-y-2 bg-[#1a1a1a] p-2 rounded">
+          <h3 className="text-sm font-semibold mb-2 text-gray-300">可用拼图 ({levelData.pieces.length} 个)</h3>
+          <div className={cn(
+            'max-h-40 overflow-y-auto grid gap-2 bg-[#1a1a1a] p-2 rounded',
+            levelData.pieces.length < 4 ? 'grid-cols-3' : 'grid-cols-4'
+          )}>
             {levelData.pieces.length === 0 ? (
-              <div className="text-center text-gray-400 py-4">暂无拼图块</div>
+              <div className="col-span-3 text-center text-gray-400 py-4">暂无拼图块</div>
             ) : (
-              levelData.pieces.map((piece, index) => (
+              levelData.pieces.map((piece) => (
                 <div
                   key={piece.id}
-                  className="flex items-center gap-2 p-2 bg-[#2a2a2a] rounded hover:bg-[#333333] transition-colors"
+                  className="flex items-center justify-center p-2 bg-[#2a2a2a] rounded hover:bg-[#333333] transition-colors"
                 >
-                  {/* 序号 */}
-                  <div className="text-[10px] text-gray-500 min-w-6">#{index + 1}</div>
-
                   {/* 拼图缩略图 */}
                   <div className="flex flex-col gap-px">
                     {piece.shape.map((row, r) => (
@@ -124,9 +125,6 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
                       </div>
                     ))}
                   </div>
-
-                  {/* 分组名称 */}
-                  <span className="text-xs text-gray-400">{getGroupName(piece.groupId)}</span>
                 </div>
               ))
             )}
