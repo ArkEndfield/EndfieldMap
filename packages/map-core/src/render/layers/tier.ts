@@ -39,17 +39,18 @@ export class TierLayer extends SingleLayerBase {
         return;
       }
 
+      const scale = tier.mapIndex === 'map01' ? 75 / 2 : 75
       const img = ImagePool.getImage(imageUrl);
       if (img.isPool || img.image.complete || img.image.width > 0 || img.image.height > 0) {
-        const scaledWidth = img.image.width / 75;
-        const scaledHeight = img.image.height / 75;
+        const scaledWidth = img.image.width / scale;
+        const scaledHeight = img.image.height / scale;
         tier.setExtentExtra([scaledWidth, scaledHeight]);
         resolve(img.image);
       } else {
         img.image.src = imageUrl;
         img.image.onload = () => {
-          const scaledWidth = img.image.width / 75;
-          const scaledHeight = img.image.height / 75;
+          const scaledWidth = img.image.width / scale;
+          const scaledHeight = img.image.height / scale;
           tier.setExtentExtra([scaledWidth, scaledHeight]);
           resolve(img.image);
         };
