@@ -36,58 +36,17 @@ export class TierController {
     });
   }
 
-  // _addTier(mapIndex: MapIndex, level: number, x: number, y: number, imageUrl: string): void {
-  //   const [crdX, crdY] = xyz2crd({ x, y: 0, z: y }, mapIndex);
-
-  //   const extent: [number, number, number, number] = [crdX, crdY, crdX, crdY];
-
-  //   const tierData: TierData = {
-  //     id: `${mapIndex}_${x}_${y}_${level}`,
-  //     mapIndex,
-  //     level,
-  //     x,
-  //     y,
-  //     imageUrl,
-  //     extent,
-  //   };
-
-  //   this.tierDataManager.addTier(tierData);
-  // }
-
-  public addTier(mapIndex: MapIndex, data: GridTierItem) {
-    this.tierDataManager.addTier(mapIndex, data);
-  }
-
-  // async renderTier(mapIndex: MapIndex, x: number, y: number, level: number): Promise<void> {
-  //   const tierId = `${mapIndex}_${x}_${y}_${level}`;
-  //   const tier = this.tierDataManager['_tiers'].get(tierId);
-
-  //   if (tier) {
-  //     const img = new Image();
-  //     await new Promise<void>((resolve, reject) => {
-  //       img.onload = () => {
-  //         const scaledWidth = img.width / 75;
-  //         const scaledHeight = img.height / 75;
-  //         const [crdX, crdY] = xyz2crd({ x, y: 0, z: y }, mapIndex);
-  //         tier.extent = [crdX, crdY, crdX + scaledWidth, crdY + scaledHeight];
-  //         resolve();
-  //       };
-  //       img.onerror = () => reject(new Error(`Failed to load image: ${tier.imageUrl}`));
-  //       img.src = tier.imageUrl;
-  //     });
-  //   }
-
-  //   await this.tierLayer.renderTier(mapIndex, x, y, level);
-  //   this.tierOverlayMaskLayer.show();
-  // }
   public async renderTier(mapIndex: MapIndex, center: Coordinate, id: string, subId?: string) {
     this.tierDataManager.clearActiveTier();
 
     this.tierDataManager.setActiveTier(mapIndex, id, subId);
 
-    await this.tierLayer.renderTier();
     this.tierOverlayMaskLayer.show();
-    this.map.getView().setCenter(xyz2crd({x: center[0], y: 0, z: center[1]}, mapIndex))
+    await this.tierLayer.renderTier();
+    this.map.getView().animate({
+      center: xyz2crd({ x: center[0], y: 0, z: center[1] }, mapIndex),
+      duration: 300,
+    });
   }
 
   public async toggleTier(mapIndex: MapIndex, center: Coordinate, id: string, subId?: string) {

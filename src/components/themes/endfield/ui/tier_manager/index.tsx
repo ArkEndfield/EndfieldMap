@@ -87,7 +87,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
             </TierTitle>
             <motion.div
               className={cn(
-                'ml-8 pb-5 relative',
+                'ml-8 mt-1.5 pb-5 relative',
                 'after:absolute after:top-0 after:w-0.5 after:bottom-0 after:bg-white/50 after:left-20'
               )}
               layout
@@ -97,7 +97,12 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                   active={activeSubTierData?.id === item.id}
                   key={`${activeTierData.id}-${item.id}`}
                   onClick={() => {
-                    adapter.tierController.toggleTier(adapter.currentMapIndex, activeTierData.center, activeTierData.id, item.id);
+                    adapter.tierController.toggleTier(
+                      adapter.currentMapIndex,
+                      activeTierData.center,
+                      activeTierData.id,
+                      item.id
+                    );
                   }}
                 >
                   {item.name}
