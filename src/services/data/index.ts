@@ -4,6 +4,7 @@ import { JSONLoader, StorageManager } from '@endfieldmap/tools';
 import { ChestRewardDataService } from '@/services/data/chest_reward';
 import { CustomPointDataService } from '@/services/data/custom_point';
 import { DungeonSeriesDataService } from '@/services/data/dungeon_series';
+import { DeltaRobotDataService } from '@/services/data/delta_robot';
 import { ElectricPoleDataService } from '@/services/data/electric_pole';
 import { EntityDataService } from '@/services/data/entity';
 import { GuideDataService } from '@/services/data/guide';
@@ -32,6 +33,7 @@ export class DataService {
   public customPointDataService: CustomPointDataService;
   public itemDataService: ItemDataService;
   public dungeonSeriesDataService: DungeonSeriesDataService;
+  public deltaRobotDataService: DeltaRobotDataService;
   public chestRewardDataService: ChestRewardDataService;
   public guideDataService: GuideDataService;
   public langHashDataService: LangHashDataService;
@@ -55,6 +57,7 @@ export class DataService {
       DataService.storage,
       this.chestRewardDataService
     );
+    this.deltaRobotDataService = new DeltaRobotDataService(DataService.jsonLoader, DataService.storage);
     this.guideDataService = new GuideDataService(DataService.jsonLoader, DataService.storage);
     this.langHashDataService = new LangHashDataService(DataService.jsonLoader, DataService.storage);
     this.mapStateDataService = new MapStateDataService(adapter);
@@ -93,6 +96,8 @@ export class DataService {
       this.langHashDataService.getLangHashData(),
       // 初始化网格分级数据
       this.gridTiersDataService.init(),
+      // 初始化 delta robot 数据
+      this.deltaRobotDataService.init(),
     ]);
   }
 

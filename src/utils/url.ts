@@ -30,6 +30,7 @@ export const getAssetUrls = () => {
     itemData: createFullUrl(host, '/dev/item'),
     itemImage: createFullUrl(host, '/images/icon'),
     tierImage: createFullUrl(host, '/images/tier'),
+    miniGameData: createFullUrl(host, '/data/minigame'),
     avatar: createFullUrl(host, '/images/avatar'),
     misc: createFullUrl(host, '/images/misc'),
     audio: createFullUrl(host, '/audio'),

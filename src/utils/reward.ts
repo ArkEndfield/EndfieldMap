@@ -31,6 +31,7 @@ export function hasDungeonReward(entity?: EntityData): boolean {
  * @returns 是否有奖励
  */
 export function hasReward(entity?: EntityData): boolean {
+  return true
   return hasChestReward(entity) || hasDungeonReward(entity);
 }
 

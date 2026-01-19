@@ -30,6 +30,8 @@ export enum StorageKey {
   GUIDE = 'guide',
   /** LangHash */
   LANG_HASH = 'lang_hash',
+  /** DeltaRobotLevel */
+  DELTA_ROBOT_LEVEL = 'delta_robot_level',
 }
 
 // local storage type enum
