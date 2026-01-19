@@ -67,15 +67,6 @@ export class GridTiersDataService {
     this.disposeFn = null;
   }
 
-  /**
-   * 渲染分层
-   * @param id 分层 id
-   * @param subId 二级分层 id
-   */
-  public renderTier(id: string, subId?: string) {
-    this.adapter.tierController.renderTier(this.adapter.currentMapIndex, id, subId);
-  }
-
   @action
   private updateAvailableTiers(center: Coordinate | undefined) {
     if (!center) return;

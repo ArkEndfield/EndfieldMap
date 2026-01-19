@@ -36,6 +36,10 @@ export class TierController {
     });
   }
 
+  public addTier(mapIndex: MapIndex, data: GridTierItem) {
+    this.tierDataManager.addTier(mapIndex, data);
+  }
+
   public async renderTier(mapIndex: MapIndex, center: Coordinate, id: string, subId?: string) {
     this.tierDataManager.clearActiveTier();
 
