@@ -1,12 +1,7 @@
-/**
- * Delta Robot Puzzle Component
- * 数织拼图组件 - 仅展示库存列表和求解结果
- */
-
 import type { EntityData } from '@endfieldmap/map-core';
-
-// import { useTranslation } from 'react-i18next';
+import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { useDeltaRobot } from '@/hooks/use_delta_robot';
+import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 
 interface DeltaRobotProps {
   entity: EntityData;
@@ -22,7 +17,7 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
     levelData,
     solutionGrid,
     solving,
-    statusMessage,
+    // statusMessage,
     handleSolve,
     getGroupColor,
     getGroupName,
@@ -85,21 +80,16 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
   };
 
   return (
-    <div className="p-4">
+    <div>
       {/* 关卡选择 */}
       <div className="mb-4">
         <label className="block text-sm font-semibold mb-2 text-gray-300">选择关卡</label>
-        <select
+        <EndfieldSelect
           value={selectedLevel}
-          onChange={(e) => setSelectedLevel(e.target.value)}
-          className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-700 rounded text-sm text-gray-300"
-        >
-          {levelList.map((id) => (
-            <option key={id} value={id}>
-              {id}
-            </option>
-          ))}
-        </select>
+          options={levelList.map((id) => ({ value: id, label: id }))}
+          onChange={(val) => setSelectedLevel(val)}
+          className="w-full"
+        />
       </div>
 
       {/* 库存列表 */}
@@ -145,16 +135,39 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
       )}
 
       {/* 求解按钮 */}
-      <button
+      <ZmdSquareButton
+        className="w-full text-base"
+        classNames={{
+          icon: 'text-base w-4 h-4',
+        }}
         onClick={handleSolve}
-        disabled={solving || !levelData || levelData.pieces.length === 0}
-        className="w-full py-2 mb-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded transition-colors"
+        disabled={!levelData || levelData.pieces.length === 0}
+        icon={
+          solving ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          )
+        }
       >
         {solving ? '求解中...' : '开始求解'}
-      </button>
+      </ZmdSquareButton>
 
       {/* 状态信息 */}
-      {statusMessage && (
+      {/* {statusMessage && (
         <div
           className={`mb-4 p-2 rounded text-sm text-center ${
             statusMessage.includes('成功')
@@ -166,7 +179,7 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
         >
           {statusMessage}
         </div>
-      )}
+      )} */}
 
       {/* 求解结果网格 */}
       {renderSolutionGrid()}
