@@ -10,6 +10,7 @@ import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
+import { SoundType } from '@/const/audio_config';
 
 /**
  * EntityItem 通用属性类型
@@ -115,6 +116,7 @@ const EntityItem = observer(
         as={ButtonWithAudio}
         asProps={{
           onClick,
+          soundType: SoundType.TICK,
           className: cn(
             'select-none w-full rounded-full grow overflow-hidden flex items-center',
             'p-px relative text-xs'
