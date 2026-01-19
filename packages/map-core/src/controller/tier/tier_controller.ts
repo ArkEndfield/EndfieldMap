@@ -3,7 +3,8 @@ import { TierDataInstance, TierDataManager } from '@endfieldmap/map-core/data/ti
 import { TierLayer } from '@endfieldmap/map-core/render/layers/tier';
 import { TierOverlayMaskLayer } from '@endfieldmap/map-core/render/layers/tier_overlay_mask';
 import type { GridTierItem, TierData } from '@endfieldmap/map-core/types/tier';
-import { xyz2crd } from '@endfieldmap/tools';
+import { Coordinate, xyz2crd } from '@endfieldmap/tools';
+import { Map } from 'ol';
 import type { Projection } from 'ol/proj';
 
 export interface TierControllerConfig {
@@ -11,14 +12,18 @@ export interface TierControllerConfig {
   opacity?: number;
   maskOpacity?: number;
   maskFillColor?: string;
+  map: Map;
 }
 
 export class TierController {
   public tierDataManager: TierDataManager;
   public tierLayer: TierLayer;
   public tierOverlayMaskLayer: TierOverlayMaskLayer;
+  /** 地图实例 */
+  private map: Map;
 
-  constructor(config: TierControllerConfig = {}) {
+  constructor(config: TierControllerConfig) {
+    this.map = config.map;
     this.tierDataManager = new TierDataManager();
     this.tierLayer = new TierLayer({
       tierDataManager: this.tierDataManager,
@@ -75,27 +80,28 @@ export class TierController {
   //   await this.tierLayer.renderTier(mapIndex, x, y, level);
   //   this.tierOverlayMaskLayer.show();
   // }
-  public async renderTier(mapIndex: MapIndex, id: string, subId?: string) {
+  public async renderTier(mapIndex: MapIndex, center: Coordinate, id: string, subId?: string) {
     this.tierDataManager.clearActiveTier();
 
     this.tierDataManager.setActiveTier(mapIndex, id, subId);
 
     await this.tierLayer.renderTier();
     this.tierOverlayMaskLayer.show();
+    this.map.getView().setCenter(xyz2crd({x: center[0], y: 0, z: center[1]}, mapIndex))
   }
 
-  public async toggleTier(mapIndex: MapIndex, id: string, subId?: string) {
+  public async toggleTier(mapIndex: MapIndex, center: Coordinate, id: string, subId?: string) {
     if (subId) {
       if (this.tierDataManager.activeTier === id && this.tierDataManager.activeSubTier === subId) {
         this.clearTier();
       } else {
-        await this.renderTier(mapIndex, id, subId);
+        await this.renderTier(mapIndex, center, id, subId);
       }
     } else {
       if (this.tierDataManager.activeTier === id) {
         this.clearTier();
       } else {
-        await this.renderTier(mapIndex, id);
+        await this.renderTier(mapIndex, center, id);
       }
     }
   }

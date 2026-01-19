@@ -135,6 +135,7 @@ export class EndfieldMapAdapter {
       },
     });
     this.tierController = new TierController({
+      map: this.mapController.mapRenderer.map,
       projection: this.mapController.mapRenderer.projection,
     });
     this.activeFeatureController = new ActiveFeatureController({
