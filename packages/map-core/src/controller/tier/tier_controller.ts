@@ -107,7 +107,7 @@ export class TierController {
   }
 
   dispose(): void {
-    this.tierLayer.layer.setSource(null);
-    this.tierOverlayMaskLayer.hide();
+    this.tierLayer.dispose();
+    this.tierOverlayMaskLayer.dispose();
   }
 }

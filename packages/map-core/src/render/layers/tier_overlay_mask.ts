@@ -54,4 +54,8 @@ export class TierOverlayMaskLayer extends SingleLayerBase {
   public isVisible(): boolean {
     return this.layer.getSource() !== null;
   }
+
+  public dispose() {
+    this.layer.dispose();
+  }
 }

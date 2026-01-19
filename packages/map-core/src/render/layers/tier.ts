@@ -1,7 +1,7 @@
-import { DEFAULT_OPACITY, LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
+import { DEFAULT_OPACITY, LayerType, LayerTypeKey, MapIndex } from '@endfieldmap/map-core/const/map';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { TierDataInstance, TierDataManager } from '@endfieldmap/map-core/data/tier';
-import { ImagePool } from '@endfieldmap/tools';
+import { ImagePool, logger } from '@endfieldmap/tools';
 import { observable } from 'mobx';
 import ImageLayer from 'ol/layer/Image';
 import type { Projection } from 'ol/proj';
@@ -39,18 +39,19 @@ export class TierLayer extends SingleLayerBase {
         return;
       }
 
-      const scale = tier.mapIndex === 'map01' ? 75 / 2 : 75
+      // TODO: 自动化处理
+      const scale = tier.mapIndex === MapIndex.MAP01 ? 75 / 2 : 75;
       const img = ImagePool.getImage(imageUrl);
-      if (img.isPool || img.image.complete || img.image.width > 0 || img.image.height > 0) {
-        const scaledWidth = img.image.width / scale;
-        const scaledHeight = img.image.height / scale;
+      if (img.isPool || img.image.complete || img.image.naturalWidth > 0 || img.image.naturalHeight > 0) {
+        const scaledWidth = img.image.naturalWidth / scale;
+        const scaledHeight = img.image.naturalHeight / scale;
         tier.setExtentExtra([scaledWidth, scaledHeight]);
         resolve(img.image);
       } else {
         img.image.src = imageUrl;
         img.image.onload = () => {
-          const scaledWidth = img.image.width / scale;
-          const scaledHeight = img.image.height / scale;
+          const scaledWidth = img.image.naturalWidth / scale;
+          const scaledHeight = img.image.naturalHeight / scale;
           tier.setExtentExtra([scaledWidth, scaledHeight]);
           resolve(img.image);
         };
@@ -66,7 +67,7 @@ export class TierLayer extends SingleLayerBase {
     const tier = this.config.tierDataManager.currentActiveTier;
 
     if (!tier || !tier.visible) {
-      this.layer.setSource(null);
+      this.clearTier();
       return;
     }
 
@@ -77,7 +78,7 @@ export class TierLayer extends SingleLayerBase {
     }
 
     if (!loadedImage) {
-      this.layer.setSource(null);
+      logger.error('[EndfieldMap | tier] 加载图片失败', tier);
       return;
     }
 
@@ -86,16 +87,26 @@ export class TierLayer extends SingleLayerBase {
         url: tier.imageUrl,
         projection: this.config.projection,
         imageExtent: tier.extent,
+        // imageLoadFunction: (image) => {
+        //   if (loadedImage) {
+        //     image.setImage(loadedImage);
+        //   } else {
+        //     image.setImage(emptyImage);
+        //   }
+        // },
       });
 
       this.layer.setSource(source);
     } catch (error) {
       console.error('Failed to render tier:', error);
-      this.layer.setSource(null);
     }
   }
 
   public clearTier(): void {
     this.layer.setSource(null);
+  }
+
+  public dispose() {
+    this.layer.dispose();
   }
 }

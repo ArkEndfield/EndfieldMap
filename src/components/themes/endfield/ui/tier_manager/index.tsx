@@ -2,50 +2,49 @@ import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
 import { observer } from 'mobx-react-lite';
 import { TierTitle } from '@themes/endfield/ui/tier_manager/tier_title';
-import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
 import { AnimatePresence, motion } from 'motion/react';
+import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
+import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
+import { SubTitle } from '@themes/endfield/ui/tier_manager/subtitle';
 
 interface TierManagerProps {
   className?: string;
 }
 
-// 动画过渡配置
-const tierItemTransition = {
-  type: 'spring' as const,
-  stiffness: 500,
-  damping: 30,
-};
-
 const TierManager = observer(({ className }: TierManagerProps) => {
   const { dataService, adapter } = useAdapter();
+  const uiManager = useEndfieldUIManager();
+  const isSidePanelOpen = uiManager.operatePanelOpen.value;
   const availableTierData = dataService.gridTiersDataService.availableTierData;
   const activeTierData = dataService.gridTiersDataService.activeTierData;
   const activeSubTierData = dataService.gridTiersDataService.activeSubTierData;
-  const inactiveTierData = dataService.gridTiersDataService.inactiveTierData;
+  const allTierData = dataService.gridTiersDataService.currentTierData;
 
   return (
-    <div className={cn('text-white text-xs w-32 bottom-0 left-0 fixed', className)}>
+    <div
+      className={cn(
+        'text-white text-xs bottom-0 fixed overflow-hidden transition-[left] ease-in-out duration-300 group/list',
+        isSidePanelOpen ? 'left-82 delay-100' : '-left-4',
+        className
+      )}
+    >
       <ScrollableList
-        className={cn('h-24', activeTierData && 'h-16')}
+        className={cn(
+          'max-h-24 relative md:group-hover/list:max-h-64 transition-[max-height] ease-in-out duration-300 -left-4 w-fit',
+          activeTierData && 'max-h-16'
+        )}
         centerId={availableTierData?.id}
         idleTimeout={5000}
       >
-        <AnimatePresence initial={false}>
-          {inactiveTierData.map((item) => (
+        <AnimatePresence mode="popLayout" initial={false}>
+          {allTierData.map((item) => (
             <motion.div
-              key={item.id}
               layout
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{
-                opacity: 0,
-                height: 0,
-                transition: {
-                  height: { delay: 0.2, duration: 0.2 },
-                  default: { duration: 0.2 },
-                },
-              }}
-              transition={tierItemTransition}
+              initial={{ opacity: 0, filter: 'blur(2px)' }}
+              animate={{ opacity: 1, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, filter: 'blur(2px)' }}
+              transition={{ duration: 0.3, type: 'spring', bounce: 0 }}
+              key={item.id}
               className="overflow-hidden"
             >
               <ScrollableListItem className="p-0.5" id={item.id}>
@@ -53,13 +52,13 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                   onClick={() => {
                     adapter.tierController.toggleTier(adapter.currentMapIndex, item.id);
                   }}
-                  className={cn('opacity-50', availableTierData?.id === item.id && 'opacity-90')}
-                  animate={{
-                    x: 0,
-                    transition: { delay: 0.2, duration: 0.2 },
-                  }}
+                  className={cn(
+                    'opacity-50',
+                    availableTierData?.id === item.id && 'opacity-80 ring-1 ring-[#FEFA53]/40',
+                    activeTierData?.id === item.id && 'opacity-100 ring-1 ring-[#FEFA53]'
+                  )}
                 >
-                  {item.name}
+                  ./{item.name}
                 </TierTitle>
               </ScrollableListItem>
             </motion.div>
@@ -68,36 +67,42 @@ const TierManager = observer(({ className }: TierManagerProps) => {
       </ScrollableList>
 
       {/* Active tier info */}
-      <AnimatePresence mode="popLayout">
+      <AnimatePresence mode="wait">
         {activeTierData && (
-          <motion.div className="relative mt-1" key={activeTierData.id}>
-            <TierTitle>{activeTierData.name}</TierTitle>
-            <motion.div
-              layout
-              className="overflow-hidden"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0, transition: { duration: 0.1 } }}
-              transition={tierItemTransition}
+          <motion.div
+            initial={{ opacity: 0, y: 10, filter: 'blur(2px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: 10, filter: 'blur(2px)' }}
+            transition={{ duration: 0.3, type: 'spring', bounce: 0 }}
+            className="relative mt-1"
+            key={activeTierData.id}
+          >
+            <TierTitle
+              className="pl-9 w-fit gap-6"
+              onClick={() => {
+                adapter.tierController.toggleTier(adapter.currentMapIndex, activeTierData.id);
+              }}
             >
-              <AnimatePresence mode="popLayout">
-                {activeTierData.items.map((item) => (
-                  <motion.div
-                    key={`${activeTierData.id}-${item.id}`}
-                    layout
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={tierItemTransition}
-                    onClick={() => {
-                      adapter.tierController.toggleTier(adapter.currentMapIndex, activeTierData.id, item.id);
-                    }}
-                    className={cn(activeSubTierData?.id === item.id && 'ring-1 ring-amber-400')}
-                  >
-                    {item.name}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+              ./{activeTierData.name}
+            </TierTitle>
+            <motion.div
+              className={cn(
+                'ml-8 pb-5 relative',
+                'after:absolute after:top-0 after:w-0.5 after:bottom-0 after:bg-white/50 after:left-20'
+              )}
+              layout
+            >
+              {activeTierData.items.map((item) => (
+                <SubTitle
+                  active={activeSubTierData?.id === item.id}
+                  key={`${activeTierData.id}-${item.id}`}
+                  onClick={() => {
+                    adapter.tierController.toggleTier(adapter.currentMapIndex, activeTierData.id, item.id);
+                  }}
+                >
+                  {item.name}
+                </SubTitle>
+              ))}
             </motion.div>
           </motion.div>
         )}

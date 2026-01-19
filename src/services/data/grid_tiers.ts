@@ -112,8 +112,8 @@ export class GridTiersDataService {
   }
 
   @computed
-  get inactiveTierData() {
-    return this.gridTiersData[this.adapter.currentMapIndex].filter((tier) => tier.id !== this.activeTierData?.id);
+  get currentTierData() {
+    return this.gridTiersData[this.adapter.currentMapIndex];
   }
 
   @computed

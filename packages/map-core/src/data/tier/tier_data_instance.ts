@@ -17,10 +17,6 @@ export class TierDataInstance {
     this.position = position;
   }
 
-  get _id(): string {
-    return `${this.mapIndex}_${this.x}_${this.y}_${this.index}`;
-  }
-
   get id() {
     return this.data.id;
   }

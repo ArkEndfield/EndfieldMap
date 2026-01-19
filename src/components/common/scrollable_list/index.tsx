@@ -17,6 +17,7 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
   // Scroll state
   const [isAtTop, setIsAtTop] = useState(true);
   const [isAtBottom, setIsAtBottom] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(false);
 
   // Drag state
   const isDragging = useRef(false);
@@ -35,6 +36,7 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     const { scrollTop, scrollHeight, clientHeight } = container;
     setIsAtTop(scrollTop <= 1);
     setIsAtBottom(scrollTop + clientHeight >= scrollHeight - 1);
+    setIsScrollable(scrollHeight > clientHeight);
   }, []);
 
   // Scroll to center a specific item
@@ -136,6 +138,26 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     };
   }, [updateScrollState, resetIdleTimer]);
 
+  // ResizeObserver to detect content changes
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateScrollState();
+    });
+
+    resizeObserver.observe(container);
+    // Observe children to detect content changes that might affect scroll height
+    Array.from(container.children).forEach((child) => {
+      resizeObserver.observe(child);
+    });
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [updateScrollState]);
+
   // Register item ref helper
   const registerItemRef = useCallback((id: string, el: HTMLElement | null) => {
     if (el) {
@@ -147,6 +169,8 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
 
   // Generate mask gradient based on scroll position
   const getMaskImage = () => {
+    if (!isScrollable) return 'none';
+
     const topGradient = isAtTop ? 'black' : 'transparent';
     const bottomGradient = isAtBottom ? 'black' : 'transparent';
 
@@ -158,24 +182,25 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
 
   return (
     <ScrollableListContext.Provider value={{ registerItemRef }}>
-      <div className={cn('relative', className)}>
-        {/* Scrollable container with mask */}
-        <div
-          ref={scrollContainerRef}
-          className="h-full overflow-y-auto scrollbar-hide cursor-grab active:cursor-grabbing select-none transition-[mask-image] duration-300"
-          style={{
-            maskImage: getMaskImage(),
-            WebkitMaskImage: getMaskImage(),
-          }}
-          onScroll={handleScroll}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
-          onClickCapture={handleClickCapture}
-        >
-          {children}
-        </div>
+      {/* Scrollable container with mask */}
+      <div
+        ref={scrollContainerRef}
+        className={cn(
+          'relative overflow-y-auto scrollbar-hide cursor-grab active:cursor-grabbing select-none transition-[mask-image] duration-300',
+          className
+        )}
+        style={{
+          maskImage: getMaskImage(),
+          WebkitMaskImage: getMaskImage(),
+        }}
+        onScroll={handleScroll}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        onClickCapture={handleClickCapture}
+      >
+        {children}
       </div>
     </ScrollableListContext.Provider>
   );

@@ -1,25 +1,21 @@
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
-import { motion, type HTMLMotionProps } from 'motion/react';
+import type { ButtonHTMLAttributes } from 'react';
 
-export interface TierTitleProps extends HTMLMotionProps<'button'> {}
-
-// 动画过渡配置
-const tierTitleTransition = {
-  type: 'spring' as const,
-  stiffness: 500,
-  damping: 30,
-};
+export interface TierTitleProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export const TierTitle = (props: TierTitleProps) => {
-  const { className, animate = { x: 0 }, initial = { x: 50 }, exit = { x: -50 }, ...rest } = props;
+  const { className, children, ...rest } = props;
   return (
-    <motion.button
-      initial={initial}
-      animate={animate}
-      exit={exit}
-      transition={tierTitleTransition}
+    <ButtonWithAudio
       {...rest}
-      className={cn('h-7 bg-black rounded-full flex justify-center items-center w-full', className)}
-    />
+      className={cn(
+        'h-7 bg-black rounded-full flex items-center w-full transition-all duration-300 pl-12 pr-2 gap-2',
+        className
+      )}
+    >
+      <div className="flex-1">{children}</div>
+      <div className="shrink-0">1</div>
+    </ButtonWithAudio>
   );
 };
