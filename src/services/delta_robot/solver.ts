@@ -3,7 +3,7 @@
  * 数织拼图求解器：使用回溯算法 + 实时约束剪枝
  */
 
-import type { Coord, Grid, PieceShape, ObstacleData } from '../../data/delta_robot/types';
+import type { Coord, Grid, PieceShape, ObstacleData } from '@eftypes/delta_robot';
 
 /**
  * 将坐标列表转换为 2D 矩阵形状
@@ -180,14 +180,12 @@ export function solvePuzzle(
 
   safeRowConstraints.forEach((row) =>
     row.forEach((val, gid) => {
-      if (gid >= 0 && gid < numGroups)
-        rowConstraintSums[gid] = (rowConstraintSums[gid] ?? 0) + val;
+      if (gid >= 0 && gid < numGroups) rowConstraintSums[gid] = (rowConstraintSums[gid] ?? 0) + val;
     })
   );
   safeColConstraints.forEach((col) =>
     col.forEach((val, gid) => {
-      if (gid >= 0 && gid < numGroups)
-        colConstraintSums[gid] = (colConstraintSums[gid] ?? 0) + val;
+      if (gid >= 0 && gid < numGroups) colConstraintSums[gid] = (colConstraintSums[gid] ?? 0) + val;
     })
   );
 
@@ -220,9 +218,7 @@ export function solvePuzzle(
   // 校验面积一致性
   for (let g = 0; g < numGroups; g++) {
     if ((rowConstraintSums[g] ?? 0) !== (colConstraintSums[g] ?? 0)) {
-      console.warn(
-        `[Solver] Group ${g}: Row sum (${rowConstraintSums[g]}) != Col sum (${colConstraintSums[g]})`
-      );
+      console.warn(`[Solver] Group ${g}: Row sum (${rowConstraintSums[g]}) != Col sum (${colConstraintSums[g]})`);
       return null;
     }
     if ((currentGroupArea[g] ?? 0) !== (rowConstraintSums[g] ?? 0)) {
@@ -285,12 +281,7 @@ export function solvePuzzle(
 /**
  * 检查是否可以在指定位置放置拼图（仅几何重叠检测）
  */
-function canPlaceGeometry(
-  board: Grid,
-  piece: PieceShape,
-  startRow: number,
-  startCol: number
-): boolean {
+function canPlaceGeometry(board: Grid, piece: PieceShape, startRow: number, startCol: number): boolean {
   for (let i = 0; i < piece.length; i++) {
     const prow = piece[i];
     if (!prow) continue;

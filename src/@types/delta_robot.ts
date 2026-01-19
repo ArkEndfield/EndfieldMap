@@ -43,7 +43,7 @@ export interface Group {
 }
 
 export interface PieceUI {
-  id: number;
+  id: string;
   shape: PieceShape;
   groupId: number;
 }

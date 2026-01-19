@@ -28,6 +28,7 @@ export const getAssetUrls = () => {
     entityImage: createFullUrl(host, '/images/icon'),
     itemData: createFullUrl(host, '/dev/item'),
     itemImage: createFullUrl(host, '/images/icon'),
+    miniGameData: createFullUrl(host, '/data/minigame'),
     avatar: createFullUrl(host, '/images/avatar'),
     misc: createFullUrl(host, '/images/misc'),
     audio: createFullUrl(host, '/audio'),

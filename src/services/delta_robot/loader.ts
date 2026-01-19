@@ -3,16 +3,8 @@
  * 关卡数据加载器：将远程 JSON 转换为 UI 可用的数据结构
  */
 
-import { parsePieceShape } from './solver';
-import type {
-  LevelData,
-  PieceData,
-  ParsedLevel,
-  Group,
-  PieceUI,
-  ObstacleData,
-  PieceLoader,
-} from '../../data/delta_robot/types';
+import { parsePieceShape } from '@/services/delta_robot/solver';
+import type { LevelData, ParsedLevel, Group, PieceUI, ObstacleData, PieceLoader } from '@eftypes/delta_robot';
 
 const COLOR_MAP: Record<string, string> = {
   Color1: '#B3FF00',
@@ -41,20 +33,14 @@ function adjust2DArray(arr: number[][], size: number, subSize: number): void {
  * @param loadPiece - 拼图块加载器函数
  * @returns 解析后的关卡数据
  */
-export async function parseLevelData(
-  data: LevelData,
-  loadPiece: PieceLoader
-): Promise<ParsedLevel> {
+export async function parseLevelData(data: LevelData, loadPiece: PieceLoader): Promise<ParsedLevel> {
   // 1. 场景尺寸
   const sizeX = data.sizeX;
   const sizeY = data.sizeY || data.sizeX; // 默认正方形
 
   // 2. 颜色分组
   const groups: Group[] = [];
-  const colorKeys = new Set([
-    ...Object.keys(data.rowCondition || {}),
-    ...Object.keys(data.columnCondition || {}),
-  ]);
+  const colorKeys = new Set([...Object.keys(data.rowCondition || {}), ...Object.keys(data.columnCondition || {})]);
 
   // 过滤并排序 Color 键
   const sortedKeys = Array.from(colorKeys)
@@ -71,8 +57,7 @@ export async function parseLevelData(
       colorNumToIdx.set(parseInt(match[1] || ''), idx);
     }
 
-    const color =
-      COLOR_MAP[key] || DEFAULT_COLORS[idx % DEFAULT_COLORS.length] || '#3CAAFF';
+    const color = COLOR_MAP[key] || DEFAULT_COLORS[idx % DEFAULT_COLORS.length] || '#3CAAFF';
     groups.push({
       id: idx + 1,
       name: key,
