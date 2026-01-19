@@ -15,6 +15,7 @@ export enum ComponentType {
   ALERT_PROMPT_INPUT = 'AlertPromptInput',
   TOOLTIP = 'Tooltip',
   ROOT_PROVIDER = 'RootProvider',
+  TIER_MANAGER = 'TierManager',
 }
 
 export interface ThemedComponentMap {
@@ -31,6 +32,7 @@ export interface ThemedComponentMap {
     <T extends React.ElementType>(props: TooltipProps<T>) => React.ReactElement | null
   >;
   [ComponentType.ROOT_PROVIDER]: LazyExoticComponent<FC<ThemeRootContextProps>>;
+  [ComponentType.TIER_MANAGER]: LazyExoticComponent<FC<object>>;
 }
 
 export type ThemedComponent<T extends ComponentType> = T extends keyof ThemedComponentMap

@@ -12,6 +12,7 @@ const AlertFull = lazy(() => import('@themes/endfield/components/alert/alert_ful
 const AlertPromptInput = lazy(() => import('@themes/endfield/components/alert/input'));
 const Tooltip = lazy(() => import('@themes/endfield/components/tooltip'));
 const ThemeRootProvider = lazy(() => import('@themes/endfield/components/root_provider'));
+const TierManager = lazy(() => import('@themes/endfield/ui/tier_manager'));
 
 const endfieldTheme: ThemedComponentMap = {
   [ComponentType.POPUP]: Popup,
@@ -25,6 +26,7 @@ const endfieldTheme: ThemedComponentMap = {
   [ComponentType.ALERT_PROMPT_INPUT]: AlertPromptInput,
   [ComponentType.TOOLTIP]: Tooltip,
   [ComponentType.ROOT_PROVIDER]: ThemeRootProvider,
+  [ComponentType.TIER_MANAGER]: TierManager,
 };
 
 export default endfieldTheme;

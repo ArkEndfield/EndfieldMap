@@ -205,6 +205,7 @@ export class EndfieldMapAdapter {
     this.mapLayerController.renderMap(mapIndex);
     this.activeFeatureController.clearActiveFeature();
     this.mapController.selection.stopSelecting();
+    this.tierController.clearTier();
   }
 
   /**
@@ -257,16 +258,6 @@ export class EndfieldMapAdapter {
       this.layerController.removeLayer(LayerType.CUSTOM_POINT);
       this.layerController.addLayer(LayerType.CUSTOM_POINT, customPointLayer);
     }
-  }
-
-  @action
-  public renderTier(mapIndex: MapIndex, x: number, y: number, level: number): Promise<void> {
-    return this.tierController.renderTier(mapIndex, x, y, level);
-  }
-
-  @action
-  public clearTier(mapIndex: MapIndex, x: number, y: number): void {
-    this.tierController.clearTier(mapIndex, x, y);
   }
 
   /**

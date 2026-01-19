@@ -168,6 +168,7 @@ class UIManager {
         Menus: components.get(ComponentType.MENUS),
         ControlPanel: components.get(ComponentType.CONTROL_PANEL),
         MapIndexMenu: components.get(ComponentType.MAP_INDEX_MENU),
+        TierManager: components.get(ComponentType.TIER_MANAGER),
       },
       alert: {
         Alert: components.get(ComponentType.ALERT),

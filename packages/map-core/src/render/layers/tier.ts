@@ -1,7 +1,6 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import { DEFAULT_OPACITY, LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
-import { TierDataManager } from '@endfieldmap/map-core/data/tier';
+import { TierDataInstance, TierDataManager } from '@endfieldmap/map-core/data/tier';
 import { ImagePool } from '@endfieldmap/tools';
 import { observable } from 'mobx';
 import ImageLayer from 'ol/layer/Image';
@@ -21,9 +20,6 @@ export interface TierLayerConfig {
 export class TierLayer extends SingleLayerBase {
   public layer: ImageLayer<ImageStatic>;
   @observable accessor config: TierLayerConfig;
-  private currentMapIndex: MapIndex | null = null;
-  private currentRegion: { x: number; y: number } | null = null;
-  private currentLevel: number | null = null;
 
   constructor(config: TierLayerConfig) {
     super();
@@ -35,8 +31,9 @@ export class TierLayer extends SingleLayerBase {
     this.layer.set(LayerTypeKey, LayerType.TIER);
   }
 
-  private loadImage(imageUrl: string): Promise<HTMLImageElement> {
-    return new Promise((resolve, reject) => {
+  private loadImage(tier: TierDataInstance): Promise<HTMLImageElement | null> {
+    return new Promise((resolve) => {
+      const imageUrl = tier.imageUrl;
       if (imageUrl === emptyImageBase64String) {
         resolve(emptyImage);
         return;
@@ -44,39 +41,46 @@ export class TierLayer extends SingleLayerBase {
 
       const img = ImagePool.getImage(imageUrl);
       if (img.isPool || img.image.complete || img.image.width > 0 || img.image.height > 0) {
+        const scaledWidth = img.image.width / 75;
+        const scaledHeight = img.image.height / 75;
+        tier.setExtentExtra([scaledWidth, scaledHeight]);
         resolve(img.image);
       } else {
         img.image.src = imageUrl;
         img.image.onload = () => {
+          const scaledWidth = img.image.width / 75;
+          const scaledHeight = img.image.height / 75;
+          tier.setExtentExtra([scaledWidth, scaledHeight]);
           resolve(img.image);
         };
         img.image.onerror = () => {
-          reject(new Error(`Failed to load image: ${imageUrl}`));
+          console.warn(`[TierLayer] Image not available: ${imageUrl}`);
+          resolve(null);
         };
       }
     });
   }
 
-  public async renderTier(mapIndex: MapIndex, x: number, y: number, level: number): Promise<void> {
-    this.currentMapIndex = mapIndex;
-    this.currentRegion = { x, y };
-    this.currentLevel = level;
-
-    const activeTier = this.config.tierDataManager.getActiveTier(mapIndex, x, y);
-
-    if (!activeTier || activeTier.level !== level) {
-      this.config.tierDataManager.setActiveTier(mapIndex, x, y, level);
-    }
-
-    const tier = this.config.tierDataManager.getActiveTier(mapIndex, x, y);
+  public async renderTier(): Promise<void> {
+    const tier = this.config.tierDataManager.currentActiveTier;
 
     if (!tier || !tier.visible) {
       this.layer.setSource(null);
       return;
     }
 
+    const loadedImage = await this.loadImage(tier);
+
+    if (this.config.tierDataManager.currentActiveTier !== tier) {
+      return;
+    }
+
+    if (!loadedImage) {
+      this.layer.setSource(null);
+      return;
+    }
+
     try {
-      await this.loadImage(tier.imageUrl);
       const source = new ImageStatic({
         url: tier.imageUrl,
         projection: this.config.projection,
@@ -90,23 +94,7 @@ export class TierLayer extends SingleLayerBase {
     }
   }
 
-  public clearTier(mapIndex: MapIndex, x: number, y: number): void {
-    this.config.tierDataManager.clearActiveTier(mapIndex, x, y);
+  public clearTier(): void {
     this.layer.setSource(null);
-    this.currentMapIndex = null;
-    this.currentRegion = null;
-    this.currentLevel = null;
-  }
-
-  public getCurrentTierInfo(): {
-    mapIndex: MapIndex | null;
-    region: { x: number; y: number } | null;
-    level: number | null;
-  } {
-    return {
-      mapIndex: this.currentMapIndex,
-      region: this.currentRegion,
-      level: this.currentLevel,
-    };
   }
 }

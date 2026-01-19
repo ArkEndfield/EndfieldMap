@@ -1,3 +1,6 @@
+import { Coordinate } from 'ol/coordinate';
+import { TierDataInstance } from '@endfieldmap/map-core/data/tier';
+
 export interface TierData {
   id: string;
   mapIndex: string;
@@ -8,9 +11,25 @@ export interface TierData {
   extent: [number, number, number, number];
 }
 
+export interface GridTierItem {
+  id: string;
+  name: string;
+  level: number;
+  lb: Coordinate;
+  rt: Coordinate;
+  center: Coordinate;
+  items: {
+    id: string;
+    name: string;
+    imagePath: string;
+    level: number;
+    index: number;
+  }[];
+}
+
 export interface TierRegion {
   mapIndex: string;
-  x: number;
-  y: number;
-  tiers: TierData[];
+  // x: number;
+  // y: number;
+  tiers: TierDataInstance[];
 }

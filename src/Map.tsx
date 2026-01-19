@@ -68,6 +68,11 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
             <ThemedComponents.map.ControlPanel />
           </Suspense>
 
+          {/* 层级切换组件 */}
+          <Suspense>
+            <ThemedComponents.map.TierManager />
+          </Suspense>
+
           {/* DevTools */}
           {isDev && <Suspense>{DevTools && <DevTools />}</Suspense>}
 

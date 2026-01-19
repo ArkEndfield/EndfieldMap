@@ -1,38 +1,58 @@
-import { makeObservable, computed, action } from 'mobx';
-import type { TierData } from '../../types/tier';
+import { makeObservable, computed, action, observable } from 'mobx';
+import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
+import { xyz2crd } from '@endfieldmap/tools';
+import type { Coordinate } from 'ol/coordinate';
 
 export class TierDataInstance {
-  mapIndex: string;
-  level: number;
-  x: number;
-  y: number;
-  imageUrl: string;
-  extent: [number, number, number, number];
-  private _visible: boolean = true;
+  public mapIndex: MapIndex;
+  public data: GridTierItem['items'][number];
+  public position: Coordinate;
+  public extentExtra: Coordinate = [0, 0];
+  @observable accessor visible: boolean = true;
 
-  constructor(data: TierData) {
-    this.mapIndex = data.mapIndex;
-    this.level = data.level;
-    this.x = data.x;
-    this.y = data.y;
-    this.imageUrl = data.imageUrl;
-    this.extent = data.extent;
-
-    makeObservable(this, {
-      visible: computed,
-      setVisible: action,
-    });
+  constructor(mapIndex: MapIndex, data: GridTierItem['items'][number], position: Coordinate) {
+    this.mapIndex = mapIndex;
+    this.data = data;
+    this.position = position;
   }
 
-  get id(): string {
-    return `${this.mapIndex}_${this.x}_${this.y}_${this.level}`;
+  get _id(): string {
+    return `${this.mapIndex}_${this.x}_${this.y}_${this.index}`;
   }
 
-  get visible(): boolean {
-    return this._visible;
+  get id() {
+    return this.data.id;
   }
 
-  setVisible(visible: boolean): void {
-    this._visible = visible;
+  get imageUrl() {
+    return this.data.imagePath;
+  }
+
+  get index() {
+    return this.data.index;
+  }
+
+  get x() {
+    return this.position[0];
+  }
+
+  get y() {
+    return this.position[1];
+  }
+
+  get extent() {
+    const [crdX, crdY] = xyz2crd({ x: this.x, y: 0, z: this.y }, this.mapIndex);
+    const extent: [number, number, number, number] = [
+      crdX,
+      crdY,
+      crdX + this.extentExtra[0],
+      crdY + this.extentExtra[1],
+    ];
+    return extent;
+  }
+
+  public setExtentExtra(position: Coordinate) {
+    this.extentExtra = position;
   }
 }

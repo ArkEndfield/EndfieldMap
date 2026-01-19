@@ -38,6 +38,13 @@ export class MapController {
   }
 
   /**
+   * 获取地图中心点
+   */
+  public getCenter() {
+    return this.mapRenderer.view.getCenter();
+  }
+
+  /**
    * 移动视图中心
    * @param center 中心点
    */

@@ -11,6 +11,7 @@ import { ItemDataService } from '@/services/data/item';
 import { LangHashDataService } from '@/services/data/lang_hash';
 import { MapStateDataService } from '@/services/data/map_state';
 import { SwiperDataService } from '@/services/data/swiper';
+import { GridTiersDataService } from '@/services/data/grid_tiers';
 
 /**
  * 数据服务
@@ -36,6 +37,7 @@ export class DataService {
   public langHashDataService: LangHashDataService;
   public mapStateDataService: MapStateDataService;
   public swiperDataService: SwiperDataService;
+  public gridTiersDataService: GridTiersDataService;
 
   constructor(adapter: EndfieldMapAdapter) {
     this.entityDataService = new EntityDataService(DataService.storage, adapter);
@@ -57,6 +59,7 @@ export class DataService {
     this.langHashDataService = new LangHashDataService(DataService.jsonLoader, DataService.storage);
     this.mapStateDataService = new MapStateDataService(adapter);
     this.swiperDataService = new SwiperDataService();
+    this.gridTiersDataService = new GridTiersDataService(DataService.jsonLoader, adapter);
   }
 
   public static async initStorage() {
@@ -88,6 +91,8 @@ export class DataService {
       this.guideDataService.getGuidesData(),
       // 初始化语言哈希数据
       this.langHashDataService.getLangHashData(),
+      // 初始化网格分级数据
+      this.gridTiersDataService.init(),
     ]);
   }
 
