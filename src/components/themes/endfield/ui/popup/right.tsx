@@ -1,6 +1,7 @@
 import { ClipSquare } from '@themes/endfield/ui/popup/deco';
 import { ChestReward } from '@themes/endfield/ui/popup/right_content/chest_reward';
 import { DungeonReward } from '@themes/endfield/ui/popup/right_content/dungeon_reward';
+import { DeltaRobot } from '@themes/endfield/ui/popup/right_content/delta_robot';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -60,6 +61,7 @@ export const RightContent = () => {
     <>
       <ChestReward entity={entity} />
       <DungeonReward entity={entity} />
+      <DeltaRobot entity={entity} />
     </>
   );
 };
