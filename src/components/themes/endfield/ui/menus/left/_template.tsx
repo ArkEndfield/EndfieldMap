@@ -1,21 +1,23 @@
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { cn } from '@/utils/style';
 
 export interface HeaderMenuProps {
   children?: React.ReactNode;
   icon: React.ReactNode;
+  className?: string;
   title: string;
   onClick?: () => void;
 }
 
-export const HeaderMenuTemplate: React.FC<HeaderMenuProps> = ({ children, icon, title, onClick }) => {
+export const HeaderMenuTemplate: React.FC<HeaderMenuProps> = ({ children, icon, title, onClick, className }) => {
   const isMobile = useIsMobile();
   if (isMobile) {
     return (
       <>
         <ButtonWithAudio
-          className="text-xl text-[#e0e0e0] w-20 h-10 flex justify-center items-center"
+          className={cn('text-xl text-[#e0e0e0] h-full flex-1 flex justify-center items-center', className)}
           onClick={onClick}
         >
           {icon}

@@ -1,5 +1,4 @@
 import { OperationList } from '@themes/endfield/components/topbar/operation_list';
-import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { CustomPointManagerToolbar as Toolbar } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point/toolbar';
@@ -9,26 +8,10 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import deviceJudge from '@/components/common/device_judge';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
 
-const TipText = observer(() => {
-  const { getCurrentModeTipText } = useCustomPointMode();
-  const { t } = useTranslation('sidebar');
-  const tipText = getCurrentModeTipText();
-  const lastTipTextRef = useRef(tipText);
-
-  if (tipText) {
-    lastTipTextRef.current = tipText;
-  }
-
-  const displayText = tipText ?? lastTipTextRef.current;
-  if (!displayText) return null;
-  return t(`operation.custom_point.${displayText}.in_mode`);
-});
-
-const CustomPointManagerToolBar = observer(() => {
+export const CustomPointOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();
   const { adapter, dataService } = useAdapter();
   const isCustomPointVisible = adapter.customPointController.customPointVisible;
@@ -36,7 +19,7 @@ const CustomPointManagerToolBar = observer(() => {
   const isInCreateMode = dataService.customPointDataService.isCreating;
 
   return (
-    <OperationList open={isOpen} className="flex gap-2 flex-wrap">
+    <OperationList open={isOpen} className="flex gap-2">
       <AnimatePresence>
         {isInCreateMode && (
           <motion.div
@@ -56,20 +39,3 @@ const CustomPointManagerToolBar = observer(() => {
     </OperationList>
   );
 });
-
-const CustomPointModeTip = observer(() => {
-  const { dataService } = useAdapter();
-  const isInOperateMode = dataService.customPointDataService.isInCustomPointOperateMode;
-
-  const onClose = () => {
-    dataService.customPointDataService.stopAllOperation();
-  };
-
-  return (
-    <OperationTip open={isInOperateMode} onClose={onClose}>
-      <TipText />
-    </OperationTip>
-  );
-});
-
-export const CustomPointOperationTip = deviceJudge(CustomPointManagerToolBar, CustomPointModeTip);

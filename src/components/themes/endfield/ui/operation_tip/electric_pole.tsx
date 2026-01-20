@@ -1,5 +1,4 @@
 import { OperationList } from '@themes/endfield/components/topbar/operation_list';
-import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { PoleManagerToolbar } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/toolbar';
@@ -9,26 +8,10 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import deviceJudge from '@/components/common/device_judge';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useElectricMode } from '@/hooks/use_electric_mode';
 
-const TipText = observer(() => {
-  const { getCurrentModeTipText } = useElectricMode();
-  const { t } = useTranslation('sidebar');
-  const tipText = getCurrentModeTipText();
-  const lastTipTextRef = useRef(tipText);
-
-  if (tipText) {
-    lastTipTextRef.current = tipText;
-  }
-
-  const displayText = tipText ?? lastTipTextRef.current;
-  if (!displayText) return null;
-  return t(`operation.electric_pole.${displayText}.in_mode`);
-});
-
-const ElectricPoleManagerToolBar = observer(() => {
+export const ElectricPoleOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();
   const { adapter, dataService } = useAdapter();
   const isElecricPoleVisible = adapter.electricPoleController.electricPoleVisible;
@@ -36,7 +19,7 @@ const ElectricPoleManagerToolBar = observer(() => {
   const isInCreateMode = dataService.electricPoleDataService.isCreating;
 
   return (
-    <OperationList open={isOpen} className="flex gap-2 flex-wrap">
+    <OperationList open={isOpen} className="flex gap-2">
       <AnimatePresence>
         {isInCreateMode && (
           <motion.div
@@ -56,19 +39,3 @@ const ElectricPoleManagerToolBar = observer(() => {
     </OperationList>
   );
 });
-
-const ElectricPoleModeTip = observer(() => {
-  const { dataService } = useAdapter();
-
-  const onClose = () => {
-    dataService.electricPoleDataService.stopAllOperation();
-  };
-
-  return (
-    <OperationTip open={dataService.electricPoleDataService.isInElectricOperateMode} onClose={onClose}>
-      <TipText />
-    </OperationTip>
-  );
-});
-
-export const ElectricPoleOperationTip = deviceJudge(ElectricPoleManagerToolBar, ElectricPoleModeTip);

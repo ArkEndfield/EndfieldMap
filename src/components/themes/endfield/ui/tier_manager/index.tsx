@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { SubTitle } from '@themes/endfield/ui/tier_manager/subtitle';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 interface TierManagerProps {
   className?: string;
@@ -14,6 +15,7 @@ interface TierManagerProps {
 const TierManager = observer(({ className }: TierManagerProps) => {
   const { dataService, adapter } = useAdapter();
   const uiManager = useEndfieldUIManager();
+  const isMobile = useIsMobile();
   const isSidePanelOpen = uiManager.isSidePanelOpen;
   const availableTierData = dataService.gridTiersDataService.availableTierData;
   const activeTierData = dataService.gridTiersDataService.activeTierData;
@@ -24,7 +26,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
     <div
       className={cn(
         'text-white text-xs bottom-0 fixed overflow-hidden transition-[left] ease-in-out duration-300 group/list',
-        isSidePanelOpen ? 'left-82 delay-100' : '-left-4',
+        isSidePanelOpen && !isMobile ? 'left-82 delay-100' : '-left-4',
         className
       )}
     >

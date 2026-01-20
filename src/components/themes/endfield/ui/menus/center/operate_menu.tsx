@@ -1,5 +1,6 @@
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { cn } from '@/utils/style';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 export interface OperateMenuProps {
   startIcon?: React.ReactNode;
@@ -11,17 +12,18 @@ export interface OperateMenuProps {
 }
 
 export const OperateMenu = ({ startIcon, endIcon, children, active, rightBorder, onToggle }: OperateMenuProps) => {
+  const isMobile = useIsMobile();
   return (
     <ButtonWithAudio
       className={cn(
-        'relative h-full',
+        'relative h-full flex-1 md:grow-0',
         active && 'bg-[#fffa00] text-[#313131]',
         rightBorder &&
           'after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-4 after:bg-white/25'
       )}
       onClick={() => onToggle?.(!active)}
     >
-      {active && (
+      {active && !isMobile && (
         <div
           className={cn(
             'absolute left-0 right-0 top-0 bottom-0 bg-no-repeat bg-size-[auto_100%] bg-right bg-[url(/images/bg/button-texture.png)]',
@@ -29,9 +31,9 @@ export const OperateMenu = ({ startIcon, endIcon, children, active, rightBorder,
           )}
         />
       )}
-      <div className="flex items-center gap-2 px-2 pb-1 font-medium relative z-1 w-40">
+      <div className="flex w-full items-center gap-2 px-2 md:pb-1 font-medium relative z-1 justify-center md:justify-start md:w-40">
         {startIcon}
-        <div className="flex-1">{children}</div>
+        <div className="md:flex-1 text-xl md:text-base">{children}</div>
         {endIcon}
       </div>
     </ButtonWithAudio>

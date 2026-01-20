@@ -13,7 +13,7 @@ export const MapButton: React.FC<ButtonProps> = ({ active = false, children, onC
     <ButtonWithAudio
       onClick={onClick}
       className={`
-        relative block py-2 text-lg font-black
+        relative block py-1 md:py-2 text-lg font-black
         ${active ? 'bg-[#fcfb58] text-[#444444]' : 'bg-[#303030e3] hover:bg-[#393939]'}
         ${!active && 'bg-[repeating-linear-gradient(75deg,transparent,transparent_0.1em,#3838385a_0.15em,#3838385a_0.2em)]'}
         ${active && 'hover:bg-none'}

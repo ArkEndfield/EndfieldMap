@@ -5,16 +5,18 @@ import React, { createElement, useCallback, useEffect, useRef, useState } from '
 import { createPortal } from 'react-dom';
 
 import { cn } from '@/utils/style';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 const TOOLTIP_OFFSET = 8;
 
 const Tooltip = <T extends React.ElementType = 'div'>({
-  disabled = false,
+  disabled: _disabled = false,
   tooltip,
   children,
   placement = 'top',
   offset = TOOLTIP_OFFSET,
   keepOnHover = true,
+  disableOnMobile = true,
   onOpen,
   onClose,
   onOpenChange,
@@ -29,6 +31,9 @@ const Tooltip = <T extends React.ElementType = 'div'>({
   const tooltipRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<number | null>(null);
+  const isMobile = useIsMobile();
+
+  const disabled = _disabled || (disableOnMobile && isMobile);
 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current || !measureRef.current) return;

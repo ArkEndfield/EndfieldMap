@@ -6,7 +6,7 @@ import { ZmdAlert } from '@/components/common/alert/alert';
 import { FeedbackIcon } from '@/components/common/icons';
 import { useCurrentLanguage } from '@/hooks/use_current_language';
 
-export const HeaderMenuFeedback = () => {
+export const HeaderMenuFeedback = ({ className }: { className?: string }) => {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation('header');
   const currentLocale = useCurrentLanguage();
@@ -16,7 +16,7 @@ export const HeaderMenuFeedback = () => {
   };
 
   return (
-    <HeaderMenuTemplate icon={<FeedbackIcon />} title={t('feedback.title')} onClick={handleOpen}>
+    <HeaderMenuTemplate icon={<FeedbackIcon />} title={t('feedback.title')} onClick={handleOpen} className={className}>
       <ZmdAlert open={open} onOpenChange={setOpen} hideCancel>
         <h1 className="text-lg font-bold text-center mb-2">{t('feedback.title')}</h1>
         <div className="px-4">

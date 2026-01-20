@@ -2,87 +2,119 @@ import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
 import { observer } from 'mobx-react-lite';
+import { menus } from '@themes/endfield/ui/menus/left/list';
 
-import { InVisibleIcon, VisibleIcon } from '@/components/common/icons';
+import {
+  CustomPointIcon,
+  ElectricPoleIconPole,
+  FilterIcon,
+  InVisibleIcon,
+  VisibleIcon,
+} from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
+import { useIsMobile } from '@/hooks/use_is_mobile';
+import { MenuContainer } from '@themes/endfield/ui/menus/center/menu_container';
+import { SoundType } from '@/const/audio_config';
+import { useAudio } from '@/hooks/use_audio';
 
-export const OperateList = observer(() => {
+const Menu = menus[0];
+
+const ElectricPoleViewIcon = observer(() => {
   const { adapter, dataService } = useAdapter();
-  const uiManager = useEndfieldUIManager();
-  const currentTab = uiManager.currentOperatePanel.value;
+  const { play } = useAudio();
   const isElecricPoleVisible = adapter.electricPoleController.electricPoleVisible;
-  const isCustomPointVisible = adapter.customPointController.customPointVisible;
 
   return (
-    <div className="flex items-stretch absolute top-0 bottom-0 left-1/2 -translate-x-1/2 z-2">
-      <OperateMenu
-        active={currentTab === CurrentOperatePanel.FILTER}
-        rightBorder
-        onToggle={() => {
-          uiManager.togglePanel(CurrentOperatePanel.FILTER);
-        }}
-      >
-        资源标点筛选
-      </OperateMenu>
-      <OperateMenu
-        active={currentTab === CurrentOperatePanel.ELECTRIC_POLE}
-        startIcon={
-          isElecricPoleVisible ? (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                dataService.electricPoleDataService.toggleVisibility();
-              }}
-            >
-              <VisibleIcon />
-            </div>
-          ) : (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                dataService.electricPoleDataService.toggleVisibility();
-              }}
-            >
-              <InVisibleIcon />
-            </div>
-          )
-        }
-        rightBorder
-        onToggle={() => {
-          uiManager.togglePanel(CurrentOperatePanel.ELECTRIC_POLE);
-        }}
-      >
-        电线杆管理
-      </OperateMenu>
-      <OperateMenu
-        active={currentTab === CurrentOperatePanel.CUSTOM_POINT}
-        startIcon={
-          isCustomPointVisible ? (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                dataService.customPointDataService.toggleVisibility();
-              }}
-            >
-              <VisibleIcon />
-            </div>
-          ) : (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                dataService.customPointDataService.toggleVisibility();
-              }}
-            >
-              <InVisibleIcon />
-            </div>
-          )
-        }
-        onToggle={() => {
-          uiManager.togglePanel(CurrentOperatePanel.CUSTOM_POINT);
-        }}
-      >
-        自定义标点
-      </OperateMenu>
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        play(SoundType.CLICK);
+        dataService.electricPoleDataService.toggleVisibility();
+      }}
+    >
+      {isElecricPoleVisible ? <VisibleIcon /> : <InVisibleIcon />}
     </div>
   );
 });
+
+const CustomPointViewIcon = observer(() => {
+  const { adapter, dataService } = useAdapter();
+  const isCustomPointVisible = adapter.customPointController.customPointVisible;
+
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        dataService.customPointDataService.toggleVisibility();
+      }}
+    >
+      {isCustomPointVisible ? <VisibleIcon /> : <InVisibleIcon />}
+    </div>
+  );
+});
+
+const MobileViewIcon = observer(() => {
+  const isMobile = useIsMobile();
+  const uiManager = useEndfieldUIManager();
+
+  const currentTab = uiManager.currentOperatePanel.value;
+
+  if (!isMobile) return null;
+
+  let component = <Menu />;
+
+  if (currentTab === CurrentOperatePanel.ELECTRIC_POLE) {
+    component = <ElectricPoleViewIcon />;
+  }
+
+  if (currentTab === CurrentOperatePanel.CUSTOM_POINT) {
+    component = <CustomPointViewIcon />;
+  }
+
+  return <MenuContainer rightBorder>{component}</MenuContainer>;
+});
+
+export const OperateList = observer(
+  ({ startContent, endContent }: { startContent?: React.ReactNode; endContent?: React.ReactNode }) => {
+    const uiManager = useEndfieldUIManager();
+    const isMobile = useIsMobile();
+    const currentTab = uiManager.currentOperatePanel.value;
+
+    return (
+      <div className="flex items-stretch h-full w-full md:w-auto md:absolute md:top-0 md:bottom-0 md:left-1/2 md:-translate-x-1/2 md:z-2">
+        {startContent}
+        <MobileViewIcon />
+        <OperateMenu
+          active={currentTab === CurrentOperatePanel.FILTER}
+          rightBorder
+          onToggle={() => {
+            uiManager.togglePanel(CurrentOperatePanel.FILTER);
+          }}
+        >
+          {isMobile ? <FilterIcon /> : '资源标点筛选'}
+        </OperateMenu>
+        <OperateMenu
+          active={currentTab === CurrentOperatePanel.ELECTRIC_POLE}
+          startIcon={!isMobile && <ElectricPoleViewIcon />}
+          rightBorder
+          onToggle={() => {
+            uiManager.togglePanel(CurrentOperatePanel.ELECTRIC_POLE);
+          }}
+        >
+          {isMobile ? <ElectricPoleIconPole /> : '电线杆管理'}
+        </OperateMenu>
+        <OperateMenu
+          active={currentTab === CurrentOperatePanel.CUSTOM_POINT}
+          startIcon={!isMobile && <CustomPointViewIcon />}
+          rightBorder={isMobile}
+          onToggle={() => {
+            uiManager.togglePanel(CurrentOperatePanel.CUSTOM_POINT);
+          }}
+        >
+          {isMobile ? <CustomPointIcon /> : '自定义标点'}
+        </OperateMenu>
+        {endContent}
+      </div>
+    );
+  }
+);

@@ -603,20 +603,6 @@ export const DiscordIcon = (props: IconProps) => (
   </svg>
 );
 
-export const ElectricPoleIcon = (props: IconProps) => (
-  <svg width="1em" height="1em" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <path d="M11.9432 74.6288H37.3144V100H11.9432V74.6288Z" fill="currentColor" />
-    <path d="M62.6856 74.6288H88.0568V100H62.6856V74.6288Z" fill="currentColor" />
-    <path d="M41.0428 75.7661H58.7679V91.0107H41.0428V75.7661Z" fill="currentColor" />
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M62.6851 75.7655H37.3149V0H62.6851V75.7655ZM45.3075 7.6459V67.078H55.0392L51.2156 7.6459H45.3075Z"
-      fill="currentColor"
-    />
-  </svg>
-);
-
 export const LayoutAndLanguageIcon = (props: IconProps) => (
   <svg width="1em" height="1em" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <g clipPath="url(#clip0_453_12)">
@@ -817,6 +803,37 @@ export const EditDisconnectIcon = (props: IconProps) => (
     {...props}
   >
     <path d="M8.73,2.56v.65h-.65v-.65h.65M3.21,8.09v.65h-.65v-.65h.65M10.38.91h-3.94v1.61h-1.53l-.3.3.5.5.09-.09h1.23v1.61h3.94V.91h0ZM6.92,2.53v-1.13h2.97v2.97h-2.97v-1.13h.66v.47h1.65v-1.65h-1.65v.47h-.66ZM2.81,4.62l-.29.29v1.53H.91v3.94h3.94v-3.94h-1.61v-1.23l.08-.08-.5-.5h0ZM3.24,7.59v-.66h1.13v2.97H1.4v-2.97h1.13v.66h-.47v1.65h1.65v-1.65h-.47ZM9.01,7.42l-.6.6-.6-.6-.39.39.6.6-.6.6.39.39.6-.6.6.6.39-.39-.6-.6.6-.6-.39-.39h0Z" />
+  </svg>
+);
+
+export const FilterIcon = (props: IconProps) => (
+  <svg
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    viewBox="0 0 200 200"
+    {...props}
+  >
+    <path d="M151.65,64.05C151.65,28.98,123.06.55,87.8.55S23.95,28.98,23.95,64.05c0,32.04,23.86,58.52,54.87,62.86v54.77l17.95,17.86v-72.63c31.01-4.34,54.87-30.83,54.87-62.86ZM87.8,109.69c-25.34,0-45.89-20.44-45.89-45.64s20.55-45.64,45.89-45.64,45.89,20.43,45.89,45.64-20.55,45.64-45.89,45.64ZM87.8,48.25c-8.77,0-15.89,7.08-15.89,15.8s7.11,15.8,15.89,15.8,15.89-7.08,15.89-15.8-7.11-15.8-15.89-15.8ZM116.91,142.85v8.29l23.41,23.28v17.75l12.87,3.2v-20.95l23.41-23.28v-8.29h-59.69Z" />
+  </svg>
+);
+
+export const CustomPointIcon = (props: IconProps) => (
+  <svg
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    viewBox="0 0 200 200"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      d="M160.26,63.91C160.26,28.6,131.48-.03,95.98-.03S31.7,28.6,31.7,63.91c0,32.26,24.02,58.92,55.24,63.29v55.14l18.08,17.98v-73.12c31.22-4.37,55.24-31.04,55.24-63.29ZM95.98,109.86c-25.52,0-46.2-20.57-46.2-45.95s20.69-45.95,46.2-45.95,46.2,20.57,46.2,45.95-20.69,45.95-46.2,45.95ZM95.98,48c-8.83,0-15.99,7.12-15.99,15.91s7.16,15.91,15.99,15.91,16-7.12,16-15.91-7.16-15.91-16-15.91ZM127.08,164.53h18.04v-18.04h-18.04v18.04ZM150.27,169.68v18.04h18.04v-18.04h-18.04Z"
+    />
   </svg>
 );
 

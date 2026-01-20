@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { CogIcon } from '@/components/common/icons';
 import uiManager from '@/services/ui_manager';
 
-export const HeaderMenuSettings = () => {
+export const HeaderMenuSettings = ({ className }: { className?: string }) => {
   const { t } = useTranslation('header');
 
   const handleOpen = () => {
     uiManager.setSettingsShown(true);
   };
 
-  return <HeaderMenuTemplate icon={<CogIcon />} title={t('settings.title')} onClick={handleOpen} />;
+  return (
+    <HeaderMenuTemplate icon={<CogIcon />} title={t('settings.title')} onClick={handleOpen} className={className} />
+  );
 };

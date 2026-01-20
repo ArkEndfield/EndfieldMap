@@ -47,8 +47,8 @@ export const OperationItem = ({ children, rightBorder, actions, className, class
               asProps={{
                 onClick: action.onClick,
                 className: cn(
-                  'text-[#A3A3A3] w-8 h-8 hover:text-[#dad695]',
-                  action.active && 'text-[#FCF250] hover:text-[#FCF250]'
+                  'text-[#A3A3A3] w-8 h-8 md:hover:text-[#dad695]',
+                  action.active && 'text-[#FCF250] md:hover:text-[#FCF250]'
                 ),
               }}
             >

@@ -3,18 +3,20 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import type { Placement,Position, TooltipProps } from '@/components/common/endfield_components/types/tooltip';
+import type { Placement, Position, TooltipProps } from '@themes/types/tooltip';
 import { cn } from '@/utils/style';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 const TOOLTIP_OFFSET = 8;
 
 export const Tooltip = <T extends React.ElementType = 'div'>({
-  disabled = false,
+  disabled: _disabled = false,
   tooltip,
   children,
   placement = 'top',
   offset = TOOLTIP_OFFSET,
   keepOnHover = true,
+  disableOnMobile = true,
   onOpen,
   onClose,
   onOpenChange,
@@ -28,6 +30,9 @@ export const Tooltip = <T extends React.ElementType = 'div'>({
   const tooltipRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<number | null>(null);
+  const isMobile = useIsMobile();
+
+  const disabled = _disabled || (disableOnMobile && isMobile);
 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current || !measureRef.current) return;

@@ -1,38 +1,38 @@
-import React from 'react';
-
 export type Placement = 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'right';
 
 export interface TooltipProps<T extends React.ElementType> {
-  /** 是否禁用 */
+  /** 是否禁用 toiltip */
   disabled?: boolean;
   /** tooltip 内容 */
   tooltip: React.ReactNode;
-  /** tooltip 的子元素 */
+  /** 触发 tooltip 的组件 */
   children: React.ReactNode;
   /** tooltip 的位置 */
   placement?: Placement;
-  /** tooltip 的偏移量 */
+  /** tooltip 与触发元素的距离（像素） */
   offset?: number;
-  /** tooltip 是否保持打开 */
+  /** 鼠标移到 tooltip 上时是否保持显示 */
   keepOnHover?: boolean;
-  /** tooltip 打开时的回调 */
+  /** tooltip 的打开事件 */
   onOpen?: () => void;
-  /** tooltip 关闭时的回调 */
+  /** tooltip 的关闭事件 */
   onClose?: () => void;
-  /** tooltip 打开状态改变时的回调 */
+  /** tooltip 的打开状态改变事件 */
   onOpenChange?: (open: boolean) => void;
-  /** tooltip 的样式 */
+  /** 移动端自动禁用 tooltip */
+  disableOnMobile?: boolean;
+  /** 自定义传入tooltip的一些类名 */
   classNames?: {
-    /** tooltip 的容器 */
+    /** tooltip 的外部容器 */
     toolTipContainer?: string;
     /** tooltip 的顶部边框 */
     topBorder?: string;
-    /** tooltip 的内容 */
+    /** tooltip 的内容容器 */
     content?: string;
   };
-  /** tooltip 的类型 */
+  /** 指定触发 tooltip 组件渲染的组件 */
   as?: T;
-  /** tooltip 的类型 props */
+  /** 指定触发 tooltip 组件渲染的组件的 props */
   asProps?: React.ComponentProps<T>;
 }
 
