@@ -4894,6 +4894,7 @@ interface Resources {
     "ffef4125de08e0c94a64ccbe12de079b": "灰针秘剂·升级"
   },
   "map": {
+    "dung01_wrdg": "谷地像差：蚀像寻遗",
     "map01": "四号谷地",
     "map02": "武陵"
   },

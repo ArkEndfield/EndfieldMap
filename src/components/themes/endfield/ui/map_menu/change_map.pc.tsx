@@ -113,6 +113,9 @@ export const ChangeMapPC: React.FC = observer(() => {
               <MapButton active={mapIndex === MapIndex.MAP02} onClick={() => handleChangeMap(MapIndex.MAP02)}>
                 {t('map:map02')}
               </MapButton>
+              <MapButton active={mapIndex === MapIndex.WDRG} onClick={() => handleChangeMap(MapIndex.WDRG)}>
+                {t('map:dung01_wrdg')}
+              </MapButton>
             </div>
           </div>
         </motion.div>

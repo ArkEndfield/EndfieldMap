@@ -5,6 +5,7 @@
 export const enum MapIndex {
   MAP01 = 'map01',
   MAP02 = 'map02',
+  WDRG = 'dung01_wrdg'
 }
 
 /**
@@ -16,4 +17,5 @@ export const DEFAULT_MAP_CENTERS: Record<MapIndex, { x: number; y: number; z: nu
   // [MapIndex.MAP02]: [16, 185],
   [MapIndex.MAP01]: { x: -224, y: 0, z: -64 },
   [MapIndex.MAP02]: { x: -1408, y: 0, z: -752 },
+  [MapIndex.WDRG]: { x: -1408, y: 0, z: -752 },
 };
