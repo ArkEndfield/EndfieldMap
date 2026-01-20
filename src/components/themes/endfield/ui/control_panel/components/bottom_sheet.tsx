@@ -73,7 +73,7 @@ export const BottomSheet = ({
           <AnimatePresence>
             {!collapsed && (
               <motion.div
-                className={cn('fixed inset-0 z-10 bg-black/40', getClassName(classNames?.backdrop, open))}
+                className={cn('fixed inset-0 z-10 bg-black/40 text-white', getClassName(classNames?.backdrop, open))}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -85,7 +85,7 @@ export const BottomSheet = ({
           {/* 弹出层容器 - 使用 translateY 实现进入/退出动画 */}
           <motion.div
             className={cn(
-              'fixed bottom-0 left-0 right-0 z-10 flex flex-col bg-[#272727]',
+              'fixed bottom-0 left-0 right-0 z-10 flex flex-col bg-[#272727] text-white',
               'pb-8 pt-4',
               getClassName(classNames?.container, open)
             )}
@@ -100,7 +100,7 @@ export const BottomSheet = ({
             }}
           >
             {/* 标题按钮区域 */}
-            <div className="absolute z-2 -top-2 left-5 w-fit max-w-full bg-[#434343] flex rounded-full text-white text-xs h-4.5 items-center">
+            <div className="absolute z-2 -top-2 left-5 w-fit max-w-full bg-[#434343] flex rounded-full text-xs h-4.5 items-center">
               <ZmdRoundIconButton className="z-1 h-5.5 w-18" onClick={handleToggle}>
                 <ChevronUpTriangle
                   className={cn('transition-transform text-sm', collapsed ? 'rotate-0' : 'rotate-180')}
