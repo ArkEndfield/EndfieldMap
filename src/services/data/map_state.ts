@@ -61,7 +61,7 @@ export class MapStateDataService {
     });
 
     this.adjustView = new LocalStorageValue<boolean>({
-      initialValue: true,
+      initialValue: false,
       storageKey: LocalStorageKey.MAP_ADJUST_VIEW,
       onValueChange: (adjust) => {
         this.adapter.mapController.mapRenderer.setAdjustView(adjust);
