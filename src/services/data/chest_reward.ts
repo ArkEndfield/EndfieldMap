@@ -41,7 +41,7 @@ export class ChestRewardDataService {
     this.loadingPromise = (async () => {
       const assetPath = getAssetUrls();
       const rewardData = await this.jsonLoader.loadJSON<Record<string, RewardItem>>(
-        `${assetPath.entityData}/chest_reward.json`
+        `${assetPath.entityData}/reward_table.json`
       );
       this.storage.permanentSet(StorageKey.CHEST_REWARD, rewardData);
       this.inited = true;
