@@ -41,9 +41,13 @@ export const crd2xyz = (coordinate: Coordinate, mapIndex: MapIndex) => {
     x = coordinate[0] - 128;
     z = coordinate[1] - 144;
     times = 8;
-  } else {
+  } else if (mapIndex === MapIndex.MAP02) {
     x = coordinate[0] - 104;
     z = coordinate[1] - 232;
+    times = 16;
+  } else {
+    x = coordinate[0] - 64;
+    z = coordinate[1] - 176;
     times = 16;
   }
   return {

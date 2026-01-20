@@ -2,12 +2,14 @@ import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { LayerIcon } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 import type { ButtonHTMLAttributes } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface SubTitleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
 }
 
 export const SubTitle = (props: SubTitleProps) => {
+  const { t } = useTranslation('lang');
   const { className, children, active, ...rest } = props;
   return (
     <ButtonWithAudio
@@ -36,7 +38,7 @@ export const SubTitle = (props: SubTitleProps) => {
           active ? 'text-base' : 'text-sm'
         )}
       >
-        <div className="truncate">{children}</div>
+        <div className="truncate">{t(`lang:${children}`)}</div>
       </div>
     </ButtonWithAudio>
   );
