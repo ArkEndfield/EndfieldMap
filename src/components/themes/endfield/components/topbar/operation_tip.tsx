@@ -21,7 +21,7 @@ export const OperationTip = ({
       {open && (
         <motion.div
           className={cn(
-            'fixed left-1/2 -translate-x-1/2 top-16 max-w-full md:max-w-3/4',
+            'fixed left-1/2 -translate-x-1/2 top-16 max-w-full md:max-w-3/4 z-11',
             'flex items-center gap-1 overflow-hidden rounded-full',
             'bg-black/60 text-white backdrop-blur-md',
             'whitespace-nowrap',

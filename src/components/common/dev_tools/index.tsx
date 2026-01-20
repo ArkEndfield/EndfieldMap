@@ -60,29 +60,38 @@ const DevToolsPanel = observer(() => {
   const dragStartMousePos = useRef({ x: 0, y: 0 });
   const hasMoved = useRef(false);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const startDrag = (clientX: number, clientY: number) => {
     setIsDragging(true);
     hasMoved.current = false;
-    dragStartMousePos.current = { x: e.clientX, y: e.clientY };
+    dragStartMousePos.current = { x: clientX, y: clientY };
 
     const rect = ref.current?.getBoundingClientRect();
     if (rect) {
       const currentRightVal = window.innerWidth - rect.right;
-      const mouseDistFromWindowRight = window.innerWidth - e.clientX;
+      const mouseDistFromWindowRight = window.innerWidth - clientX;
       dragStartOffset.current = {
         right: mouseDistFromWindowRight - currentRightVal,
-        top: e.clientY - rect.top,
+        top: clientY - rect.top,
       };
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    startDrag(e.clientX, e.clientY);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      startDrag(touch.clientX, touch.clientY);
     }
   };
 
   useEffect(() => {
     if (isDragging) {
-      const d1 = domEventListener(window, 'mousemove', (e) => {
-        if (!isDragging) return;
-
+      const handleMove = (clientX: number, clientY: number) => {
         if (!hasMoved.current) {
-          const moveDist = Math.hypot(e.clientX - dragStartMousePos.current.x, e.clientY - dragStartMousePos.current.y);
+          const moveDist = Math.hypot(clientX - dragStartMousePos.current.x, clientY - dragStartMousePos.current.y);
           if (moveDist > 3) {
             hasMoved.current = true;
           } else {
@@ -90,9 +99,9 @@ const DevToolsPanel = observer(() => {
           }
         }
 
-        const mouseDistFromWindowRight = window.innerWidth - e.clientX;
+        const mouseDistFromWindowRight = window.innerWidth - clientX;
         let newRight = mouseDistFromWindowRight - dragStartOffset.current.right;
-        let newTop = e.clientY - dragStartOffset.current.top;
+        let newTop = clientY - dragStartOffset.current.top;
 
         // 边界检测
         if (ref.current) {
@@ -106,8 +115,9 @@ const DevToolsPanel = observer(() => {
         }
 
         setPosition({ right: newRight, top: newTop });
-      });
-      const d2 = domEventListener(window, 'mouseup', () => {
+      };
+
+      const handleEnd = () => {
         if (isDragging) {
           setIsDragging(false);
           if (devToolsState && hasMoved.current) {
@@ -117,14 +127,32 @@ const DevToolsPanel = observer(() => {
             };
           }
         }
-      });
-      const dispose = () => {
-        d1?.();
-        d2?.();
       };
 
+      const d1 = domEventListener(window, 'mousemove', (e) => {
+        handleMove(e.clientX, e.clientY);
+      });
+      const d2 = domEventListener(window, 'mouseup', handleEnd);
+      const d3 = domEventListener(
+        window,
+        'touchmove',
+        (e: TouchEvent) => {
+          if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            handleMove(touch.clientX, touch.clientY);
+          }
+        },
+        { passive: true }
+      );
+      const d4 = domEventListener(window, 'touchend', handleEnd);
+      const d5 = domEventListener(window, 'touchcancel', handleEnd);
+
       return () => {
-        dispose?.();
+        d1?.();
+        d2?.();
+        d3?.();
+        d4?.();
+        d5?.();
       };
     }
   }, [isDragging, position, devToolsState]);
@@ -155,6 +183,7 @@ const DevToolsPanel = observer(() => {
         height: collapsed ? '40px' : 'auto',
       }}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
     >
       <div className={cn('flex items-center justify-between p-2 select-none h-10', collapsed ? 'p-0 h-10' : '')}>
         {!collapsed && <span className="text-xs font-bold ml-1">DevTools</span>}

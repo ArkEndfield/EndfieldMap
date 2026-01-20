@@ -13,8 +13,8 @@ export const ZmdRoundIconButton = (props: ZmdIconButtonProps) => {
         'before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:rounded-full',
         'before:bg-[url(/images/bg/pag-button-texture.png)] before:bg-cover before:bg-center before:bg-no-repeat',
         'before:opacity-40 before:transition-opacity',
-        !disabled && 'hover:bg-[#fffa00] active:bg-[#eeea00] hover:before:opacity-100 cursor-pointer',
-        disabled && 'opacity-50 cursor-not-allowed',
+        !disabled && 'md:hover:bg-[#fffa00] md:active:bg-[#eeea00] md:hover:before:opacity-100',
+        disabled && 'opacity-50',
         className
       )}
       {...rest}

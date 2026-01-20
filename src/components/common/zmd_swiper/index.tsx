@@ -147,7 +147,7 @@ const ZmdSwiper = observer(() => {
         className="absolute right-full mr-1 top-1/2 -translate-y-1/2 z-1 w-4 h-12"
         onClick={() => (uiManager.swiperOpen.value = !uiManager.swiperOpen.value)}
       >
-        <ChevronUpTriangle className={cn('transition-transform rotate-270 text-xs', expanded && 'rotate-90')} />
+        <ChevronUpTriangle className={cn('transition-transform text-xs', expanded ? 'rotate-90' : 'rotate-270')} />
       </ZmdRoundIconButton>
     </div>
   );

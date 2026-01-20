@@ -58,11 +58,11 @@ export const ZmdSquareButton = ({
         'after:bg-[url(/images/bg/tex_mainBtn_dec.png)] after:bg-contain after:bg-left after:bg-no-repeat',
         isIconLeft ? 'pl-7 pr-1' : 'pl-1 pr-7 before:rotate-180 after:rotate-180',
         isPrimary
-          ? 'bg-[#2a2728] text-[#fefcfc] hover:bg-[#1e1c1c] hover:text-[#f3f1f1] active:bg-[#2a2728] active:text-[#fefcfc]'
-          : 'bg-[#f2f1ef] text-[#4d4d4d] hover:bg-[#d4d3d1] hover:text-[#5a5a5a] active:bg-[#f2f1ef] active:text-[#4d4d4d]',
+          ? 'bg-[#2a2728] text-[#fefcfc] md:hover:bg-[#1e1c1c] md:hover:text-[#f3f1f1] active:bg-[#2a2728] active:text-[#fefcfc]'
+          : 'bg-[#f2f1ef] text-[#4d4d4d] md:hover:bg-[#d4d3d1] md:hover:text-[#5a5a5a] active:bg-[#f2f1ef] active:text-[#4d4d4d]',
         isPrimary
-          ? 'shadow-[0_0_0_0.05em_#2a2728,0_0_0_0.05em_#81807f_inset] hover:shadow-[0_0_0_0.05em_#1e1c1c,0_0_0_0.05em_#81807f_inset] active:shadow-[0_0_0_0.05em_#2a2728,0_0_0_0.05em_#81807f_inset]'
-          : 'shadow-[0_0_0_0.05em_#f2f1ef,0_0_0_0.05em_#a0a2a3_inset] hover:shadow-[0_0_0_0.05em_#d4d3d1,0_0_0_0.05em_#a0a2a3_inset] active:shadow-[0_0_0_0.05em_#f2f1ef,0_0_0_0.05em_#a0a2a3_inset]',
+          ? 'shadow-[0_0_0_0.05em_#2a2728,0_0_0_0.05em_#81807f_inset] md:hover:shadow-[0_0_0_0.05em_#1e1c1c,0_0_0_0.05em_#81807f_inset] active:shadow-[0_0_0_0.05em_#2a2728,0_0_0_0.05em_#81807f_inset]'
+          : 'shadow-[0_0_0_0.05em_#f2f1ef,0_0_0_0.05em_#a0a2a3_inset] md:hover:shadow-[0_0_0_0.05em_#d4d3d1,0_0_0_0.05em_#a0a2a3_inset] active:shadow-[0_0_0_0.05em_#f2f1ef,0_0_0_0.05em_#a0a2a3_inset]',
         isDisabled && 'opacity-70 pointer-events-none',
         className,
         classNames?.button &&

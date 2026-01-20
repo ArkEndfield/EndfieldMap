@@ -35,7 +35,15 @@ export class EndfieldUIManager {
    */
   @computed
   get isSidePanelOpen(): boolean {
-    return this.operatePanelOpen.value && this.currentOperatePanel.value !== CurrentOperatePanel.NONE;
+    return this.operatePanelOpen.value && this.isNonEmptyPanel;
+  }
+
+  /**
+   * 是否为非空面板
+   */
+  @computed
+  get isNonEmptyPanel(): boolean {
+    return this.currentOperatePanel.value !== CurrentOperatePanel.NONE;
   }
 
   /**

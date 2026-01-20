@@ -108,7 +108,7 @@ export const LeftContentContainer: React.FC<{
           )}
           onClick={toggleExpand}
         >
-          <ChevronUpTriangle className={cn('transition-transform rotate-270 text-xs', !isExpanded && 'rotate-90')} />
+          <ChevronUpTriangle className={cn('transition-transform text-xs', !isExpanded ? 'rotate-90' : 'rotate-270')} />
         </ZmdRoundIconButton>
       )}
     </div>

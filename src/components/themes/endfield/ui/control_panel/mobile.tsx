@@ -1,15 +1,76 @@
+import { CurrentOperatePanel } from '@themes/endfield/const/ui';
+import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
+import { BottomSheet } from '@themes/endfield/ui/control_panel/components/bottom_sheet';
 import { FilterAndEntityPanelMobile } from '@themes/endfield/ui/control_panel/controllers/filter_and_entity_panel.mobile';
-import { CustomPointButtonMobile } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point_button';
-import { ElectricPoleButtomMobile } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole_button';
-import { SelectModeOperation } from '@themes/endfield/ui/control_panel/controllers/operations/select_mode';
+import { CustomPointManager } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point';
+import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
-export default function MobileControlPanel() {
+import { alert } from '@/components/common/alert/alert_api';
+import { useAdapter } from '@/hooks/use_adapter';
+
+const MobileControlPanel = observer(() => {
+  const { t } = useTranslation('sidebar');
+  const uiManager = useEndfieldUIManager();
+  const { dataService } = useAdapter();
+  const currentPanel = uiManager.currentOperatePanel.value;
+  const isOpen = uiManager.isSidePanelOpen; // Controls collapsed state
+  const isNoneCurrentPanel = currentPanel === CurrentOperatePanel.NONE;
+
+  // Toggle collapse state (like PC's FoldButton)
+  const toggleCollapse = () => {
+    uiManager.operatePanelOpen.value = !isOpen;
+  };
+
+  const handleToggleElectricPole = () => {
+    if (dataService.electricPoleDataService.isInElectricOperateMode) {
+      alert.info(t('operation.electric_pole_operating_tip'));
+      return;
+    }
+    toggleCollapse();
+  };
+
+  const handleToggleCustomPoint = () => {
+    if (dataService.customPointDataService.isInCustomPointOperateMode) {
+      alert.info(t('operation.custom_point_operating_tip'));
+      return;
+    }
+    toggleCollapse();
+  };
+
+  // Don't render anything if no panel is selected
+  if (isNoneCurrentPanel) return null;
+
   return (
     <>
-      <ElectricPoleButtomMobile />
-      <CustomPointButtonMobile />
-      <FilterAndEntityPanelMobile />
-      <SelectModeOperation />
+      <BottomSheet
+        open={currentPanel === CurrentOperatePanel.FILTER}
+        collapsed={!isOpen}
+        onToggleCollapse={toggleCollapse}
+      >
+        <FilterAndEntityPanelMobile />
+      </BottomSheet>
+
+      <BottomSheet
+        open={currentPanel === CurrentOperatePanel.ELECTRIC_POLE}
+        collapsed={!isOpen}
+        onToggleCollapse={handleToggleElectricPole}
+        dismissible={!dataService.electricPoleDataService.isInElectricOperateMode}
+      >
+        <ElectricPoleManager />
+      </BottomSheet>
+
+      <BottomSheet
+        open={currentPanel === CurrentOperatePanel.CUSTOM_POINT}
+        collapsed={!isOpen}
+        onToggleCollapse={handleToggleCustomPoint}
+        dismissible={!dataService.customPointDataService.isInCustomPointOperateMode}
+      >
+        <CustomPointManager />
+      </BottomSheet>
     </>
   );
-}
+});
+
+export default MobileControlPanel;

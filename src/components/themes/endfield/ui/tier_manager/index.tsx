@@ -17,6 +17,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
   const uiManager = useEndfieldUIManager();
   const isMobile = useIsMobile();
   const isSidePanelOpen = uiManager.isSidePanelOpen;
+  const isNonEmptyPanel = uiManager.isNonEmptyPanel;
   const availableTierData = dataService.gridTiersDataService.availableTierData;
   const activeTierData = dataService.gridTiersDataService.activeTierData;
   const activeSubTierData = dataService.gridTiersDataService.activeSubTierData;
@@ -27,6 +28,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
       className={cn(
         'text-white text-xs bottom-0 fixed overflow-hidden transition-[left] ease-in-out duration-300 group/list',
         isSidePanelOpen && !isMobile ? 'left-82 delay-100' : '-left-4',
+        isMobile && isNonEmptyPanel && 'bottom-15',
         className
       )}
     >
@@ -55,7 +57,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                     adapter.tierController.toggleTier(adapter.currentMapIndex, item.center, item.id);
                   }}
                   className={cn(
-                    'opacity-50 hover:translate-x-2',
+                    'opacity-50 md:hover:translate-x-2',
                     availableTierData?.id === item.id && 'opacity-80 ring-1 ring-[#FEFA53]/40',
                     activeTierData?.id === item.id && 'opacity-100 ring-1 ring-[#FEFA53] text-[#FEFA53]'
                   )}

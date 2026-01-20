@@ -8,10 +8,10 @@ export const ZmdSquareIconButton = (props: ZmdIconButtonProps) => {
     <ButtonWithAudio
       className={cn(
         'rounded-md w-6 h-6 flex items-center justify-center relative shadow-[0_0_.625rem_rgba(2,2,2,.3)]',
-        'bg-[#fafafa] hover:bg-[#e8e8e8] active:bg-[#eeea00] text-[#3c3c3c] transition-colors',
+        'bg-[#fafafa] md:hover:bg-[#e8e8e8] active:bg-[#eeea00] text-[#3c3c3c] transition-colors',
         'before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:rounded-full',
         'before:bg-[url(/images/bg/pag-button-texture.png)] before:bg-cover before:bg-center before:bg-no-repeat',
-        'before:opacity-40 before:transition-opacity hover:before:opacity-100',
+        'before:opacity-40 before:transition-opacity md:hover:before:opacity-100',
         className
       )}
       {...rest}
