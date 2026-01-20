@@ -46,6 +46,7 @@ export class MapStateDataService {
       initialValue: {
         [MapIndex.MAP01]: 3,
         [MapIndex.MAP02]: 3,
+        [MapIndex.DUNG01]: 3,
       },
       storageKey: LocalStorageKey.MAP_ZOOM,
     });
@@ -54,6 +55,7 @@ export class MapStateDataService {
       initialValue: {
         [MapIndex.MAP01]: getMapCenter(MapIndex.MAP01),
         [MapIndex.MAP02]: getMapCenter(MapIndex.MAP02),
+        [MapIndex.DUNG01]: getMapCenter(MapIndex.DUNG01),
       },
       storageKey: LocalStorageKey.MAP_VIEW_STATE,
     });

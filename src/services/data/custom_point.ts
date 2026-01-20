@@ -98,7 +98,7 @@ export class CustomPointDataService {
 
   private ensureMapData(data: Partial<CustomPointMapData>): CustomPointMapData {
     const ensured: Partial<CustomPointMapData> = {};
-    const mapIndices: MapIndex[] = [MapIndex.MAP01, MapIndex.MAP02];
+    const mapIndices: MapIndex[] = [MapIndex.MAP01, MapIndex.MAP02, MapIndex.DUNG01];
 
     mapIndices.forEach((mapIndex) => {
       if (!data[mapIndex]) {

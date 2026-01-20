@@ -87,6 +87,7 @@ export const CustomPointKey = '#custom_point';
 export const ELECTRIC_ZONE_RADIUS: Record<MapIndex, number> = {
   [MapIndex.MAP01]: 10,
   [MapIndex.MAP02]: 5,
+  [MapIndex.DUNG01]: 0
 };
 
 /** 地图类型 */

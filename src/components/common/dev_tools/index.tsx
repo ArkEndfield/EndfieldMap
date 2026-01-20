@@ -1,4 +1,4 @@
-import { crd2xyz, domEventListener } from '@endfieldmap/tools';
+import { crd2xyz, domEventListener, xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
@@ -222,6 +222,7 @@ const DevToolsPanel = observer(() => {
             </div>
             {devToolsState.value.showCursorPosition && <CursorPositionDisplay />}
             <TierControls />
+            <CoordinateJump />
             <button
               className={cn(
                 'w-full flex items-center justify-center gap-2 px-2 py-1.5 rounded text-xs border border-white/10 transition-colors',
@@ -243,6 +244,70 @@ const DevToolsPanel = observer(() => {
           </div>
         </div>
       )}
+    </div>
+  );
+});
+
+const CoordinateJump = observer(() => {
+  const { adapter } = useAdapter();
+  const [mode, setMode] = useState<'xyz' | 'crd'>('xyz');
+  const [x, setX] = useState('');
+  const [y, setY] = useState('');
+  const [z, setZ] = useState('');
+
+  const handleJump = () => {
+    if (mode === 'xyz') {
+      const coord = xyz2crd({ x: Number(x), y: Number(y), z: Number(z) }, adapter.currentMapIndex);
+      adapter.mapController.setCenter(coord);
+    } else {
+      adapter.mapController.setCenter([Number(x), Number(z)]);
+    }
+  };
+
+  return (
+    <div className="border border-white/10 rounded p-2 space-y-2">
+      <div className="flex gap-2">
+        <button
+          className={cn('px-2 py-1 text-[10px] rounded', mode === 'xyz' ? 'bg-white/20' : 'bg-white/5')}
+          onClick={() => setMode('xyz')}
+        >
+          XYZ
+        </button>
+        <button
+          className={cn('px-2 py-1 text-[10px] rounded', mode === 'crd' ? 'bg-white/20' : 'bg-white/5')}
+          onClick={() => setMode('crd')}
+        >
+          CRD
+        </button>
+      </div>
+      <div className="flex gap-1">
+        <input
+          className="w-full bg-white/5 border border-white/10 rounded px-1 py-0.5 text-[10px]"
+          placeholder={mode === 'xyz' ? 'x' : 'crd[0]'}
+          value={x}
+          onChange={(e) => setX(e.target.value)}
+        />
+        {mode === 'xyz' && (
+          <input
+            className="w-full bg-white/5 border border-white/10 rounded px-1 py-0.5 text-[10px]"
+            placeholder="y"
+            value={y}
+            onChange={(e) => setY(e.target.value)}
+          />
+        )}
+        <input
+          className="w-full bg-white/5 border border-white/10 rounded px-1 py-0.5 text-[10px]"
+          placeholder={mode === 'xyz' ? 'z' : 'crd[1]'}
+          value={z}
+          onChange={(e) => setZ(e.target.value)}
+        />
+      </div>
+      <button
+        className="w-full bg-white/10 hover:bg-white/20 rounded px-2 py-1 text-[10px]"
+        onClick={handleJump}
+      >
+        跳转
+      </button>
     </div>
   );
 });

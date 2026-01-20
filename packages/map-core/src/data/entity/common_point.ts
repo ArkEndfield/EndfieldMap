@@ -47,8 +47,8 @@ export class CommonPointDataManager {
 
     this.loadPromise = (async () => {
       const dataPromise = Promise.all([
-        this.jsonLoader.loadJSON<EntityJsonDataList>(`${this.assetPath}/entities.json`),
-        this.jsonLoader.loadJSON<EntityInfoDataJson>(`${this.assetPath}/info.json`),
+        this.jsonLoader.loadJSON<EntityJsonDataList>(`${this.assetPath}/level_entities_filtered.json`),
+        this.jsonLoader.loadJSON<EntityInfoDataJson>(`${this.assetPath}/entity_info.json`),
       ]);
       const [data, infoData] = await dataPromise;
 

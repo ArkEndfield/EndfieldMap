@@ -73,8 +73,8 @@ export class EntityMapDataManager {
   private async doLoadData(): Promise<void> {
     try {
       const [jsonData, infoData] = await Promise.all([
-        this.jsonLoader.loadJSON<EntityJsonDataList>(`${this.assetPath}/entities.json`),
-        this.jsonLoader.loadJSON<EntityInfoDataJson>(`${this.assetPath}/info.json`),
+        this.jsonLoader.loadJSON<EntityJsonDataList>(`${this.assetPath}/level_entities_filtered.json`),
+        this.jsonLoader.loadJSON<EntityInfoDataJson>(`${this.assetPath}/entity_info.json`),
       ]);
 
       // 处理info数据
