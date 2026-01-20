@@ -11,11 +11,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { ChevronUp, ChevronUpTriangle } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
 
 const ZmdSwiper = observer(() => {
   const expanded = uiManager.swiperOpen.value;
+  const isMobile = useIsMobile();
   const { dataService } = useAdapter();
   const swiperRef = useRef<SwiperType>(null);
   const paginationContainerRef = useRef<HTMLDivElement>(null);
@@ -59,13 +61,13 @@ const ZmdSwiper = observer(() => {
   }
 
   return (
-    <div className="fixed right-0 h-36 bottom-18 md:bottom-12">
+    <div className="fixed right-0 h-28 md:h-36 bottom-11 md:bottom-12">
       <AnimatePresence>
         {expanded && (
           <motion.div
             initial={{ width: 0, opacity: 0, paddingRight: 0 }}
             animate={{
-              width: '16rem',
+              width: isMobile ? '12rem' : '16rem',
               opacity: 1,
               paddingRight: '1rem',
               transition: { duration: 0.5, type: 'spring', bounce: 0.25 },
@@ -132,7 +134,7 @@ const ZmdSwiper = observer(() => {
               {swiperConfig.list.map((_, index) => (
                 <div
                   key={index}
-                  className="flex-1 h-1 bg-[#818182] relative overflow-hidden cursor-pointer"
+                  className="flex-1 h-0.5 md:h-1 bg-[#818182] relative overflow-hidden cursor-pointer"
                   onClick={() => swiperRef.current?.slideToLoop(index)}
                   data-index={index}
                 />
