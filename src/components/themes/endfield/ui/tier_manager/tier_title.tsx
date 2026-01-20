@@ -16,7 +16,7 @@ export const TierTitle = (props: TierTitleProps) => {
       )}
     >
       <div className="flex-1">{children}</div>
-      <div className="shrink-0 flex items-center justify-center">
+      <div className="shrink-0 flex items-center justify-center text-base">
         <LayersIcon />
       </div>
     </ButtonWithAudio>
