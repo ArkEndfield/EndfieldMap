@@ -1,4 +1,5 @@
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { LayersIcon } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 import type { ButtonHTMLAttributes } from 'react';
 
@@ -15,7 +16,9 @@ export const TierTitle = (props: TierTitleProps) => {
       )}
     >
       <div className="flex-1">{children}</div>
-      <div className="shrink-0">1</div>
+      <div className="shrink-0 flex items-center justify-center">
+        <LayersIcon />
+      </div>
     </ButtonWithAudio>
   );
 };

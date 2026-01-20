@@ -45,7 +45,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
               exit={{ opacity: 0, filter: 'blur(2px)' }}
               transition={{ duration: 0.3, type: 'spring', bounce: 0 }}
               key={item.id}
-              className="overflow-hidden"
+              className="overflow-hidden pr-2"
             >
               <ScrollableListItem className="p-0.5" id={item.id}>
                 <TierTitle
@@ -53,9 +53,9 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                     adapter.tierController.toggleTier(adapter.currentMapIndex, item.center, item.id);
                   }}
                   className={cn(
-                    'opacity-50',
+                    'opacity-50 hover:translate-x-2',
                     availableTierData?.id === item.id && 'opacity-80 ring-1 ring-[#FEFA53]/40',
-                    activeTierData?.id === item.id && 'opacity-100 ring-1 ring-[#FEFA53]'
+                    activeTierData?.id === item.id && 'opacity-100 ring-1 ring-[#FEFA53] text-[#FEFA53]'
                   )}
                 >
                   ./{item.name}
@@ -85,12 +85,11 @@ const TierManager = observer(({ className }: TierManagerProps) => {
             >
               ./{activeTierData.name}
             </TierTitle>
-            <motion.div
+            <div
               className={cn(
                 'ml-8 mt-1.5 pb-5 relative',
                 'after:absolute after:top-0 after:w-0.5 after:bottom-0 after:bg-white/50 after:left-20'
               )}
-              layout
             >
               {activeTierData.items.map((item) => (
                 <SubTitle
@@ -108,7 +107,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                   {item.name}
                 </SubTitle>
               ))}
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

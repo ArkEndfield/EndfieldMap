@@ -889,3 +889,37 @@ export const ChangeMapIcon = (props: IconProps) => (
     <path d="M5.35,10.46v-5.21L.9,3.41l4.44,7.05ZM5.95,5.25v5.21l4.44-7.05-4.44,1.84ZM5.65.83L.93,2.78l4.71,1.95,4.71-1.95L5.65.83Z" />
   </svg>
 );
+
+export const LayerIcon = (props: IconProps) => (
+  <svg
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    viewBox="0 0 197.69 95.22"
+    {...props}
+  >
+    <path opacity={0.5} fillRule="evenodd" d="M57.69,55.6l40.74-19.61,40.73,19.61-40.73,19.61-40.74-19.61Z" />
+    <path
+      fillRule="evenodd"
+      d="M98.42,0L0,47.39l98.42,47.39,98.42-47.39L98.42,0ZM40.63,47.39l57.79-27.82,57.79,27.82-57.79,27.82-57.79-27.82Z"
+    />
+  </svg>
+);
+
+export const LayersIcon = (props: IconProps) => (
+  <svg
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    viewBox="0 0 118.62 103.16"
+    {...props}
+  >
+    <path d="M58.88,56.52l58.89-28.36L59.29,0l-.41-.19L0,28.16l58.47,28.16.41.19ZM58.88,10.12l37.47,18.04-37.47,18.04L21.42,28.16,58.88,10.12Z" />
+    <polygon points="98.59 42.12 87.88 47.28 96.35 51.36 58.88 69.4 21.42 51.36 29.89 47.28 19.18 42.12 0 51.36 58.88 79.71 117.77 51.36 98.99 42.32 98.59 42.12" />
+    <polygon points="87.88 70.47 96.35 74.55 58.88 92.59 21.42 74.55 29.89 70.47 19.18 65.32 0 74.55 58.88 102.9 117.77 74.55 98.59 65.32 87.88 70.47" />
+  </svg>
+);

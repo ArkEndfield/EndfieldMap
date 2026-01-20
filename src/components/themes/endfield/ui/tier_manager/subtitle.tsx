@@ -1,4 +1,5 @@
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { LayerIcon } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 import type { ButtonHTMLAttributes } from 'react';
 
@@ -19,12 +20,12 @@ export const SubTitle = (props: SubTitleProps) => {
     >
       <div
         className={cn(
-          'h-8 w-8 flex items-center justify-center relative',
+          'h-8 w-8 flex items-center justify-center relative pl-1.5 text-lg',
           'after:absolute after:w-0.5 after:h-4 group-hover:after:h-8 after:bg-white after:-right-0.5 after:transition-all after:duration-300',
           active && 'after:h-8 after:bg-[#fff100] bg-linear-to-r from-transparent to-[#fff100]/50'
         )}
       >
-        1
+        <LayerIcon />
       </div>
 
       <div
