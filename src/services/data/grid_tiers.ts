@@ -48,7 +48,7 @@ export class GridTiersDataService {
         mapIndex = MapIndex.MAP01;
       } else if (id.startsWith('map02')) {
         mapIndex = MapIndex.MAP02;
-      } if (id.startsWith('dung01')) {
+      } else if (id.startsWith('dung01')) {
         mapIndex = MapIndex.DUNG01;
       } else {
         return;
