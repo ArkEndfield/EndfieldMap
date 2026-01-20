@@ -1,25 +1,22 @@
 import type { DealedRewardItem } from '@eftypes/reward';
 import type { EntityData } from '@endfieldmap/map-core';
 import { Item } from '@themes/endfield/components/item';
-import { RewardTitle } from '@themes/endfield/ui/popup/right_content/reward_title';
+import { SubPopupTitle } from '@/components/themes/endfield/ui/popup/right_content/title';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
-import { hasChestReward, isDealedRewardItemWithCount } from '@/utils/reward';
+import { isDealedRewardItemWithCount } from '@/utils/reward';
 
 export const ChestReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<DealedRewardItem[]>([]);
-  const showRewards = hasChestReward(entity);
   const { t } = useTranslation(['popup', 'lang']);
   const { dataService } = useAdapter();
 
   const getRewadData = useCallback(async () => {
-    if (showRewards) {
-      const rewards = await dataService.chestRewardDataService.getRewards(entity.properties.reward_id);
-      return rewards;
-    }
-  }, [dataService.chestRewardDataService, entity, showRewards]);
+    const rewards = await dataService.chestRewardDataService.getRewards(entity.properties.reward_id);
+    return rewards;
+  }, [dataService.chestRewardDataService, entity]);
 
   useEffect(() => {
     getRewadData().then((data) => {
@@ -29,16 +26,14 @@ export const ChestReward = ({ entity }: { entity: EntityData }) => {
     });
   }, [getRewadData]);
 
-  if (!showRewards) {
-    return null;
-  }
   if (!rewards || rewards.length <= 0) {
     return <div className="text-center text-gray-400 py-4">暂无奖励信息</div>;
   }
+
   return (
     <div>
-      <RewardTitle>{t('popup:reward.chest.title')}</RewardTitle>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-8 px-2">
+      <SubPopupTitle>{t('popup:reward.chest.title')}</SubPopupTitle>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-8 pb-8 pl-6 pr-4 pt-3">
         {rewards.map((rwd) => (
           <Item
             key={rwd.id}
@@ -55,7 +50,7 @@ export const ChestReward = ({ entity }: { entity: EntityData }) => {
             name={t(`lang:${rwd.name}`, {
               defaultValue: rwd.name,
             })}
-          ></Item>
+          />
         ))}
       </div>
     </div>

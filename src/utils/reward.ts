@@ -22,17 +22,18 @@ export function hasChestReward(entity?: EntityData): boolean {
  */
 export function hasDungeonReward(entity?: EntityData): boolean {
   if (!entity) return false;
-  return !!entity.properties?.dungeion_series_id;
+  return !!entity.properties?.system_inst_key;
 }
 
 /**
- * 实体是否有奖励
+ * 实体是否有DeltaRobot
  * @param entity 实体
- * @returns 是否有奖励
+ * @returns 是否有DeltaRobot
  */
-export function hasReward(entity?: EntityData): boolean {
-  return true
-  return hasChestReward(entity) || hasDungeonReward(entity);
+export function hasDeltaRobot(entity?: EntityData): boolean {
+  if (!entity) return false;
+  // TODO: fixme
+  return entity.entityDataIdKey === 'int_fixable_robot';
 }
 
 /**

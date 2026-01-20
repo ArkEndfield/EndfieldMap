@@ -133,13 +133,14 @@ const CustomPointList: React.FC = observer(() => {
 
           // 构造 EntityItem 需要的数据
           const entityInfo = {
+            uniqueKey: group.entityDataIdKey,
             category: CustomPointKey,
             entityDataIdKey: group.entityDataIdKey,
             entityInfo: typeEntityInfo.entityInfo,
             count: group.count,
             markedCount: 0,
             visible: group.allVisible,
-          };
+          } as const;
 
           return (
             <EntityItem

@@ -53,9 +53,9 @@ export class DungeonSeriesDataService {
     return dungeonSeriesData[id];
   }
 
-  public async getDungeonRewards(dungeion_series_id?: string) {
-    if (!dungeion_series_id) return {};
-    const dungeonSeries = await this.getDungeonSeriesDataById(dungeion_series_id);
+  public async getDungeonRewards(system_inst_key?: string) {
+    if (!system_inst_key) return {};
+    const dungeonSeries = await this.getDungeonSeriesDataById(system_inst_key);
     if (!dungeonSeries) return {};
     const includeDungeon = dungeonSeries.includeDungeon;
 
@@ -83,9 +83,9 @@ export class DungeonSeriesDataService {
     return rewards;
   }
 
-  public async getIncludeDungeonCount(dungeion_series_id?: string) {
-    if (!dungeion_series_id) return 0;
-    const dungeonSeries = await this.getDungeonSeriesDataById(dungeion_series_id);
+  public async getIncludeDungeonCount(system_inst_key?: string) {
+    if (!system_inst_key) return 0;
+    const dungeonSeries = await this.getDungeonSeriesDataById(system_inst_key);
     if (!dungeonSeries || !dungeonSeries.includeDungeon) return 0;
     return dungeonSeries.includeDungeon.length;
   }

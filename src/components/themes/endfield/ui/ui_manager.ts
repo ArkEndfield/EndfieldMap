@@ -3,6 +3,7 @@ import { EndfieldThemeLocalStorageKey } from '@themes/endfield/const/storage_key
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 
 import type { DataService } from '@/services/data';
+import { computed } from 'mobx';
 
 export class EndfieldUIManager {
   private static instance: EndfieldUIManager;
@@ -27,6 +28,14 @@ export class EndfieldUIManager {
       initialValue: true,
       storageKey: EndfieldThemeLocalStorageKey.OPERATE_PANEL_OPEN,
     });
+  }
+
+  /**
+   * 侧边栏是否打开
+   */
+  @computed
+  get isSidePanelOpen(): boolean {
+    return this.operatePanelOpen.value && this.currentOperatePanel.value !== CurrentOperatePanel.NONE;
   }
 
   /**

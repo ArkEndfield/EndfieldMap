@@ -1,90 +1,32 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
-import { CustomPointDataInstance, CustomPointKey, customPointTypes, ElectricPoleKey } from '@endfieldmap/map-core';
-import { Toggle } from '@themes/endfield/components/toggle';
-import { ClipSquare, Deco } from '@themes/endfield/ui/popup/deco';
+import { CustomPointDataInstance, CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
-import { alert } from '@/components/common/alert/alert_api';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { Guide } from '@/components/common/guide';
-import { EditIcon, PowerIcon } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
+import { useActiveFeatureName } from '@/hooks/use_entity_name';
 
-/** 描边 */
-const Border = () => (
-  <div
-    className="absolute inset-0 bottom-[18px] pointer-events-none -z-1"
-    style={{
-      filter: 'url(#stroke-filter)',
-    }}
-  >
-    <ClipSquare className="bg-[#272827]" />
-    <div className="w-full h-[calc(100%-1rem+1.5rem)] bg-[#272827]" />
-  </div>
-);
-
-/** 关闭按钮 */
-export const CloseButton = ({ onClick }: { onClick?: () => void }) => (
-  <ButtonWithAudio className="no-underline absolute top-3 right-5 text-3xl text-[#ece065] z-2" onClick={onClick}>
-    <PowerIcon />
-  </ButtonWithAudio>
-);
-
-/** 顶部图标和标题 */
-const Header = ({ name, pic }: { name: string; pic: string }) => (
-  <div className="flex items-center gap-2 shrink-0">
-    <div className="shrink-0">
-      <img src={pic} className="w-6 h-6 rounded-full" />
-    </div>
-    <div className="truncate overflow-hidden">{name}</div>
-  </div>
-);
+import { Footer } from '@themes/endfield/ui/popup/left_content/footer';
+import { PopupHeader } from '@themes/endfield/ui/popup/left_content/header';
+import { MarkButton } from '@themes/endfield/ui/popup/left_content/mark_button';
+import { RenameButton } from '@themes/endfield/ui/popup/left_content/rename_button';
+import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { ChevronUpTriangle } from '@/components/common/icons';
 
 export const LeftContent = observer(({ className }: { className?: string }) => {
-  const { adapter, dataService } = useAdapter();
-  const { t } = useTranslation(['popup', 'common', 'lang']);
+  const { adapter } = useAdapter();
+  const { t } = useTranslation(['popup', 'common']);
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityInfo = activeFeature?.entityInfo;
 
-  const isElectricPole = entityInfo?.category === ElectricPoleKey;
   const isCustomPoint = entityInfo?.category === CustomPointKey;
-  const displayName = (() => {
-    if (isElectricPole && activeFeature) {
-      return activeFeature.name;
-    } else if (isCustomPoint && activeFeature) {
-      return activeFeature.name;
-    }
-    return t(`lang:${dataService.langHashDataService.getHash(entityInfo?.entityInfo.point)}`, {
-      defaultValue: entityInfo?.entityInfo.point || '',
-    });
-  })();
-
-  const handleToggleMarked = () => {
-    activeFeature?.toggleMarked?.();
-  };
-
-  const handleRename = async () => {
-    if (!activeFeature?.rename) return;
-
-    const currentName = activeFeature.name;
-    const content = isElectricPole ? t('popup:electric_pole.rename_tip') : t('popup:custom_point.rename_tip');
-
-    const newName = await alert.prompt({
-      content,
-      defaultValue: currentName,
-    });
-
-    if (newName && newName !== currentName) {
-      activeFeature.rename(newName);
-    }
-  };
+  const { name: displayName, categoryName } = useActiveFeatureName(activeFeature);
 
   const handleChangePointType = (newType: CustomPointTypeId) => {
     if (!activeFeature || !isCustomPoint) return;
@@ -108,59 +50,35 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className={cn('relative z-1 flex flex-col min-h-60', className)}
+          className={cn('relative z-1 flex flex-col h-full', className)}
         >
-          <Header name={displayName || ''} pic={getEntityIcon(entityInfo.category, entityInfo.entityInfo.pic)} />
+          <PopupHeader onClose={() => adapter.activeFeatureController.clearActiveFeature?.()}>
+            <MarkButton entity={activeFeature} />
+            <RenameButton entity={activeFeature} />
+          </PopupHeader>
 
-          <div className="my-2 text-sm flex flex-wrap items-center gap-2 px-4 shrink-0">
-            <span className="ml-auto text-zinc-400">id: {activeFeature.id}</span>
-          </div>
-
-          <ScrollArea className="flex-1 min-h-0">
+          <ScrollArea className="flex-1 min-h-0 p-3">
             <Guide entity={activeFeature.data} />
-          </ScrollArea>
 
-          {/* 自定义标点类型选择 */}
-          {isCustomPoint && (
-            <div className="mt-3 shrink-0">
-              <div className="text-xs text-[#aaaaaa] mb-1">{t('popup:custom_point.change_type')}</div>
-              <EndfieldSelect
-                value={(activeFeature as CustomPointDataInstance).typeId}
-                options={customPointTypeOptions}
-                onChange={handleChangePointType}
-              />
-            </div>
-          )}
-
-          {/* 操作按钮 */}
-          <div className="mt-3 pt-3 shrink-0 flex gap-2 justify-end">
-            {activeFeature.markable === true && (
-              <div className="bg-[#272727] rounded-full p-0.5">
-                <Toggle
-                  onToggle={() => {
-                    handleToggleMarked();
-                  }}
-                  checked={activeFeature.marked ?? false}
-                  label={activeFeature.marked ? t('common:operate.marked') : t('common:operate.mark')}
+            {/* 自定义标点类型选择 */}
+            {isCustomPoint && (
+              <div className="mt-3 shrink-0">
+                <div className="text-xs text-[#aaaaaa] mb-1">{t('popup:custom_point.change_type')}</div>
+                <EndfieldSelect
+                  value={(activeFeature as CustomPointDataInstance).typeId}
+                  options={customPointTypeOptions}
+                  onChange={handleChangePointType}
                 />
               </div>
             )}
-            {(isElectricPole || isCustomPoint) && (
-              <ZmdRoundButton
-                classNames={{
-                  text: 'text-sm',
-                  icon: 'text-sm p-0.5',
-                }}
-                icon={<EditIcon />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRename();
-                }}
-              >
-                {t('common:operate.rename')}
-              </ZmdRoundButton>
-            )}
-          </div>
+          </ScrollArea>
+
+          <Footer
+            name={displayName || ''}
+            pic={getEntityIcon(entityInfo.category, entityInfo.entityInfo.pic)}
+            id={activeFeature.id}
+            categoryName={categoryName}
+          />
         </motion.div>
       )}
     </AnimatePresence>
@@ -168,28 +86,31 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
 });
 
 /** 左边弹窗内容 */
-export const LeftContentContainer: React.FC = observer(() => {
-  const { adapter } = useAdapter();
-
+export const LeftContentContainer: React.FC<{
+  showSubPopup: boolean;
+  toggleExpand: () => void;
+  isExpanded: boolean;
+}> = ({ showSubPopup, toggleExpand, isExpanded }) => {
   return (
-    <div className={cn('w-78 shrink-0 h-auto', 'border-b-6 border-[#656465] relative')}>
-      {/* 描边层 */}
-      <Border />
-
-      <CloseButton onClick={() => adapter.activeFeatureController.clearActiveFeature?.()} />
-
-      <ClipSquare className="bg-[#272827]" />
-
-      <div
-        className={cn(
-          'w-full bg-[#272827] text-white p-3 pt-0 shadow-[0_-2px_0_#272827] relative',
-          'after:absolute after:z-0 after:left-0 after:h-32 after:bottom-0 after:w-54 after:bg-linear-to-tr after:from-white/25 after:via-white/0 after:to-black/0 after:pointer-events-none'
-        )}
-      >
-        <Deco />
-
-        <LeftContent className="max-h-78" />
-      </div>
+    <div
+      className={cn(
+        'w-78 shrink-0 h-full relative',
+        'border-b-4 border-[#656465] relative bg-[#272827] text-white pt-0',
+        'after:absolute after:opacity-20 after:right-0 after:bottom-0 after:left-0 after:h-24 after:bg-[url(/images/bg/button-texture.png)] after:bg-cover after:bg-bottom-right after:bg-no-repeat after:mask-[linear-gradient(to_top,black_calc(100%-3rem),transparent)]'
+      )}
+    >
+      <LeftContent />
+      {showSubPopup && (
+        <ZmdRoundIconButton
+          className={cn(
+            'absolute top-1/2 -translate-y-1/2 z-1 w-4 h-12 transition-all',
+            isExpanded ? '-right-2.5' : ' -right-2'
+          )}
+          onClick={toggleExpand}
+        >
+          <ChevronUpTriangle className={cn('transition-transform rotate-270 text-xs', !isExpanded && 'rotate-90')} />
+        </ZmdRoundIconButton>
+      )}
     </div>
   );
-});
+};

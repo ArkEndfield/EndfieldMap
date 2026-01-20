@@ -1,9 +1,5 @@
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
-import type {
-  EntityData,
-  EntityDataInstanceConfig,
-  EntityInfoData,
-} from '@endfieldmap/map-core/types/entity';
+import type { EntityData, EntityDataInstanceConfig, EntityInfoData } from '@endfieldmap/map-core/types/entity';
 import { xyz2crd } from '@endfieldmap/tools';
 import { computed, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
@@ -69,8 +65,8 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
    * 获取副本系列ID
    */
   @computed
-  get dungeonSeriesId(): string | undefined {
-    return this._data.properties.dungeion_series_id;
+  get systemInstKey(): string | undefined {
+    return this._data.properties.system_inst_key;
   }
 
   /**

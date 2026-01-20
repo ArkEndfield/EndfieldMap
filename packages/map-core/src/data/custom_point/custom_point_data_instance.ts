@@ -1,5 +1,9 @@
+import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core/const';
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
-import { getCustomPointEntityInfo, isValidCustomPointType } from '@endfieldmap/map-core/data/custom_point/custom_point_config';
+import {
+  getCustomPointEntityInfo,
+  isValidCustomPointType,
+} from '@endfieldmap/map-core/data/custom_point/custom_point_config';
 import type { EntityInfo } from '@endfieldmap/map-core/data/entity';
 import type {
   CustomPointData,
@@ -23,6 +27,8 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
   public readonly markable: boolean = false;
   /** 是否可选择 */
   public readonly selectable: boolean = false;
+  /** 是否可以重命名 */
+  public readonly renameable: boolean = true;
 
   constructor(config: CustomPointDataInstanceConfig) {
     super({
@@ -54,12 +60,12 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
   @computed
   get typeId(): CustomPointTypeId {
     const id = this._data.entityDataIdKey;
-    
+
     // 如果没有类型ID，返回默认值
     if (!id) {
       return 'custom_point_1'; // 返回默认类型
     }
-    
+
     return id;
   }
 

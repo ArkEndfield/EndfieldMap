@@ -14,7 +14,7 @@ interface TierManagerProps {
 const TierManager = observer(({ className }: TierManagerProps) => {
   const { dataService, adapter } = useAdapter();
   const uiManager = useEndfieldUIManager();
-  const isSidePanelOpen = uiManager.operatePanelOpen.value;
+  const isSidePanelOpen = uiManager.isSidePanelOpen;
   const availableTierData = dataService.gridTiersDataService.availableTierData;
   const activeTierData = dataService.gridTiersDataService.activeTierData;
   const activeSubTierData = dataService.gridTiersDataService.activeSubTierData;

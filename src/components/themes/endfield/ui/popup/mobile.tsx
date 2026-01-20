@@ -1,3 +1,4 @@
+import type { EntityData } from '@endfieldmap/map-core';
 import { LeftContent } from '@themes/endfield/ui/popup/left';
 import { RightContent } from '@themes/endfield/ui/popup/right';
 import { observer } from 'mobx-react-lite';
@@ -10,7 +11,7 @@ import { EndfieldSwitch } from '@/components/common/endfield_components/form/swi
 import { ScrollArea } from '@/components/common/scroll_area';
 import { snapPoints } from '@/const/ui';
 import { useAdapter } from '@/hooks/use_adapter';
-import { hasReward } from '@/utils/reward';
+import { type RightContentItem, useVisibleRightContentItems } from '@themes/endfield/ui/popup/right_content/items';
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
   const variants = {
@@ -44,19 +45,27 @@ const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; 
   );
 };
 
-const Content = ({ showEntityPage }: { showEntityPage: boolean }) => {
+const Content = ({
+  showSubPage,
+  items,
+  entity,
+}: {
+  showSubPage: boolean;
+  items: RightContentItem[];
+  entity?: EntityData;
+}) => {
   return (
     <AnimatePresence mode="wait">
-      {showEntityPage ? (
-        <AnimationWrapper key="entity" direction="left">
-          <ScrollArea className="w-full h-full px-4">
-            <LeftContent />
+      {showSubPage ? (
+        <AnimationWrapper key="reward" direction="right">
+          <ScrollArea className="w-full h-full px-8">
+            {entity && <RightContent items={items} entity={entity} />}
           </ScrollArea>
         </AnimationWrapper>
       ) : (
-        <AnimationWrapper key="reward" direction="right">
-          <ScrollArea className="w-full h-full px-8">
-            <RightContent />
+        <AnimationWrapper key="entity" direction="left">
+          <ScrollArea className="w-full h-full px-4">
+            <LeftContent />
           </ScrollArea>
         </AnimationWrapper>
       )}
@@ -67,7 +76,7 @@ const Content = ({ showEntityPage }: { showEntityPage: boolean }) => {
 const MobilePopup: React.FC = observer(() => {
   const { adapter, dataService } = useAdapter();
   const { t } = useTranslation('popup');
-  const [showEntityPage, setShowEntityPage] = useState(true);
+  const [showSubPage, setShowSubPage] = useState(false);
 
   const activeFeature = adapter?.activeFeatureController.activeFeature;
 
@@ -81,10 +90,13 @@ const MobilePopup: React.FC = observer(() => {
     !dataService.customPointDataService.isInCustomPointOperateMode;
 
   const entity = activeFeature?.data;
-  const showRewards = entity && hasReward(entity);
+
+  const { items: visibleItems, showSubPopup } = useVisibleRightContentItems(entity);
+
+  const isInSubPage = showSubPage && showSubPopup;
 
   useEffect(() => {
-    setShowEntityPage(true);
+    setShowSubPage(false);
   }, [activeFeature]);
 
   return (
@@ -93,17 +105,17 @@ const MobilePopup: React.FC = observer(() => {
         <Sheet.Header className="bg-[#272727] rounded-t-md" />
         <Sheet.Content disableDrag disableScroll className="bg-[#272727] text-white">
           <div className="w-full h-full flex flex-col">
-            {showRewards ? (
+            {showSubPopup ? (
               <div className="shrink-0 grow-0 mx-5 mb-3">
                 <EndfieldSwitch
-                  checked={showEntityPage}
-                  onChange={setShowEntityPage}
-                  onText={t('entity.title') as string}
-                  offText={t('reward.title') as string}
+                  checked={!showSubPage}
+                  onChange={(v) => setShowSubPage(!v)}
+                  onText={t('entity.title')}
+                  offText={t('reward.title')}
                 />
               </div>
             ) : null}
-            <Content showEntityPage={showEntityPage} />
+            <Content showSubPage={isInSubPage} items={visibleItems} entity={entity} />
           </div>
         </Sheet.Content>
       </Sheet.Container>

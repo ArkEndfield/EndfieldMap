@@ -298,7 +298,7 @@ export class ElectricPoleDataService {
   }
 
   private async saveDeviceVisibilityToStorage() {
-    return await this.storage.permanentSet(StorageKey.ELECTRIC_POLE_VISIBILITY, this.deviceVisibilityData);
+    return await this.storage.permanentSet(StorageKey.ELECTRIC_POLE_VISIBILITY, toJS(this.deviceVisibilityData));
   }
 
   private saveDeviceVisibilityToStorageDebounced = debounce(

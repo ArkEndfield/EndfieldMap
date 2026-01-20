@@ -1,9 +1,7 @@
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
-import type {
-  DataInstanceConfig,
-  DataInstanceState,
-} from '@endfieldmap/map-core/data/base/types';
+import type { DataInstanceConfig, DataInstanceState } from '@endfieldmap/map-core/data/base/types';
 import type { EntityData } from '@endfieldmap/map-core/types/entity';
+import { logger } from '@endfieldmap/tools';
 import { action, computed, observable, toJS } from 'mobx';
 
 /**
@@ -21,6 +19,8 @@ export abstract class BaseDataInstance<T extends EntityData> {
   public readonly markable: boolean = true;
   /** 是否可选择 */
   public readonly selectable: boolean = true;
+  /** 是否可以重命名 */
+  public readonly renameable: boolean = false;
 
   /** 原始数据 - 深度响应式 */
   @observable.deep
@@ -156,6 +156,10 @@ export abstract class BaseDataInstance<T extends EntityData> {
    */
   @action
   public rename(name: string): void {
+    if (!this.renameable) {
+      logger.error('[EndfieldMap | DataInstance]', 'DataInstance is not renameable', this);
+      return;
+    }
     this._data.properties.name = name;
   }
 

@@ -1,38 +1,21 @@
-import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
+import { type EntityInfoStats } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import Counter from '@/components/common/count_up';
 import { Tooltip } from '@/components/common/tooltip/tooltip';
-import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { useEntityName } from '@/hooks/use_entity_name';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
 import { SoundType } from '@/const/audio_config';
-
-/**
- * EntityItem 通用属性类型
- * 兼容 EntityInfoStats 和手动构造的数据
- */
-interface EntityItemData {
-  category: string;
-  entityDataIdKey: string;
-  entityInfo: {
-    point: string;
-    pic: string;
-  };
-  count: number;
-  markedCount?: number;
-  visible?: boolean;
-}
 
 interface EntityItemProps {
   hideCount?: boolean;
   hideMarked?: boolean;
   markCount?: number;
-  entity?: EntityItemData;
+  entity?: EntityInfoStats;
   category?: string;
   active?: boolean;
   onClick?: () => void;
@@ -41,32 +24,11 @@ interface EntityItemProps {
 
 const EntityItem = observer(
   ({ hideCount = false, entity, category, active = false, onClick, children, hideMarked = false }: EntityItemProps) => {
-    const { dataService } = useAdapter();
-    const { t } = useTranslation(['common', 'sidebar', 'lang']);
     const isMobile = useIsMobile();
     const textRef = useRef<HTMLDivElement>(null);
     const [isOverflowing, setIsOverflowing] = useState(false);
 
-    const displayName = useMemo(() => {
-      if (entity) {
-        if (entity.category === ElectricPoleKey) {
-          return t(`sidebar:operation.electric_pole.create.device_type.options.${entity.entityDataIdKey}`, {
-            defaultValue: entity.entityDataIdKey,
-          });
-        }
-
-        // 检查是否是自定义标点类型（以 custom_point_ 开头）
-        if (entity.category === CustomPointKey) {
-          return t(`common:custom_point.type.${entity.entityDataIdKey}`, {
-            defaultValue: entity.entityDataIdKey,
-          });
-        }
-        return t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
-          defaultValue: entity.entityDataIdKey,
-        });
-      }
-      return 'unnamed';
-    }, [dataService.langHashDataService, entity, t]);
+    const { name: displayName } = useEntityName(entity);
 
     const checkOverflow = React.useCallback(() => {
       const el = textRef.current;

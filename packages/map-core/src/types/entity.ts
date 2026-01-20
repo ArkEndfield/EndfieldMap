@@ -50,7 +50,7 @@ export interface EnityProperties {
   /** 奖励ID */
   reward_id?: string;
   /** 副本奖励ID */
-  dungeion_series_id?: string;
+  system_inst_key?: string;
   /** 允许任意其他属性 */
   [key: string]: unknown;
 }
@@ -136,7 +136,9 @@ export type Category =
   | 'settlement'
   | 'spcstone'
   | 'system'
-  | 'special';
+  | 'special'
+  | typeof ElectricPoleKey
+  | typeof CustomPointKey;
 
 /**
  * 实体分类数据，来自于json
@@ -176,7 +178,7 @@ export type EntityInfoKey = EntityData['entityDataIdKey'];
  * 实体信息数据
  */
 export interface EntityInfoData<T extends EntityInfoKey = EntityInfoKey> {
-  category: EntityCategoryData['category'] | typeof ElectricPoleKey | typeof CustomPointKey;
+  category: Category;
   entityInfo: {
     point: T;
     pic: string;
@@ -194,7 +196,7 @@ export type EntityInfoDataJson = Record<EntityInfoKey, EntityInfoData>;
  */
 export interface EntityInfoItemData<T extends BaseEntityData = EntityData> {
   uniqueKey: string;
-  category: EntityCategoryData['category'] | typeof ElectricPoleKey | typeof CustomPointKey;
+  category: Category;
   entityDataIdKey: T['entityDataIdKey'];
   entityInfo: EntityInfoData<T['entityDataIdKey']>['entityInfo'];
   visible: boolean;
@@ -278,9 +280,9 @@ export interface EntityInfoStats {
   entityInfo: EntityInfoData['entityInfo'];
   visible: boolean;
   count: number;
-  markedCount: number;
-  selectedCount: number;
-  mapIndex: MapIndex;
+  markedCount?: number;
+  selectedCount?: number;
+  mapIndex?: MapIndex;
 }
 
 /**

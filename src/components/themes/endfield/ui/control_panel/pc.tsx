@@ -13,7 +13,7 @@ const PCControlPanel = observer(() => {
   const uiManager = useEndfieldUIManager();
   const currentOperatePanel = uiManager.currentOperatePanel.value;
   const isNoneCurrentPanel = currentOperatePanel === CurrentOperatePanel.NONE;
-  const isOpen = uiManager.operatePanelOpen.value && !isNoneCurrentPanel;
+  const isOpen = uiManager.isSidePanelOpen;
   const shouldPanelOpen = (panel: CurrentOperatePanel) => {
     return isOpen && currentOperatePanel === panel;
   };

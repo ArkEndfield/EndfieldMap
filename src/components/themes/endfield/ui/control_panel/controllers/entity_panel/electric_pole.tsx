@@ -106,6 +106,7 @@ const ElectricPoleList: React.FC = observer(() => {
         {groups.map((group) => {
           const { iconPic } = getElectricPoleDeviceConfig(group.deviceKey);
           const entityInfo = {
+            uniqueKey: group.deviceKey,
             category: ElectricPoleKey,
             entityDataIdKey: group.deviceKey,
             entityInfo: {
@@ -115,7 +116,7 @@ const ElectricPoleList: React.FC = observer(() => {
             count: group.count,
             markedCount: 0,
             visible: group.allVisible,
-          };
+          } as const;
 
           return (
             <EntityItem

@@ -487,7 +487,7 @@ export class CustomPointDataService {
    * 保存自定义标点可见性数据到存储
    */
   public async saveCustomPointVisibilityToStorage() {
-    return await this.storage.permanentSet(StorageKey.CUSTOM_POINT_VISIBILITY, this.customPointVisibilityData);
+    return await this.storage.permanentSet(StorageKey.CUSTOM_POINT_VISIBILITY, toJS(this.customPointVisibilityData));
   }
 
   /**
