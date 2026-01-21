@@ -323,14 +323,14 @@ export class EndfieldMapAdapter {
    * @param entityId entity的id
    * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
    * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
-   * @param animationTime 移动视图animate的时间（可选，默认为150ms）
+   * @param animationTime 移动视图animate的时间（可选，默认为1s）
    * @param zoom 是否同时调整缩放（默认为undefined，即没有值，如果有值就同时设置缩放）
    */
   public async moveToEntity(
     entityId: string | number,
     autoToggleVisible: boolean = true,
     autoSetActive: boolean = false,
-    animationTime: number = 150,
+    animationTime: number = 1000,
     zoom?: number
   ) {
     const id = typeof entityId === 'string' ? parseInt(entityId, 10) : entityId;
@@ -394,14 +394,14 @@ export class EndfieldMapAdapter {
    * @param instance entity实例 TODO: 如果以后增加的话，这里要同步更新
    * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
    * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
-   * @param animationTime 移动视图animate的时间（可选，默认为150ms）
+   * @param animationTime 移动视图animate的时间（可选，默认为1s）
    * @param zoom 是否同时调整缩放（默认为undefined，即没有值，如果有值就同时设置缩放）
    */
   public async moveToEntityInstance(
     instance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance,
     autoToggleVisible: boolean = true,
     autoSetActive: boolean = false,
-    animationTime: number = 150,
+    animationTime: number = 1000,
     zoom?: number
   ) {
     const targetMapIndex = instance.mapIndex;

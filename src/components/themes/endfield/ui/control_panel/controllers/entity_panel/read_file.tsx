@@ -4,7 +4,7 @@ import { NoteKey } from '@endfieldmap/map-core';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
@@ -15,7 +15,7 @@ import { useAdapter } from '@/hooks/use_adapter';
  */
 const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQuery }) => {
   const { t } = useTranslation(['sidebar', 'lang']);
-  const { dataService } = useAdapter();
+  const { dataService, adapter } = useAdapter();
   const data = dataService.readFileDataService.investigateData;
 
   // 处理数据：建立 collectionId 到 name 的映射，并准备搜索结果
@@ -76,10 +76,12 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
   }, [searchQuery, itemsList]);
 
   // 点击处理
-  const handleClick = useCallback((item: ReadFileItem) => {
-    console.log('Clicked item:', item);
-    // TODO: 添加点击后的逻辑
-  }, []);
+  const handleClick = (item: ReadFileItem) => {
+    const id = item.logicId;
+    if (id) {
+      adapter.moveToEntity(id, true, true, void 0, 5);
+    }
+  };
 
   // 检查是否满足显示条件
   const shouldShow = searchQuery.trim() === '799' || (searchQuery.trim() !== '' && filteredItems.length > 0);
@@ -94,7 +96,7 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
     uniqueKey: item.id,
     category: NoteKey,
     entityInfo: {
-      point: item.logicId,
+      point: item.name,
       pic: 'item_read_file',
       desc: item.value,
     },
@@ -106,21 +108,22 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
   return (
     <EntityGroup title={t('filter.category.#read_file')} subtitle="READ FILE" iconColor="#ff6b6b">
       <div className="grid grid-cols-2 gap-x-1 gap-y-1.5 py-2">
-        {entityItems.map((entity) => (
-          <EntityItem
-            key={entity.entityDataIdKey}
-            entity={entity as EntityInfoStats}
-            category={entity.category}
-            active={true}
-            onClick={() => {
-              const item = itemsMap.get(entity.entityDataIdKey);
-              console.log(entity)
-              if (item) handleClick(item);
-            }}
-            hideCount
-            hideMarked
-          />
-        ))}
+        {entityItems.map((entity) => {
+          const item = itemsMap.get(entity.uniqueKey);
+          return (
+            <EntityItem
+              key={entity.entityDataIdKey}
+              entity={entity as EntityInfoStats}
+              category={entity.category}
+              active={!!item?.logicId}
+              onClick={() => {
+                if (item) handleClick(item);
+              }}
+              hideCount
+              hideMarked
+            />
+          );
+        })}
       </div>
     </EntityGroup>
   );
