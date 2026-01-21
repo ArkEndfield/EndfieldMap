@@ -1,4 +1,4 @@
-import { CustomPointKey, type DataInstance, ElectricPoleKey, ElectricPoleDataInstance } from '@endfieldmap/map-core';
+import { CustomPointKey, type DataInstance, ElectricPoleDataInstance,ElectricPoleKey } from '@endfieldmap/map-core';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';

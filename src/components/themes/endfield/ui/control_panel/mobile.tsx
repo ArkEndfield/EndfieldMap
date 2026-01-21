@@ -1,6 +1,5 @@
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
-import { BottomSheet } from '@themes/endfield/ui/control_panel/components/bottom_sheet';
 import { FilterAndEntityPanelMobile } from '@themes/endfield/ui/control_panel/controllers/filter_and_entity_panel.mobile';
 import { CustomPointManager } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point';
 import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
@@ -8,6 +7,8 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
+import { Logo } from '@/components/common/icons';
+import { BottomSheet } from '@/components/themes/endfield/components/bottom_sheet';
 import { useAdapter } from '@/hooks/use_adapter';
 
 const MobileControlPanel = observer(() => {
@@ -39,11 +40,12 @@ const MobileControlPanel = observer(() => {
     toggleCollapse();
   };
 
-  // Don't render anything if no panel is selected
-  if (isNoneCurrentPanel) return null;
+  const logo = <Logo className="fixed h-5 bottom-2 left-1/2 -translate-x-1/2 text-white/20 z-20" />;
+  if (isNoneCurrentPanel) return logo;
 
   return (
     <>
+      {logo}
       <BottomSheet
         open={currentPanel === CurrentOperatePanel.FILTER}
         collapsed={!isOpen}
