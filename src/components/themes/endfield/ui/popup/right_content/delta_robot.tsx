@@ -86,11 +86,15 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
               // 非计数障碍
               bgColor = '#1a1a1a';
               content = '🚫';
+              for(let i = 0; i < 4; i++) borderColors[i] = 'black';
+              for(let i = 0; i < 4; i++) borderStyles[i] = 'solid';
             } else if (val >= 20000) {
               // 计数障碍
               const groupId = val - 20000;
               bgColor = getGroupColor(groupId);
               content = '🔒';
+              for(let i = 0; i < 4; i++) borderColors[i] = 'black';
+              for(let i = 0; i < 4; i++) borderStyles[i] = 'solid';
             } else if (val > 0) {
               // 拼图块
               const piece = levelData.pieces[val - 1];
