@@ -33,11 +33,42 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
     const flatGrid = solutionGrid.flat();
     const { sizeX } = levelData;
 
+    // 获取单元格边框样式 - 只在格子边界处绘制边框
+    const getCellBorderStyle = (val: number, row: number, col: number): {
+      hasTop: boolean;
+      hasRight: boolean;
+      hasBottom: boolean;
+      hasLeft: boolean;
+    } => {
+      if (val <= 0) {
+        return { hasTop: false, hasRight: false, hasBottom: false, hasLeft: false };
+      }
+
+      // 获取四周相邻单元格的值
+      const topVal = row > 0 ? flatGrid[(row - 1) * sizeX + col] : -1;
+      const rightVal = col < sizeX - 1 ? flatGrid[row * sizeX + (col + 1)] : -1;
+      const bottomVal = row < Math.ceil(flatGrid.length / sizeX) - 1 ? flatGrid[(row + 1) * sizeX + col] : -1;
+      const leftVal = col > 0 ? flatGrid[row * sizeX + (col - 1)] : -1;
+
+      // 判断相邻格子是否为同一拼图块（有效拼图块：>0 且 <20000）
+      // 同一拼图块：值相等，且都不是障碍物
+      const isSamePiece = (neighborVal: number) =>
+        neighborVal > 0 && neighborVal < 20000 && neighborVal === val;
+
+      // 只在边界处绘制边框：网格边界、与不同拼图块相邻、与障碍物相邻
+      return {
+        hasTop: row === 0 || !isSamePiece(topVal),
+        hasRight: col === sizeX - 1 || !isSamePiece(rightVal),
+        hasBottom: row === Math.ceil(flatGrid.length / sizeX) - 1 || !isSamePiece(bottomVal),
+        hasLeft: col === 0 || !isSamePiece(leftVal),
+      };
+    };
+
     return (
       <div className="mb-6">
         <h3 className="text-sm font-semibold mb-2 text-gray-300">求解结果</h3>
         <div
-          className="inline-grid gap-0.5 p-2 bg-[#1a1a1a] rounded"
+          className="inline-grid gap-0 p-2 bg-[#1a1a1a] text-black rounded"
           style={{
             gridTemplateColumns: `repeat(${sizeX}, minmax(0, 1fr))`,
           }}
@@ -48,6 +79,8 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
 
             let bgColor = '#2a2a2a';
             let content = '';
+            const borderColors = ['transparent', 'transparent', 'transparent', 'transparent'];
+            const borderStyles = ['none', 'none', 'none', 'none'];
 
             if (val === -1) {
               // 非计数障碍
@@ -64,14 +97,35 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
               if (piece) {
                 bgColor = getGroupColor(piece.groupId);
                 content = String(val);
+
+                // 获取边框信息
+                const borderInfo = getCellBorderStyle(val, r, c);
+                const borderColor = 'black';
+                const borderStyle = 'solid';
+
+                borderColors[0] = borderInfo.hasTop ? borderColor : 'transparent';
+                borderColors[1] = borderInfo.hasRight ? borderColor : 'transparent';
+                borderColors[2] = borderInfo.hasBottom ? borderColor : 'transparent';
+                borderColors[3] = borderInfo.hasLeft ? borderColor : 'transparent';
+
+                borderStyles[0] = borderInfo.hasTop ? borderStyle : 'none';
+                borderStyles[1] = borderInfo.hasRight ? borderStyle : 'none';
+                borderStyles[2] = borderInfo.hasBottom ? borderStyle : 'none';
+                borderStyles[3] = borderInfo.hasLeft ? borderStyle : 'none';
               }
             }
 
             return (
               <div
                 key={`${r}-${c}`}
-                className="w-8 h-8 flex items-center justify-center text-xs font-bold border border-gray-700"
-                style={{ backgroundColor: bgColor }}
+                className="w-8 h-8 flex items-center justify-center text-xs font-bold transition-all duration-300"
+                style={{
+                  backgroundColor: bgColor,
+                  borderTop: `${borderStyles[0]} 1px ${borderColors[0]}`,
+                  borderRight: `${borderStyles[1]} 1px ${borderColors[1]}`,
+                  borderBottom: `${borderStyles[2]} 1px ${borderColors[2]}`,
+                  borderLeft: `${borderStyles[3]} 1px ${borderColors[3]}`,
+                }}
               >
                 {content}
               </div>
@@ -113,6 +167,9 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
                   <div
                     key={piece.id}
                     className="flex items-center justify-center p-2 bg-[#2a2a2a] rounded hover:bg-[#333333] transition-colors"
+                    style={{
+                      border: `2px solid rgba(255,255,255,0.5)`,
+                    }}
                   >
                     {/* 拼图缩略图 */}
                     <div className="flex flex-col gap-px">

@@ -110,6 +110,22 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
     return levelData?.groups[groupId]?.color || '#3CAAFF';
   };
 
+  // 获取分组边框颜色 - 增强亮度以实现高亮效果
+  const getGroupBorderColor = (groupId: number): string => {
+    const baseColor = getGroupColor(groupId);
+    return adjustColorBrightness(baseColor, 40);
+  };
+
+  // 调整颜色亮度的辅助函数
+  const adjustColorBrightness = (hexColor: string, percent: number): string => {
+    const num = parseInt(hexColor.replace('#', ''), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = Math.min(255, (num >> 16) + amt);
+    const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+    const B = Math.min(255, (num & 0x0000FF) + amt);
+    return `#${(1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1)}`;
+  };
+
   // 获取分组名称
   const getGroupName = (groupId: number): string => {
     return levelData?.groups[groupId]?.name || 'Unknown';
@@ -126,6 +142,7 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
     loadLevel,
     handleSolve,
     getGroupColor,
+    getGroupBorderColor,
     getGroupName,
   };
 };
