@@ -50,6 +50,10 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
       setAdapterReactive(adapter.current);
 
+      // TODO: 后面删掉，部署无妨
+      // @ts-expect-error 方便线上调试用
+      window.adapter = adapter.current;
+
       // 初始化鼠标指针样式监听器
       initCursorEventListeners(adapter.current);
 

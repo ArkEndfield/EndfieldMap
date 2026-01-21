@@ -18,6 +18,9 @@ import { PopupController } from '@endfieldmap/map-core/controller/interaction/po
 import { TierController } from '@endfieldmap/map-core/controller/tier';
 import type { EndfieldMapAssetConfig } from '@endfieldmap/map-core/data/asset';
 import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
+import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
+import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { EndfieldMapEvent } from '@endfieldmap/map-core/event/map';
@@ -313,6 +316,137 @@ export class EndfieldMapAdapter {
    */
   public removeControl(control: Control): void {
     this.mapController.mapRenderer.map.removeControl(control);
+  }
+
+  /**
+   * 移动到指定 entity
+   * @param entityId entity的id
+   * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
+   * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
+   * @param animationTime 移动视图animate的时间（可选，默认为150ms）
+   * @param zoom 是否同时调整缩放（默认为undefined，即没有值，如果有值就同时设置缩放）
+   */
+  public async moveToEntity(
+    entityId: string | number,
+    autoToggleVisible: boolean = true,
+    autoSetActive: boolean = false,
+    animationTime: number = 150,
+    zoom?: number
+  ) {
+    const id = typeof entityId === 'string' ? parseInt(entityId, 10) : entityId;
+    if (isNaN(id)) {
+      logger.warn('[EndfieldMapAdapter] Invalid entity ID:', entityId);
+      return;
+    }
+
+    let targetInstance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance | undefined;
+
+    // 确保数据加载完毕
+    await this.entityController.dataManager.loadData();
+    // 使用加载完毕的数据索引地图
+    const mapIndices = Array.from(this.entityController.dataManager.mapData.keys());
+
+    // 1. 搜索游戏内的标点
+    for (const mapIndex of mapIndices) {
+      const instance = await this.entityController.dataManager.getInstanceById(mapIndex, id);
+      if (instance) {
+        targetInstance = instance;
+        break;
+      }
+    }
+
+    // 2. 搜索电线杆
+    if (!targetInstance) {
+      for (const mapIndex of mapIndices) {
+        const manager = this.electricPoleController.dataManager.getMapManager(mapIndex);
+        const instance = manager.getById(id);
+        if (instance) {
+          targetInstance = instance;
+          break;
+        }
+      }
+    }
+
+    // 3. 搜索自定义标点
+    if (!targetInstance) {
+      for (const mapIndex of mapIndices) {
+        const manager = this.customPointController.dataManager.getMapManager(mapIndex);
+        const instance = manager.getById(id);
+        if (instance) {
+          targetInstance = instance;
+          break;
+        }
+      }
+    }
+
+    // TODO： 如果以后新增的话需要更新
+
+    if (!targetInstance) {
+      logger.warn(`[moveToEntity] Entity ${id} not found.`);
+      return;
+    }
+
+    await this.moveToEntityInstance(targetInstance, autoToggleVisible, autoSetActive, animationTime, zoom);
+  }
+
+  /**
+   * 移动到指定 entity 实例
+   * @param instance entity实例 TODO: 如果以后增加的话，这里要同步更新
+   * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
+   * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
+   * @param animationTime 移动视图animate的时间（可选，默认为150ms）
+   * @param zoom 是否同时调整缩放（默认为undefined，即没有值，如果有值就同时设置缩放）
+   */
+  public async moveToEntityInstance(
+    instance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance,
+    autoToggleVisible: boolean = true,
+    autoSetActive: boolean = false,
+    animationTime: number = 150,
+    zoom?: number
+  ) {
+    const targetMapIndex = instance.mapIndex;
+    const entityType = instance.entityType;
+
+    // 切换地图
+    if (this.currentMapIndex !== targetMapIndex) {
+      this.renderMap(targetMapIndex);
+      const currentLanguage = this.areaNameController.areaNameDataManager.language;
+      if (currentLanguage) {
+        this.renderAreaName(currentLanguage);
+      }
+      await this.renderEntity(targetMapIndex);
+      this.renderElectricPole(targetMapIndex);
+      this.renderCustomPoint(targetMapIndex);
+    }
+
+    // 自动切换可见性
+    if (autoToggleVisible) {
+      if (entityType === '#ElectricPole') {
+        this.electricPoleController.setElectricPoleVisible(true);
+        this.electricPoleController.setZoneVisible(true);
+      } else if (entityType === '#CustomPoint') {
+        this.customPointController.setCustomPointVisible(true);
+      } else {
+        // Standard Entity
+        const entityInstance = instance as EntityDataInstance;
+        this.entityController.showEntity(entityInstance.entityDataIdKey);
+      }
+    }
+
+    // 自动激活特征
+    if (autoSetActive) {
+      this.activeFeatureController.setActiveFeature(instance);
+    }
+
+    // 移动地图
+    const center = instance.coordinates;
+    if (center) {
+      this.mapController.mapRenderer.view.animate({
+        center,
+        zoom: zoom ?? this.mapController.mapRenderer.view.getZoom(),
+        duration: animationTime,
+      });
+    }
   }
 
   /**
