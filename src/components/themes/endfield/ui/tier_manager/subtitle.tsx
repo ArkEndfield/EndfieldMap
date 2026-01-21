@@ -44,7 +44,13 @@ export const SubTitle = (props: SubTitleProps) => {
           !active && 'lg:text-base'
         )}
       >
-        <div className="truncate">{t(`lang:${children}`)}</div>
+        <div className="truncate">
+          {typeof children === 'string'
+            ? t(`lang:${children}`, {
+                defaultValue: children,
+              })
+            : children}
+        </div>
       </div>
     </ButtonWithAudio>
   );
