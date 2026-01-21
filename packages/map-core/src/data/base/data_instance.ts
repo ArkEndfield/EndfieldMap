@@ -21,6 +21,8 @@ export abstract class BaseDataInstance<T extends EntityData> {
   public readonly selectable: boolean = true;
   /** 是否可以重命名 */
   public readonly renameable: boolean = false;
+  /** 是否可以删除 */
+  public readonly deletable: boolean = false;
 
   /** 原始数据 - 深度响应式 */
   @observable.deep

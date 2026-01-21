@@ -1,16 +1,15 @@
 import type { EntityData } from '@endfieldmap/map-core';
+import { BottomSheet } from '@themes/endfield/components/bottom_sheet';
 import { LeftContent } from '@themes/endfield/ui/popup/left';
 import { RightContent } from '@themes/endfield/ui/popup/right';
 import { type RightContentItem, useVisibleRightContentItems } from '@themes/endfield/ui/popup/right_content/items';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sheet } from 'react-modal-sheet';
 
 import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { ScrollArea } from '@/components/common/scroll_area';
-import { snapPoints } from '@/const/ui';
 import { useAdapter } from '@/hooks/use_adapter';
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
@@ -79,8 +78,11 @@ const MobilePopup: React.FC = observer(() => {
   const [showSubPage, setShowSubPage] = useState(false);
 
   const activeFeature = adapter?.activeFeatureController.activeFeature;
+  const openTimeRef = useRef(0);
 
   const handleClose = () => {
+    // Prevent ghost clicks
+    if (Date.now() - openTimeRef.current < 400) return;
     adapter?.activeFeatureController.clearActiveFeature();
   };
 
@@ -99,27 +101,36 @@ const MobilePopup: React.FC = observer(() => {
     setShowSubPage(false);
   }, [activeFeature]);
 
+  useEffect(() => {
+    if (open) {
+      openTimeRef.current = Date.now();
+    }
+  }, [open]);
+
   return (
-    <Sheet isOpen={open} onClose={handleClose} snapPoints={snapPoints} initialSnap={5}>
-      <Sheet.Container>
-        <Sheet.Header className="bg-[#272727] rounded-t-md" />
-        <Sheet.Content disableDrag disableScroll className="bg-[#272727] text-white">
-          <div className="w-full h-full flex flex-col">
-            {showSubPopup ? (
-              <div className="shrink-0 grow-0 mx-5 mb-3">
-                <EndfieldSwitch
-                  checked={!showSubPage}
-                  onChange={(v) => setShowSubPage(!v)}
-                  onText={t('entity.title')}
-                  offText={t('reward.title')}
-                />
-              </div>
-            ) : null}
-            <Content showSubPage={isInSubPage} items={visibleItems} entity={entity} />
+    <BottomSheet
+      open={open}
+      collapsed={false}
+      dismissible
+      onToggleCollapse={handleClose}
+      classNames={{
+        container: 'rounded-t-md',
+      }}
+    >
+      <div className="w-full h-full flex flex-col">
+        {showSubPopup ? (
+          <div className="shrink-0 grow-0 mx-5 mb-3">
+            <EndfieldSwitch
+              checked={!showSubPage}
+              onChange={(v) => setShowSubPage(!v)}
+              onText={t('entity.title')}
+              offText={t('reward.title')}
+            />
           </div>
-        </Sheet.Content>
-      </Sheet.Container>
-    </Sheet>
+        ) : null}
+        <Content showSubPage={isInSubPage} items={visibleItems} entity={entity} />
+      </div>
+    </BottomSheet>
   );
 });
 

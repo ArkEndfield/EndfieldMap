@@ -1,5 +1,6 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointDataInstance, CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
+import { DeleteButton } from '@themes/endfield/ui/popup/left_content/delete_button';
 import { Footer } from '@themes/endfield/ui/popup/left_content/footer';
 import { PopupHeader } from '@themes/endfield/ui/popup/left_content/header';
 import { MarkButton } from '@themes/endfield/ui/popup/left_content/mark_button';
@@ -54,6 +55,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           <PopupHeader onClose={() => adapter.activeFeatureController.clearActiveFeature?.()}>
             <MarkButton entity={activeFeature} />
             <RenameButton entity={activeFeature} />
+            <DeleteButton entity={activeFeature} />
           </PopupHeader>
 
           <ScrollArea className="flex-1 min-h-0 p-3">
