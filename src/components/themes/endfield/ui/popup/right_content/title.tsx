@@ -21,7 +21,7 @@ export const SubPopupTitle = ({
   return (
     <div
       className={cn(
-        'flex border-b border-[#383938] text-[#979796] bg-[#272827] text-sm h-10 top-0 sticky items-center gap-2 pl-4 pr-2 z-2',
+        'flex border-b border-[#383938] text-[#979796] bg-[#272827] text-sm h-10 top-0 sticky items-center gap-2 pl-4 pr-2 z-3',
         className,
         classNames?.container
       )}
