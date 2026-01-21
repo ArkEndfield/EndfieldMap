@@ -19,10 +19,7 @@ const DEFAULT_ELECTRIC_POLE_ENTITY_INFO: EntityInfo = {
  * 电线杆数据管理器
  * 管理单个地图上的所有电线杆数据
  */
-export class ElectricPoleDataManager extends BaseDataManager<
-  ElectricPoleData,
-  ElectricPoleDataInstance
-> {
+export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, ElectricPoleDataInstance> {
   /** Entity信息 */
   public readonly entityInfo: EntityInfo;
 
@@ -40,10 +37,12 @@ export class ElectricPoleDataManager extends BaseDataManager<
    * 创建电线杆数据实例
    */
   protected createInstance(data: ElectricPoleData): ElectricPoleDataInstance {
+    if (!data.entityInfo) {
+      data.entityInfo = this.entityInfo;
+    }
     return new ElectricPoleDataInstance({
       data,
       mapIndex: this.mapIndex,
-      entityInfo: this.entityInfo,
     });
   }
 

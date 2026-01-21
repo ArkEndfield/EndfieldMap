@@ -73,6 +73,8 @@ export interface EntityData {
   defaultHide?: boolean;
   /** 属性 */
   properties: EnityProperties;
+  /** Entity信息 */
+  entityInfo?: EntityInfoData;
 }
 
 /**
@@ -213,7 +215,6 @@ export interface EntityInfoItemData<T extends BaseEntityData = EntityData> {
 export interface EntityDataInstanceConfig {
   data: EntityData;
   mapIndex: MapIndex;
-  entityInfo: EntityInfoData;
 }
 
 /**
@@ -222,7 +223,6 @@ export interface EntityDataInstanceConfig {
 export interface CustomPointDataInstanceConfig {
   data: CustomPointData;
   mapIndex: MapIndex;
-  entityInfo: EntityInfoData;
 }
 
 /**
@@ -231,7 +231,6 @@ export interface CustomPointDataInstanceConfig {
 export interface ElectricPoleDataInstanceConfig {
   data: ElectricPoleData;
   mapIndex: MapIndex;
-  entityInfo: EntityInfoData;
 }
 
 /**
