@@ -47,6 +47,11 @@ interface Resources {
     "feedback": {
       "title": "反馈"
     },
+    "head_menu": {
+      "custom": "自定义标点",
+      "filter": "资源标点筛选",
+      "poles": "电线杆管理"
+    },
     "map": {
       "change_map": "切换地图",
       "map_change": "地图切换"
@@ -3461,7 +3466,7 @@ interface Resources {
     "a9bfd50ee80cb1e05036d85b805fb0be": "象征着艰辛前路的装备。“事未竟，路犹长。”",
     "a9c886c480ce495f5ffa3bcf5ad46c2b": "获取后可制造相应的装备。",
     "a9cdc13710f128654e4c23f2d8a1c98b": "驮兽粪便",
-    "a9ce5cdb15e6c634b7703cc7dc1184b0": "int_trchest_common_gorgeous",
+    "a9ce5cdb15e6c634b7703cc7dc1184b0": "储藏箱IV",
     "a9f4eca5cfe496bb2c2b4ec2233c43be": "帝江号金雕像",
     "a9fcf28e8892d931a048f3fe3a526e9b": "集成工业系统",
     "aa01db32f6829b88dd6332cb8295eca2": "在无数次精致保养后，您的武器已与各种伟大传说中的珍宝并无差别。",

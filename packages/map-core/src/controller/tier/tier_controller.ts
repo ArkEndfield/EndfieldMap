@@ -3,7 +3,7 @@ import { TierDataManager } from '@endfieldmap/map-core/data/tier';
 import { TierLayer } from '@endfieldmap/map-core/render/layers/tier';
 import { TierOverlayMaskLayer } from '@endfieldmap/map-core/render/layers/tier_overlay_mask';
 import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
-import { Coordinate, xyz2crd } from '@endfieldmap/tools';
+import { type Coordinate, xyz2crd } from '@endfieldmap/tools';
 import { Map } from 'ol';
 import type { Projection } from 'ol/proj';
 

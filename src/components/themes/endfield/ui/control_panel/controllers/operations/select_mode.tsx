@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { alert } from '@/components/common/alert/alert_api';
 import { MultiOperationIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
-import uiManager from '@/services/ui_manager';
 
 export const SelectModeOperation = observer(() => {
   const { adapter, dataService } = useAdapter();
@@ -22,7 +21,6 @@ export const SelectModeOperation = observer(() => {
       alert.info(t('operation.custom_point_operating_tip'));
       return;
     }
-    if (!adapter.mapController.selection.isSelecting) uiManager.closeAllManagers();
     adapter.mapController.selection.toggleSelecting();
     adapter.activeFeatureController.clearActiveFeature();
   };

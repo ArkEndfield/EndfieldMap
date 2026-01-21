@@ -130,7 +130,7 @@ const EntityPanel = observer(() => {
             onIconClick={() => handleCategoryClick(categoryInfo.category, categoryInfo.allDisplayed)}
             iconColor={categoryInfo.allDisplayed ? '#f9f853' : '#ffffff'}
             totalCount={categoryInfo.entities.reduce((acc, entity) => acc + entity.count, 0)}
-            markedCount={categoryInfo.entities.reduce((acc, entity) => acc + entity.markedCount, 0)}
+            markedCount={categoryInfo.entities.reduce((acc, entity) => acc + (entity.markedCount ?? 0), 0)}
           >
             {/* {categoryInfo.displayedEntities}/{categoryInfo.totalEntities} */}
             {/* 实体列表 */}

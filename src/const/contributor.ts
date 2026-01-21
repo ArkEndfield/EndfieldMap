@@ -33,4 +33,16 @@ export const contributors: ContributorInfo[] = [
     home: 'https://space.bilibili.com/781911',
     noReferrer: true,
   },
+  {
+    name: '白纸camy-白云笺',
+    avatar: 'https://i0.hdslb.com/bfs/face/2a460f40d575e480393b50191b1bbdfd62a3afe6.jpg',
+    home: 'https://space.bilibili.com/286451682',
+    noReferrer: true,
+  },
+  {
+    name: '佑木いずみ',
+    avatar: 'https://i0.hdslb.com/bfs/face/e54beaed3b037b0b5cc9b3d33cd4950a0d0887cd.jpg',
+    home: 'https://space.bilibili.com/184934952',
+    noReferrer: true,
+  },
 ];
