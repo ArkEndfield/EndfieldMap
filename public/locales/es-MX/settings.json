@@ -39,6 +39,7 @@
     "title": "Mapa",
     "cluster": "Agrupación de marcadores",
     "move_center": "Volver al centro del mapa",
+    "toggle_layer": "Alternar capas del mapa",
     "hover": {
       "title": "Tiempo de respuesta de detección de desplazamiento del mouse",
       "description": "Tiempo de respuesta de detección de desplazamiento del mouse sobre los marcadores del mapa, menor tiempo requiere mayor rendimiento",

@@ -39,6 +39,7 @@
     "title": "Map",
     "cluster": "Marker Clustering",
     "move_center": "Return to Map Center",
+    "toggle_layer": "Toggle Map Layers",
     "hover": {
       "title": "Mouse Hover Detection Response Time",
       "description": "Mouse hover detection response time on map markers, shorter time requires higher performance",

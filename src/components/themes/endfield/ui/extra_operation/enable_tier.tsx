@@ -5,8 +5,10 @@ import { ZmdRoundIconButton } from '@/components/common/endfield_components/butt
 import { LayerSwitchIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
+import { useTranslation } from 'react-i18next';
 
 export const EnableTier = observer(() => {
+  const { t } = useTranslation(['settings']);
   const { adapter } = useAdapter();
   const toggleTierEnabled = () => {
     uiManager.enableTier.value = !uiManager.enableTier.value;
@@ -15,7 +17,7 @@ export const EnableTier = observer(() => {
   return (
     <Tooltip
       as={ZmdRoundIconButton}
-      tooltip="开启/关闭分层"
+      tooltip={t('map.toggle_layer')}
       placement="left"
       asProps={{
         onClick: toggleTierEnabled,

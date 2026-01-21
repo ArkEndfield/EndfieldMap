@@ -42,6 +42,7 @@
     "title": "地图",
     "cluster": "标点聚合",
     "move_center": "回到地图中心",
+    "toggle_layer": "开启/关闭分层",
     "hover": {
       "title": "鼠标悬停检测响应时间",
       "description": "鼠标在地图标点上的悬停检测响应时间，时间越短性能需求越高",
