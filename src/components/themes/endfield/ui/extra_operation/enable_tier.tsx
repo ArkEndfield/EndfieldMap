@@ -1,9 +1,10 @@
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
-import { observer } from 'mobx-react-lite';
 import Tooltip from '@themes/endfield/components/tooltip';
+import { observer } from 'mobx-react-lite';
+
+import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { LayerSwitchIcon } from '@/components/common/icons';
-import uiManager from '@/services/ui_manager';
 import { useAdapter } from '@/hooks/use_adapter';
+import uiManager from '@/services/ui_manager';
 
 export const EnableTier = observer(() => {
   const { adapter } = useAdapter();

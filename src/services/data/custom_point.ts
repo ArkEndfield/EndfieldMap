@@ -1,11 +1,5 @@
-import type { CustomPointPreset, CustomPointPresetExportBundle, CustomPointPresetStorage } from '@eftypes/custom_point';
-import type {
-  CustomPointData,
-  CustomPointMapData,
-  EndfieldMapAdapter,
-  EntityVisibility,
-  StorageData,
-} from '@endfieldmap/map-core';
+import type { CustomPointPreset, CustomPointPresetExportBundle } from '@eftypes/custom_point';
+import type { CustomPointMapData, EndfieldMapAdapter, EntityVisibility, StorageData } from '@endfieldmap/map-core';
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointKey, getDefaultCustomPointType, MAP_EVENT } from '@endfieldmap/map-core';
 import {
@@ -20,26 +14,29 @@ import {
 import { action, autorun, computed, observable, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY, type VersionType } from '@/const/data';
+import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
+import { BasePresetDataService } from '@/services/data/base/base_preset';
 
 /**
  * 自定义标点数据管理器
  */
-export class CustomPointDataService {
+export class CustomPointDataService extends BasePresetDataService<
+  CustomPointMapData,
+  CustomPointPreset,
+  CustomPointPresetExportBundle
+> {
   private adapter: EndfieldMapAdapter;
-  private storage: StorageManager;
 
-  @observable accessor dataVersion: VersionType = '0.0.1';
+  protected get storageKey(): string {
+    return StorageKey.CUSTOM_POINT;
+  }
 
-  @observable accessor presetStorage: CustomPointPresetStorage = {
-    presets: [],
-    currentPresetId: null,
-  };
+  protected get exportTypeKey(): string {
+    return EXPORT_TYPE_KEY.CUSTOM_POINT_PRESET;
+  }
 
   @observable accessor customPointVisibility: boolean = true;
   @observable accessor customPointVisibilityData: StorageData<EntityVisibility> = {};
-
-  private initialized: boolean = false;
 
   @observable accessor isCreating: boolean = false;
   @observable accessor isDeleting: boolean = false;
@@ -49,7 +46,7 @@ export class CustomPointDataService {
   private reactionDisposers: Array<() => void> = [];
 
   constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
-    this.storage = storage;
+    super(storage);
     this.adapter = adapter;
     this.initAdapter();
   }
@@ -64,29 +61,14 @@ export class CustomPointDataService {
   public async initFromStorage() {
     if (this.initialized) return;
 
-    const [stored, visibility, visibilityData] = await Promise.all([
-      this.storage.permanentGet<CustomPointPresetStorage>(StorageKey.CUSTOM_POINT),
+    await this.initPresetFromStorage();
+
+    const [visibility, visibilityData] = await Promise.all([
       LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY),
       this.storage.permanentGet<StorageData<EntityVisibility>>(StorageKey.CUSTOM_POINT_VISIBILITY),
     ]);
 
     runInAction(() => {
-      if (stored && Array.isArray(stored.presets)) {
-        const normalizedPresets = stored.presets.map((preset) => ({
-          ...preset,
-          data: this.ensureMapData(preset.data),
-        }));
-        this.presetStorage = {
-          presets: normalizedPresets,
-          currentPresetId: stored.currentPresetId ?? normalizedPresets[0]?.id ?? null,
-        };
-      } else {
-        // 如果还没有任何记录，则保持空预设列表，后续第一次保存时再创建默认预设
-        this.presetStorage = {
-          presets: [],
-          currentPresetId: null,
-        };
-      }
       this.customPointVisibility = visibility ?? true;
       this.customPointVisibilityData = visibilityData || {};
       this.initialized = true;
@@ -96,16 +78,20 @@ export class CustomPointDataService {
     this.applyCurrentPresetToAdapter();
   }
 
-  private ensureMapData(data: Partial<CustomPointMapData>): CustomPointMapData {
+  protected ensureMapData(data: Partial<CustomPointMapData> | unknown): CustomPointMapData {
+    if (!data || typeof data !== 'object') {
+      data = {};
+    }
+    const safeData = data as Partial<CustomPointMapData>;
     const ensured: Partial<CustomPointMapData> = {};
     const mapIndices: MapIndex[] = [MapIndex.MAP01, MapIndex.MAP02, MapIndex.DUNG01];
 
     mapIndices.forEach((mapIndex) => {
-      if (!data[mapIndex]) {
+      if (!safeData[mapIndex]) {
         ensured[mapIndex] = [];
-      } else if (Array.isArray(data[mapIndex])) {
+      } else if (Array.isArray(safeData[mapIndex])) {
         // 验证并过滤掉无效的自定义标点数据
-        const validPoints = data[mapIndex]!.filter((point) => {
+        const validPoints = safeData[mapIndex]!.filter((point) => {
           // 检查是否有有效的对象
           if (!point || typeof point !== 'object') {
             logger.warn('[CustomPointDataService|ensureMapData] Invalid point data (not an object)', {
@@ -145,11 +131,11 @@ export class CustomPointDataService {
         });
 
         // 如果过滤掉了一些无效数据，记录警告
-        const filteredCount = data[mapIndex]!.length - validPoints.length;
+        const filteredCount = safeData[mapIndex]!.length - validPoints.length;
         if (filteredCount > 0) {
           logger.warn(
             `[CustomPointDataService|ensureMapData] Filtered out ${filteredCount} invalid custom point(s) from ${mapIndex}`,
-            data[mapIndex],
+            safeData[mapIndex],
             validPoints
           );
         }
@@ -163,203 +149,17 @@ export class CustomPointDataService {
     return ensured as CustomPointMapData;
   }
 
-  @computed
-  public get currentPreset(): CustomPointPreset | null {
-    return this.presetStorage.presets.find((p) => p.id === this.presetStorage.currentPresetId) ?? null;
-  }
-
-  @computed
-  public get currentPresetId(): string | null {
-    return this.presetStorage.currentPresetId;
-  }
-
-  @computed
-  public get presetList() {
-    return this.presetStorage.presets.map((preset) => ({
-      id: preset.id,
-      name: preset.name,
-    }));
-  }
-
-  // region: 预设管理
-  /**
-   * 创建新的预设
-   * @param name 预设名称
-   * @param initialData 初始化数据，传入 true 则使用当前地图数据，传入数据对象则使用该数据，未传入则使用空数据
-   * @returns
-   */
-  public async createPreset(name: string, initialData?: CustomPointMapData | boolean) {
-    const now = Date.now();
-    const useInitialData = !!initialData && initialData !== true;
-    const useCurrentData = initialData === true;
-    const baseData = useInitialData
-      ? initialData
-      : this.initialized && useCurrentData
-        ? this.adapter.customPointController.dataManager.allData
-        : ({} as CustomPointMapData);
-    const ensuredData = this.ensureMapData(baseData);
-
-    const newPreset: CustomPointPreset = {
-      id: this.generatePresetId(),
-      name,
-      data: ensuredData,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    runInAction(() => {
-      this.presetStorage.presets.push(newPreset);
-      this.clearActiveFeature();
-      this.presetStorage.currentPresetId = newPreset.id;
-    });
-
-    await this.savePresetStorage();
-
-    this.applyPresetToAdapter(newPreset);
-
-    return newPreset;
-  }
-
-  /**
-   * 切换预设
-   * @param id 预设id
-   * @returns
-   */
-  public async switchPreset(id: string) {
-    if (this.presetStorage.currentPresetId === id) return;
-    this.clearActiveFeature();
-
-    const preset = this.presetStorage.presets.find((p) => p.id === id);
-    if (!preset) {
-      throw new Error(`Preset not found: ${id}`);
-    }
-
-    runInAction(() => {
-      this.presetStorage.currentPresetId = id;
-    });
-
-    await this.savePresetStorage();
-
-    this.applyPresetToAdapter(toJS(preset));
-  }
-
-  /**
-   * 删除预设
-   * @param id 预设id
-   * @returns
-   */
-  public async deletePreset(id: string) {
-    const index = this.presetStorage.presets.findIndex((p) => p.id === id);
-    if (index === -1) {
-      throw new Error(`Preset not found: ${id}`);
-    }
-
-    const isCurrent = this.presetStorage.currentPresetId === id;
-    let nextPreset: CustomPointPreset | null = null;
-
-    runInAction(() => {
-      this.presetStorage.presets.splice(index, 1);
-
-      if (isCurrent) {
-        nextPreset = this.presetStorage.presets[0] ?? null;
-        this.presetStorage.currentPresetId = nextPreset ? nextPreset.id : null;
-        this.clearActiveFeature();
-      } else if (!this.presetStorage.presets.length) {
-        this.presetStorage.currentPresetId = null;
-        this.clearActiveFeature();
-      }
-    });
-
-    await this.savePresetStorage();
-
-    // 仅当删除的是当前预设时，才更新地图上的自定义标点数据
-    if (isCurrent) {
-      if (nextPreset) {
-        this.applyPresetToAdapter(toJS(nextPreset));
-      } else {
-        // 若已经没有任何预设，则清空所有地图上的自定义标点
-        const emptyData = this.ensureMapData({} as CustomPointMapData);
-        this.adapter.customPointController.initCustomPointData(emptyData);
-        this.adapter.renderCustomPoint(this.adapter.currentMapIndex);
-      }
-    }
-  }
-
-  /**
-   * 重命名预设
-   * @param id 预设id
-   * @param name 新名称
-   * @returns
-   */
-  public async renamePreset(id: string, name: string) {
-    const preset = this.presetStorage.presets.find((p) => p.id === id);
-    if (!preset) {
-      throw new Error(`Preset not found: ${id}`);
-    }
-
-    runInAction(() => {
-      preset.name = name;
-      preset.updatedAt = Date.now();
-    });
-
-    await this.savePresetStorage();
-  }
-
-  /**
-   * 内部方法-应用当前预设到适配器
-   */
-  private applyCurrentPresetToAdapter() {
-    if (!this.initialized) return;
-    const preset = this.currentPreset;
-    if (!preset) return;
-    this.applyPresetToAdapter(toJS(preset));
-  }
-
-  /**
-   * 内部方法-保存预设存储结构到存储
-   */
-  private async savePresetStorage() {
-    const plain = {
-      presets: toJS(this.presetStorage.presets),
-      currentPresetId: toJS(this.presetStorage.currentPresetId),
-    };
-    await this.storage.permanentSet(StorageKey.CUSTOM_POINT, plain);
-  }
-
   /**
    * 内部方法-防抖保存预设存储结构到存储
    */
-  private debouncedSave = debounce((currentData: Partial<Record<MapIndex, CustomPointData[]>>) => {
-    if (!this.initialized) return;
-
-    const ensuredData = this.ensureMapData(currentData);
-
-    runInAction(() => {
-      // 如果还没有任何预设，自动创建一个默认预设
-      if (!this.currentPreset) {
-        const now = Date.now();
-        const newPreset: CustomPointPreset = {
-          id: this.generatePresetId(),
-          name: 'Default Preset',
-          data: ensuredData,
-          createdAt: now,
-          updatedAt: now,
-        };
-        this.presetStorage.presets.push(newPreset);
-        this.presetStorage.currentPresetId = newPreset.id;
-      } else {
-        this.currentPreset.data = ensuredData;
-        this.currentPreset.updatedAt = Date.now();
-      }
-    });
-
-    this.savePresetStorage();
+  private debouncedSave = debounce((currentData: CustomPointMapData) => {
+    this.upsertCurrentPresetData(currentData);
   }, DEBOUNCE_INTERVAL);
 
   /**
    * 内部方法-应用预设到适配器
    */
-  private applyPresetToAdapter(preset: CustomPointPreset) {
+  protected applyPresetToAdapter(preset: CustomPointPreset) {
     try {
       const data = this.ensureMapData(preset.data);
       this.adapter.customPointController.initCustomPointData(data);
@@ -387,6 +187,10 @@ export class CustomPointDataService {
         cancelText: '删除损坏预设',
       });
     }
+  }
+
+  protected get temporaryData(): CustomPointMapData {
+    return this.adapter.customPointController.dataManager.allData;
   }
   // endregion
 
@@ -620,117 +424,5 @@ export class CustomPointDataService {
   }
   // endregion
 
-  private generatePresetId(): string {
-    return `preset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  // region: 导入导出处理
-  public async exportPresets(ids: string[]) {
-    if (!ids.length) {
-      throw new Error('No custom point presets selected to export');
-    }
-
-    const idSet = new Set(ids);
-    const presets = this.presetStorage.presets.filter((p) => idSet.has(p.id));
-
-    if (!presets.length) {
-      throw new Error('Selected custom point presets not found');
-    }
-
-    await this.downloadPresetBundle(presets);
-  }
-
-  /**
-   * 在浏览器中触发下载 JSON 文件(支持导出多个预设)
-   * 优先使用 File System Access API，不支持时回退到 <a> 标签下载
-   */
-  private async downloadPresetBundle(presets: CustomPointPreset[]) {
-    const bundle: CustomPointPresetExportBundle = {
-      type: EXPORT_TYPE_KEY.CUSTOM_POINT_PRESET,
-      version: this.dataVersion,
-      exportedAt: Date.now(),
-      presets: presets.map((p) => ({
-        ...toJS(p),
-        data: this.ensureMapData(p.data),
-      })),
-    };
-
-    const json = JSON.stringify(bundle, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-
-    // 生成文件名
-    let filename: string;
-    if (presets.length === 1) {
-      const preset = presets[0];
-      filename = `custom_point_${preset.name || preset.id}.json`;
-    } else {
-      filename = `custom_point_presets_${presets.length}_${Date.now()}.json`;
-    }
-
-    // 尝试使用 File System Access API
-    if ('showSaveFilePicker' in window) {
-      try {
-        const handle = await window.showSaveFilePicker({
-          suggestedName: filename,
-          types: [
-            {
-              description: 'JSON Files',
-              accept: { 'application/json': ['.json'] },
-            },
-          ],
-        });
-
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-        alert.info('导出成功');
-        return;
-      } catch (error) {
-        // 用户取消或其他错误，回退到 <a> 标签下载
-        if (error instanceof Error && error.name !== 'AbortError') {
-          logger.warn(
-            '[CustomPointDataService|downloadPresetBundle] File System Access API failed, falling back to <a> tag download',
-            error
-          );
-        }
-      }
-    }
-
-    // 回退到传统的 <a> 标签下载方式
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  public async importPresetBundle(bundle: CustomPointPresetExportBundle) {
-    if (!bundle || bundle.type !== EXPORT_TYPE_KEY.CUSTOM_POINT_PRESET || !Array.isArray(bundle.presets)) {
-      throw new Error('Invalid preset bundle format');
-    }
-
-    if (bundle.version !== this.dataVersion) {
-      // TODO: 版本不匹配时的处理逻辑
-      logger.warn('[CustomPointDataService|importPresetBundle] Importing preset bundle version mismatch', {
-        expected: this.dataVersion,
-        actual: bundle.version,
-      });
-    }
-
-    const newPresets = bundle.presets.map((preset) => ({
-      ...preset,
-      id: this.generatePresetId(),
-      data: this.ensureMapData(preset.data),
-    }));
-
-    runInAction(() => {
-      this.presetStorage.presets.push(...newPresets);
-    });
-
-    await this.savePresetStorage();
-  }
   // endregion
 }

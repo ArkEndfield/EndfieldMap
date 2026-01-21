@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
 import uiManager from '@/services/ui_manager';
+import { cn } from '@/utils/style';
 
 interface TierManagerProps {
   className?: string;
