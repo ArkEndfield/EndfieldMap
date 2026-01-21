@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { cn } from '@/utils/style';
+import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { ZmdSquareIconButton } from '@/components/common/endfield_components/button/square_icon_button';
+import Tooltip from '@themes/endfield/components/tooltip';
+import { ExportIcon, ImportIcon, BatchDeleteIcon } from '@/components/common/icons';
 
 interface PresetToolbarProps {
   hasSelection: boolean;
@@ -14,38 +15,26 @@ const PresetToolbar: React.FC<PresetToolbarProps> = ({ hasSelection, onExport, o
   const { t } = useTranslation(['common', 'sidebar']);
 
   return (
-    <div className="flex items-center justify-between gap-1.5 pt-1 shrink-0 font-bold">
-      <ButtonWithAudio
+    <div className="flex gap-2 justify-between items-center">
+      <ZmdSquareButton
+        type="default"
         onClick={onExport}
-        className={cn(
-          'flex-1 text-xs py-1 px-1.5 rounded transition-colors',
-          'bg-[#D9D9D9] hover:bg-[#c4c4c4] text-[#404040]',
-          'disabled:hover:bg-[#D9D9D9] disabled:opacity-50',
-          'flex items-center gap-1.5'
-        )}
         disabled={!hasSelection}
+        icon={<ExportIcon />}
+        className="flex-1"
       >
-        <div className="flex-1 h-[1.5px] bg-[#E2E2E2]"></div>
-        <div className="shrink-0">{t('sidebar:operation.electric_pole.preset.export_select')}</div>
-        <div className="flex-1 h-[1.5px] bg-[#E2E2E2]"></div>
-      </ButtonWithAudio>
-      <ButtonWithAudio
-        onClick={onDelete}
-        className={cn(
-          'text-xs py-1 px-4 rounded transition-colors',
-          'bg-[#D9D9D9] hover:bg-[#c4c4c4] text-[#EE3838]',
-          'disabled:hover:bg-[#D9D9D9] disabled:opacity-50'
-        )}
-        disabled={!hasSelection}
-      >
-        {t('batch_delete')}
-      </ButtonWithAudio>
-      <ButtonWithAudio
-        onClick={onImport}
-        className="bg-[#FCFB1E] hover:bg-[#ecec20] text-[#404040] text-xs py-1 px-4 rounded transition-colors"
-      >
-        {t('sidebar:operation.electric_pole.preset.import.button')}
-      </ButtonWithAudio>
+        {t('sidebar:operation.electric_pole.preset.export_select')}
+      </ZmdSquareButton>
+      <Tooltip tooltip={t('batch_delete')} placement="top">
+        <ZmdSquareIconButton onClick={onDelete} disabled={!hasSelection} className="text-lg w-8 h-8 text-[#ff4d4f]">
+          <BatchDeleteIcon />
+        </ZmdSquareIconButton>
+      </Tooltip>
+      <Tooltip tooltip={t('sidebar:operation.electric_pole.preset.import.button')} placement="top">
+        <ZmdSquareIconButton onClick={onImport} className="text-lg w-8 h-8">
+          <ImportIcon />
+        </ZmdSquareIconButton>
+      </Tooltip>
     </div>
   );
 };
