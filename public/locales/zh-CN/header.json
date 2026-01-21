@@ -8,5 +8,10 @@
   },
   "settings": {
     "title": "设置"
+  },
+  "head_menu": {
+    "filter": "资源标点筛选",
+    "poles": "电线杆管理", 
+    "custom": "自定义标点"
   }
 }

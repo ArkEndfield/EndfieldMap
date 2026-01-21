@@ -9,4 +9,10 @@
   "settings": {
     "title": "設定"
   }
+  ,
+  "head_menu": {
+    "filter": "資源標點篩選",
+    "poles": "電線桿管理",
+    "custom": "自訂標點"
+  }
 }

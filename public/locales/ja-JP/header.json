@@ -9,4 +9,10 @@
   "settings": {
     "title": "設定"
   }
+  ,
+  "head_menu": {
+    "filter": "リソースマーカーのフィルター",
+    "poles": "電柱管理",
+    "custom": "カスタムマーカー"
+  }
 }

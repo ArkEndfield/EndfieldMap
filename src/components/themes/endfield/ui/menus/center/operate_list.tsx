@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
@@ -76,6 +77,7 @@ const MobileViewIcon = observer(() => {
 
 export const OperateList = observer(
   ({ startContent, endContent }: { startContent?: React.ReactNode; endContent?: React.ReactNode }) => {
+    const { t } = useTranslation(['header']);
     const uiManager = useEndfieldUIManager();
     const isMobile = useIsMobile();
     const currentTab = uiManager.currentOperatePanel.value;
@@ -91,7 +93,7 @@ export const OperateList = observer(
             uiManager.togglePanel(CurrentOperatePanel.FILTER);
           }}
         >
-          {isMobile ? <FilterIcon /> : '资源标点筛选'}
+          {isMobile ? <FilterIcon /> : t('header:head_menu.filter')}
         </OperateMenu>
         <OperateMenu
           active={currentTab === CurrentOperatePanel.ELECTRIC_POLE}
@@ -101,7 +103,7 @@ export const OperateList = observer(
             uiManager.togglePanel(CurrentOperatePanel.ELECTRIC_POLE);
           }}
         >
-          {isMobile ? <ElectricPoleIconPole /> : '电线杆管理'}
+          {isMobile ? <ElectricPoleIconPole /> : t('header:head_menu.poles')}
         </OperateMenu>
         <OperateMenu
           active={currentTab === CurrentOperatePanel.CUSTOM_POINT}
@@ -111,7 +113,7 @@ export const OperateList = observer(
             uiManager.togglePanel(CurrentOperatePanel.CUSTOM_POINT);
           }}
         >
-          {isMobile ? <CustomPointIcon /> : '自定义标点'}
+          {isMobile ? <CustomPointIcon /> : t('header:head_menu.custom')}
         </OperateMenu>
         {endContent}
       </div>
