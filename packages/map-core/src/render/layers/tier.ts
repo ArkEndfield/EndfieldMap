@@ -1,6 +1,6 @@
 import { DEFAULT_OPACITY, LayerType, LayerTypeKey, MapIndex } from '@endfieldmap/map-core/const/map';
-import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { TierDataInstance, TierDataManager } from '@endfieldmap/map-core/data/tier';
+import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { ImagePool, logger } from '@endfieldmap/tools';
 import { observable } from 'mobx';
 import ImageLayer from 'ol/layer/Image';

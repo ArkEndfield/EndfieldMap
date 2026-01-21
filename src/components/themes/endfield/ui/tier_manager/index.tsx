@@ -1,12 +1,14 @@
-import { useAdapter } from '@/hooks/use_adapter';
-import { cn } from '@/utils/style';
-import { observer } from 'mobx-react-lite';
-import { TierTitle } from '@themes/endfield/ui/tier_manager/tier_title';
-import { AnimatePresence, motion } from 'motion/react';
-import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { SubTitle } from '@themes/endfield/ui/tier_manager/subtitle';
+import { TierTitle } from '@themes/endfield/ui/tier_manager/tier_title';
+import { observer } from 'mobx-react-lite';
+import { AnimatePresence, motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
+
+import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
+import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { cn } from '@/utils/style';
 
 interface TierManagerProps {
   className?: string;
@@ -14,6 +16,7 @@ interface TierManagerProps {
 
 const TierManager = observer(({ className }: TierManagerProps) => {
   const { dataService, adapter } = useAdapter();
+  const { t } = useTranslation('lang');
   const uiManager = useEndfieldUIManager();
   const isMobile = useIsMobile();
   const isSidePanelOpen = uiManager.isSidePanelOpen;
@@ -29,13 +32,15 @@ const TierManager = observer(({ className }: TierManagerProps) => {
         'text-white text-xs bottom-0 fixed overflow-hidden transition-[left] ease-in-out duration-300 group/list',
         isSidePanelOpen && !isMobile ? 'left-82 delay-100' : '-left-4',
         isMobile && isNonEmptyPanel && 'bottom-15',
+        'lg:text-sm',
         className
       )}
     >
       <ScrollableList
         className={cn(
           'max-h-24 relative md:group-hover/list:max-h-64 transition-[max-height] ease-in-out duration-300 -left-4 w-fit',
-          activeTierData && 'max-h-16'
+          activeTierData && 'max-h-16',
+          'lg:max-h-32 lg:group-hover/list:max-h-80 lg:gap-2'
         )}
         centerId={availableTierData?.id}
         idleTimeout={5000}
@@ -51,7 +56,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
               key={item.id}
               className="overflow-hidden pr-2"
             >
-              <ScrollableListItem className="p-0.5" id={item.id}>
+              <ScrollableListItem className={cn('p-0.5 lg:p-1')} id={item.id}>
                 <TierTitle
                   onClick={() => {
                     adapter.tierController.toggleTier(adapter.currentMapIndex, item.center, item.id);
@@ -62,7 +67,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                     activeTierData?.id === item.id && 'opacity-100 ring-1 ring-[#FEFA53] text-[#FEFA53]'
                   )}
                 >
-                  ./{item.name}
+                  ./{t(`lang:${item.items?.[0].name}`, { defaultValue: 'None' })}
                 </TierTitle>
               </ScrollableListItem>
             </motion.div>
@@ -82,17 +87,17 @@ const TierManager = observer(({ className }: TierManagerProps) => {
             key={activeTierData.id}
           >
             <TierTitle
-              className="pl-9 w-fit gap-6"
               onClick={() => {
                 adapter.tierController.toggleTier(adapter.currentMapIndex, activeTierData.center, activeTierData.id);
               }}
             >
-              ./{activeTierData.name}
+              ./{t(`lang:${activeTierData.items?.[0].name}`) || 'NONE'}
             </TierTitle>
             <div
               className={cn(
                 'ml-8 mt-1.5 pb-5 relative',
-                'after:absolute after:top-0 after:w-0.5 after:bottom-0 after:bg-white/50 after:left-20'
+                'after:absolute after:top-0 after:w-0.5 after:bottom-0 after:bg-white/50 after:left-20',
+                'lg:ml-10 lg:mt-2.5 lg:pb-6 lg:after:left-24'
               )}
             >
               {activeTierData.items.map((item) => (
