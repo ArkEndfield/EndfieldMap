@@ -1,13 +1,12 @@
+import type { ReadFileItem } from '@eftypes/read_file';
 import type { EntityInfoStats } from '@endfieldmap/map-core';
 import { NoteKey } from '@endfieldmap/map-core';
-
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { ReadFileItem } from '@eftypes/read_file';
 import { useAdapter } from '@/hooks/use_adapter';
 
 /**
@@ -34,21 +33,22 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
     domains.forEach((item) => {
       const { name, desc, categories } = item;
 
-      // 遍历 categories 下的 collectionIdList，建立 collectionId 到 name 的映射
+      // 遍历 categories 下的 collectionIdList，建立 id 到 name 的映射
       categories.forEach((category) => {
         const { collectionIdList } = category;
-        collectionIdList.forEach((collectionId) => {
+        collectionIdList.forEach(({ id, logicId }) => {
           // 使用 lang 命名空间进行翻译
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const translatedName = (t as any)(`lang:${name}`, { defaultValue: name }) as string;
           const readFileItem: ReadFileItem = {
-            id: collectionId,
+            id,
+            logicId,
             name,
             icon: 'item_read_file',
             translatedName,
             value: desc || '',
           };
-          map.set(collectionId, readFileItem);
+          map.set(id, readFileItem);
           list.push(readFileItem);
         });
       });
@@ -94,7 +94,7 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
     uniqueKey: item.id,
     category: NoteKey,
     entityInfo: {
-      point: item.name,
+      point: item.logicId,
       pic: 'item_read_file',
       desc: item.value,
     },
@@ -114,6 +114,7 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
             active={true}
             onClick={() => {
               const item = itemsMap.get(entity.entityDataIdKey);
+              console.log(entity)
               if (item) handleClick(item);
             }}
             hideCount

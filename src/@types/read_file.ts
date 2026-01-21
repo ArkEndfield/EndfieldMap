@@ -1,7 +1,12 @@
 // 单个分类项接口
+export interface CollectionIdItem {
+  id: string;
+  logicId: number;
+}
+
 export interface CategoryItem {
   name: string;
-  collectionIdList: string[];
+  collectionIdList: CollectionIdItem[];
 }
 
 // 单个研究项接口
@@ -9,7 +14,7 @@ export interface ResearchItem {
   id: string;
   name: string;
   desc: string;
-  collectionIdList: string[];
+  collectionIdList: CollectionIdItem[];
   categories: CategoryItem[];
 }
 
@@ -21,6 +26,7 @@ export interface InvestigateData {
 
 export interface ReadFileItem {
   id: string;
+  logicId: number;
   name: string;
   icon: string;
   translatedName: string;
