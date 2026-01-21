@@ -1,6 +1,7 @@
 import type { EntityData } from '@endfieldmap/map-core';
 import { LeftContent } from '@themes/endfield/ui/popup/left';
 import { RightContent } from '@themes/endfield/ui/popup/right';
+import { type RightContentItem, useVisibleRightContentItems } from '@themes/endfield/ui/popup/right_content/items';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
@@ -11,7 +12,6 @@ import { EndfieldSwitch } from '@/components/common/endfield_components/form/swi
 import { ScrollArea } from '@/components/common/scroll_area';
 import { snapPoints } from '@/const/ui';
 import { useAdapter } from '@/hooks/use_adapter';
-import { type RightContentItem, useVisibleRightContentItems } from '@themes/endfield/ui/popup/right_content/items';
 
 const AnimationWrapper = ({ children, direction }: { children: React.ReactNode; direction: 'left' | 'right' }) => {
   const variants = {

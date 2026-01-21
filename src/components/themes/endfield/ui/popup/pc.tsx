@@ -1,5 +1,6 @@
 import { LeftContentContainer } from '@themes/endfield/ui/popup/left';
 import { RightContentContainer } from '@themes/endfield/ui/popup/right';
+import { useVisibleRightContentItems } from '@themes/endfield/ui/popup/right_content/items';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
@@ -7,7 +8,6 @@ import { createPortal } from 'react-dom';
 
 import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
-import { useVisibleRightContentItems } from '@themes/endfield/ui/popup/right_content/items';
 
 const PCPopup: React.FC = observer(() => {
   const { adapter, dataService } = useAdapter();

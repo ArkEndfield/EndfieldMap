@@ -1,7 +1,7 @@
-import { makeObservable, computed, action, observable } from 'mobx';
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
 import { xyz2crd } from '@endfieldmap/tools';
+import { observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 export class TierDataInstance {

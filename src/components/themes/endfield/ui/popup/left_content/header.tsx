@@ -1,6 +1,5 @@
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { PowerIcon, Deco7Dots } from '@/components/common/icons';
-
+import { Deco7Dots,PowerIcon } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 
 export interface PopupHeaderProps {

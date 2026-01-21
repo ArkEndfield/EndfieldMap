@@ -1,10 +1,10 @@
 import type { DealedRewardItem } from '@eftypes/reward';
 import type { EntityData } from '@endfieldmap/map-core';
 import { Item } from '@themes/endfield/components/item';
-import { SubPopupTitle } from '@/components/themes/endfield/ui/popup/right_content/title';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { SubPopupTitle } from '@/components/themes/endfield/ui/popup/right_content/title';
 import { useAdapter } from '@/hooks/use_adapter';
 import { isDealedRewardItemWithCount } from '@/utils/reward';
 

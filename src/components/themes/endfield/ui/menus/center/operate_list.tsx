@@ -1,9 +1,10 @@
-import { useTranslation } from 'react-i18next';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
+import { MenuContainer } from '@themes/endfield/ui/menus/center/menu_container';
 import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
-import { observer } from 'mobx-react-lite';
 import { menus } from '@themes/endfield/ui/menus/left/list';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import {
   CustomPointIcon,
@@ -12,11 +13,10 @@ import {
   InVisibleIcon,
   VisibleIcon,
 } from '@/components/common/icons';
-import { useAdapter } from '@/hooks/use_adapter';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { MenuContainer } from '@themes/endfield/ui/menus/center/menu_container';
 import { SoundType } from '@/const/audio_config';
+import { useAdapter } from '@/hooks/use_adapter';
 import { useAudio } from '@/hooks/use_audio';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 const Menu = menus[0];
 

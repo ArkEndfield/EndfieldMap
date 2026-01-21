@@ -1,17 +1,12 @@
-import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core/const';
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
 import {
   getCustomPointEntityInfo,
   isValidCustomPointType,
 } from '@endfieldmap/map-core/data/custom_point/custom_point_config';
 import type { EntityInfo } from '@endfieldmap/map-core/data/entity';
-import type {
-  CustomPointData,
-  CustomPointDataInstanceConfig,
-  CustomPointTypeId,
-} from '@endfieldmap/map-core/types/entity';
+import type { CustomPointData, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
 import { xyz2crd } from '@endfieldmap/tools';
-import { action, computed, observable } from 'mobx';
+import { action, computed } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 /**

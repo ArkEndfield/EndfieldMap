@@ -1,8 +1,7 @@
-import { makeObservable, action, computed, observable } from 'mobx';
 import type { MapIndex } from '@endfieldmap/map-core/const/map';
-import type { TierData, GridTierItem, TierRegion } from '@endfieldmap/map-core/types/tier';
-
 import { TierDataInstance } from '@endfieldmap/map-core/data/tier/tier_data_instance';
+import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
+import { action, makeObservable, observable } from 'mobx';
 
 export class TierDataManager {
   public tiers: Map<MapIndex, Map<string, Map<string, TierDataInstance>>> = new Map();

@@ -5,11 +5,11 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import Counter from '@/components/common/count_up';
 import { Tooltip } from '@/components/common/tooltip/tooltip';
-import { useIsMobile } from '@/hooks/use_is_mobile';
+import { SoundType } from '@/const/audio_config';
 import { useEntityName } from '@/hooks/use_entity_name';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
-import { SoundType } from '@/const/audio_config';
 
 interface EntityItemProps {
   hideCount?: boolean;

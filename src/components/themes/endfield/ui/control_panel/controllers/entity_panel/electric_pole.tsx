@@ -5,8 +5,8 @@ import {
   ElectricPoleKey,
   getElectricPoleDeviceConfig,
 } from '@endfieldmap/map-core';
-import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
+import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
