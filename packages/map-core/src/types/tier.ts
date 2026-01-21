@@ -1,5 +1,5 @@
-import { Coordinate } from 'ol/coordinate';
 import { TierDataInstance } from '@endfieldmap/map-core/data/tier';
+import { Coordinate } from 'ol/coordinate';
 
 export interface TierData {
   id: string;
