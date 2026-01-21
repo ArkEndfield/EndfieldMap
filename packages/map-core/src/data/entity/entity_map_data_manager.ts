@@ -10,7 +10,7 @@ import type {
   EntityInfoStats,
   EntityJsonDataList,
 } from '@endfieldmap/map-core/types/entity';
-import { groupBy, type JSONLoader, logger } from '@endfieldmap/tools';
+import { type JSONLoader, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
 
 export interface EntityMapDataManagerConfig {
@@ -90,32 +90,36 @@ export class EntityMapDataManager {
           const mapIndex = mapItem.map_id;
           const groupManagerMap = new Map<string, EntityGroupManager>();
 
-          // 收集该地图所有的entity数据，按entityDataIdKey分组
-          const allEntities: EntityData[] = [];
-          const categoryMap = new Map<string, Category>();
+          const groupDataMap = new Map<string, { category: Category; entities: EntityData[] }>();
 
+          // 收集该地图所有的entity数据，按entityDataIdKey分组，并注入entityInfo
           for (const levelItem of mapItem.levels) {
             for (const categoryItem of levelItem.categories) {
+              const category = categoryItem.category;
               for (const entity of categoryItem.data) {
-                allEntities.push(entity);
-                categoryMap.set(entity.entityDataIdKey, categoryItem.category);
+                const key = entity.entityDataIdKey;
+
+                // [NEW] 将entityInfo注入到entity中
+                const entityInfo = this.infoData.get(key);
+                if (entityInfo) {
+                  entity.entityInfo = entityInfo;
+                }
+
+                // Grouping
+                let group = groupDataMap.get(key);
+                if (!group) {
+                  group = { category, entities: [] };
+                  groupDataMap.set(key, group);
+                }
+                group.entities.push(entity);
               }
             }
           }
 
-          // 按entityDataIdKey分组
-          const groupedData = groupBy(allEntities, 'entityDataIdKey');
-
-          for (const [entityDataIdKey, entities] of Object.entries(groupedData)) {
+          for (const [entityDataIdKey, { category, entities }] of groupDataMap) {
             const entityInfo = this.infoData.get(entityDataIdKey);
             if (!entityInfo) {
               logger.debug(`[EntityMapDataManager] Entity info not found for ${entityDataIdKey}`);
-              continue;
-            }
-
-            const category = categoryMap.get(entityDataIdKey);
-            if (!category) {
-              logger.debug(`[EntityMapDataManager] Category not found for ${entityDataIdKey}`);
               continue;
             }
 

@@ -10,15 +10,16 @@ import type { Coordinate } from 'ol/coordinate';
  */
 export class EntityDataInstance extends BaseDataInstance<EntityData> {
   /** Entity信息 */
-  @observable
-  accessor entityInfo: EntityInfoData;
+  @computed
+  get entityInfo(): EntityInfoData {
+    return this._data.entityInfo!;
+  }
 
   constructor(config: EntityDataInstanceConfig) {
     super({
       data: config.data,
       mapIndex: config.mapIndex,
     });
-    this.entityInfo = config.entityInfo;
   }
 
   /**

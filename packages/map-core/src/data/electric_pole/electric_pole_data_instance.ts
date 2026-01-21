@@ -18,8 +18,10 @@ import type { Coordinate } from 'ol/coordinate';
  */
 export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData> {
   /** Entity信息 */
-  @observable
-  accessor entityInfo: EntityInfo;
+  @computed
+  get entityInfo(): EntityInfo {
+    return this._data.entityInfo!;
+  }
 
   /** 是否可标记（电线杆不支持标记） */
   public readonly markable: boolean = false;
@@ -41,7 +43,6 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
       data: config.data,
       mapIndex: config.mapIndex,
     });
-    this.entityInfo = config.entityInfo;
   }
 
   /**

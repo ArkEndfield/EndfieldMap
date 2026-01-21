@@ -20,8 +20,10 @@ import type { Coordinate } from 'ol/coordinate';
  */
 export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
   /** Entity信息 - 根据类型动态获取 */
-  @observable
-  private accessor _entityInfo: EntityInfo;
+  @computed
+  get entityInfo(): EntityInfo {
+    return this._data.entityInfo!;
+  }
 
   /** 是否可标记（自定义标点不支持标记） */
   public readonly markable: boolean = false;
@@ -29,22 +31,6 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
   public readonly selectable: boolean = false;
   /** 是否可以重命名 */
   public readonly renameable: boolean = true;
-
-  constructor(config: CustomPointDataInstanceConfig) {
-    super({
-      data: config.data,
-      mapIndex: config.mapIndex,
-    });
-    this._entityInfo = config.entityInfo;
-  }
-
-  /**
-   * 获取Entity信息
-   */
-  @computed
-  get entityInfo(): EntityInfo {
-    return this._entityInfo;
-  }
 
   /**
    * 获取坐标
@@ -74,7 +60,7 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
    */
   @computed
   get iconName(): string {
-    return this._entityInfo.entityInfo.pic;
+    return this.entityInfo.entityInfo.pic;
   }
 
   /**
@@ -87,7 +73,7 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
     }
 
     this._data.entityDataIdKey = typeId;
-    this._entityInfo = getCustomPointEntityInfo(typeId);
+    this._data.entityInfo = getCustomPointEntityInfo(typeId);
   }
 
   /**

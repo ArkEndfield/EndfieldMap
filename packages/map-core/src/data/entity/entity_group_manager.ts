@@ -47,7 +47,6 @@ export class EntityGroupManager extends BaseDataManager<EntityData, EntityDataIn
     return new EntityDataInstance({
       data,
       mapIndex: this.mapIndex,
-      entityInfo: this.entityInfo,
     });
   }
 

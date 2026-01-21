@@ -8,10 +8,7 @@ import { computed } from 'mobx';
  * 自定义标点数据管理器
  * 管理单个地图上的所有自定义标点数据
  */
-export class CustomPointDataManager extends BaseDataManager<
-  CustomPointData,
-  CustomPointDataInstance
-> {
+export class CustomPointDataManager extends BaseDataManager<CustomPointData, CustomPointDataInstance> {
   constructor(config: CustomPointDataManagerConfig) {
     super({ mapIndex: config.mapIndex });
 
@@ -25,11 +22,12 @@ export class CustomPointDataManager extends BaseDataManager<
    * 创建自定义标点数据实例
    */
   protected createInstance(data: CustomPointData): CustomPointDataInstance {
-    const entityInfo = getCustomPointEntityInfo(data.entityDataIdKey);
+    if (!data.entityInfo) {
+      data.entityInfo = getCustomPointEntityInfo(data.entityDataIdKey);
+    }
     return new CustomPointDataInstance({
       data,
       mapIndex: this.mapIndex,
-      entityInfo,
     });
   }
 
