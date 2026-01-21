@@ -3,6 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Grid, ParsedLevel } from '@/@types/delta_robot';
 import { useAdapter } from '@/hooks/use_adapter';
 import { solvePuzzle } from '@/services/delta_robot/solver';
+import { logger } from '@endfieldmap/tools';
+import { DeltaRobotStatus } from '@/const/delta_robot';
 
 interface UseDeltaRobotProps {
   levelLogicId: string | number;
@@ -16,27 +18,30 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
   const [selectedLevel, setSelectedLevel] = useState<string>(levelList[0] || '');
   const [levelData, setLevelData] = useState<ParsedLevel | null>(null);
   const [solutionGrid, setSolutionGrid] = useState<Grid | null>(null);
-  const [solving, setSolving] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState<string>('');
+  const [status, setStatus] = useState<DeltaRobotStatus>(DeltaRobotStatus.Idle);
+  const [solvingTime, setSolvingTime] = useState<number>(-1);
 
   // 加载关卡数据
   const loadLevel = useCallback(
     async (levelId: string) => {
       try {
-        setStatusMessage('加载关卡数据中...');
+        setStatus(DeltaRobotStatus.Loading);
         setSolutionGrid(null);
         setLevelData(null); // Clear previous data while loading
 
         const parsed = await dataService.deltaRobotDataService.getLevelData(levelId);
 
-        if (!parsed) throw new Error('关卡数据加载失败');
+        if (!parsed) {
+          setStatus(DeltaRobotStatus.LoadingError);
+          return;
+        }
 
         // 更新状态
         setLevelData(parsed);
-        setStatusMessage('关卡加载成功！');
+        setStatus(DeltaRobotStatus.LoadingSuccess);
       } catch (error) {
-        console.error('加载关卡失败:', error);
-        setStatusMessage('关卡加载失败，请重试');
+        logger.error('加载关卡失败:', error);
+        setStatus(DeltaRobotStatus.LoadingError);
       }
     },
     [dataService]
@@ -52,12 +57,10 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
   // 求解拼图
   const handleSolve = useCallback(() => {
     if (!levelData || levelData.pieces.length === 0) {
-      setStatusMessage('没有可用的拼图块');
       return;
     }
 
-    setSolving(true);
-    setStatusMessage('正在求解...');
+    setStatus(DeltaRobotStatus.Solving);
 
     // 使用 setTimeout 避免阻塞 UI
     setTimeout(() => {
@@ -92,15 +95,14 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
 
         if (result) {
           setSolutionGrid(result);
-          setStatusMessage(`求解成功！耗时 ${(endTime - startTime).toFixed(2)}ms`);
+          setStatus(DeltaRobotStatus.SolvingSuccess);
+          setSolvingTime(endTime - startTime);
         } else {
-          setStatusMessage('求解失败：无解或约束冲突');
+          setStatus(DeltaRobotStatus.SolvingError);
         }
       } catch (error) {
-        console.error('求解出错:', error);
-        setStatusMessage('求解出错，请检查数据');
-      } finally {
-        setSolving(false);
+        logger.error('求解出错:', error);
+        setStatus(DeltaRobotStatus.SolvingError);
       }
     }, 100);
   }, [levelData]);
@@ -121,9 +123,9 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
     const num = parseInt(hexColor.replace('#', ''), 16);
     const amt = Math.round(2.55 * percent);
     const R = Math.min(255, (num >> 16) + amt);
-    const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
-    const B = Math.min(255, (num & 0x0000FF) + amt);
-    return `#${(1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1)}`;
+    const G = Math.min(255, ((num >> 8) & 0x00ff) + amt);
+    const B = Math.min(255, (num & 0x0000ff) + amt);
+    return `#${((1 << 24) | (R << 16) | (G << 8) | B).toString(16).slice(1)}`;
   };
 
   // 获取分组名称
@@ -137,8 +139,8 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
     setSelectedLevel,
     levelData,
     solutionGrid,
-    solving,
-    statusMessage,
+    status,
+    solvingTime,
     loadLevel,
     handleSolve,
     getGroupColor,

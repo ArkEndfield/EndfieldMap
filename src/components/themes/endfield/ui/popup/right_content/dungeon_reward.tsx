@@ -32,7 +32,7 @@ export const DungeonReward = ({ entity }: { entity: EntityData }) => {
       {Object.entries(rewards).map(([key, rwds]) => (
         <Fragment key={key}>
           <SubPopupTitle>{key}</SubPopupTitle>
-          <div className="grid grid-cols-3 gap-x-4 gap-y-8 pb-8 pl-6 pr-4 pt-3">
+          <div className="grid grid-cols-3 gap-x-4 gap-y-8 pb-8 pl-6 pr-5 pt-3">
             {rwds.map((rwd) => (
               <Item
                 key={rwd.id}

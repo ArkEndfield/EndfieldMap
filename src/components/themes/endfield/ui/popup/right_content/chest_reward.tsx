@@ -33,7 +33,7 @@ export const ChestReward = ({ entity }: { entity: EntityData }) => {
   return (
     <div>
       <SubPopupTitle>{t('popup:reward.chest.title')}</SubPopupTitle>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-8 pb-8 pl-6 pr-4 pt-3">
+      <div className="grid grid-cols-3 gap-x-4 gap-y-8 pb-8 pl-6 pr-5 pt-3">
         {rewards.map((rwd) => (
           <Item
             key={rwd.id}

@@ -982,3 +982,22 @@ export const CenterIcon = (props: IconProps) => (
     <path d="M5.65,3.44l1.17-2.03h-2.34l1.17,2.03ZM4.47,9.89h2.34l-1.17-2.03-1.17,2.03ZM1.41,6.82l2.03-1.17-2.03-1.17v2.34ZM7.86,5.65l2.03,1.17v-2.34l-2.03,1.17ZM6.25,5.65c0-.33-.27-.6-.6-.6s-.6.27-.6.6.27.6.6.6.6-.27.6-.6Z" />
   </svg>
 );
+
+export const TickCircleIcon = (props: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    {...props}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+);
