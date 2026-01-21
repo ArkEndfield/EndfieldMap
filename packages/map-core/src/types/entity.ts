@@ -1,5 +1,11 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
-import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey, MapIndex } from '@endfieldmap/map-core/const/map';
+import type {
+  CustomPointKey,
+  ElectricPoleIdKey,
+  ElectricPoleKey,
+  NoteKey,
+  MapIndex,
+} from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
 /**
@@ -140,7 +146,8 @@ export type Category =
   | 'system'
   | 'special'
   | typeof ElectricPoleKey
-  | typeof CustomPointKey;
+  | typeof CustomPointKey
+  | typeof NoteKey;
 
 /**
  * 实体分类数据，来自于json

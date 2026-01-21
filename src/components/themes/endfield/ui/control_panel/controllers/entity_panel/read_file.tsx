@@ -1,55 +1,14 @@
 import type { EntityInfoStats } from '@endfieldmap/map-core';
+import { NoteKey } from '@endfieldmap/map-core';
+
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { getAssetUrls } from '@/utils/url';
-
-// 单个分类项接口
-interface CategoryItem {
-  name: string;
-  collectionIdList: string[];
-}
-
-// 单个研究项接口
-interface ResearchItem {
-  id: string;
-  name: string;
-  desc: string;
-  collectionIdList: string[];
-  categories: CategoryItem[];
-}
-
-// JSON 数据结构 (prts_investigate_tmpl.json)
-interface InvestigateData {
-  domain_1: ResearchItem[];
-  domain_2: ResearchItem[];
-}
-
-interface ReadFileItem {
-  id: string;
-  name: string;
-  icon: string;
-  translatedName: string;
-  value: string;
-}
-
-// 自定义 EntityInfo 兼容类型，用于 EntityItem
-interface ReadFileEntityInfo {
-  entityDataIdKey: string;
-  uniqueKey: string;
-  category: string;
-  entityInfo: {
-    point: string;
-    pic: string;
-    desc: string;
-  };
-  count: number;
-  markedCount: number;
-  visible: boolean;
-}
+import type { ReadFileItem } from '@eftypes/read_file';
+import { useAdapter } from '@/hooks/use_adapter';
 
 /**
  * 情报档案组件
@@ -57,27 +16,8 @@ interface ReadFileEntityInfo {
  */
 const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQuery }) => {
   const { t } = useTranslation(['sidebar', 'lang']);
-  const [data, setData] = useState<InvestigateData | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  // 加载 prts_investigate_tmpl.json 数据
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { entityData } = getAssetUrls();
-        const response = await fetch(`${entityData}/prts_investigate_tmpl.json`);
-        const json = await response.json();
-        setData(json);
-      } catch (error) {
-        console.error('Failed to load prts_investigate_tmpl.json:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { dataService } = useAdapter();
+  const data = dataService.readFileDataService.investigateData;
 
   // 处理数据：建立 collectionId 到 name 的映射，并准备搜索结果
   const itemsResult = useMemo((): { itemsMap: Map<string, ReadFileItem>; itemsList: ReadFileItem[] } => {
@@ -149,10 +89,10 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
   }
 
   // 转换为兼容 EntityItem 的格式
-  const entityItems: ReadFileEntityInfo[] = filteredItems.map((item: ReadFileItem) => ({
+  const entityItems: EntityInfoStats[] = filteredItems.map((item: ReadFileItem) => ({
     entityDataIdKey: item.name,
     uniqueKey: item.id,
-    category: '#note',
+    category: NoteKey,
     entityInfo: {
       point: item.name,
       pic: 'item_read_file',
@@ -164,32 +104,23 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
   }));
 
   return (
-    <EntityGroup
-      title={t('filter.category.#read_file')}
-      subtitle="READ FILE"
-      iconColor="#ff6b6b"
-    >
-      {loading ? (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        <div className="py-2 px-3 text-sm text-[#a0a0a0]">{(t as any)('read_file.content')}</div>
-      ) : (
-        <div className="grid grid-cols-2 gap-x-1 gap-y-1.5 py-2">
-          {entityItems.map((entity) => (
-            <EntityItem
-              key={entity.entityDataIdKey}
-              entity={entity as unknown as EntityInfoStats}
-              category={entity.category}
-              active={true}
-              onClick={() => {
-                const item = itemsMap.get(entity.entityDataIdKey);
-                if (item) handleClick(item);
-              }}
-              hideCount
-              hideMarked
-            />
-          ))}
-        </div>
-      )}
+    <EntityGroup title={t('filter.category.#read_file')} subtitle="READ FILE" iconColor="#ff6b6b">
+      <div className="grid grid-cols-2 gap-x-1 gap-y-1.5 py-2">
+        {entityItems.map((entity) => (
+          <EntityItem
+            key={entity.entityDataIdKey}
+            entity={entity as EntityInfoStats}
+            category={entity.category}
+            active={true}
+            onClick={() => {
+              const item = itemsMap.get(entity.entityDataIdKey);
+              if (item) handleClick(item);
+            }}
+            hideCount
+            hideMarked
+          />
+        ))}
+      </div>
     </EntityGroup>
   );
 });
