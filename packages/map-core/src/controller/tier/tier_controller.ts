@@ -69,7 +69,7 @@ export class TierController {
     }
   }
 
-  clearTier(): void {
+  public clearTier(): void {
     this.tierDataManager.clearActiveTier();
     this.tierLayer.clearTier();
     this.tierOverlayMaskLayer.hide();

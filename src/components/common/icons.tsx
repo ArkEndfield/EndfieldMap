@@ -34,7 +34,7 @@ export const BookIcon = (props: IconProps) => (
   </svg>
 );
 
-export const CenterIcon = (props: IconProps) => (
+export const CenterIcon2 = (props: IconProps) => (
   <svg
     viewBox="0 0 32 32"
     id="icon"
@@ -921,6 +921,20 @@ export const ChangeMapIcon = (props: IconProps) => (
   </svg>
 );
 
+export const LayerSwitchIcon = (props: IconProps) => (
+  <svg
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    viewBox="1 1.9 9.3 7.5"
+    {...props}
+  >
+    <path d="M10.28,4.35L5.65,1.91,1.02,4.35l4.63,2.44,4.63-2.44ZM5.65,2.8l2.94,1.55-2.94,1.55-2.94-1.55,2.94-1.55ZM5.65,7.49l-2.84-1.5-1.79.95,4.63,2.44,4.63-2.44-1.79-.95-2.84,1.5Z" />
+  </svg>
+);
+
 export const LayerIcon = (props: IconProps) => (
   <svg
     width="1em"
@@ -952,5 +966,19 @@ export const LayersIcon = (props: IconProps) => (
     <path d="M58.88,56.52l58.89-28.36L59.29,0l-.41-.19L0,28.16l58.47,28.16.41.19ZM58.88,10.12l37.47,18.04-37.47,18.04L21.42,28.16,58.88,10.12Z" />
     <polygon points="98.59 42.12 87.88 47.28 96.35 51.36 58.88 69.4 21.42 51.36 29.89 47.28 19.18 42.12 0 51.36 58.88 79.71 117.77 51.36 98.99 42.32 98.59 42.12" />
     <polygon points="87.88 70.47 96.35 74.55 58.88 92.59 21.42 74.55 29.89 70.47 19.18 65.32 0 74.55 58.88 102.9 117.77 74.55 98.59 65.32 87.88 70.47" />
+  </svg>
+);
+
+export const CenterIcon = (props: IconProps) => (
+  <svg
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    viewBox="1.4 1.4 8.5 8.5"
+    {...props}
+  >
+    <path d="M5.65,3.44l1.17-2.03h-2.34l1.17,2.03ZM4.47,9.89h2.34l-1.17-2.03-1.17,2.03ZM1.41,6.82l2.03-1.17-2.03-1.17v2.34ZM7.86,5.65l2.03,1.17v-2.34l-2.03,1.17ZM6.25,5.65c0-.33-.27-.6-.6-.6s-.6.27-.6.6.27.6.6.6.6-.27.6-.6Z" />
   </svg>
 );

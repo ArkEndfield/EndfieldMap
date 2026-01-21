@@ -11,8 +11,6 @@ class UIManager {
   private mediaQueryList: MediaQueryList | null = null;
 
   @observable accessor settingsShown: boolean;
-  @observable accessor electricPoleManagerOpen: boolean;
-  @observable accessor customPointManagerOpen: boolean;
   @observable accessor isDark = false;
 
   // region: dark mode
@@ -76,11 +74,13 @@ class UIManager {
       audioService.setEnabled(enabled);
     },
   });
+  public enableTier = new LocalStorageValue({
+    initialValue: true,
+    storageKey: UILocalStorageKey.ENABLE_TIER,
+  });
 
   constructor() {
     this.settingsShown = false;
-    this.electricPoleManagerOpen = false;
-    this.customPointManagerOpen = false;
 
     // Sync audio service with saved setting
     audioService.setEnabled(this.audioEnabled.value);
@@ -95,50 +95,6 @@ class UIManager {
   @action
   public toggleSettings() {
     this.settingsShown = !this.settingsShown;
-  }
-  // endregion
-
-  @action
-  public closeAllManagers() {
-    this.setElectricPoleManagerOpen(false);
-    this.setCustomPointManagerOpen(false);
-  }
-
-  @action
-  public toggleAllManagers() {
-    this.toggleElectricPoleManager();
-    this.toggleCustomPointManager();
-  }
-
-  // region: 电线杆管理器
-  @action
-  public setElectricPoleManagerOpen(open: boolean) {
-    if (open && this.customPointManagerOpen) {
-      // 如果要打开电线杆管理器，先关闭自定义标点管理器
-      this.setCustomPointManagerOpen(false);
-    }
-    this.electricPoleManagerOpen = open;
-  }
-
-  @action
-  public toggleElectricPoleManager() {
-    this.setElectricPoleManagerOpen(!this.electricPoleManagerOpen);
-  }
-  // endregion
-
-  // region: 自定义标点管理器
-  @action
-  public setCustomPointManagerOpen(open: boolean) {
-    if (open && this.electricPoleManagerOpen) {
-      // 如果要打开自定义标点管理器，先关闭电线杆管理器
-      this.setElectricPoleManagerOpen(false);
-    }
-    this.customPointManagerOpen = open;
-  }
-
-  @action
-  public toggleCustomPointManager() {
-    this.setCustomPointManagerOpen(!this.customPointManagerOpen);
   }
   // endregion
 
@@ -169,6 +125,7 @@ class UIManager {
         ControlPanel: components.get(ComponentType.CONTROL_PANEL),
         MapIndexMenu: components.get(ComponentType.MAP_INDEX_MENU),
         TierManager: components.get(ComponentType.TIER_MANAGER),
+        ExtraOperation: components.get(ComponentType.EXTRA_OPERATION),
       },
       alert: {
         Alert: components.get(ComponentType.ALERT),

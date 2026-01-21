@@ -5,4 +5,5 @@ export enum UILocalStorageKey {
   DARK_MODE = 'darkMode',
   AUDIO_ENABLED = 'audioEnabled',
   SWIPER_OPEN = 'swiperOpen',
+  ENABLE_TIER = 'enableTier',
 }

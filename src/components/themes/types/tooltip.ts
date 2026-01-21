@@ -33,7 +33,7 @@ export interface TooltipProps<T extends React.ElementType> {
   /** 指定触发 tooltip 组件渲染的组件 */
   as?: T;
   /** 指定触发 tooltip 组件渲染的组件的 props */
-  asProps?: React.ComponentProps<T>;
+  asProps?: Omit<React.ComponentProps<T>, 'children'>;
 }
 
 export interface Position {
