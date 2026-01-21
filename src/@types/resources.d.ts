@@ -5389,7 +5389,7 @@ interface Resources {
         "#custom_point": "自定义点位",
         "#egg": "???",
         "#electric_pole": "电线杆",
-        "#read_file": "情报档案",
+        "#note": "情报档案",
         "dnarrative": "世界叙事回响",
         "dungeon": "副本点位",
         "enemy": "敌人",

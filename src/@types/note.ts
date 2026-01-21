@@ -24,7 +24,7 @@ export interface InvestigateData {
   domain_2: ResearchItem[];
 }
 
-export interface ReadFileItem {
+export interface NoteItem {
   id: string;
   logicId: number;
   name: string;

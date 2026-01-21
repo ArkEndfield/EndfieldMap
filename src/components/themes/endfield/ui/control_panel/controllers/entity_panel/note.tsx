@@ -1,4 +1,3 @@
-import type { ReadFileItem } from '@eftypes/read_file';
 import type { EntityInfoStats } from '@endfieldmap/map-core';
 import { NoteKey } from '@endfieldmap/map-core';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
@@ -7,25 +6,26 @@ import { observer } from 'mobx-react-lite';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { NoteItem } from '@/@types/note';
 import { useAdapter } from '@/hooks/use_adapter';
 
 /**
  * 情报档案组件
  * 默认隐藏，仅在特定搜索条件时显示
  */
-const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQuery }) => {
+const NoteEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQuery }) => {
   const { t } = useTranslation(['sidebar', 'lang']);
   const { dataService, adapter } = useAdapter();
-  const data = dataService.readFileDataService.investigateData;
+  const data = dataService.noteDataService.investigateData;
 
   // 处理数据：建立 collectionId 到 name 的映射，并准备搜索结果
-  const itemsResult = useMemo((): { itemsMap: Map<string, ReadFileItem>; itemsList: ReadFileItem[] } => {
+  const itemsResult = useMemo((): { itemsMap: Map<string, NoteItem>; itemsList: NoteItem[] } => {
     if (!data) {
-      return { itemsMap: new Map<string, ReadFileItem>(), itemsList: [] };
+      return { itemsMap: new Map<string, NoteItem>(), itemsList: [] };
     }
 
-    const map = new Map<string, ReadFileItem>();
-    const list: ReadFileItem[] = [];
+    const map = new Map<string, NoteItem>();
+    const list: NoteItem[] = [];
 
     // 遍历 domain_1 和 domain_2
     const domains = [...(data.domain_1 ?? []), ...(data.domain_2 ?? [])];
@@ -40,7 +40,7 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
           // 使用 lang 命名空间进行翻译
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const translatedName = (t as any)(`lang:${name}`, { defaultValue: name }) as string;
-          const readFileItem: ReadFileItem = {
+          const NoteItem: NoteItem = {
             id,
             logicId,
             name,
@@ -48,8 +48,8 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
             translatedName,
             value: desc || '',
           };
-          map.set(id, readFileItem);
-          list.push(readFileItem);
+          map.set(id, NoteItem);
+          list.push(NoteItem);
         });
       });
     });
@@ -68,7 +68,7 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
     }
 
     return itemsList.filter(
-      (item: ReadFileItem) =>
+      (item: NoteItem) =>
         item.value.toLowerCase().includes(query) ||
         item.id.toLowerCase().includes(query) ||
         item.translatedName.toLowerCase().includes(query)
@@ -76,7 +76,7 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
   }, [searchQuery, itemsList]);
 
   // 点击处理
-  const handleClick = (item: ReadFileItem) => {
+  const handleClick = (item: NoteItem) => {
     const id = item.logicId;
     if (id) {
       adapter.moveToEntity(id, true, true, void 0, 5);
@@ -91,7 +91,7 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
   }
 
   // 转换为兼容 EntityItem 的格式
-  const entityItems: EntityInfoStats[] = filteredItems.map((item: ReadFileItem) => ({
+  const entityItems: EntityInfoStats[] = filteredItems.map((item: NoteItem) => ({
     entityDataIdKey: item.name,
     uniqueKey: item.id,
     category: NoteKey,
@@ -106,14 +106,14 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
   }));
 
   return (
-    <EntityGroup title={t('filter.category.#read_file')} subtitle="READ FILE" iconColor="#ff6b6b">
+    <EntityGroup title={t('filter.category.#note')} subtitle="READ FILE" iconColor="#ff6b6b">
       <div className="grid grid-cols-2 gap-x-1 gap-y-1.5 py-2">
         {entityItems.map((entity) => {
           const item = itemsMap.get(entity.uniqueKey);
           return (
             <EntityItem
               key={entity.entityDataIdKey}
-              entity={entity as EntityInfoStats}
+              entity={entity}
               category={entity.category}
               active={!!item?.logicId}
               onClick={() => {
@@ -129,4 +129,4 @@ const ReadFileEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searc
   );
 });
 
-export default ReadFileEntityGroup;
+export default NoteEntityGroup;

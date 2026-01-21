@@ -1,12 +1,12 @@
 import { type JSONLoader } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 
-import type { InvestigateData } from '@eftypes/read_file';
+import type { InvestigateData } from '@/@types/note';
 import { getAssetUrls } from '@/utils/url';
 
 const assetURL = getAssetUrls();
 
-export class ReadFileDataService {
+export class NoteDataService {
   private jsonLoader: JSONLoader;
   @observable accessor investigateData!: InvestigateData;
 

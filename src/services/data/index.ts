@@ -12,7 +12,7 @@ import { GuideDataService } from '@/services/data/guide';
 import { ItemDataService } from '@/services/data/item';
 import { LangHashDataService } from '@/services/data/lang_hash';
 import { MapStateDataService } from '@/services/data/map_state';
-import { ReadFileDataService } from '@/services/data/read_file';
+import { NoteDataService } from '@/services/data/note';
 import { SwiperDataService } from '@/services/data/swiper';
 
 /**
@@ -41,7 +41,7 @@ export class DataService {
   public mapStateDataService: MapStateDataService;
   public swiperDataService: SwiperDataService;
   public gridTiersDataService: GridTiersDataService;
-  public readFileDataService: ReadFileDataService;
+  public noteDataService: NoteDataService;
 
   constructor(adapter: EndfieldMapAdapter) {
     this.entityDataService = new EntityDataService(DataService.storage, adapter);
@@ -65,7 +65,7 @@ export class DataService {
     this.mapStateDataService = new MapStateDataService(adapter);
     this.swiperDataService = new SwiperDataService();
     this.gridTiersDataService = new GridTiersDataService(DataService.jsonLoader, adapter);
-    this.readFileDataService = new ReadFileDataService(DataService.jsonLoader);
+    this.noteDataService = new NoteDataService(DataService.jsonLoader);
   }
 
   public static async initStorage() {
@@ -102,7 +102,7 @@ export class DataService {
       // 初始化 delta robot 数据
       this.deltaRobotDataService.init(),
       // 初始化情报档案数据
-      this.readFileDataService.init(),
+      this.noteDataService.init(),
     ]);
   }
 

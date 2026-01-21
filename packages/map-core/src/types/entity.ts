@@ -3,8 +3,8 @@ import type {
   CustomPointKey,
   ElectricPoleIdKey,
   ElectricPoleKey,
-  NoteKey,
   MapIndex,
+  NoteKey,
 } from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
