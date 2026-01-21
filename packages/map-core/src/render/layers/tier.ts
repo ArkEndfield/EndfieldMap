@@ -40,7 +40,7 @@ export class TierLayer extends SingleLayerBase {
       }
 
       // TODO: 自动化处理
-      const scale = tier.mapIndex === MapIndex.MAP01 ? 75 / 2 : 75;
+      const scale = tier.mapIndex === MapIndex.MAP02 ? 75 : 75 / 2;
       const img = ImagePool.getImage(imageUrl);
       if (img.isPool || img.image.complete || img.image.naturalWidth > 0 || img.image.naturalHeight > 0) {
         const scaledWidth = img.image.naturalWidth / scale;
