@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import CustomPointList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/custom_point';
 import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
+import ReadFileEntityGroup from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/read_file';
 import { useAdapter } from '@/hooks/use_adapter';
 
 interface CategoryInfo {
@@ -122,6 +123,7 @@ const EntityPanel = observer(() => {
       <div>
         <CustomPointList />
         <ElectricPoleList />
+        <ReadFileEntityGroup searchQuery={searchQuery} />
         {categorizedEntities.map((categoryInfo) => (
           <EntityGroup
             key={categoryInfo.category}

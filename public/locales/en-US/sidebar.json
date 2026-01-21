@@ -23,7 +23,9 @@
       "system": "Daily Dungeon",
       "other": "Other",
       "#electric_pole": "Electric Pole",
-      "#custom_point": "Custom Point"
+      "#custom_point": "Custom Point",
+      "#read_file": "Intelligence Archives",
+      "#egg": "Egg"
     }
   },
   "operation": {

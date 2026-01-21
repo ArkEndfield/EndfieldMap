@@ -83,6 +83,9 @@ export const ElectricPoleKey = ElectricPoleIdKey;
 /** 自定义标点 ID 键 */
 export const CustomPointKey = '#custom_point';
 
+/** 纸条搜索键 */
+export const NoteKey = '#note';
+
 /** TODO: 电线杆覆盖区域半径（地图坐标单位） */
 export const ELECTRIC_ZONE_RADIUS: Record<MapIndex, number> = {
   [MapIndex.MAP01]: 10,
