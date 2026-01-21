@@ -17,5 +17,5 @@ export const DEFAULT_MAP_CENTERS: Record<MapIndex, { x: number; y: number; z: nu
   // [MapIndex.MAP02]: [16, 185],
   [MapIndex.MAP01]: { x: -224, y: 0, z: -64 },
   [MapIndex.MAP02]: { x: -1408, y: 0, z: -752 },
-  [MapIndex.DUNG01]: { x: 128, y: 0, z: 0 },
+  [MapIndex.DUNG01]: { x: -80, y: 0, z: -80 },
 };
