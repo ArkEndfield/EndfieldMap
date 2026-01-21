@@ -2,10 +2,9 @@ import type { EntityData } from '@endfieldmap/map-core';
 import { ChestReward } from '@themes/endfield/ui/popup/right_content/chest_reward';
 import { DeltaRobot } from '@themes/endfield/ui/popup/right_content/delta_robot';
 import { DungeonReward } from '@themes/endfield/ui/popup/right_content/dungeon_reward';
+import { useEffect, useState } from 'react';
 
 import { hasChestReward, hasDeltaRobot, hasDungeonReward } from '@/utils/reward';
-
-import { useEffect, useState } from 'react';
 
 export interface RightContentItem {
   id: string;

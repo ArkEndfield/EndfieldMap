@@ -1,7 +1,7 @@
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
 import type { EntityData, EntityDataInstanceConfig, EntityInfoData } from '@endfieldmap/map-core/types/entity';
 import { xyz2crd } from '@endfieldmap/tools';
-import { computed, observable } from 'mobx';
+import { computed } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 /**

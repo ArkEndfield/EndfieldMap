@@ -1,8 +1,9 @@
-import { useAdapter } from '@/hooks/use_adapter';
 import { MAP_EVENT } from '@endfieldmap/map-core';
-import { crd2xyz, xyz2crd } from '@endfieldmap/tools';
+import { crd2xyz } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
+
+import { useAdapter } from '@/hooks/use_adapter';
 
 const CenterPositionDisplay = observer(() => {
   const { adapter } = useAdapter();
@@ -43,11 +44,6 @@ const CenterPositionDisplay = observer(() => {
 });
 
 export const TierControls = observer(() => {
-  const { adapter, dataService } = useAdapter();
-  const [tierBoundaryEnabled, setTierBoundaryEnabled] = useState(false);
-  const [boundaryFeatureIds, setBoundaryFeatureIds] = useState<number[]>([]);
-  const tierGridsData = dataService.gridTiersDataService.gridTiersData;
-
   return (
     <div className="space-y-2 border-t border-white/10 pt-2">
       <CenterPositionDisplay />

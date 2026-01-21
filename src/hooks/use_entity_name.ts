@@ -1,12 +1,13 @@
 import type { DataInstance, EntityInfoStats } from '@endfieldmap/map-core';
+import { CustomPointKey,ElectricPoleKey } from '@endfieldmap/map-core';
 import { useTranslation } from 'react-i18next';
-import { ElectricPoleKey, CustomPointKey } from '@endfieldmap/map-core';
+
 import { useAdapter } from '@/hooks/use_adapter';
 
 export const useEntityName = (entity?: EntityInfoStats) => {
   const { t } = useTranslation(['common', 'sidebar', 'lang']);
   const { dataService } = useAdapter();
-  const categoryName = !!entity?.category
+  const categoryName = entity?.category
     ? t(`sidebar:filter.category.${entity.category}`, {
         defaultValue: entity.category,
       })

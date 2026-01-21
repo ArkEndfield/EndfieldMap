@@ -1,9 +1,9 @@
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
+import { action, observable } from 'mobx';
 
 import type { LevelData, ParsedLevel, PieceData } from '@/@types/delta_robot';
 import { parseLevelData } from '@/services/delta_robot/loader';
 import { getAssetUrls } from '@/utils/url';
-import { action, observable } from 'mobx';
 
 const assetURL = getAssetUrls();
 

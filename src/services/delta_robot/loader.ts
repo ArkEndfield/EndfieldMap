@@ -3,8 +3,9 @@
  * 关卡数据加载器：将远程 JSON 转换为 UI 可用的数据结构
  */
 
+import type { Group, LevelData, ObstacleData, ParsedLevel, PieceLoader,PieceUI } from '@eftypes/delta_robot';
+
 import { parsePieceShape } from '@/services/delta_robot/solver';
-import type { LevelData, ParsedLevel, Group, PieceUI, ObstacleData, PieceLoader } from '@eftypes/delta_robot';
 
 const COLOR_MAP: Record<string, string> = {
   Color1: '#B3FF00',

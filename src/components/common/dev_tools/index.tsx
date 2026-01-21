@@ -3,10 +3,10 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
 import { DevToolsDrawPanel } from '@/components/common/dev_tools/draw_panel';
+import { TierControls } from '@/components/common/dev_tools/views/tier_controller';
 import { CogIcon, EditIcon, MinusIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
-import { TierControls } from '@/components/common/dev_tools/views/tier_controller';
 
 // 开发工具面板
 const DevToolsPanel = observer(() => {

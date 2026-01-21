@@ -1,9 +1,9 @@
 import { LocalStorageValue } from '@endfieldmap/tools';
 import { EndfieldThemeLocalStorageKey } from '@themes/endfield/const/storage_key';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
+import { computed } from 'mobx';
 
 import type { DataService } from '@/services/data';
-import { computed } from 'mobx';
 
 export class EndfieldUIManager {
   private static instance: EndfieldUIManager;

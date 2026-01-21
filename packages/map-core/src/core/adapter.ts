@@ -9,13 +9,13 @@ import { CustomPointController } from '@endfieldmap/map-core/controller/entity/c
 import { DataController } from '@endfieldmap/map-core/controller/entity/data_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
-import { TierController } from '@endfieldmap/map-core/controller/tier';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/feature/active_feature';
 import { HoverConnectionController } from '@endfieldmap/map-core/controller/feature/hover_connection';
 import { HoverFeatureController } from '@endfieldmap/map-core/controller/feature/hover_feature';
 import { EventController } from '@endfieldmap/map-core/controller/interaction/event';
 import { KeyboardMoveController } from '@endfieldmap/map-core/controller/interaction/keyboard';
 import { PopupController } from '@endfieldmap/map-core/controller/interaction/popup';
+import { TierController } from '@endfieldmap/map-core/controller/tier';
 import type { EndfieldMapAssetConfig } from '@endfieldmap/map-core/data/asset';
 import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';

@@ -1,8 +1,8 @@
-import { OperateList } from '@themes/endfield/ui/menus/center/operate_list';
 import { MenuContainer } from '@themes/endfield/ui/menus/center/menu_container';
+import { OperateList } from '@themes/endfield/ui/menus/center/operate_list';
+import { menus } from '@themes/endfield/ui/menus/left/list';
 
 import { cn } from '@/utils/style';
-import { menus } from '@themes/endfield/ui/menus/left/list';
 
 const Menu = menus[1];
 

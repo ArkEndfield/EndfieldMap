@@ -1,11 +1,12 @@
+import type { DataInstance } from '@endfieldmap/map-core';
+import { ElectricPoleKey } from '@endfieldmap/map-core';
+import Tooltip from '@themes/endfield/components/tooltip';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
+import { alert } from '@/components/common/alert/alert_api';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { EditIcon } from '@/components/common/icons';
-import type { DataInstance } from '@endfieldmap/map-core';
-import { observer } from 'mobx-react-lite';
-import Tooltip from '@themes/endfield/components/tooltip';
-import { useTranslation } from 'react-i18next';
-import { ElectricPoleKey } from '@endfieldmap/map-core';
-import { alert } from '@/components/common/alert/alert_api';
 
 export interface RenameButtonProps {
   entity: DataInstance;

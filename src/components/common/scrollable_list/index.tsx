@@ -1,5 +1,6 @@
+import { createContext, type ReactNode,useCallback, useContext, useEffect, useRef, useState } from 'react';
+
 import { cn } from '@/utils/style';
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 
 export interface ScrollableListProps {
   className?: string;

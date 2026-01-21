@@ -5,11 +5,8 @@ import { CustomPointManagerToolbar as Toolbar } from '@themes/endfield/ui/contro
 import CustomPointTypeSelector from '@themes/endfield/ui/control_panel/controllers/operations/custom_point/type_selector';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
-import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
 
 export const CustomPointOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();

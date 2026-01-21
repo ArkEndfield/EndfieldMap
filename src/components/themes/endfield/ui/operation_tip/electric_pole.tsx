@@ -5,11 +5,8 @@ import { PoleManagerToolbar } from '@themes/endfield/ui/control_panel/controller
 import ElectricPoleTypeSelector from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/type_selector';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
-import { useElectricMode } from '@/hooks/use_electric_mode';
 
 export const ElectricPoleOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();

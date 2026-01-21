@@ -8,5 +8,10 @@
   },
   "settings": {
     "title": "Settings"
+  },
+    "head_menu": {
+    "filter": "Resource Filter",
+    "poles": "Poles", 
+    "custom": "Custom Points"
   }
 }

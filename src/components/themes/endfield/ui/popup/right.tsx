@@ -1,10 +1,10 @@
 import type { EntityData } from '@endfieldmap/map-core';
+import type { RightContentItem } from '@themes/endfield/ui/popup/right_content/items';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
-import type { RightContentItem } from '@themes/endfield/ui/popup/right_content/items';
 import { cn } from '@/utils/style';
 
 export interface RightContentProps {
