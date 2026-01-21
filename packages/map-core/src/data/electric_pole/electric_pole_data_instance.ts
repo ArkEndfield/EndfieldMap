@@ -29,6 +29,8 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
   public readonly selectable: boolean = false;
   /** 是否可以重命名 */
   public readonly renameable: boolean = true;
+  /** 是否可以删除 */
+  public readonly deletable: boolean = true;
 
   /** 发出的连线（当前电线杆发出） */
   @observable.shallow
