@@ -5,13 +5,14 @@ import { ZmdSquareButton } from '@/components/common/endfield_components/button/
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { useDeltaRobot } from '@/hooks/use_delta_robot';
 import { cn } from '@/utils/style';
+import { useTranslation } from 'react-i18next';
 
 interface DeltaRobotProps {
   entity: EntityData;
 }
 
 export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
-  // const { t } = useTranslation(['popup', 'lang']);
+  const { t } = useTranslation(['popup', 'lang']);
 
   const {
     levelList,
@@ -142,14 +143,14 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
 
   return (
     <div>
-      <SubPopupTitle>解决方案</SubPopupTitle>
+      <SubPopupTitle>{t("popup:robot.solution")}</SubPopupTitle>
       {/* 关卡选择 */}
       <div className="px-4 pt-4">
         <div className="mb-4">
-          <label className="block text-sm font-semibold mb-2 text-gray-300">选择关卡（共 {levelList.length} 关）</label>
+          <label className="block text-sm font-semibold mb-2 text-gray-300">{t("popup:robot.level_selection", {levels:levelList.length})}</label>
           <EndfieldSelect
             value={selectedLevel}
-            options={levelList.map((id, index) => ({ value: id, label: `第 ${index + 1} 关` }))}
+            options={levelList.map((id, index) => ({ value: id, label: t("popup:robot.level_item", {level:(index + 1)})  }))}
             onChange={(val) => setSelectedLevel(val)}
             className="w-full"
           />
@@ -157,7 +158,7 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
         {/* 库存列表 */}
         {levelData && (
           <div className="mb-6">
-            <h3 className="text-sm font-semibold mb-2 text-gray-300">可用拼图 ({levelData.pieces.length} 个)</h3>
+            <h3 className="text-sm font-semibold mb-2 text-gray-300">{t("popup:robot.puzzle_piece_count", {pieces:levelData.pieces.length})}</h3>
             <div
               className={cn(
                 'max-h-40 overflow-y-auto grid gap-2 bg-[#1a1a1a] p-2 rounded',
@@ -165,7 +166,7 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
               )}
             >
               {levelData.pieces.length === 0 ? (
-                <div className="col-span-3 text-center text-gray-400 py-4">暂无拼图块</div>
+                <div className="col-span-3 text-center text-gray-400 py-4">{t("popup:robot.no_puzzle_piece")}</div>
               ) : (
                 levelData.pieces.map((piece) => (
                   <div
@@ -227,7 +228,7 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
             )
           }
         >
-          {solving ? '求解中...' : '开始求解'}
+          {solving ? t("popup:robot.solving") : t("popup:robot.start_slove")}
         </ZmdSquareButton>
 
         {/* 状态信息 */}

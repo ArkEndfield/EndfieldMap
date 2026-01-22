@@ -14,5 +14,15 @@
   "custom_point": {
     "rename_tip": "Please enter custom point name",
     "change_type": "Change marker type"
+  },
+  "robot": {
+    "solution": "Solution",
+    "result": "Result",
+    "level_selection": "Select Level ({{levels}} total)",
+    "level_item": "Level {{level}}",
+    "puzzle_piece_count": "{{pieces}} Puzzle Pieces available",
+    "no_puzzle_piece": "No Puzzle Pieces",
+    "solving": "Solving...",
+    "start_slove": "Find solution"
   }
 }
