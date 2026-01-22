@@ -246,7 +246,9 @@ export class EntityGroupRenderer {
       }),
       () => {
         feature.changed();
-        this.clusterSource.changed();
+        // 使用 refresh() 确保 marked 状态变化时 geometryFunction 重新执行
+        // 这在筛选模式为 marked/unmarked 时尤为重要
+        this.clusterSource.refresh();
       }
     );
 
@@ -304,6 +306,11 @@ export class EntityGroupRenderer {
       () => this.dataManager.groupVisible,
       (visible) => {
         this.layer.setVisible(visible);
+        // 当图层变为可见时，需要刷新 clusterSource 以重新应用 marked 筛选模式
+        // 使用 refresh() 强制重新计算聚合，因为 geometryFunction 需要重新执行
+        if (visible) {
+          this.clusterSource.refresh();
+        }
       }
     );
     this.disposers.push(visibilityDisposer);
@@ -466,7 +473,8 @@ export class EntityGroupRenderer {
       return;
     }
     this.markedFilterMode = mode;
-    this.clusterSource.changed();
+    // 需要调用 refresh() 强制重新计算聚合，changed() 不足以触发 geometryFunction 重新执行
+    this.clusterSource.refresh();
   }
 
   /**
