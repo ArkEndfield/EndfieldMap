@@ -67,7 +67,7 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
 
     return (
       <div className="mb-6">
-        <h3 className="text-sm font-semibold mb-2 text-gray-300">求解结果</h3>
+        <h3 className="text-sm font-semibold mb-2 text-gray-300">{t("popup:robot.solution")}</h3>
         <div
           className="inline-grid gap-0 p-2 bg-[#1a1a1a] text-black rounded"
           style={{
