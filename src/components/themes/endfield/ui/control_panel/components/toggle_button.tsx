@@ -33,7 +33,7 @@ export default function ToggleButton({ checked, value, onChange, children, class
   };
 
   return (
-    <ZmdSquareIconButton className={cn(isActive && 'bg-[#fffa00] hover:bg-[#fffa00]', className)} onClick={toggle}>
+    <ZmdSquareIconButton className={cn(isActive && 'bg-[#fffa00] md:hover:bg-[#fffa00]', className)} onClick={toggle}>
       {children}
     </ZmdSquareIconButton>
   );
