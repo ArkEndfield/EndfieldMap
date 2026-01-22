@@ -1,5 +1,5 @@
 import type { DataInstance, EntityInfoStats } from '@endfieldmap/map-core';
-import { CustomPointKey,ElectricPoleKey } from '@endfieldmap/map-core';
+import { CustomPointKey, ElectricPoleKey, NoteKey } from '@endfieldmap/map-core';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
@@ -20,6 +20,10 @@ export const useEntityName = (entity?: EntityInfoStats) => {
       });
     } else if (entity.category === CustomPointKey) {
       name = t(`common:custom_point.type.${entity.entityDataIdKey}`, {
+        defaultValue: entity.entityDataIdKey,
+      });
+    } else if (entity.category === NoteKey) {
+      name = t(`lang:${entity.entityDataIdKey}`, {
         defaultValue: entity.entityDataIdKey,
       });
     } else {

@@ -1,4 +1,5 @@
 import type { Category, EntityInfoStats } from '@endfieldmap/map-core';
+import { debounce } from '@endfieldmap/tools';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { Search } from '@themes/endfield/ui/control_panel/controllers/entity_panel/search';
@@ -8,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import CustomPointList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/custom_point';
 import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
+import NoteEntityGroup from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/note';
 import { useAdapter } from '@/hooks/use_adapter';
 
 interface CategoryInfo {
@@ -25,7 +27,14 @@ interface CategoryInfo {
 const EntityPanel = observer(() => {
   const { t } = useTranslation(['sidebar', 'lang']);
   const { adapter, dataService } = useAdapter();
+  const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const debouncedSetSearchQuery = useMemo(() => {
+    return debounce((value: string) => {
+      setSearchQuery(value);
+    }, 300);
+  }, []);
 
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
   const entities = adapter.entityController.currentStats;
@@ -113,15 +122,19 @@ const EntityPanel = observer(() => {
       {/* 搜索输入框 */}
       <div className="px-1 pt-2">
         <Search
-          value={searchQuery}
-          onValueChange={(v) => setSearchQuery(v)}
+          value={inputValue}
+          onValueChange={(v) => {
+            setInputValue(v);
+            debouncedSetSearchQuery(v);
+          }}
           placeholder={t('sidebar:filter.search_placeholder')}
         />
       </div>
 
       <div>
-        <CustomPointList />
-        <ElectricPoleList />
+        {!searchQuery && <CustomPointList />}
+        {!searchQuery && <ElectricPoleList />}
+        <NoteEntityGroup searchQuery={searchQuery} />
         {categorizedEntities.map((categoryInfo) => (
           <EntityGroup
             key={categoryInfo.category}

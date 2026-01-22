@@ -23,7 +23,9 @@
       "system": "일일 던전",
       "other": "기타",
       "#electric_pole": "전신주",
-      "#custom_point": "사용자 지정 포인트"
+      "#custom_point": "사용자 지정 포인트",
+      "#note": "정보 아카이브",
+      "#egg": "계란"
     }
   },
   "operation": {

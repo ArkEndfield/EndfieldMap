@@ -23,7 +23,9 @@
       "system": "デイリーダンジョン",
       "other": "その他",
       "#electric_pole": "電柱",
-      "#custom_point": "カスタムポイント"
+      "#custom_point": "カスタムポイント",
+      "#note": "情報アーカイブ",
+      "#egg": "エッグ"
     }
   },
   "operation": {

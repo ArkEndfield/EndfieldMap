@@ -23,7 +23,9 @@
       "system": "Mazmorra diaria",
       "other": "Otro",
       "#electric_pole": "Poste eléctrico",
-      "#custom_point": "Punto personalizado"
+      "#custom_point": "Punto personalizado",
+      "#note": "Archivos de Inteligencia",
+      "#egg": "Huevo"
     }
   },
   "operation": {

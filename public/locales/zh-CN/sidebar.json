@@ -23,7 +23,9 @@
       "system": "日常副本",
       "other": "其他",
       "#electric_pole": "电线杆",
-      "#custom_point": "自定义点位"
+      "#custom_point": "自定义点位",
+      "#note": "情报档案",
+      "#egg": "???"
     }
   },
   "operation": {
