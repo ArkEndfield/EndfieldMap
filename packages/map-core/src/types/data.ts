@@ -1,7 +1,7 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
-import type { ElectricPoleMapData } from '@endfieldmap/map-core/data/electric_pole';
-import type { CustomPointMapData } from '@endfieldmap/map-core/types/entity';
+import type { CustomPointMapData, ElectricPoleMapData } from '@endfieldmap/map-core/types/entity';
 import type { EntityData } from '@endfieldmap/map-core/types/entity';
+
+import type { MapData } from '@endfieldmap/map-core/types/map';
 
 /**
  * entity 是否显示
@@ -16,7 +16,7 @@ export type FeatureMarked = Record<EntityData['levelLogicId'], boolean>;
 /**
  * 存储的数据类型
  */
-export type StorageData<T> = Partial<Record<MapIndex, T>>;
+export type StorageData<T> = Partial<Record<MapData['id'], T>>;
 
 /**
  * 导出的数据结构

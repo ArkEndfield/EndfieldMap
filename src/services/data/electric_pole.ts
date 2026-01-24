@@ -1,5 +1,5 @@
 import type { ElectricPolePreset, ElectricPolePresetExportBundle } from '@eftypes/electric_pole';
-import type { ElectricPoleMapData, EndfieldMapAdapter, StorageData } from '@endfieldmap/map-core';
+import type { ElectricPoleMapData, EndfieldMapAdapter, MapData, StorageData } from '@endfieldmap/map-core';
 import {
   DEFAULT_ELECTRIC_POLE_DEVICE_KEY,
   ELECTRIC_POLE_DEVICE_CONFIGS,
@@ -15,7 +15,6 @@ import {
   LocalStorageDB,
   LocalStorageKey,
   logger,
-  MapIndex,
   StorageKey,
   type StorageManager,
 } from '@endfieldmap/tools';
@@ -97,14 +96,15 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
     // 监听地图切换，清除当正在连接的电线杆
     reaction(
-      () => this.adapter.currentMapIndex,
+      () => this.adapter.mapController.dataManager.currentMapId,
       () => {
         if (this.connectingPole) {
           this.connectingPole = null;
           this.adapter.activeFeatureController.clearActiveFeature();
         }
-        this.applyStoredVisibility(this.adapter.currentMapIndex);
-      }
+        this.applyStoredVisibility(this.adapter.mapController.dataManager.currentMapId);
+      },
+      { fireImmediately: true }
     );
   }
 
@@ -202,11 +202,11 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
   // region: 可见性（按类型）
 
-  public updateDeviceVisibility(mapIndex: MapIndex, deviceKey: ElectricPoleDeviceKey, visible: boolean) {
-    if (!this.deviceVisibilityData[mapIndex]) {
-      this.deviceVisibilityData[mapIndex] = {};
+  public updateDeviceVisibility(mapId: MapData['id'], deviceKey: ElectricPoleDeviceKey, visible: boolean) {
+    if (!this.deviceVisibilityData[mapId]) {
+      this.deviceVisibilityData[mapId] = {};
     }
-    this.deviceVisibilityData[mapIndex]![deviceKey] = visible;
+    this.deviceVisibilityData[mapId]![deviceKey] = visible;
     this.saveDeviceVisibilityToStorageDebounced();
   }
 
@@ -219,12 +219,12 @@ export class ElectricPoleDataService extends BasePresetDataService<
     DEBOUNCE_INTERVAL
   );
 
-  private applyStoredVisibility(mapIndex: MapIndex) {
-    const visibilityData = this.deviceVisibilityData[mapIndex];
+  private applyStoredVisibility(mapId: MapData['id']) {
+    const visibilityData = this.deviceVisibilityData[mapId];
     if (!visibilityData) return;
 
     const dataManager = this.adapter.electricPoleController.dataManager;
-    const manager = dataManager.getMapManager(mapIndex);
+    const manager = dataManager.getMapManager(mapId);
     if (!manager) return;
 
     manager.instances.forEach((instance) => {
@@ -240,11 +240,11 @@ export class ElectricPoleDataService extends BasePresetDataService<
   private initEntityClickEvent() {
     this.adapter.event.on(MAP_EVENT.MAP_CLICK, (event) => {
       if (!this.isCreating) return;
-      const mapIndex = this.adapter!.currentMapIndex;
+      const mapId = this.adapter!.mapController.dataManager.currentMapId;
       const coordinate = event.coordinate;
       try {
         const feature = this.adapter!.electricPoleController.createElectricPole(
-          mapIndex,
+          mapId,
           coordinate,
           this.creatingDeviceKey
         );
@@ -299,7 +299,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
    */
   @action
   public toggleZoneVisibility() {
-    const visible = !this.adapter.electricPoleController?.zoneVisible;
+    const visible = !this.adapter.electricPoleController.dataManager.zoneVisible;
     this.changeZoneVisibility(visible);
   }
 
@@ -308,7 +308,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
    */
   @action
   public changeVisibility(visible: boolean) {
-    this.adapter.electricPoleController?.setElectricPoleVisible?.(visible);
+    this.adapter.electricPoleController?.setVisible?.(visible);
     LocalStorageDB.set(LocalStorageKey.ELECTRIC_POLE_DISPLAY, visible);
   }
 
@@ -317,7 +317,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
    */
   @action
   public toggleVisibility() {
-    const visible = !this.adapter.electricPoleController?.electricPoleVisible;
+    const visible = !this.adapter.electricPoleController.dataManager.visible;
     this.changeVisibility(visible);
   }
 
@@ -348,8 +348,8 @@ export class ElectricPoleDataService extends BasePresetDataService<
   @action
   public deleteElectricPole(pole: ElectricPoleDataInstance, force = false) {
     if (!this.isDeleting && !force) return;
-    const mapIndex = this.adapter.currentMapIndex;
-    this.adapter.electricPoleController.deleteElectricPole(mapIndex, pole.id);
+    const mapId = this.adapter.mapController.dataManager.currentMapId;
+    this.adapter.electricPoleController.deleteElectricPole(mapId, pole.id);
     this.adapter.hoverFeatureController.clearHoverFeature();
   }
 
@@ -559,8 +559,8 @@ export class ElectricPoleDataService extends BasePresetDataService<
     const sourceData = data as Partial<ElectricPoleMapData>;
     const ensured: ElectricPoleMapData = {};
 
-    const mapIndices = [MapIndex.MAP01, MapIndex.MAP02] as (keyof ElectricPoleMapData)[];
-    for (const map of mapIndices) {
+    const mapIds = this.adapter.mapController.dataManager.mapIds;
+    for (const map of mapIds) {
       if (!sourceData[map]) {
         ensured[map] = [];
         continue;
@@ -660,9 +660,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
     try {
       const data = this.ensureMapData(preset.data);
       this.adapter.electricPoleController.resetAllElectricPoleData(data);
-      // 重新渲染当前地图上的电线杆
-      this.adapter.renderElectricPole(this.adapter.currentMapIndex);
-      this.applyStoredVisibility(this.adapter.currentMapIndex);
+      this.applyStoredVisibility(this.adapter.mapController.dataManager.currentMapId);
     } catch (error) {
       logger.error(
         '[ElectricPoleDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data',
@@ -683,9 +681,8 @@ export class ElectricPoleDataService extends BasePresetDataService<
         onCancel: () => {
           const emptyData = this.ensureMapData({} as ElectricPoleMapData);
           adapter?.electricPoleController.resetAllElectricPoleData(emptyData);
-          adapter?.renderElectricPole(adapter?.currentMapIndex);
           if (adapter) {
-            this.applyStoredVisibility(adapter.currentMapIndex);
+            this.applyStoredVisibility(adapter.mapController.dataManager.currentMapId);
           }
         },
         cancelText: '删除损坏预设',

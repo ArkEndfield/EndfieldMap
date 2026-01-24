@@ -1,4 +1,5 @@
-import { DEFAULT_ZOOM, type MapIndex } from '@endfieldmap/map-core/const';
+import { DEFAULT_ZOOM } from '@endfieldmap/map-core/const';
+import type { MapData } from '@endfieldmap/map-core/types';
 import type { AreaNameData, UnionAreaName } from '@endfieldmap/map-core/types/area_name';
 import type { JSONLoader, Language } from '@endfieldmap/tools';
 
@@ -7,21 +8,21 @@ export interface AreaNameDataManagerConfig {
   assetPath: string;
 }
 
-export type AreaNameDataKey = `${MapIndex}.${Language}`;
+export type AreaNameDataKey = `${MapData['id']}.${Language}`;
 
 export class AreaNameDataManager {
   private jsonLoader: JSONLoader;
   private assetPath: string;
   private data: Map<AreaNameDataKey, AreaNameData> = new Map();
   public language: Language | null;
-  public mapIndex: MapIndex | null;
+  public mapId: MapData['id'] | null;
   public zoom: number;
 
   constructor(config: AreaNameDataManagerConfig) {
     this.jsonLoader = config.jsonLoader;
     this.assetPath = config.assetPath;
     this.language = null;
-    this.mapIndex = null;
+    this.mapId = null;
     this.zoom = DEFAULT_ZOOM;
   }
 
@@ -30,33 +31,33 @@ export class AreaNameDataManager {
     return detailedData;
   }
 
-  public async loadData(mapIndex: MapIndex, language: Language): Promise<AreaNameData | null> {
-    const data = await this.jsonLoader.loadJSON<AreaNameData>(`${this.assetPath}/${language}/${mapIndex}.json`);
+  public async loadData(mapId: MapData['id'], language: Language): Promise<AreaNameData | null> {
+    const data = await this.jsonLoader.loadJSON<AreaNameData>(`${this.assetPath}/${language}/${mapId}.json`);
     if (data) {
-      const key: AreaNameDataKey = `${mapIndex}.${language}`;
+      const key: AreaNameDataKey = `${mapId}.${language}`;
       this.data.set(key, data);
     }
     return data || null;
   }
 
-  public async getAreaNameData(mapIndex: MapIndex, language: Language, zoom: number): Promise<UnionAreaName | null> {
-    const key: AreaNameDataKey = `${mapIndex}.${language}`;
+  public async getAreaNameData(mapId: MapData['id'], language: Language, zoom: number): Promise<UnionAreaName | null> {
+    const key: AreaNameDataKey = `${mapId}.${language}`;
     let data = this.data.get(key) ?? null;
     if (!data) {
-      data = await this.loadData(mapIndex, language);
+      data = await this.loadData(mapId, language);
       if (!data) {
         return this.currentData;
       }
     }
-    this.mapIndex = mapIndex;
+    this.mapId = mapId;
     this.language = language;
     this.zoom = zoom;
     return this.getDetailedData(data, zoom);
   }
 
   get currentData(): UnionAreaName | null {
-    if (!this.mapIndex || !this.language || !this.zoom) return null;
-    const currentKey: AreaNameDataKey = `${this.mapIndex}.${this.language}`;
+    if (!this.mapId || !this.language || !this.zoom) return null;
+    const currentKey: AreaNameDataKey = `${this.mapId}.${this.language}`;
     const data = this.data.get(currentKey) ?? null;
     return data ? this.getDetailedData(data, this.zoom) : null;
   }

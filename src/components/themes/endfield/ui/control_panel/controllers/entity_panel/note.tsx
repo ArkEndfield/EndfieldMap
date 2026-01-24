@@ -38,8 +38,7 @@ const NoteEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQue
         const { collectionIdList } = category;
         collectionIdList.forEach(({ id, logicId }) => {
           // 使用 lang 命名空间进行翻译
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const translatedName = (t as any)(`lang:${name}`, { defaultValue: name }) as string;
+          const translatedName = t(`lang:${name}`, { defaultValue: name });
           const NoteItem: NoteItem = {
             id,
             logicId,

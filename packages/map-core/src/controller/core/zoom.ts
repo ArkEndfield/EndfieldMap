@@ -1,4 +1,4 @@
-import { MAP_EVENT } from '@endfieldmap/map-core/const';
+import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, MAP_EVENT } from '@endfieldmap/map-core/const';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import Control from 'ol/control/Control';
 import type Map from 'ol/Map';
@@ -65,8 +65,8 @@ export class ZoomController extends Control {
     if (!this.view) return;
 
     const zoom = this.view.getZoom() ?? 0;
-    const minZoom = this.view.getMinZoom() ?? 0;
-    const maxZoom = this.view.getMaxZoom() ?? 10;
+    const minZoom = this.view.getMinZoom() ?? DEFAULT_MIN_ZOOM;
+    const maxZoom = this.view.getMaxZoom() ?? DEFAULT_MAX_ZOOM;
 
     this.zoomChangeCallbacks.forEach((callback) => {
       callback(zoom, minZoom, maxZoom);

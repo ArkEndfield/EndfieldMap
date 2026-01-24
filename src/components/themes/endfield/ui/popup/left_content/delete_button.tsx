@@ -1,4 +1,4 @@
-import { CustomPointKey, type DataInstance, ElectricPoleDataInstance,ElectricPoleKey } from '@endfieldmap/map-core';
+import { CustomPointKey, type DataInstance, ElectricPoleDataInstance, ElectricPoleKey } from '@endfieldmap/map-core';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ export const DeleteButton: React.FC<DeleteButtonProps> = observer(({ entity }) =
 
   const handleDelete = () => {
     if (isCustomPoint) {
-      dataService.customPointDataService.deleteCustomPoint(adapter.currentMapIndex, entity.id);
+      dataService.customPointDataService.deleteCustomPoint(adapter.mapController.dataManager.currentMapId, entity.id);
     } else if (isElectricPole) {
       dataService.electricPoleDataService.deleteElectricPole(entity as ElectricPoleDataInstance, true);
     }

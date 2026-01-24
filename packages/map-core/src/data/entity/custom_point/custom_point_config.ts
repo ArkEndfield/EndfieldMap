@@ -1,6 +1,5 @@
 import { CustomPointKey } from '@endfieldmap/map-core/const/map';
-import type { EntityInfo } from '@endfieldmap/map-core/data/entity';
-import type { CustomPointTypeConfig, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
+import type { CustomPointTypeConfig, CustomPointTypeId, EntityInfoData } from '@endfieldmap/map-core/types/entity';
 
 /**
  * 自定义标点类型映射
@@ -26,7 +25,7 @@ export const customPointTypes: CustomPointTypeConfig[] = Object.entries(customPo
 /**
  * 获取自定义标点的EntityInfo
  */
-export function getCustomPointEntityInfo(typeId: CustomPointTypeId): EntityInfo {
+export function getCustomPointEntityInfo(typeId: CustomPointTypeId): EntityInfoData {
   const icon = customPointTypeMap[typeId];
   return {
     category: CustomPointKey,
@@ -47,7 +46,7 @@ export function getDefaultCustomPointType(): CustomPointTypeConfig {
 /**
  * 获取默认的自定义标点EntityInfo
  */
-export function getDefaultCustomPointEntityInfo(): EntityInfo {
+export function getDefaultCustomPointEntityInfo(): EntityInfoData {
   const defaultType = getDefaultCustomPointType();
   return getCustomPointEntityInfo(defaultType.id);
 }

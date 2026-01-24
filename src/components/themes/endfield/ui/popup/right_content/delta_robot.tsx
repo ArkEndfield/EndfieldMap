@@ -1,11 +1,11 @@
 import type { EntityData } from '@endfieldmap/map-core';
 import { SubPopupTitle } from '@themes/endfield/ui/popup/right_content/title';
+import { useTranslation } from 'react-i18next';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { useDeltaRobot } from '@/hooks/use_delta_robot';
 import { cn } from '@/utils/style';
-import { useTranslation } from 'react-i18next';
 
 interface DeltaRobotProps {
   entity: EntityData;

@@ -16,18 +16,17 @@ import {
   FeatureTypeKey,
   LayerType,
   LayerTypeKey,
-  type MapIndex,
   MarkedFeatureFilterMode,
 } from '@endfieldmap/map-core/const/map';
 import type { EntityDataInstance, EntityGroupManager } from '@endfieldmap/map-core/data/entity';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import {
   createBlurredShadowStyles,
   createClusterStyle,
   createEntityBackgroundStyles,
   createEntityIconStyles,
 } from '@endfieldmap/map-core/render/factory';
-import { xyz2crd } from '@endfieldmap/tools';
-import { type IReactionDisposer,reaction } from 'mobx';
+import { type IReactionDisposer, reaction } from 'mobx';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { FeatureLike } from 'ol/Feature';
@@ -48,6 +47,8 @@ export interface EntityGroupRendererConfig {
   dataManager: EntityGroupManager;
   /** 图标路径 */
   iconPath: string;
+  /** 过滤模式 */
+  markedFilterMode?: MarkedFeatureFilterMode;
   /** 是否启用聚合 */
   enableCluster?: boolean;
   /** 聚合距离 */
@@ -74,9 +75,6 @@ interface FeatureDataMapping {
  * 负责渲染单个EntityGroupManager中的所有Entity
  */
 export class EntityGroupRenderer {
-  /** 地图索引 */
-  public readonly mapIndex: MapIndex;
-
   /** 数据管理器 */
   public readonly dataManager: EntityGroupManager;
 
@@ -150,7 +148,6 @@ export class EntityGroupRenderer {
 
   constructor(config: EntityGroupRendererConfig) {
     this.dataManager = config.dataManager;
-    this.mapIndex = config.dataManager.mapIndex;
     this.enableShadow = config.enableShadow ?? false;
     this.maxStyleCacheSize = config.maxStyleCacheSize ?? 1000;
 
@@ -163,8 +160,9 @@ export class EntityGroupRenderer {
     });
 
     // 初始化图层
+    const initialDistance = config.enableCluster ? (config.clusterDistance ?? DEFAULT_CLUSTER_DISTANCE) : 0;
     this.layer = new VectorLayer({
-      source: this.clusterSource,
+      source: initialDistance > 0 ? this.clusterSource : this.baseSource,
       style: this.createStyle.bind(this),
       renderBuffer: config.renderBuffer ?? 100,
       updateWhileAnimating: false,
@@ -188,8 +186,9 @@ export class EntityGroupRenderer {
       EntityGroupRenderer.BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
     }
 
-    // 初始化features
-    this.initializeFeatures();
+    if (config.markedFilterMode) {
+      this.setMarkedFilterMode(config.markedFilterMode);
+    }
 
     // 设置数据变化监听
     this.setupDataManagerReaction();
@@ -218,20 +217,12 @@ export class EntityGroupRenderer {
   }
 
   /**
-   * 初始化所有features
-   */
-  private initializeFeatures(): void {
-    for (const dataInstance of this.dataManager.instances) {
-      this.addFeatureForInstance(dataInstance);
-    }
-  }
-
-  /**
    * 为数据实例添加feature
    */
   private addFeatureForInstance(dataInstance: EntityDataInstance): void {
     const feature = new Feature();
-    const coordinates = xyz2crd(dataInstance.position, this.mapIndex);
+    const mapDataManager = MapDataManager.getInstance();
+    const coordinates = mapDataManager.xyz2crd(dataInstance.position, this.dataManager.mapId);
     feature.setGeometry(new Point(coordinates));
     feature.set(FeatureTypeKey, FeatureType.ENTITY);
     feature.set(EntityInstanceKey, dataInstance);
@@ -249,7 +240,8 @@ export class EntityGroupRenderer {
         // 使用 refresh() 确保 marked 状态变化时 geometryFunction 重新执行
         // 这在筛选模式为 marked/unmarked 时尤为重要
         this.clusterSource.refresh();
-      }
+      },
+      { fireImmediately: true }
     );
 
     this.featureMappings.set(dataInstance.id, {
@@ -285,9 +277,11 @@ export class EntityGroupRenderer {
         const newIdSet = new Set(newIds);
 
         // 移除已删除的
-        for (const id of oldIds) {
-          if (!newIdSet.has(id)) {
-            this.removeFeatureForInstance(id);
+        if (oldIds && oldIds.length > 0) {
+          for (const id of oldIds) {
+            if (!newIdSet.has(id)) {
+              this.removeFeatureForInstance(id);
+            }
           }
         }
 
@@ -297,7 +291,8 @@ export class EntityGroupRenderer {
             this.addFeatureForInstance(instance);
           }
         }
-      }
+      },
+      { fireImmediately: true }
     );
     this.disposers.push(disposer);
 
@@ -311,7 +306,8 @@ export class EntityGroupRenderer {
         if (visible) {
           this.clusterSource.refresh();
         }
-      }
+      },
+      { fireImmediately: true }
     );
     this.disposers.push(visibilityDisposer);
   }
@@ -345,7 +341,13 @@ export class EntityGroupRenderer {
    * 创建样式
    */
   private createStyle(feature: FeatureLike): Style[] {
-    const clusterFeatures = feature.get('features') as Feature[] | undefined;
+    let clusterFeatures = feature.get('features') as Feature[] | undefined;
+
+    // 如果不是聚合feature（即直接使用baseSource时），则自身就是数据feature
+    if (!clusterFeatures) {
+      clusterFeatures = [feature as Feature];
+    }
+
     if (!clusterFeatures || clusterFeatures.length === 0) {
       return [];
     }
@@ -481,7 +483,22 @@ export class EntityGroupRenderer {
    * 设置聚合距离
    */
   public setClusterDistance(distance: number): void {
-    this.clusterSource.setDistance(distance);
+    console.log('[EntityGroupRenderer] setClusterDistance', distance);
+    const currentSource = this.layer.getSource();
+
+    if (distance <= 0) {
+      // 禁用聚合：切换到 baseSource
+      if (currentSource !== this.baseSource) {
+        this.layer.setSource(this.baseSource);
+      }
+    } else {
+      // 启用聚合：切换到 clusterSource 并设置距离
+      this.clusterSource.setDistance(distance);
+      this.clusterSource.refresh();
+      if (currentSource !== this.clusterSource) {
+        this.layer.setSource(this.clusterSource);
+      }
+    }
   }
 
   /**

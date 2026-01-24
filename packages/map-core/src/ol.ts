@@ -4,6 +4,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 
+export type { Coordinate } from 'ol/coordinate';
+
 export const MapOL = {
   Feature,
   Map,

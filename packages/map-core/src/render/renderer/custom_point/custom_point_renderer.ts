@@ -6,9 +6,8 @@ import {
   FeatureTypeKey,
   LayerType,
   LayerTypeKey,
-  type MapIndex,
 } from '@endfieldmap/map-core/const/map';
-import type { CustomPointDataInstance, CustomPointDataManager } from '@endfieldmap/map-core/data/custom_point';
+import type { CustomPointDataInstance, CustomPointDataManager } from '@endfieldmap/map-core/data/entity/custom_point';
 import { createEntityBackgroundStyles, createEntityIconStyles } from '@endfieldmap/map-core/render/factory';
 import { type IReactionDisposer, reaction } from 'mobx';
 import { Feature } from 'ol';
@@ -27,7 +26,7 @@ export interface CustomPointRendererConfig {
   /** 数据管理器 */
   dataManager: CustomPointDataManager;
   /** 图标基础路径 */
-  iconBasePath: string;
+  imagePath: string;
   /** 图标大小 */
   iconSize?: number;
   /** 渲染缓冲区 */
@@ -59,9 +58,6 @@ export class CustomPointRenderer {
   /** 是否是多图层（用于兼容 UnionLayerBase 接口） */
   public readonly isMultiLayer = false;
 
-  /** 地图索引 */
-  public readonly mapIndex: MapIndex;
-
   /** 数据管理器 */
   public readonly dataManager: CustomPointDataManager;
 
@@ -81,7 +77,7 @@ export class CustomPointRenderer {
   private styleCache: Map<string, Style[]> = new Map();
 
   /** 图标基础路径 */
-  private iconBasePath: string;
+  private imagePath: string;
 
   /** 图标大小 */
   private iconSize: number;
@@ -114,8 +110,7 @@ export class CustomPointRenderer {
 
   constructor(config: CustomPointRendererConfig) {
     this.dataManager = config.dataManager;
-    this.mapIndex = config.dataManager.mapIndex;
-    this.iconBasePath = config.iconBasePath;
+    this.imagePath = config.imagePath;
     this.iconSize = config.iconSize ?? DEFAULT_ICON_SIZE;
 
     // 初始化数据源
@@ -167,7 +162,8 @@ export class CustomPointRenderer {
       }),
       () => {
         feature.changed();
-      }
+      },
+      { fireImmediately: true }
     );
 
     this.featureMappings.set(dataInstance.id, {
@@ -201,9 +197,11 @@ export class CustomPointRenderer {
         const oldIdSet = new Set(oldIds);
         const newIdSet = new Set(newIds);
 
-        for (const id of oldIds) {
-          if (!newIdSet.has(id)) {
-            this.removeFeatureForInstance(id);
+        if (oldIds && oldIds.length > 0) {
+          for (const id of oldIds) {
+            if (!newIdSet.has(id)) {
+              this.removeFeatureForInstance(id);
+            }
           }
         }
 
@@ -212,7 +210,8 @@ export class CustomPointRenderer {
             this.addFeatureForInstance(instance);
           }
         }
-      }
+      },
+      { fireImmediately: true }
     );
     this.disposers.push(disposer);
   }
@@ -223,7 +222,7 @@ export class CustomPointRenderer {
   private getOrCreateIconStyle(iconName: string): Style {
     if (!this.iconStyleCache.has(iconName)) {
       const iconStyle = createEntityIconStyles({
-        url: `${this.iconBasePath}/${iconName}.png`,
+        url: `${this.imagePath}/${iconName}.png`,
         size: this.iconSize,
         radius: ENTITY_RADIUS,
         borderWidth: DEFAULT_STROKE_WIDTH,

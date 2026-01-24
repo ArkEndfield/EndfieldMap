@@ -1,5 +1,4 @@
 import { MAP_EVENT } from '@endfieldmap/map-core';
-import { crd2xyz } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 
@@ -16,7 +15,7 @@ const CenterPositionDisplay = observer(() => {
       setCoords(`${x.toFixed(2)}, ${y.toFixed(2)}`);
     };
 
-    const initialCenter = adapter.mapController.mapRenderer.map.getView().getCenter();
+    const initialCenter = adapter.mapController.olMapRenderer.map.getView().getCenter();
     updateCenter(initialCenter as [number, number] | undefined);
 
     const dispose = adapter.event.on(MAP_EVENT.MAP_CENTER_CHANGE, (center) => {
@@ -30,7 +29,10 @@ const CenterPositionDisplay = observer(() => {
 
   if (!coords) return null;
 
-  const xyzPosition = crd2xyz([Number(coords.split(',')[0]), Number(coords.split(',')[1])], adapter.currentMapIndex);
+  const xyzPosition = adapter.mapController.dataManager.crd2xyz(
+    [Number(coords.split(',')[0]), Number(coords.split(',')[1])],
+    adapter.mapController.dataManager.currentMapId
+  );
 
   return (
     <div className="font-mono text-[10px] text-blue-400 select-all">

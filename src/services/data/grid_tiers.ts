@@ -1,5 +1,11 @@
-import { type EndfieldMapAdapter, type GridTierItem, MAP_EVENT, MapIndex } from '@endfieldmap/map-core';
-import { type Coordinate, crd2xyz, type JSONLoader } from '@endfieldmap/tools';
+import {
+  type EndfieldMapAdapter,
+  type GridTierItem,
+  MAP_EVENT,
+  type MapData,
+  type Coordinate,
+} from '@endfieldmap/map-core';
+import { type JSONLoader } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 
 import type { GridTiersData } from '@/@types/grid_tiers';
@@ -12,16 +18,19 @@ export class GridTiersDataService {
   private adapter: EndfieldMapAdapter;
   private disposeFn: (() => void) | null = null;
   // TODO: 自动化
-  @observable accessor gridTiersData: Record<MapIndex, GridTierItem[]> = {
-    [MapIndex.MAP01]: [],
-    [MapIndex.MAP02]: [],
-    [MapIndex.DUNG01]: [],
-  };
+  @observable accessor gridTiersData: Record<MapData['id'], GridTierItem[]>;
   @observable accessor availableTier: string | null = null;
 
   constructor(jsonLoader: JSONLoader, adapter: EndfieldMapAdapter) {
     this.jsonLoader = jsonLoader;
     this.adapter = adapter;
+    this.gridTiersData = this.adapter.mapController.dataManager.mapIds.reduce(
+      (acc, mapId) => {
+        acc[mapId] = [];
+        return acc;
+      },
+      {} as Record<MapData['id'], GridTierItem[]>
+    );
   }
 
   @action
@@ -43,18 +52,19 @@ export class GridTiersDataService {
           index,
         })),
       };
-      let mapIndex: MapIndex;
+      // TODO: 智能读取
+      let mapId: MapData['id'];
       if (id.startsWith('map01')) {
-        mapIndex = MapIndex.MAP01;
+        mapId = 'map01';
       } else if (id.startsWith('map02')) {
-        mapIndex = MapIndex.MAP02;
+        mapId = 'map02';
       } else if (id.startsWith('dung01')) {
-        mapIndex = MapIndex.DUNG01;
+        mapId = 'dung01';
       } else {
         return;
       }
-      this.adapter.tierController.addTier(mapIndex, tierData);
-      this.gridTiersData[mapIndex].push(tierData);
+      this.adapter.tierController.addTier(mapId, tierData);
+      this.gridTiersData[mapId].push(tierData);
     });
 
     const initialCenter = this.adapter.mapController.getCenter();
@@ -72,15 +82,16 @@ export class GridTiersDataService {
 
   @action
   private updateAvailableTiers(center: Coordinate | undefined) {
-    if (!center) return;
+    if (!center || !Array.isArray(center)) return;
 
     const [crdX, crdY] = center;
-    const xyzPos = crd2xyz([crdX, crdY], this.adapter.currentMapIndex);
+    const mapDataManager = this.adapter.mapController.dataManager;
+    const mapId = mapDataManager.currentMapId;
+    const xyzPos = mapDataManager.crd2xyz([crdX, crdY], mapId);
     const gameX = xyzPos.x;
     const gameY = xyzPos.z;
-    const mapIndex = this.adapter.currentMapIndex;
 
-    for (const [, gridData] of Object.entries(this.gridTiersData[mapIndex])) {
+    for (const [, gridData] of Object.entries(this.gridTiersData[mapId])) {
       const [lbX, lbY] = gridData.lb;
       const [rtX, rtY] = gridData.rt;
 
@@ -95,19 +106,25 @@ export class GridTiersDataService {
 
   @computed
   get availableTierData() {
-    return this.gridTiersData[this.adapter.currentMapIndex].find((tier) => tier.id === this.availableTier);
+    const mapDataManager = this.adapter.mapController.dataManager;
+    const mapId = mapDataManager.currentMapId;
+    return this.gridTiersData[mapId].find((tier) => tier.id === this.availableTier);
   }
 
   @computed
   get activeTierData() {
+    const mapDataManager = this.adapter.mapController.dataManager;
+    const mapId = mapDataManager.currentMapId;
     const id = this.adapter.tierController.tierDataManager.activeTier;
     if (!id) return null;
-    return this.gridTiersData[this.adapter.currentMapIndex].find((tier) => tier.id === id);
+    return this.gridTiersData[mapId].find((tier) => tier.id === id);
   }
 
   @computed
   get currentTierData() {
-    return this.gridTiersData[this.adapter.currentMapIndex];
+    const mapDataManager = this.adapter.mapController.dataManager;
+    const mapId = mapDataManager.currentMapId;
+    return this.gridTiersData[mapId];
   }
 
   @computed

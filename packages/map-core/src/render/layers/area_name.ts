@@ -1,8 +1,7 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import { FeatureType, FeatureTypeKey, LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
-import type { UnionAreaName } from '@endfieldmap/map-core/types';
-import { xyz2crd } from '@endfieldmap/tools';
+import type { MapData, UnionAreaName } from '@endfieldmap/map-core/types';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
@@ -87,11 +86,11 @@ export class AreaNameLayer extends SingleLayerBase {
   /**
    * 设置区域名称
    * @param language 语言
-   * @param mapIndex 地图索引
+   * @param mapId 地图索引
    * @param zoom 缩放级别
    * @param forceUpdate 是否强制更新，默认不强制更新
    */
-  public async setAreaName(data: UnionAreaName, mapIndex: MapIndex) {
+  public async setAreaName(data: UnionAreaName, mapId: MapData['id']) {
     this.vectorSource.clear();
     this.nameFeatures = [];
     for (const loc of data) {
@@ -99,8 +98,9 @@ export class AreaNameLayer extends SingleLayerBase {
       if (!subTitle) continue;
       const position = subTitle.position;
       if (!position) continue;
+      const mapDataManager = MapDataManager.getInstance();
       const areaNameFeature = new Feature({
-        geometry: new Point(xyz2crd(position, mapIndex)),
+        geometry: new Point(mapDataManager.xyz2crd(position, mapId)),
       });
       areaNameFeature.setStyle(this.createAreaNameStyle(subTitle.value));
       areaNameFeature.set(FeatureTypeKey, FeatureType.AREA_NAME);

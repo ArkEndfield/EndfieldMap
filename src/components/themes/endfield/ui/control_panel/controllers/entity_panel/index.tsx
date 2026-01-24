@@ -37,11 +37,11 @@ const EntityPanel = observer(() => {
   }, []);
 
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
-  const entities = adapter.entityController.currentStats;
-  const currentMap = adapter.currentMapIndex;
+  const entities = adapter.entityController.dataManager.currentStats;
+  const currentMap = adapter.mapController.dataManager.currentMapId;
 
   // 计算每个实体的 marked 数量并按分类分组
-  const categorizedEntities = useMemo<CategoryInfo[]>(() => {
+  const categorizedEntities = useMemo(() => {
     if (!entities.length) return [];
 
     const lowerSearchQuery = searchQuery.toLowerCase().trim();
@@ -57,13 +57,15 @@ const EntityPanel = observer(() => {
           defaultValue: entity.entityInfo.point,
         }).toLowerCase();
         const category = entity.category.toLowerCase();
-        const translatedCategory = t(`sidebar:filter.category.${entity.category}`).toLowerCase();
+        const translatedCategory = t(`sidebar:filter.category.${entity.category}`, {
+          defaultValue: entity.category.toLowerCase(),
+        }).toLowerCase();
 
         const matches =
           entityIdKey.includes(lowerSearchQuery) ||
           translatedEntityName.includes(lowerSearchQuery) ||
-          category.includes(lowerSearchQuery) ||
-          translatedCategory.includes(lowerSearchQuery);
+          translatedCategory.includes(lowerSearchQuery) ||
+          category.includes(lowerSearchQuery);
 
         if (!matches) return;
       }

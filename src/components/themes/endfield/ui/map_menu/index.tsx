@@ -1,4 +1,4 @@
-import { MapIndex } from '@endfieldmap/tools';
+import type { MapData } from '@endfieldmap/map-core';
 import { useMapChange } from '@themes/endfield/hooks/map_change';
 import { MapChangeAnimation } from '@themes/endfield/ui/map_menu/map_change_animation';
 import { observer } from 'mobx-react-lite';
@@ -10,24 +10,27 @@ import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ChangeMapIcon, Deco7Dots, SwitchIcon } from '@/components/common/icons';
 import { MapButton } from '@/components/themes/endfield/ui/map_menu/button';
 import { SoundType } from '@/const/audio_config';
+import { useAdapter } from '@/hooks/use_adapter';
 import { useClickOutside } from '@/hooks/use_click_outside';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
 
 const ChangeMap: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'map']);
+  const { adapter } = useAdapter();
   const [showPopover, setShowPopover] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const { mapIndex, showChangeAnimation, changeMap } = useMapChange();
+  const { mapId, showChangeAnimation, changeMap } = useMapChange();
+  const allMapIds = adapter.mapController.dataManager.mapIds;
   const isMobile = useIsMobile();
 
   const togglePopover = () => {
     setShowPopover(!showPopover);
   };
 
-  const handleChangeMap = (newMapIndex: MapIndex) => {
-    changeMap(newMapIndex);
+  const handleChangeMap = (newMapId: MapData['id']) => {
+    changeMap(newMapId);
     setShowPopover(false);
   };
 
@@ -61,14 +64,18 @@ const ChangeMap: React.FC = observer(() => {
               onClick={togglePopover}
             >
               <div className="absolute text-sm left-0 top-0 font-medium text-[#d2d2d2]">//</div>
-              {t(`map:${mapIndex}`)}
+              {t(`map:${mapId}`, {
+                defaultValue: mapId,
+              })}
             </div>
             <div
               className="text-[#d2d2d2] text-xs md:text-sm [text-shadow:0_0.05em_0.1em_rgba(0,0,0,0.5)]"
               onClick={togglePopover}
             >
               <span className="left-0 top-0 font-medium">/</span>
-              {t(`map:${mapIndex}`)}
+              {t(`map:${mapId}`, {
+                defaultValue: mapId,
+              })}
             </div>
           </div>
           <div className="text-xs bg-[#fffa00] p-0.5 pb-1 relative flex flex-col items-center shadow-[0_0.1em_0.5em_rgba(0,0,0,0.7)] w-4 overflow-hidden">
@@ -118,20 +125,18 @@ const ChangeMap: React.FC = observer(() => {
             </div>
 
             <div className="flex flex-col gap-1 h-full justify-between">
-              <MapButton active={mapIndex === MapIndex.MAP01} onClick={() => handleChangeMap(MapIndex.MAP01)}>
-                {t('map:map01')}
-              </MapButton>
-              <MapButton active={mapIndex === MapIndex.MAP02} onClick={() => handleChangeMap(MapIndex.MAP02)}>
-                {t('map:map02')}
-              </MapButton>
-              <MapButton active={mapIndex === MapIndex.DUNG01} onClick={() => handleChangeMap(MapIndex.DUNG01)}>
-                {t('map:dung01')}
-              </MapButton>
+              {allMapIds.map((id) => (
+                <MapButton active={mapId === id} onClick={() => handleChangeMap(id)} key={id}>
+                  {t(`map:${id}`, {
+                    defaultValue: id,
+                  })}
+                </MapButton>
+              ))}
             </div>
           </div>
         </motion.div>
       </motion.div>
-      <MapChangeAnimation showChangeAnimation={showChangeAnimation} mapIndex={mapIndex} />
+      <MapChangeAnimation showChangeAnimation={showChangeAnimation} mapId={mapId} />
     </>
   );
 });

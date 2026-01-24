@@ -1,9 +1,9 @@
-import type { MapIndex } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { AreaNameDataManager } from '@endfieldmap/map-core/data/area_name';
+import { AreaNameDataManager } from '@endfieldmap/map-core/data/map/area_name';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { AreaNameFeatureStyle, AreaNameLayerConfig } from '@endfieldmap/map-core/render/layers/area_name';
 import { AreaNameLayer } from '@endfieldmap/map-core/render/layers/area_name';
+import type { MapData } from '@endfieldmap/map-core/types';
 import type { JSONLoader, Language } from '@endfieldmap/tools';
 
 export interface AreaNameControllerConfig extends AreaNameLayerConfig {
@@ -25,21 +25,21 @@ export class AreaNameController {
   }
 
   private autoRefreshAreaName(zoom: number) {
-    this.setAreaName(this.areaNameDataManager.mapIndex, this.areaNameDataManager.language, zoom);
+    this.setAreaName(this.areaNameDataManager.mapId, this.areaNameDataManager.language, zoom);
   }
 
   public async setAreaName(
-    mapIndex: MapIndex | null,
+    mapId: MapData['id'] | null,
     language: Language | null,
     zoom?: number,
     forceUpdate: boolean = false
   ) {
-    if (!language || !mapIndex || !zoom) return;
+    if (!language || !mapId || !zoom) return;
     const currentData = this.areaNameDataManager.currentData;
-    const areaNameData = await this.areaNameDataManager.getAreaNameData(mapIndex, language, zoom);
+    const areaNameData = await this.areaNameDataManager.getAreaNameData(mapId, language, zoom);
     if (currentData && areaNameData === currentData && !forceUpdate) return;
     if (!areaNameData) return;
-    this.areaNameLayer.setAreaName(areaNameData, mapIndex);
+    this.areaNameLayer.setAreaName(areaNameData, mapId);
   }
 
   /**
@@ -47,7 +47,7 @@ export class AreaNameController {
    */
   public refresh() {
     this.setAreaName(
-      this.areaNameDataManager.mapIndex,
+      this.areaNameDataManager.mapId,
       this.areaNameDataManager.language,
       this.areaNameDataManager.zoom,
       true

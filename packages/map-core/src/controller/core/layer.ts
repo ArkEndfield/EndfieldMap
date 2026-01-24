@@ -1,18 +1,14 @@
 import { type LayerType } from '@endfieldmap/map-core/const/map';
 import type { UnionLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { isMultiLayer } from '@endfieldmap/map-core/render/layers/_base';
-import type { Map as OlMap } from 'ol';
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 
 /** 地图图层管理器 */
 export class EndfieldMapLayerController {
-  /** 地图实例 */
-  public map: OlMap;
   /** 图层集合 */
   public layers: Map<LayerType, UnionLayerBase> = new Map();
 
-  constructor(map: OlMap) {
-    this.map = map;
-  }
+  constructor() {}
 
   /**
    * 添加图层
@@ -20,6 +16,8 @@ export class EndfieldMapLayerController {
    * @param layer 图层实例
    */
   public addLayer(type: LayerType, layer: UnionLayerBase): void {
+    const mapInstance = EndfieldMap.getInstance();
+    const map = mapInstance.map;
     // 如果该类型已有图层，先移除，避免向地图重复添加相同的 layer 实例
     const existing = this.layers.get(type);
     if (existing) {
@@ -28,10 +26,10 @@ export class EndfieldMapLayerController {
 
     if (isMultiLayer(layer)) {
       layer.layers.forEach((layer) => {
-        this.map.addLayer(layer);
+        map.addLayer(layer);
       });
     } else {
-      this.map.addLayer(layer.layer);
+      map.addLayer(layer.layer);
     }
     this.layers.set(type, layer);
   }
@@ -52,12 +50,14 @@ export class EndfieldMapLayerController {
   public removeLayer(type: LayerType): void {
     const layer = this.layers.get(type);
     if (!layer) return;
+    const mapInstance = EndfieldMap.getInstance();
+    const map = mapInstance.map;
     if (isMultiLayer(layer)) {
       layer.layers.forEach((layer) => {
-        this.map.removeLayer(layer);
+        map.removeLayer(layer);
       });
     } else {
-      this.map.removeLayer(layer.layer);
+      map.removeLayer(layer.layer);
     }
     this.layers.delete(type);
   }

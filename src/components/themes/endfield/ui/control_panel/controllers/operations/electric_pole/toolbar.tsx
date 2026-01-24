@@ -15,7 +15,7 @@ export const PoleManagerToolbar = observer(() => {
   const { getCurrentMode, toggleMode } = useElectricMode();
   const currentMode = getCurrentMode();
   const isAutoConnect = dataService.electricPoleDataService.autoConnect;
-  const isZoneVisible = adapter.electricPoleController.zoneVisible;
+  const isZoneVisible = adapter.electricPoleController.dataManager.zoneVisible;
   const isInCreateMode = dataService.electricPoleDataService.isCreating;
   // 配置按钮数据
   const tools = [

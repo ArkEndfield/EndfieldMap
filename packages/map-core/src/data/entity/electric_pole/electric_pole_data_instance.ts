@@ -1,14 +1,17 @@
 import {
   type ElectricPoleDeviceKey,
   getElectricPoleDeviceConfig,
-  getElectricPoleRangeRadius,
   isSameElectricPoleConnectionType,
   LEGACY_ELECTRIC_POLE_DEVICE_KEY,
 } from '@endfieldmap/map-core/const/electric_pole';
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
-import type { EntityInfo } from '@endfieldmap/map-core/data/entity';
-import type { ElectricPoleData, ElectricPoleDataInstanceConfig } from '@endfieldmap/map-core/types/entity';
-import { calculateDistance, ElectricPoleError, xyz2crd } from '@endfieldmap/tools';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type {
+  ElectricPoleData,
+  ElectricPoleDataInstanceConfig,
+  EntityInfoData,
+} from '@endfieldmap/map-core/types/entity';
+import { calculateDistance, ElectricPoleError } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
@@ -19,7 +22,7 @@ import type { Coordinate } from 'ol/coordinate';
 export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData> {
   /** Entity信息 */
   @computed
-  get entityInfo(): EntityInfo {
+  get entityInfo(): EntityInfoData {
     return this._data.entityInfo!;
   }
 
@@ -43,7 +46,7 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
   constructor(config: ElectricPoleDataInstanceConfig) {
     super({
       data: config.data,
-      mapIndex: config.mapIndex,
+      mapId: config.mapId,
     });
   }
 
@@ -52,7 +55,8 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
    */
   @computed
   get coordinates(): Coordinate {
-    return xyz2crd(this._data.position, this.mapIndex);
+    const mapDataInstance = MapDataManager.getInstance();
+    return mapDataInstance.xyz2crd(this._data.position, this.mapId);
   }
 
   /**
@@ -74,7 +78,7 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
    */
   @computed
   get zoneRadius(): number {
-    return getElectricPoleRangeRadius(this.mapIndex, this.deviceKey);
+    return MapDataManager.getInstance().getElectricPoleRangeRadius(this.mapId, this.deviceKey);
   }
 
   /**

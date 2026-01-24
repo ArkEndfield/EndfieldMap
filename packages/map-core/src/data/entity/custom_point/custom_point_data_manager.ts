@@ -1,6 +1,6 @@
 import { BaseDataManager } from '@endfieldmap/map-core/data/base';
-import { getCustomPointEntityInfo } from '@endfieldmap/map-core/data/custom_point/custom_point_config';
-import { CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point/custom_point_data_instance';
+import { getCustomPointEntityInfo } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_config';
+import { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_instance';
 import type { CustomPointData, CustomPointDataManagerConfig } from '@endfieldmap/map-core/types/entity';
 import { computed } from 'mobx';
 
@@ -10,7 +10,7 @@ import { computed } from 'mobx';
  */
 export class CustomPointDataManager extends BaseDataManager<CustomPointData, CustomPointDataInstance> {
   constructor(config: CustomPointDataManagerConfig) {
-    super({ mapIndex: config.mapIndex });
+    super({ mapId: config.mapId });
 
     // 初始化数据
     if (config.initialData && config.initialData.length > 0) {
@@ -27,7 +27,7 @@ export class CustomPointDataManager extends BaseDataManager<CustomPointData, Cus
     }
     return new CustomPointDataInstance({
       data,
-      mapIndex: this.mapIndex,
+      mapId: this.mapId,
     });
   }
 

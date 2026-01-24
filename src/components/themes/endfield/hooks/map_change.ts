@@ -1,4 +1,4 @@
-import { MapIndex } from '@endfieldmap/tools';
+import type { MapData } from '@endfieldmap/map-core';
 import { useState } from 'react';
 
 import { useAdapter } from '@/hooks/use_adapter';
@@ -6,10 +6,10 @@ import { useAdapter } from '@/hooks/use_adapter';
 export const useMapChange = () => {
   const [showChangeAnimation, setShowChangeAnimation] = useState(false);
   const { dataService } = useAdapter();
-  const mapIndex = dataService.mapStateDataService.currentMap.value;
+  const mapId = dataService.mapStateDataService.currentMap.value;
 
-  const changeMap = (newMapIndex: MapIndex) => {
-    dataService.mapStateDataService.currentMap.value = newMapIndex;
+  const changeMap = (newMapId: MapData['id']) => {
+    dataService.mapStateDataService.currentMap.value = newMapId;
     setShowChangeAnimation(true);
 
     setTimeout(() => {
@@ -18,7 +18,7 @@ export const useMapChange = () => {
   };
 
   return {
-    mapIndex,
+    mapId,
     showChangeAnimation,
     changeMap,
   };

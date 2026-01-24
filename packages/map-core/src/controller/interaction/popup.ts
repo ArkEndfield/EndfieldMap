@@ -1,16 +1,11 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { DEFAULT_ICON_SIZE } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { DataInstance, DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
-import type { Map as OlMap } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import Overlay from 'ol/Overlay';
-
-export interface PopupControllerConfig {
-  /** OpenLayers地图实例 */
-  map: OlMap;
-}
 
 /**
  * PopupController
@@ -18,8 +13,6 @@ export interface PopupControllerConfig {
  * 不负责DOM创建和显示控制，只负责位置管理
  */
 export class PopupController {
-  /** OpenLayers地图实例 */
-  private map: OlMap;
   /** 桌面端Overlay */
   private overlay: Overlay | null = null;
   /** 当前激活的feature */
@@ -27,8 +20,7 @@ export class PopupController {
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
 
-  constructor(config: PopupControllerConfig) {
-    this.map = config.map;
+  constructor() {
     this.registerEventHandlers();
   }
 
@@ -77,9 +69,10 @@ export class PopupController {
    * @param element HTML元素
    */
   public setOverlayElement(element: HTMLElement | null) {
+    const mapInstance = EndfieldMap.getInstance();
     // 清理旧的overlay
     if (this.overlay) {
-      this.map.removeOverlay(this.overlay);
+      mapInstance.map.removeOverlay(this.overlay);
       this.overlay = null;
     }
 
@@ -94,7 +87,7 @@ export class PopupController {
       className: 'endfieldmap-popup-overlay',
     });
 
-    this.map.addOverlay(this.overlay);
+    mapInstance.map.addOverlay(this.overlay);
 
     // 如果有当前feature，立即更新位置
     if (this.currentFeature) {
@@ -130,13 +123,14 @@ export class PopupController {
    * 销毁控制器，清理资源
    */
   public dispose() {
+    const mapInstance = EndfieldMap.getInstance();
     // 清理事件监听器
     this.disposeListeners.forEach((dispose) => dispose());
     this.disposeListeners = [];
 
     // 清理overlay
     if (this.overlay) {
-      this.map.removeOverlay(this.overlay);
+      mapInstance.map.removeOverlay(this.overlay);
       this.overlay = null;
     }
 

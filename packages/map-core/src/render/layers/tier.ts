@@ -1,31 +1,25 @@
-import { DEFAULT_OPACITY, LayerType, LayerTypeKey, MapIndex } from '@endfieldmap/map-core/const/map';
+import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { TierDataInstance, TierDataManager } from '@endfieldmap/map-core/data/tier';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import { emptyImage, emptyImageBase64String } from '@endfieldmap/map-core/utils/image';
 import { ImagePool, logger } from '@endfieldmap/tools';
-import { observable } from 'mobx';
 import ImageLayer from 'ol/layer/Image';
-import type { Projection } from 'ol/proj';
 import { ImageStatic } from 'ol/source';
 
-const emptyImageBase64String = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-const emptyImage = new Image();
-emptyImage.src = emptyImageBase64String;
-
 export interface TierLayerConfig {
-  opacity?: number;
-  projection?: Projection;
   tierDataManager: TierDataManager;
 }
 
 export class TierLayer extends SingleLayerBase {
   public layer: ImageLayer<ImageStatic>;
-  @observable accessor config: TierLayerConfig;
+  private tierDataManager: TierDataManager;
 
-  constructor(config: TierLayerConfig) {
+  constructor(tierDataManager: TierDataManager) {
     super();
-    this.config = config;
+    this.tierDataManager = tierDataManager;
     this.layer = new ImageLayer({
-      opacity: config.opacity ?? DEFAULT_OPACITY,
       zIndex: -1,
     });
     this.layer.set(LayerTypeKey, LayerType.TIER);
@@ -39,8 +33,16 @@ export class TierLayer extends SingleLayerBase {
         return;
       }
 
-      // TODO: 自动化处理
-      const scale = tier.mapIndex === MapIndex.MAP02 ? 75 : 75 / 2;
+      // TODO: 不知道可不可能有什么潜在问题
+      const mapDataManager = MapDataManager.getInstance();
+      const mapData = mapDataManager.getMapData(tier.mapId);
+      if (!mapData) {
+        logger.error('[EndfieldMap | tier] mapData not found', tier);
+        resolve(null);
+        return;
+      }
+      // const scale = tier.mapId === 'map02' ? 75 : 75 / 2;
+      const scale = 75 / (16 / mapData.scale);
       const img = ImagePool.getImage(imageUrl);
       if (img.isPool || img.image.complete || img.image.naturalWidth > 0 || img.image.naturalHeight > 0) {
         const scaledWidth = img.image.naturalWidth / scale;
@@ -64,7 +66,7 @@ export class TierLayer extends SingleLayerBase {
   }
 
   public async renderTier(): Promise<void> {
-    const tier = this.config.tierDataManager.currentActiveTier;
+    const tier = this.tierDataManager.currentActiveTier;
 
     if (!tier || !tier.visible) {
       this.clearTier();
@@ -73,7 +75,7 @@ export class TierLayer extends SingleLayerBase {
 
     const loadedImage = await this.loadImage(tier);
 
-    if (this.config.tierDataManager.currentActiveTier !== tier) {
+    if (this.tierDataManager.currentActiveTier !== tier) {
       return;
     }
 
@@ -85,15 +87,8 @@ export class TierLayer extends SingleLayerBase {
     try {
       const source = new ImageStatic({
         url: tier.imageUrl,
-        projection: this.config.projection,
+        projection: EndfieldMap.projection,
         imageExtent: tier.extent,
-        // imageLoadFunction: (image) => {
-        //   if (loadedImage) {
-        //     image.setImage(loadedImage);
-        //   } else {
-        //     image.setImage(emptyImage);
-        //   }
-        // },
       });
 
       this.layer.setSource(source);

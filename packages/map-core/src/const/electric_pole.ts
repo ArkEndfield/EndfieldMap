@@ -1,10 +1,10 @@
-import { ELECTRIC_ZONE_RADIUS, type MapIndex } from '@endfieldmap/map-core/const/map';
+import type { MapData } from '@endfieldmap/map-core/types';
 
 /**
  * 电线杆 / 中继器 / 滑索 配置
  *
  * 注意：地图内距离计算使用的是地图坐标单位；当前通过「80m -> ELECTRIC_ZONE_RADIUS」进行线性换算。
- * 如果后续某个地图比例并非线性，可通过 rangeRadiusByMapIndex 覆盖。
+ * 如果后续某个地图比例并非线性，可通过 rangeRadiusByMapId 覆盖。
  */
 
 /** 用于换算的基准米数（当前 ELECTRIC_ZONE_RADIUS 表示 80m） */
@@ -38,7 +38,7 @@ export interface ElectricPoleDeviceConfig {
   /** 连接类型：同类型之间可互连（例如 pole 与 repeater 属于 electric） */
   connectionType: ElectricPoleConnectionType;
   /** 可选：直接覆盖某个地图下的范围半径（地图坐标单位） */
-  rangeRadiusByMapIndex?: Partial<Record<MapIndex, number>>;
+  rangeRadiusByMapId?: Partial<Record<MapData['id'], number>>;
 }
 
 export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, ElectricPoleDeviceConfig> = {
@@ -85,17 +85,6 @@ export const LEGACY_ELECTRIC_POLE_DEVICE_KEY: ElectricPoleDeviceKey = 'repeater'
 
 export function getElectricPoleDeviceConfig(key: ElectricPoleDeviceKey): ElectricPoleDeviceConfig {
   return ELECTRIC_POLE_DEVICE_CONFIGS[key];
-}
-
-export function getElectricPoleRangeRadius(mapIndex: MapIndex, key: ElectricPoleDeviceKey): number {
-  const config = getElectricPoleDeviceConfig(key);
-  const override = config.rangeRadiusByMapIndex?.[mapIndex];
-  if (typeof override === 'number' && Number.isFinite(override) && override > 0) {
-    return override;
-  }
-
-  const baseRadius = ELECTRIC_ZONE_RADIUS[mapIndex] ?? 10;
-  return (config.rangeMeters / ELECTRIC_RANGE_BASE_METERS) * baseRadius;
 }
 
 export function isSameElectricPoleConnectionType(a: ElectricPoleDeviceKey, b: ElectricPoleDeviceKey): boolean {

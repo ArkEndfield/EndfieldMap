@@ -3,8 +3,8 @@ import { ConnectionTargetIdKey, EntityInstanceKey } from '@endfieldmap/map-core/
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import {
   type EntityHitTestResult,
@@ -38,12 +38,12 @@ export class EventController {
       const electricPoleLayers = this.electricPoleController.currentRenderer?.visible
         ? [this.electricPoleController.currentRenderer]
         : [];
-      const customPointLayers = this.customPointController.layerContainer
-        ? [this.customPointController.layerContainer].filter((layer) => layer.visible)
+      const customPointLayers = this.customPointController.currentRenderer?.visible
+        ? [this.customPointController.currentRenderer]
         : [];
-      const entityLayers = this.entityController.currentRenderers.filter((layer) => layer.visible);
+      const entityLayers = this.entityController.render.currentRenderer.filter((layer) => layer.visible);
 
-      const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
+      const allClickedFeatures: EntityHitTestResult[] = hitTestEntitiesAt(
         {
           coordinate: event.coordinate as [number, number] | undefined,
           pixel: event.pixel as [number, number],
@@ -95,6 +95,9 @@ export class EventController {
         // 处理单个实体点击
         const feature = features[0];
         const instance = feature.get(EntityInstanceKey) as EntityDataInstance;
+        // 标记事件已被处理，防止被视为地图空白处点击
+        event.hasHit = true;
+
         mapEventEmitter.fire(MAP_EVENT.ENTITY_CLICK, {
           instance,
           feature,
@@ -109,12 +112,12 @@ export class EventController {
       const electricPoleLayers = this.electricPoleController.currentRenderer?.visible
         ? [this.electricPoleController.currentRenderer]
         : [];
-      const customPointLayers = this.customPointController.layerContainer
-        ? [this.customPointController.layerContainer].filter((layer) => layer.visible)
+      const customPointLayers = this.customPointController.currentRenderer?.visible
+        ? [this.customPointController.currentRenderer]
         : [];
-      const entityLayers = this.entityController.currentRenderers.filter((layer) => layer.visible);
+      const entityLayers = this.entityController.render.currentRenderer.filter((layer) => layer.visible);
 
-      const allClickedFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
+      const allClickedFeatures: EntityHitTestResult[] = hitTestEntitiesAt(
         {
           coordinate: detail.coordinate,
           pixel: detail.pixel,

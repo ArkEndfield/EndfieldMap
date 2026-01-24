@@ -1,13 +1,16 @@
 import { ElectricPoleIdKey, ElectricPoleKey } from '@endfieldmap/map-core/const/map';
 import { BaseDataManager } from '@endfieldmap/map-core/data/base';
-import { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole/electric_pole_data_instance';
-import type { EntityInfo } from '@endfieldmap/map-core/data/entity';
-import type { ElectricPoleData, ElectricPoleDataManagerConfig } from '@endfieldmap/map-core/types/entity';
+import { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_instance';
+import type {
+  ElectricPoleData,
+  ElectricPoleDataManagerConfig,
+  EntityInfoData,
+} from '@endfieldmap/map-core/types/entity';
 import { logger } from '@endfieldmap/tools';
 import { action, computed } from 'mobx';
 
 /** 默认的电线杆Entity信息 */
-const DEFAULT_ELECTRIC_POLE_ENTITY_INFO: EntityInfo = {
+const DEFAULT_ELECTRIC_POLE_ENTITY_INFO: EntityInfoData = {
   category: ElectricPoleKey,
   entityInfo: {
     pic: 'icon_map_big_pole',
@@ -21,10 +24,10 @@ const DEFAULT_ELECTRIC_POLE_ENTITY_INFO: EntityInfo = {
  */
 export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, ElectricPoleDataInstance> {
   /** Entity信息 */
-  public readonly entityInfo: EntityInfo;
+  public readonly entityInfo: EntityInfoData;
 
   constructor(config: ElectricPoleDataManagerConfig) {
-    super({ mapIndex: config.mapIndex });
+    super({ mapId: config.mapId });
     this.entityInfo = DEFAULT_ELECTRIC_POLE_ENTITY_INFO;
 
     // 初始化数据
@@ -42,7 +45,7 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
     }
     return new ElectricPoleDataInstance({
       data,
-      mapIndex: this.mapIndex,
+      mapId: this.mapId,
     });
   }
 
@@ -129,7 +132,7 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
       }
       if (!byId.has(targetId)) {
         logger.warn('[ElectricPoleDataManager] Connection target not found', {
-          mapIndex: this.mapIndex,
+          mapId: this.mapId,
           from: instance.id,
           to: targetId,
         });

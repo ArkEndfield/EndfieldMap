@@ -1,4 +1,4 @@
-import type { Coordinate } from '@endfieldmap/tools';
+import type { Coordinate } from '@endfieldmap/map-core';
 
 export interface GridTierData {
   lb: Coordinate;

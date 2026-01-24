@@ -1,19 +1,11 @@
 import { EndfieldMapAdapter } from '@endfieldmap/map-core';
-import { logger } from '@endfieldmap/tools';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { LoadingStageId } from '@/const/loading';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import i18n from '@/i18n';
-import { initActiveFeatureEventListeners } from '@/services/active_feature';
-import { initCursorEventListeners } from '@/services/cursor';
 import { DataService } from '@/services/data';
-import { isDev } from '@/services/env';
-import { initHoverFeatureEventListeners } from '@/services/hover_feature';
-import { loadingManager } from '@/services/loading';
-import { sentryReporter } from '@/services/logger';
+import { MapService } from '@/services/map';
 import { getLanguage } from '@/utils/language';
-import { getAssetUrls } from '@/utils/url';
 
 /**
  * 地图适配器 hook
@@ -27,59 +19,23 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   /**
    * 初始化地图函数
    */
-  const init = useCallback(async () => {
-    if (adapter.current) return;
+  const init = async () => {
+    if (adapter.current || !containerRef.current) return;
 
-    try {
-      // LOADING 初始化数据服务
-      loadingManager.updateStageProgress(LoadingStageId.STORAGE, 10);
-      await DataService.initStorage();
-      // LOADING
-      loadingManager.completeStage(LoadingStageId.STORAGE);
-
-      // LOADING
-      loadingManager.updateStageProgress(LoadingStageId.MAP_ADAPTER, 20);
-
-      adapter.current = new EndfieldMapAdapter({
-        container: containerRef.current!,
-        asset: getAssetUrls(),
-        jsonLoader: DataService.jsonLoader,
-        consolaReporter: sentryReporter,
-        isDev: isDev,
-      });
-
-      setAdapterReactive(adapter.current);
-
-      // TODO: 后面删掉，部署无妨
-      // @ts-expect-error 方便线上调试用
-      window.adapter = adapter.current;
-
-      // 初始化鼠标指针样式监听器
-      initCursorEventListeners(adapter.current);
-
-      // LOADING
-      loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
-    } catch (e) {
-      loadingManager.setError(e as Error);
-      logger.error('加载错误', e);
-    }
-  }, [containerRef]);
+    const mapService = MapService.getInstance(containerRef.current!);
+    const data = await mapService.init();
+    if (!data) return;
+    const { adapter: efAdapter, dataService: efDataService } = data;
+    adapter.current = efAdapter;
+    dataService.current = efDataService;
+    setAdapterReactive(efAdapter);
+    setDataServiceReactive(efDataService);
+  };
 
   useEffect(() => {
     if (containerRef.current) {
       // 初始化地图
-      init().then(async () => {
-        loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 10);
-        dataService.current = await DataService.createInstance(adapter.current!);
-        setDataServiceReactive(dataService.current);
-        loadingManager.completeStage(LoadingStageId.MAP_RENDER);
-        loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);
-        // 初始化激活feature事件监听器，用于设置和清除激活的feature
-        initActiveFeatureEventListeners(adapter.current!, dataService.current);
-
-        // 初始化hover事件监听器，用于设置和清除hover的feature
-        initHoverFeatureEventListeners(adapter.current!, dataService.current);
-      });
+      init();
     }
   }, [init, containerRef]);
 

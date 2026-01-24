@@ -1,6 +1,3 @@
-import { MapIndex } from '@endfieldmap/tools';
-export { MapIndex };
-
 /** 默认缩放 */
 export const DEFAULT_ZOOM = 3;
 
@@ -8,7 +5,7 @@ export const DEFAULT_ZOOM = 3;
 export const DEFAULT_CENTER = [0, 0];
 
 /** 默认最大缩放 */
-export const DEFAULT_MAX_ZOOM = 5;
+export const DEFAULT_MAX_ZOOM = 8;
 
 /** 默认最小缩放 */
 export const DEFAULT_MIN_ZOOM = 1;
@@ -85,13 +82,6 @@ export const CustomPointKey = '#custom_point';
 
 /** 纸条搜索键 */
 export const NoteKey = '#note';
-
-/** TODO: 电线杆覆盖区域半径（地图坐标单位） */
-export const ELECTRIC_ZONE_RADIUS: Record<MapIndex, number> = {
-  [MapIndex.MAP01]: 10,
-  [MapIndex.MAP02]: 5,
-  [MapIndex.DUNG01]: 0
-};
 
 /** 地图类型 */
 export const enum MapType {

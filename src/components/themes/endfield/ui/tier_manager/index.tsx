@@ -70,7 +70,11 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                     <ScrollableListItem className={cn('p-0.5 lg:p-1')} id={item.id}>
                       <TierTitle
                         onClick={() => {
-                          adapter.tierController.toggleTier(adapter.currentMapIndex, item.center, item.id);
+                          adapter.tierController.toggleTier(
+                            adapter.mapController.dataManager.currentMapId,
+                            item.center,
+                            item.id
+                          );
                         }}
                         className={cn(
                           'opacity-50 md:hover:translate-x-2',
@@ -100,7 +104,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                   <TierTitle
                     onClick={() => {
                       adapter.tierController.toggleTier(
-                        adapter.currentMapIndex,
+                        adapter.mapController.dataManager.currentMapId,
                         activeTierData.center,
                         activeTierData.id
                       );
@@ -124,7 +128,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
                         key={`${activeTierData.id}-${item.id}`}
                         onClick={() => {
                           adapter.tierController.toggleTier(
-                            adapter.currentMapIndex,
+                            adapter.mapController.dataManager.currentMapId,
                             activeTierData.center,
                             activeTierData.id,
                             item.id

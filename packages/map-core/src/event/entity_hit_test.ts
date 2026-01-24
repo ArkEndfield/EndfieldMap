@@ -159,7 +159,15 @@ function hitTestClusteredLayer(
     (feature) => {
       // 只处理当前图层的特征
       const clusterFeature = feature as Feature<Point>;
-      const clusterFeatures = clusterFeature.get('features') as Feature<Point>[] | undefined;
+      let clusterFeatures = clusterFeature.get('features') as Feature<Point>[] | undefined;
+
+      // 兼容非 Cluster Source 的情况（当聚合被禁用时，使用的是 baseSource）
+      if (!clusterFeatures) {
+        // 如果是原始 feature，将其包装为数组
+        if (clusterFeature.get(EntityInstanceKey)) {
+          clusterFeatures = [clusterFeature];
+        }
+      }
 
       if (!clusterFeatures || clusterFeatures.length === 0) {
         return false; // 继续查找
@@ -186,7 +194,12 @@ function hitTestClusteredLayer(
   }
 
   // 获取聚簇中的所有特征并过滤
-  const clusterFeatures = hitClusterFeature.get('features') as Feature<Point>[];
+  // 获取聚簇中的所有特征并过滤
+  let clusterFeatures = hitClusterFeature.get('features') as Feature<Point>[] | undefined;
+  if (!clusterFeatures && hitClusterFeature.get(EntityInstanceKey)) {
+    clusterFeatures = [hitClusterFeature];
+  }
+  clusterFeatures = clusterFeatures || [];
   const features = filterAndSortClusterFeatures(clusterFeatures, layer);
 
   if (features.length > 0) {

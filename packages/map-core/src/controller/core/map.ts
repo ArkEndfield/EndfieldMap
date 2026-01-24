@@ -1,31 +1,33 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import { EndfieldMap } from '@endfieldmap/map-core/render/map';
-import type { MapConfig } from '@endfieldmap/map-core/types/map';
+import { MapRender } from '@endfieldmap/map-core/render/map';
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { MapConfig, MapDataJson } from '@endfieldmap/map-core/types/map';
 import type { Coordinate } from 'ol/coordinate';
 
 export interface MapControllerConfig {
   mapConfig: Omit<MapConfig, 'mapImageUrl'>;
-  asset: EndfieldMapAsset;
+  data: MapDataJson;
 }
 
 export class MapController {
-  public mapRenderer: EndfieldMap;
+  public olMapRenderer: EndfieldMap;
+  public mapRenderer: MapRender;
+  public dataManager: MapDataManager;
 
   constructor(config: MapControllerConfig) {
-    const { mapConfig, asset } = config;
-    this.mapRenderer = new EndfieldMap({
-      ...mapConfig,
-      mapImageUrl: asset.mapImage,
-    });
+    const { mapConfig } = config;
+    this.dataManager = new MapDataManager(config.data);
+    this.olMapRenderer = new EndfieldMap(mapConfig);
+    this.mapRenderer = new MapRender();
     this.registerEventHandler();
   }
 
   private registerEventHandler() {
     mapEventEmitter.on(MAP_EVENT.CLUSTER_CLICK, (event) => {
       const { extent } = event;
-      this.mapRenderer.view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
+      this.olMapRenderer.view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
     });
   }
 
@@ -34,14 +36,14 @@ export class MapController {
    * @param center 中心点
    */
   public setCenter(center: Coordinate) {
-    this.mapRenderer.view.setCenter(center);
+    this.olMapRenderer.view.setCenter(center);
   }
 
   /**
    * 获取地图中心点
    */
   public getCenter() {
-    return this.mapRenderer.view.getCenter();
+    return this.olMapRenderer.view.getCenter();
   }
 
   /**
@@ -49,7 +51,7 @@ export class MapController {
    * @param center 中心点
    */
   public moveViewCenter(center: Coordinate, zoom?: number) {
-    this.mapRenderer.view.animate({
+    this.olMapRenderer.view.animate({
       center,
       zoom,
       duration: 500,
@@ -61,7 +63,7 @@ export class MapController {
    * @param zoom 缩放级别
    */
   public setZoom(zoom: number) {
-    this.mapRenderer.view.setZoom(zoom);
+    this.olMapRenderer.view.setZoom(zoom);
   }
 
   /**
@@ -69,7 +71,15 @@ export class MapController {
    * @returns 选择交互
    */
   public get selection() {
-    return this.mapRenderer.selection;
+    return this.olMapRenderer.selection;
+  }
+
+  /**
+   * 渲染地图
+   */
+  public renderMap(id: string) {
+    this.dataManager.setCurrentMap(id);
+    this.mapRenderer.renderMap();
   }
 
   /**

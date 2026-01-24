@@ -1,11 +1,11 @@
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
 import {
+  customPointTypes,
   getCustomPointEntityInfo,
   isValidCustomPointType,
-} from '@endfieldmap/map-core/data/custom_point/custom_point_config';
-import type { EntityInfo } from '@endfieldmap/map-core/data/entity';
-import type { CustomPointData, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
-import { xyz2crd } from '@endfieldmap/tools';
+} from '@endfieldmap/map-core/data/entity/custom_point/custom_point_config';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { CustomPointData, CustomPointTypeId, EntityInfoData } from '@endfieldmap/map-core/types/entity';
 import { action, computed } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
@@ -16,7 +16,7 @@ import type { Coordinate } from 'ol/coordinate';
 export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
   /** Entity信息 - 根据类型动态获取 */
   @computed
-  get entityInfo(): EntityInfo {
+  get entityInfo(): EntityInfoData {
     return this._data.entityInfo!;
   }
 
@@ -34,7 +34,8 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
    */
   @computed
   get coordinates(): Coordinate {
-    return xyz2crd(this._data.position, this.mapIndex);
+    const mapDataManager = MapDataManager.getInstance();
+    return mapDataManager.xyz2crd(this._data.position, this.mapId);
   }
 
   /**
@@ -46,7 +47,7 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
 
     // 如果没有类型ID，返回默认值
     if (!id) {
-      return 'custom_point_1'; // 返回默认类型
+      return customPointTypes[0].id; // 返回默认类型
     }
 
     return id;

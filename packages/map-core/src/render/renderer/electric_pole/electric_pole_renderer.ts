@@ -15,9 +15,11 @@ import {
   FeatureTypeKey,
   LayerType,
   LayerTypeKey,
-  type MapIndex,
 } from '@endfieldmap/map-core/const/map';
-import type { ElectricPoleDataInstance, ElectricPoleDataManager } from '@endfieldmap/map-core/data/electric_pole';
+import type {
+  ElectricPoleDataInstance,
+  ElectricPoleDataManager,
+} from '@endfieldmap/map-core/data/entity/electric_pole';
 import {
   createBlurredShadowStyles,
   createEntityBackgroundStyles,
@@ -70,9 +72,6 @@ interface FeatureMapping {
  * 负责渲染电线杆实体和连接线
  */
 export class ElectricPoleRenderer {
-  /** 地图索引 */
-  public readonly mapIndex: MapIndex;
-
   /** 数据管理器 */
   public readonly dataManager: ElectricPoleDataManager;
 
@@ -163,7 +162,6 @@ export class ElectricPoleRenderer {
 
   constructor(config: ElectricPoleRendererConfig) {
     this.dataManager = config.dataManager;
-    this.mapIndex = config.dataManager.mapIndex;
     this.enableShadow = config.enableShadow ?? false;
     this.imagePath = config.imagePath;
 
@@ -241,7 +239,8 @@ export class ElectricPoleRenderer {
       () => {
         pointFeature.changed();
         this.syncConnectionFeatures(dataInstance, connectionFeatures);
-      }
+      },
+      { fireImmediately: true }
     );
 
     this.featureMappings.set(dataInstance.id, {
@@ -327,9 +326,11 @@ export class ElectricPoleRenderer {
         const newIdSet = new Set(newIds);
 
         // 移除已删除的
-        for (const id of oldIds) {
-          if (!newIdSet.has(id)) {
-            this.removeFeatureForInstance(id);
+        if (oldIds && oldIds.length > 0) {
+          for (const id of oldIds) {
+            if (!newIdSet.has(id)) {
+              this.removeFeatureForInstance(id);
+            }
           }
         }
 
@@ -339,7 +340,8 @@ export class ElectricPoleRenderer {
             this.addFeatureForInstance(instance);
           }
         }
-      }
+      },
+      { fireImmediately: true }
     );
     this.disposers.push(disposer);
   }
@@ -458,9 +460,7 @@ export class ElectricPoleRenderer {
    */
   private createConnectionStyle(feature: FeatureLike): Style {
     const isHovered = this.hoveredFeature === feature;
-    return isHovered
-      ? ElectricPoleRenderer.CONNECTION_STYLE_HOVER
-      : ElectricPoleRenderer.CONNECTION_STYLE_NORMAL;
+    return isHovered ? ElectricPoleRenderer.CONNECTION_STYLE_HOVER : ElectricPoleRenderer.CONNECTION_STYLE_NORMAL;
   }
 
   /**

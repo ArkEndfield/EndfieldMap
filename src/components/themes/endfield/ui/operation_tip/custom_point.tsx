@@ -11,7 +11,7 @@ import { useAdapter } from '@/hooks/use_adapter';
 export const CustomPointOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();
   const { adapter, dataService } = useAdapter();
-  const isCustomPointVisible = adapter.customPointController.customPointVisible;
+  const isCustomPointVisible = adapter.customPointController.dataManager.visible;
   const isOpen = uiManager.currentOperatePanel.value === CurrentOperatePanel.CUSTOM_POINT && isCustomPointVisible;
   const isInCreateMode = dataService.customPointDataService.isCreating;
 

@@ -2,13 +2,12 @@ import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH } from '@endfieldmap/map-core/c
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { ActiveLayer } from '@endfieldmap/map-core/render/layers/active';
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { DataInstance, DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
-import type Map from 'ol/Map';
 
 export interface ActiveFeatureControllerConfig {
-  map: Map;
   disableActiveFeature?: boolean;
 }
 
@@ -25,17 +24,15 @@ export class ActiveFeatureController {
   private disabled: boolean = false;
   /** Active图层 */
   public activeLayer: ActiveLayer;
-  /** 地图实例 */
-  private map: Map;
 
   constructor(config: ActiveFeatureControllerConfig) {
-    this.map = config.map;
     this.disabled = config.disableActiveFeature ?? false;
 
     // 创建ActiveLayer实例
     this.activeLayer = new ActiveLayer();
+    const mapInstance = EndfieldMap.getInstance();
     // 将ActiveLayer添加到地图
-    this.map.addLayer(this.activeLayer.layer);
+    mapInstance.map.addLayer(this.activeLayer.layer);
 
     if (!this.disabled) {
       this.registerEventHandlers();
@@ -116,12 +113,13 @@ export class ActiveFeatureController {
    * 销毁控制器，清理事件监听器
    */
   public dispose() {
+    const mapInstance = EndfieldMap.getInstance();
     this.unregisterEventHandlers();
     this.clearActiveFeature();
     // 隐藏active效果
     this.activeLayer.hideActive();
     // 从地图中移除active图层
-    this.map.removeLayer(this.activeLayer.layer);
+    mapInstance.map.removeLayer(this.activeLayer.layer);
   }
 
   /**

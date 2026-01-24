@@ -1,6 +1,8 @@
-import { type MapIndex } from '@endfieldmap/map-core/const/map';
-import type { ElectricPoleDataInstance, ElectricPoleDataManager } from '@endfieldmap/map-core/data/electric_pole';
-import { type IReactionDisposer,reaction } from 'mobx';
+import type {
+  ElectricPoleDataInstance,
+  ElectricPoleDataManager,
+} from '@endfieldmap/map-core/data/entity/electric_pole';
+import { type IReactionDisposer, reaction } from 'mobx';
 import { Feature } from 'ol';
 import { Circle as CircleGeom } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
@@ -35,9 +37,6 @@ interface ZoneFeatureMapping {
  * 负责渲染电线杆的覆盖范围
  */
 export class ElectricPoleZoneRenderer {
-  /** 地图索引 */
-  public readonly mapIndex: MapIndex;
-
   /** 数据管理器 */
   public readonly dataManager: ElectricPoleDataManager;
 
@@ -58,7 +57,6 @@ export class ElectricPoleZoneRenderer {
 
   constructor(config: ElectricPoleZoneRendererConfig) {
     this.dataManager = config.dataManager;
-    this.mapIndex = config.dataManager.mapIndex;
 
     // 创建样式
     this.zoneStyle = new Style({
@@ -103,7 +101,9 @@ export class ElectricPoleZoneRenderer {
    */
   private addFeatureForInstance(dataInstance: ElectricPoleDataInstance): void {
     const feature = new Feature();
-    feature.setGeometry(dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined);
+    feature.setGeometry(
+      dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined
+    );
 
     // 设置位置变化监听（如果位置可以改变的话）
     const disposer = reaction(
@@ -113,9 +113,12 @@ export class ElectricPoleZoneRenderer {
         radius: dataInstance.zoneRadius,
       }),
       () => {
-        feature.setGeometry(dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined);
+        feature.setGeometry(
+          dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined
+        );
         feature.changed();
-      }
+      },
+      { fireImmediately: true }
     );
 
     this.featureMappings.set(dataInstance.id, {
@@ -149,9 +152,11 @@ export class ElectricPoleZoneRenderer {
         const oldIdSet = new Set(oldIds);
         const newIdSet = new Set(newIds);
 
-        for (const id of oldIds) {
-          if (!newIdSet.has(id)) {
-            this.removeFeatureForInstance(id);
+        if (oldIds && oldIds.length > 0) {
+          for (const id of oldIds) {
+            if (!newIdSet.has(id)) {
+              this.removeFeatureForInstance(id);
+            }
           }
         }
 
@@ -160,7 +165,8 @@ export class ElectricPoleZoneRenderer {
             this.addFeatureForInstance(instance);
           }
         }
-      }
+      },
+      { fireImmediately: true }
     );
     this.disposers.push(disposer);
   }

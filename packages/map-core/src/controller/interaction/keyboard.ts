@@ -1,10 +1,8 @@
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { domEventListener } from '@endfieldmap/tools';
-import type { Map as OlMap } from 'ol';
 import type View from 'ol/View';
 
 export interface KeyboardMoveControllerConfig {
-  /** OpenLayers 地图实例 */
-  map: OlMap;
   /** 移动速度（像素级，默认 8） */
   speed?: number;
   /** 是否启用（默认 true） */
@@ -16,7 +14,6 @@ export interface KeyboardMoveControllerConfig {
  * WASD 控制地图平移（支持斜向 & 连续）
  */
 export class KeyboardMoveController {
-  private map: OlMap;
   private view: View;
   private speed: number;
   private enable: boolean;
@@ -32,8 +29,8 @@ export class KeyboardMoveController {
   private rafId: number | null = null;
 
   constructor(config: KeyboardMoveControllerConfig) {
-    this.map = config.map;
-    this.view = this.map.getView();
+    const mapInstance = EndfieldMap.getInstance();
+    this.view = mapInstance.map.getView();
     this.speed = config.speed ?? 1;
     this.enable = config.enable ?? true;
 

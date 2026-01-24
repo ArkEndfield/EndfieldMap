@@ -1,4 +1,3 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type {
   EntityCategoryData,
   EntityDataList,
@@ -7,6 +6,7 @@ import type {
   EntityInfoKey,
   EntityJsonDataList,
   EntityLevelData,
+  MapData,
 } from '@endfieldmap/map-core/types';
 import { type JSONLoader, logger } from '@endfieldmap/tools';
 
@@ -16,7 +16,7 @@ export interface CommonPointDataManagerConfig {
 }
 
 export type EntityDataMap = Map<
-  MapIndex,
+  MapData['id'],
   Map<EntityLevelData['map_level_id'], Map<EntityCategoryData['category'], EntityDataList>>
 >;
 
@@ -88,15 +88,15 @@ export class CommonPointDataManager {
 
   /**
    * 获取地图所有实体数据
-   * @param mapIndex 地图索引
+   * @param mapId 地图索引
    * @returns 地图所有实体数据
    */
-  public async getData(mapIndex: MapIndex) {
+  public async getData(mapId: MapData['id']) {
     await this.loadData();
-    if (this.data.has(mapIndex)) {
-      return this.data.get(mapIndex)!;
+    if (this.data.has(mapId)) {
+      return this.data.get(mapId)!;
     }
-    logger.warn(`Map data not found for map index: ${mapIndex}`);
+    logger.warn(`Map data not found for map index: ${mapId}`);
     return new Map() as Map<EntityLevelData['map_level_id'], Map<EntityCategoryData['category'], EntityDataList>>;
   }
 
@@ -115,11 +115,11 @@ export class CommonPointDataManager {
 
   /**
    * 获取地图所有实体数据（分类）
-   * @param mapIndex 地图索引
+   * @param mapId 地图索引
    * @returns 地图所有实体数据（分类）
    */
-  public async getCategoryData(mapIndex: MapIndex) {
-    const data = await this.getData(mapIndex);
+  public async getCategoryData(mapId: MapData['id']) {
+    const data = await this.getData(mapId);
     const categoryData: Map<EntityCategoryData['category'], EntityDataList> = new Map();
 
     data.forEach((levelData) => {
@@ -136,11 +136,11 @@ export class CommonPointDataManager {
 
   /**
    * 获取地图所有实体数据（扁平化）
-   * @param mapIndex 地图索引
+   * @param mapId 地图索引
    * @returns 地图所有实体数据（扁平化）
    */
-  public async getDataFlat(mapIndex: MapIndex) {
-    const data = await this.getData(mapIndex);
+  public async getDataFlat(mapId: MapData['id']) {
+    const data = await this.getData(mapId);
     const flatData: EntityDataList = [];
     data.forEach((levelData) => {
       Array.from(levelData.values()).forEach((categoryData) => {

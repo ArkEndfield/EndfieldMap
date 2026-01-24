@@ -5258,6 +5258,16 @@ interface Resources {
         "title": "宝箱内容"
       },
       "title": "奖励"
+    },
+    "robot": {
+      "level_item": "第 {{level}} 关",
+      "level_selection": "选择关卡（共 {{levels}} 关）",
+      "no_puzzle_piece": "暂无拼图块",
+      "puzzle_piece_count": "可用拼图 ({{pieces}} 个)",
+      "result": "结果",
+      "solution": "解决方案",
+      "solving": "求解中...",
+      "start_slove": "开始求解"
     }
   },
   "settings": {

@@ -1,8 +1,8 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
-import type { ElectricPoleData, ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import type { Command } from '@endfieldmap/map-core/history/command';
+import type { ElectricPoleData, MapData } from '@endfieldmap/map-core/types';
 import { logger } from '@endfieldmap/tools';
 import type { Coordinate } from 'ol/coordinate';
 
@@ -15,7 +15,7 @@ export class CreateElectricPoleCommand implements Command {
 
   constructor(
     private readonly controller: ElectricPoleController,
-    private readonly mapIndex: MapIndex,
+    private readonly mapId: MapData['id'],
     private readonly position: Coordinate,
     private readonly deviceKey?: ElectricPoleDeviceKey
   ) {
@@ -23,12 +23,12 @@ export class CreateElectricPoleCommand implements Command {
   }
 
   execute(): void {
-    this.createdInstance = this.controller.createElectricPole(this.mapIndex, this.position, this.deviceKey);
+    this.createdInstance = this.controller.createElectricPole(this.mapId, this.position, this.deviceKey);
   }
 
   undo(): void {
     if (this.createdInstance) {
-      this.controller.deleteElectricPole(this.mapIndex, this.createdInstance.id);
+      this.controller.deleteElectricPole(this.mapId, this.createdInstance.id);
       this.createdInstance = null;
     }
   }
@@ -45,7 +45,7 @@ export class DeleteElectricPoleCommand implements Command {
 
   constructor(
     private readonly controller: ElectricPoleController,
-    private readonly mapIndex: MapIndex,
+    private readonly mapId: MapData['id'],
     private readonly instance: ElectricPoleDataInstance
   ) {
     this.description = `删除电线杆 #${instance.id}`;
@@ -56,13 +56,13 @@ export class DeleteElectricPoleCommand implements Command {
   }
 
   execute(): void {
-    this.controller.deleteElectricPole(this.mapIndex, this.instance.id);
+    this.controller.deleteElectricPole(this.mapId, this.instance.id);
   }
 
   undo(): void {
     if (this.deletedData) {
       // 恢复电线杆
-      const manager = this.controller.dataManager.getMapManager(this.mapIndex);
+      const manager = this.controller.dataManager.getMapManager(this.mapId);
       const restored = manager.addWithConnection(this.deletedData);
 
       if (!restored) return;
@@ -111,7 +111,7 @@ export class BatchCreateElectricPolesCommand implements Command {
 
   constructor(
     private readonly controller: ElectricPoleController,
-    private readonly mapIndex: MapIndex,
+    private readonly mapId: MapData['id'],
     private readonly positions: Coordinate[],
     private readonly deviceKey?: ElectricPoleDeviceKey
   ) {
@@ -122,7 +122,7 @@ export class BatchCreateElectricPolesCommand implements Command {
     this.createdInstances = [];
     for (const position of this.positions) {
       try {
-        const instance = this.controller.createElectricPole(this.mapIndex, position, this.deviceKey);
+        const instance = this.controller.createElectricPole(this.mapId, position, this.deviceKey);
         if (instance) {
           this.createdInstances.push(instance);
         }
@@ -138,7 +138,7 @@ export class BatchCreateElectricPolesCommand implements Command {
 
   undo(): void {
     for (const instance of this.createdInstances) {
-      this.controller.deleteElectricPole(this.mapIndex, instance.id);
+      this.controller.deleteElectricPole(this.mapId, instance.id);
     }
     this.createdInstances = [];
   }
@@ -157,14 +157,14 @@ export class BatchDeleteElectricPolesCommand implements Command {
 
   constructor(
     private readonly controller: ElectricPoleController,
-    private readonly mapIndex: MapIndex,
+    private readonly mapId: MapData['id'],
     private readonly ids: number[]
   ) {
     this.description = `批量删除 ${ids.length} 个电线杆`;
   }
 
   execute(): void {
-    const manager = this.controller.dataManager.getMapManager(this.mapIndex);
+    const manager = this.controller.dataManager.getMapManager(this.mapId);
 
     this.deletedData = [];
     for (const id of this.ids) {
@@ -175,13 +175,13 @@ export class BatchDeleteElectricPolesCommand implements Command {
           outgoingTargetIds: [...instance.outgoingConnectionIds],
           incomingSourceIds: instance.incomingConnections.map((p) => p.id),
         });
-        this.controller.deleteElectricPole(this.mapIndex, id);
+        this.controller.deleteElectricPole(this.mapId, id);
       }
     }
   }
 
   undo(): void {
-    const manager = this.controller.dataManager.getMapManager(this.mapIndex);
+    const manager = this.controller.dataManager.getMapManager(this.mapId);
 
     // 第一阶段：先恢复所有电线杆实例
     const restoredMap = new Map<number, ElectricPoleDataInstance>();
