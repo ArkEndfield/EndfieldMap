@@ -2,19 +2,15 @@ import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric
 import { getElectricPoleDeviceConfig } from '@endfieldmap/map-core/const/electric_pole';
 import {
   DEFAULT_FILL_COLOR,
-  DEFAULT_FILL_COLOR_TRANSPARENT_50,
-  DEFAULT_FILL_COLOR_TRANSPARENT_75,
   DEFAULT_ICON_SIZE,
   DEFAULT_STROKE_COLOR,
-  DEFAULT_STROKE_COLOR_TRANSPARENT_50,
-  DEFAULT_STROKE_COLOR_TRANSPARENT_75,
   DEFAULT_STROKE_WIDTH,
   EntityInstanceKey,
 } from '@endfieldmap/map-core/const/map';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import {
+  createBaseEntityBackgroundStyle,
   createBlurredShadowStyles,
-  createEntityBackgroundStyles,
   createEntityIconStyles,
 } from '@endfieldmap/map-core/render/factory';
 import type { FeatureLike } from 'ol/Feature';
@@ -47,19 +43,11 @@ export class ElectricPoleStyleProvider {
   private iconSize: number;
 
   /** 背景样式 */
-  private static readonly NORMAL_STYLE_BG = createEntityBackgroundStyles(
+  private static readonly NORMAL_STYLE_BG = createBaseEntityBackgroundStyle(
     ENTITY_RADIUS,
     DEFAULT_STROKE_WIDTH,
-    {
-      '100': DEFAULT_FILL_COLOR,
-      '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
-    },
-    {
-      '100': DEFAULT_STROKE_COLOR,
-      '50': DEFAULT_STROKE_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_STROKE_COLOR_TRANSPARENT_75,
-    }
+    DEFAULT_FILL_COLOR,
+    DEFAULT_STROKE_COLOR
   );
 
   /** 阴影样式 */
@@ -95,12 +83,8 @@ export class ElectricPoleStyleProvider {
   /**
    * 生成样式缓存键
    */
-  private generateStyleCacheKey(
-    deviceKey: ElectricPoleDeviceKey,
-    fillOpacity: '50' | '75' | '100',
-    state: 'active' | 'normal'
-  ): string {
-    return `${deviceKey}-${fillOpacity}-${state}`;
+  private generateStyleCacheKey(deviceKey: ElectricPoleDeviceKey, state: 'active' | 'normal'): string {
+    return `${deviceKey}-${state}`;
   }
 
   /**
@@ -116,20 +100,15 @@ export class ElectricPoleStyleProvider {
     }
 
     // 根据状态计算透明度
-    let fillOpacity: '50' | '75' | '100' = '100';
-    if (dataInstance.active) {
-      fillOpacity = '75';
-    }
-
     const state: 'active' | 'normal' = dataInstance.active ? 'active' : 'normal';
-    const cacheKey = this.generateStyleCacheKey(dataInstance.deviceKey, fillOpacity, state);
+    const cacheKey = this.generateStyleCacheKey(dataInstance.deviceKey, state);
 
     const cachedStyle = this.styleCache.get(cacheKey);
     if (cachedStyle) {
       return cachedStyle;
     }
 
-    const bgStyles = ElectricPoleStyleProvider.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
+    const bgStyles = ElectricPoleStyleProvider.NORMAL_STYLE_BG;
     const iconStyle = this.getOrCreateIconStyle(dataInstance.deviceKey);
     const styles: Style[] = this.enableShadow
       ? [...ElectricPoleStyleProvider.BASE_BACKDROP_STYLE, ...bgStyles, iconStyle]

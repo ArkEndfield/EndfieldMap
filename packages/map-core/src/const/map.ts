@@ -31,29 +31,11 @@ export const DEFAULT_CLUSTER_DISTANCE = 30;
 /** 默认填充颜色 */
 export const DEFAULT_FILL_COLOR = '#525152';
 
-/** 默认填充颜色-透明50% */
-export const DEFAULT_FILL_COLOR_TRANSPARENT_50 = 'rgba(82, 81, 82, 0.5)';
-
-/** 默认填充颜色-透明75% */
-export const DEFAULT_FILL_COLOR_TRANSPARENT_75 = 'rgba(82, 81, 82, 0.75)';
-
 /** 默认描边颜色 */
 export const DEFAULT_STROKE_COLOR = '#2E2F2E';
 
-/** 默认描边颜色-透明50% */
-export const DEFAULT_STROKE_COLOR_TRANSPARENT_50 = 'rgba(46, 47, 46, 0.5)';
-
-/** 默认描边颜色-透明75% */
-export const DEFAULT_STROKE_COLOR_TRANSPARENT_75 = 'rgba(46, 47, 46, 0.75)';
-
 /** 默认选中颜色 */
 export const DEFAULT_SELECTED_COLOR = 'rgba(255, 215, 0, 1)';
-
-/** 默认选中颜色-透明50% */
-export const DEFAULT_SELECTED_COLOR_TRANSPARENT_50 = 'rgba(255, 215, 0, 0.5)';
-
-/** 默认选中颜色-透明75% */
-export const DEFAULT_SELECTED_COLOR_TRANSPARENT_75 = 'rgba(255, 215, 0, 0.75)';
 
 /** 默认描边宽度 */
 export const DEFAULT_STROKE_WIDTH = 3;

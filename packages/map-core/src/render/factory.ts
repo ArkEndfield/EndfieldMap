@@ -182,6 +182,31 @@ export function createEntityBackgroundStyles(
 }
 
 /**
+ * 创建实体点位的背景样式（不含透明度变体）
+ */
+export function createBaseEntityBackgroundStyle(
+  radius: number,
+  strokeWidth: number,
+  fillColor: string,
+  strokeColor: string
+): Style[] {
+  return [
+    // 外层描边
+    new Style({
+      image: new CircleStyle({
+        radius: radius + strokeWidth + 2,
+        stroke: new Stroke({ color: fillColor, width: strokeWidth }),
+        displacement: [0, radius + strokeWidth * 2],
+      }),
+    }),
+    createCircleStyle(radius, fillColor, strokeWidth, strokeColor),
+    createDecoration(radius, 'left', strokeWidth, strokeColor),
+    createDecoration(radius, 'right', strokeWidth, strokeColor),
+    createBottomTriangleIndicator(strokeColor),
+  ];
+}
+
+/**
  * 创建聚合样式
  * @param radius 半径
  * @param size 数量

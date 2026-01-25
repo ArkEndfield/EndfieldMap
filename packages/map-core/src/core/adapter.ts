@@ -157,7 +157,6 @@ export class EndfieldMapAdapter {
     this.mapController.olMapRenderer.map.addControl(this.zoomController);
 
     this.layerController.addLayer(LayerType.AREA_NAME, this.areaNameController.areaNameLayer);
-    // this.layerController.addLayer(LayerType.MAP, this.mapController.mapRenderer);
     this.layerController.addLayer(LayerType.TIER_OVERLAY_MASK, this.tierController.tierOverlayMaskLayer);
     this.layerController.addLayer(LayerType.TIER, this.tierController.tierLayer);
 

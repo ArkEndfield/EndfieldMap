@@ -1,23 +1,17 @@
 import {
   DEFAULT_FILL_COLOR,
-  DEFAULT_FILL_COLOR_TRANSPARENT_50,
-  DEFAULT_FILL_COLOR_TRANSPARENT_75,
   DEFAULT_ICON_SIZE,
   DEFAULT_SELECTED_COLOR,
-  DEFAULT_SELECTED_COLOR_TRANSPARENT_50,
-  DEFAULT_SELECTED_COLOR_TRANSPARENT_75,
   DEFAULT_STROKE_COLOR,
-  DEFAULT_STROKE_COLOR_TRANSPARENT_50,
-  DEFAULT_STROKE_COLOR_TRANSPARENT_75,
   DEFAULT_STROKE_WIDTH,
   EntityInstanceKey,
   MarkedFeatureFilterMode,
 } from '@endfieldmap/map-core/const/map';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import {
+  createBaseEntityBackgroundStyle,
   createBlurredShadowStyles,
   createClusterStyle,
-  createEntityBackgroundStyles,
   createEntityIconStyles,
 } from '@endfieldmap/map-core/render/factory';
 import { Feature } from 'ol';
@@ -54,35 +48,19 @@ export class EntityGroupStyleProvider {
   private markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
 
   /** 背景样式 - 选中状态 */
-  private static readonly SELECTED_STYLE_BG = createEntityBackgroundStyles(
+  private static readonly SELECTED_STYLE_BG = createBaseEntityBackgroundStyle(
     ENTITY_RADIUS,
     DEFAULT_STROKE_WIDTH,
-    {
-      '100': DEFAULT_FILL_COLOR,
-      '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
-    },
-    {
-      '100': DEFAULT_SELECTED_COLOR,
-      '50': DEFAULT_SELECTED_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_SELECTED_COLOR_TRANSPARENT_75,
-    }
+    DEFAULT_FILL_COLOR,
+    DEFAULT_SELECTED_COLOR
   );
 
   /** 背景样式 - 普通状态 */
-  private static readonly NORMAL_STYLE_BG = createEntityBackgroundStyles(
+  private static readonly NORMAL_STYLE_BG = createBaseEntityBackgroundStyle(
     ENTITY_RADIUS,
     DEFAULT_STROKE_WIDTH,
-    {
-      '100': DEFAULT_FILL_COLOR,
-      '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
-    },
-    {
-      '100': DEFAULT_STROKE_COLOR,
-      '50': DEFAULT_STROKE_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_STROKE_COLOR_TRANSPARENT_75,
-    }
+    DEFAULT_FILL_COLOR,
+    DEFAULT_STROKE_COLOR
   );
 
   /** 阴影样式 */
@@ -117,13 +95,29 @@ export class EntityGroupStyleProvider {
   /**
    * 生成样式缓存键
    */
-  private generateStyleCacheKey(
-    fillOpacity: '50' | '75' | '100',
-    strokeOpacity: '50' | '75' | '100',
-    state: 'active' | 'selected' | 'normal',
-    size: number
-  ): string {
-    return `${fillOpacity}-${strokeOpacity}-${state}-${size}`;
+  private generateStyleCacheKey(opacity: number, state: 'active' | 'selected' | 'normal', size: number): string {
+    // 保留2位小数以避免浮点数精度问题导致的缓存未命中
+    return `${opacity.toFixed(2)}-${state}-${size}`;
+  }
+
+  /**
+   * 应用透明度到样式列表
+   * @param styles 原始样式列表
+   * @param opacity 透明度 (0-1)
+   */
+  private applyOpacity(styles: Style[], opacity: number): Style[] {
+    if (opacity >= 1) {
+      return styles;
+    }
+    return styles.map((style) => {
+      const clone = style.clone();
+      const image = clone.getImage();
+      if (image) {
+        // 对于ImageStyle (Icon, Circle, RegularShape)，直接设置opacity
+        image.setOpacity(opacity);
+      }
+      return clone;
+    });
   }
 
   /**
@@ -194,24 +188,31 @@ export class EntityGroupStyleProvider {
       const marked = instance.marked;
       const selected = instance.selected;
 
-      const fillOpacity: '50' | '75' | '100' = marked ? '50' : '100';
-      const strokeOpacity: '50' | '75' | '100' = selected ? '50' : fillOpacity;
       const state: 'selected' | 'normal' = selected ? 'selected' : 'normal';
+      // marked状态下整体半透明，selected状态下不透明（或者你可以定义selected也半透明，但在已有逻辑中selected优先级高且通常高亮）
+      // 根据用户需求：marked的时候改成整体透明度
+      // 假设：marked且未被选中时，透明度为0.4；选中时保持不透明以便查看；普通状态不透明
+      let opacity = 1;
+      if (marked && !selected) {
+        opacity = 0.4;
+      }
 
-      const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state, 1);
+      const cacheKey = this.generateStyleCacheKey(opacity, state, 1);
       const cachedStyle = this.styleCache.get(cacheKey);
       if (cachedStyle) {
         return cachedStyle;
       }
 
       const bgStyles =
-        state === 'selected'
-          ? EntityGroupStyleProvider.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
-          : EntityGroupStyleProvider.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
+        state === 'selected' ? EntityGroupStyleProvider.SELECTED_STYLE_BG : EntityGroupStyleProvider.NORMAL_STYLE_BG;
 
-      const styles: Style[] = this.enableShadow
+      // 组合基础样式：Base + Background + Icon
+      // Apply opacity to ALL styles including icon
+      const baseStyles: Style[] = this.enableShadow
         ? [...EntityGroupStyleProvider.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!]
         : [...bgStyles, this.iconStyleCache!];
+
+      const styles = this.applyOpacity(baseStyles, opacity);
 
       this.addToStyleCache(cacheKey, styles);
       return styles;
@@ -228,42 +229,41 @@ export class EntityGroupStyleProvider {
     const hasMarked = markedCount > 0;
     const hasSelected = selectedCount > 0;
     const allMarked = markedCount === size;
-    const allSelected = selectedCount === size;
 
-    let fillOpacity: '50' | '75' | '100' = '100';
-    if (hasMarked) {
-      fillOpacity = allMarked ? '50' : '75';
+    let state: 'selected' | 'normal' = hasSelected ? 'selected' : 'normal';
+
+    let opacity = 1;
+    if (hasMarked && !hasSelected) {
+      // 如果全部都是marked，则淡化；如果部分marked，可能还是保持不透明或者半透明？
+      // 逻辑保持类似之前：如果allMarked则淡化更多，如果部分marked则淡化少一点？
+      // 这里简化逻辑：只要没有被选中的，且全部marked，就变淡。
+      if (allMarked) {
+        opacity = 0.4;
+      } else {
+        // 部分marked，可以稍微淡一点或者不淡
+        opacity = 0.7;
+      }
     }
 
-    let strokeOpacity: '50' | '75' | '100' = '100';
-    let state: 'selected' | 'normal' = 'normal';
-
-    if (hasSelected) {
-      state = 'selected';
-      strokeOpacity = allSelected ? '50' : '75';
-    } else {
-      strokeOpacity = fillOpacity;
-    }
-
-    const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state, size);
+    const cacheKey = this.generateStyleCacheKey(opacity, state, size);
     const cachedStyle = this.styleCache.get(cacheKey);
     if (cachedStyle) {
       return cachedStyle;
     }
 
     const bgStyles =
-      state === 'selected'
-        ? EntityGroupStyleProvider.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
-        : EntityGroupStyleProvider.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
+      state === 'selected' ? EntityGroupStyleProvider.SELECTED_STYLE_BG : EntityGroupStyleProvider.NORMAL_STYLE_BG;
 
     const clusterStyle = createClusterStyle({
       radius: ENTITY_RADIUS,
       size,
     });
 
-    const styles: Style[] = this.enableShadow
+    const baseStyles: Style[] = this.enableShadow
       ? [...EntityGroupStyleProvider.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!, clusterStyle]
       : [...bgStyles, this.iconStyleCache!, clusterStyle];
+
+    const styles = this.applyOpacity(baseStyles, opacity);
 
     this.addToStyleCache(cacheKey, styles);
     return styles;
