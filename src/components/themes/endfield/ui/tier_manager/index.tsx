@@ -49,7 +49,7 @@ const TierManager = observer(({ className }: TierManagerProps) => {
           >
             <ScrollableList
               className={cn(
-                'max-h-24 relative md:group-hover/list:max-h-64 transition-[max-height] ease-in-out duration-300 -left-4 w-fit',
+                'max-h-24 relative md:group-hover/list:max-h-64 transition-[max-height] ease-in-out duration-300 -left-8 w-fit',
                 activeTierData && 'max-h-16',
                 'lg:max-h-32 lg:group-hover/list:max-h-80 lg:gap-2'
               )}
