@@ -10,7 +10,7 @@ import type {
   StorageData,
 } from '@endfieldmap/map-core';
 import { debounce, LocalStorageDB, LocalStorageKey, logger, StorageKey, type StorageManager } from '@endfieldmap/tools';
-import { action, autorun, computed, observable, runInAction, toJS } from 'mobx';
+import { action, autorun, computed, observable, reaction, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
@@ -329,6 +329,9 @@ export class CustomPointDataService extends BasePresetDataService<
       throw new Error('CustomPointDataService not initialized');
     }
 
+    // 创建前确保该类型可见
+    this.updateCustomPointVisibility(mapId, this.selectedPointType, true);
+
     const feature = this.adapter.customPointController.createCustomPoint(mapId, coordinate, this.selectedPointType);
     return feature;
   }
@@ -357,6 +360,18 @@ export class CustomPointDataService extends BasePresetDataService<
       this.debouncedSave(data);
     });
     this.reactionDisposers.push(dispose);
+
+    const visibilityDispose = reaction(
+      () => {
+        const mapId = this.adapter.mapController.dataManager.currentMapId;
+        return toJS(this.customPointVisibilityData[mapId]);
+      },
+      () => {
+        const mapId = this.adapter.mapController.dataManager.currentMapId;
+        this.applyStoredVisibility(mapId);
+      }
+    );
+    this.reactionDisposers.push(visibilityDispose);
   }
 
   /**

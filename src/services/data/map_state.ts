@@ -201,17 +201,19 @@ export class MapStateDataService {
         return;
       }
 
+      // 设置地图缩放
+      const zoom = this.mapZoom.value?.[mapId] ?? mapData.zoom?.default ?? DEFAULT_ZOOM;
+      this.adapter.mapController.setZoom(zoom);
+
       // 设置地图名称
-      this.adapter.renderAreaName(getLanguage(i18n.languages));
+      this.adapter.renderAreaName(getLanguage(i18n.languages), zoom);
+
       // 设置地图中心
       let center: Coordinate | undefined = this.mapCenter.value?.[mapId];
       if (!Array.isArray(center) || center.length < 2) {
         center = this.adapter.mapController.dataManager.getMapCenter(mapId);
       }
       this.adapter.mapController.setCenter(center);
-      // 设置地图缩放
-      const zoom = this.mapZoom.value?.[mapId] ?? mapData.zoom?.default ?? DEFAULT_ZOOM;
-      this.adapter.mapController.setZoom(zoom);
     } catch (e) {
       loadingManager.setError(e as Error);
       logger.error('[EndfieldMapAdapter | renderMap] error, ', e);

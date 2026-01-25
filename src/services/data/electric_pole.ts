@@ -106,6 +106,19 @@ export class ElectricPoleDataService extends BasePresetDataService<
       },
       { fireImmediately: true }
     );
+
+    // 监听可见性数据变化
+    const visibilityDisposer = reaction(
+      () => {
+        const mapId = this.adapter.mapController.dataManager.currentMapId;
+        return toJS(this.deviceVisibilityData[mapId]);
+      },
+      () => {
+        const mapId = this.adapter.mapController.dataManager.currentMapId;
+        this.applyStoredVisibility(mapId);
+      }
+    );
+    this.reactionDisposers.push(visibilityDisposer);
   }
 
   // region: 数据处理和获取
@@ -144,6 +157,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
     this.upsertCurrentPresetData(data);
   }, DEBOUNCE_INTERVAL);
 
+  @action
   public clearActiveFeature() {
     this.adapter.activeFeatureController?.clearActiveFeature?.();
     this.connectingPole = null;
@@ -243,6 +257,9 @@ export class ElectricPoleDataService extends BasePresetDataService<
       const mapId = this.adapter!.mapController.dataManager.currentMapId;
       const coordinate = event.coordinate;
       try {
+        // 创建前确保该类型可见
+        this.updateDeviceVisibility(mapId, this.creatingDeviceKey, true);
+
         const feature = this.adapter!.electricPoleController.createElectricPole(
           mapId,
           coordinate,

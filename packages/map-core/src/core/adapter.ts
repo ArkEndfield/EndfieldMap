@@ -188,9 +188,9 @@ export class EndfieldMapAdapter {
    * @param mapId 地图id
    * @param language 语言
    */
-  public renderAreaName(language: Language) {
-    const zoom = this.mapController.olMapRenderer.view.getZoom() || 3;
-    return this.areaNameController.setAreaName(this.mapController.dataManager.currentMapId, language, zoom);
+  public renderAreaName(language: Language, zoom?: number) {
+    const currentZoom = zoom ?? this.mapController.olMapRenderer.view.getZoom() ?? 3;
+    return this.areaNameController.setAreaName(this.mapController.dataManager.currentMapId, language, currentZoom);
   }
 
   /**

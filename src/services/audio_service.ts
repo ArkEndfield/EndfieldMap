@@ -3,7 +3,7 @@
  * 管理音效加载、缓存和播放
  */
 
-import { action, observable } from 'mobx';
+import { action, observable, runInAction } from 'mobx';
 
 import { AUDIO_CONFIG, AUDIO_SETTINGS, SoundType } from '@/const/audio_config';
 import { logger } from '@endfieldmap/tools';
@@ -45,7 +45,9 @@ class AudioService {
       }
 
       await Promise.all(preloadPromises);
-      this.initialized = true;
+      runInAction(() => {
+        this.initialized = true;
+      });
 
       logger.log('[AudioService] 已初始化并预加载音效');
     } catch (error) {
