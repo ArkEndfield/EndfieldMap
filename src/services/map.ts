@@ -1,10 +1,4 @@
-import {
-  DEFAULT_MAX_ZOOM,
-  DEFAULT_MIN_ZOOM,
-  DEFAULT_ZOOM,
-  EndfieldMapAdapter,
-  type MapDataJson,
-} from '@endfieldmap/map-core';
+import { EndfieldMapAdapter, type MapDataJson } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 
 import { LoadingStageId } from '@/const/loading';
@@ -17,58 +11,61 @@ import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getAssetUrls } from '@/utils/url';
 
-const MOCK_MAP_DATA: MapDataJson = {
-  version: '1.0.0',
-  data: [
-    {
-      id: 'map01',
-      name: '四号谷地',
-      center: { x: -224, y: 0, z: -64 },
-      scale: 8,
-      offset: { x: 128, y: 0, z: 144 },
-      electricZoneBaseSize: 10,
-      regions: [],
-      zoom: {
-        default: DEFAULT_ZOOM,
-        min: DEFAULT_MIN_ZOOM,
-        max: DEFAULT_MAX_ZOOM,
-      },
-    },
-    {
-      id: 'map02',
-      name: '武陵',
-      center: { x: -1408, y: 0, z: -752 },
-      scale: 16,
-      offset: { x: 104, y: 0, z: 232 },
-      electricZoneBaseSize: 5,
-      regions: [],
-      zoom: {
-        default: DEFAULT_ZOOM,
-        min: DEFAULT_MIN_ZOOM,
-        max: DEFAULT_MAX_ZOOM,
-      },
-    },
-    {
-      id: 'dung01',
-      name: '谷地像差：蚀像寻遗',
-      center: { x: -80, y: 0, z: -80 },
-      scale: 8,
-      offset: { x: 64, y: 0, z: 176 },
-      electricZoneBaseSize: 0,
-      regions: [],
-      zoom: {
-        default: DEFAULT_ZOOM,
-        min: DEFAULT_MIN_ZOOM,
-        max: DEFAULT_MAX_ZOOM,
-      },
-    },
-  ],
-};
+// const MOCK_MAP_DATA: MapDataJson = {
+//   version: '1.0.0',
+//   data: [
+//     {
+//       id: 'map01',
+//       name: '四号谷地',
+//       center: { x: -224, y: 0, z: -64 },
+//       scale: 8,
+//       offset: { x: 128, y: 0, z: 144 },
+//       electricZoneBaseSize: 10,
+//       regions: [],
+//       zoom: {
+//         default: DEFAULT_ZOOM,
+//         min: DEFAULT_MIN_ZOOM,
+//         max: DEFAULT_MAX_ZOOM,
+//       },
+//     },
+//     {
+//       id: 'map02',
+//       name: '武陵',
+//       center: { x: -1408, y: 0, z: -752 },
+//       scale: 16,
+//       offset: { x: 104, y: 0, z: 232 },
+//       electricZoneBaseSize: 5,
+//       regions: [],
+//       zoom: {
+//         default: DEFAULT_ZOOM,
+//         min: DEFAULT_MIN_ZOOM,
+//         max: DEFAULT_MAX_ZOOM,
+//       },
+//     },
+//     {
+//       id: 'dung01',
+//       name: '谷地像差：蚀像寻遗',
+//       center: { x: -80, y: 0, z: -80 },
+//       scale: 8,
+//       offset: { x: 64, y: 0, z: 176 },
+//       electricZoneBaseSize: 0,
+//       regions: [],
+//       zoom: {
+//         default: DEFAULT_ZOOM,
+//         min: DEFAULT_MIN_ZOOM,
+//         max: DEFAULT_MAX_ZOOM,
+//       },
+//     },
+//   ],
+// };
+
+const assets = getAssetUrls();
 
 export class MapService {
   public adapter: EndfieldMapAdapter | null = null;
   public dataService: DataService | null = null;
   public initPromise: Promise<{ adapter: EndfieldMapAdapter; dataService: DataService } | undefined> | null = null;
+  public mapData: MapDataJson | null = null;
 
   public static instance: MapService | null = null;
 
@@ -90,8 +87,25 @@ export class MapService {
     return this.initPromise;
   }
 
-  async _init() {
+  private async loadMapData(retry_times: number = 0): Promise<MapDataJson> {
     try {
+      const jsonLoader = DataService.jsonLoader;
+      const mapData = await jsonLoader.loadJSON<MapDataJson>(`${assets.mapData}/map_data.json`);
+      if (mapData) return mapData;
+      throw new Error('加载地图数据失败');
+    } catch (error) {
+      logger.error('加载地图数据失败', error);
+      if (retry_times < 3) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return this.loadMapData(retry_times + 1);
+      }
+      throw error;
+    }
+  }
+
+  private async _init() {
+    try {
+      this.mapData = await this.loadMapData();
       // LOADING 初始化数据服务
       loadingManager.updateStageProgress(LoadingStageId.STORAGE, 10);
       await DataService.initStorage();
@@ -103,8 +117,8 @@ export class MapService {
 
       this.adapter = new EndfieldMapAdapter({
         container: this.container,
-        data: MOCK_MAP_DATA,
-        asset: getAssetUrls(),
+        data: this.mapData,
+        asset: assets,
         jsonLoader: DataService.jsonLoader,
         consolaReporter: sentryReporter,
         isDev: isDev,
