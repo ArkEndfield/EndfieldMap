@@ -27,9 +27,9 @@ export class SwiperDataService {
       list: [
         {
           cid: 1,
-          cover: 'https://i0.hdslb.com/bfs/archive/979915354a9dabc24f0964b406bfbc4229013132.jpg',
-          link: 'https://www.bilibili.com/video/BV1wfzWBBEEb',
-          title: '【终末地一条龙全收集】四号谷地-枢纽区丨宝箱丨醚质丨故障机器人',
+          cover: 'https://i0.hdslb.com/bfs/archive/1b24b6bdc017dcdb4abafa88af070c41577532ed.jpg',
+          link: 'https://www.bilibili.com/video/BV1YhzkBzEjh',
+          title: '【终末地一条龙全收集】武陵-景玉谷丨宝箱丨醚质丨故障机器人丨装备箱丨采录桩丨',
           type: '1',
         },
         {
@@ -41,9 +41,9 @@ export class SwiperDataService {
         },
         {
           cid: 3,
-          cover: 'https://i0.hdslb.com/bfs/archive/48e12a8a25c0b2a9f827afdfcae58fc3659808bd.jpg',
-          link: 'https://www.bilibili.com/video/BV1Edz6ByEKi',
-          title: '【明日方舟:终末地】维修总动员全机器人维修合集丨故障机器人丨维修总动员丨拼图丨矿脉源区',
+          cover: 'https://i0.hdslb.com/bfs/archive/979915354a9dabc24f0964b406bfbc4229013132.jpg',
+          link: 'https://www.bilibili.com/video/BV1wfzWBBEEb',
+          title: '【终末地一条龙全收集】四号谷地-枢纽区丨宝箱丨醚质丨故障机器人',
           type: '1',
         },
       ],
