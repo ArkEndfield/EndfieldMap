@@ -6,6 +6,7 @@
 import { action, observable } from 'mobx';
 
 import { AUDIO_CONFIG, AUDIO_SETTINGS, SoundType } from '@/const/audio_config';
+import { logger } from '@endfieldmap/tools';
 
 interface AudioInstance {
   buffer: AudioBuffer;
@@ -46,9 +47,9 @@ class AudioService {
       await Promise.all(preloadPromises);
       this.initialized = true;
 
-      console.log('[AudioService] 已初始化并预加载音效');
+      logger.log('[AudioService] 已初始化并预加载音效');
     } catch (error) {
-      console.error('[AudioService] 初始化失败:', error);
+      logger.error('[AudioService] 初始化失败:', error);
     }
   }
 
@@ -91,9 +92,9 @@ class AudioService {
           config,
         });
 
-        console.log(`[AudioService] 已加载音效: ${soundType}`);
+        logger.log(`[AudioService] 已加载音效: ${soundType}`);
       } catch (error) {
-        console.error(`[AudioService] 加载音效 "${soundType}" 失败:`, error);
+        logger.error(`[AudioService] 加载音效 "${soundType}" 失败:`, error);
         throw error;
       } finally {
         this.loadingPromises.delete(soundType);
@@ -214,7 +215,7 @@ class AudioService {
    */
   public clearCache(): void {
     this.audioCache.clear();
-    console.log('[AudioService] 缓存已清空');
+    logger.log('[AudioService] 缓存已清空');
   }
 
   /**
