@@ -1,16 +1,5 @@
 import {
   DEFAULT_CLUSTER_DISTANCE,
-  DEFAULT_FILL_COLOR,
-  DEFAULT_FILL_COLOR_TRANSPARENT_50,
-  DEFAULT_FILL_COLOR_TRANSPARENT_75,
-  DEFAULT_ICON_SIZE,
-  DEFAULT_SELECTED_COLOR,
-  DEFAULT_SELECTED_COLOR_TRANSPARENT_50,
-  DEFAULT_SELECTED_COLOR_TRANSPARENT_75,
-  DEFAULT_STROKE_COLOR,
-  DEFAULT_STROKE_COLOR_TRANSPARENT_50,
-  DEFAULT_STROKE_COLOR_TRANSPARENT_75,
-  DEFAULT_STROKE_WIDTH,
   EntityInstanceKey,
   FeatureType,
   FeatureTypeKey,
@@ -20,24 +9,15 @@ import {
 } from '@endfieldmap/map-core/const/map';
 import type { EntityDataInstance, EntityGroupManager } from '@endfieldmap/map-core/data/entity';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import {
-  createBlurredShadowStyles,
-  createClusterStyle,
-  createEntityBackgroundStyles,
-  createEntityIconStyles,
-} from '@endfieldmap/map-core/render/factory';
 import { type IReactionDisposer, reaction } from 'mobx';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
-import type { FeatureLike } from 'ol/Feature';
 import { Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import { Cluster } from 'ol/source';
 import VectorSource from 'ol/source/Vector';
-import type Style from 'ol/style/Style';
 
-const ENTITY_SIZE = DEFAULT_ICON_SIZE;
-const ENTITY_RADIUS = ENTITY_SIZE / 2;
+import { EntityGroupStyleProvider } from './entity_group_style';
 
 /**
  * Entity组渲染器配置
@@ -90,20 +70,8 @@ export class EntityGroupRenderer {
   /** Feature到数据实例的映射 */
   private featureMappings: Map<number, FeatureDataMapping> = new Map();
 
-  /** 样式缓存 */
-  private styleCache: Map<string, Style[]> = new Map();
-
-  /** 样式缓存键的LRU队列 */
-  private styleCacheKeys: string[] = [];
-
-  /** 图标样式缓存 */
-  private iconStyleCache: Style | null = null;
-
-  /** 是否启用阴影 */
-  private enableShadow: boolean;
-
-  /** 样式缓存最大数量 */
-  private maxStyleCacheSize: number;
+  /** 样式提供者 */
+  private styleProvider: EntityGroupStyleProvider;
 
   /** 当前marked过滤模式 */
   private markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
@@ -111,45 +79,20 @@ export class EntityGroupRenderer {
   /** MobX disposers */
   private disposers: IReactionDisposer[] = [];
 
-  /** 背景样式 - 选中状态 */
-  private static readonly SELECTED_STYLE_BG = createEntityBackgroundStyles(
-    ENTITY_RADIUS,
-    DEFAULT_STROKE_WIDTH,
-    {
-      '100': DEFAULT_FILL_COLOR,
-      '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
-    },
-    {
-      '100': DEFAULT_SELECTED_COLOR,
-      '50': DEFAULT_SELECTED_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_SELECTED_COLOR_TRANSPARENT_75,
-    }
-  );
-
-  /** 背景样式 - 普通状态 */
-  private static readonly NORMAL_STYLE_BG = createEntityBackgroundStyles(
-    ENTITY_RADIUS,
-    DEFAULT_STROKE_WIDTH,
-    {
-      '100': DEFAULT_FILL_COLOR,
-      '50': DEFAULT_FILL_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_FILL_COLOR_TRANSPARENT_75,
-    },
-    {
-      '100': DEFAULT_STROKE_COLOR,
-      '50': DEFAULT_STROKE_COLOR_TRANSPARENT_50,
-      '75': DEFAULT_STROKE_COLOR_TRANSPARENT_75,
-    }
-  );
-
-  /** 阴影样式 */
-  private static BASE_BACKDROP_STYLE: Style[] = [];
-
   constructor(config: EntityGroupRendererConfig) {
     this.dataManager = config.dataManager;
-    this.enableShadow = config.enableShadow ?? false;
-    this.maxStyleCacheSize = config.maxStyleCacheSize ?? 1000;
+
+    // 初始化样式提供者
+    this.styleProvider = new EntityGroupStyleProvider({
+      iconPath: config.iconPath,
+      enableShadow: config.enableShadow,
+      maxStyleCacheSize: config.maxStyleCacheSize,
+      markedFilterMode: config.markedFilterMode,
+    });
+
+    if (config.markedFilterMode) {
+      this.markedFilterMode = config.markedFilterMode;
+    }
 
     // 初始化数据源
     this.baseSource = new VectorSource();
@@ -163,7 +106,7 @@ export class EntityGroupRenderer {
     const initialDistance = config.enableCluster ? (config.clusterDistance ?? DEFAULT_CLUSTER_DISTANCE) : 0;
     this.layer = new VectorLayer({
       source: initialDistance > 0 ? this.clusterSource : this.baseSource,
-      style: this.createStyle.bind(this),
+      style: this.styleProvider.createStyle.bind(this.styleProvider),
       renderBuffer: config.renderBuffer ?? 100,
       updateWhileAnimating: false,
       updateWhileInteracting: false,
@@ -172,23 +115,6 @@ export class EntityGroupRenderer {
       declutter: false,
     });
     this.layer.set(LayerTypeKey, LayerType.ENTITY);
-
-    // 初始化图标样式
-    this.iconStyleCache = createEntityIconStyles({
-      url: config.iconPath,
-      size: DEFAULT_ICON_SIZE,
-      radius: ENTITY_RADIUS,
-      borderWidth: 3,
-    });
-
-    // 初始化阴影样式
-    if (this.enableShadow) {
-      EntityGroupRenderer.BASE_BACKDROP_STYLE = [createBlurredShadowStyles(ENTITY_RADIUS)];
-    }
-
-    if (config.markedFilterMode) {
-      this.setMarkedFilterMode(config.markedFilterMode);
-    }
 
     // 设置数据变化监听
     this.setupDataManagerReaction();
@@ -313,161 +239,6 @@ export class EntityGroupRenderer {
   }
 
   /**
-   * 生成样式缓存键
-   */
-  private generateStyleCacheKey(
-    fillOpacity: '50' | '75' | '100',
-    strokeOpacity: '50' | '75' | '100',
-    state: 'active' | 'selected' | 'normal',
-    size: number
-  ): string {
-    return `${fillOpacity}-${strokeOpacity}-${state}-${size}`;
-  }
-
-  /**
-   * 检查feature是否因marked状态而可见
-   */
-  private isFeatureVisibleByMarked(dataInstance: EntityDataInstance): boolean {
-    if (this.markedFilterMode === MarkedFeatureFilterMode.Marked) {
-      return dataInstance.marked;
-    }
-    if (this.markedFilterMode === MarkedFeatureFilterMode.Unmarked) {
-      return !dataInstance.marked;
-    }
-    return true;
-  }
-
-  /**
-   * 创建样式
-   */
-  private createStyle(feature: FeatureLike): Style[] {
-    let clusterFeatures = feature.get('features') as Feature[] | undefined;
-
-    // 如果不是聚合feature（即直接使用baseSource时），则自身就是数据feature
-    if (!clusterFeatures) {
-      clusterFeatures = [feature as Feature];
-    }
-
-    if (!clusterFeatures || clusterFeatures.length === 0) {
-      return [];
-    }
-
-    // 获取可见的数据实例
-    const visibleInstances: EntityDataInstance[] = [];
-    for (const f of clusterFeatures) {
-      const instance = f.get(EntityInstanceKey) as EntityDataInstance;
-      if (instance && this.isFeatureVisibleByMarked(instance)) {
-        visibleInstances.push(instance);
-      }
-    }
-
-    const size = visibleInstances.length;
-    if (size === 0) {
-      return [];
-    }
-
-    // 单个feature的样式
-    if (size === 1) {
-      const instance = visibleInstances[0];
-      const marked = instance.marked;
-      const selected = instance.selected;
-
-      const fillOpacity: '50' | '75' | '100' = marked ? '50' : '100';
-      const strokeOpacity: '50' | '75' | '100' = selected ? '50' : fillOpacity;
-      const state: 'selected' | 'normal' = selected ? 'selected' : 'normal';
-
-      const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state, 1);
-      const cachedStyle = this.styleCache.get(cacheKey);
-      if (cachedStyle) {
-        return cachedStyle;
-      }
-
-      const bgStyles =
-        state === 'selected'
-          ? EntityGroupRenderer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
-          : EntityGroupRenderer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
-
-      const styles: Style[] = this.enableShadow
-        ? [...EntityGroupRenderer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!]
-        : [...bgStyles, this.iconStyleCache!];
-
-      this.addToStyleCache(cacheKey, styles);
-      return styles;
-    }
-
-    // 聚合feature的样式
-    let markedCount = 0;
-    let selectedCount = 0;
-    for (const instance of visibleInstances) {
-      if (instance.marked) markedCount++;
-      if (instance.selected) selectedCount++;
-    }
-
-    const hasMarked = markedCount > 0;
-    const hasSelected = selectedCount > 0;
-    const allMarked = markedCount === size;
-    const allSelected = selectedCount === size;
-
-    let fillOpacity: '50' | '75' | '100' = '100';
-    if (hasMarked) {
-      fillOpacity = allMarked ? '50' : '75';
-    }
-
-    let strokeOpacity: '50' | '75' | '100' = '100';
-    let state: 'selected' | 'normal' = 'normal';
-
-    if (hasSelected) {
-      state = 'selected';
-      strokeOpacity = allSelected ? '50' : '75';
-    } else {
-      strokeOpacity = fillOpacity;
-    }
-
-    const cacheKey = this.generateStyleCacheKey(fillOpacity, strokeOpacity, state, size);
-    const cachedStyle = this.styleCache.get(cacheKey);
-    if (cachedStyle) {
-      return cachedStyle;
-    }
-
-    const bgStyles =
-      state === 'selected'
-        ? EntityGroupRenderer.SELECTED_STYLE_BG[`${fillOpacity}-${strokeOpacity}`]
-        : EntityGroupRenderer.NORMAL_STYLE_BG[`${fillOpacity}-${fillOpacity}`];
-
-    const clusterStyle = createClusterStyle({
-      radius: ENTITY_RADIUS,
-      size,
-    });
-
-    const styles: Style[] = this.enableShadow
-      ? [...EntityGroupRenderer.BASE_BACKDROP_STYLE, ...bgStyles, this.iconStyleCache!, clusterStyle]
-      : [...bgStyles, this.iconStyleCache!, clusterStyle];
-
-    this.addToStyleCache(cacheKey, styles);
-    return styles;
-  }
-
-  /**
-   * 添加样式到缓存
-   */
-  private addToStyleCache(key: string, styles: Style[]): void {
-    const existingIndex = this.styleCacheKeys.indexOf(key);
-    if (existingIndex !== -1) {
-      this.styleCacheKeys.splice(existingIndex, 1);
-    }
-
-    this.styleCacheKeys.push(key);
-    this.styleCache.set(key, styles);
-
-    if (this.styleCacheKeys.length > this.maxStyleCacheSize) {
-      const oldestKey = this.styleCacheKeys.shift();
-      if (oldestKey) {
-        this.styleCache.delete(oldestKey);
-      }
-    }
-  }
-
-  /**
    * 设置marked过滤模式
    */
   public setMarkedFilterMode(mode: MarkedFeatureFilterMode): void {
@@ -475,6 +246,7 @@ export class EntityGroupRenderer {
       return;
     }
     this.markedFilterMode = mode;
+    this.styleProvider.setMarkedFilterMode(mode);
     // 需要调用 refresh() 强制重新计算聚合，changed() 不足以触发 geometryFunction 重新执行
     this.clusterSource.refresh();
   }

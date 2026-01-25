@@ -2,8 +2,8 @@ import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_map_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
-import { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer/electric_pole/electric_pole_renderer';
-import { ElectricPoleZoneRenderer } from '@endfieldmap/map-core/render/renderer/electric_pole/electric_pole_zone_renderer';
+import { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer/entity/electric_pole/electric_pole_renderer';
+import { ElectricPoleZoneRenderer } from '@endfieldmap/map-core/render/renderer/entity/electric_pole/electric_pole_zone_renderer';
 import type { MapData } from '@endfieldmap/map-core/types';
 import VectorLayer from 'ol/layer/Vector';
 

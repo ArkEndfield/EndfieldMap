@@ -72,7 +72,11 @@ export class MapService {
 
   public static instance: MapService | null = null;
 
-  private constructor(public container: HTMLElement) {}
+  private constructor(public container: HTMLElement) {
+    // TODO: 后面删掉，部署无妨
+    // @ts-expect-error 方便线上调试用
+    window.mapService = this;
+  }
 
   public static getInstance(container: HTMLElement) {
     if (MapService.instance) return MapService.instance;
@@ -105,9 +109,6 @@ export class MapService {
         consolaReporter: sentryReporter,
         isDev: isDev,
       });
-      // TODO: 后面删掉，部署无妨
-      // @ts-expect-error 方便线上调试用
-      window.adapter = this.adapter;
 
       // 初始化鼠标指针样式监听器
       initCursorEventListeners(this.adapter);

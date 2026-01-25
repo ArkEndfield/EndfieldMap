@@ -4,7 +4,7 @@ import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { EntityMapDataManager } from '@endfieldmap/map-core/data/entity';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import { EntityRender } from '@endfieldmap/map-core/render/renderer/entity';
+import { EntityRender } from '@endfieldmap/map-core/render/renderer/entity/entity';
 import type { Category, EntityData, MapData } from '@endfieldmap/map-core/types';
 import type { EntityVisibility, FeatureMarked, StorageData } from '@endfieldmap/map-core/types/data';
 import type { JSONLoader } from '@endfieldmap/tools';

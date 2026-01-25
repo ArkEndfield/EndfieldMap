@@ -3,7 +3,7 @@ import { CustomPointKey } from '@endfieldmap/map-core/const/map';
 import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_instance';
 import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import { CustomPointRender } from '@endfieldmap/map-core/render/renderer/custom_point';
+import { CustomPointRender } from '@endfieldmap/map-core/render/renderer/entity/custom_point/';
 import type { CustomPointMapData, MapData } from '@endfieldmap/map-core/types';
 import type { CustomPointData, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';

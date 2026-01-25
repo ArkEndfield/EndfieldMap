@@ -8,7 +8,7 @@ import { ElectricPoleIdKey, ElectricPoleKey } from '@endfieldmap/map-core/const/
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_map_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import { ElectricPoleRender } from '@endfieldmap/map-core/render/renderer/electric_pole';
+import { ElectricPoleRender } from '@endfieldmap/map-core/render/renderer/entity/electric_pole';
 import type { ElectricPoleData, ElectricPoleMapData, MapData } from '@endfieldmap/map-core/types';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { calculateXYZDistance, logger } from '@endfieldmap/tools';

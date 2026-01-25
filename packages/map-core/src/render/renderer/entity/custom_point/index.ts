@@ -2,7 +2,7 @@ import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
-import { CustomPointRenderer } from '@endfieldmap/map-core/render/renderer/custom_point/custom_point_renderer';
+import { CustomPointRenderer } from '@endfieldmap/map-core/render/renderer/entity/custom_point/custom_point_renderer';
 import type { MapData } from '@endfieldmap/map-core/types';
 import VectorLayer from 'ol/layer/Vector';
 
