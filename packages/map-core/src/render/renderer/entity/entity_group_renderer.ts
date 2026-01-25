@@ -255,7 +255,6 @@ export class EntityGroupRenderer {
    * 设置聚合距离
    */
   public setClusterDistance(distance: number): void {
-    console.log('[EntityGroupRenderer] setClusterDistance', distance);
     const currentSource = this.layer.getSource();
 
     if (distance <= 0) {

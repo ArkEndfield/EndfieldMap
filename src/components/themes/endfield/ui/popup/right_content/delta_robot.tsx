@@ -82,7 +82,7 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
               solutionGrid={solutionGrid}
               levelData={levelData}
               getGroupColor={getGroupColor}
-              className="w-32 h-32"
+              className="w-54 h-54"
             />
           )}
         </div>

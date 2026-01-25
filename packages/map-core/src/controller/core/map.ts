@@ -27,7 +27,7 @@ export class MapController {
   private registerEventHandler() {
     mapEventEmitter.on(MAP_EVENT.CLUSTER_CLICK, (event) => {
       const { extent } = event;
-      this.olMapRenderer.view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
+      this.olMapRenderer.view.fit(extent, { duration: 500, padding: [50, 50, 50, 50], maxZoom: 6 });
     });
   }
 
