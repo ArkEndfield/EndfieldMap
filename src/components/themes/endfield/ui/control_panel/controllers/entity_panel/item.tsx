@@ -150,11 +150,14 @@ const EntityItem = observer(
                 <span
                   className="leading-none tabular-nums relative inline-block overflow-visible"
                   style={{
-                    width: `${entity.count.toString().length * 0.7}ch`,
+                    width: `${entity.count.toString().length * (hideMarked ? 0.9 : 0.7)}ch`,
                     height: '1em',
                   }}
                 >
-                  <span className="absolute left-0 bottom-0 origin-bottom-left" style={{ transform: 'scale(0.7)' }}>
+                  <span
+                    className="absolute left-0 bottom-0 origin-bottom-left"
+                    style={{ transform: hideMarked ? 'none' : 'scale(0.7)' }}
+                  >
                     {entity.count}
                   </span>
                 </span>

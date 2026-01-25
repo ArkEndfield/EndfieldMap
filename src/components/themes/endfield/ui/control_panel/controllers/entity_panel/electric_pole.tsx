@@ -133,7 +133,6 @@ const ElectricPoleList: React.FC = observer(() => {
               category={ElectricPoleKey}
               active={group.allVisible}
               onClick={() => handleToggleTypeVisible(group)}
-              hideCount
               hideMarked
             />
           );

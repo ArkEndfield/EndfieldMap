@@ -149,7 +149,6 @@ const CustomPointList: React.FC = observer(() => {
               category={CustomPointKey}
               active={group.allVisible}
               onClick={() => handleToggleTypeVisible(group)}
-              hideCount
               hideMarked
             />
           );
