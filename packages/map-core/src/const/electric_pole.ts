@@ -57,7 +57,7 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     iconPic: 'icon_map_big_pole',
     rangeMeters: 80,
     createLimit: false,
-    maxConnections: 2,
+    maxConnections: false,
     connectionType: 'electric',
   },
   zipline_80: {
