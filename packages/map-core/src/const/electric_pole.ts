@@ -48,7 +48,7 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     iconPic: 'icon_map_big_pole',
     rangeMeters: 50,
     createLimit: false,
-    maxConnections: 2,
+    maxConnections: 10,
     connectionType: 'electric',
   },
   repeater: {
@@ -57,7 +57,7 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     iconPic: 'icon_map_big_pole',
     rangeMeters: 80,
     createLimit: false,
-    maxConnections: false,
+    maxConnections: 100,
     connectionType: 'electric',
   },
   zipline_80: {
