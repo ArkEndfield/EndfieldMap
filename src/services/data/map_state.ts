@@ -9,8 +9,6 @@ import {
 import { debounce, LocalStorageKey, LocalStorageValue, logger } from '@endfieldmap/tools';
 
 import { DEBOUNCE_INTERVAL } from '@/const/data';
-import i18n from '@/i18n';
-import { getLanguage } from '@/utils/language';
 
 export interface DevToolsState {
   position: { right: number; top: number };
@@ -204,9 +202,6 @@ export class MapStateDataService {
       // 设置地图缩放
       const zoom = this.mapZoom.value?.[mapId] ?? mapData.zoom?.default ?? DEFAULT_ZOOM;
       this.adapter.mapController.setZoom(zoom);
-
-      // 设置地图名称
-      this.adapter.renderAreaName(getLanguage(i18n.languages), zoom);
 
       // 设置地图中心
       let center: Coordinate | undefined = this.mapCenter.value?.[mapId];

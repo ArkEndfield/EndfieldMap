@@ -5,7 +5,6 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 import i18n from '@/i18n';
 import { DataService } from '@/services/data';
 import { MapService } from '@/services/map';
-import { getLanguage } from '@/utils/language';
 
 /**
  * 地图适配器 hook
@@ -43,7 +42,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     // 监听语言变化
     i18n.on('languageChanged', () => {
       if (adapter.current) {
-        adapter.current.renderAreaName(getLanguage(i18n.languages));
+        adapter.current.renderAreaName();
       }
     });
     return () => {

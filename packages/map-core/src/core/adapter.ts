@@ -109,10 +109,7 @@ export class EndfieldMapAdapter {
     });
     this.eventManager = new EndfieldMapEvent();
     this.layerController = new EndfieldMapLayerController();
-    this.areaNameController = new AreaNameController({
-      jsonLoader: this.jsonLoader,
-      asset_path: this.asset.areaName,
-    });
+    this.areaNameController = new AreaNameController({});
     this.entityController = new EntityController({
       jsonLoader: this.jsonLoader,
       dataPath: this.asset.entityData,
@@ -185,12 +182,11 @@ export class EndfieldMapAdapter {
 
   /**
    * 设置区域名称
-   * @param mapId 地图id
-   * @param language 语言
+   * @param zoom 缩放
    */
-  public renderAreaName(language: Language, zoom?: number) {
-    const currentZoom = zoom ?? this.mapController.olMapRenderer.view.getZoom() ?? 3;
-    return this.areaNameController.setAreaName(this.mapController.dataManager.currentMapId, language, currentZoom);
+  public renderAreaName(zoom?: number) {
+    const currentZoom = zoom ?? this.mapController.olMapRenderer.view.getZoom();
+    return this.areaNameController.setAreaName(currentZoom);
   }
 
   /**
@@ -321,10 +317,6 @@ export class EndfieldMapAdapter {
     // 切换地图
     if (this.mapController.dataManager.currentMapId !== targetMapId) {
       this.renderMap(targetMapId);
-      const currentLanguage = this.areaNameController.areaNameDataManager.language;
-      if (currentLanguage) {
-        this.renderAreaName(currentLanguage);
-      }
     }
 
     // 自动切换可见性

@@ -2,8 +2,6 @@
 export interface EndfieldMapAssetConfig {
   /** 地图图片 */
   mapImage: string;
-  /** 区域名称数据地址 */
-  areaName: string;
   /** 实体数据地址 */
   entityData: string;
   /** 实体图片地址 */
@@ -32,8 +30,6 @@ export interface EndfieldMapAssetConfig {
 export class EndfieldMapAsset {
   /** 地图图片 */
   public mapImage: string;
-  /** 区域名称数据 */
-  public areaName: string;
   /** 实体数据 */
   public entityData: string;
   /** 实体图片 */
@@ -69,7 +65,6 @@ export class EndfieldMapAsset {
       throw new Error('EndfieldMapAsset instance already exists');
     }
     this.mapImage = config.mapImage;
-    this.areaName = config.areaName;
     this.entityData = config.entityData;
     this.entityImage = config.entityImage;
     this.tierData = config.tierData;

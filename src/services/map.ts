@@ -10,6 +10,7 @@ import { initHoverFeatureEventListeners } from '@/services/hover_feature';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getAssetUrls } from '@/utils/url';
+import i18n from '@/i18n';
 
 // const MOCK_MAP_DATA: MapDataJson = {
 //   version: '1.0.0',
@@ -60,6 +61,10 @@ import { getAssetUrls } from '@/utils/url';
 // };
 
 const assets = getAssetUrls();
+
+const translateAreaName = (name: string): string => {
+  return i18n.t(name, { ns: 'lang', defaultValue: name });
+};
 
 export class MapService {
   public adapter: EndfieldMapAdapter | null = null;
@@ -123,6 +128,8 @@ export class MapService {
         consolaReporter: sentryReporter,
         isDev: isDev,
       });
+
+      this.adapter.areaNameController.registerNameFunction(translateAreaName);
 
       // 初始化鼠标指针样式监听器
       initCursorEventListeners(this.adapter);

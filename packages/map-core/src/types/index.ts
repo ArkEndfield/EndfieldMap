@@ -1,4 +1,3 @@
-export * from '@endfieldmap/map-core/types/area_name';
 export * from '@endfieldmap/map-core/types/data';
 export * from '@endfieldmap/map-core/types/dev_tools';
 export * from '@endfieldmap/map-core/types/entity';
