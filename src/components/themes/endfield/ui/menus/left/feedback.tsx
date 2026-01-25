@@ -2,7 +2,7 @@ import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ZmdAlert } from '@/components/common/alert/alert';
+import { Dialog } from '@/components/common/dialog';
 import { FeedbackIcon } from '@/components/common/icons';
 import { useCurrentLanguage } from '@/hooks/use_current_language';
 
@@ -17,9 +17,8 @@ export const HeaderMenuFeedback = ({ className }: { className?: string }) => {
 
   return (
     <HeaderMenuTemplate icon={<FeedbackIcon />} title={t('feedback.title')} onClick={handleOpen} className={className}>
-      <ZmdAlert open={open} onOpenChange={setOpen} hideCancel>
-        <h1 className="text-lg font-bold text-center mb-2">{t('feedback.title')}</h1>
-        <div className="px-4">
+      <Dialog open={open} onOpenChange={setOpen} title={t('feedback.title')} icon={<FeedbackIcon />}>
+        <div className="p-4">
           {['zh-CN', 'zh-TW'].includes(currentLocale) && (
             <div>
               <h3 className="text-lg font-bold text-center mb-2">
@@ -41,7 +40,7 @@ export const HeaderMenuFeedback = ({ className }: { className?: string }) => {
             to join the Discord server
           </h3>
         </div>
-      </ZmdAlert>
+      </Dialog>
     </HeaderMenuTemplate>
   );
 };
