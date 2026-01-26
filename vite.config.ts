@@ -53,12 +53,12 @@ export default defineConfig(({ command, mode }) => {
           theme_color: '#262626',
           icons: [
             {
-              src: 'pwa-192x192.png',
+              src: 'android-chrome-192x192.png',
               sizes: '192x192',
               type: 'image/png',
             },
             {
-              src: 'pwa-512x512.png',
+              src: 'ndroid-chrome-512x512.png',
               sizes: '512x512',
               type: 'image/png',
             },
@@ -73,6 +73,9 @@ export default defineConfig(({ command, mode }) => {
         '@eftypes': resolve(__dirname, './src/@types'),
         '@themes': resolve(__dirname, './src/components/themes'),
       },
+    },
+    server: {
+      allowedHosts: ["oqoq21sr1y-5173.cnb.run", "oqoq21sr1y-4173.cnb.run"]
     },
     build: {
       sourcemap: 'hidden',
