@@ -16,13 +16,13 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
 
 const ChangeMap: React.FC = observer(() => {
-  const { t } = useTranslation(['header', 'map']);
+  const { t } = useTranslation(['header', 'lang']);
   const { adapter } = useAdapter();
   const [showPopover, setShowPopover] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const { mapId, showChangeAnimation, changeMap } = useMapChange();
-  const allMapIds = adapter.mapController.dataManager.mapIds;
+  const { mapId, mapName, showChangeAnimation, changeMap } = useMapChange();
+  const allMaps = adapter.mapController.dataManager.data;
   const isMobile = useIsMobile();
 
   const togglePopover = () => {
@@ -64,8 +64,8 @@ const ChangeMap: React.FC = observer(() => {
               onClick={togglePopover}
             >
               <div className="absolute text-sm left-0 top-0 font-medium text-[#d2d2d2]">//</div>
-              {t(`map:${mapId}`, {
-                defaultValue: mapId,
+              {t(`lang:${mapName}`, {
+                defaultValue: mapName,
               })}
             </div>
             <div
@@ -73,8 +73,8 @@ const ChangeMap: React.FC = observer(() => {
               onClick={togglePopover}
             >
               <span className="left-0 top-0 font-medium">/</span>
-              {t(`map:${mapId}`, {
-                defaultValue: mapId,
+              {t(`lang:${mapName}`, {
+                defaultValue: mapName,
               })}
             </div>
           </div>
@@ -125,10 +125,10 @@ const ChangeMap: React.FC = observer(() => {
             </div>
 
             <div className="flex flex-col gap-1 h-full justify-between">
-              {allMapIds.map((id) => (
-                <MapButton active={mapId === id} onClick={() => handleChangeMap(id)} key={id}>
-                  {t(`map:${id}`, {
-                    defaultValue: id,
+              {allMaps.map((map) => (
+                <MapButton active={mapId === map.id} onClick={() => handleChangeMap(map.id)} key={map.id}>
+                  {t(`lang:${map.name}`, {
+                    defaultValue: map.name,
                   })}
                 </MapButton>
               ))}
@@ -136,7 +136,7 @@ const ChangeMap: React.FC = observer(() => {
           </div>
         </motion.div>
       </motion.div>
-      <MapChangeAnimation showChangeAnimation={showChangeAnimation} mapId={mapId} />
+      <MapChangeAnimation showChangeAnimation={showChangeAnimation} mapName={mapName} />
     </>
   );
 });

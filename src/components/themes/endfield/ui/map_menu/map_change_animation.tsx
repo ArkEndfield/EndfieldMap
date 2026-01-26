@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 
 interface MapChangeAnimationProps {
   showChangeAnimation: boolean;
-  mapId: MapData['id'];
+  mapName: MapData['name'];
 }
 
-export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({ showChangeAnimation, mapId }) => {
-  const { t } = useTranslation(['header', 'map']);
+export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({ showChangeAnimation, mapName }) => {
+  const { t } = useTranslation(['header', 'lang']);
 
   return createPortal(
     <motion.div
@@ -49,8 +49,8 @@ export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({ showChan
           y: '1em',
         }}
       >
-        {t(`map:${mapId}`, {
-          defaultValue: mapId,
+        {t(`lang:${mapName}`, {
+          defaultValue: mapName,
         })}
       </motion.div>
 

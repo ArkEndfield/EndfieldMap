@@ -17,6 +17,7 @@ class AudioService {
   private audioContext: AudioContext | null = null;
   private audioCache: Map<SoundType, AudioInstance> = new Map();
   private loadingPromises: Map<SoundType, Promise<void>> = new Map();
+  private initializationPromise: Promise<void> | null = null;
 
   @observable accessor masterVolume: number = AUDIO_SETTINGS.DEFAULT_VOLUME;
   @observable accessor enabled: boolean = AUDIO_SETTINGS.ENABLE_AUDIO;
@@ -31,28 +32,38 @@ class AudioService {
       return;
     }
 
-    try {
-      // 创建 AudioContext（延迟初始化）
-      this.audioContext = new (window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-
-      // 预加载所有标记为需要预加载的音效
-      const preloadPromises: Promise<void>[] = [];
-      for (const [soundType, config] of Object.entries(AUDIO_CONFIG)) {
-        if (config.preload !== false) {
-          preloadPromises.push(this.loadSound(soundType as SoundType));
-        }
-      }
-
-      await Promise.all(preloadPromises);
-      runInAction(() => {
-        this.initialized = true;
-      });
-
-      logger.log('[AudioService] 已初始化并预加载音效');
-    } catch (error) {
-      logger.error('[AudioService] 初始化失败:', error);
+    if (this.initializationPromise) {
+      return this.initializationPromise;
     }
+
+    this.initializationPromise = (async () => {
+      try {
+        // 创建 AudioContext（延迟初始化）
+        this.audioContext = new (window.AudioContext ||
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+
+        // 预加载所有标记为需要预加载的音效
+        const preloadPromises: Promise<void>[] = [];
+        for (const [soundType, config] of Object.entries(AUDIO_CONFIG)) {
+          if (config.preload !== false) {
+            preloadPromises.push(this.loadSound(soundType as SoundType));
+          }
+        }
+
+        await Promise.all(preloadPromises);
+        runInAction(() => {
+          this.initialized = true;
+        });
+
+        logger.log('[AudioService] 已初始化并预加载音效');
+      } catch (error) {
+        logger.error('[AudioService] 初始化失败:', error);
+      } finally {
+        this.initializationPromise = null;
+      }
+    })();
+
+    return this.initializationPromise;
   }
 
   /**
@@ -94,7 +105,7 @@ class AudioService {
           config,
         });
 
-        logger.log(`[AudioService] 已加载音效: ${soundType}`);
+        // logger.log(`[AudioService] 已加载音效: ${soundType}`);
       } catch (error) {
         logger.error(`[AudioService] 加载音效 "${soundType}" 失败:`, error);
         throw error;

@@ -5,8 +5,9 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 export const useMapChange = () => {
   const [showChangeAnimation, setShowChangeAnimation] = useState(false);
-  const { dataService } = useAdapter();
-  const mapId = dataService.mapStateDataService.currentMap.value;
+  const { adapter, dataService } = useAdapter();
+  const mapId = adapter.mapController.dataManager.currentMapId;
+  const mapName = adapter.mapController.dataManager.currentMap?.name || 'Unknown';
 
   const changeMap = (newMapId: MapData['id']) => {
     dataService.mapStateDataService.currentMap.value = newMapId;
@@ -19,6 +20,7 @@ export const useMapChange = () => {
 
   return {
     mapId,
+    mapName,
     showChangeAnimation,
     changeMap,
   };
