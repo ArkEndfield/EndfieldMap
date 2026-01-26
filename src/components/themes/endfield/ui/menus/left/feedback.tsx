@@ -23,7 +23,7 @@ export const HeaderMenuFeedback = ({ className }: { className?: string }) => {
         icon={<FeedbackIcon />}
         height="85vh"
         classNames={{
-          contentContainer: 'h-full',
+          contentContainer: 'h-full flex flex-col',
           content: 'flex-1',
           scrollContent: 'h-full flex flex-col',
         }}

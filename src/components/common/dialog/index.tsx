@@ -154,7 +154,6 @@ const DialogInner: React.FC<DialogProps> = ({
           className={cn(
             'bg-white relative overflow-hidden flex-1',
             'bg-[repeating-linear-gradient(-45deg,transparent,transparent_2px,#ccc2_2px,#ccc2_3px)]',
-            'flex flex-col',
             classNames?.contentContainer && typeof classNames.contentContainer === 'function'
               ? classNames.contentContainer(open)
               : classNames?.contentContainer
