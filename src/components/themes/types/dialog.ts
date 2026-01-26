@@ -13,6 +13,7 @@ export interface DialogProps {
     backdrop?: string | ((open?: boolean) => string);
     alert?: string | ((open?: boolean) => string);
     content?: string | ((open?: boolean) => string);
+    scrollContent?: string | ((open?: boolean) => string);
     contentContainer?: string | ((open?: boolean) => string);
     header?: string | ((open?: boolean) => string);
     footer?: string | ((open?: boolean) => string);
