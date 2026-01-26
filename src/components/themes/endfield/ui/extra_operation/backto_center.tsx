@@ -1,5 +1,4 @@
 import { DEFAULT_ZOOM } from '@endfieldmap/map-core';
-import { getMapCenter } from '@endfieldmap/tools';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
@@ -11,9 +10,9 @@ import { useAdapter } from '@/hooks/use_adapter';
 export const BackToCenter = observer(() => {
   const { t } = useTranslation('settings');
   const { adapter } = useAdapter();
-  const mapIndex = adapter.currentMapIndex;
+  const mapId = adapter.mapController.dataManager.currentMapId;
   const moveToCenter = () => {
-    const center = getMapCenter(mapIndex);
+    const center = adapter.mapController.dataManager.getMapCenter(mapId);
     adapter.mapController.moveViewCenter(center, DEFAULT_ZOOM);
   };
   return (

@@ -1,4 +1,4 @@
-import { motion, useAnimate } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -12,186 +12,42 @@ const ALERT_BG = '/images/bg/alert/alert_bg.png';
 const ALERT_BANNER_BG_LEFT = '/images/bg/alert/alert_banner_bg_left.png';
 const ALERT_BANNER_BG_RIGHT = '/images/bg/alert/alert_banner_bg_right.png';
 
-export const ZmdAlert: React.FC<ZmdAlertProps> = ({
+const GLITCH_OPACITY = [0, 1, 1, 0, 0, 1, 1, 0, 0, 1];
+const GLITCH_TIMES = [0, 0.48, 0.82, 0.85, 0.87, 0.9, 0.92, 0.95, 0.97, 1];
+const GLITCH_DURATION = 0.205;
+
+const AlertInner: React.FC<
+  ZmdAlertProps & {
+    handleClose: () => void;
+    handleDismiss: () => void;
+    handleCancel: () => void;
+    handleConfirm: () => void;
+    isProcessing: boolean;
+  }
+> = ({
   open,
-  onOpenChange,
-  dismissible = true,
-  hideCancel = false,
+  hideCancel,
   cancelText,
   confirmText,
-  loading = false,
-  showIcon = true,
-  width = '30em',
-  height = 'auto',
+  loading,
+  showIcon,
+  width,
+  height,
   children,
   classNames,
-  onDismiss = () => {},
-  onCancel = () => {},
-  onClose = () => {},
-  onConfirm = () => {},
+  handleDismiss,
+  handleCancel,
+  handleConfirm,
+  isProcessing,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [backdropVisible, setBackdropVisible] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isOpening, setIsOpening] = useState(false);
-
-  const [alertRef, alertAnimate] = useAnimate();
-  const [contentRef, contentAnimate] = useAnimate();
-  const [buttonsRef] = useAnimate();
-
   const { t } = useTranslation();
 
-  const handleDismiss = () => {
-    if (isOpening || !dismissible || isProcessing) return;
-
-    const result = onDismiss();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
-  const handleClose = () => {
-    if (isProcessing) return;
-
-    const result = onClose();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            onOpenChange?.(false);
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      onOpenChange?.(false);
-    }
-  };
-
-  const handleCancel = () => {
-    if (isProcessing) return;
-
-    const result = onCancel();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
-  const handleConfirm = () => {
-    if (isProcessing) return;
-
-    const result = onConfirm();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
   useEffect(() => {
-    const shineAnimate = async (scope: typeof contentRef, show: boolean) => {
-      if (!scope.current) return;
+    dialogRef.current?.showModal();
+  }, []);
 
-      if (show) {
-        await contentAnimate(scope.current, { opacity: 1 }, { duration: 0.1 });
-        await contentAnimate(scope.current, { opacity: 0 }, { duration: 0.005, delay: 0.07 });
-        await contentAnimate(scope.current, { opacity: 1 }, { duration: 0.005, delay: 0.005 });
-        await contentAnimate(scope.current, { opacity: 0 }, { duration: 0.005, delay: 0.005 });
-        await contentAnimate(scope.current, { opacity: 1 }, { duration: 0.005, delay: 0.005 });
-      } else {
-        await contentAnimate(scope.current, { opacity: 0 }, { duration: 0.15 });
-      }
-    };
-
-    const animate = async () => {
-      if (open) {
-        setIsOpening(true);
-        setBackdropVisible(true);
-
-        // Wait for DOM to be ready
-        await new Promise((resolve) => setTimeout(resolve, 10));
-
-        if (!alertRef.current) return;
-
-        await alertAnimate(
-          alertRef.current,
-          {
-            transform: ['scaleY(0)', 'scaleY(1)'],
-            opacity: [0, 1],
-          },
-          { duration: 0.15 }
-        );
-
-        shineAnimate(contentRef, true);
-        shineAnimate(buttonsRef, true);
-        setIsOpening(false);
-      } else if (backdropVisible) {
-        // Only animate close if dialog was visible
-        shineAnimate(contentRef, false);
-        shineAnimate(buttonsRef, false);
-
-        if (alertRef.current) {
-          await Promise.all([
-            alertAnimate(alertRef.current, { transform: ['scaleY(1)', 'scaleY(0)'] }, { duration: 0.15 }),
-            alertAnimate(alertRef.current, { opacity: [1, 0] }, { duration: 0.03, delay: 0.07 }),
-          ]);
-        }
-
-        setBackdropVisible(false);
-      }
-    };
-
-    animate();
-  }, [open, alertAnimate, alertRef, contentRef, buttonsRef, contentAnimate, backdropVisible]);
-
-  useEffect(() => {
-    if (backdropVisible) {
-      dialogRef.current?.showModal();
-    } else {
-      dialogRef.current?.close();
-    }
-  }, [backdropVisible]);
-
-  if (!backdropVisible && !open) return null;
-
-  return createPortal(
+  return (
     <dialog
       ref={dialogRef}
       className={cn(
@@ -207,7 +63,6 @@ export const ZmdAlert: React.FC<ZmdAlertProps> = ({
       }}
     >
       <motion.div
-        ref={alertRef}
         className={cn(
           'min-h-[10em] max-h-[calc(100vh-4em)] max-w-[calc(100vw-2em)] bg-[#fefefe] rounded-[0.2em] shadow-[0_0_0.4em_rgba(0,0,0,0.3)] flex flex-col pt-[1.7em] pb-4 px-0 m-4 relative bg-no-repeat bg-size-[90%_auto] bg-position-[bottom_right] md:max-w-[calc(100vw-0.2em)] md:pt-[1.7em] md:m-2',
           classNames?.alert && typeof classNames.alert === 'function' ? classNames.alert(open) : classNames?.alert
@@ -216,11 +71,18 @@ export const ZmdAlert: React.FC<ZmdAlertProps> = ({
           width,
           height,
           backgroundImage: `url(${ALERT_BG})`,
-          transformOrigin: open ? 'top' : 'bottom',
+          transformOrigin: 'top',
+        }}
+        initial={{ transform: 'scaleY(0)', opacity: 0 }}
+        animate={{ transform: 'scaleY(1)', opacity: 1, transition: { duration: 0.15 } }}
+        exit={{
           transform: 'scaleY(0)',
           opacity: 0,
+          transition: {
+            transform: { duration: 0.15 },
+            opacity: { duration: 0.03, delay: 0.07 },
+          },
         }}
-        initial={false}
       >
         {/* Banner */}
         <div className="absolute w-full top-0 left-0 z-0 flex items-stretch h-[4.5em]">
@@ -234,26 +96,32 @@ export const ZmdAlert: React.FC<ZmdAlertProps> = ({
         </div>
 
         {/* Content */}
-        <div
-          ref={contentRef}
+        <motion.div
           className={cn(
             'flex-1 flex flex-col min-h-0 mx-4 z-1 relative',
             classNames?.content && typeof classNames.content === 'function'
               ? classNames.content(open)
               : classNames?.content
           )}
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: GLITCH_OPACITY,
+            transition: { duration: GLITCH_DURATION, times: GLITCH_TIMES },
+          }}
+          exit={{ opacity: 0, transition: { duration: 0.15 } }}
         >
           <div className="flex-1 py-4 text-[#2a2728] overflow-auto">{children}</div>
-        </div>
+        </motion.div>
 
         {/* Actions */}
-        <div
-          ref={buttonsRef}
-          className={cn(
-            'flex gap-4 px-4 pt-4 z-1 relative',
-            hideCancel ? 'justify-center' : 'justify-between',
-            !open && 'hidden'
-          )}
+        <motion.div
+          className={cn('flex gap-4 px-4 pt-4 z-1 relative', hideCancel ? 'justify-center' : 'justify-between')}
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: GLITCH_OPACITY,
+            transition: { duration: GLITCH_DURATION, times: GLITCH_TIMES },
+          }}
+          exit={{ opacity: 0, transition: { duration: 0.15 } }}
         >
           {!hideCancel && (
             <ZmdRoundButton
@@ -280,9 +148,145 @@ export const ZmdAlert: React.FC<ZmdAlertProps> = ({
               button: 'w-1/2',
             }}
           />
-        </div>
+        </motion.div>
       </motion.div>
-    </dialog>,
+    </dialog>
+  );
+};
+
+export const ZmdAlert: React.FC<ZmdAlertProps> = ({
+  open,
+  onOpenChange,
+  dismissible = true,
+  hideCancel = false,
+  cancelText,
+  confirmText,
+  loading = false,
+  showIcon = true,
+  width = '30em',
+  height = 'auto',
+  onDismiss = () => {},
+  onCancel = () => {},
+  onClose = () => {},
+  onConfirm = () => {},
+  children,
+  classNames,
+}) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Logic Handlers
+  const handleClose = () => {
+    if (isProcessing) return;
+
+    const result = onClose();
+    if (result instanceof Promise) {
+      setIsProcessing(true);
+      result
+        .then((res) => {
+          setIsProcessing(false);
+          if (res !== false) {
+            onOpenChange?.(false);
+          }
+        })
+        .catch(() => {
+          setIsProcessing(false);
+        });
+    } else if (result !== false) {
+      onOpenChange?.(false);
+    }
+  };
+
+  const handleDismiss = () => {
+    if (!dismissible || isProcessing) return;
+
+    const result = onDismiss();
+    if (result instanceof Promise) {
+      setIsProcessing(true);
+      result
+        .then((res) => {
+          setIsProcessing(false);
+          if (res !== false) {
+            handleClose();
+          }
+        })
+        .catch(() => {
+          setIsProcessing(false);
+        });
+    } else if (result !== false) {
+      handleClose();
+    }
+  };
+
+  const handleCancelInternal = () => {
+    if (isProcessing) return;
+
+    const result = onCancel();
+    if (result instanceof Promise) {
+      setIsProcessing(true);
+      result
+        .then((res) => {
+          setIsProcessing(false);
+          if (res !== false) {
+            handleClose();
+          }
+        })
+        .catch(() => {
+          setIsProcessing(false);
+        });
+    } else if (result !== false) {
+      handleClose();
+    }
+  };
+
+  const handleConfirmInternal = () => {
+    if (isProcessing) return;
+
+    const result = onConfirm();
+    if (result instanceof Promise) {
+      setIsProcessing(true);
+      result
+        .then((res) => {
+          setIsProcessing(false);
+          if (res !== false) {
+            handleClose();
+          }
+        })
+        .catch(() => {
+          setIsProcessing(false);
+        });
+    } else if (result !== false) {
+      handleClose();
+    }
+  };
+
+  return createPortal(
+    <AnimatePresence>
+      {open && (
+        <AlertInner
+          open={open}
+          onOpenChange={onOpenChange}
+          dismissible={dismissible}
+          hideCancel={hideCancel}
+          cancelText={cancelText}
+          confirmText={confirmText}
+          loading={loading}
+          showIcon={showIcon}
+          width={width}
+          height={height}
+          onDismiss={onDismiss}
+          onCancel={onCancel}
+          onClose={onClose}
+          onConfirm={onConfirm}
+          children={children}
+          classNames={classNames}
+          handleClose={handleClose}
+          handleDismiss={handleDismiss}
+          handleCancel={handleCancelInternal}
+          handleConfirm={handleConfirmInternal}
+          isProcessing={isProcessing}
+        />
+      )}
+    </AnimatePresence>,
     document.body
   );
 };

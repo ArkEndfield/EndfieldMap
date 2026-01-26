@@ -1,116 +1,50 @@
-import { CustomPointKey, type MapIndex } from '@endfieldmap/map-core/const/map';
-import type { CustomPointData, CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point';
-import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/custom_point';
-import { CustomPointRenderer } from '@endfieldmap/map-core/render/renderer';
-import type { CustomPointMapData } from '@endfieldmap/map-core/types';
-import type { FeatureMarked, StorageData } from '@endfieldmap/map-core/types/data';
-import type { CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
+import { Disposer } from '@endfieldmap/map-core/commom/disposer';
+import { CustomPointKey } from '@endfieldmap/map-core/const/map';
+import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_instance';
+import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import { CustomPointRender } from '@endfieldmap/map-core/render/renderer/entity/custom_point/';
+import type { CustomPointMapData, MapData } from '@endfieldmap/map-core/types';
+import type { CustomPointData, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
-import { crd2xyz, logger } from '@endfieldmap/tools';
-import { action, type IReactionDisposer, observable } from 'mobx';
+import { logger } from '@endfieldmap/tools';
+import { action, reaction } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
-
-/**
- * 自定义标点控制器配置
- */
-export interface CustomPointControllerConfig {
-  /** 初始数据 */
-  data?: CustomPointMapData;
-  /** 图标配置 */
-  icon: {
-    /** 图片路径 */
-    imagePath: string;
-    /** 图标尺寸 */
-    size?: number;
-  };
-}
 
 /**
  * 自定义标点控制器
  * 负责协调CustomPointDataManager和CustomPointRenderer
  */
-export class CustomPointController {
+export class CustomPointController extends Disposer {
   /** 数据管理器 */
   public readonly dataManager: CustomPointMapDataManager;
 
-  /** 图标配置 */
-  private readonly iconConfig: CustomPointControllerConfig['icon'];
+  /** 渲染器 */
+  private render: CustomPointRender;
 
-  /** 渲染器缓存：mapIndex -> renderer */
-  private rendererCache: Map<MapIndex, CustomPointRenderer> = new Map();
-
-  /** 当前地图渲染器 */
-  @observable
-  accessor currentRenderer: CustomPointRenderer | null = null;
-
-  /** 当前图层容器 */
-  public layerContainer: CustomPointRenderer | null = null;
-
-  /** 当前地图索引 */
-  private currentMapIndex?: MapIndex;
-
-  /** 自定义标点可见性 */
-  @observable
-  accessor customPointVisible: boolean = true;
-
-  /** MobX disposers */
-  private disposers: IReactionDisposer[] = [];
-
-  constructor(config: CustomPointControllerConfig) {
-    this.iconConfig = config.icon;
+  constructor() {
+    super();
     this.dataManager = new CustomPointMapDataManager();
-
-    // 加载初始数据
-    if (config.data) {
-      this.loadCustomPointData(config.data);
-    }
+    this.render = new CustomPointRender(this.dataManager);
+    this.initListeners();
   }
 
-  // #region 地图切换
-
-  /**
-   * 获取或创建地图渲染器
-   */
-  private getOrCreateRenderer(mapIndex: MapIndex): CustomPointRenderer {
-    let renderer = this.rendererCache.get(mapIndex);
-
-    if (!renderer) {
-      const manager = this.dataManager.getMapManager(mapIndex);
-
-      renderer = new CustomPointRenderer({
-        dataManager: manager,
-        iconBasePath: this.iconConfig.imagePath,
-        iconSize: this.iconConfig.size,
-      });
-
-      this.rendererCache.set(mapIndex, renderer);
-    }
-
-    // 应用当前可见性设置
-    renderer.setVisible(this.customPointVisible);
-
-    return renderer;
+  private initListeners() {
+    const mapDataManager = MapDataManager.getInstance();
+    // mobx 监听 currentMap
+    const disposer = reaction(
+      () => mapDataManager.currentMapId,
+      (mapId) => {
+        this.render.render(mapId);
+      },
+      { fireImmediately: true }
+    );
+    this.disposers.push(disposer);
   }
 
-  /**
-   * 切换地图
-   */
-  @action
-  public switchMap(mapIndex: MapIndex): void {
-    if (this.currentMapIndex === mapIndex) {
-      return;
-    }
-
-    this.currentMapIndex = mapIndex;
-    this.dataManager.switchMap(mapIndex);
-
-    const renderer = this.getOrCreateRenderer(mapIndex);
-
-    this.currentRenderer = renderer;
-    this.layerContainer = renderer;
+  get currentRenderer() {
+    return this.render.currentCustomPointInstance;
   }
-
-  // #endregion
 
   // #region 数据操作
 
@@ -130,8 +64,7 @@ export class CustomPointController {
     }
 
     // 处理每个地图的数据
-    for (const [mapIndexKey, list] of Object.entries(data)) {
-      const mapIndex = mapIndexKey as MapIndex;
+    for (const [mapId, list] of Object.entries(data)) {
       const pointList = list as CustomPointData[];
 
       // 构建旧ID到新ID的映射
@@ -156,7 +89,7 @@ export class CustomPointController {
       });
 
       // 加载到数据管理器
-      this.dataManager.loadMapData(mapIndex, remappedList);
+      this.dataManager.loadMapData(mapId, remappedList);
     }
   }
 
@@ -165,11 +98,10 @@ export class CustomPointController {
    */
   @action
   public loadCustomPointData(data: CustomPointMapData): void {
-    for (const [mapIndexKey, list] of Object.entries(data)) {
-      const mapIndex = mapIndexKey as MapIndex;
+    for (const [mapId, list] of Object.entries(data)) {
       const pointList = list as CustomPointData[];
 
-      this.dataManager.loadMapData(mapIndex, pointList);
+      this.dataManager.loadMapData(mapId, pointList);
     }
   }
 
@@ -178,19 +110,13 @@ export class CustomPointController {
    */
   @action
   public createCustomPoint(
-    mapIndex: MapIndex,
+    mapId: MapData['id'],
     position: Coordinate,
     type: CustomPointTypeId
   ): CustomPointDataInstance | null {
-    const xyzPosition = crd2xyz(position, mapIndex);
-
-    // 确保当前地图已切换
-    if (this.currentMapIndex !== mapIndex) {
-      logger.warn('[CustomPointController] Creating custom point on non-current map, switching map first');
-      this.switchMap(mapIndex);
-    }
-
-    const manager = this.dataManager.getMapManager(mapIndex);
+    const mapDataInstance = MapDataManager.getInstance();
+    const xyzPosition = mapDataInstance.crd2xyz(position, mapId);
+    const manager = this.dataManager.getMapManager(mapId);
 
     // 生成新ID
     const existingIds = new Set(manager.instances.map((instance) => instance.id));
@@ -209,12 +135,6 @@ export class CustomPointController {
     // 添加到数据管理器
     const instance = manager.add(data);
 
-    // 确保渲染器已经存在并被添加到图层
-    if (!this.layerContainer || this.layerContainer !== this.currentRenderer) {
-      logger.warn('[CustomPointController] LayerContainer not set, switching map to ensure renderer is added');
-      this.switchMap(mapIndex);
-    }
-
     return instance;
   }
 
@@ -222,11 +142,8 @@ export class CustomPointController {
    * 添加自定义标点
    */
   @action
-  public addCustomPoint(mapIndex: MapIndex, data: CustomPointData): CustomPointDataInstance | null {
-    // 确保渲染器存在
-    this.getOrCreateRenderer(mapIndex);
-
-    const manager = this.dataManager.getMapManager(mapIndex);
+  public addCustomPoint(mapId: MapData['id'], data: CustomPointData): CustomPointDataInstance | null {
+    const manager = this.dataManager.getMapManager(mapId);
     const instance = manager.add(data);
 
     return instance;
@@ -236,12 +153,12 @@ export class CustomPointController {
    * 删除自定义标点
    */
   @action
-  public deleteCustomPoint(mapIndex: MapIndex, id: number): boolean {
-    const manager = this.dataManager.getMapManager(mapIndex);
+  public deleteCustomPoint(mapId: MapData['id'], id: number): boolean {
+    const manager = this.dataManager.getMapManager(mapId);
     const instance = manager.getById(id);
 
     if (!instance) {
-      logger.error('[CustomPointController] Instance not found', { mapIndex, id });
+      logger.error('[CustomPointController] Instance not found', { mapId, id });
       return false;
     }
 
@@ -272,58 +189,8 @@ export class CustomPointController {
    */
   @action
   public setCustomPointVisible(visible: boolean): void {
-    this.customPointVisible = visible;
-
-    for (const [, renderer] of this.rendererCache) {
-      renderer.setVisible(visible);
-    }
+    this.dataManager.setVisible(visible);
+    this.render.setVisible(visible);
   }
-
-  /**
-   * 切换自定义标点可见性
-   */
-  public toggleCustomPointVisible(): void {
-    this.setCustomPointVisible(!this.customPointVisible);
-  }
-
   // #endregion
-
-  // #region 数据导入导出
-
-  /**
-   * 导出标记数据
-   */
-  public exportMarked(): StorageData<FeatureMarked> {
-    return this.dataManager.exportMarkedData();
-  }
-
-  /**
-   * 导入标记数据
-   */
-  public importMarked(data: StorageData<FeatureMarked>): number {
-    const fullData: Record<MapIndex, Record<number, boolean>> = {} as Record<MapIndex, Record<number, boolean>>;
-    for (const [key, value] of Object.entries(data)) {
-      if (value) {
-        fullData[key as MapIndex] = value;
-      }
-    }
-    return this.dataManager.importMarkedData(fullData);
-  }
-
-  // #endregion
-
-  /**
-   * 销毁控制器
-   */
-  public dispose(): void {
-    for (const [, renderer] of this.rendererCache) {
-      renderer.dispose();
-    }
-    this.rendererCache.clear();
-
-    for (const disposer of this.disposers) {
-      disposer();
-    }
-    this.disposers = [];
-  }
 }

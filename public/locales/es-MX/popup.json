@@ -14,5 +14,15 @@
   "custom_point": {
     "rename_tip": "Por favor ingrese el nombre del punto personalizado",
     "change_type": "Cambiar tipo de marcador"
+  },
+  "robot": {
+    "solution": "Solución",
+    "result": "Resultado",
+    "level_selection": "Seleccionar nivel (total {{levels}} niveles)",
+    "level_item": "Nivel {{level}}",
+    "puzzle_piece_count": "Piezas de rompecabezas disponibles ({{pieces}} pcs)",
+    "no_puzzle_piece": "No hay piezas de rompecabezas",
+    "solving": "Resolviendo...",
+    "start_slove": "Iniciar resolución"
   }
 }

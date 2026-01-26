@@ -1,6 +1,6 @@
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { EntityData, EntityDataInstanceConfig, EntityInfoData } from '@endfieldmap/map-core/types/entity';
-import { xyz2crd } from '@endfieldmap/tools';
 import { computed } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
@@ -18,7 +18,7 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
   constructor(config: EntityDataInstanceConfig) {
     super({
       data: config.data,
-      mapIndex: config.mapIndex,
+      mapId: config.mapId,
     });
   }
 
@@ -27,7 +27,8 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
    */
   @computed
   get coordinates(): Coordinate {
-    return xyz2crd(this._data.position, this.mapIndex);
+    const mapDataManager = MapDataManager.getInstance();
+    return mapDataManager.xyz2crd(this._data.position, this.mapId);
   }
 
   /**

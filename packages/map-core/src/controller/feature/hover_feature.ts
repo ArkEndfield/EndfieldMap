@@ -8,16 +8,15 @@ import {
   selectTopmostHitResult,
 } from '@endfieldmap/map-core/event/entity_hit_test';
 import { HoverLayer } from '@endfieldmap/map-core/render/layers/hover';
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { HitTestableLayer } from '@endfieldmap/map-core/types';
 import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
 import { debounce, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
-import type Map from 'ol/Map';
 
 export interface HoverFeatureControllerConfig {
-  map: Map;
   getEntityLayers: () => HitTestableLayer[];
   getElectricPoleLayers: () => HitTestableLayer[];
   getCustomPointLayers: () => HitTestableLayer[];
@@ -50,11 +49,8 @@ export class HoverFeatureController {
   private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
   /** Hover图层 */
   public hoverLayer: HoverLayer;
-  /** 地图实例 */
-  private map: Map;
 
   constructor(config: HoverFeatureControllerConfig) {
-    this.map = config.map;
     this.getEntityLayers = config.getEntityLayers;
     this.getElectricPoleLayers = config.getElectricPoleLayers;
     this.getCustomPointLayers = config.getCustomPointLayers;
@@ -64,8 +60,9 @@ export class HoverFeatureController {
 
     // 创建HoverLayer实例
     this.hoverLayer = new HoverLayer();
+    const mapInstance = EndfieldMap.getInstance();
     // 将HoverLayer添加到地图
-    this.map.addLayer(this.hoverLayer.layer);
+    mapInstance.map.addLayer(this.hoverLayer.layer);
 
     if (!this.disabled) {
       this.registerEventHandlers();
@@ -278,12 +275,13 @@ export class HoverFeatureController {
    * 销毁控制器，清理事件监听器
    */
   public dispose() {
+    const mapInstance = EndfieldMap.getInstance();
     this.unregisterEventHandlers();
     this.clearHoverFeature();
     // 隐藏hover效果
     this.hoverLayer.hideHover();
     // 从地图中移除hover图层
-    this.map.removeLayer(this.hoverLayer.layer);
+    mapInstance.map.removeLayer(this.hoverLayer.layer);
   }
 
   /**

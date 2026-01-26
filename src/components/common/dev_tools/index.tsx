@@ -1,4 +1,5 @@
-import { crd2xyz, domEventListener, xyz2crd } from '@endfieldmap/tools';
+import type { Coordinate } from '@endfieldmap/map-core';
+import { domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
@@ -257,7 +258,10 @@ const CoordinateJump = observer(() => {
 
   const handleJump = () => {
     if (mode === 'xyz') {
-      const coord = xyz2crd({ x: Number(x), y: Number(y), z: Number(z) }, adapter.currentMapIndex);
+      const coord = adapter.mapController.dataManager.xyz2crd(
+        { x: Number(x), y: Number(y), z: Number(z) },
+        adapter.mapController.dataManager.currentMapId
+      );
       adapter.mapController.setCenter(coord);
     } else {
       adapter.mapController.setCenter([Number(x), Number(z)]);
@@ -302,10 +306,7 @@ const CoordinateJump = observer(() => {
           onChange={(e) => setZ(e.target.value)}
         />
       </div>
-      <button
-        className="w-full bg-white/10 hover:bg-white/20 rounded px-2 py-1 text-[10px]"
-        onClick={handleJump}
-      >
+      <button className="w-full bg-white/10 hover:bg-white/20 rounded px-2 py-1 text-[10px]" onClick={handleJump}>
         跳转
       </button>
     </div>
@@ -317,8 +318,8 @@ const CursorPositionDisplay = observer(() => {
   const [coords, setCoords] = useState<string>('');
 
   useEffect(() => {
-    const map = adapter.mapController.mapRenderer.map;
-    const listener = (e: { coordinate: number[] }) => {
+    const map = adapter.mapController.olMapRenderer.map;
+    const listener = (e: { coordinate: Coordinate }) => {
       const [x, y] = e.coordinate;
       setCoords(`${x.toFixed(2)}, ${y.toFixed(2)}`);
     };
@@ -330,7 +331,10 @@ const CursorPositionDisplay = observer(() => {
 
   if (!coords) return null;
 
-  const xyzPosition = crd2xyz([Number(coords.split(',')[0]), Number(coords.split(',')[1])], adapter.currentMapIndex);
+  const xyzPosition = adapter.mapController.dataManager.crd2xyz(
+    [Number(coords.split(',')[0]), Number(coords.split(',')[1])],
+    adapter.mapController.dataManager.currentMapId
+  );
 
   return (
     <div className="mb-2 font-mono text-[10px] text-green-400 select-all">

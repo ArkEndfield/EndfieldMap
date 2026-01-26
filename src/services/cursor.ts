@@ -5,7 +5,7 @@ import { EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
  * 当hover到实体时，将鼠标指针改为pointer
  */
 export function initCursorEventListeners(adapter: EndfieldMapAdapter) {
-  const viewport = adapter.mapController.mapRenderer.map.getViewport();
+  const viewport = adapter.mapController.olMapRenderer.map.getViewport();
 
   // 监听hover_feature_change事件，根据是否有hover的feature来改变鼠标指针
   adapter.event.on(MAP_EVENT.HOVER_FEATURE_CHANGE, (event) => {

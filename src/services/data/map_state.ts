@@ -1,17 +1,14 @@
-import { type EndfieldMapAdapter, MAP_EVENT, MapIndex, MarkedFeatureFilterMode } from '@endfieldmap/map-core';
 import {
+  DEFAULT_ZOOM,
+  type EndfieldMapAdapter,
+  MAP_EVENT,
+  type MapData,
+  MarkedFeatureFilterMode,
   type Coordinate,
-  type DataState,
-  debounce,
-  getMapCenter,
-  LocalStorageKey,
-  LocalStorageValue,
-  logger,
-} from '@endfieldmap/tools';
+} from '@endfieldmap/map-core';
+import { debounce, LocalStorageKey, LocalStorageValue, logger } from '@endfieldmap/tools';
 
 import { DEBOUNCE_INTERVAL } from '@/const/data';
-import i18n from '@/i18n';
-import { getLanguage } from '@/utils/language';
 
 export interface DevToolsState {
   position: { right: number; top: number };
@@ -23,10 +20,14 @@ export interface DevToolsState {
 
 import { loadingManager } from '@/services/loading';
 
+interface DataState<T> {
+  [key: MapData['id']]: T;
+}
+
 export class MapStateDataService {
   private adapter: EndfieldMapAdapter;
 
-  public currentMap!: LocalStorageValue<MapIndex>;
+  public currentMap!: LocalStorageValue<MapData['id']>;
   public mapZoom!: LocalStorageValue<DataState<number>>;
   public mapCenter!: LocalStorageValue<DataState<Coordinate>>;
   public adjustView!: LocalStorageValue<boolean>;
@@ -41,22 +42,16 @@ export class MapStateDataService {
 
   constructor(adapter: EndfieldMapAdapter) {
     this.adapter = adapter;
+    const mapDataManager = this.adapter.mapController.dataManager;
+    const firstMapId = mapDataManager.mapIds[0];
 
     this.mapZoom = new LocalStorageValue<DataState<number>>({
-      initialValue: {
-        [MapIndex.MAP01]: 3,
-        [MapIndex.MAP02]: 3,
-        [MapIndex.DUNG01]: 3,
-      },
+      initialValue: {},
       storageKey: LocalStorageKey.MAP_ZOOM,
     });
 
     this.mapCenter = new LocalStorageValue<DataState<Coordinate>>({
-      initialValue: {
-        [MapIndex.MAP01]: getMapCenter(MapIndex.MAP01),
-        [MapIndex.MAP02]: getMapCenter(MapIndex.MAP02),
-        [MapIndex.DUNG01]: getMapCenter(MapIndex.DUNG01),
-      },
+      initialValue: {},
       storageKey: LocalStorageKey.MAP_VIEW_STATE,
     });
 
@@ -64,7 +59,7 @@ export class MapStateDataService {
       initialValue: false,
       storageKey: LocalStorageKey.MAP_ADJUST_VIEW,
       onValueChange: (adjust) => {
-        this.adapter.mapController.mapRenderer.setAdjustView(adjust);
+        this.adapter.mapController.olMapRenderer.setAdjustView(adjust);
       },
     });
 
@@ -132,7 +127,7 @@ export class MapStateDataService {
       initialValue: true,
       storageKey: LocalStorageKey.ELECTRIC_POLE_DISPLAY,
       onValueChange: (data) => {
-        this.adapter.electricPoleController.setElectricPoleVisible(data);
+        this.adapter.electricPoleController.setVisible(data);
       },
     });
 
@@ -145,8 +140,8 @@ export class MapStateDataService {
     });
 
     // 初始化所有 LocalStorageValue 实例，确保 this 上下文正确
-    this.currentMap = new LocalStorageValue<MapIndex>({
-      initialValue: MapIndex.MAP01,
+    this.currentMap = new LocalStorageValue<MapData['id']>({
+      initialValue: firstMapId,
       storageKey: LocalStorageKey.MAP_CURRENT_MAP,
       onValueChange: (data) => {
         this.renderMap(data);
@@ -161,7 +156,7 @@ export class MapStateDataService {
     this.adapter.event.on(
       MAP_EVENT.ZOOM_CHANGE,
       debounce((zoom: number) => {
-        const currentMap = this.adapter!.currentMapIndex;
+        const currentMap = this.adapter!.mapController.dataManager.currentMapId;
         this.setMapZoom(currentMap, zoom);
       }, DEBOUNCE_INTERVAL)
     );
@@ -170,7 +165,7 @@ export class MapStateDataService {
       MAP_EVENT.MAP_CENTER_CHANGE,
       debounce((center?: Coordinate) => {
         if (!center) return;
-        const currentMap = this.adapter!.currentMapIndex;
+        const currentMap = this.adapter!.mapController.dataManager.currentMapId;
         this.setMapCenter(currentMap, center);
       }, DEBOUNCE_INTERVAL)
     );
@@ -178,42 +173,42 @@ export class MapStateDataService {
 
   /**
    * 设置地图缩放级别
-   * @param mapIndex 地图id
+   * @param mapId 地图id
    * @param zoom 缩放级别
    */
-  public setMapZoom(mapIndex: MapIndex, zoom: number) {
+  public setMapZoom(mapId: MapData['id'], zoom: number) {
     this.mapZoom.value = {
       ...this.mapZoom.value,
-      [mapIndex]: zoom,
+      [mapId]: zoom,
     };
   }
 
-  public setMapCenter(mapIndex: MapIndex, center: Coordinate) {
+  public setMapCenter(mapId: MapData['id'], center: Coordinate) {
     this.mapCenter.value = {
       ...this.mapCenter.value,
-      [mapIndex]: center,
+      [mapId]: center,
     };
   }
 
-  public renderMap(mapIndex: MapIndex) {
+  public renderMap(mapId: MapData['id']) {
     try {
-      this.adapter.renderMap(mapIndex);
+      this.adapter.renderMap(mapId);
+      const mapData = this.adapter.mapController.dataManager.getMapData(mapId);
+      if (!mapData) {
+        logger.error('[EndfieldMapAdapter | renderMap] mapData not found', mapId);
+        return;
+      }
 
-      // 渲染实体
-      this.adapter.renderEntity(mapIndex).catch((e) => {
-        loadingManager.setError(e as Error);
-        logger.error('[EndfieldMapAdapter | renderEntity] error, ', e);
-      });
-      // 设置地图名称
-      this.adapter.renderAreaName(getLanguage(i18n.languages));
-      // 渲染电线杆
-      this.adapter.renderElectricPole(mapIndex);
-      // 渲染自定义标点
-      this.adapter.renderCustomPoint(mapIndex);
-      // 设置地图中心
-      this.adapter.mapController.setCenter(this.mapCenter.value[mapIndex]);
       // 设置地图缩放
-      this.adapter.mapController.setZoom(this.mapZoom.value[mapIndex]);
+      const zoom = this.mapZoom.value?.[mapId] ?? mapData.zoom?.default ?? DEFAULT_ZOOM;
+      this.adapter.mapController.setZoom(zoom);
+
+      // 设置地图中心
+      let center: Coordinate | undefined = this.mapCenter.value?.[mapId];
+      if (!Array.isArray(center) || center.length < 2) {
+        center = this.adapter.mapController.dataManager.getMapCenter(mapId);
+      }
+      this.adapter.mapController.setCenter(center);
     } catch (e) {
       loadingManager.setError(e as Error);
       logger.error('[EndfieldMapAdapter | renderMap] error, ', e);

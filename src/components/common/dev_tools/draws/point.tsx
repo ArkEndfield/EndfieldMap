@@ -1,4 +1,3 @@
-import { xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
@@ -20,7 +19,7 @@ export const PointDraw = observer(() => {
 
     let finalCoords: [number, number];
     if (coordType === DevToolsCoordType.Game) {
-      const res = xyz2crd(coords, currentMap);
+      const res = adapter.mapController.dataManager.xyz2crd(coords, currentMap);
       finalCoords = [res[0], res[1]];
     } else {
       finalCoords = [coords.x, coords.y];

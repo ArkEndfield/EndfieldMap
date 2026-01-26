@@ -22,7 +22,7 @@ export const getAssetUrls = () => {
   const host = assetsHost;
   return {
     mapImage: createFullUrl(host, '/images/map'),
-    areaName: createFullUrl(host, '/data/map/area_name'),
+    mapData: createFullUrl(host, '/data/map'),
     entityData: createFullUrl(host, '/data/entity'),
     tierData: createFullUrl(host, '/data/tier'),
     langHash: createFullUrl(host, '/data/entity'),

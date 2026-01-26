@@ -1,18 +1,18 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapData } from '@endfieldmap/map-core/types/map';
 import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
-import { xyz2crd } from '@endfieldmap/tools';
 import { observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 export class TierDataInstance {
-  public mapIndex: MapIndex;
+  public mapId: MapData['id'];
   public data: GridTierItem['items'][number];
   public position: Coordinate;
   public extentExtra: Coordinate = [0, 0];
   @observable accessor visible: boolean = true;
 
-  constructor(mapIndex: MapIndex, data: GridTierItem['items'][number], position: Coordinate) {
-    this.mapIndex = mapIndex;
+  constructor(mapId: MapData['id'], data: GridTierItem['items'][number], position: Coordinate) {
+    this.mapId = mapId;
     this.data = data;
     this.position = position;
   }
@@ -38,7 +38,8 @@ export class TierDataInstance {
   }
 
   get extent() {
-    const [crdX, crdY] = xyz2crd({ x: this.x, y: 0, z: this.y }, this.mapIndex);
+    const mapDataManager = MapDataManager.getInstance();
+    const [crdX, crdY] = mapDataManager.xyz2crd({ x: this.x, y: 0, z: this.y }, this.mapId);
     const extent: [number, number, number, number] = [
       crdX,
       crdY,

@@ -1,6 +1,3 @@
-import { MapIndex } from '@endfieldmap/tools';
-export { MapIndex };
-
 /** 默认缩放 */
 export const DEFAULT_ZOOM = 3;
 
@@ -8,7 +5,7 @@ export const DEFAULT_ZOOM = 3;
 export const DEFAULT_CENTER = [0, 0];
 
 /** 默认最大缩放 */
-export const DEFAULT_MAX_ZOOM = 5;
+export const DEFAULT_MAX_ZOOM = 8;
 
 /** 默认最小缩放 */
 export const DEFAULT_MIN_ZOOM = 1;
@@ -34,29 +31,11 @@ export const DEFAULT_CLUSTER_DISTANCE = 30;
 /** 默认填充颜色 */
 export const DEFAULT_FILL_COLOR = '#525152';
 
-/** 默认填充颜色-透明50% */
-export const DEFAULT_FILL_COLOR_TRANSPARENT_50 = 'rgba(82, 81, 82, 0.5)';
-
-/** 默认填充颜色-透明75% */
-export const DEFAULT_FILL_COLOR_TRANSPARENT_75 = 'rgba(82, 81, 82, 0.75)';
-
 /** 默认描边颜色 */
 export const DEFAULT_STROKE_COLOR = '#2E2F2E';
 
-/** 默认描边颜色-透明50% */
-export const DEFAULT_STROKE_COLOR_TRANSPARENT_50 = 'rgba(46, 47, 46, 0.5)';
-
-/** 默认描边颜色-透明75% */
-export const DEFAULT_STROKE_COLOR_TRANSPARENT_75 = 'rgba(46, 47, 46, 0.75)';
-
 /** 默认选中颜色 */
 export const DEFAULT_SELECTED_COLOR = 'rgba(255, 215, 0, 1)';
-
-/** 默认选中颜色-透明50% */
-export const DEFAULT_SELECTED_COLOR_TRANSPARENT_50 = 'rgba(255, 215, 0, 0.5)';
-
-/** 默认选中颜色-透明75% */
-export const DEFAULT_SELECTED_COLOR_TRANSPARENT_75 = 'rgba(255, 215, 0, 0.75)';
 
 /** 默认描边宽度 */
 export const DEFAULT_STROKE_WIDTH = 3;
@@ -85,13 +64,6 @@ export const CustomPointKey = '#custom_point';
 
 /** 纸条搜索键 */
 export const NoteKey = '#note';
-
-/** TODO: 电线杆覆盖区域半径（地图坐标单位） */
-export const ELECTRIC_ZONE_RADIUS: Record<MapIndex, number> = {
-  [MapIndex.MAP01]: 10,
-  [MapIndex.MAP02]: 5,
-  [MapIndex.DUNG01]: 0
-};
 
 /** 地图类型 */
 export const enum MapType {

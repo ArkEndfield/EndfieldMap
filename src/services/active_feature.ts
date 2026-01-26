@@ -31,7 +31,12 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter, dat
   });
 
   // 监听map_click事件，清除active_feature
-  adapter.event.on(MAP_EVENT.MAP_CLICK, () => {
+  adapter.event.on(MAP_EVENT.MAP_CLICK, (event) => {
+    // 如果点击了实体，不清除active_feature
+    if (event.hasHit) {
+      return;
+    }
+
     if (dataService.electricPoleDataService.isInElectricOperateMode) {
       return;
     }

@@ -32,7 +32,7 @@ const CustomPointList: React.FC = observer(() => {
   const dataManager = adapter.customPointController.dataManager;
   const currentManager = dataManager.currentManager;
   const instances = currentManager?.instances ?? [];
-  const currentMapIndex = adapter.currentMapIndex;
+  const currentMapId = adapter.mapController.dataManager.currentMapId;
 
   // 按类型分组
   const { customPointGroups, totalCount } = (() => {
@@ -67,7 +67,7 @@ const CustomPointList: React.FC = observer(() => {
       } else {
         // If no instances, use stored visibility preference
         const storedVisibility =
-          dataService.customPointDataService.customPointVisibilityData[currentMapIndex]?.[entityDataIdKey];
+          dataService.customPointDataService.customPointVisibilityData[currentMapId]?.[entityDataIdKey];
         // Default to true if not set
         allVisible = storedVisibility !== false;
       }
@@ -96,7 +96,7 @@ const CustomPointList: React.FC = observer(() => {
     }
     // 保存可见性状态
     dataService.customPointDataService.updateCustomPointVisibility(
-      adapter.currentMapIndex,
+      adapter.mapController.dataManager.currentMapId,
       group.entityDataIdKey,
       newVisible
     );
@@ -109,7 +109,7 @@ const CustomPointList: React.FC = observer(() => {
         group.instances.forEach((instance) => instance.setVisible(newVisible));
       }
       dataService.customPointDataService.updateCustomPointVisibility(
-        adapter.currentMapIndex,
+        adapter.mapController.dataManager.currentMapId,
         group.entityDataIdKey,
         newVisible
       );
@@ -149,7 +149,6 @@ const CustomPointList: React.FC = observer(() => {
               category={CustomPointKey}
               active={group.allVisible}
               onClick={() => handleToggleTypeVisible(group)}
-              hideCount
               hideMarked
             />
           );

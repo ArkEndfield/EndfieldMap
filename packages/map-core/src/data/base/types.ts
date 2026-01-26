@@ -1,4 +1,4 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
+import type { MapData } from '@endfieldmap/map-core/types';
 import type { EntityData } from '@endfieldmap/map-core/types/entity';
 
 /**
@@ -23,7 +23,7 @@ export interface DataInstanceConfig<T extends EntityData> {
   /** 原始数据 */
   data: T;
   /** 地图索引 */
-  mapIndex: MapIndex;
+  mapId: MapData['id'];
 }
 
 /**
@@ -31,7 +31,7 @@ export interface DataInstanceConfig<T extends EntityData> {
  */
 export interface DataManagerConfig {
   /** 地图索引 */
-  mapIndex: MapIndex;
+  mapId: MapData['id'];
 }
 
 /**

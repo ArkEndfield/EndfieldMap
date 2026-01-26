@@ -1,8 +1,7 @@
-import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, LayerType, MapIndex } from '@endfieldmap/map-core/const';
+import { LayerType } from '@endfieldmap/map-core/const';
 import { AreaNameController } from '@endfieldmap/map-core/controller/core/area_name';
 import { EndfieldMapLayerController } from '@endfieldmap/map-core/controller/core/layer';
 import { MapController } from '@endfieldmap/map-core/controller/core/map';
-import { MapLayerController } from '@endfieldmap/map-core/controller/core/map_layer';
 import { ZoomController } from '@endfieldmap/map-core/controller/core/zoom';
 import { DevToolsController } from '@endfieldmap/map-core/controller/dev_tools';
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
@@ -18,19 +17,19 @@ import { PopupController } from '@endfieldmap/map-core/controller/interaction/po
 import { TierController } from '@endfieldmap/map-core/controller/tier';
 import type { EndfieldMapAssetConfig } from '@endfieldmap/map-core/data/asset';
 import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
+import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { EndfieldMapEvent } from '@endfieldmap/map-core/event/map';
-import type { SimpleMapConfig } from '@endfieldmap/map-core/types/map';
-import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
+import type { MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core/types/map';
+import type { JSONLoader, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
-import type Control from 'ol/control/Control';
 
 export interface AdapterConfig {
+  data: MapDataJson;
   container: HTMLElement;
   asset: EndfieldMapAssetConfig;
   jsonLoader: JSONLoader;
@@ -59,7 +58,7 @@ export class EndfieldMapAdapter {
   /** 区域名称控制器 */
   public areaNameController: AreaNameController;
   /** 地图图层控制器 */
-  public mapLayerController: MapLayerController;
+  // public mapLayerController: MapLayerController;
   /** 实体数据管理器 */
   public entityController: EntityController;
   /** 电线杆数据管理器 */
@@ -85,8 +84,6 @@ export class EndfieldMapAdapter {
   public devToolsController: DevToolsController | null = null;
   /** 事件 */
   public event: EndfieldMapEmitter;
-  /** 当前地图索引 */
-  @observable accessor currentMapIndex: MapIndex = MapIndex.MAP01;
   /** 是否开启hover效果 */
   @observable accessor enableHover: boolean = true;
   /** hover debounce time */
@@ -96,62 +93,39 @@ export class EndfieldMapAdapter {
     if (config.consolaReporter) {
       logger.addReporter(config.consolaReporter);
     }
-    const mapConfig: SimpleMapConfig & { maxZoom: number; minZoom: number } = {
+    const mapConfig: SimpleMapConfig = {
       ...(config.map || {}),
-      maxZoom: config.map?.maxZoom ?? DEFAULT_MAX_ZOOM,
-      minZoom: config.map?.minZoom ?? DEFAULT_MIN_ZOOM,
     };
     this.event = mapEventEmitter;
     this.container = config.container;
     this.asset = new EndfieldMapAsset(config.asset);
     this.jsonLoader = config.jsonLoader;
     this.mapController = new MapController({
-      asset: this.asset,
+      data: config.data,
       mapConfig: {
         container: this.container,
         ...mapConfig,
       },
     });
-    this.eventManager = new EndfieldMapEvent(this.mapController.mapRenderer.map, this.mapController.mapRenderer.view);
-    this.layerController = new EndfieldMapLayerController(this.mapController.mapRenderer.map);
-    this.mapLayerController = new MapLayerController({
-      tileUrl: this.asset.mapImage,
-      projection: this.mapController.mapRenderer.projection,
-      maxZoom: mapConfig.maxZoom,
-    });
-    this.areaNameController = new AreaNameController({
-      jsonLoader: this.jsonLoader,
-      asset_path: this.asset.areaName,
-    });
+    this.eventManager = new EndfieldMapEvent();
+    this.layerController = new EndfieldMapLayerController();
+    this.areaNameController = new AreaNameController({});
     this.entityController = new EntityController({
       jsonLoader: this.jsonLoader,
       dataPath: this.asset.entityData,
-      imagePath: this.asset.entityImage,
     });
-    this.electricPoleController = new ElectricPoleController({
-      imagePath: this.asset.entityImage,
-    });
-    this.customPointController = new CustomPointController({
-      icon: {
-        imagePath: this.asset.entityImage,
-        size: 20,
-      },
-    });
-    this.tierController = new TierController({
-      map: this.mapController.mapRenderer.map,
-      projection: this.mapController.mapRenderer.projection,
-    });
+    this.electricPoleController = new ElectricPoleController();
+    this.customPointController = new CustomPointController();
+    this.tierController = new TierController();
     this.activeFeatureController = new ActiveFeatureController({
-      map: this.mapController.mapRenderer.map,
       disableActiveFeature: config.map?.disableActiveFeature,
     });
     this.hoverFeatureController = new HoverFeatureController({
-      map: this.mapController.mapRenderer.map,
-      getEntityLayers: () => this.entityController?.currentRenderers || [],
+      getEntityLayers: () => this.entityController?.render.currentRenderer || [],
       getElectricPoleLayers: () =>
         this.electricPoleController?.currentRenderer ? [this.electricPoleController.currentRenderer] : [],
       getCustomPointLayers: () =>
-        this.customPointController?.layerContainer ? [this.customPointController.layerContainer] : [],
+        this.customPointController?.currentRenderer ? [this.customPointController.currentRenderer] : [],
       checkIsActive: (instance) => this.activeFeatureController.activeFeature === instance,
       disableHoverFeature: config.map?.disableHoverFeature,
     });
@@ -171,42 +145,36 @@ export class EndfieldMapAdapter {
     });
     // 初始化popup控制器（默认启用）
     if (config.popup?.enabled !== false) {
-      this.popupController = new PopupController({
-        map: this.mapController.mapRenderer.map,
-      });
+      this.popupController = new PopupController();
     }
 
     // 初始化缩放控制器
     this.zoomController = new ZoomController();
-    // 注册缩放控件到地图
-    this.mapController.mapRenderer.map.addControl(this.zoomController);
+    // 注册缩放控件到地图 TODO: 不知道后面可不可以去掉
+    this.mapController.olMapRenderer.map.addControl(this.zoomController);
 
     this.layerController.addLayer(LayerType.AREA_NAME, this.areaNameController.areaNameLayer);
-    this.layerController.addLayer(LayerType.MAP, this.mapLayerController.mapLayer);
     this.layerController.addLayer(LayerType.TIER_OVERLAY_MASK, this.tierController.tierOverlayMaskLayer);
     this.layerController.addLayer(LayerType.TIER, this.tierController.tierLayer);
 
     this.KeyboardMoveController = new KeyboardMoveController({
-      map: this.mapController.mapRenderer.map,
       speed: 0.5,
     });
 
     // 开发模式下初始化 DevTools 控制器
     if (config.isDev) {
-      this.devToolsController = new DevToolsController({
-        map: this.mapController.mapRenderer.map,
-      });
+      this.devToolsController = new DevToolsController();
     }
   }
 
   /**
    * 渲染地图
-   * @param mapIndex 地图索引
+   * @param mapId 地图id
    */
   @action
-  public renderMap(mapIndex: MapIndex) {
-    this.currentMapIndex = mapIndex;
-    this.mapLayerController.renderMap(mapIndex);
+  public renderMap(mapId: MapData['id']) {
+    // this.mapLayerController.renderMap(mapId);
+    this.mapController.renderMap(mapId);
     this.activeFeatureController.clearActiveFeature();
     this.mapController.selection.stopSelecting();
     this.tierController.clearTier();
@@ -214,54 +182,11 @@ export class EndfieldMapAdapter {
 
   /**
    * 设置区域名称
-   * @param mapIndex 地图索引
-   * @param language 语言
+   * @param zoom 缩放
    */
-  public renderAreaName(language: Language) {
-    const zoom = this.mapController.mapRenderer.view.getZoom() || 3;
-    return this.areaNameController.setAreaName(this.currentMapIndex, language, zoom);
-  }
-
-  /**
-   * 渲染实体
-   * @param mapIndex 地图索引
-   */
-  @action
-  public async renderEntity(mapIndex: MapIndex) {
-    this.layerController.removeLayer(LayerType.ENTITY);
-    await this.entityController.switchMap(mapIndex);
-    const entityLayer = this.entityController.layerContainer;
-    if (entityLayer) {
-      this.layerController.addLayer(LayerType.ENTITY, entityLayer);
-    }
-  }
-
-  /**
-   * 渲染电线杆
-   * @param mapIndex 地图索引
-   */
-  @action
-  public renderElectricPole(mapIndex: MapIndex) {
-    this.electricPoleController.switchMap(mapIndex);
-    const electricPoleLayer = this.electricPoleController.layerContainer;
-    if (electricPoleLayer) {
-      this.layerController.addLayer(LayerType.ELECTRIC_POLE, electricPoleLayer);
-    }
-  }
-
-  /**
-   * 渲染自定义标点
-   * @param mapIndex 地图索引
-   */
-  @action
-  public renderCustomPoint(mapIndex: MapIndex) {
-    this.customPointController.switchMap(mapIndex);
-    const customPointLayer = this.customPointController.layerContainer;
-    if (customPointLayer) {
-      // 先移除旧图层，再添加新图层
-      this.layerController.removeLayer(LayerType.CUSTOM_POINT);
-      this.layerController.addLayer(LayerType.CUSTOM_POINT, customPointLayer);
-    }
+  public renderAreaName(zoom?: number) {
+    const currentZoom = zoom ?? this.mapController.olMapRenderer.view.getZoom();
+    return this.areaNameController.setAreaName(currentZoom);
   }
 
   /**
@@ -303,34 +228,18 @@ export class EndfieldMapAdapter {
   }
 
   /**
-   * 注册控件到地图
-   * @param control OpenLayers控件实例
-   */
-  public addControl(control: Control): void {
-    this.mapController.mapRenderer.map.addControl(control);
-  }
-
-  /**
-   * 从地图移除控件
-   * @param control OpenLayers控件实例
-   */
-  public removeControl(control: Control): void {
-    this.mapController.mapRenderer.map.removeControl(control);
-  }
-
-  /**
    * 移动到指定 entity
    * @param entityId entity的id
    * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
    * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
-   * @param animationTime 移动视图animate的时间（可选，默认为150ms）
+   * @param animationTime 移动视图animate的时间（可选，默认为1s）
    * @param zoom 是否同时调整缩放（默认为undefined，即没有值，如果有值就同时设置缩放）
    */
   public async moveToEntity(
     entityId: string | number,
     autoToggleVisible: boolean = true,
     autoSetActive: boolean = false,
-    animationTime: number = 150,
+    animationTime: number = 1000,
     zoom?: number
   ) {
     const id = typeof entityId === 'string' ? parseInt(entityId, 10) : entityId;
@@ -341,14 +250,12 @@ export class EndfieldMapAdapter {
 
     let targetInstance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance | undefined;
 
-    // 确保数据加载完毕
-    await this.entityController.dataManager.loadData();
     // 使用加载完毕的数据索引地图
-    const mapIndices = Array.from(this.entityController.dataManager.mapData.keys());
+    const mapIds = this.mapController.dataManager.mapIds;
 
     // 1. 搜索游戏内的标点
-    for (const mapIndex of mapIndices) {
-      const instance = await this.entityController.dataManager.getInstanceById(mapIndex, id);
+    for (const mapId of mapIds) {
+      const instance = this.entityController.dataManager.getInstanceById(mapId, id);
       if (instance) {
         targetInstance = instance;
         break;
@@ -357,8 +264,8 @@ export class EndfieldMapAdapter {
 
     // 2. 搜索电线杆
     if (!targetInstance) {
-      for (const mapIndex of mapIndices) {
-        const manager = this.electricPoleController.dataManager.getMapManager(mapIndex);
+      for (const mapId of mapIds) {
+        const manager = this.electricPoleController.dataManager.getMapManager(mapId);
         const instance = manager.getById(id);
         if (instance) {
           targetInstance = instance;
@@ -369,8 +276,8 @@ export class EndfieldMapAdapter {
 
     // 3. 搜索自定义标点
     if (!targetInstance) {
-      for (const mapIndex of mapIndices) {
-        const manager = this.customPointController.dataManager.getMapManager(mapIndex);
+      for (const mapId of mapIds) {
+        const manager = this.customPointController.dataManager.getMapManager(mapId);
         const instance = manager.getById(id);
         if (instance) {
           targetInstance = instance;
@@ -394,35 +301,28 @@ export class EndfieldMapAdapter {
    * @param instance entity实例 TODO: 如果以后增加的话，这里要同步更新
    * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
    * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
-   * @param animationTime 移动视图animate的时间（可选，默认为150ms）
+   * @param animationTime 移动视图animate的时间（可选，默认为1s）
    * @param zoom 是否同时调整缩放（默认为undefined，即没有值，如果有值就同时设置缩放）
    */
   public async moveToEntityInstance(
     instance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance,
     autoToggleVisible: boolean = true,
     autoSetActive: boolean = false,
-    animationTime: number = 150,
+    animationTime: number = 1000,
     zoom?: number
   ) {
-    const targetMapIndex = instance.mapIndex;
+    const targetMapId = instance.mapId;
     const entityType = instance.entityType;
 
     // 切换地图
-    if (this.currentMapIndex !== targetMapIndex) {
-      this.renderMap(targetMapIndex);
-      const currentLanguage = this.areaNameController.areaNameDataManager.language;
-      if (currentLanguage) {
-        this.renderAreaName(currentLanguage);
-      }
-      await this.renderEntity(targetMapIndex);
-      this.renderElectricPole(targetMapIndex);
-      this.renderCustomPoint(targetMapIndex);
+    if (this.mapController.dataManager.currentMapId !== targetMapId) {
+      this.renderMap(targetMapId);
     }
 
     // 自动切换可见性
     if (autoToggleVisible) {
       if (entityType === '#ElectricPole') {
-        this.electricPoleController.setElectricPoleVisible(true);
+        this.electricPoleController.setVisible(true);
         this.electricPoleController.setZoneVisible(true);
       } else if (entityType === '#CustomPoint') {
         this.customPointController.setCustomPointVisible(true);
@@ -441,9 +341,9 @@ export class EndfieldMapAdapter {
     // 移动地图
     const center = instance.coordinates;
     if (center) {
-      this.mapController.mapRenderer.view.animate({
+      this.mapController.olMapRenderer.view.animate({
         center,
-        zoom: zoom ?? this.mapController.mapRenderer.view.getZoom(),
+        zoom: zoom ?? this.mapController.olMapRenderer.view.getZoom(),
         duration: animationTime,
       });
     }
@@ -455,7 +355,7 @@ export class EndfieldMapAdapter {
   public dispose(): void {
     // 取消注册缩放控件
     if (this.zoomController) {
-      this.mapController.mapRenderer.map.removeControl(this.zoomController);
+      this.mapController.olMapRenderer.map.removeControl(this.zoomController);
       this.zoomController.dispose();
     }
     // 清理 DevTools 控制器

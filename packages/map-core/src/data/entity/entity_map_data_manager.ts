@@ -1,7 +1,7 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
-import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
+import { DEFAULT_CLUSTER_DISTANCE, MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { EntityDataInstance } from '@endfieldmap/map-core/data/entity/entity_data_instance';
 import { EntityGroupManager } from '@endfieldmap/map-core/data/entity/entity_group_manager';
+import type { MapData } from '@endfieldmap/map-core/types';
 import type {
   Category,
   EntityData,
@@ -12,6 +12,8 @@ import type {
 } from '@endfieldmap/map-core/types/entity';
 import { type JSONLoader, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
+
+import { MapDataManager } from '../map/map';
 
 export interface EntityMapDataManagerConfig {
   jsonLoader: JSONLoader;
@@ -27,26 +29,32 @@ export class EntityMapDataManager {
   private assetPath: string;
 
   /** 是否已加载 */
-  private dataLoaded: boolean = false;
+  public dataLoaded: boolean = false;
 
   /** 加载Promise */
   private loadPromise: Promise<void> | null = null;
 
-  /** 地图数据：mapIndex -> entityDataIdKey -> EntityGroupManager */
+  /** 地图数据：mapId -> entityDataIdKey -> EntityGroupManager */
   @observable
-  accessor mapData: Map<MapIndex, Map<string, EntityGroupManager>> = new Map();
+  accessor mapData: Map<MapData['id'], Map<string, EntityGroupManager>> = new Map();
 
   /** Entity信息数据 */
   @observable
   accessor infoData: Map<string, EntityInfoData> = new Map();
 
-  /** 当前地图索引 */
-  @observable
-  accessor currentMapIndex: MapIndex | null = null;
-
   /** 当前marked过滤模式 */
   @observable
   accessor markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
+
+  /** 是否禁用聚合 */
+  @observable
+  accessor disableCluster: boolean = false;
+
+  /** 聚合距离 */
+  public clusterDistance: number = DEFAULT_CLUSTER_DISTANCE;
+
+  /** 上次聚合距离 */
+  public lastClusterDistance: number = 0;
 
   constructor(config: EntityMapDataManagerConfig) {
     this.jsonLoader = config.jsonLoader;
@@ -87,7 +95,7 @@ export class EntityMapDataManager {
       // 处理entity数据
       if (jsonData) {
         for (const mapItem of jsonData) {
-          const mapIndex = mapItem.map_id;
+          const mapId = mapItem.map_id;
           const groupManagerMap = new Map<string, EntityGroupManager>();
 
           const groupDataMap = new Map<string, { category: Category; entities: EntityData[] }>();
@@ -124,7 +132,7 @@ export class EntityMapDataManager {
             }
 
             const groupManager = new EntityGroupManager({
-              mapIndex,
+              mapId,
               entityDataIdKey,
               entityInfo,
               category,
@@ -135,7 +143,7 @@ export class EntityMapDataManager {
           }
 
           runInAction(() => {
-            this.mapData.set(mapIndex, groupManagerMap);
+            this.mapData.set(mapId, groupManagerMap);
           });
         }
       }
@@ -159,53 +167,19 @@ export class EntityMapDataManager {
   /**
    * 获取地图的所有组管理器
    */
-  public async getMapGroupManagers(mapIndex: MapIndex): Promise<Map<string, EntityGroupManager>> {
-    await this.loadData();
-    return this.mapData.get(mapIndex) ?? new Map();
+  public getMapGroupManagers(mapId: MapData['id']): Map<string, EntityGroupManager> {
+    if (!this.dataLoaded) {
+      throw new Error('EntityMapDataManager is not loaded');
+    }
+    return this.mapData.get(mapId) ?? new Map();
   }
 
   /**
    * 获取地图的所有组管理器数组
    */
-  public async getMapGroupManagerList(mapIndex: MapIndex): Promise<EntityGroupManager[]> {
-    const managers = await this.getMapGroupManagers(mapIndex);
+  public getMapGroupManagerList(mapId: MapData['id']): EntityGroupManager[] {
+    const managers = this.getMapGroupManagers(mapId);
     return Array.from(managers.values());
-  }
-
-  /**
-   * 获取指定地图和entityDataIdKey的组管理器
-   */
-  public async getGroupManager(mapIndex: MapIndex, entityDataIdKey: string): Promise<EntityGroupManager | undefined> {
-    const managers = await this.getMapGroupManagers(mapIndex);
-    return managers.get(entityDataIdKey);
-  }
-
-  /**
-   * 获取地图的按分类分组的组管理器
-   */
-  public async getMapCategorizedGroupManagers(mapIndex: MapIndex): Promise<Map<Category, EntityGroupManager[]>> {
-    const managers = await this.getMapGroupManagerList(mapIndex);
-    const categorized = new Map<Category, EntityGroupManager[]>();
-
-    for (const manager of managers) {
-      const category = manager.category;
-      if (!categorized.has(category)) {
-        categorized.set(category, []);
-      }
-      categorized.get(category)!.push(manager);
-    }
-
-    return categorized;
-  }
-
-  /**
-   * 切换当前地图
-   */
-  @action
-  public async switchMap(mapIndex: MapIndex): Promise<EntityGroupManager[]> {
-    await this.loadData();
-    this.currentMapIndex = mapIndex;
-    return this.getMapGroupManagerList(mapIndex);
   }
 
   /**
@@ -213,10 +187,9 @@ export class EntityMapDataManager {
    */
   @computed
   get currentGroupManagers(): EntityGroupManager[] {
-    if (!this.currentMapIndex) {
-      return [];
-    }
-    const managers = this.mapData.get(this.currentMapIndex);
+    const mapDataInstance = MapDataManager.getInstance();
+    const mapId = mapDataInstance.currentMapId;
+    const managers = this.mapData.get(mapId);
     return managers ? Array.from(managers.values()) : [];
   }
 
@@ -239,8 +212,8 @@ export class EntityMapDataManager {
   /**
    * 通过ID获取数据实例
    */
-  public async getInstanceById(mapIndex: MapIndex, id: number): Promise<EntityDataInstance | undefined> {
-    const managers = await this.getMapGroupManagerList(mapIndex);
+  public getInstanceById(mapId: MapData['id'], id: number): EntityDataInstance | undefined {
+    const managers = this.getMapGroupManagerList(mapId);
     for (const manager of managers) {
       const instance = manager.getById(id);
       if (instance) {
@@ -254,14 +227,14 @@ export class EntityMapDataManager {
    * 导出所有标记数据
    */
   @computed
-  get markedData(): Record<MapIndex, Record<number, boolean>> {
+  get markedData(): Record<MapData['id'], Record<number, boolean>> {
     const result: Record<string, Record<number, boolean>> = {};
 
-    for (const [mapIndex, managers] of this.mapData) {
-      result[mapIndex] = {};
+    for (const [mapId, managers] of this.mapData) {
+      result[mapId] = {};
       for (const [, manager] of managers) {
         for (const instance of manager.markedInstances) {
-          result[mapIndex][instance.id] = true;
+          result[mapId][instance.id] = true;
         }
       }
     }
@@ -273,13 +246,13 @@ export class EntityMapDataManager {
    * 导入标记数据
    */
   @action
-  public async importMarkedData(data: Record<MapIndex, Record<number, boolean>>): Promise<number> {
+  public async importMarkedData(data: Record<MapData['id'], Record<number, boolean>>): Promise<number> {
     await this.loadData();
     let count = 0;
 
-    for (const [mapIndexStr, markedMap] of Object.entries(data)) {
-      const mapIndex = mapIndexStr as MapIndex;
-      const managers = this.mapData.get(mapIndex);
+    for (const [mapIdStr, markedMap] of Object.entries(data)) {
+      const mapId = mapIdStr as MapData['id'];
+      const managers = this.mapData.get(mapId);
       if (!managers) continue;
 
       for (const [, manager] of managers) {
@@ -314,13 +287,13 @@ export class EntityMapDataManager {
    * 导出可见性数据
    */
   @computed
-  get visibilityData(): Record<MapIndex, Record<string, boolean>> {
+  get visibilityData(): Record<MapData['id'], Record<string, boolean>> {
     const result: Record<string, Record<string, boolean>> = {};
 
-    for (const [mapIndex, managers] of this.mapData) {
-      result[mapIndex] = {};
+    for (const [mapId, managers] of this.mapData) {
+      result[mapId] = {};
       for (const [entityDataIdKey, manager] of managers) {
-        result[mapIndex][entityDataIdKey] = manager.groupVisible;
+        result[mapId][entityDataIdKey] = manager.groupVisible;
       }
     }
 
@@ -331,13 +304,13 @@ export class EntityMapDataManager {
    * 导入可见性数据
    */
   @action
-  public async importVisibilityData(data: Record<MapIndex, Record<string, boolean>>): Promise<number> {
+  public async importVisibilityData(data: Record<MapData['id'], Record<string, boolean>>): Promise<number> {
     await this.loadData();
     let count = 0;
 
-    for (const [mapIndexStr, visibilityMap] of Object.entries(data)) {
-      const mapIndex = mapIndexStr as MapIndex;
-      const managers = this.mapData.get(mapIndex);
+    for (const [mapIdStr, visibilityMap] of Object.entries(data)) {
+      const mapId = mapIdStr as MapData['id'];
+      const managers = this.mapData.get(mapId);
       if (!managers) continue;
 
       for (const [entityDataIdKey, visible] of Object.entries(visibilityMap)) {
@@ -362,5 +335,10 @@ export class EntityMapDataManager {
         manager.setGroupVisible(visible);
       }
     }
+  }
+
+  @action
+  public setDisableCluster(value: boolean): void {
+    this.disableCluster = value;
   }
 }

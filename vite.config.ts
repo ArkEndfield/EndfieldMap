@@ -4,6 +4,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -42,6 +43,28 @@ export default defineConfig(({ command, mode }) => {
             filesToDeleteAfterUpload: '**/*.js.map',
           },
         }),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.ico', 'locales/**/*.json', 'images/**/*.png', 'images/**/*.jpg', 'images/**/*.svg'],
+        manifest: {
+          name: '终末地地图资源查询 - ZMDMAP',
+          short_name: 'ZMDMap',
+          description: '终末地地图站, 一站式查询地图所有资源点位。Endfield Interactive Map.',
+          theme_color: '#262626',
+          icons: [
+            {
+              src: 'pwa-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: 'pwa-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+            },
+          ],
+        },
+      }),
     ],
     resolve: {
       alias: {

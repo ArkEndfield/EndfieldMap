@@ -1,8 +1,7 @@
 import type { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
 import type { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import type { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
-import type { ElectricPoleMapData } from '@endfieldmap/map-core/data/electric_pole';
-import type { CustomPointMapData } from '@endfieldmap/map-core/types';
+import type { CustomPointMapData, ElectricPoleMapData } from '@endfieldmap/map-core/types';
 import type { ExportedData } from '@endfieldmap/map-core/types/data';
 import { logger } from '@endfieldmap/tools';
 
@@ -120,15 +119,5 @@ export class DataController {
       logger.error('[DataController] Failed to import data', error);
       return false;
     }
-  }
-
-  /**
-   * 清除所有数据
-   */
-  public clearAllData(): void {
-    this.entityController.clearAllMarked();
-    this.entityController.resetAllVisibility(false);
-    this.electricPoleController.dataManager.resetAllData({});
-    this.customPointController.dataManager.clearAll();
   }
 }

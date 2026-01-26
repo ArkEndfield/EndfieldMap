@@ -1,4 +1,5 @@
 import type { Category, EntityInfoStats } from '@endfieldmap/map-core';
+import { debounce } from '@endfieldmap/tools';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { Search } from '@themes/endfield/ui/control_panel/controllers/entity_panel/search';
@@ -8,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import CustomPointList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/custom_point';
 import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
-import ReadFileEntityGroup from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/read_file';
+import NoteEntityGroup from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/note';
 import { useAdapter } from '@/hooks/use_adapter';
 
 interface CategoryInfo {
@@ -26,14 +27,21 @@ interface CategoryInfo {
 const EntityPanel = observer(() => {
   const { t } = useTranslation(['sidebar', 'lang']);
   const { adapter, dataService } = useAdapter();
+  const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const debouncedSetSearchQuery = useMemo(() => {
+    return debounce((value: string) => {
+      setSearchQuery(value);
+    }, 300);
+  }, []);
+
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
-  const entities = adapter.entityController.currentStats;
-  const currentMap = adapter.currentMapIndex;
+  const entities = adapter.entityController.dataManager.currentStats;
+  const currentMap = adapter.mapController.dataManager.currentMapId;
 
   // 计算每个实体的 marked 数量并按分类分组
-  const categorizedEntities = useMemo<CategoryInfo[]>(() => {
+  const categorizedEntities = useMemo(() => {
     if (!entities.length) return [];
 
     const lowerSearchQuery = searchQuery.toLowerCase().trim();
@@ -49,13 +57,15 @@ const EntityPanel = observer(() => {
           defaultValue: entity.entityInfo.point,
         }).toLowerCase();
         const category = entity.category.toLowerCase();
-        const translatedCategory = t(`sidebar:filter.category.${entity.category}`).toLowerCase();
+        const translatedCategory = t(`sidebar:filter.category.${entity.category}`, {
+          defaultValue: entity.category.toLowerCase(),
+        }).toLowerCase();
 
         const matches =
           entityIdKey.includes(lowerSearchQuery) ||
           translatedEntityName.includes(lowerSearchQuery) ||
-          category.includes(lowerSearchQuery) ||
-          translatedCategory.includes(lowerSearchQuery);
+          translatedCategory.includes(lowerSearchQuery) ||
+          category.includes(lowerSearchQuery);
 
         if (!matches) return;
       }
@@ -114,16 +124,19 @@ const EntityPanel = observer(() => {
       {/* 搜索输入框 */}
       <div className="px-1 pt-2">
         <Search
-          value={searchQuery}
-          onValueChange={(v) => setSearchQuery(v)}
+          value={inputValue}
+          onValueChange={(v) => {
+            setInputValue(v);
+            debouncedSetSearchQuery(v);
+          }}
           placeholder={t('sidebar:filter.search_placeholder')}
         />
       </div>
 
       <div>
-        <CustomPointList />
-        <ElectricPoleList />
-        <ReadFileEntityGroup searchQuery={searchQuery} />
+        {!searchQuery && <CustomPointList />}
+        {!searchQuery && <ElectricPoleList />}
+        <NoteEntityGroup searchQuery={searchQuery} />
         {categorizedEntities.map((categoryInfo) => (
           <EntityGroup
             key={categoryInfo.category}

@@ -3,13 +3,18 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 
+import { languageConfig } from '@/const/language';
 import { LoadingStageId } from '@/const/loading';
 import { isDev } from '@/services/env';
 import { loadingManager } from '@/services/loading';
+import { getVersionInfo } from '@endfieldmap/tools';
 
-const ns = ['common', 'error', 'header', 'lang', 'map', 'popup', 'sidebar', 'settings'];
+const ns = ['common', 'error', 'header', 'lang', 'popup', 'sidebar', 'settings'];
+const supportedLngs = languageConfig.map((lang) => lang.code);
 // 标志位：防止语言切换等情况导致进度回退
 let initialLoadComplete = false;
+
+const { commitHash } = getVersionInfo();
 
 i18n
   // load translation using http -> see /public/locales
@@ -24,11 +29,18 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init(
     {
+      load: 'currentOnly',
+      supportedLngs,
       fallbackLng: 'zh-CN',
       ns: ns,
       defaultNS: 'common',
       debug: isDev,
       returnEmptyString: false,
+      backend: {
+        queryStringParams: {
+          v: commitHash,
+        },
+      },
     },
     () => {
       i18n.loadNamespaces(ns).then(() => {

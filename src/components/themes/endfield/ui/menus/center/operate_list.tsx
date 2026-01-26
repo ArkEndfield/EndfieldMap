@@ -23,7 +23,7 @@ const Menu = menus[0];
 const ElectricPoleViewIcon = observer(() => {
   const { adapter, dataService } = useAdapter();
   const { play } = useAudio();
-  const isElecricPoleVisible = adapter.electricPoleController.electricPoleVisible;
+  const isElecricPoleVisible = adapter.electricPoleController.dataManager.visible;
 
   return (
     <div
@@ -40,7 +40,7 @@ const ElectricPoleViewIcon = observer(() => {
 
 const CustomPointViewIcon = observer(() => {
   const { adapter, dataService } = useAdapter();
-  const isCustomPointVisible = adapter.customPointController.customPointVisible;
+  const isCustomPointVisible = adapter.customPointController.dataManager.visible;
 
   return (
     <div

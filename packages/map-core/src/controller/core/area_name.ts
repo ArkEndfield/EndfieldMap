@@ -1,57 +1,75 @@
-import type { MapIndex } from '@endfieldmap/map-core/const';
+import { Disposer } from '@endfieldmap/map-core/commom/disposer';
+import { DEFAULT_ZOOM } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { AreaNameDataManager } from '@endfieldmap/map-core/data/area_name';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import type { AreaNameFeatureStyle, AreaNameLayerConfig } from '@endfieldmap/map-core/render/layers/area_name';
 import { AreaNameLayer } from '@endfieldmap/map-core/render/layers/area_name';
-import type { JSONLoader, Language } from '@endfieldmap/tools';
+import { reaction } from 'mobx';
 
-export interface AreaNameControllerConfig extends AreaNameLayerConfig {
-  jsonLoader: JSONLoader;
-  asset_path: string;
-}
+export interface AreaNameControllerConfig extends AreaNameLayerConfig {}
 
-export class AreaNameController {
+export class AreaNameController extends Disposer {
   public areaNameLayer: AreaNameLayer;
-  public areaNameDataManager: AreaNameDataManager;
+  private getNameFunction?: <T extends string>(name: T) => string;
+  private currentZoom: number = DEFAULT_ZOOM;
+
   constructor(config: AreaNameControllerConfig) {
-    const { jsonLoader, asset_path, ...areaNameLayerConfig } = config;
-    this.areaNameLayer = new AreaNameLayer(areaNameLayerConfig);
-    this.areaNameDataManager = new AreaNameDataManager({
-      jsonLoader,
-      assetPath: asset_path,
+    super();
+    this.areaNameLayer = new AreaNameLayer({
+      ...config,
+      getName: (name) => this.getName(name),
     });
-    mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, this.autoRefreshAreaName.bind(this));
+    mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, this.setAreaName.bind(this));
+    this.initListener();
   }
 
-  private autoRefreshAreaName(zoom: number) {
-    this.setAreaName(this.areaNameDataManager.mapIndex, this.areaNameDataManager.language, zoom);
+  private initListener() {
+    const mapData = MapDataManager.getInstance();
+    this.disposers.push(
+      reaction(
+        () => mapData.currentMapId,
+        () => {
+          this.refresh();
+        }
+      )
+    );
   }
 
-  public async setAreaName(
-    mapIndex: MapIndex | null,
-    language: Language | null,
-    zoom?: number,
-    forceUpdate: boolean = false
-  ) {
-    if (!language || !mapIndex || !zoom) return;
-    const currentData = this.areaNameDataManager.currentData;
-    const areaNameData = await this.areaNameDataManager.getAreaNameData(mapIndex, language, zoom);
-    if (currentData && areaNameData === currentData && !forceUpdate) return;
-    if (!areaNameData) return;
-    this.areaNameLayer.setAreaName(areaNameData, mapIndex);
+  public registerNameFunction(fn: <T extends string>(name: T) => string) {
+    this.getNameFunction = fn;
+    this.refresh();
+  }
+
+  public getName<T extends string>(name: T) {
+    return this.getNameFunction?.(name) || 'name';
+  }
+
+  public async setAreaName(_zoom?: number) {
+    if (!this.getNameFunction) return;
+    const zoom = _zoom ?? MapDataManager.getInstance().currentMap?.zoom?.default ?? DEFAULT_ZOOM;
+    const mapDataManager = MapDataManager.getInstance();
+    const currentMapId = mapDataManager.currentMapId;
+    if (!currentMapId) return;
+
+    const regions = mapDataManager.currentMap?.regions;
+    if (!regions) return;
+
+    this.currentZoom = zoom;
+
+    if (zoom >= 3) {
+      const overrides = regions.flatMap((region) => region.overrides);
+      this.areaNameLayer.setAreaName(overrides, currentMapId);
+    } else {
+      this.areaNameLayer.setAreaName(regions, currentMapId);
+    }
   }
 
   /**
    * 刷新图层
    */
   public refresh() {
-    this.setAreaName(
-      this.areaNameDataManager.mapIndex,
-      this.areaNameDataManager.language,
-      this.areaNameDataManager.zoom,
-      true
-    );
+    this.setAreaName(this.currentZoom);
   }
 
   /**

@@ -1,4 +1,3 @@
-import { xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
@@ -36,7 +35,7 @@ export const ShapeDraw = observer(() => {
           const x = parts[0];
           const y = parts[1];
           const z = parts[2] || 0;
-          const res = xyz2crd({ x, y, z }, currentMap);
+          const res = adapter.mapController.dataManager.xyz2crd({ x, y, z }, currentMap);
           coords.push([res[0], res[1]]);
         } else {
           coords.push([parts[0], parts[1]]);

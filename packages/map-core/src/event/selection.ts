@@ -1,6 +1,7 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { DisposeListener, EntityEventDetail } from '@endfieldmap/map-core/types/event';
 import { action, observable } from 'mobx';
@@ -10,20 +11,17 @@ import { getWidth } from 'ol/extent';
 import type { Geometry } from 'ol/geom';
 import { DragBox, Select } from 'ol/interaction';
 import type VectorLayer from 'ol/layer/Vector';
-import type Map from 'ol/Map';
 import { Cluster } from 'ol/source';
 import VectorSource from 'ol/source/Vector';
 
 export class EndfieldSelectionInteraction {
   @observable accessor isSelecting: boolean = false;
   @observable accessor selectedFeatures: Feature<Geometry>[] = [];
-  private _map?: Map;
   private _disposeEntityClickListener?: DisposeListener;
   public select: Select;
   public dragBox: DragBox;
 
-  constructor(map: Map) {
-    this._map = map;
+  constructor() {
     this.select = new Select({
       multi: true,
       condition: () => false,
@@ -90,11 +88,11 @@ export class EndfieldSelectionInteraction {
   }
 
   private updateMapFeatureSelection() {
-    if (!this._map) return;
+    const map = EndfieldMap.getInstance().map;
 
     const selectedSingleFeatures = this.collectSingleFeatures(this.select.getFeatures().getArray());
 
-    this._map.getAllLayers().forEach((layer) => {
+    map.getAllLayers().forEach((layer) => {
       if (!('getSource' in layer)) return;
       const source = this.getActualSource((layer as VectorLayer<VectorSource>).getSource());
       if (!source?.getFeatures) return;
@@ -112,10 +110,10 @@ export class EndfieldSelectionInteraction {
   }
 
   private handleDragBoxEnd() {
-    if (!this._map) return;
+    const map = EndfieldMap.getInstance().map;
 
     const boxExtent = this.dragBox.getGeometry().getExtent();
-    const view = this._map.getView();
+    const view = map.getView();
     const rotation = view.getRotation();
     const oblique = rotation % (Math.PI / 2) !== 0;
 
@@ -143,7 +141,8 @@ export class EndfieldSelectionInteraction {
     world: number,
     worldWidth: number
   ) {
-    this._map?.getAllLayers().forEach((layer) => {
+    const map = EndfieldMap.getInstance().map;
+    map.getAllLayers().forEach((layer) => {
       if (!('getSource' in layer)) return;
 
       // 跳过不可见的图层
@@ -214,11 +213,11 @@ export class EndfieldSelectionInteraction {
       if (!selectedArray.includes(f)) {
         // 必须是 ENTITY 类型
         if (f.get(FeatureTypeKey) !== FeatureType.ENTITY) return;
-        
+
         const dataInstance = f.get(EntityInstanceKey) as DataInstance | undefined;
         // 检查是否可选择
         if (!dataInstance?.selectable) return;
-        
+
         this.select.getFeatures().push(f);
       }
     });

@@ -1,6 +1,6 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import type { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer/electric_pole_renderer';
+import { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer';
 import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
 import { debounce, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';

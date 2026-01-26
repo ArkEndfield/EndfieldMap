@@ -2,7 +2,7 @@ import type { LoadingState } from '@endfieldmap/tools/const/enum';
 import { StorageType } from '@endfieldmap/tools/const/enum';
 import { JSONLoaderError } from '@endfieldmap/tools/const/error';
 import type { StorageManager } from '@endfieldmap/tools/storage/manager';
-import { isDev } from '@endfieldmap/tools/utils/runtime';
+import { isDev, getVersionInfo } from '@endfieldmap/tools/utils/runtime';
 
 // 定义加载结果类型
 export interface LoadResult<T> {
@@ -28,12 +28,9 @@ export class JSONLoader {
    * @returns 添加了参数的URL
    */
   private addVersionToURL(url: string): string {
+    const { commitHash } = getVersionInfo();
     const separator = url.includes('?') ? '&' : '?';
-    if (typeof __COMMIT_HASH__ !== 'undefined' && __COMMIT_HASH__) {
-      return `${url}${separator}v=${__COMMIT_HASH__}`;
-    }
-    const timestamp = new Date().getTime();
-    return `${url}${separator}t=${timestamp}`;
+    return `${url}${separator}v=${commitHash}`;
   }
 
   /**

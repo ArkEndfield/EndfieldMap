@@ -15,7 +15,7 @@ import { action, computed, observable } from 'mobx';
  */
 export class EntityGroupManager extends BaseDataManager<EntityData, EntityDataInstance> {
   /** 实体数据ID键 */
-  public readonly entityDataIdKey: string;
+  public readonly entityDataIdKey: EntityData['entityDataIdKey'];
 
   /** Entity信息 */
   @observable
@@ -29,7 +29,7 @@ export class EntityGroupManager extends BaseDataManager<EntityData, EntityDataIn
   accessor groupVisible: boolean = false;
 
   constructor(config: EntityGroupManagerConfig) {
-    super({ mapIndex: config.mapIndex });
+    super({ mapId: config.mapId });
     this.entityDataIdKey = config.entityDataIdKey;
     this.entityInfo = config.entityInfo;
     this.category = config.category;
@@ -46,7 +46,7 @@ export class EntityGroupManager extends BaseDataManager<EntityData, EntityDataIn
   protected createInstance(data: EntityData): EntityDataInstance {
     return new EntityDataInstance({
       data,
-      mapIndex: this.mapIndex,
+      mapId: this.mapId,
     });
   }
 
@@ -63,7 +63,7 @@ export class EntityGroupManager extends BaseDataManager<EntityData, EntityDataIn
    */
   @computed
   get uniqueKey(): string {
-    return `${this.mapIndex}-${this.category}-${this.entityDataIdKey}`;
+    return `${this.mapId}-${this.category}-${this.entityDataIdKey}`;
   }
 
   /**
@@ -88,7 +88,7 @@ export class EntityGroupManager extends BaseDataManager<EntityData, EntityDataIn
       count: this.count,
       markedCount: this.markedCount,
       selectedCount: this.selectedCount,
-      mapIndex: this.mapIndex,
+      mapId: this.mapId,
     };
   }
 }

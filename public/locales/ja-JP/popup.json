@@ -14,5 +14,15 @@
   "custom_point": {
     "rename_tip": "カスタムポイント名を入力してください",
     "change_type": "マーカータイプを変更"
+  },
+  "robot": {
+    "solution": "ソリューション",
+    "result": "結果",
+    "level_selection": "レベル選択（全 {{levels}} レベル）",
+    "level_item": "{{level}} レベル",
+    "puzzle_piece_count": "利用可能なパズルピース（{{pieces}} 個）",
+    "no_puzzle_piece": "パズルピースがありません",
+    "solving": "解決中...",
+    "start_slove": "解決を開始"
   }
 }

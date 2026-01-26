@@ -1,18 +1,15 @@
-import { MapIndex } from '@endfieldmap/tools';
+import type { MapData } from '@endfieldmap/map-core';
 import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 interface MapChangeAnimationProps {
   showChangeAnimation: boolean;
-  mapIndex: MapIndex;
+  mapName: MapData['name'];
 }
 
-export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({
-  showChangeAnimation,
-  mapIndex,
-}) => {
-  const { t } = useTranslation(['header', 'map']);
+export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({ showChangeAnimation, mapName }) => {
+  const { t } = useTranslation(['header', 'lang']);
 
   return createPortal(
     <motion.div
@@ -52,7 +49,9 @@ export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({
           y: '1em',
         }}
       >
-        {t(`map:${mapIndex}`)}
+        {t(`lang:${mapName}`, {
+          defaultValue: mapName,
+        })}
       </motion.div>
 
       <motion.div

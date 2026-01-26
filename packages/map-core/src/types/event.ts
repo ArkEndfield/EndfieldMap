@@ -1,14 +1,15 @@
 import type { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
-import type { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer/electric_pole_renderer';
+import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import type { HitTestableLayer } from '@endfieldmap/map-core/types/layer';
 import type { Feature, Map as OlMap, MapBrowserEvent, MapEvent } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
 import type { FeatureLike } from 'ol/Feature';
 import type { Point } from 'ol/geom';
+
+import { ElectricPoleRenderer } from '../render/renderer';
 
 /**
  * 数据实例联合类型
@@ -110,10 +111,14 @@ export interface MapEventEmitter {
   newValue: boolean;
 }
 
+export type EndfieldMapClickEvent = MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent> & {
+  hasHit?: boolean;
+};
+
 export interface MapEventEmitter {
   // 基于 ol 的
   [MAP_EVENT.ZOOM_CHANGE]: number;
-  [MAP_EVENT.MAP_CLICK]: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+  [MAP_EVENT.MAP_CLICK]: EndfieldMapClickEvent;
   [MAP_EVENT.MAP_HOVER]: MapHoverEventDetail;
   [MAP_EVENT.MAP_CENTER_CHANGE]: Coordinate | undefined;
   [MAP_EVENT.MAP_CONTEXT_MENU]: MapContextMenuEventDetail;

@@ -1,13 +1,10 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
-import type { CustomPointControllerConfig } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
-import type { ElectricPoleControllerConfig } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import type { EntityControllerConfig } from '@endfieldmap/map-core/controller/entity/entity_controller';
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/custom_point';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/electric_pole';
+import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import {
   BatchCreateCustomPointsCommand,
   BatchCreateElectricPolesCommand,
@@ -20,6 +17,7 @@ import {
   historyManager,
 } from '@endfieldmap/map-core/history';
 import type { CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
+import type { MapData } from '@endfieldmap/map-core/types/map';
 import type { Coordinate } from 'ol/coordinate';
 
 /**
@@ -28,8 +26,8 @@ import type { Coordinate } from 'ol/coordinate';
  */
 export interface IControllerFactory {
   createEntityController(config: EntityControllerConfig): EntityController;
-  createElectricPoleController(config: ElectricPoleControllerConfig): ElectricPoleController;
-  createCustomPointController(config: CustomPointControllerConfig): CustomPointController;
+  createElectricPoleController(): ElectricPoleController;
+  createCustomPointController(): CustomPointController;
 }
 
 /**
@@ -41,12 +39,12 @@ export class DefaultControllerFactory implements IControllerFactory {
     return new EntityController(config);
   }
 
-  createElectricPoleController(config: ElectricPoleControllerConfig): ElectricPoleController {
-    return new ElectricPoleController(config);
+  createElectricPoleController(): ElectricPoleController {
+    return new ElectricPoleController();
   }
 
-  createCustomPointController(config: CustomPointControllerConfig): CustomPointController {
-    return new CustomPointController(config);
+  createCustomPointController(): CustomPointController {
+    return new CustomPointController();
   }
 }
 
@@ -60,18 +58,22 @@ export class ElectricPoleControllerWithHistory {
   /**
    * 创建电线杆（带历史记录）
    */
-  create(mapIndex: MapIndex, position: Coordinate, deviceKey?: ElectricPoleDeviceKey): ElectricPoleDataInstance | null {
-    const command = new CreateElectricPoleCommand(this.controller, mapIndex, position, deviceKey);
+  create(
+    mapId: MapData['id'],
+    position: Coordinate,
+    deviceKey?: ElectricPoleDeviceKey
+  ): ElectricPoleDataInstance | null {
+    const command = new CreateElectricPoleCommand(this.controller, mapId, position, deviceKey);
     historyManager.execute(command);
-    const instances = this.controller.dataManager.getMapManager(mapIndex).instances;
+    const instances = this.controller.dataManager.getMapManager(mapId).instances;
     return instances[instances.length - 1] ?? null;
   }
 
   /**
    * 删除电线杆（带历史记录）
    */
-  delete(mapIndex: MapIndex, instance: ElectricPoleDataInstance): boolean {
-    const command = new DeleteElectricPoleCommand(this.controller, mapIndex, instance);
+  delete(mapId: MapData['id'], instance: ElectricPoleDataInstance): boolean {
+    const command = new DeleteElectricPoleCommand(this.controller, mapId, instance);
     historyManager.execute(command);
     return true;
   }
@@ -79,19 +81,23 @@ export class ElectricPoleControllerWithHistory {
   /**
    * 批量创建电线杆（带历史记录）
    */
-  batchCreate(mapIndex: MapIndex, positions: Coordinate[], deviceKey?: ElectricPoleDeviceKey): ElectricPoleDataInstance[] {
-    const command = new BatchCreateElectricPolesCommand(this.controller, mapIndex, positions, deviceKey);
+  batchCreate(
+    mapId: MapData['id'],
+    positions: Coordinate[],
+    deviceKey?: ElectricPoleDeviceKey
+  ): ElectricPoleDataInstance[] {
+    const command = new BatchCreateElectricPolesCommand(this.controller, mapId, positions, deviceKey);
     historyManager.execute(command);
     // 返回创建的实例
-    const manager = this.controller.dataManager.getMapManager(mapIndex);
+    const manager = this.controller.dataManager.getMapManager(mapId);
     return manager.instances.slice(-positions.length);
   }
 
   /**
    * 批量删除电线杆（带历史记录）
    */
-  batchDelete(mapIndex: MapIndex, ids: number[]): number {
-    const command = new BatchDeleteElectricPolesCommand(this.controller, mapIndex, ids);
+  batchDelete(mapId: MapData['id'], ids: number[]): number {
+    const command = new BatchDeleteElectricPolesCommand(this.controller, mapId, ids);
     historyManager.execute(command);
     return ids.length;
   }
@@ -107,18 +113,18 @@ export class CustomPointControllerWithHistory {
   /**
    * 创建自定义标点（带历史记录）
    */
-  create(mapIndex: MapIndex, position: Coordinate, type: CustomPointTypeId): CustomPointDataInstance | null {
-    const command = new CreateCustomPointCommand(this.controller, mapIndex, position, type);
+  create(mapId: MapData['id'], position: Coordinate, type: CustomPointTypeId): CustomPointDataInstance | null {
+    const command = new CreateCustomPointCommand(this.controller, mapId, position, type);
     historyManager.execute(command);
-    const instances = this.controller.dataManager.getMapManager(mapIndex).instances;
+    const instances = this.controller.dataManager.getMapManager(mapId).instances;
     return instances[instances.length - 1] ?? null;
   }
 
   /**
    * 删除自定义标点（带历史记录）
    */
-  delete(mapIndex: MapIndex, instance: CustomPointDataInstance): boolean {
-    const command = new DeleteCustomPointCommand(this.controller, mapIndex, instance);
+  delete(mapId: MapData['id'], instance: CustomPointDataInstance): boolean {
+    const command = new DeleteCustomPointCommand(this.controller, mapId, instance);
     historyManager.execute(command);
     return true;
   }
@@ -127,20 +133,20 @@ export class CustomPointControllerWithHistory {
    * 批量创建自定义标点（带历史记录）
    */
   batchCreate(
-    mapIndex: MapIndex,
+    mapId: MapData['id'],
     items: Array<{ position: Coordinate; type: CustomPointTypeId }>
   ): CustomPointDataInstance[] {
-    const command = new BatchCreateCustomPointsCommand(this.controller, mapIndex, items);
+    const command = new BatchCreateCustomPointsCommand(this.controller, mapId, items);
     historyManager.execute(command);
-    const manager = this.controller.dataManager.getMapManager(mapIndex);
+    const manager = this.controller.dataManager.getMapManager(mapId);
     return manager.instances.slice(-items.length);
   }
 
   /**
    * 批量删除自定义标点（带历史记录）
    */
-  batchDelete(mapIndex: MapIndex, ids: number[]): number {
-    const command = new BatchDeleteCustomPointsCommand(this.controller, mapIndex, ids);
+  batchDelete(mapId: MapData['id'], ids: number[]): number {
+    const command = new BatchDeleteCustomPointsCommand(this.controller, mapId, ids);
     historyManager.execute(command);
     return ids.length;
   }

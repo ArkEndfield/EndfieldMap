@@ -25,7 +25,7 @@ const ElectricPoleList: React.FC = observer(() => {
   const { adapter, dataService } = useAdapter();
 
   const instances = adapter.electricPoleController.dataManager.currentInstances;
-  const currentMapIndex = adapter.currentMapIndex;
+  const currentMapId = adapter.mapController.dataManager.currentMapId;
 
   const { groups, totalCount } = (() => {
     const groupMap = new Map<ElectricPoleDeviceKey, ElectricPoleDataInstance[]>();
@@ -57,7 +57,7 @@ const ElectricPoleList: React.FC = observer(() => {
         allVisible = visibleCount === count;
       } else {
         // If no instances, use stored visibility preference
-        const storedVisibility = dataService.electricPoleDataService.deviceVisibilityData[currentMapIndex]?.[deviceKey];
+        const storedVisibility = dataService.electricPoleDataService.deviceVisibilityData[currentMapId]?.[deviceKey];
         // Default to visible if not set
         allVisible = storedVisibility !== false;
       }
@@ -81,7 +81,11 @@ const ElectricPoleList: React.FC = observer(() => {
     if (group.instances.length > 0) {
       group.instances.forEach((instance) => instance.setVisible(newVisible));
     }
-    dataService.electricPoleDataService.updateDeviceVisibility(adapter.currentMapIndex, group.deviceKey, newVisible);
+    dataService.electricPoleDataService.updateDeviceVisibility(
+      adapter.mapController.dataManager.currentMapId,
+      group.deviceKey,
+      newVisible
+    );
   };
 
   const handleToggleAll = () => {
@@ -90,7 +94,11 @@ const ElectricPoleList: React.FC = observer(() => {
       if (group.instances.length > 0) {
         group.instances.forEach((instance) => instance.setVisible(newVisible));
       }
-      dataService.electricPoleDataService.updateDeviceVisibility(adapter.currentMapIndex, group.deviceKey, newVisible);
+      dataService.electricPoleDataService.updateDeviceVisibility(
+        adapter.mapController.dataManager.currentMapId,
+        group.deviceKey,
+        newVisible
+      );
     });
   };
 
@@ -125,7 +133,6 @@ const ElectricPoleList: React.FC = observer(() => {
               category={ElectricPoleKey}
               active={group.allVisible}
               onClick={() => handleToggleTypeVisible(group)}
-              hideCount
               hideMarked
             />
           );

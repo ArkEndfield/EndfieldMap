@@ -1,4 +1,3 @@
-import { xyz2crd } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useMemo, useState } from 'react';
 
@@ -37,8 +36,14 @@ export const RuleShapesDraw = observer(() => {
       if (coordType === DevToolsCoordType.Game) {
         const halfW = boxSize.width / 2;
         const halfH = boxSize.height / 2;
-        const topLeft = xyz2crd({ x: center.x - halfW, y: center.y, z: center.z - halfH }, currentMap);
-        const bottomRight = xyz2crd({ x: center.x + halfW, y: center.y, z: center.z + halfH }, currentMap);
+        const topLeft = adapter.mapController.dataManager.xyz2crd(
+          { x: center.x - halfW, y: center.y, z: center.z - halfH },
+          currentMap
+        );
+        const bottomRight = adapter.mapController.dataManager.xyz2crd(
+          { x: center.x + halfW, y: center.y, z: center.z + halfH },
+          currentMap
+        );
         devToolsController.drawRectangle([topLeft[0], topLeft[1]], [bottomRight[0], bottomRight[1]], {
           strokeColor: params.strokeColor,
           strokeWidth: params.strokeWidth,
@@ -60,8 +65,14 @@ export const RuleShapesDraw = observer(() => {
 
     if (shapeType === 'sphere') {
       if (coordType === DevToolsCoordType.Game) {
-        const centerCrd = xyz2crd({ x: center.x, y: center.y, z: center.z }, currentMap);
-        const edgeCrd = xyz2crd({ x: center.x + sphereRadius, y: center.y, z: center.z }, currentMap);
+        const centerCrd = adapter.mapController.dataManager.xyz2crd(
+          { x: center.x, y: center.y, z: center.z },
+          currentMap
+        );
+        const edgeCrd = adapter.mapController.dataManager.xyz2crd(
+          { x: center.x + sphereRadius, y: center.y, z: center.z },
+          currentMap
+        );
         const radius = Math.hypot(edgeCrd[0] - centerCrd[0], edgeCrd[1] - centerCrd[1]);
         devToolsController.drawCircle([centerCrd[0], centerCrd[1]], radius, {
           strokeColor: params.strokeColor,
@@ -184,7 +195,11 @@ export const RuleShapesDraw = observer(() => {
             onChange={(e) => setParams({ ...params, strokeWidth: Number(e.target.value) })}
           />
         </div>
-        <ColorPicker label="填充颜色" value={params.fillColor} onChange={(color) => setParams({ ...params, fillColor: color })} />
+        <ColorPicker
+          label="填充颜色"
+          value={params.fillColor}
+          onChange={(color) => setParams({ ...params, fillColor: color })}
+        />
       </div>
 
       <button
@@ -197,4 +212,3 @@ export const RuleShapesDraw = observer(() => {
     </div>
   );
 });
-

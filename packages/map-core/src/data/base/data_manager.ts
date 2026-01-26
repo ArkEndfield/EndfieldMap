@@ -1,6 +1,6 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { BaseDataInstance } from '@endfieldmap/map-core/data/base/data_instance';
 import type { DataManagerConfig } from '@endfieldmap/map-core/data/base/types';
+import type { MapData } from '@endfieldmap/map-core/types';
 import type { EntityData } from '@endfieldmap/map-core/types/entity';
 import { action, computed, observable } from 'mobx';
 
@@ -9,12 +9,9 @@ import { action, computed, observable } from 'mobx';
  * 负责管理某一类数据实例的集合
  * 提供增删查改等基本操作
  */
-export abstract class BaseDataManager<
-  T extends EntityData,
-  I extends BaseDataInstance<T>,
-> {
-  /** 地图索引 */
-  public readonly mapIndex: MapIndex;
+export abstract class BaseDataManager<T extends EntityData, I extends BaseDataInstance<T>> {
+  /** 地图ID */
+  public readonly mapId: MapData['id'];
 
   /** 数据实例集合 */
   @observable
@@ -24,7 +21,7 @@ export abstract class BaseDataManager<
   protected accessor instanceMap: Map<number, I> = new Map();
 
   constructor(config: DataManagerConfig) {
-    this.mapIndex = config.mapIndex;
+    this.mapId = config.mapId;
   }
 
   /**

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndexedDB 管理工具</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --success: #22c55e;
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 0.875rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .db-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .db-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .db-item:last-child {
+            border-bottom: none;
+        }
+
+        .db-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .db-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .db-version {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--success);
+            background-color: rgba(34, 197, 94, 0.1);
+        }
+        
+        #status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            display: none;
+            white-space: pre-wrap;
+        }
+        .status-success { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .status-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .status-info { background: rgba(59, 130, 246, 0.1); color: var(--accent); border: 1px solid var(--accent); }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>IndexedDB 管理工具</h1>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+            用于备份和恢复 IndexedDB 数据的辅助工具
+        </p>
+    </header>
+
+    <div class="card">
+        <div class="card-header">数据库列表</div>
+        <ul class="db-list" id="dbList">
+            <li style="padding:1rem; color: var(--text-secondary);">正在加载数据库...</li>
+        </ul>
+        <div style="margin-top: 1rem; text-align: right;">
+            <button class="btn btn-primary" onclick="loadDatabases()">刷新列表</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">导入 / 恢复 (Import / Restore)</div>
+        
+        <!-- File Import -->
+        <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileSelect(event)">
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <p>点击选择或将 JSON 备份文件拖拽到此处</p>
+        </div>
+
+        <!-- Text/Clipboard Import -->
+        <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+             <div style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.875rem;">或者直接粘贴 JSON 内容:</div>
+             <textarea id="pasteArea" placeholder="在此处粘贴 JSON 数据..." style="width: 100%; height: 100px; background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border); border-radius: 0.375rem; padding: 0.5rem; box-sizing: border-box; resize: vertical; margin-bottom: 0.5rem;"></textarea>
+             
+             <div class="actions">
+                 <button class="btn btn-primary" onclick="pasteFromClipboard()">从剪贴板粘贴 (Paste)</button>
+                 <button class="btn btn-success" onclick="importFromText()">导入文本 (Import Text)</button>
+                 <button class="btn" style="background: var(--border);" onclick="document.getElementById('pasteArea').value=''">清空 (Clear)</button>
+             </div>
+        </div>
+    </div>
+
+    <div id="status"></div>
+</div>
+
+<script>
+    // Utils
+    const showStatus = (msg, type = 'info') => {
+        const el = document.getElementById('status');
+        el.className = `status-${type}`;
+        el.textContent = msg;
+        el.style.display = 'block';
+        if (type === 'success') {
+             setTimeout(() => {
+                el.style.display = 'none';
+            }, 5000);
+        }
+    };
+
+    // 1. List Databases
+    async function loadDatabases() {
+        const listEl = document.getElementById('dbList');
+        listEl.innerHTML = '<li style="padding:1rem;">正在扫描...</li>';
+        
+        if (!window.indexedDB.databases) {
+            listEl.innerHTML = '<li style="padding:1rem; color: var(--danger);">当前浏览器不支持 indexedDB.databases() API</li>';
+            return;
+        }
+
+        try {
+            const dbs = await window.indexedDB.databases();
+            listEl.innerHTML = '';
+            
+            if (dbs.length === 0) {
+                listEl.innerHTML = '<li style="padding:1rem; color: var(--text-secondary);">未找到任何 IndexedDB 数据库。</li>';
+                return;
+            }
+
+            dbs.forEach(db => {
+                const li = document.createElement('li');
+                li.className = 'db-item';
+                li.innerHTML = `
+                    <div class="db-info">
+                        <span class="db-name">${db.name}</span>
+                        <span class="db-version">版本: ${db.version}</span>
+                    </div>
+                    <div class="actions">
+                <button class="btn btn-primary" onclick="exportDB('${db.name}', ${db.version}, 'download')">导出文件 (Download)</button>
+                        <button class="btn btn-primary" onclick="exportDB('${db.name}', ${db.version}, 'copy')">复制数据 (Copy)</button>
+                    </div>
+                `;
+                listEl.appendChild(li);
+            });
+        } catch (e) {
+            console.error(e);
+            listEl.innerHTML = '<li style="padding:1rem; color: var(--danger);">加载数据库列表失败。</li>';
+        }
+    }
+
+    // 2. Export DB
+    async function exportDB(dbName, version, mode = 'download') {
+        const actionName = mode === 'download' ? '导出' : '复制';
+        showStatus(`正在${actionName} ${dbName}...`, 'info');
+        
+        try {
+            // Check for File System Access API support for download mode
+            const useStreaming = mode === 'download' && 'showSaveFilePicker' in window;
+
+            if (mode === 'download' && !useStreaming) {
+                showStatus('您的浏览器不支持流式保存，导出大数据量可能会导致崩溃。建议使用最新版 Chrome/Edge。', 'warning');
+                // Proceed with legacy memory-based method for now
+            }
+
+            let fileHandle, writable;
+            if (useStreaming) {
+                try {
+                    fileHandle = await window.showSaveFilePicker({
+                        suggestedName: `${dbName}_backup_${formatDate(new Date())}.json`,
+                        types: [{
+                            description: 'JSON Files',
+                            accept: { 'application/json': ['.json'] },
+                        }],
+                    });
+                    writable = await fileHandle.createWritable();
+                } catch (e) {
+                    if (e.name === 'AbortError') {
+                        showStatus('已取消导出。', 'info');
+                        return;
+                    }
+                    throw e;
+                }
+            }
+
+            const request = window.indexedDB.open(dbName, version);
+            
+            request.onerror = (e) => showStatus(`打开数据库失败: ${e.target.error}`, 'error');
+            
+            request.onsuccess = async (e) => {
+                const db = e.target.result;
+                const storeNames = Array.from(db.objectStoreNames);
+                const permanentStoreName = 'permanent';
+                const targetStores = storeNames.includes(permanentStoreName) ? [permanentStoreName] : [];
+
+                if (targetStores.length === 0) {
+                     showStatus('未找到永久存储 (store name: "permanent")。', 'error');
+                     db.close();
+                     if (writable) writable.close();
+                     return;
+                }
+
+                // If copying, we still need to collect everything in memory.
+                // If streaming, we write chunks.
+                
+                const transaction = db.transaction(targetStores, 'readonly');
+                const store = transaction.objectStore(permanentStoreName);
+                const cursorReq = store.openCursor();
+                
+                let totalItems = 0;
+                let firstItem = true;
+
+                // Prepare header
+                const header = `{\n  "database": "${dbName}",\n  "version": ${version},\n  "timestamp": "${new Date().toISOString()}",\n  "stores": {\n    "${permanentStoreName}": [\n`;
+                
+                if (useStreaming) {
+                    await writable.write(header);
+                }
+                
+                // Memory buffer for legacy download / copy
+                const memoryItems = []; 
+
+                cursorReq.onsuccess = async (evt) => {
+                    const cursor = evt.target.result;
+                    if (cursor) {
+                        const itemObj = { key: cursor.key, value: cursor.value };
+                        
+                        if (useStreaming) {
+                            // Stream write
+                            const prefix = firstItem ? '' : ',\n';
+                            const chunk = prefix + JSON.stringify(itemObj);
+                            // We can't await inside onsuccess easily if it blocks the transaction? 
+                            // Actually, IndexedDB transactions auto-commit if no request is made. 
+                            // Writing to stream IS async. This is tricky.
+                            // However, we just need to confirm write. 
+                            // WARNING: Awaiting here might cause the transaction to close inactive?
+                            // Let's try buffering a bit or just firing write.
+                            // Actually, stream writing is usually fast enough, or we need to keep the transaction alive.
+                            // But keeping transaction alive while waiting for disk I/O is risky.
+                            // Better approach: Reading everything into memory is the problem.
+                            // The standard way to stream from IDB is tricky because of the auto-commit.
+                            // But 'showSaveFilePicker' writable stream is usually okay if we don't await too long?
+                            // Let's try simpler formatting.
+                            
+                            // Note: We MUST NOT await writable.write() inside the cursor event loop directly 
+                            // if it takes too long, because the cursor request needs to be continued synchronously-ish 
+                            // or the transaction closes. 
+                            // BUT createWritable streams are effectively buffers.
+                            writable.write(chunk);
+                        } else {
+                            memoryItems.push(itemObj);
+                        }
+
+                        firstItem = false;
+                        totalItems++;
+                        if (totalItems % 500 === 0) {
+                            showStatus(`正在导出... (已处理 ${totalItems} 条)`, 'info');
+                        }
+                        cursor.continue();
+                    } else {
+                        // Done
+                        if (useStreaming) {
+                            await writable.write('\n    ]\n  }\n}');
+                            await writable.close();
+                            showStatus(`导出成功 (流式)！共 ${totalItems} 条记录。`, 'success');
+                        } else {
+                            // Legacy construction
+                            const exportData = {
+                                database: dbName,
+                                version: version,
+                                timestamp: new Date().toISOString(),
+                                stores: {}
+                            };
+                            exportData.stores[permanentStoreName] = memoryItems;
+                            
+                            if (mode === 'download') {
+                                downloadData(exportData, `${dbName}_backup_${formatDate(new Date())}.json`);
+                                showStatus(`导出成功！共 ${totalItems} 条记录。`, 'success');
+                            } else {
+                                copyToClipboard(exportData);
+                            }
+                        }
+                        db.close();
+                    }
+                };
+                
+                cursorReq.onerror = (err) => {
+                    console.error(`读取失败`, err);
+                    showStatus('读取数据失败', 'error');
+                };
+            };
+        } catch (err) {
+            console.error(err);
+            showStatus(`${actionName}失败: ` + err.message, 'error');
+        }
+    }
+
+    function formatDate(date) {
+        // YYYYMMDD_HHMMSS
+        const pad = (n) => n.toString().padStart(2, '0');
+        return `${date.getFullYear()}${pad(date.getMonth()+1)}${pad(date.getDate())}_${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+    }
+
+    function downloadData(data, filename) {
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    async function copyToClipboard(data) {
+        try {
+            const json = JSON.stringify(data, null, 2);
+            await navigator.clipboard.writeText(json);
+            showStatus('数据已复制到剪贴板！', 'success');
+        } catch (err) {
+            console.error('Copy failed', err);
+            showStatus('复制失败，请检查浏览器权限。', 'error');
+        }
+    }
+
+    // 3. Import DB
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) processImport(file);
+        // Reset input so same file can be selected again
+        event.target.value = '';
+    }
+
+    // Drag and Drop
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+            processImport(e.dataTransfer.files[0]);
+        }
+    });
+
+    function processImport(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                validateAndRestore(data);
+            } catch (err) {
+                showStatus('解析 JSON 失败: ' + err.message, 'error');
+            }
+        };
+        reader.readAsText(file);
+    }
+    
+    function importFromText() {
+        const text = document.getElementById('pasteArea').value;
+        if (!text) {
+            showStatus('请先在文本框中粘贴数据。', 'error');
+            return;
+        }
+        try {
+            const data = JSON.parse(text);
+            validateAndRestore(data);
+        } catch (err) {
+             showStatus('解析文本失败: ' + err.message, 'error');
+        }
+    }
+
+    async function pasteFromClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById('pasteArea').value = text;
+            if (text) {
+                showStatus('已从剪贴板粘贴，点击“导入文本”开始恢复。', 'info');
+            } else {
+                showStatus('剪贴板为空。', 'info');
+            }
+        } catch (err) {
+            console.error('Paste failed', err);
+            showStatus('读取剪贴板失败，请手动粘贴。', 'error');
+        }
+    }
+
+    function validateAndRestore(data) {
+        if (!data.database || !data.stores) {
+            showStatus('无效的备份文件格式 (缺少 database 或 stores 字段)。', 'error');
+            return;
+        }
+        restoreDB(data);
+    }
+
+    function restoreDB(data) {
+        const dbName = data.database;
+        // 我们不使用 backup 中的 version 来打开 DB，而是打开当前最新版本
+        // 这样可以避免版本回退导致的问题。前提是 Schema 没有剧烈变化。
+        
+        showStatus(`准备恢复 ${dbName} ...`, 'info');
+
+        const request = window.indexedDB.open(dbName); 
+
+        request.onerror = (e) => showStatus('打开数据库失败: ' + e.target.error, 'error');
+
+        request.onsuccess = (e) => {
+            const db = e.target.result;
+            const backupStoreNames = Object.keys(data.stores);
+            const dbStoreNames = Array.from(db.objectStoreNames);
+
+            // 过滤出两个都存在的 store，且只恢复 permanent
+            const validStores = backupStoreNames.filter(name => {
+                if (name !== 'permanent') {
+                    console.log(`[Import] Skipping non-permanent store: ${name}`);
+                    return false;
+                }
+                return dbStoreNames.includes(name);
+            });
+
+            if (validStores.length === 0) {
+                showStatus('没有找到永久存储 (store "permanent") 进行恢复。', 'error');
+                db.close();
+                return;
+            }
+
+            const transaction = db.transaction(validStores, 'readwrite');
+            
+            transaction.oncomplete = () => {
+                showStatus(`成功恢复了永久存储数据！\n数据库: ${dbName}`, 'success');
+                db.close();
+            };
+            
+            transaction.onerror = (err) => {
+                showStatus('事务出错: ' + err.target.error, 'error');
+            };
+
+            validStores.forEach(storeName => {
+                const store = transaction.objectStore(storeName);
+                
+                // 1. 清空现有数据
+                const clearReq = store.clear();
+                
+                clearReq.onsuccess = () => {
+                   // 2. 插入新数据
+                   const items = data.stores[storeName]; // 这是一个数组 [{key, value}, ...]
+                   let insertCount = 0;
+                   console.log(`[Import] 清空 store ${storeName} 成功，准备插入 ${items.length} 条数据。`);
+                   
+                   items.forEach((item, index) => {
+                       let req;
+                       try {
+                           // 检查 store 是否使用 inline keys
+                           if (store.keyPath) {
+                               req = store.put(item.value); 
+                           } else {
+                               req = store.put(item.value, item.key);
+                           }
+                           
+                           req.onerror = (evt) => {
+                               // 捕获具体的插入错误
+                               console.error(`[Import Error] Store: ${storeName}, Index: ${index}`, evt.target.error);
+                               showStatus(`导入错误 (Store: ${storeName}, Item Index: ${index}): ${evt.target.error.message}`, 'error');
+                               evt.preventDefault(); // 尝试防止事务立即中止，以便看到更多错误（虽然事务最终还是会失败）
+                               evt.stopPropagation();
+                           };
+                           
+                           req.onsuccess = () => {
+                               insertCount++;
+                           };
+                       } catch (e) {
+                           console.error(`[Import Exception] Store: ${storeName}, Item:`, item, e);
+                           showStatus(`数据插入异常: ${e.message}`, 'error');
+                       }
+                   });
+                };
+
+                clearReq.onerror = (err) => {
+                    console.error(`无法清空 store ${storeName}`, err);
+                    showStatus(`清空 Store 失败: ${err.target.error.message}`, 'error');
+                };
+            });
+
+        };
+    }
+
+    // Init
+    loadDatabases();
+
+</script>
+</body>
+</html>

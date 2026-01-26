@@ -14,6 +14,11 @@ export interface RightContentItem {
 
 export const rightContentItems: RightContentItem[] = [
   {
+    id: 'delta_robot',
+    Component: DeltaRobot,
+    check: hasDeltaRobot,
+  },
+  {
     id: 'chest_reward',
     Component: ChestReward,
     check: hasChestReward,
@@ -22,11 +27,6 @@ export const rightContentItems: RightContentItem[] = [
     id: 'dungeon_reward',
     Component: DungeonReward,
     check: hasDungeonReward,
-  },
-  {
-    id: 'delta_robot',
-    Component: DeltaRobot,
-    check: hasDeltaRobot,
   },
 ];
 

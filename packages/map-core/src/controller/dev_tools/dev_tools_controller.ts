@@ -7,6 +7,7 @@ import {
   SetDevToolsFeatureVisibilityCommand,
 } from '@endfieldmap/map-core/history/dev_tools_commands';
 import { HistoryManager } from '@endfieldmap/map-core/history/history_manager';
+import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { DevToolsRenderer } from '@endfieldmap/map-core/render/renderer/dev_tools_renderer';
 import {
   DevToolsFeatureBaseStyleKey,
@@ -25,15 +26,12 @@ import type { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Geometry } from 'ol/geom';
 import { Circle, LineString, Point, Polygon } from 'ol/geom';
-import type OlMap from 'ol/Map';
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 
 /**
  * DevTools 控制器配置
  */
 export interface DevToolsControllerConfig {
-  /** OpenLayers 地图实例 */
-  map: OlMap;
   /** 历史记录最大数量 */
   maxHistory?: number;
 }
@@ -49,9 +47,6 @@ export class DevToolsController implements DevToolsControllerInterface {
   /** 历史记录管理器（DevTools 专用） */
   public readonly historyManager: HistoryManager;
 
-  /** OpenLayers 地图实例 */
-  private readonly map: OlMap;
-
   /** ID 生成器 */
   private idCounter = 0;
 
@@ -66,13 +61,13 @@ export class DevToolsController implements DevToolsControllerInterface {
   @observable
   accessor layerAdded = false;
 
-  constructor(config: DevToolsControllerConfig) {
-    this.map = config.map;
+  constructor(config?: DevToolsControllerConfig) {
+    const mapInstance = EndfieldMap.getInstance();
     this.renderer = new DevToolsRenderer();
-    this.historyManager = new HistoryManager(config.maxHistory ?? 50);
+    this.historyManager = new HistoryManager(config?.maxHistory ?? 50);
 
     // 添加图层到地图
-    this.map.addLayer(this.renderer.layer);
+    mapInstance.map.addLayer(this.renderer.layer);
     this.layerAdded = true;
 
     logger.debug('[DevToolsController] Initialized');
@@ -358,8 +353,7 @@ export class DevToolsController implements DevToolsControllerInterface {
       id: feature.get(DevToolsFeatureIdKey) as number,
       type: feature.get(DevToolsFeatureTypeKey) as DevToolsShapeType,
       geometry: (feature.getGeometry() as Geometry).clone(),
-      style:
-        (feature.get(DevToolsFeatureBaseStyleKey) as Style | Style[]) ?? (feature.getStyle() as Style | Style[]),
+      style: (feature.get(DevToolsFeatureBaseStyleKey) as Style | Style[]) ?? (feature.getStyle() as Style | Style[]),
       zIndex: feature.get(DevToolsFeatureZIndexKey) as number,
       visible: (feature.get(DevToolsFeatureVisibleKey) as boolean) ?? true,
     };
@@ -513,8 +507,9 @@ export class DevToolsController implements DevToolsControllerInterface {
    */
   @action
   public dispose(): void {
+    const mapInstance = EndfieldMap.getInstance();
     if (this.layerAdded) {
-      this.map.removeLayer(this.renderer.layer);
+      mapInstance.map.removeLayer(this.renderer.layer);
       this.layerAdded = false;
     }
     this.renderer.dispose();

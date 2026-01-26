@@ -14,5 +14,15 @@
   "custom_point": {
     "rename_tip": "请输入自定义点位名称",
     "change_type": "切换标点类型"
+  },
+  "robot": {
+    "solution": "解决方案",
+    "result": "结果",
+    "level_selection": "选择关卡（共 {{levels}} 关）",
+    "level_item": "第 {{level}} 关",
+    "puzzle_piece_count": "可用拼图 ({{pieces}} 个)",
+    "no_puzzle_piece": "暂无拼图块",
+    "solving": "求解中...",
+    "start_slove": "开始求解"
   }
 }

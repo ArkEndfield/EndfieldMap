@@ -1,5 +1,5 @@
-import type { MapIndex } from '@endfieldmap/map-core/const/map';
 import type { DataInstanceConfig, DataInstanceState } from '@endfieldmap/map-core/data/base/types';
+import type { MapData } from '@endfieldmap/map-core/types';
 import type { EntityData } from '@endfieldmap/map-core/types/entity';
 import { logger } from '@endfieldmap/tools';
 import { action, computed, observable, toJS } from 'mobx';
@@ -10,8 +10,8 @@ import { action, computed, observable, toJS } from 'mobx';
  * 使用 MobX 装饰器实现响应式
  */
 export abstract class BaseDataInstance<T extends EntityData> {
-  /** 地图索引 */
-  public readonly mapIndex: MapIndex;
+  /** 地图ID */
+  public readonly mapId: MapData['id'];
 
   /** 是否可激活 */
   public readonly activable: boolean = true;
@@ -46,7 +46,7 @@ export abstract class BaseDataInstance<T extends EntityData> {
 
   constructor(config: DataInstanceConfig<T>) {
     this._data = config.data;
-    this.mapIndex = config.mapIndex;
+    this.mapId = config.mapId;
   }
 
   /**
