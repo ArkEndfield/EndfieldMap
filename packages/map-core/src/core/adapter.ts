@@ -24,7 +24,7 @@ import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { EndfieldMapEvent } from '@endfieldmap/map-core/event/map';
 import type { MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core/types/map';
-import type { JSONLoader, Language, LoggerReporter } from '@endfieldmap/tools';
+import type { JSONLoader, LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 
