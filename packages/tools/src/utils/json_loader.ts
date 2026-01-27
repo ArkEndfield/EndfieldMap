@@ -43,9 +43,12 @@ export class JSONLoader {
   public async loadJSON<T>(url: string, maxRetries: number = 5, retryDelay: number = 1000): Promise<T> {
     let retries = 0;
 
+    // 使用添加了版本号/时间戳的URL作为Cache Key
+    const versionedURL = this.addVersionToURL(url);
+
     // 检查IndexedDB缓存
     if (!isDev) {
-      const cachedData = await this.storage.get<T>(url, StorageType.TEMPORARY);
+      const cachedData = await this.storage.get<T>(versionedURL, StorageType.TEMPORARY);
       if (cachedData !== null) {
         return cachedData;
       }
@@ -54,7 +57,6 @@ export class JSONLoader {
     while (retries < maxRetries) {
       try {
         // 使用添加了版本号/时间戳的URL进行请求
-        const versionedURL = this.addVersionToURL(url);
         const response = await fetch(versionedURL);
         if (!response.ok) {
           throw new JSONLoaderError(`HTTP error! status: ${response.status}`, url);
@@ -63,7 +65,7 @@ export class JSONLoader {
 
         if (!isDev) {
           // 存入IndexedDB缓存
-          await this.storage.set(url, data, { type: StorageType.TEMPORARY });
+          await this.storage.set(versionedURL, data, { type: StorageType.TEMPORARY });
         }
 
         return data;

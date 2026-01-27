@@ -1,8 +1,9 @@
 export const isDev =
   process.env.NODE_ENV === 'development' || new URLSearchParams(window.location.search).get('__DEV__') === 'true';
 
+const timestamp = new Date().getTime().toString();
+
 export const getVersionInfo = () => {
-  const timestamp = new Date().getTime().toString();
   let commitHash = timestamp,
     buildTime = timestamp;
   if (typeof __COMMIT_HASH__ !== 'undefined' && __COMMIT_HASH__) {
