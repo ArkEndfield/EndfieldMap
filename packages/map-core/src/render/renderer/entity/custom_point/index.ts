@@ -1,4 +1,3 @@
-import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
@@ -12,13 +11,11 @@ export class CustomPointRender {
 
   constructor(dataManager: CustomPointMapDataManager) {
     const mapDataManager = MapDataManager.getInstance();
-    const assetPath = EndfieldMapAsset.getInstance();
     mapDataManager.data.forEach((item) => {
       this.renderInstances.set(
         item.id,
         new CustomPointRenderer({
           dataManager: dataManager.getMapManager(item.id),
-          imagePath: assetPath.entityImage,
           iconSize: 20, // TODO: 以后调整
         })
       );

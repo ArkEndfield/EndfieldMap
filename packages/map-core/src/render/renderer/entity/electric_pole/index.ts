@@ -1,4 +1,3 @@
-import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_map_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
@@ -14,13 +13,11 @@ export class ElectricPoleRender {
 
   constructor(dataManager: ElectricPoleMapDataManager) {
     const mapDataManager = MapDataManager.getInstance();
-    const assetPath = EndfieldMapAsset.getInstance();
     mapDataManager.data.forEach((item) => {
       this.renderInstances.set(
         item.id,
         new ElectricPoleRenderer({
           dataManager: dataManager.getMapManager(item.id),
-          imagePath: assetPath.entityImage,
         })
       );
       this.zoneRenderInstances.set(

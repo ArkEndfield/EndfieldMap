@@ -110,10 +110,7 @@ export class EndfieldMapAdapter {
     this.eventManager = new EndfieldMapEvent();
     this.layerController = new EndfieldMapLayerController();
     this.areaNameController = new AreaNameController({});
-    this.entityController = new EntityController({
-      jsonLoader: this.jsonLoader,
-      dataPath: this.asset.entityData,
-    });
+    this.entityController = new EntityController();
     this.electricPoleController = new ElectricPoleController();
     this.customPointController = new CustomPointController();
     this.tierController = new TierController();

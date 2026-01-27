@@ -7,6 +7,7 @@ import {
   LayerType,
   LayerTypeKey,
 } from '@endfieldmap/map-core/const/map';
+import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { CustomPointDataInstance, CustomPointDataManager } from '@endfieldmap/map-core/data/entity/custom_point';
 import { createEntityBackgroundStyles, createEntityIconStyles } from '@endfieldmap/map-core/render/factory';
 import { type IReactionDisposer, reaction } from 'mobx';
@@ -25,8 +26,6 @@ const ENTITY_RADIUS = DEFAULT_ICON_SIZE / 2;
 export interface CustomPointRendererConfig {
   /** 数据管理器 */
   dataManager: CustomPointDataManager;
-  /** 图标基础路径 */
-  imagePath: string;
   /** 图标大小 */
   iconSize?: number;
   /** 渲染缓冲区 */
@@ -76,9 +75,6 @@ export class CustomPointRenderer {
   /** 组合样式缓存 */
   private styleCache: Map<string, Style[]> = new Map();
 
-  /** 图标基础路径 */
-  private imagePath: string;
-
   /** 图标大小 */
   private iconSize: number;
 
@@ -110,7 +106,6 @@ export class CustomPointRenderer {
 
   constructor(config: CustomPointRendererConfig) {
     this.dataManager = config.dataManager;
-    this.imagePath = config.imagePath;
     this.iconSize = config.iconSize ?? DEFAULT_ICON_SIZE;
 
     // 初始化数据源
@@ -221,8 +216,9 @@ export class CustomPointRenderer {
    */
   private getOrCreateIconStyle(iconName: string): Style {
     if (!this.iconStyleCache.has(iconName)) {
+      const imagePath = EndfieldMapAsset.getInstance().entityImage;
       const iconStyle = createEntityIconStyles({
-        url: `${this.imagePath}/${iconName}.png`,
+        url: `${imagePath}/${iconName}.png`,
         size: this.iconSize,
         radius: ENTITY_RADIUS,
         borderWidth: DEFAULT_STROKE_WIDTH,

@@ -1,7 +1,7 @@
 import type { DealedRewardItem } from '@eftypes/reward';
 import type { EntityData } from '@endfieldmap/map-core';
 import { Item } from '@themes/endfield/components/item';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import { SubPopupTitle } from '@/components/themes/endfield/ui/popup/right_content/title';
 import { useAdapter } from '@/hooks/use_adapter';
@@ -11,18 +11,18 @@ export const DungeonReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<Record<string, DealedRewardItem[]>>({});
   const { dataService } = useAdapter();
 
-  const getRewadData = useCallback(async () => {
-    const rewards = await dataService.dungeonSeriesDataService.getDungeonRewards(entity.properties.system_inst_key);
+  const getRewadData = async (id: EntityData['properties']['system_inst_key']) => {
+    const rewards = await dataService.dungeonSeriesDataService.getDungeonRewards(id);
     return rewards;
-  }, [entity]);
+  };
 
   useEffect(() => {
-    getRewadData().then((data) => {
+    getRewadData(entity.properties.system_inst_key).then((data) => {
       if (data) {
         setRewards(data);
       }
     });
-  }, [getRewadData]);
+  }, [getRewadData, entity]);
 
   if (!rewards || Object.keys(rewards).length <= 0) {
     return <div className="text-center text-gray-400 py-4">暂无奖励信息</div>;

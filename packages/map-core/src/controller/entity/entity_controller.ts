@@ -5,20 +5,15 @@ import { EntityMapDataManager } from '@endfieldmap/map-core/data/entity';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { EntityRender } from '@endfieldmap/map-core/render/renderer/entity/entity';
-import type { Category, EntityData, MapData } from '@endfieldmap/map-core/types';
+import type {
+  Category,
+  EntityData,
+  EntityInfoDataJson,
+  EntityJsonDataList,
+  MapData,
+} from '@endfieldmap/map-core/types';
 import type { EntityVisibility, FeatureMarked, StorageData } from '@endfieldmap/map-core/types/data';
-import type { JSONLoader } from '@endfieldmap/tools';
 import { action, reaction } from 'mobx';
-
-/**
- * Entity控制器配置
- */
-export interface EntityControllerConfig {
-  /** JSON加载器 */
-  jsonLoader: JSONLoader;
-  /** 数据路径 */
-  dataPath: string;
-}
 
 /**
  * Entity控制器
@@ -32,20 +27,11 @@ export class EntityController extends Disposer {
   /** 当前缩放级别 */
   private currentZoom: number = 3;
 
-  /** 待应用的可见性数据 */
-  // private pendingVisibility: StorageData<EntityVisibility> | null = null;
-
-  // /** 待应用的标记数据 */
-  // private pendingMarked: StorageData<FeatureMarked> | null = null;
-
   public render: EntityRender;
 
-  constructor(config: EntityControllerConfig) {
+  constructor() {
     super();
-    this.dataManager = new EntityMapDataManager({
-      jsonLoader: config.jsonLoader,
-      assetPath: config.dataPath,
-    });
+    this.dataManager = new EntityMapDataManager();
     this.render = new EntityRender(this.dataManager);
 
     this.registerEventHandlers();
@@ -69,7 +55,8 @@ export class EntityController extends Disposer {
         async () => {
           // load data
           if (!this.dataManager.dataLoaded) {
-            await this.dataManager.loadData();
+            // data not loaded, wait or ignore
+            return;
           }
           this.render.render();
 
@@ -82,6 +69,13 @@ export class EntityController extends Disposer {
         { fireImmediately: true }
       )
     );
+  }
+
+  public loadData(jsonData: EntityJsonDataList, infoData: EntityInfoDataJson) {
+    this.dataManager.loadData(jsonData, infoData);
+    this.render.render();
+    this.applyMarkedFilterMode();
+    this.updateClusterDistance(true);
   }
 
   /**
@@ -115,36 +109,6 @@ export class EntityController extends Disposer {
     this.dataManager.setDisableCluster(newDisableCluster);
     this.updateClusterDistance();
   }
-
-  /**
-   * 获取地图的渲染器
-   */
-  // private getMapRenderers(mapId: MapData['id']): EntityGroupRenderer[] {
-  //   // 应用待处理的可见性数据
-  //   if (this.pendingVisibility && this.pendingVisibility[mapId]) {
-  //     const visibilityMap = this.pendingVisibility[mapId]!;
-  //     for (const [entityDataIdKey, visible] of Object.entries(visibilityMap)) {
-  //       const manager = groupManagers.find((m) => m.entityDataIdKey === entityDataIdKey);
-  //       if (manager) {
-  //         manager.setGroupVisible(visible);
-  //       }
-  //     }
-  //   }
-
-  //   // 应用待处理的标记数据
-  //   if (this.pendingMarked && this.pendingMarked[mapId]) {
-  //     const markedMap = this.pendingMarked[mapId]!;
-  //     for (const manager of groupManagers) {
-  //       for (const instance of manager.instances) {
-  //         if (markedMap[instance.id] === true) {
-  //           instance.setMarked(true);
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   return Array.from(rendererMap.values());
-  // }
 
   /**
    * 应用marked过滤模式到渲染器

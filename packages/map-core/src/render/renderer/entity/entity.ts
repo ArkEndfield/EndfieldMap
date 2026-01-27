@@ -36,7 +36,6 @@ export class EntityRender {
 
   public render() {
     const mapDataManager = MapDataManager.getInstance();
-    const asset = EndfieldMapAsset.getInstance();
     const currentMapId = mapDataManager.currentMapId;
     const groupManagers = this.dataManager.getMapGroupManagerList(currentMapId);
     const mapRenderer = this.renders.get(currentMapId)!;
@@ -56,10 +55,11 @@ export class EntityRender {
 
     // 创建新的渲染器并添加图层
     const mapInstance = EndfieldMap.getInstance();
+    const imagePath = EndfieldMapAsset.getInstance().entityImage;
     for (const manager of groupManagers) {
       const renderer = new EntityGroupRenderer({
         dataManager: manager,
-        iconPath: `${asset.entityImage}/${manager.iconName}.png`,
+        iconPath: `${imagePath}/${manager.iconName}.png`,
         enableCluster: !this.dataManager.disableCluster,
         clusterDistance: this.dataManager.clusterDistance,
         markedFilterMode: this.dataManager.markedFilterMode,

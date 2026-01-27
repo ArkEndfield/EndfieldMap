@@ -1,6 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 import type { PieceUI } from '@/@types/delta_robot';
 import { cn } from '@/utils/style';
-import { useTranslation } from 'react-i18next';
 
 export const DeltaRobotPiece = ({
   data,

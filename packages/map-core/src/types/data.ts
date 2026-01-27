@@ -1,6 +1,5 @@
 import type { CustomPointMapData, ElectricPoleMapData } from '@endfieldmap/map-core/types/entity';
 import type { EntityData } from '@endfieldmap/map-core/types/entity';
-
 import type { MapData } from '@endfieldmap/map-core/types/map';
 
 /**

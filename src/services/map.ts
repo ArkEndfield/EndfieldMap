@@ -1,7 +1,13 @@
-import { EndfieldMapAdapter, type MapDataJson } from '@endfieldmap/map-core';
+import {
+  EndfieldMapAdapter,
+  type EntityInfoDataJson,
+  type EntityJsonDataList,
+  type MapDataJson,
+} from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 
 import { LoadingStageId } from '@/const/loading';
+import i18n from '@/i18n';
 import { initActiveFeatureEventListeners } from '@/services/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
 import { DataService } from '@/services/data';
@@ -10,7 +16,6 @@ import { initHoverFeatureEventListeners } from '@/services/hover_feature';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getAssetUrls } from '@/utils/url';
-import i18n from '@/i18n';
 
 // const MOCK_MAP_DATA: MapDataJson = {
 //   version: '1.0.0',
@@ -108,9 +113,32 @@ export class MapService {
     }
   }
 
+  private async loadEntityData(retry_times: number = 0): Promise<[EntityJsonDataList, EntityInfoDataJson]> {
+    try {
+      const jsonLoader = DataService.jsonLoader;
+      const [jsonData, infoData] = await Promise.all([
+        jsonLoader.loadJSON<EntityJsonDataList>(`${assets.entityData}/level_entities_filtered.json`),
+        jsonLoader.loadJSON<EntityInfoDataJson>(`${assets.entityData}/entity_info.json`),
+      ]);
+      if (jsonData && infoData) return [jsonData, infoData];
+      throw new Error('加载实体数据失败');
+    } catch (error) {
+      logger.error('加载实体数据失败', error);
+      if (retry_times < 3) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return this.loadEntityData(retry_times + 1);
+      }
+      throw error;
+    }
+  }
+
   private async _init() {
     try {
-      this.mapData = await this.loadMapData();
+      const [mapData, [entityJsonData, entityInfoData]] = await Promise.all([
+        this.loadMapData(),
+        this.loadEntityData(),
+      ]);
+      this.mapData = mapData;
       // LOADING 初始化数据服务
       loadingManager.updateStageProgress(LoadingStageId.STORAGE, 10);
       await DataService.initStorage();
@@ -128,6 +156,9 @@ export class MapService {
         consolaReporter: sentryReporter,
         isDev: isDev,
       });
+
+      // 注入实体数据
+      this.adapter.entityController.loadData(entityJsonData, entityInfoData);
 
       this.adapter.areaNameController.registerNameFunction(translateAreaName);
 

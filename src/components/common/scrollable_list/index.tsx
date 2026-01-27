@@ -1,35 +1,43 @@
-import { createContext, type ReactNode,useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
+import { ScrollableListContext } from '@/components/common/scrollable_list/context';
+import { useScrollableListItem } from '@/components/common/scrollable_list/hooks';
 import { cn } from '@/utils/style';
 
 export interface ScrollableListProps {
   className?: string;
   children: ReactNode;
-  /** ID of the item to center on */
+  /** ID 需要居中的 id */
   centerId?: string | null;
-  /** Idle timeout in ms before auto-centering (default: 5000) */
+  /** 空闲超时时间，超时后自动居中，单位为毫秒 */
   idleTimeout?: number;
+}
+
+export interface ScrollableListItemProps {
+  id: string;
+  children: ReactNode;
+  className?: string;
 }
 
 export const ScrollableList = ({ className, children, centerId, idleTimeout = 5000 }: ScrollableListProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Map<string, HTMLElement>>(new Map());
 
-  // Scroll state
+  // 滚动状态
   const [isAtTop, setIsAtTop] = useState(true);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
 
-  // Drag state
+  // 拖拽状态
   const isDragging = useRef(false);
   const startY = useRef(0);
   const startScrollTop = useRef(0);
   const hasDragged = useRef(false);
 
-  // Idle timer for auto-scroll
+  // 空闲定时器
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Check scroll boundaries
+  // 滚动边界检查
   const updateScrollState = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -40,7 +48,7 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     setIsScrollable(scrollHeight > clientHeight);
   }, []);
 
-  // Scroll to center a specific item
+  // 滚动到指定项目
   const scrollToItem = useCallback((itemId: string) => {
     const container = scrollContainerRef.current;
     const itemEl = itemRefs.current.get(itemId);
@@ -59,7 +67,7 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     });
   }, []);
 
-  // Reset idle timer
+  // 重置空闲定时器
   const resetIdleTimer = useCallback(() => {
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
@@ -72,13 +80,13 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     }
   }, [centerId, idleTimeout, scrollToItem]);
 
-  // Handle scroll event
+  // 滚动事件处理
   const handleScroll = useCallback(() => {
     updateScrollState();
     resetIdleTimer();
   }, [updateScrollState, resetIdleTimer]);
 
-  // Mouse drag handlers
+  // 拖拽事件处理
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       isDragging.current = true;
@@ -112,7 +120,7 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     isDragging.current = false;
   }, []);
 
-  // Prevent click if dragged
+  // 如果拖拽了，阻止点击
   const handleClickCapture = useCallback((e: React.MouseEvent) => {
     if (hasDragged.current) {
       e.stopPropagation();
@@ -120,14 +128,14 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     }
   }, []);
 
-  // Auto-scroll when centerId changes
+  // centerId 变化时自动滚动
   useEffect(() => {
     if (centerId) {
       scrollToItem(centerId);
     }
   }, [centerId, scrollToItem]);
 
-  // Initial scroll state and cleanup
+  // 初始化滚动状态和清理
   useEffect(() => {
     updateScrollState();
     resetIdleTimer();
@@ -139,7 +147,7 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     };
   }, [updateScrollState, resetIdleTimer]);
 
-  // ResizeObserver to detect content changes
+  // ResizeObserver 检测内容变化
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -149,7 +157,7 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     });
 
     resizeObserver.observe(container);
-    // Observe children to detect content changes that might affect scroll height
+    // 监听 children 变化，检测内容变化，可能影响 scroll height
     Array.from(container.children).forEach((child) => {
       resizeObserver.observe(child);
     });
@@ -159,7 +167,7 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     };
   }, [updateScrollState]);
 
-  // Register item ref helper
+  // 注册子项 ref
   const registerItemRef = useCallback((id: string, el: HTMLElement | null) => {
     if (el) {
       itemRefs.current.set(id, el);
@@ -168,22 +176,22 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     }
   }, []);
 
-  // Generate mask gradient based on scroll position
+  // 基于滚动位置生成 mask gradient
   const getMaskImage = () => {
     if (!isScrollable) return 'none';
 
     const topGradient = isAtTop ? 'black' : 'transparent';
     const bottomGradient = isAtBottom ? 'black' : 'transparent';
 
-    // Create a mask that fades content at edges
-    // When at top: no fade at top (black = visible)
-    // When at bottom: no fade at bottom (black = visible)
+    // 创建一个 mask，淡出内容在边缘
+    // 当在顶部：顶部不淡出（黑色 = 可见）
+    // 当在底部：底部不淡出（黑色 = 可见）
     return `linear-gradient(to bottom, ${topGradient} 0%, black 15%, black 85%, ${bottomGradient} 100%)`;
   };
 
   return (
     <ScrollableListContext.Provider value={{ registerItemRef }}>
-      {/* Scrollable container with mask */}
+      {/* 可滚动的容器，带有 mask */}
       <div
         ref={scrollContainerRef}
         className={cn(
@@ -206,33 +214,6 @@ export const ScrollableList = ({ className, children, centerId, idleTimeout = 50
     </ScrollableListContext.Provider>
   );
 };
-
-interface ScrollableListContextType {
-  registerItemRef: (id: string, el: HTMLElement | null) => void;
-}
-
-const ScrollableListContext = createContext<ScrollableListContextType | null>(null);
-
-export const useScrollableListItem = (id: string) => {
-  const context = useContext(ScrollableListContext);
-  if (!context) {
-    throw new Error('useScrollableListItem must be used within ScrollableList');
-  }
-
-  return useCallback(
-    (el: HTMLElement | null) => {
-      context.registerItemRef(id, el);
-    },
-    [context, id]
-  );
-};
-
-// ScrollableListItem component for convenience
-export interface ScrollableListItemProps {
-  id: string;
-  children: ReactNode;
-  className?: string;
-}
 
 export const ScrollableListItem = ({ id, children, className }: ScrollableListItemProps) => {
   const refCallback = useScrollableListItem(id);

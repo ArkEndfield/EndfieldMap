@@ -1,3 +1,4 @@
+import { getVersionInfo } from '@endfieldmap/tools';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
@@ -7,7 +8,6 @@ import { languageConfig } from '@/const/language';
 import { LoadingStageId } from '@/const/loading';
 import { isDev } from '@/services/env';
 import { loadingManager } from '@/services/loading';
-import { getVersionInfo } from '@endfieldmap/tools';
 
 const ns = ['common', 'error', 'header', 'lang', 'popup', 'sidebar', 'settings'];
 const supportedLngs = languageConfig.map((lang) => lang.code);

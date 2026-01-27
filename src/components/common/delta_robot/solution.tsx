@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
 import type { Grid, ParsedLevel } from '@eftypes/delta_robot';
+import { useEffect, useRef } from 'react';
+
 import { CELL_SIZE } from '@/const/delta_robot';
 import { renderGroup, renderObstacle } from '@/services/delta_robot/render';
 import { cn } from '@/utils/style';

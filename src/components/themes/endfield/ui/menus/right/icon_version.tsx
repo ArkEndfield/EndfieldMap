@@ -1,6 +1,7 @@
+import { getVersionInfo } from '@endfieldmap/tools';
+
 import { Logo } from '@/components/common/icons';
 import { isDev } from '@/services/env';
-import { getVersionInfo } from '@endfieldmap/tools';
 
 const { commitHash, buildTime } = getVersionInfo();
 

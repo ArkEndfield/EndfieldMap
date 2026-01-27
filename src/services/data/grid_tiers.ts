@@ -1,9 +1,9 @@
 import {
+  type Coordinate,
   type EndfieldMapAdapter,
   type GridTierItem,
   MAP_EVENT,
   type MapData,
-  type Coordinate,
 } from '@endfieldmap/map-core';
 import { type JSONLoader } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';

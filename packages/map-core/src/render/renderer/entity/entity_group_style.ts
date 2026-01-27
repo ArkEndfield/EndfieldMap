@@ -230,7 +230,7 @@ export class EntityGroupStyleProvider {
     const hasSelected = selectedCount > 0;
     const allMarked = markedCount === size;
 
-    let state: 'selected' | 'normal' = hasSelected ? 'selected' : 'normal';
+    const state: 'selected' | 'normal' = hasSelected ? 'selected' : 'normal';
 
     let opacity = 1;
     if (hasMarked && !hasSelected) {

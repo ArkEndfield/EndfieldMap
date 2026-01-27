@@ -1,10 +1,10 @@
 import {
+  type Coordinate,
   DEFAULT_ZOOM,
   type EndfieldMapAdapter,
   MAP_EVENT,
   type MapData,
   MarkedFeatureFilterMode,
-  type Coordinate,
 } from '@endfieldmap/map-core';
 import { debounce, LocalStorageKey, LocalStorageValue, logger } from '@endfieldmap/tools';
 

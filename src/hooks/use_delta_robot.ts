@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { logger } from '@endfieldmap/tools';
+import { useEffect, useState } from 'react';
 
 import type { Grid, ParsedLevel } from '@/@types/delta_robot';
+import { DeltaRobotStatus } from '@/const/delta_robot';
 import { useAdapter } from '@/hooks/use_adapter';
 import { solvePuzzle } from '@/services/delta_robot/solver';
-import { logger } from '@endfieldmap/tools';
-import { DeltaRobotStatus } from '@/const/delta_robot';
 
 interface UseDeltaRobotProps {
   levelLogicId: string | number;
@@ -22,40 +22,37 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
   const [solvingTime, setSolvingTime] = useState<number>(-1);
 
   // 加载关卡数据
-  const loadLevel = useCallback(
-    async (levelId: string) => {
-      try {
-        setStatus(DeltaRobotStatus.Loading);
-        setSolutionGrid(null);
-        setLevelData(null); // Clear previous data while loading
+  const loadLevel = async () => {
+    try {
+      setStatus(DeltaRobotStatus.Loading);
+      setSolutionGrid(null);
+      setLevelData(null); // Clear previous data while loading
 
-        const parsed = await dataService.deltaRobotDataService.getLevelData(levelId);
+      const parsed = await dataService.deltaRobotDataService.getLevelData(selectedLevel);
 
-        if (!parsed) {
-          setStatus(DeltaRobotStatus.LoadingError);
-          return;
-        }
-
-        // 更新状态
-        setLevelData(parsed);
-        setStatus(DeltaRobotStatus.LoadingSuccess);
-      } catch (error) {
-        logger.error('加载关卡失败:', error);
+      if (!parsed) {
         setStatus(DeltaRobotStatus.LoadingError);
+        return;
       }
-    },
-    [dataService]
-  );
+
+      // 更新状态
+      setLevelData(parsed);
+      setStatus(DeltaRobotStatus.LoadingSuccess);
+    } catch (error) {
+      logger.error('加载关卡失败:', error);
+      setStatus(DeltaRobotStatus.LoadingError);
+    }
+  };
 
   // 初始加载
   useEffect(() => {
     if (selectedLevel) {
-      loadLevel(selectedLevel);
+      loadLevel();
     }
-  }, [selectedLevel, loadLevel]);
+  }, [selectedLevel]);
 
   // 求解拼图
-  const handleSolve = useCallback(() => {
+  const handleSolve = () => {
     if (!levelData || levelData.pieces.length === 0) {
       return;
     }
@@ -105,7 +102,7 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
         setStatus(DeltaRobotStatus.SolvingError);
       }
     }, 100);
-  }, [levelData]);
+  };
 
   // 获取分组颜色
   const getGroupColor = (groupId: number): string => {

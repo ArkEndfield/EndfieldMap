@@ -25,8 +25,6 @@ import { ElectricPoleStyleProvider } from './electric_pole_style';
 export interface ElectricPoleRendererConfig {
   /** 数据管理器 */
   dataManager: ElectricPoleDataManager;
-  /** 图片路径（用于拼接 iconPic） */
-  imagePath: string;
   /** 图标大小 */
   iconSize?: number;
   /** 渲染缓冲区 */
@@ -97,10 +95,8 @@ export class ElectricPoleRenderer {
 
   constructor(config: ElectricPoleRendererConfig) {
     this.dataManager = config.dataManager;
-
     // 初始化样式提供者
     this.styleProvider = new ElectricPoleStyleProvider({
-      imagePath: config.imagePath,
       iconSize: config.iconSize,
       enableShadow: config.enableShadow,
     });

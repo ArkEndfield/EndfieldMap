@@ -1,7 +1,6 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
-import type { EntityControllerConfig } from '@endfieldmap/map-core/controller/entity/entity_controller';
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
 import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
@@ -25,7 +24,7 @@ import type { Coordinate } from 'ol/coordinate';
  * 用于依赖注入和测试
  */
 export interface IControllerFactory {
-  createEntityController(config: EntityControllerConfig): EntityController;
+  createEntityController(): EntityController;
   createElectricPoleController(): ElectricPoleController;
   createCustomPointController(): CustomPointController;
 }
@@ -35,8 +34,8 @@ export interface IControllerFactory {
  * 创建标准的控制器实例
  */
 export class DefaultControllerFactory implements IControllerFactory {
-  createEntityController(config: EntityControllerConfig): EntityController {
-    return new EntityController(config);
+  createEntityController(): EntityController {
+    return new EntityController();
   }
 
   createElectricPoleController(): ElectricPoleController {

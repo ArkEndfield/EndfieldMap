@@ -3,10 +3,10 @@
  * 管理音效加载、缓存和播放
  */
 
+import { logger } from '@endfieldmap/tools';
 import { action, observable, runInAction } from 'mobx';
 
 import { AUDIO_CONFIG, AUDIO_SETTINGS, SoundType } from '@/const/audio_config';
-import { logger } from '@endfieldmap/tools';
 
 interface AudioInstance {
   buffer: AudioBuffer;

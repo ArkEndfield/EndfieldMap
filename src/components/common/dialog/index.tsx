@@ -1,11 +1,12 @@
+import { AnimatePresence,motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import { motion, AnimatePresence } from 'motion/react';
-import { cn } from '@/utils/style';
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { EndfieldCloseIcon } from '@/components/common/icons';
 import { type DialogProps } from '@/components/themes/types/dialog';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { cn } from '@/utils/style';
+
 import { ScrollArea } from '../scroll_area';
 
 const CloseButton: React.FC<{

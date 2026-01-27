@@ -10,24 +10,16 @@ import type {
   EntityInfoStats,
   EntityJsonDataList,
 } from '@endfieldmap/map-core/types/entity';
-import { type JSONLoader, logger } from '@endfieldmap/tools';
+import { logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
 
 import { MapDataManager } from '../map/map';
-
-export interface EntityMapDataManagerConfig {
-  jsonLoader: JSONLoader;
-  assetPath: string;
-}
 
 /**
  * Entity地图数据管理器
  * 管理所有地图的Entity数据
  */
 export class EntityMapDataManager {
-  private jsonLoader: JSONLoader;
-  private assetPath: string;
-
   /** 是否已加载 */
   public dataLoaded: boolean = false;
 
@@ -56,35 +48,16 @@ export class EntityMapDataManager {
   /** 上次聚合距离 */
   public lastClusterDistance: number = 0;
 
-  constructor(config: EntityMapDataManagerConfig) {
-    this.jsonLoader = config.jsonLoader;
-    this.assetPath = config.assetPath;
-  }
+  constructor() {}
 
   /**
    * 加载数据
    */
-  public async loadData(): Promise<void> {
+  public async loadData(jsonData: EntityJsonDataList, infoData: EntityInfoDataJson): Promise<void> {
     if (this.dataLoaded) {
       return;
     }
-
-    if (this.loadPromise) {
-      return this.loadPromise;
-    }
-
-    this.loadPromise = this.doLoadData();
-    await this.loadPromise;
-  }
-
-  @action
-  private async doLoadData(): Promise<void> {
     try {
-      const [jsonData, infoData] = await Promise.all([
-        this.jsonLoader.loadJSON<EntityJsonDataList>(`${this.assetPath}/level_entities_filtered.json`),
-        this.jsonLoader.loadJSON<EntityInfoDataJson>(`${this.assetPath}/entity_info.json`),
-      ]);
-
       // 处理info数据
       if (infoData) {
         for (const [key, info] of Object.entries(infoData)) {
@@ -149,14 +122,11 @@ export class EntityMapDataManager {
       }
 
       this.dataLoaded = true;
-      this.loadPromise = null;
     } catch (error) {
-      this.loadPromise = null;
       logger.error('[EntityMapDataManager] Failed to load data', error);
       throw error;
     }
   }
-
   /**
    * 获取Entity信息
    */
@@ -247,7 +217,14 @@ export class EntityMapDataManager {
    */
   @action
   public async importMarkedData(data: Record<MapData['id'], Record<number, boolean>>): Promise<number> {
-    await this.loadData();
+    if (!this.dataLoaded) {
+      if (this.loadPromise) {
+        await this.loadPromise;
+      } else {
+        logger.warn('[EntityMapDataManager] Cannot import marked data: data not loaded');
+        return 0;
+      }
+    }
     let count = 0;
 
     for (const [mapIdStr, markedMap] of Object.entries(data)) {
@@ -305,7 +282,14 @@ export class EntityMapDataManager {
    */
   @action
   public async importVisibilityData(data: Record<MapData['id'], Record<string, boolean>>): Promise<number> {
-    await this.loadData();
+    if (!this.dataLoaded) {
+      if (this.loadPromise) {
+        await this.loadPromise;
+      } else {
+        logger.warn('[EntityMapDataManager] Cannot import marked data: data not loaded');
+        return 0;
+      }
+    }
     let count = 0;
 
     for (const [mapIdStr, visibilityMap] of Object.entries(data)) {

@@ -7,14 +7,12 @@ import type { AreaNameFeatureStyle, AreaNameLayerConfig } from '@endfieldmap/map
 import { AreaNameLayer } from '@endfieldmap/map-core/render/layers/area_name';
 import { reaction } from 'mobx';
 
-export interface AreaNameControllerConfig extends AreaNameLayerConfig {}
-
 export class AreaNameController extends Disposer {
   public areaNameLayer: AreaNameLayer;
   private getNameFunction?: <T extends string>(name: T) => string;
   private currentZoom: number = DEFAULT_ZOOM;
 
-  constructor(config: AreaNameControllerConfig) {
+  constructor(config: AreaNameLayerConfig) {
     super();
     this.areaNameLayer = new AreaNameLayer({
       ...config,

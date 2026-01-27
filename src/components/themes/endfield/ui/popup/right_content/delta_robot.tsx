@@ -2,15 +2,14 @@ import type { EntityData } from '@endfieldmap/map-core';
 import { SubPopupTitle } from '@themes/endfield/ui/popup/right_content/title';
 import { useTranslation } from 'react-i18next';
 
+import { DeltaRobotPiece } from '@/components/common/delta_robot/piece';
+import { DeltaRobotSolutionGrid } from '@/components/common/delta_robot/solution';
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
-import { useDeltaRobot } from '@/hooks/use_delta_robot';
-import { cn } from '@/utils/style';
-
-import { DeltaRobotSolutionGrid } from '@/components/common/delta_robot/solution';
 import { TickCircleIcon } from '@/components/common/icons';
 import { DeltaRobotStatus } from '@/const/delta_robot';
-import { DeltaRobotPiece } from '@/components/common/delta_robot/piece';
+import { useDeltaRobot } from '@/hooks/use_delta_robot';
+import { cn } from '@/utils/style';
 
 interface DeltaRobotProps {
   entity: EntityData;

@@ -2,7 +2,7 @@ import type { LoadingState } from '@endfieldmap/tools/const/enum';
 import { StorageType } from '@endfieldmap/tools/const/enum';
 import { JSONLoaderError } from '@endfieldmap/tools/const/error';
 import type { StorageManager } from '@endfieldmap/tools/storage/manager';
-import { isDev, getVersionInfo } from '@endfieldmap/tools/utils/runtime';
+import { getVersionInfo,isDev } from '@endfieldmap/tools/utils/runtime';
 
 // 定义加载结果类型
 export interface LoadResult<T> {

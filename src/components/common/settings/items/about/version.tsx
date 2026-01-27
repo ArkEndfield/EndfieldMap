@@ -1,4 +1,5 @@
 import { getVersionInfo } from '@endfieldmap/tools';
+
 import { isDev } from '@/services/env';
 
 const { commitHash, buildTime } = getVersionInfo();
