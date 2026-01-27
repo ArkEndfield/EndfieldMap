@@ -10,8 +10,8 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({ command, mode }) => {
   const isDev = mode === 'development';
   const alias = {
-    '@endfieldmap/map-core': resolve(__dirname, './packages/map-core/src'),
-    '@endfieldmap/tools': resolve(__dirname, './packages/tools/src'),
+    '@endfieldmap/map-core': resolve(__dirname, '../map-core/src'),
+    '@endfieldmap/tools': resolve(__dirname, '../tools/src'),
   };
   return {
     mode,
@@ -75,7 +75,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     server: {
-      allowedHosts: ["oqoq21sr1y-5173.cnb.run", "oqoq21sr1y-4173.cnb.run"]
+      allowedHosts: ['oqoq21sr1y-5173.cnb.run', 'oqoq21sr1y-4173.cnb.run'],
     },
     build: {
       sourcemap: 'hidden',

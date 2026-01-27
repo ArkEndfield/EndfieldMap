@@ -44,7 +44,7 @@ main:
         - name: 压缩包
           script: |
             apt-get update && apt-get install -y zip
-            zip -r dist.zip dist
+            cd packages/map-web && zip -r ../../map-web.zip dist
         - name: 发布
           type: git:release
           options:
@@ -56,7 +56,7 @@ main:
           settings:
             tag: ${VERSION}
             attachments:
-              - dist.zip
+              - map-web.zip
   web_trigger_deploy:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
@@ -82,7 +82,7 @@ main:
             echo "${SSH_KEY}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
             # 使用 rsync 清空并同步文件到服务器
-            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
+            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" packages/map-web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
   web_trigger_production:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
@@ -103,7 +103,7 @@ main:
         - name: 压缩包
           script: |
             apt-get update && apt-get install -y zip
-            zip -r dist.zip dist
+            cd packages/map-web && zip -r ../../map-web.zip dist
         - name: 发布
           type: git:release
           options:
@@ -115,7 +115,7 @@ main:
           settings:
             tag: ${VERSION}
             attachments:
-              - dist.zip
+              - map-web.zip
         - name: 部署到服务器
           script: |
             apt-get update && apt-get install -y rsync
@@ -124,4 +124,4 @@ main:
             echo "${SSH_KEY}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
             # 使用 rsync 清空并同步文件到服务器
-            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
+            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" packages/map-web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
