@@ -18,18 +18,10 @@
   "scripts": {
     "build": "vite build",
     "test": "vitest",
-    "test:run": "vitest run"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.28.5",
-    "@babel/plugin-proposal-decorators": "^7.28.0",
-    "@babel/plugin-transform-class-properties": "^7.27.1",
-    "@babel/plugin-transform-class-static-block": "^7.28.3",
-    "@vitejs/plugin-react": "^5.1.2",
-    "typescript": "~5.9.3",
-    "unplugin-dts": "1.0.0-beta.6",
-    "vite": "npm:rolldown-vite@7.2.7",
-    "vitest": "^4.0.3"
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@endfieldmap/tools": "workspace:*",
