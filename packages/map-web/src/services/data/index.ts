@@ -104,6 +104,13 @@ export class DataService {
       // 初始化情报档案数据
       this.noteDataService.init(),
     ]);
+    this.deleteCacheData();
+  }
+
+  private deleteCacheData() {
+    // TODO: 旧版本数据迁移
+    // 先前缓存了 lang_hash，但是现在不需要了，因为其本身就写入内存里了
+    DataService.storage.permanentRemove('lang_hash');
   }
 
   /**
