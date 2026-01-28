@@ -31,9 +31,9 @@ const options = [
 
 export const WasdSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
   const isMobile = useIsMobile();
-  const wasdMoveSpeed = dataService.mapStateDataService.wasdMoveSpeed.value;
+  const wasdMoveSpeed = mapDataService.mapStateDataService.wasdMoveSpeed.value;
 
   if (isMobile) {
     return null;
@@ -48,7 +48,7 @@ export const WasdSetting = observer(() => {
           label: t(`map.wasd_move_speed.value.${option.label}`),
         }))}
         activeKey={wasdMoveSpeed}
-        onChange={(v) => (dataService.mapStateDataService.wasdMoveSpeed.value = v)}
+        onChange={(v) => (mapDataService.mapStateDataService.wasdMoveSpeed.value = v)}
       />
     </SettingItem>
   );

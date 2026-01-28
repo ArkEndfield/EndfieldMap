@@ -18,10 +18,10 @@ import { cn } from '@/utils/style';
 const ZmdSwiper = observer(() => {
   const expanded = uiManager.swiperOpen.value;
   const isMobile = useIsMobile();
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
   const swiperRef = useRef<SwiperType>(null);
   const paginationContainerRef = useRef<HTMLDivElement>(null);
-  const swiperConfig = dataService.swiperDataService.swiperConfig;
+  const swiperConfig = mapDataService.swiperDataService.swiperConfig;
 
   const updatePaginationProgress = useCallback((swiper: SwiperType, progress: number) => {
     if (!paginationContainerRef.current) return;

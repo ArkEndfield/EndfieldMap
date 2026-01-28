@@ -26,7 +26,7 @@ interface CategoryInfo {
  */
 const EntityPanel = observer(() => {
   const { t } = useTranslation(['sidebar', 'lang']);
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -53,7 +53,7 @@ const EntityPanel = observer(() => {
       // 如果有搜索条件，进行过滤
       if (lowerSearchQuery) {
         const entityIdKey = entity.entityDataIdKey.toLowerCase();
-        const translatedEntityName = t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
+        const translatedEntityName = t(`lang:${mapDataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
           defaultValue: entity.entityInfo.point,
         }).toLowerCase();
         const category = entity.category.toLowerCase();
@@ -104,7 +104,7 @@ const EntityPanel = observer(() => {
     const hardCordOrder = ['other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative'];
     result.sort((a, b) => hardCordOrder.indexOf(a.category) - hardCordOrder.indexOf(b.category));
     return result;
-  }, [dataService.langHashDataService, entities, searchQuery, t]);
+  }, [mapDataService.langHashDataService, entities, searchQuery, t]);
 
   // 切换分类显示/隐藏
   const handleCategoryClick = (category: Category, allDisplayed: boolean) => {

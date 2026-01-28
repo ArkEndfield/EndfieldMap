@@ -6,7 +6,7 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 export const useEntityName = (entity?: EntityInfoStats) => {
   const { t } = useTranslation(['common', 'sidebar', 'lang']);
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
   const categoryName = entity?.category
     ? t(`sidebar:filter.category.${entity.category}`, {
         defaultValue: entity.category,
@@ -27,7 +27,7 @@ export const useEntityName = (entity?: EntityInfoStats) => {
         defaultValue: entity.entityDataIdKey,
       });
     } else {
-      name = t(`lang:${dataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
+      name = t(`lang:${mapDataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
         defaultValue: entity.entityDataIdKey,
       });
     }
@@ -40,7 +40,7 @@ export const useEntityName = (entity?: EntityInfoStats) => {
 
 export const useActiveFeatureName = (entity?: DataInstance | null) => {
   const { t } = useTranslation(['common', 'sidebar', 'lang']);
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
   let categoryName = 'unknown category';
   let name = 'unnamed';
   if (entity) {
@@ -53,7 +53,7 @@ export const useActiveFeatureName = (entity?: DataInstance | null) => {
     } else if (entityInfo.category === CustomPointKey) {
       name = entity.name;
     } else {
-      name = t(`lang:${dataService.langHashDataService.getHash(entityInfo?.entityInfo.point)}`, {
+      name = t(`lang:${mapDataService.langHashDataService.getHash(entityInfo?.entityInfo.point)}`, {
         defaultValue: entityInfo?.entityInfo.point || '',
       });
     }

@@ -16,16 +16,16 @@ interface TierManagerProps {
 }
 
 const TierManager = observer(({ className }: TierManagerProps) => {
-  const { dataService, adapter } = useAdapter();
+  const { mapDataService, adapter } = useAdapter();
   const { t } = useTranslation('lang');
   const efUIManager = useEndfieldUIManager();
   const isMobile = useIsMobile();
   const isSidePanelOpen = efUIManager.isSidePanelOpen;
   const isNonEmptyPanel = efUIManager.isNonEmptyPanel;
-  const availableTierData = dataService.gridTiersDataService.availableTierData;
-  const activeTierData = dataService.gridTiersDataService.activeTierData;
-  const activeSubTierData = dataService.gridTiersDataService.activeSubTierData;
-  const allTierData = dataService.gridTiersDataService.currentTierData;
+  const availableTierData = mapDataService.gridTiersDataService.availableTierData;
+  const activeTierData = mapDataService.gridTiersDataService.activeTierData;
+  const activeSubTierData = mapDataService.gridTiersDataService.activeSubTierData;
+  const allTierData = mapDataService.gridTiersDataService.currentTierData;
 
   const enableTier = uiManager.enableTier.value;
 

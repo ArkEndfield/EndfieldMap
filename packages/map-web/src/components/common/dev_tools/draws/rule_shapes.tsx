@@ -8,9 +8,9 @@ import { useAdapter } from '@/hooks/use_adapter';
 type RuleShapeType = 'box' | 'sphere';
 
 export const RuleShapesDraw = observer(() => {
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const devToolsController = adapter.devToolsController;
-  const currentMap = dataService.mapStateDataService.currentMap.value;
+  const currentMap = mapDataService.mapStateDataService.currentMap.value;
 
   const { coordType, CoordTypeSelector } = useCoordType();
   const [shapeType, setShapeType] = useState<RuleShapeType>('box');

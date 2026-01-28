@@ -13,16 +13,19 @@ export interface DeleteButtonProps {
 
 export const DeleteButton: React.FC<DeleteButtonProps> = observer(({ entity }) => {
   const { t } = useTranslation();
-  const { dataService, adapter } = useAdapter();
+  const { mapDataService, adapter } = useAdapter();
 
   const isCustomPoint = entity.entityInfo?.category === CustomPointKey;
   const isElectricPole = entity.entityInfo?.category === ElectricPoleKey;
 
   const handleDelete = () => {
     if (isCustomPoint) {
-      dataService.customPointDataService.deleteCustomPoint(adapter.mapController.dataManager.currentMapId, entity.id);
+      mapDataService.customPointDataService.deleteCustomPoint(
+        adapter.mapController.dataManager.currentMapId,
+        entity.id
+      );
     } else if (isElectricPole) {
-      dataService.electricPoleDataService.deleteElectricPole(entity as ElectricPoleDataInstance, true);
+      mapDataService.electricPoleDataService.deleteElectricPole(entity as ElectricPoleDataInstance, true);
     }
     // 关闭弹窗
     adapter.activeFeatureController.clearActiveFeature?.();

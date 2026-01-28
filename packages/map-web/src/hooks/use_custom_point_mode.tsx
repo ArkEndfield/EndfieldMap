@@ -29,8 +29,8 @@ const modeTipText: Record<CustomPointMode, ModeTipTextKeys> = {
 };
 
 export const useCustomPointMode = () => {
-  const { adapter, dataService } = useAdapter();
-  const service = dataService.customPointDataService;
+  const { adapter, mapDataService } = useAdapter();
+  const service = mapDataService.customPointDataService;
   const { t } = useTranslation('sidebar');
 
   const getModeValue = (mode: CustomPointMode): boolean => {
@@ -54,7 +54,7 @@ export const useCustomPointMode = () => {
     }
 
     // 检查是否在电线杆操作模式
-    if (dataService.electricPoleDataService.isInElectricOperateMode) {
+    if (mapDataService.electricPoleDataService.isInElectricOperateMode) {
       alert.info({
         content: <div className="text-center">{t('operation.electric_pole_operating_tip')}</div>,
       });

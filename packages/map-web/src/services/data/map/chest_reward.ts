@@ -6,7 +6,7 @@ import type {
 } from '@eftypes/reward';
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
 
-import { ItemDataService } from '@/services/data/item';
+import { ItemDataService } from '@/services/data/map/item';
 import { isRewardWithCountType } from '@/utils/reward';
 import { getAssetUrls } from '@/utils/url';
 

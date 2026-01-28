@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import i18n from '@/i18n';
-import { DataService } from '@/services/data';
+import type { MapDataService } from '@/services/data/map';
 import { MapService } from '@/services/map';
 
 /**
@@ -11,9 +11,9 @@ import { MapService } from '@/services/map';
  */
 export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | null>) {
   const adapter = useRef<EndfieldMapAdapter | null>(null);
-  const dataService = useRef<DataService | null>(null);
+  const mapDataService = useRef<MapDataService | null>(null);
   const [adapterReactive, setAdapterReactive] = useState<EndfieldMapAdapter | null>(null);
-  const [dataServiceReactive, setDataServiceReactive] = useState<DataService | null>(null);
+  const [mapDataServiceReactive, setMapDataServiceReactive] = useState<MapDataService | null>(null);
   const isMobile = useIsMobile();
   /**
    * 初始化地图函数
@@ -24,11 +24,11 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     const mapService = MapService.getInstance(containerRef.current!);
     const data = await mapService.init();
     if (!data) return;
-    const { adapter: efAdapter, dataService: efDataService } = data;
+    const { adapter: efAdapter, mapDataService: efDataService } = data;
     adapter.current = efAdapter;
-    dataService.current = efDataService;
+    mapDataService.current = efDataService;
     setAdapterReactive(efAdapter);
-    setDataServiceReactive(efDataService);
+    setMapDataServiceReactive(efDataService);
   };
 
   useEffect(() => {
@@ -58,6 +58,6 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
   return {
     adapter: adapterReactive,
-    dataService: dataServiceReactive,
+    mapDataService: mapDataServiceReactive,
   };
 }

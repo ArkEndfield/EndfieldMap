@@ -26,7 +26,7 @@ interface CustomPointTypeGroup {
  */
 const CustomPointList: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
 
   // 从 DataManager 获取当前地图的所有自定义标点实例
   const dataManager = adapter.customPointController.dataManager;
@@ -67,7 +67,7 @@ const CustomPointList: React.FC = observer(() => {
       } else {
         // If no instances, use stored visibility preference
         const storedVisibility =
-          dataService.customPointDataService.customPointVisibilityData[currentMapId]?.[entityDataIdKey];
+          mapDataService.customPointDataService.customPointVisibilityData[currentMapId]?.[entityDataIdKey];
         // Default to true if not set
         allVisible = storedVisibility !== false;
       }
@@ -95,7 +95,7 @@ const CustomPointList: React.FC = observer(() => {
       });
     }
     // 保存可见性状态
-    dataService.customPointDataService.updateCustomPointVisibility(
+    mapDataService.customPointDataService.updateCustomPointVisibility(
       adapter.mapController.dataManager.currentMapId,
       group.entityDataIdKey,
       newVisible
@@ -108,7 +108,7 @@ const CustomPointList: React.FC = observer(() => {
       if (group.instances.length > 0) {
         group.instances.forEach((instance) => instance.setVisible(newVisible));
       }
-      dataService.customPointDataService.updateCustomPointVisibility(
+      mapDataService.customPointDataService.updateCustomPointVisibility(
         adapter.mapController.dataManager.currentMapId,
         group.entityDataIdKey,
         newVisible

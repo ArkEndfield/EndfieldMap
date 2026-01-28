@@ -10,7 +10,7 @@ import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
 
 const PCPopup: React.FC = observer(() => {
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const activeFeature = adapter?.activeFeatureController.activeFeature;
   const entity = activeFeature?.data;
   const { items, showSubPopup } = useVisibleRightContentItems(entity);
@@ -62,8 +62,8 @@ const PCPopup: React.FC = observer(() => {
   return createPortal(
     <AnimatePresence>
       {activeFeature &&
-        !dataService.electricPoleDataService.isInElectricOperateMode &&
-        !dataService.customPointDataService.isInCustomPointOperateMode && (
+        !mapDataService.electricPoleDataService.isInElectricOperateMode &&
+        !mapDataService.customPointDataService.isInCustomPointOperateMode && (
           <motion.div
             key="desktop-popup"
             initial={{ opacity: 0, y: 18, scale: 0.9 }}

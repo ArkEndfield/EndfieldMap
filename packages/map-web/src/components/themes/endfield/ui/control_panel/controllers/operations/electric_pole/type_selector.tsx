@@ -15,11 +15,11 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 const ElectricPoleTypeSelector: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { dataService } = useAdapter();
-  const selectedType = dataService.electricPoleDataService.creatingDeviceKey;
+  const { mapDataService } = useAdapter();
+  const selectedType = mapDataService.electricPoleDataService.creatingDeviceKey;
 
   const handleSelectType = (deviceKey: ElectricPoleDeviceKey) => {
-    dataService.electricPoleDataService.setCreatingDeviceKey(deviceKey);
+    mapDataService.electricPoleDataService.setCreatingDeviceKey(deviceKey);
   };
 
   return (

@@ -10,10 +10,10 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 export const CustomPointOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const isCustomPointVisible = adapter.customPointController.dataManager.visible;
   const isOpen = uiManager.currentOperatePanel.value === CurrentOperatePanel.CUSTOM_POINT && isCustomPointVisible;
-  const isInCreateMode = dataService.customPointDataService.isCreating;
+  const isInCreateMode = mapDataService.customPointDataService.isCreating;
 
   return (
     <OperationList open={isOpen} className="flex gap-2">

@@ -7,13 +7,13 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 export const ClusterSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { dataService } = useAdapter();
-  const enableCluster = dataService.mapStateDataService.enableCluster.value;
+  const { mapDataService } = useAdapter();
+  const enableCluster = mapDataService.mapStateDataService.enableCluster.value;
   return (
     <SettingItem title={t('map.cluster')} tailDeco>
       <EndfieldSwitch
         checked={enableCluster}
-        onChange={(v) => (dataService.mapStateDataService.enableCluster.value = v)}
+        onChange={(v) => (mapDataService.mapStateDataService.enableCluster.value = v)}
       />
     </SettingItem>
   );

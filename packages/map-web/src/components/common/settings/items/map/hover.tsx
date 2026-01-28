@@ -31,9 +31,9 @@ const options = [
 
 export const HoverSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
   const isMobile = useIsMobile();
-  const hoverDebounceTime = dataService.mapStateDataService.hoverTime.value;
+  const hoverDebounceTime = mapDataService.mapStateDataService.hoverTime.value;
 
   if (isMobile) {
     return null;
@@ -48,7 +48,7 @@ export const HoverSetting = observer(() => {
           label: t(`map.hover.value.${option.label}`),
         }))}
         activeKey={hoverDebounceTime}
-        onChange={(v) => (dataService.mapStateDataService.hoverTime.value = v)}
+        onChange={(v) => (mapDataService.mapStateDataService.hoverTime.value = v)}
       />
     </SettingItem>
   );

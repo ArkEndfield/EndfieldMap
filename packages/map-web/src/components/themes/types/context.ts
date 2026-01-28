@@ -1,6 +1,6 @@
-import type { DataService } from '@/services/data';
+import type { MapDataService } from '@/services/data/map';
 
 export interface ThemeRootContextProps {
-  dataService: DataService;
+  mapDataService: MapDataService;
   children: React.ReactNode;
 }

@@ -11,8 +11,8 @@ interface UseDeltaRobotProps {
 }
 
 export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
-  const { dataService } = useAdapter();
-  const levelList = dataService.deltaRobotDataService.getLevelList(levelLogicId) || [];
+  const { mapDataService } = useAdapter();
+  const levelList = mapDataService.deltaRobotDataService.getLevelList(levelLogicId) || [];
 
   // 状态管理
   const [selectedLevel, setSelectedLevel] = useState<string>(levelList[0] || '');
@@ -28,7 +28,7 @@ export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
       setSolutionGrid(null);
       setLevelData(null); // Clear previous data while loading
 
-      const parsed = await dataService.deltaRobotDataService.getLevelData(selectedLevel);
+      const parsed = await mapDataService.deltaRobotDataService.getLevelData(selectedLevel);
 
       if (!parsed) {
         setStatus(DeltaRobotStatus.LoadingError);

@@ -1,19 +1,19 @@
 import { EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
 
-import type { DataService } from '@/services/data';
+import type { MapDataService } from '@/services/data/map';
 
 /**
  * 初始化hover事件监听器
  * 监听 ENTITY_HOVER 和 CONNECTION_HOVER 事件，设置 hover 状态
  * @param adapter 地图适配器
  */
-export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter, dataService: DataService) {
+export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter, mapDataService: MapDataService) {
   // 监听 entity_hover 事件，设置 hover feature
   adapter.event.on(MAP_EVENT.ENTITY_HOVER, (event) => {
     if (
-      dataService.customPointDataService.isCreating ||
-      dataService.electricPoleDataService.isCreating ||
-      dataService.electricPoleDataService.isDeletingConnection
+      mapDataService.customPointDataService.isCreating ||
+      mapDataService.electricPoleDataService.isCreating ||
+      mapDataService.electricPoleDataService.isDeletingConnection
     )
       return;
 
@@ -34,9 +34,9 @@ export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter, data
   // 监听 connection_hover 事件，设置 hover connection
   adapter.event.on(MAP_EVENT.CONNECTION_HOVER, (event) => {
     if (
-      dataService.customPointDataService.isCreating ||
-      dataService.electricPoleDataService.isCreating ||
-      dataService.electricPoleDataService.isDeleting
+      mapDataService.customPointDataService.isCreating ||
+      mapDataService.electricPoleDataService.isCreating ||
+      mapDataService.electricPoleDataService.isDeleting
     )
       return;
 

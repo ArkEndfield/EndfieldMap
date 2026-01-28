@@ -9,10 +9,10 @@ import { isDealedRewardItemWithCount } from '@/utils/reward';
 
 export const DungeonReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<Record<string, DealedRewardItem[]>>({});
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
 
   const getRewadData = async (id: EntityData['properties']['system_inst_key']) => {
-    const rewards = await dataService.dungeonSeriesDataService.getDungeonRewards(id);
+    const rewards = await mapDataService.dungeonSeriesDataService.getDungeonRewards(id);
     return rewards;
   };
 

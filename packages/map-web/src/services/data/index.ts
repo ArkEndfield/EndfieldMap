@@ -1,23 +1,5 @@
-import { type EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { JSONLoader, StorageManager } from '@endfieldmap/tools';
 
-import { ChestRewardDataService } from '@/services/data/chest_reward';
-import { CustomPointDataService } from '@/services/data/custom_point';
-import { DeltaRobotDataService } from '@/services/data/delta_robot';
-import { DungeonSeriesDataService } from '@/services/data/dungeon_series';
-import { ElectricPoleDataService } from '@/services/data/electric_pole';
-import { EntityDataService } from '@/services/data/entity';
-import { GridTiersDataService } from '@/services/data/grid_tiers';
-import { GuideDataService } from '@/services/data/guide';
-import { ItemDataService } from '@/services/data/item';
-import { LangHashDataService } from '@/services/data/lang_hash';
-import { MapStateDataService } from '@/services/data/map_state';
-import { NoteDataService } from '@/services/data/note';
-import { SwiperDataService } from '@/services/data/swiper';
-
-/**
- * 数据服务
- */
 export class DataService {
   public static storage = new StorageManager({
     name: 'endfieldmap',
@@ -27,98 +9,8 @@ export class DataService {
   public static jsonLoader = new JSONLoader({
     storage: this.storage,
   });
-  public static instance?: DataService;
-
-  public entityDataService: EntityDataService;
-  public electricPoleDataService: ElectricPoleDataService;
-  public customPointDataService: CustomPointDataService;
-  public itemDataService: ItemDataService;
-  public dungeonSeriesDataService: DungeonSeriesDataService;
-  public deltaRobotDataService: DeltaRobotDataService;
-  public chestRewardDataService: ChestRewardDataService;
-  public guideDataService: GuideDataService;
-  public langHashDataService: LangHashDataService;
-  public mapStateDataService: MapStateDataService;
-  public swiperDataService: SwiperDataService;
-  public gridTiersDataService: GridTiersDataService;
-  public noteDataService: NoteDataService;
-
-  constructor(adapter: EndfieldMapAdapter) {
-    this.entityDataService = new EntityDataService(DataService.storage, adapter);
-    this.electricPoleDataService = new ElectricPoleDataService(DataService.storage, adapter);
-    this.customPointDataService = new CustomPointDataService(DataService.storage, adapter);
-
-    this.itemDataService = new ItemDataService(DataService.jsonLoader, DataService.storage);
-    this.chestRewardDataService = new ChestRewardDataService(
-      DataService.jsonLoader,
-      DataService.storage,
-      this.itemDataService
-    );
-    this.dungeonSeriesDataService = new DungeonSeriesDataService(
-      DataService.jsonLoader,
-      DataService.storage,
-      this.chestRewardDataService
-    );
-    this.deltaRobotDataService = new DeltaRobotDataService(DataService.jsonLoader, DataService.storage);
-    this.guideDataService = new GuideDataService(DataService.jsonLoader, DataService.storage);
-    this.langHashDataService = new LangHashDataService(DataService.jsonLoader);
-    this.mapStateDataService = new MapStateDataService(adapter);
-    this.swiperDataService = new SwiperDataService();
-    this.gridTiersDataService = new GridTiersDataService(DataService.jsonLoader, adapter);
-    this.noteDataService = new NoteDataService(DataService.jsonLoader);
-  }
 
   public static async initStorage() {
-    await DataService.storage.init();
-  }
-
-  public static async createInstance(adapter: EndfieldMapAdapter) {
-    if (DataService.instance) return DataService.instance;
-    const instance = new DataService(adapter);
-    await instance.init();
-    return instance;
-  }
-
-  public async init() {
-    await Promise.all([
-      // 初始化 entity 数据
-      this.entityDataService.initFromStorage(),
-      // 初始化电线杆预设数据
-      this.electricPoleDataService.initFromStorage(),
-      // 初始化自定义标点预设数据
-      this.customPointDataService.initFromStorage(),
-      // 初始化 item 数据（游戏物品）
-      this.itemDataService.getItemData(),
-      // 初始化宝箱奖励数据
-      this.chestRewardDataService.getRewardsData(),
-      // 初始化副本奖励数据
-      this.dungeonSeriesDataService.getDungeonSeriesData(),
-      // 初始化攻略数据
-      this.guideDataService.getGuidesData(),
-      // 初始化语言哈希数据
-      this.langHashDataService.init(),
-      // 初始化网格分级数据
-      this.gridTiersDataService.init(),
-      // 初始化 delta robot 数据
-      this.deltaRobotDataService.init(),
-      // 初始化情报档案数据
-      this.noteDataService.init(),
-    ]);
-    this.deleteCacheData();
-  }
-
-  private deleteCacheData() {
-    // TODO: 旧版本数据迁移
-    // 先前缓存了 lang_hash，但是现在不需要了，因为其本身就写入内存里了
-    DataService.storage.permanentRemove('lang_hash');
-  }
-
-  /**
-   * 停止所有操作
-   * TODO: 更新补充
-   */
-  public stopAllOperation() {
-    this.customPointDataService.stopAllOperation();
-    this.electricPoleDataService.stopAllOperation();
+    await this.storage.init();
   }
 }

@@ -73,7 +73,7 @@ const Content = ({
 };
 
 const MobilePopup: React.FC = observer(() => {
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const { t } = useTranslation('popup');
   const [showSubPage, setShowSubPage] = useState(false);
 
@@ -88,8 +88,8 @@ const MobilePopup: React.FC = observer(() => {
 
   const open =
     !!activeFeature &&
-    !dataService.electricPoleDataService.isInElectricOperateMode &&
-    !dataService.customPointDataService.isInCustomPointOperateMode;
+    !mapDataService.electricPoleDataService.isInElectricOperateMode &&
+    !mapDataService.customPointDataService.isInCustomPointOperateMode;
 
   const entity = activeFeature?.data;
 

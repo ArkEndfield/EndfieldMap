@@ -17,8 +17,8 @@ const shapeTypeLabel: Record<DevToolsShapeType, string> = {
 };
 
 export const DevToolsDrawPanelToggle = observer(() => {
-  const { dataService } = useAdapter();
-  const devToolsState = dataService.mapStateDataService.devToolsState;
+  const { mapDataService } = useAdapter();
+  const devToolsState = mapDataService.mapStateDataService.devToolsState;
 
   if (!devToolsState) {
     return null;
@@ -44,9 +44,9 @@ export const DevToolsDrawPanelToggle = observer(() => {
 });
 
 export const DevToolsDrawPanel = observer(() => {
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const devToolsController = adapter.devToolsController;
-  const devToolsState = dataService.mapStateDataService.devToolsState;
+  const devToolsState = mapDataService.mapStateDataService.devToolsState;
 
   const [isDragging, setIsDragging] = useState(false);
   const dragStartOffset = useRef({ right: 0, top: 0 });

@@ -13,9 +13,9 @@ export interface PresetItem {
 
 export const useCustomPointPresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
 
-  const service = dataService.customPointDataService;
+  const service = mapDataService.customPointDataService;
   const currentPresetId = service.currentPresetId ?? '';
   const presets = service.presetList;
 

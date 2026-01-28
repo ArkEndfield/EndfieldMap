@@ -3,10 +3,10 @@ import type { ThemeRootContextProps } from '@themes/types/context';
 
 import { EndfieldUIManager } from '@/components/themes/endfield/ui/ui_manager';
 
-const EndfieldThemeRootProvider = ({ children, dataService }: ThemeRootContextProps) => {
-  const uiManager = EndfieldUIManager.getInstance(dataService);
+const EndfieldThemeRootProvider = ({ children, mapDataService }: ThemeRootContextProps) => {
+  const uiManager = EndfieldUIManager.getInstance(mapDataService);
   return (
-    <EndfieldThemeUIManagerContext.Provider value={{ uiManager, dataService }}>
+    <EndfieldThemeUIManagerContext.Provider value={{ uiManager, mapDataService }}>
       {children}
     </EndfieldThemeUIManagerContext.Provider>
   );

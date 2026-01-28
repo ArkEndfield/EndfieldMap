@@ -8,7 +8,7 @@ import { SettingsPage } from '@/components/common/settings';
 import ZmdSwiper from '@/components/common/zmd_swiper';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import { DataService } from '@/services/data';
+import { MapDataService } from '@/services/data/map';
 import { isDev } from '@/services/env';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
@@ -17,13 +17,13 @@ const DevTools = isDev ? lazy(() => import('@/components/common/dev_tools')) : n
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
-  dataService: DataService;
+  mapDataService: MapDataService;
 }
 
-const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
+const Controllers = observer(({ adapter, mapDataService }: ControllersProps) => {
   const isMobile = useIsMobile();
   const enableHover = adapter.enableHover;
-  const hoverHitTestTime = dataService.mapStateDataService.hoverTime.value;
+  const hoverHitTestTime = mapDataService.mapStateDataService.hoverTime.value;
   const ThemedComponents = uiManager.ThemedComponents;
 
   useEffect(() => {
@@ -35,9 +35,9 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
   }, [adapter, enableHover, hoverHitTestTime, isMobile]);
 
   return (
-    <AdapterProvider adapter={adapter} dataService={dataService}>
+    <AdapterProvider adapter={adapter} mapDataService={mapDataService}>
       <Suspense>
-        <ThemedComponents.RootProvider dataService={dataService}>
+        <ThemedComponents.RootProvider mapDataService={mapDataService}>
           {/* 弹窗组件 */}
           <Suspense>
             <ThemedComponents.map.Popup />
@@ -96,7 +96,7 @@ const Controllers = observer(({ adapter, dataService }: ControllersProps) => {
 
 function EndfieldMap() {
   const container = useRef<HTMLDivElement>(null);
-  const { adapter, dataService } = useMapAdapter(container);
+  const { adapter, mapDataService } = useMapAdapter(container);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -110,7 +110,7 @@ function EndfieldMap() {
       ></div>
 
       {/* 控制组件 */}
-      {adapter && dataService && <Controllers adapter={adapter} dataService={dataService} />}
+      {adapter && mapDataService && <Controllers adapter={adapter} mapDataService={mapDataService} />}
     </div>
   );
 }

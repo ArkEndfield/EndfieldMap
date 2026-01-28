@@ -3,24 +3,24 @@ import { EndfieldThemeLocalStorageKey } from '@themes/endfield/const/storage_key
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { computed } from 'mobx';
 
-import type { DataService } from '@/services/data';
+import type { MapDataService } from '@/services/data/map';
 
 export class EndfieldUIManager {
   private static instance: EndfieldUIManager;
-  private dataService: DataService;
+  private mapDataService: MapDataService;
 
   /** 当前操作面板 */
   public currentOperatePanel: LocalStorageValue<CurrentOperatePanel>;
   /** 侧边面板是否打开 */
   public operatePanelOpen: LocalStorageValue<boolean>;
 
-  private constructor(dataService: DataService) {
-    this.dataService = dataService;
+  private constructor(mapDataService: MapDataService) {
+    this.mapDataService = mapDataService;
     this.currentOperatePanel = new LocalStorageValue<CurrentOperatePanel>({
       initialValue: CurrentOperatePanel.FILTER,
       storageKey: EndfieldThemeLocalStorageKey.CURRENT_OPERATE_PANEL,
       onValueChange: () => {
-        this.dataService.stopAllOperation();
+        this.mapDataService.stopAllOperation();
       },
     });
 
@@ -48,24 +48,24 @@ export class EndfieldUIManager {
 
   /**
    * 获取单例
-   * @param dataService 数据服务
+   * @param mapDataService 数据服务
    * @returns
    */
-  public static getInstance(dataService: DataService): EndfieldUIManager {
+  public static getInstance(mapDataService: MapDataService): EndfieldUIManager {
     if (!EndfieldUIManager.instance) {
-      EndfieldUIManager.instance = new EndfieldUIManager(dataService);
+      EndfieldUIManager.instance = new EndfieldUIManager(mapDataService);
     }
     const instance = EndfieldUIManager.instance;
-    instance.setDataService(dataService);
+    instance.setMapDataService(mapDataService);
     return instance;
   }
 
   /**
    * 设置数据服务
-   * @param dataService 数据服务
+   * @param mapDataService 数据服务
    */
-  public setDataService(dataService: DataService) {
-    this.dataService = dataService;
+  public setMapDataService(mapDataService: MapDataService) {
+    this.mapDataService = mapDataService;
   }
 
   /**

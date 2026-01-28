@@ -11,8 +11,8 @@ import { cn } from '@/utils/style';
 
 // 开发工具面板
 const DevToolsPanel = observer(() => {
-  const { dataService } = useAdapter();
-  const devToolsState = dataService.mapStateDataService.devToolsState;
+  const { mapDataService } = useAdapter();
+  const devToolsState = mapDataService.mapStateDataService.devToolsState;
 
   const [position, setPosition] = useState(devToolsState?.value?.position || { right: 20, top: 20 });
   const [isDragging, setIsDragging] = useState(false);

@@ -15,11 +15,11 @@ import { cn } from '@/utils/style';
  */
 const CustomPointTypeSelector: React.FC = observer(() => {
   const { t } = useTranslation(['common', 'sidebar']);
-  const { dataService } = useAdapter();
-  const selectedType = dataService.customPointDataService.selectedPointType;
+  const { mapDataService } = useAdapter();
+  const selectedType = mapDataService.customPointDataService.selectedPointType;
 
   const handleSelectType = (pointType: CustomPointTypeId) => {
-    dataService.customPointDataService.setSelectedPointType(pointType);
+    mapDataService.customPointDataService.setSelectedPointType(pointType);
   };
 
   return (

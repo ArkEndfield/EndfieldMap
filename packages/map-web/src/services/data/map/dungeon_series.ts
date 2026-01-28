@@ -2,7 +2,7 @@ import type { DungeonSeriesData } from '@eftypes/dungeon_series';
 import type { DealedRewardItem } from '@eftypes/reward';
 import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
 
-import { ChestRewardDataService } from '@/services/data/chest_reward';
+import { ChestRewardDataService } from '@/services/data/map/chest_reward';
 import { getAssetUrls } from '@/utils/url';
 
 export class DungeonSeriesDataService {

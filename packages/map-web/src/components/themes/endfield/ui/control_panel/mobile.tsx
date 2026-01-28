@@ -14,7 +14,7 @@ import { useAdapter } from '@/hooks/use_adapter';
 const MobileControlPanel = observer(() => {
   const { t } = useTranslation('sidebar');
   const uiManager = useEndfieldUIManager();
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
   const currentPanel = uiManager.currentOperatePanel.value;
   const isOpen = uiManager.isSidePanelOpen; // Controls collapsed state
   const isNoneCurrentPanel = currentPanel === CurrentOperatePanel.NONE;
@@ -25,7 +25,7 @@ const MobileControlPanel = observer(() => {
   };
 
   const handleToggleElectricPole = () => {
-    if (dataService.electricPoleDataService.isInElectricOperateMode) {
+    if (mapDataService.electricPoleDataService.isInElectricOperateMode) {
       alert.info(t('operation.electric_pole_operating_tip'));
       return;
     }
@@ -33,7 +33,7 @@ const MobileControlPanel = observer(() => {
   };
 
   const handleToggleCustomPoint = () => {
-    if (dataService.customPointDataService.isInCustomPointOperateMode) {
+    if (mapDataService.customPointDataService.isInCustomPointOperateMode) {
       alert.info(t('operation.custom_point_operating_tip'));
       return;
     }
@@ -58,7 +58,7 @@ const MobileControlPanel = observer(() => {
         open={currentPanel === CurrentOperatePanel.ELECTRIC_POLE}
         collapsed={!isOpen}
         onToggleCollapse={handleToggleElectricPole}
-        dismissible={!dataService.electricPoleDataService.isInElectricOperateMode}
+        dismissible={!mapDataService.electricPoleDataService.isInElectricOperateMode}
       >
         <ElectricPoleManager />
       </BottomSheet>
@@ -67,7 +67,7 @@ const MobileControlPanel = observer(() => {
         open={currentPanel === CurrentOperatePanel.CUSTOM_POINT}
         collapsed={!isOpen}
         onToggleCollapse={handleToggleCustomPoint}
-        dismissible={!dataService.customPointDataService.isInCustomPointOperateMode}
+        dismissible={!mapDataService.customPointDataService.isInCustomPointOperateMode}
       >
         <CustomPointManager />
       </BottomSheet>

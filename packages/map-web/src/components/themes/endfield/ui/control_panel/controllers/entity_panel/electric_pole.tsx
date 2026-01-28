@@ -22,7 +22,7 @@ interface ElectricPoleTypeGroup {
 
 const ElectricPoleList: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
 
   const instances = adapter.electricPoleController.dataManager.currentInstances;
   const currentMapId = adapter.mapController.dataManager.currentMapId;
@@ -57,7 +57,7 @@ const ElectricPoleList: React.FC = observer(() => {
         allVisible = visibleCount === count;
       } else {
         // If no instances, use stored visibility preference
-        const storedVisibility = dataService.electricPoleDataService.deviceVisibilityData[currentMapId]?.[deviceKey];
+        const storedVisibility = mapDataService.electricPoleDataService.deviceVisibilityData[currentMapId]?.[deviceKey];
         // Default to visible if not set
         allVisible = storedVisibility !== false;
       }
@@ -81,7 +81,7 @@ const ElectricPoleList: React.FC = observer(() => {
     if (group.instances.length > 0) {
       group.instances.forEach((instance) => instance.setVisible(newVisible));
     }
-    dataService.electricPoleDataService.updateDeviceVisibility(
+    mapDataService.electricPoleDataService.updateDeviceVisibility(
       adapter.mapController.dataManager.currentMapId,
       group.deviceKey,
       newVisible
@@ -94,7 +94,7 @@ const ElectricPoleList: React.FC = observer(() => {
       if (group.instances.length > 0) {
         group.instances.forEach((instance) => instance.setVisible(newVisible));
       }
-      dataService.electricPoleDataService.updateDeviceVisibility(
+      mapDataService.electricPoleDataService.updateDeviceVisibility(
         adapter.mapController.dataManager.currentMapId,
         group.deviceKey,
         newVisible

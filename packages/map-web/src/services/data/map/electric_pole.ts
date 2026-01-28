@@ -23,7 +23,7 @@ import { action, autorun, computed, observable, reaction, runInAction, toJS } fr
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
 import i18n from '@/i18n';
-import { BasePresetDataService } from '@/services/data/base/base_preset';
+import { BasePresetDataService } from '@/services/data/map/base/base_preset';
 
 /**
  * 获取电线杆错误的 i18n 消息

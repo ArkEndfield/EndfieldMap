@@ -10,10 +10,10 @@ import { useAdapter } from '@/hooks/use_adapter';
 
 export const ElectricPoleOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const isElecricPoleVisible = adapter.electricPoleController.dataManager.visible;
   const isOpen = uiManager.currentOperatePanel.value === CurrentOperatePanel.ELECTRIC_POLE && isElecricPoleVisible;
-  const isInCreateMode = dataService.electricPoleDataService.isCreating;
+  const isInCreateMode = mapDataService.electricPoleDataService.isCreating;
 
   return (
     <OperationList open={isOpen} className="flex gap-2">

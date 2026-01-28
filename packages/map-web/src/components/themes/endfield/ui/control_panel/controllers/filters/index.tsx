@@ -16,10 +16,10 @@ const filterModes = [
 ] as const;
 
 export const Filters = observer(({ className, extra }: { className?: string; extra?: React.ReactNode }) => {
-  const { dataService, adapter } = useAdapter();
+  const { mapDataService, adapter } = useAdapter();
   const { t } = useTranslation('sidebar');
 
-  const filterMode = dataService.mapStateDataService.filterMarked.value;
+  const filterMode = mapDataService.mapStateDataService.filterMarked.value;
 
   const clearFilterSelect = () => {
     adapter.entityController.hideAllEntities();
@@ -37,9 +37,9 @@ export const Filters = observer(({ className, extra }: { className?: string; ext
             className="text-lg w-8 h-8"
             onChange={(v) => {
               if (v) {
-                dataService.mapStateDataService.filterMarked.value = mode.value;
+                mapDataService.mapStateDataService.filterMarked.value = mode.value;
               } else {
-                dataService.mapStateDataService.filterMarked.value = MarkedFeatureFilterMode.All;
+                mapDataService.mapStateDataService.filterMarked.value = MarkedFeatureFilterMode.All;
               }
             }}
           >

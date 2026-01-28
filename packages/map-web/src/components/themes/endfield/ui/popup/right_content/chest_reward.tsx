@@ -11,12 +11,12 @@ import { isDealedRewardItemWithCount } from '@/utils/reward';
 export const ChestReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<DealedRewardItem[]>([]);
   const { t } = useTranslation(['popup', 'lang']);
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
 
   const getRewadData = useCallback(async () => {
-    const rewards = await dataService.chestRewardDataService.getRewards(entity.properties.reward_id);
+    const rewards = await mapDataService.chestRewardDataService.getRewards(entity.properties.reward_id);
     return rewards;
-  }, [dataService.chestRewardDataService, entity]);
+  }, [mapDataService.chestRewardDataService, entity]);
 
   useEffect(() => {
     getRewadData().then((data) => {

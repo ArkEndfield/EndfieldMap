@@ -15,8 +15,8 @@ import { useAdapter } from '@/hooks/use_adapter';
  */
 const NoteEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQuery }) => {
   const { t } = useTranslation(['sidebar', 'lang']);
-  const { dataService, adapter } = useAdapter();
-  const data = dataService.noteDataService.investigateData;
+  const { mapDataService, adapter } = useAdapter();
+  const data = mapDataService.noteDataService.investigateData;
 
   // 处理数据：建立 collectionId 到 name 的映射，并准备搜索结果
   const itemsResult = useMemo((): { itemsMap: Map<string, NoteItem>; itemsList: NoteItem[] } => {

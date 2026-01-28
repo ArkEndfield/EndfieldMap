@@ -21,7 +21,7 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 const Menu = menus[0];
 
 const ElectricPoleViewIcon = observer(() => {
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const { play } = useAudio();
   const isElecricPoleVisible = adapter.electricPoleController.dataManager.visible;
 
@@ -30,7 +30,7 @@ const ElectricPoleViewIcon = observer(() => {
       onClick={(e) => {
         e.stopPropagation();
         play(SoundType.CLICK);
-        dataService.electricPoleDataService.toggleVisibility();
+        mapDataService.electricPoleDataService.toggleVisibility();
       }}
     >
       {isElecricPoleVisible ? <VisibleIcon /> : <InVisibleIcon />}
@@ -39,14 +39,14 @@ const ElectricPoleViewIcon = observer(() => {
 });
 
 const CustomPointViewIcon = observer(() => {
-  const { adapter, dataService } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const isCustomPointVisible = adapter.customPointController.dataManager.visible;
 
   return (
     <div
       onClick={(e) => {
         e.stopPropagation();
-        dataService.customPointDataService.toggleVisibility();
+        mapDataService.customPointDataService.toggleVisibility();
       }}
     >
       {isCustomPointVisible ? <VisibleIcon /> : <InVisibleIcon />}

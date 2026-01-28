@@ -14,7 +14,7 @@ import { action, autorun, computed, observable, reaction, runInAction, toJS } fr
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
-import { BasePresetDataService } from '@/services/data/base/base_preset';
+import { BasePresetDataService } from '@/services/data/map/base/base_preset';
 
 /**
  * 自定义标点数据管理器

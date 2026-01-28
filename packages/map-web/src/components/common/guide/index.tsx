@@ -47,12 +47,12 @@ export const Guide = ({ entity }: { entity: EntityData }) => {
   const [showImage, setShowImage] = useState(false);
   const [index, setIndex] = useState(0);
   const imageRef = useRef<ControllerRef>(null);
-  const { dataService } = useAdapter();
+  const { mapDataService } = useAdapter();
 
   const getGuideData = useCallback(async () => {
-    const guides = await dataService.guideDataService.getGuide(entity.levelLogicId);
+    const guides = await mapDataService.guideDataService.getGuide(entity.levelLogicId);
     return guides;
-  }, [dataService.guideDataService, entity.levelLogicId]);
+  }, [mapDataService.guideDataService, entity.levelLogicId]);
 
   const { slides, imageIndexMap } = collectImages(guide?.nodes ?? []);
 

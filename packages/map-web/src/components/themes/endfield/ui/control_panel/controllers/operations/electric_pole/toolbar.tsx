@@ -11,12 +11,12 @@ import { useElectricMode } from '@/hooks/use_electric_mode';
 
 export const PoleManagerToolbar = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { dataService, adapter } = useAdapter();
+  const { mapDataService, adapter } = useAdapter();
   const { getCurrentMode, toggleMode } = useElectricMode();
   const currentMode = getCurrentMode();
-  const isAutoConnect = dataService.electricPoleDataService.autoConnect;
+  const isAutoConnect = mapDataService.electricPoleDataService.autoConnect;
   const isZoneVisible = adapter.electricPoleController.dataManager.zoneVisible;
-  const isInCreateMode = dataService.electricPoleDataService.isCreating;
+  const isInCreateMode = mapDataService.electricPoleDataService.isCreating;
   // 配置按钮数据
   const tools = [
     {
@@ -55,14 +55,14 @@ export const PoleManagerToolbar = observer(() => {
         {isInCreateMode && (
           <EndfieldSquareSwitch
             value={isAutoConnect}
-            onValueChange={() => dataService.electricPoleDataService.toggleAutoConnect()}
+            onValueChange={() => mapDataService.electricPoleDataService.toggleAutoConnect()}
             label={t('operation.electric_pole.create.auto_connect')}
             className="mr-4"
           />
         )}
         <EndfieldSquareSwitch
           value={isZoneVisible}
-          onValueChange={() => dataService.electricPoleDataService.toggleZoneVisibility()}
+          onValueChange={() => mapDataService.electricPoleDataService.toggleZoneVisibility()}
           label={t('operation.electric_pole.zone.display')}
           className="mr-4"
         />

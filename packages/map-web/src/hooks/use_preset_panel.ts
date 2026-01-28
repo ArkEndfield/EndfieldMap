@@ -13,8 +13,8 @@ export interface PresetItem {
 
 export const usePresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
-  const { dataService } = useAdapter();
-  const service = dataService.electricPoleDataService;
+  const { mapDataService } = useAdapter();
+  const service = mapDataService.electricPoleDataService;
   const currentPresetId = service.currentPresetId ?? '';
   const presets = service.presetList;
 
