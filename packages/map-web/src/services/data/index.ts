@@ -61,7 +61,7 @@ export class DataService {
     );
     this.deltaRobotDataService = new DeltaRobotDataService(DataService.jsonLoader, DataService.storage);
     this.guideDataService = new GuideDataService(DataService.jsonLoader, DataService.storage);
-    this.langHashDataService = new LangHashDataService(DataService.jsonLoader, DataService.storage);
+    this.langHashDataService = new LangHashDataService(DataService.jsonLoader);
     this.mapStateDataService = new MapStateDataService(adapter);
     this.swiperDataService = new SwiperDataService();
     this.gridTiersDataService = new GridTiersDataService(DataService.jsonLoader, adapter);
@@ -96,7 +96,7 @@ export class DataService {
       // 初始化攻略数据
       this.guideDataService.getGuidesData(),
       // 初始化语言哈希数据
-      this.langHashDataService.getLangHashData(),
+      this.langHashDataService.init(),
       // 初始化网格分级数据
       this.gridTiersDataService.init(),
       // 初始化 delta robot 数据

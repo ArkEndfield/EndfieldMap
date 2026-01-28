@@ -28,8 +28,6 @@ export enum StorageKey {
   DUNGEON_SERIES = 'dungeon_series',
   /** Guide */
   GUIDE = 'guide',
-  /** LangHash */
-  LANG_HASH = 'lang_hash',
   /** DeltaRobotLevel */
   DELTA_ROBOT_LEVEL = 'delta_robot_level',
 }
