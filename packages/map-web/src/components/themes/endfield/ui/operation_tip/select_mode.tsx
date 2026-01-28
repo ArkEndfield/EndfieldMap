@@ -8,7 +8,7 @@ import { EndfieldFormButton } from '@/components/common/endfield_components/form
 import { useAdapter } from '@/hooks/use_adapter';
 
 const SelectOperator = observer(() => {
-  const { adapter } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
 
   const selectedFeatures = adapter.mapController.selection.selectedFeatures;
   const { t } = useTranslation(['sidebar', 'common']);
@@ -16,7 +16,9 @@ const SelectOperator = observer(() => {
   const markFeatures = (marked: boolean) => {
     selectedFeatures.forEach((feature) => {
       const instance = feature.get(EntityInstanceKey) as DataInstance | undefined;
-      instance?.setMarked?.(marked);
+      if (instance) {
+        mapDataService.entityDataService.markEntity(instance.mapId, instance.id, marked);
+      }
     });
   };
 

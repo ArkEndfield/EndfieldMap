@@ -65,10 +65,6 @@ export abstract class BasePresetDataService<
     this.storage = storage;
   }
 
-  public get isInitialized() {
-    return this.initialized;
-  }
-
   @computed
   public get currentPreset(): TPreset | null {
     return this.presetStorage.presets.find((p) => p.id === this.presetStorage.currentPresetId) ?? null;
@@ -119,9 +115,6 @@ export abstract class BasePresetDataService<
       }
       this.initialized = true;
     });
-
-    // 这里不自动调用 applyPresetToAdapter，因为子类可能有自己的初始化流程
-    // 子类可以在调用完 super.initPresetFromStorage() 后自行调用 applyCurrentPresetToAdapter()
   }
 
   /**

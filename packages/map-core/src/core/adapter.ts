@@ -5,7 +5,7 @@ import { MapController } from '@endfieldmap/map-core/controller/core/map';
 import { ZoomController } from '@endfieldmap/map-core/controller/core/zoom';
 import { DevToolsController } from '@endfieldmap/map-core/controller/dev_tools';
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
-import { DataController } from '@endfieldmap/map-core/controller/entity/data_controller';
+// import { DataController } from '@endfieldmap/map-core/controller/entity/data_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/feature/active_feature';
@@ -73,7 +73,7 @@ export class EndfieldMapAdapter {
   /** Hover连接控制器 */
   public hoverConnectionController: HoverConnectionController;
   /** 数据控制器 */
-  public dataController: DataController;
+  // public dataController: DataController;
   /** Popup控制器 */
   public popupController: PopupController | null = null;
   /** 缩放控制器 */
@@ -130,11 +130,11 @@ export class EndfieldMapAdapter {
       getConnectionLayer: () => this.electricPoleController?.currentRenderer || null,
       disableHoverConnection: config.map?.disableHoverFeature,
     });
-    this.dataController = new DataController({
-      entityController: this.entityController,
-      electricPoleController: this.electricPoleController,
-      customPointController: this.customPointController,
-    });
+    // this.dataController = new DataController({
+    //   entityController: this.entityController,
+    //   electricPoleController: this.electricPoleController,
+    //   customPointController: this.customPointController,
+    // });
     this.eventController = new EventController({
       entityController: this.entityController,
       electricPoleController: this.electricPoleController,
@@ -326,7 +326,7 @@ export class EndfieldMapAdapter {
       } else {
         // Standard Entity
         const entityInstance = instance as EntityDataInstance;
-        this.entityController.showEntity(entityInstance.entityDataIdKey);
+        this.entityController.setVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
       }
     }
 

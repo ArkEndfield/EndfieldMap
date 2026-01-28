@@ -5,14 +5,7 @@ import { EntityMapDataManager } from '@endfieldmap/map-core/data/entity';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
 import { EntityRender } from '@endfieldmap/map-core/render/renderer/entity/entity';
-import type {
-  Category,
-  EntityData,
-  EntityInfoDataJson,
-  EntityJsonDataList,
-  MapData,
-} from '@endfieldmap/map-core/types';
-import type { EntityVisibility, FeatureMarked, StorageData } from '@endfieldmap/map-core/types/data';
+import type { EntityData, EntityInfoDataJson, EntityJsonDataList, MapData } from '@endfieldmap/map-core/types';
 import { action, reaction } from 'mobx';
 
 /**
@@ -117,47 +110,19 @@ export class EntityController extends Disposer {
     this.render.updateMarkedFilterMode(this.dataManager.markedFilterMode);
   }
 
-  // #region 可见性操作
+  /**
+   * 设置Marked
+   */
+  public setMarked(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], marked: boolean): void {
+    this.dataManager.setMarked(mapId, levelLogicId, marked);
+  }
 
   /**
-   * 显示实体
+   * 设置实体组可见性
    */
-  public showEntity(entityDataIdKey: string) {
-    const manager = this.dataManager.currentGroupManagers.find((m) => m.entityDataIdKey === entityDataIdKey);
-    if (!manager) return;
-
-    manager.setGroupVisible(true);
+  public setVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean): void {
+    this.dataManager.setVisibility(mapId, entityKey, visible);
   }
-
-  public hideCategoryEntities(category: Category) {
-    const manager = this.dataManager.currentGroupManagers.find((m) => m.entityDataIdKey === category);
-    if (!manager) return;
-
-    manager.setGroupVisible(false);
-  }
-
-  public showCategoryEntities(category: Category) {
-    const manager = this.dataManager.currentGroupManagers.find((m) => m.entityDataIdKey === category);
-    if (!manager) return;
-
-    manager.setGroupVisible(true);
-  }
-
-  public toggleEntityVisible(entityDataIdKey: EntityData['entityDataIdKey']) {
-    const manager = this.dataManager.currentGroupManagers.find((m) => m.entityDataIdKey === entityDataIdKey);
-    if (!manager) return;
-
-    manager.setGroupVisible(!manager.groupVisible);
-  }
-
-  public hideAllEntities() {
-    this.dataManager.currentGroupManagers.forEach((manager) => {
-      manager.setGroupVisible(false);
-    });
-  }
-  // #endregion
-
-  // #region Marked过滤
 
   /**
    * 设置marked过滤模式
@@ -172,43 +137,41 @@ export class EntityController extends Disposer {
     // 应用到当前渲染器
     this.applyMarkedFilterMode();
   }
-  // #endregion
 
   // #region 数据导入导出
   /**
    * 导入可见性数据
    */
-  public async importVisibility(data: StorageData<EntityVisibility>): Promise<number> {
-    // this.pendingVisibility = data;
-    // 转换为data manager期望的类型
-    const fullData: Record<MapData['id'], Record<string, boolean>> = {} as Record<
-      MapData['id'],
-      Record<string, boolean>
-    >;
-    for (const [key, value] of Object.entries(data)) {
-      if (value) {
-        fullData[key as MapData['id']] = value;
-      }
+  public async importVisibility(
+    data: {
+      entityKey: EntityData['entityDataIdKey'];
+      mapId: MapData['id'];
+      visible: boolean;
+    }[]
+  ): Promise<number> {
+    let count = 0;
+    for (const item of data) {
+      this.dataManager.setVisibility(item.mapId, item.entityKey, item.visible);
+      count++;
     }
-    return this.dataManager.importVisibilityData(fullData);
+    return count;
   }
 
-  /**
-   * 导入标记数据
-   */
-  public async importMarked(data: StorageData<FeatureMarked>): Promise<number> {
-    // this.pendingMarked = data;
-    // 转换为data manager期望的类型
-    const fullData: Record<MapData['id'], Record<number, boolean>> = {} as Record<
-      MapData['id'],
-      Record<number, boolean>
-    >;
-    for (const [key, value] of Object.entries(data)) {
-      if (value) {
-        fullData[key as MapData['id']] = value;
+  public async importMarked(
+    data: {
+      entityId: EntityData['levelLogicId'];
+      mapId: MapData['id'];
+      marked: boolean;
+    }[]
+  ): Promise<number> {
+    let count = 0;
+    for (const item of data) {
+      this.dataManager.setMarked(item.mapId, item.entityId, item.marked);
+      if (item.marked) {
+        count++;
       }
     }
-    return this.dataManager.importMarkedData(fullData);
+    return count;
   }
   // #endregion
 }

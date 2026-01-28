@@ -1,4 +1,5 @@
 import { JSONLoader, StorageManager } from '@endfieldmap/tools';
+import { Storage } from '@/services/data/db/storage';
 
 export class DataService {
   public static storage = new StorageManager({
@@ -9,8 +10,10 @@ export class DataService {
   public static jsonLoader = new JSONLoader({
     storage: this.storage,
   });
+  public static dbStorage = new Storage();
 
   public static async initStorage() {
     await this.storage.init();
+    await this.dbStorage.init();
   }
 }

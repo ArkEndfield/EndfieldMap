@@ -108,11 +108,14 @@ const EntityPanel = observer(() => {
 
   // 切换分类显示/隐藏
   const handleCategoryClick = (category: Category, allDisplayed: boolean) => {
-    if (allDisplayed) {
-      adapter.entityController.hideCategoryEntities(category);
-    } else {
-      adapter.entityController.showCategoryEntities(category);
-    }
+    const isShow = !allDisplayed;
+    const allEntityDataIds = categorizedEntities
+      .find((c) => c.category === category)
+      ?.entities.map((e) => e.entityDataIdKey);
+    if (!allEntityDataIds) return;
+    allEntityDataIds.forEach((entityDataId) => {
+      mapDataService.entityDataService.setEntityGroupVisibility(currentMap, entityDataId, isShow);
+    });
   };
 
   if (!currentMap) {
@@ -156,7 +159,13 @@ const EntityPanel = observer(() => {
                   entity={entity}
                   category={categoryInfo.category}
                   active={entity.visible}
-                  onClick={() => adapter.entityController.toggleEntityVisible(entity.entityDataIdKey)}
+                  onClick={() =>
+                    mapDataService.entityDataService.setEntityGroupVisibility(
+                      currentMap,
+                      entity.entityDataIdKey,
+                      !entity.visible
+                    )
+                  }
                   hideCount={false}
                 />
               ))}

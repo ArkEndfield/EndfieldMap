@@ -88,6 +88,8 @@ export class MapService {
 
   private async _init() {
     try {
+      await DataService.initStorage();
+
       const [mapData, [entityJsonData, entityInfoData]] = await Promise.all([
         this.loadMapData(),
         this.loadEntityData(),
@@ -95,7 +97,6 @@ export class MapService {
       this.mapData = mapData;
       // LOADING 初始化数据服务
       loadingManager.updateStageProgress(LoadingStageId.STORAGE, 10);
-      await DataService.initStorage();
       // LOADING
       loadingManager.completeStage(LoadingStageId.STORAGE);
 

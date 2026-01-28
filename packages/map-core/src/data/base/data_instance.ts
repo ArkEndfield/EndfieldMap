@@ -120,16 +120,6 @@ export abstract class BaseDataInstance<T extends EntityData> {
   }
 
   /**
-   * 切换标记状态
-   */
-  @action
-  public toggleMarked(): boolean {
-    const newValue = !this.marked;
-    this.setMarked(newValue);
-    return newValue;
-  }
-
-  /**
    * 设置选中状态
    */
   @action

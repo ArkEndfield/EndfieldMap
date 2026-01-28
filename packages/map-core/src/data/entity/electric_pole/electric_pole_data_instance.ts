@@ -68,9 +68,7 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
     if (Array.isArray(connections)) {
       return connections.filter((id): id is number => typeof id === 'number' && Number.isFinite(id));
     }
-
-    const legacy = this._data.properties.connectTo;
-    return typeof legacy === 'number' && Number.isFinite(legacy) ? [legacy] : [];
+    return [];
   }
 
   /**
@@ -135,9 +133,6 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
   @action
   public setOutgoingConnectionIds(ids: number[]): void {
     this._data.properties.connections = ids;
-    if (Object.prototype.hasOwnProperty.call(this._data.properties, 'connectTo')) {
-      this._data.properties.connectTo = null;
-    }
   }
 
   /**

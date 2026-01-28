@@ -426,23 +426,6 @@ export class ElectricPoleDataService extends BasePresetDataService<
    * 使用 MobX reaction 监听电线杆数据变化并自动保存
    */
   private initAutoSaveReaction() {
-    // reaction(
-    //   () => {
-    //     // 通过 JSON 序列化追踪数据变化
-    //     const manager = this.adapter.electricPoleController.dataManager;
-    //     const data = manager.allData;
-    //     return JSON.stringify(data);
-    //   },
-    //   debounce(() => {
-    //     logger.debug('[ElectricPoleDataService] Auto-saving due to data change');
-    //     this.saveDataToStorage(this.temporaryData).catch((error) => {
-    //       logger.error('Failed to save electric pole data:', error);
-    //     });
-    //   }, DEBOUNCE_INTERVAL),
-    //   {
-    //     delay: 100,
-    //   }
-    // );
     const dispose = autorun(() => {
       const data = this.adapter.electricPoleController.dataManager.allData;
       this.debouncedSave(data);
@@ -635,8 +618,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
               : LEGACY_ELECTRIC_POLE_DEVICE_KEY;
 
           const connectionsRaw = Array.isArray(pole.properties.connections) ? pole.properties.connections : [];
-          const legacyConnectTo = pole.properties.connectTo != null ? [pole.properties.connectTo] : [];
-          const merged = [...connectionsRaw, ...legacyConnectTo].filter(
+          const merged = [...connectionsRaw].filter(
             (id): id is number => typeof id === 'number' && Number.isFinite(id)
           );
           const uniqueConnections = [...new Set<number>(merged)];
@@ -647,7 +629,6 @@ export class ElectricPoleDataService extends BasePresetDataService<
               ...pole.properties,
               deviceKey,
               connections: uniqueConnections,
-              connectTo: null,
             },
           };
         });

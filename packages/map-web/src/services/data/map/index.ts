@@ -40,7 +40,7 @@ export class MapDataService {
   constructor(adapter: EndfieldMapAdapter, storage: StorageManager, jsonLoader: JSONLoader) {
     this.storage = storage;
     this.jsonLoader = jsonLoader;
-    this.entityDataService = new EntityDataService(this.storage, adapter);
+    this.entityDataService = new EntityDataService(adapter);
     this.electricPoleDataService = new ElectricPoleDataService(this.storage, adapter);
     this.customPointDataService = new CustomPointDataService(this.storage, adapter);
 

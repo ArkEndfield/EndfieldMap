@@ -1,89 +1,63 @@
-import type {
-  EndfieldMapAdapter,
-  EntityVisibility,
-  FeatureMarked,
-  StorageData,
-} from '@endfieldmap/map-core';
-import { debounce, StorageKey, type StorageManager } from '@endfieldmap/tools';
-import { autorun } from 'mobx';
+import { type EndfieldMapAdapter, type MapData, type EntityData } from '@endfieldmap/map-core';
 
-import { DEBOUNCE_INTERVAL } from '@/const/data';
+import { userService } from '@/services/user';
 
 /**
  * 实体数据管理器
  */
 export class EntityDataService {
-  private storage: StorageManager;
   private adapter: EndfieldMapAdapter;
-  private reactionDisposers: Array<() => void> = [];
 
-  constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
-    this.storage = storage;
+  constructor(adapter: EndfieldMapAdapter) {
     this.adapter = adapter;
-    this.initAutoSaveReaction();
   }
 
   public async initFromStorage() {
-    const entityVisibilityData = (await this.storage.permanentGet(StorageKey.LAYERS_VISIBILITY)) || {};
-    const featureMarkedData = (await this.storage.permanentGet(StorageKey.MARKED_FEATURES)) || {};
+    const markData = await userService.data.entityMarkService.getAllMapMarkData();
+    const visibilityData = await userService.data.entityVisibilityService.getAllMapVisibilityData();
 
-    // 直接导入数据，新版 API 内部会处理数据验证
-    if (Object.keys(entityVisibilityData).length > 0) {
-      await this.adapter.entityController.importVisibility(entityVisibilityData);
+    // 导入可见性数据
+    if (visibilityData.length > 0) {
+      await this.adapter.entityController.importVisibility(visibilityData);
     }
-    if (Object.keys(featureMarkedData).length > 0) {
-      await this.adapter.entityController.importMarked(featureMarkedData);
+    // 导入标记数据
+    if (markData.length > 0) {
+      await this.adapter.entityController.importMarked(markData);
     }
-  }
-
-  public async saveEntityVisibilityToStorage(data: StorageData<EntityVisibility>) {
-    return await this.storage.permanentSet(StorageKey.LAYERS_VISIBILITY, data);
-  }
-
-  public async saveFeatureMarkedToStorage(data: StorageData<FeatureMarked>) {
-    return await this.storage.permanentSet(StorageKey.MARKED_FEATURES, data);
+    this.initSubscriptions();
   }
 
   /**
-   * 使用 MobX autorun 监听数据变化并自动保存
+   * 初始化数据订阅
    */
-  private initAutoSaveReaction() {
-    // 监听可见性数据变化
-    const visibilityDispose = autorun(() => {
-      const visibilityData = JSON.stringify(this.adapter.entityController.dataManager.visibilityData);
-      this.debouncedSaveVisibility(visibilityData);
+  private initSubscriptions() {
+    // 订阅标记数据变化
+    userService.data.entityMarkService.addScribe((mapId, id, marked) => {
+      this.adapter.entityController.setMarked(mapId, id, marked);
     });
 
-    // 监听标记数据变化
-    const markedDispose = autorun(() => {
-      const markedData = JSON.stringify(this.adapter.entityController.dataManager.markedData);
-      this.debouncedSaveMarked(markedData);
+    // 订阅可见性数据变化
+    userService.data.entityVisibilityService.addSubscribe((mapId, entityKey, visible) => {
+      this.adapter.entityController.setVisibility(mapId, entityKey, visible);
     });
-
-    this.reactionDisposers.push(visibilityDispose, markedDispose);
   }
 
-  /**
-   * 防抖保存可见性数据
-   */
-  private debouncedSaveVisibility = debounce((_serializedData: string) => {
-    const visibilityData = this.adapter.entityController.dataManager.visibilityData;
-    this.saveEntityVisibilityToStorage(visibilityData);
-  }, DEBOUNCE_INTERVAL);
+  public markEntity(mapId: MapData['id'], id: EntityData['levelLogicId'], marked: boolean) {
+    this.adapter.entityController.setMarked(mapId, id, marked);
+    userService.data.entityMarkService.setMarkData(mapId, id, marked);
+  }
 
-  /**
-   * 防抖保存标记数据
-   */
-  private debouncedSaveMarked = debounce((_serializedData: string) => {
-    const markedData = this.adapter.entityController.dataManager.markedData;
-    this.saveFeatureMarkedToStorage(markedData);
-  }, DEBOUNCE_INTERVAL);
+  public setEntityGroupVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean) {
+    this.adapter.entityController.setVisibility(mapId, entityKey, visible);
+    userService.data.entityVisibilityService.setVisibilityData(mapId, entityKey, visible);
+  }
+
+  public resetAllVisibility() {
+    userService.data.entityVisibilityService.clearAllData();
+  }
 
   /**
    * 清理资源
    */
-  public dispose() {
-    this.reactionDisposers.forEach((dispose) => dispose());
-    this.reactionDisposers = [];
-  }
+  public dispose() {}
 }

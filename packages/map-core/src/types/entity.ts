@@ -1,8 +1,7 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey, NoteKey } from '@endfieldmap/map-core/const/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
-
-import type { MapData } from './map';
+import type { MapData } from '@endfieldmap/map-core/types/map';
 
 /**
  * 自定义标点类型ID
@@ -94,8 +93,6 @@ export interface ElectricPoleData extends EntityData {
      * - 用于根据“谁发出”来计算距离限制
      */
     connections?: Array<EntityData['levelLogicId']>;
-    /** @deprecated 旧结构：单一 connectTo */
-    connectTo?: EntityData['levelLogicId'] | null;
     name?: string;
   };
 }

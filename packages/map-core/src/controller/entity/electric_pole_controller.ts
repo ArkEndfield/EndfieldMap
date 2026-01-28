@@ -130,7 +130,6 @@ export class ElectricPoleController extends Disposer {
       properties: {
         deviceKey,
         connections: [],
-        connectTo: null,
       },
     };
 

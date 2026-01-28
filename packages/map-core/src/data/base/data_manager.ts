@@ -161,18 +161,6 @@ export abstract class BaseDataManager<T extends EntityData, I extends BaseDataIn
   }
 
   /**
-   * 清除所有标记
-   */
-  @action
-  public clearAllMarked(): void {
-    for (const instance of this.instances) {
-      if (instance.marked) {
-        instance.setMarked(false);
-      }
-    }
-  }
-
-  /**
    * 清除所有选中
    */
   @action

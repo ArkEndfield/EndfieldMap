@@ -1,6 +1,7 @@
 import { DEFAULT_CLUSTER_DISTANCE, MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { EntityDataInstance } from '@endfieldmap/map-core/data/entity/entity_data_instance';
 import { EntityGroupManager } from '@endfieldmap/map-core/data/entity/entity_group_manager';
+import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types';
 import type {
   Category,
@@ -13,8 +14,6 @@ import type {
 import { logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
 
-import { MapDataManager } from '../map/map';
-
 /**
  * Entity地图数据管理器
  * 管理所有地图的Entity数据
@@ -22,9 +21,6 @@ import { MapDataManager } from '../map/map';
 export class EntityMapDataManager {
   /** 是否已加载 */
   public dataLoaded: boolean = false;
-
-  /** 加载Promise */
-  private loadPromise: Promise<void> | null = null;
 
   /** 地图数据：mapId -> entityDataIdKey -> EntityGroupManager */
   @observable
@@ -127,28 +123,15 @@ export class EntityMapDataManager {
       throw error;
     }
   }
-  /**
-   * 获取Entity信息
-   */
-  public getEntityInfo(entityDataIdKey: string): EntityInfoData | undefined {
-    return this.infoData.get(entityDataIdKey);
-  }
-
-  /**
-   * 获取地图的所有组管理器
-   */
-  public getMapGroupManagers(mapId: MapData['id']): Map<string, EntityGroupManager> {
-    if (!this.dataLoaded) {
-      throw new Error('EntityMapDataManager is not loaded');
-    }
-    return this.mapData.get(mapId) ?? new Map();
-  }
 
   /**
    * 获取地图的所有组管理器数组
    */
   public getMapGroupManagerList(mapId: MapData['id']): EntityGroupManager[] {
-    const managers = this.getMapGroupManagers(mapId);
+    if (!this.dataLoaded) {
+      throw new Error('EntityMapDataManager is not loaded');
+    }
+    const managers = this.mapData.get(mapId) ?? new Map();
     return Array.from(managers.values());
   }
 
@@ -194,101 +177,13 @@ export class EntityMapDataManager {
   }
 
   /**
-   * 导出所有标记数据
-   */
-  @computed
-  get markedData(): Record<MapData['id'], Record<number, boolean>> {
-    const result: Record<string, Record<number, boolean>> = {};
-
-    for (const [mapId, managers] of this.mapData) {
-      result[mapId] = {};
-      for (const [, manager] of managers) {
-        for (const instance of manager.markedInstances) {
-          result[mapId][instance.id] = true;
-        }
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * 导入标记数据
-   */
-  @action
-  public async importMarkedData(data: Record<MapData['id'], Record<number, boolean>>): Promise<number> {
-    if (!this.dataLoaded) {
-      if (this.loadPromise) {
-        await this.loadPromise;
-      } else {
-        logger.warn('[EntityMapDataManager] Cannot import marked data: data not loaded');
-        return 0;
-      }
-    }
-    let count = 0;
-
-    for (const [mapIdStr, markedMap] of Object.entries(data)) {
-      const mapId = mapIdStr as MapData['id'];
-      const managers = this.mapData.get(mapId);
-      if (!managers) continue;
-
-      for (const [, manager] of managers) {
-        for (const instance of manager.instances) {
-          const shouldBeMarked = markedMap[instance.id] === true;
-          if (instance.marked !== shouldBeMarked) {
-            instance.setMarked(shouldBeMarked);
-            if (shouldBeMarked) {
-              count++;
-            }
-          }
-        }
-      }
-    }
-
-    return count;
-  }
-
-  /**
-   * 清除所有标记
-   */
-  @action
-  public clearAllMarked(): void {
-    for (const [, managers] of this.mapData) {
-      for (const [, manager] of managers) {
-        manager.clearAllMarked();
-      }
-    }
-  }
-
-  /**
-   * 导出可见性数据
-   */
-  @computed
-  get visibilityData(): Record<MapData['id'], Record<string, boolean>> {
-    const result: Record<string, Record<string, boolean>> = {};
-
-    for (const [mapId, managers] of this.mapData) {
-      result[mapId] = {};
-      for (const [entityDataIdKey, manager] of managers) {
-        result[mapId][entityDataIdKey] = manager.groupVisible;
-      }
-    }
-
-    return result;
-  }
-
-  /**
    * 导入可见性数据
    */
   @action
   public async importVisibilityData(data: Record<MapData['id'], Record<string, boolean>>): Promise<number> {
     if (!this.dataLoaded) {
-      if (this.loadPromise) {
-        await this.loadPromise;
-      } else {
-        logger.warn('[EntityMapDataManager] Cannot import marked data: data not loaded');
-        return 0;
-      }
+      logger.warn('[EntityMapDataManager] Cannot import marked data: data not loaded');
+      return 0;
     }
     let count = 0;
 
@@ -309,20 +204,33 @@ export class EntityMapDataManager {
     return count;
   }
 
-  /**
-   * 重置所有可见性
-   */
   @action
-  public resetAllVisibility(visible: boolean = false): void {
-    for (const [, managers] of this.mapData) {
-      for (const [, manager] of managers) {
-        manager.setGroupVisible(visible);
-      }
+  public setDisableCluster(value: boolean): void {
+    this.disableCluster = value;
+  }
+
+  @action
+  public setMarked(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], marked: boolean): void {
+    const instance = this.getInstanceById(mapId, levelLogicId);
+    if (instance) {
+      instance.setMarked(marked);
+    } else {
+      logger.warn(`[EntityMapDataManager] Instance not found: mapId=${mapId}, levelLogicId=${levelLogicId}`);
     }
   }
 
   @action
-  public setDisableCluster(value: boolean): void {
-    this.disableCluster = value;
+  public setVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean): void {
+    const managers = this.mapData.get(mapId);
+    if (!managers) {
+      logger.warn(`[EntityMapDataManager] Map not found: mapId=${mapId}`);
+      return;
+    }
+    const manager = managers.get(entityKey);
+    if (manager) {
+      manager.setGroupVisible(visible);
+    } else {
+      logger.warn(`[EntityMapDataManager] Entity group not found: mapId=${mapId}, entityKey=${entityKey}`);
+    }
   }
 }

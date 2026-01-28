@@ -109,16 +109,12 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
     byId: Map<number, ElectricPoleDataInstance>
   ): number[] {
     const raw = instance.data.properties.connections;
-    const legacy = instance.data.properties.connectTo;
 
     const merged: number[] = [];
     if (Array.isArray(raw)) {
       for (const id of raw) {
         if (typeof id === 'number' && Number.isFinite(id)) merged.push(id);
       }
-    }
-    if (typeof legacy === 'number' && Number.isFinite(legacy)) {
-      merged.push(legacy);
     }
 
     const seen = new Set<number>();
@@ -180,8 +176,6 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
       ...instance.data,
       properties: {
         ...instance.data.properties,
-        // 兼容：保留 connectTo 字段为空，连接关系统一以 connections 表示
-        connectTo: null,
         connections: instance.outgoingConnectionIds,
       },
     }));

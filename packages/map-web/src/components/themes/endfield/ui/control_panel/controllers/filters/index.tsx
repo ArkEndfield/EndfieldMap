@@ -16,13 +16,14 @@ const filterModes = [
 ] as const;
 
 export const Filters = observer(({ className, extra }: { className?: string; extra?: React.ReactNode }) => {
-  const { mapDataService, adapter } = useAdapter();
+  const { mapDataService } = useAdapter();
   const { t } = useTranslation('sidebar');
 
   const filterMode = mapDataService.mapStateDataService.filterMarked.value;
 
   const clearFilterSelect = () => {
-    adapter.entityController.hideAllEntities();
+    mapDataService.entityDataService.resetAllVisibility();
+    mapDataService.mapStateDataService.filterMarked.value = MarkedFeatureFilterMode.All;
   };
 
   return (

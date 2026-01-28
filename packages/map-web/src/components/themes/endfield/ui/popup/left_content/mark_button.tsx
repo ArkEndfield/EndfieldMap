@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { FilterMarked, FilterUnMarked } from '@/components/common/icons';
 import { cn } from '@/utils/style';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export interface MarkButtonProps {
   entity: DataInstance;
@@ -13,6 +14,7 @@ export interface MarkButtonProps {
 
 export const MarkButton: React.FC<MarkButtonProps> = observer(({ entity }) => {
   const { t } = useTranslation();
+  const { mapDataService } = useAdapter();
   if (!entity?.markable) return null;
   return (
     <Tooltip
@@ -21,7 +23,7 @@ export const MarkButton: React.FC<MarkButtonProps> = observer(({ entity }) => {
       placement="bottom"
       asProps={{
         className: cn('text-xl p-1', entity.marked && 'text-[#fffa00]'),
-        onClick: () => entity.toggleMarked?.(),
+        onClick: () => mapDataService.entityDataService.markEntity(entity.mapId, entity.id, !entity.marked),
       }}
     >
       {entity.marked ? <FilterMarked /> : <FilterUnMarked />}
