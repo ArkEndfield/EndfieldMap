@@ -10,7 +10,7 @@ import { markDataSchema, type MarkDataCollection } from '@/services/data/db/sche
 import { visibilityDataSchema, type VisibilityDataCollection } from '@/services/data/db/schema/visibility';
 import { presetSchema, type PresetCollection } from '@/services/data/db/schema/preset';
 import { DataService } from '@/services/data';
-import { StorageKey } from '@endfieldmap/tools';
+import { logger, StorageKey } from '@endfieldmap/tools';
 import type { ElectricPolePreset } from '@/@types/electric_pole';
 import type { CustomPointPreset } from '@/@types/custom_point';
 import { EntityMarkService } from '@/services/data/user/marked/entity';
@@ -100,16 +100,30 @@ export class Storage {
   private static MIGRATION_KEY = 'endfieldmap:migrated_to_rxdb';
 
   public async migrate() {
-    // 检查是否已迁移
-    if (localStorage.getItem(Storage.MIGRATION_KEY)) {
-      return;
-    }
-
     if (!this.db) {
       throw new Error('Database not initialized');
     }
 
     const storage = DataService.storage;
+
+    const now = Date.now();
+    // 检查是否已迁移
+    const flag = localStorage.getItem(Storage.MIGRATION_KEY);
+    if (flag) {
+      const [migrated, timestamp] = flag.split(':');
+      if (migrated === 'true') {
+        // 检查是否超过 7 天，如果超过，删除所有数据
+        if (timestamp && now - Number(timestamp) > 7 * 24 * 60 * 60 * 1000) {
+          storage.permanentRemove(StorageKey.ELECTRIC_POLE);
+          storage.permanentRemove(StorageKey.ELECTRIC_POLE_VISIBILITY);
+          storage.permanentRemove(StorageKey.CUSTOM_POINT);
+          storage.permanentRemove(StorageKey.CUSTOM_POINT_VISIBILITY);
+          storage.permanentRemove(StorageKey.LAYERS_VISIBILITY);
+          storage.permanentRemove(StorageKey.MARKED_FEATURES);
+        }
+        return;
+      }
+    }
 
     // 并行获取所有旧数据
     const [
@@ -256,7 +270,7 @@ export class Storage {
     }
 
     // 标记迁移完成
-    localStorage.setItem(Storage.MIGRATION_KEY, 'true');
-    console.log('[Storage] Data migration completed successfully');
+    localStorage.setItem(Storage.MIGRATION_KEY, `true:${now}`);
+    logger.log('[Storage] Data migration completed successfully');
   }
 }
