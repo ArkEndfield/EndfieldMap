@@ -2,7 +2,7 @@ import { BaseDataManager } from '@endfieldmap/map-core/data/base';
 import { getCustomPointEntityInfo } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_config';
 import { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_instance';
 import type { CustomPointData, CustomPointDataManagerConfig } from '@endfieldmap/map-core/types/entity';
-import { computed } from 'mobx';
+import { action, computed, observable } from 'mobx';
 
 /**
  * 自定义标点数据管理器
@@ -18,6 +18,10 @@ export class CustomPointDataManager extends BaseDataManager<CustomPointData, Cus
     }
   }
 
+  /** 类型可见性 */
+  @observable
+  accessor typeVisibility: Map<string, boolean> = new Map();
+
   /**
    * 创建自定义标点数据实例
    */
@@ -25,10 +29,39 @@ export class CustomPointDataManager extends BaseDataManager<CustomPointData, Cus
     if (!data.entityInfo) {
       data.entityInfo = getCustomPointEntityInfo(data.entityDataIdKey);
     }
-    return new CustomPointDataInstance({
+    const instance = new CustomPointDataInstance({
       data,
       mapId: this.mapId,
     });
+
+    // 应用可见性
+    const typeId = instance.typeId; // 假设 CustomPointDataInstance 有 typeId (对应 entityDataIdKey)
+    const isVisible = this.typeVisibility.get(typeId) ?? true;
+    instance.setVisible(isVisible);
+
+    return instance;
+  }
+
+  /**
+   * 设置指定类型的可见性
+   */
+  @action
+  public setTypeVisible(typeId: string, visible: boolean): void {
+    this.typeVisibility.set(typeId, visible);
+
+    // 更新现有实例
+    for (const instance of this.instances) {
+      if (instance.typeId === typeId) {
+        instance.setVisible(visible);
+      }
+    }
+  }
+
+  /**
+   * 获取指定类型的可见性
+   */
+  public getTypeVisible(typeId: string): boolean {
+    return this.typeVisibility.get(typeId) ?? true;
   }
 
   /**

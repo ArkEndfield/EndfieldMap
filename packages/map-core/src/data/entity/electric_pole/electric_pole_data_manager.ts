@@ -1,3 +1,8 @@
+import {
+  DEFAULT_ELECTRIC_POLE_DEVICE_KEY,
+  type ElectricPoleDeviceKey,
+  LEGACY_ELECTRIC_POLE_DEVICE_KEY,
+} from '@endfieldmap/map-core/const/electric_pole';
 import { ElectricPoleIdKey, ElectricPoleKey } from '@endfieldmap/map-core/const/map';
 import { BaseDataManager } from '@endfieldmap/map-core/data/base';
 import { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_instance';
@@ -7,7 +12,7 @@ import type {
   EntityInfoData,
 } from '@endfieldmap/map-core/types/entity';
 import { logger } from '@endfieldmap/tools';
-import { action, computed } from 'mobx';
+import { action, computed, observable } from 'mobx';
 
 /** 默认的电线杆Entity信息 */
 const DEFAULT_ELECTRIC_POLE_ENTITY_INFO: EntityInfoData = {
@@ -26,6 +31,10 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
   /** Entity信息 */
   public readonly entityInfo: EntityInfoData;
 
+  /** 设备类型可见性 */
+  @observable
+  accessor deviceVisibility: Map<ElectricPoleDeviceKey, boolean> = new Map();
+
   constructor(config: ElectricPoleDataManagerConfig) {
     super({ mapId: config.mapId });
     this.entityInfo = DEFAULT_ELECTRIC_POLE_ENTITY_INFO;
@@ -43,10 +52,17 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
     if (!data.entityInfo) {
       data.entityInfo = this.entityInfo;
     }
-    return new ElectricPoleDataInstance({
+    const instance = new ElectricPoleDataInstance({
       data,
       mapId: this.mapId,
     });
+
+    // 应用可见性
+    const deviceKey = instance.deviceKey;
+    const isVisible = this.deviceVisibility.get(deviceKey) ?? true;
+    instance.setVisible(isVisible);
+
+    return instance;
   }
 
   /**
@@ -165,6 +181,28 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
     instance.clearAllConnections();
 
     return this.remove(id);
+  }
+
+  /**
+   * 设置指定设备类型的可见性
+   */
+  @action
+  public setDeviceVisible(deviceKey: ElectricPoleDeviceKey, visible: boolean): void {
+    this.deviceVisibility.set(deviceKey, visible);
+
+    // 更新现有实例
+    for (const instance of this.instances) {
+      if (instance.deviceKey === deviceKey) {
+        instance.setVisible(visible);
+      }
+    }
+  }
+
+  /**
+   * 获取指定设备类型的可见性
+   */
+  public getDeviceVisible(deviceKey: ElectricPoleDeviceKey): boolean {
+    return this.deviceVisibility.get(deviceKey) ?? true;
   }
 
   /**

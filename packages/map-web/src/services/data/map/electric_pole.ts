@@ -1,5 +1,5 @@
 import type { ElectricPolePreset, ElectricPolePresetExportBundle } from '@eftypes/electric_pole';
-import type { ElectricPoleMapData, EndfieldMapAdapter, MapData, StorageData } from '@endfieldmap/map-core';
+import type { ElectricPoleMapData, EndfieldMapAdapter, MapData } from '@endfieldmap/map-core';
 import {
   DEFAULT_ELECTRIC_POLE_DEVICE_KEY,
   ELECTRIC_POLE_DEVICE_CONFIGS,
@@ -18,12 +18,13 @@ import {
   StorageKey,
   type StorageManager,
 } from '@endfieldmap/tools';
-import { action, autorun, computed, observable, reaction, runInAction, toJS } from 'mobx';
+import { action, autorun, computed, observable, reaction, runInAction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
 import i18n from '@/i18n';
 import { BasePresetDataService } from '@/services/data/map/base/base_preset';
+import { userService } from '@/services/user';
 
 /**
  * 获取电线杆错误的 i18n 消息
@@ -63,9 +64,6 @@ export class ElectricPoleDataService extends BasePresetDataService<
   /** 是否自动连接连续创建的电线杆 */
   @observable accessor autoConnect: boolean = true;
 
-  /** 电线杆类型可见性数据（按地图维度） */
-  @observable accessor deviceVisibilityData: StorageData<Partial<Record<ElectricPoleDeviceKey, boolean>>> = {};
-
   /** 是否处于连接电线杆状态 */
   @observable accessor isConnecting: boolean = false;
   private connectingPole: ElectricPoleDataInstance | null = null;
@@ -102,23 +100,9 @@ export class ElectricPoleDataService extends BasePresetDataService<
           this.connectingPole = null;
           this.adapter.activeFeatureController.clearActiveFeature();
         }
-        this.applyStoredVisibility(this.adapter.mapController.dataManager.currentMapId);
       },
       { fireImmediately: true }
     );
-
-    // 监听可见性数据变化
-    const visibilityDisposer = reaction(
-      () => {
-        const mapId = this.adapter.mapController.dataManager.currentMapId;
-        return toJS(this.deviceVisibilityData[mapId]);
-      },
-      () => {
-        const mapId = this.adapter.mapController.dataManager.currentMapId;
-        this.applyStoredVisibility(mapId);
-      }
-    );
-    this.reactionDisposers.push(visibilityDisposer);
   }
 
   // region: 数据处理和获取
@@ -128,19 +112,37 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
     await this.initPresetFromStorage();
 
-    const [visibilityData] = await Promise.all([
-      this.storage.permanentGet<StorageData<Partial<Record<ElectricPoleDeviceKey, boolean>>>>(
-        StorageKey.ELECTRIC_POLE_VISIBILITY
-      ),
-    ]);
-
     runInAction(() => {
-      this.deviceVisibilityData = visibilityData || {};
       this.initialized = true;
     });
 
     // 从存储加载数据后，将当前预设应用到地图
     this.applyCurrentPresetToAdapter();
+
+    // 加载所有可见性数据并导入到 Core 层
+    await this.loadAndImportVisibility();
+
+    // 初始化可见性数据订阅
+    this.initVisibilitySubscriptions();
+  }
+
+  /**
+   * 加载所有可见性数据并导入到 Core 层
+   */
+  private async loadAndImportVisibility() {
+    const allVisibilityData = await userService.data.electricPoleVisibilityService.getAllMapVisibilityData();
+
+    this.adapter.electricPoleController.importVisibility(allVisibilityData);
+  }
+
+  /**
+   * 初始化可见性数据订阅
+   */
+  private initVisibilitySubscriptions() {
+    // 订阅可见性数据变化
+    userService.data.electricPoleVisibilityService.addSubscribe((mapId, deviceKey, visible) => {
+      this.adapter.electricPoleController.setMapDeviceVisible(mapId, deviceKey as ElectricPoleDeviceKey, visible);
+    });
   }
 
   /**
@@ -217,36 +219,10 @@ export class ElectricPoleDataService extends BasePresetDataService<
   // region: 可见性（按类型）
 
   public updateDeviceVisibility(mapId: MapData['id'], deviceKey: ElectricPoleDeviceKey, visible: boolean) {
-    if (!this.deviceVisibilityData[mapId]) {
-      this.deviceVisibilityData[mapId] = {};
-    }
-    this.deviceVisibilityData[mapId]![deviceKey] = visible;
-    this.saveDeviceVisibilityToStorageDebounced();
-  }
-
-  private async saveDeviceVisibilityToStorage() {
-    return await this.storage.permanentSet(StorageKey.ELECTRIC_POLE_VISIBILITY, toJS(this.deviceVisibilityData));
-  }
-
-  private saveDeviceVisibilityToStorageDebounced = debounce(
-    this.saveDeviceVisibilityToStorage.bind(this),
-    DEBOUNCE_INTERVAL
-  );
-
-  private applyStoredVisibility(mapId: MapData['id']) {
-    const visibilityData = this.deviceVisibilityData[mapId];
-    if (!visibilityData) return;
-
-    const dataManager = this.adapter.electricPoleController.dataManager;
-    const manager = dataManager.getMapManager(mapId);
-    if (!manager) return;
-
-    manager.instances.forEach((instance) => {
-      const key = instance.deviceKey;
-      if (key in visibilityData) {
-        instance.setVisible(visibilityData[key]!);
-      }
-    });
+    // 立即更新 UI
+    // this.adapter.electricPoleController.setDeviceVisible(deviceKey, visible);
+    // 持久化到数据库
+    userService.data.electricPoleVisibilityService.setVisibilityData(mapId, deviceKey, visible);
   }
 
   // endregion
@@ -658,7 +634,6 @@ export class ElectricPoleDataService extends BasePresetDataService<
     try {
       const data = this.ensureMapData(preset.data);
       this.adapter.electricPoleController.resetAllElectricPoleData(data);
-      this.applyStoredVisibility(this.adapter.mapController.dataManager.currentMapId);
     } catch (error) {
       logger.error(
         '[ElectricPoleDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data',
@@ -679,9 +654,6 @@ export class ElectricPoleDataService extends BasePresetDataService<
         onCancel: () => {
           const emptyData = this.ensureMapData({} as ElectricPoleMapData);
           adapter?.electricPoleController.resetAllElectricPoleData(emptyData);
-          if (adapter) {
-            this.applyStoredVisibility(adapter.mapController.dataManager.currentMapId);
-          }
         },
         cancelText: '删除损坏预设',
       });

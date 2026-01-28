@@ -1,4 +1,5 @@
 import { Disposer } from '@endfieldmap/map-core/commom/disposer';
+import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_instance';
 import { ElectricPoleDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
@@ -142,5 +143,48 @@ export class ElectricPoleMapDataManager extends Disposer {
   @action
   setZoneVisible(visible: boolean): void {
     this.zoneVisible = visible;
+  }
+
+  /**
+   * 设置指定设备类型的可见性（当前地图）
+   */
+  @action
+  setDeviceVisible(deviceKey: ElectricPoleDeviceKey, visible: boolean): void {
+    const manager = this.currentManager;
+    if (manager) {
+      manager.setDeviceVisible(deviceKey, visible);
+    }
+  }
+
+  /**
+   * 设置指定地图的指定设备类型的可见性
+   */
+  @action
+  setMapDeviceVisible(mapId: MapData['id'], deviceKey: ElectricPoleDeviceKey, visible: boolean): void {
+    const manager = this.getMapManager(mapId);
+    manager.setDeviceVisible(deviceKey, visible);
+  }
+
+  /**
+   * 获取指定设备类型的可见性（当前地图）
+   */
+  getDeviceVisible(deviceKey: ElectricPoleDeviceKey): boolean {
+    return this.currentManager?.getDeviceVisible(deviceKey) ?? true;
+  }
+
+  /**
+   * 导入可见性数据
+   */
+  @action
+  public importVisibilityData(data: { mapId: MapData['id']; entityKey: string; visible: boolean }[]): void {
+    for (const item of data) {
+      const { mapId, entityKey, visible } = item;
+
+      // 确保 Manager 存在（即使没有电线杆数据，也应该保存设置）
+      const manager = this.getMapManager(mapId);
+
+      // 这里的 entityKey 其实就是 ElectricPoleDeviceKey
+      manager.setDeviceVisible(entityKey as ElectricPoleDeviceKey, visible);
+    }
   }
 }

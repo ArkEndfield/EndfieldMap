@@ -4,17 +4,16 @@ import type {
   CustomPointMapData,
   CustomPointTypeId,
   EndfieldMapAdapter,
-  EntityVisibility,
   MapData,
-  StorageData,
 } from '@endfieldmap/map-core';
 import { CustomPointKey, getDefaultCustomPointType, MAP_EVENT } from '@endfieldmap/map-core';
 import { debounce, LocalStorageDB, LocalStorageKey, logger, StorageKey, type StorageManager } from '@endfieldmap/tools';
-import { action, autorun, computed, observable, reaction, runInAction, toJS } from 'mobx';
+import { action, autorun, computed, observable, runInAction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
 import { BasePresetDataService } from '@/services/data/map/base/base_preset';
+import { userService } from '@/services/user';
 
 /**
  * 自定义标点数据管理器
@@ -35,7 +34,7 @@ export class CustomPointDataService extends BasePresetDataService<
   }
 
   @observable accessor customPointVisibility: boolean = true;
-  @observable accessor customPointVisibilityData: StorageData<EntityVisibility> = {};
+  // @observable accessor customPointVisibilityData 已移除，改为 RxDB 管理
 
   @observable accessor isCreating: boolean = false;
   @observable accessor isDeleting: boolean = false;
@@ -62,19 +61,47 @@ export class CustomPointDataService extends BasePresetDataService<
 
     await this.initPresetFromStorage();
 
-    const [visibility, visibilityData] = await Promise.all([
-      LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY),
-      this.storage.permanentGet<StorageData<EntityVisibility>>(StorageKey.CUSTOM_POINT_VISIBILITY),
-    ]);
+    const visibility = await LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY);
 
     runInAction(() => {
       this.customPointVisibility = visibility ?? true;
-      this.customPointVisibilityData = visibilityData || {};
       this.initialized = true;
     });
 
     // 从存储加载数据后，将当前预设应用到地图
     this.applyCurrentPresetToAdapter();
+
+    // 加载所有可见性数据并导入到 Core 层
+    await this.loadAndImportVisibility();
+
+    // 初始化可见性数据订阅
+    this.initVisibilitySubscriptions();
+  }
+
+  /**
+   * 加载所有可见性数据并导入到 Core 层
+   */
+  private async loadAndImportVisibility() {
+    const allVisibilityData = await userService.data.customPointVisibilityService.getAllMapVisibilityData();
+
+    // 转换为 plain object 传递给 Core 层
+    const plainData = allVisibilityData.map((doc) => ({
+      mapId: doc.mapId,
+      entityKey: doc.entityKey,
+      visible: doc.visible,
+    }));
+
+    this.adapter.customPointController.importVisibility(plainData);
+  }
+
+  /**
+   * 初始化可见性数据订阅
+   */
+  private initVisibilitySubscriptions() {
+    // 订阅可见性数据变化
+    userService.data.customPointVisibilityService.addSubscribe((mapId, entityKey, visible) => {
+      this.adapter.customPointController.setMapTypeVisible(mapId, entityKey, visible);
+    });
   }
 
   protected ensureMapData(data: Partial<CustomPointMapData> | unknown): CustomPointMapData {
@@ -162,8 +189,6 @@ export class CustomPointDataService extends BasePresetDataService<
     try {
       const data = this.ensureMapData(preset.data);
       this.adapter.customPointController.initCustomPointData(data);
-      // 应用存储的可见性设置
-      this.applyStoredVisibility(this.adapter.mapController.dataManager.currentMapId);
     } catch (error) {
       logger.error('[CustomPointDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data', {
         presetId: preset.id,
@@ -275,46 +300,12 @@ export class CustomPointDataService extends BasePresetDataService<
   /**
    * 更新自定义标点类型的可见性
    */
+  /**
+   * 更新自定义标点类型的可见性
+   */
   public updateCustomPointVisibility(mapId: MapData['id'], entityDataIdKey: string, visible: boolean) {
-    if (!this.customPointVisibilityData[mapId]) {
-      this.customPointVisibilityData[mapId] = {};
-    }
-    this.customPointVisibilityData[mapId][entityDataIdKey] = visible;
-    this.saveCustomPointVisibilityToStorageDebounced();
-  }
-
-  /**
-   * 保存自定义标点可见性数据到存储
-   */
-  public async saveCustomPointVisibilityToStorage() {
-    return await this.storage.permanentSet(StorageKey.CUSTOM_POINT_VISIBILITY, toJS(this.customPointVisibilityData));
-  }
-
-  /**
-   * 防抖保存自定义标点可见性数据
-   */
-  get saveCustomPointVisibilityToStorageDebounced() {
-    return debounce(this.saveCustomPointVisibilityToStorage.bind(this), DEBOUNCE_INTERVAL);
-  }
-
-  /**
-   * 应用存储的可见性设置到自定义标点features
-   */
-  private applyStoredVisibility(mapId: MapData['id']) {
-    const visibilityData = this.customPointVisibilityData[mapId];
-    if (!visibilityData) return;
-
-    const dataManager = this.adapter.customPointController.dataManager;
-    const manager = dataManager.getMapManager(mapId);
-    if (!manager) return;
-
-    const instances = manager.instances;
-    instances.forEach((instance) => {
-      const entityDataIdKey = instance.data.entityDataIdKey;
-      if (entityDataIdKey in visibilityData) {
-        instance.setVisible(visibilityData[entityDataIdKey]);
-      }
-    });
+    // 持久化到数据库
+    userService.data.customPointVisibilityService.setVisibilityData(mapId, entityDataIdKey, visible);
   }
   // endregion
 
@@ -360,18 +351,6 @@ export class CustomPointDataService extends BasePresetDataService<
       this.debouncedSave(data);
     });
     this.reactionDisposers.push(dispose);
-
-    const visibilityDispose = reaction(
-      () => {
-        const mapId = this.adapter.mapController.dataManager.currentMapId;
-        return toJS(this.customPointVisibilityData[mapId]);
-      },
-      () => {
-        const mapId = this.adapter.mapController.dataManager.currentMapId;
-        this.applyStoredVisibility(mapId);
-      }
-    );
-    this.reactionDisposers.push(visibilityDispose);
   }
 
   /**

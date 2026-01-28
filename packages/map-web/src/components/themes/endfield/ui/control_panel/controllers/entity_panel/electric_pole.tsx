@@ -25,7 +25,6 @@ const ElectricPoleList: React.FC = observer(() => {
   const { adapter, mapDataService } = useAdapter();
 
   const instances = adapter.electricPoleController.dataManager.currentInstances;
-  const currentMapId = adapter.mapController.dataManager.currentMapId;
 
   const { groups, totalCount } = (() => {
     const groupMap = new Map<ElectricPoleDeviceKey, ElectricPoleDataInstance[]>();
@@ -49,17 +48,14 @@ const ElectricPoleList: React.FC = observer(() => {
     allDeviceKeys.forEach((deviceKey) => {
       const groupInstances = groupMap.get(deviceKey) || [];
       const count = groupInstances.length;
-      let allVisible = true;
-      let visibleCount = 0;
 
+      // 直接从 Controller 获取可见性状态（Source of Truth）
+      const allVisible = adapter.electricPoleController.getDeviceVisible(deviceKey);
+
+      // visibleCount 仅用于统计显示
+      let visibleCount = 0;
       if (count > 0) {
         visibleCount = groupInstances.filter((i) => i.visible).length;
-        allVisible = visibleCount === count;
-      } else {
-        // If no instances, use stored visibility preference
-        const storedVisibility = mapDataService.electricPoleDataService.deviceVisibilityData[currentMapId]?.[deviceKey];
-        // Default to visible if not set
-        allVisible = storedVisibility !== false;
       }
 
       result.push({
@@ -78,9 +74,6 @@ const ElectricPoleList: React.FC = observer(() => {
 
   const handleToggleTypeVisible = (group: ElectricPoleTypeGroup) => {
     const newVisible = !group.allVisible;
-    if (group.instances.length > 0) {
-      group.instances.forEach((instance) => instance.setVisible(newVisible));
-    }
     mapDataService.electricPoleDataService.updateDeviceVisibility(
       adapter.mapController.dataManager.currentMapId,
       group.deviceKey,
@@ -91,9 +84,6 @@ const ElectricPoleList: React.FC = observer(() => {
   const handleToggleAll = () => {
     const newVisible = !allDisplayed;
     groups.forEach((group) => {
-      if (group.instances.length > 0) {
-        group.instances.forEach((instance) => instance.setVisible(newVisible));
-      }
       mapDataService.electricPoleDataService.updateDeviceVisibility(
         adapter.mapController.dataManager.currentMapId,
         group.deviceKey,

@@ -47,14 +47,6 @@ export class CustomPointMapDataManager extends Disposer {
   }
 
   /**
-   * 切换当前地图
-   */
-  @action
-  public switchMap(mapId: MapData['id']): CustomPointDataManager {
-    return this.getMapManager(mapId);
-  }
-
-  /**
    * 获取当前地图数据管理器
    */
   @computed
@@ -62,22 +54,6 @@ export class CustomPointMapDataManager extends Disposer {
     const mapData = MapDataManager.getInstance();
     const currentMapId = mapData.currentMapId;
     return this.getMapManager(currentMapId);
-  }
-
-  /**
-   * 获取当前地图的所有实例
-   */
-  @computed
-  get currentInstances(): CustomPointDataInstance[] {
-    return this.currentManager?.instances ?? [];
-  }
-
-  /**
-   * 获取当前地图的所有数据
-   */
-  @computed
-  get currentData(): CustomPointData[] {
-    return this.currentManager?.exportData ?? [];
   }
 
   /**
@@ -121,10 +97,48 @@ export class CustomPointMapDataManager extends Disposer {
 
   /**
    * 设置是否可见
-   * @param visible 是否可见
    */
   @action
   public setVisible(visible: boolean): void {
     this.visible = visible;
+  }
+
+  /**
+   * 设置指定类型的可见性（当前地图）
+   */
+  @action
+  public setTypeVisible(typeId: string, visible: boolean): void {
+    const manager = this.currentManager;
+    if (manager) {
+      manager.setTypeVisible(typeId, visible);
+    }
+  }
+
+  /**
+   * 获取指定类型的可见性（当前地图）
+   */
+  public getTypeVisible(typeId: string): boolean {
+    return this.currentManager?.getTypeVisible(typeId) ?? true;
+  }
+
+  /**
+   * 设置指定地图的指定类型可见性
+   */
+  @action
+  public setMapTypeVisible(mapId: MapData['id'], typeId: string, visible: boolean): void {
+    const manager = this.getMapManager(mapId);
+    manager.setTypeVisible(typeId, visible);
+  }
+
+  /**
+   * 导入可见性数据
+   */
+  @action
+  public importVisibilityData(data: { mapId: MapData['id']; entityKey: string; visible: boolean }[]): void {
+    for (const item of data) {
+      const { mapId, entityKey, visible } = item;
+      const manager = this.getMapManager(mapId);
+      manager.setTypeVisible(entityKey, visible);
+    }
   }
 }

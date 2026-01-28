@@ -32,7 +32,6 @@ const CustomPointList: React.FC = observer(() => {
   const dataManager = adapter.customPointController.dataManager;
   const currentManager = dataManager.currentManager;
   const instances = currentManager?.instances ?? [];
-  const currentMapId = adapter.mapController.dataManager.currentMapId;
 
   // 按类型分组
   const { customPointGroups, totalCount } = (() => {
@@ -58,18 +57,14 @@ const CustomPointList: React.FC = observer(() => {
       const entityDataIdKey = typeConfig.id;
       const groupInstances = groupMap.get(entityDataIdKey) || [];
       const count = groupInstances.length;
-      let allVisible = true;
-      let visibleCount = 0;
 
+      // 直接从 Controller 获取可见性状态
+      const allVisible = adapter.customPointController.getTypeVisible(entityDataIdKey);
+
+      // visibleCount 仅用于统计
+      let visibleCount = 0;
       if (count > 0) {
         visibleCount = groupInstances.filter((i) => i.visible).length;
-        allVisible = visibleCount === count;
-      } else {
-        // If no instances, use stored visibility preference
-        const storedVisibility =
-          mapDataService.customPointDataService.customPointVisibilityData[currentMapId]?.[entityDataIdKey];
-        // Default to true if not set
-        allVisible = storedVisibility !== false;
       }
 
       groups.push({
@@ -89,12 +84,7 @@ const CustomPointList: React.FC = observer(() => {
   // 切换某个类型的所有自定义标点的显示/隐藏
   const handleToggleTypeVisible = (group: CustomPointTypeGroup) => {
     const newVisible = !group.allVisible;
-    if (group.instances.length > 0) {
-      group.instances.forEach((instance) => {
-        instance.setVisible(newVisible);
-      });
-    }
-    // 保存可见性状态
+    // 保存可见性状态 (RxDB 订阅会自动更新实例)
     mapDataService.customPointDataService.updateCustomPointVisibility(
       adapter.mapController.dataManager.currentMapId,
       group.entityDataIdKey,
@@ -105,9 +95,6 @@ const CustomPointList: React.FC = observer(() => {
   const handleToggleAll = () => {
     const newVisible = !allDisplayed;
     customPointGroups.forEach((group) => {
-      if (group.instances.length > 0) {
-        group.instances.forEach((instance) => instance.setVisible(newVisible));
-      }
       mapDataService.customPointDataService.updateCustomPointVisibility(
         adapter.mapController.dataManager.currentMapId,
         group.entityDataIdKey,

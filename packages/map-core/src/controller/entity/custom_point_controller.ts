@@ -192,5 +192,33 @@ export class CustomPointController extends Disposer {
     this.dataManager.setVisible(visible);
     this.render.setVisible(visible);
   }
+
+  /**
+   * 设置指定类型的可见性
+   */
+  public setTypeVisible(typeId: string, visible: boolean): void {
+    this.dataManager.setTypeVisible(typeId, visible);
+  }
+
+  /**
+   * 获取指定类型的可见性
+   */
+  public getTypeVisible(typeId: string): boolean {
+    return this.dataManager.getTypeVisible(typeId);
+  }
+
+  /**
+   * 设置指定地图的指定类型可见性
+   */
+  public setMapTypeVisible(mapId: MapData['id'], typeId: string, visible: boolean): void {
+    this.dataManager.setMapTypeVisible(mapId, typeId, visible);
+  }
+
+  /**
+   * 导入可见性数据
+   */
+  public importVisibility(data: { mapId: MapData['id']; entityKey: string; visible: boolean }[]): void {
+    this.dataManager.importVisibilityData(data);
+  }
   // #endregion
 }

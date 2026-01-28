@@ -189,5 +189,33 @@ export class ElectricPoleController extends Disposer {
 
     this.render.setVisible(visible);
   }
+
+  /**
+   * 设置指定设备类型的可见性
+   */
+  public setDeviceVisible(deviceKey: ElectricPoleDeviceKey, visible: boolean): void {
+    this.dataManager.setDeviceVisible(deviceKey, visible);
+  }
+
+  /**
+   * 设置指定地图的指定设备类型的可见性
+   */
+  public setMapDeviceVisible(mapId: MapData['id'], deviceKey: ElectricPoleDeviceKey, visible: boolean): void {
+    this.dataManager.setMapDeviceVisible(mapId, deviceKey, visible);
+  }
+
+  /**
+   * 获取指定设备类型的可见性
+   */
+  public getDeviceVisible(deviceKey: ElectricPoleDeviceKey): boolean {
+    return this.dataManager.getDeviceVisible(deviceKey);
+  }
+
+  /**
+   * 导入可见性数据
+   */
+  public importVisibility(data: { mapId: MapData['id']; entityKey: string; visible: boolean }[]): void {
+    this.dataManager.importVisibilityData(data);
+  }
   // #endregion
 }
