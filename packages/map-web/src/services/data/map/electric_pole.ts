@@ -23,7 +23,7 @@ import { action, autorun, computed, observable, reaction, runInAction } from 'mo
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
 import i18n from '@/i18n';
-import { BasePresetDataService } from '@/services/data/map/base/base_preset';
+import { BasePresetDataService, type IVisibilityService } from '@/services/data/map/base/base_preset';
 import { userService } from '@/services/user';
 
 /**
@@ -55,6 +55,18 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
   protected get exportTypeKey(): string {
     return EXPORT_TYPE_KEY.ELECTRIC_POLE_PRESET;
+  }
+
+  protected get visibilityService(): IVisibilityService {
+    return userService.data.electricPoleVisibilityService;
+  }
+
+  protected importVisibilityToAdapter(data: any[]): void {
+    this.adapter.electricPoleController.importVisibility(data);
+  }
+
+  protected onVisibilityChange(mapId: string, key: string, visible: boolean): void {
+    this.adapter.electricPoleController.setMapDeviceVisible(mapId, key as ElectricPoleDeviceKey, visible);
   }
 
   /** 是否处于创建电线杆状态 */
@@ -119,30 +131,8 @@ export class ElectricPoleDataService extends BasePresetDataService<
     // 从存储加载数据后，将当前预设应用到地图
     this.applyCurrentPresetToAdapter();
 
-    // 加载所有可见性数据并导入到 Core 层
-    await this.loadAndImportVisibility();
-
-    // 初始化可见性数据订阅
-    this.initVisibilitySubscriptions();
-  }
-
-  /**
-   * 加载所有可见性数据并导入到 Core 层
-   */
-  private async loadAndImportVisibility() {
-    const allVisibilityData = await userService.data.electricPoleVisibilityService.getAllMapVisibilityData();
-
-    this.adapter.electricPoleController.importVisibility(allVisibilityData);
-  }
-
-  /**
-   * 初始化可见性数据订阅
-   */
-  private initVisibilitySubscriptions() {
-    // 订阅可见性数据变化
-    userService.data.electricPoleVisibilityService.addSubscribe((mapId, deviceKey, visible) => {
-      this.adapter.electricPoleController.setMapDeviceVisible(mapId, deviceKey as ElectricPoleDeviceKey, visible);
-    });
+    // 初始化可见性逻辑 (加载 + 订阅)
+    await this.initVisibilityLogic();
   }
 
   /**
@@ -222,7 +212,8 @@ export class ElectricPoleDataService extends BasePresetDataService<
     // 立即更新 UI
     // this.adapter.electricPoleController.setDeviceVisible(deviceKey, visible);
     // 持久化到数据库
-    userService.data.electricPoleVisibilityService.setVisibilityData(mapId, deviceKey, visible);
+    // userService.data.electricPoleVisibilityService.setVisibilityData(mapId, deviceKey, visible);
+    this.updateItemVisibility(mapId, deviceKey, visible);
   }
 
   // endregion

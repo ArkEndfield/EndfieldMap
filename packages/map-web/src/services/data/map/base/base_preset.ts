@@ -23,6 +23,12 @@ export interface BasePresetExportBundle<TPreset> {
   presets: TPreset[];
 }
 
+export interface IVisibilityService {
+  getAllMapVisibilityData(): Promise<any[]>;
+  setVisibilityData(mapId: string, entityKey: string, visible: boolean): Promise<any>;
+  addSubscribe(callback: (mapId: string, entityKey: string, visible: boolean) => void): void;
+}
+
 /**
  * 基础预设数据管理器
  * TData: 地图数据类型 (e.g. ElectricPoleMapData, CustomPointMapData)
@@ -52,6 +58,9 @@ export abstract class BasePresetDataService<
   // 对应的导出类型key
   protected abstract get exportTypeKey(): string;
 
+  // 可见性服务
+  protected abstract get visibilityService(): IVisibilityService;
+
   // 确保数据格式正确
   protected abstract ensureMapData(data: Partial<TData> | unknown): TData;
   // 应用预设到 adapter
@@ -60,6 +69,32 @@ export abstract class BasePresetDataService<
   protected abstract get temporaryData(): TData;
   // 清除当前的 Active Feature (切换预设时调用)
   protected abstract clearActiveFeature(): void;
+
+  // 导入可见性数据到 Adapter
+  protected abstract importVisibilityToAdapter(data: any[]): void;
+  // 处理可见性变更订阅
+  protected abstract onVisibilityChange(mapId: string, key: string, visible: boolean): void;
+
+  /**
+   * 初始化可见性逻辑 (加载 + 订阅)
+   */
+  protected async initVisibilityLogic() {
+    // 加载所有可见性数据并导入到 Core 层
+    const allVisibilityData = await this.visibilityService.getAllMapVisibilityData();
+    this.importVisibilityToAdapter(allVisibilityData);
+
+    // 订阅可见性数据变化
+    this.visibilityService.addSubscribe((mapId, entityKey, visible) => {
+      this.onVisibilityChange(mapId, entityKey, visible);
+    });
+  }
+
+  /**
+   * 更新单项可见性
+   */
+  public async updateItemVisibility(mapId: string, key: string, visible: boolean) {
+    await this.visibilityService.setVisibilityData(mapId, key, visible);
+  }
 
   constructor(storage: StorageManager) {
     this.storage = storage;

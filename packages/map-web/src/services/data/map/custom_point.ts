@@ -12,7 +12,7 @@ import { action, autorun, computed, observable, runInAction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
-import { BasePresetDataService } from '@/services/data/map/base/base_preset';
+import { BasePresetDataService, type IVisibilityService } from '@/services/data/map/base/base_preset';
 import { userService } from '@/services/user';
 
 /**
@@ -33,8 +33,25 @@ export class CustomPointDataService extends BasePresetDataService<
     return EXPORT_TYPE_KEY.CUSTOM_POINT_PRESET;
   }
 
+  protected get visibilityService(): IVisibilityService {
+    return userService.data.customPointVisibilityService;
+  }
+
+  protected importVisibilityToAdapter(data: any[]): void {
+    // 转换为 plain object 传递给 Core 层
+    const plainData = data.map((doc) => ({
+      mapId: doc.mapId,
+      entityKey: doc.entityKey,
+      visible: doc.visible,
+    }));
+    this.adapter.customPointController.importVisibility(plainData);
+  }
+
+  protected onVisibilityChange(mapId: string, key: string, visible: boolean): void {
+    this.adapter.customPointController.setMapTypeVisible(mapId, key, visible);
+  }
+
   @observable accessor customPointVisibility: boolean = true;
-  // @observable accessor customPointVisibilityData 已移除，改为 RxDB 管理
 
   @observable accessor isCreating: boolean = false;
   @observable accessor isDeleting: boolean = false;
@@ -71,37 +88,8 @@ export class CustomPointDataService extends BasePresetDataService<
     // 从存储加载数据后，将当前预设应用到地图
     this.applyCurrentPresetToAdapter();
 
-    // 加载所有可见性数据并导入到 Core 层
-    await this.loadAndImportVisibility();
-
-    // 初始化可见性数据订阅
-    this.initVisibilitySubscriptions();
-  }
-
-  /**
-   * 加载所有可见性数据并导入到 Core 层
-   */
-  private async loadAndImportVisibility() {
-    const allVisibilityData = await userService.data.customPointVisibilityService.getAllMapVisibilityData();
-
-    // 转换为 plain object 传递给 Core 层
-    const plainData = allVisibilityData.map((doc) => ({
-      mapId: doc.mapId,
-      entityKey: doc.entityKey,
-      visible: doc.visible,
-    }));
-
-    this.adapter.customPointController.importVisibility(plainData);
-  }
-
-  /**
-   * 初始化可见性数据订阅
-   */
-  private initVisibilitySubscriptions() {
-    // 订阅可见性数据变化
-    userService.data.customPointVisibilityService.addSubscribe((mapId, entityKey, visible) => {
-      this.adapter.customPointController.setMapTypeVisible(mapId, entityKey, visible);
-    });
+    // 初始化可见性逻辑 (加载 + 订阅)
+    await this.initVisibilityLogic();
   }
 
   protected ensureMapData(data: Partial<CustomPointMapData> | unknown): CustomPointMapData {
@@ -305,7 +293,8 @@ export class CustomPointDataService extends BasePresetDataService<
    */
   public updateCustomPointVisibility(mapId: MapData['id'], entityDataIdKey: string, visible: boolean) {
     // 持久化到数据库
-    userService.data.customPointVisibilityService.setVisibilityData(mapId, entityDataIdKey, visible);
+    // userService.data.customPointVisibilityService.setVisibilityData(mapId, entityDataIdKey, visible);
+    this.updateItemVisibility(mapId, entityDataIdKey, visible);
   }
   // endregion
 
