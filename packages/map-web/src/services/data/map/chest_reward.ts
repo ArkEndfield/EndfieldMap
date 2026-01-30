@@ -34,12 +34,9 @@ export class ChestRewardDataService {
   }
 
   public async init() {
-    const [_, data] = await Promise.all([
-      DataService.dbStorage.database.gameChestReward.find().remove(),
-      this.jsonLoader.loadJSON<Record<string, Omit<ChestRewardSchemaType, 'id'>>>(
-        `${assetPath.entityData}/reward_table.json`
-      ),
-    ]);
+    const data = await this.jsonLoader.loadJSON<Record<string, Omit<ChestRewardSchemaType, 'id'>>>(
+      `${assetPath.entityData}/reward_table.json`
+    );
     const rewards = Object.entries(data || {}).map(([id, reward]) => ({
       id,
       ...reward,
@@ -50,9 +47,11 @@ export class ChestRewardDataService {
   }
 
   private async getRewardDataFromDB(id: string) {
-    return await DataService.dbStorage.database.gameChestReward.findOne({
-      selector: { id },
-    }).exec();
+    return await DataService.dbStorage.database.gameChestReward
+      .findOne({
+        selector: { id },
+      })
+      .exec();
   }
 
   public async getRewards(reward_id?: string): Promise<DealedRewardItem[]> {

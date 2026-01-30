@@ -20,10 +20,10 @@ export class DeltaRobotDataService {
   @action
   public async init() {
     // 清空旧数据并加载新数据
-    const [_, levelListData] = await Promise.all([
-      DataService.dbStorage.database.gameDeltaRobotLevelList.find().remove(),
-      this.jsonLoader.loadJSON<Record<string, string[]>>(`${assetURL.miniGameData}/minigame.json`),
-    ]);
+    // 清空旧数据并加载新数据
+    const levelListData = await this.jsonLoader.loadJSON<Record<string, string[]>>(
+      `${assetURL.miniGameData}/minigame.json`
+    );
 
     // 批量保存到数据库
     const levelListItems = Object.entries(levelListData || {}).map(([id, levels]) => ({

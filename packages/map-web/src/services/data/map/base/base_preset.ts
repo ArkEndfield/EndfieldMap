@@ -134,7 +134,7 @@ export abstract class BasePresetDataService<
     if (this.initialized) return;
 
     // 从数据库加载预设列表，只获取元数据
-    const presets = await this.presetService.getAllPresets();
+    const presets = await this.presetService.getAllPresetMetadata();
 
     runInAction(() => {
       if (presets.length > 0) {
@@ -206,7 +206,7 @@ export abstract class BasePresetDataService<
 
     if (isCurrent) {
       // 获取剩余预设列表
-      const remainingPresets = await this.presetService.getAllPresets();
+      const remainingPresets = await this.presetService.getAllPresetMetadata();
       const nextPresetId = remainingPresets[0]?.id ?? null;
 
       runInAction(() => {

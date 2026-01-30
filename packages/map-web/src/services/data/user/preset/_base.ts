@@ -32,12 +32,12 @@ export interface IPresetService<
   TPreset extends PresetSchemaType & { data: TNodeSchema[] },
   TNodeSchema extends RequiredNodeFields,
 > {
-  getAllPresets(): Promise<TPreset[]>;
   getPresetById(id: string): Promise<TPreset | null>;
   getPresetByIdForExport(id: string): Promise<TPreset | null>;
   createPreset(name: string, data: TNodeSchema[]): Promise<TPreset>;
   updatePreset(id: string, updates: { name?: string }): Promise<TPreset>;
   deletePreset(id: string): Promise<void>;
+  getAllPresetMetadata(): Promise<PresetSchemaType[]>;
 
   // 节点操作
   renameNode(mapId: MapData['id'], presetId: string, levelLogicId: number, newName: string): Promise<void>;
@@ -97,30 +97,6 @@ export abstract class BasePresetService<
   }
 
   /**
-   * 获取所有预设列表（包含节点数据）
-   */
-  public async getAllPresets(): Promise<TPreset[]> {
-    const docs = await this.presetDB.find().exec();
-    const presets: TPreset[] = [];
-
-    for (const doc of docs) {
-      const presetData = doc._data as PresetSchemaType;
-      // 查询该预设下的所有节点
-      const nodes = await this.nodesDB
-        .find({ selector: { presetId: presetData.id } as NodeSelector<TNodeSchema> })
-        .exec();
-      const data = nodes.map((node) => node._data as TNodeSchema);
-
-      presets.push({
-        ...presetData,
-        data,
-      } as TPreset);
-    }
-
-    return presets;
-  }
-
-  /**
    * 根据 ID 获取单个预设（包含节点数据）
    */
   public async getPresetById(id: string): Promise<TPreset | null> {
@@ -136,6 +112,11 @@ export abstract class BasePresetService<
       ...presetData,
       data,
     } as TPreset;
+  }
+
+  public async getAllPresetMetadata(): Promise<PresetSchemaType[]> {
+    const docs = await this.presetDB.find().exec();
+    return docs.map((doc) => doc.toJSON() as PresetSchemaType);
   }
 
   /**

@@ -15,12 +15,9 @@ export class GuideDataService {
   }
 
   public async init() {
-    const [_, data] = await Promise.all([
-      DataService.dbStorage.database.gameGuide.find().remove(),
-      this.jsonLoader.loadJSON<Record<string, Omit<GuideSchemaType, 'id'>>>(
-        `${assetPath.entityData}/guide.json`
-      ),
-    ]);
+    const data = await this.jsonLoader.loadJSON<Record<string, Omit<GuideSchemaType, 'id'>>>(
+      `${assetPath.entityData}/guide.json`
+    );
     const guides = Object.entries(data || {}).map(([id, guide]) => ({
       id,
       ...guide,

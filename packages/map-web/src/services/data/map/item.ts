@@ -14,12 +14,9 @@ export class ItemDataService {
   }
 
   public async init() {
-    const [_, data] = await Promise.all([
-      DataService.dbStorage.database.gameItem.find().remove(),
-      this.jsonLoader.loadJSON<Record<string, ItemSchemaType>>(
-        `${assetPath.itemData}/item_table.json`
-      ),
-    ]);
+    const data = await this.jsonLoader.loadJSON<Record<string, ItemSchemaType>>(
+      `${assetPath.itemData}/item_table.json`
+    );
     const items = Object.values(data || {});
     if (items.length > 0) {
       await DataService.dbStorage.database.gameItem.bulkUpsert(items);
@@ -27,14 +24,16 @@ export class ItemDataService {
   }
 
   private async getItemDataFromDB(id: string) {
-    return await DataService.dbStorage.database.gameItem.findOne({
-      selector: { id },
-    }).exec();
+    return await DataService.dbStorage.database.gameItem
+      .findOne({
+        selector: { id },
+      })
+      .exec();
   }
 
   public async getItemData(item_id: string) {
     const _itemData = await this.getItemDataFromDB(item_id);
-    const itemData = {..._itemData?.toJSON() };
+    const itemData = { ..._itemData?.toJSON() };
     if (itemData?.iconId) {
       const name = itemData.iconId;
       if (name) itemData.iconId = `${assetPath.itemImage}/${name}.png`;

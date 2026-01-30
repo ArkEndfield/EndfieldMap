@@ -16,12 +16,12 @@ declare global {
 
 const STAGE_CONFIGS: StageConfig[] = [
   { id: LoadingStageId.INIT, weight: 5, label: '初始化' },
-  { id: LoadingStageId.I18N, weight: 15, label: '加载语言包' },
-  { id: LoadingStageId.STORAGE, weight: 10, label: '初始化存储' },
-  { id: LoadingStageId.COMPONENTS, weight: 20, label: '加载组件' },
-  { id: LoadingStageId.MAP_ADAPTER, weight: 15, label: '初始化地图' },
-  { id: LoadingStageId.MAP_RENDER, weight: 20, label: '渲染地图' },
-  { id: LoadingStageId.ENTITY_RENDER, weight: 15, label: '加载实体' },
+  { id: LoadingStageId.I18N, weight: 8, label: '加载语言包' },
+  { id: LoadingStageId.STORAGE, weight: 12, label: '初始化存储' },
+  { id: LoadingStageId.COMPONENTS, weight: 5, label: '加载组件' },
+  { id: LoadingStageId.MAP_ADAPTER, weight: 10, label: '初始化地图' },
+  { id: LoadingStageId.MAP_RENDER, weight: 50, label: '渲染地图' },
+  { id: LoadingStageId.ENTITY_RENDER, weight: 10, label: '加载实体' },
 ];
 
 class LoadingProgressManager {

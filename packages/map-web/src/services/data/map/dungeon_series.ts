@@ -18,12 +18,9 @@ export class DungeonSeriesDataService {
   }
 
   public async init() {
-    const [_, data] = await Promise.all([
-      DataService.dbStorage.database.gameDungeonSeries.find().remove(),
-      this.jsonLoader.loadJSON<Record<string, Omit<DungeonSeriesSchemaType, 'id'>>>(
-        `${assetPath.entityData}/dungeon_series.json`
-      ),
-    ]);
+    const data = await this.jsonLoader.loadJSON<Record<string, Omit<DungeonSeriesSchemaType, 'id'>>>(
+      `${assetPath.entityData}/dungeon_series.json`
+    );
     const dungeonSeriesList = Object.values(data || {});
     if (dungeonSeriesList.length > 0) {
       await DataService.dbStorage.database.gameDungeonSeries.bulkUpsert(dungeonSeriesList);

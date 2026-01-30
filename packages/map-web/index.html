@@ -434,15 +434,15 @@
           // 简单的加权平均
           const weights = {
             INIT: 5,
-            I18N: 15,
-            STORAGE: 10,
-            COMPONENTS: 20,
-            MAP_ADAPTER: 15,
-            MAP_RENDER: 20,
-            ENTITY_RENDER: 15,
+            I18N: 8,
+            STORAGE: 12,
+            COMPONENTS: 5,
+            MAP_ADAPTER: 10,
+            MAP_RENDER: 50,
+            ENTITY_RENDER: 10,
           };
           let total = 0;
-          // 总权重应为所有预定义权重的和：5+15+10+20+15+20+15 = 100
+          // 总权重应为所有预定义权重的和：5+8+12+5+10+50+10 = 100
           const totalPossibleWeight = 100;
 
           for (const [stage, progress] of Object.entries(this.stages)) {
