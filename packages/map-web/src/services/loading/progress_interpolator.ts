@@ -2,6 +2,8 @@ export class ProgressInterpolator {
   private currentValue: number = 0;
   private targetValue: number = 0;
   private velocity: number = 0;
+  // 记录历史最高显示值，防止进度回退
+  private maxDisplayedValue: number = 0;
 
   // 弹簧物理参数
   private readonly STIFFNESS = 100; // 刚度
@@ -39,6 +41,11 @@ export class ProgressInterpolator {
       this.velocity = 0;
     }
 
-    return this.currentValue;
+    // 防止进度回退：显示值永远不低于历史最高值
+    if (this.currentValue > this.maxDisplayedValue) {
+      this.maxDisplayedValue = this.currentValue;
+    }
+
+    return this.maxDisplayedValue;
   }
 }

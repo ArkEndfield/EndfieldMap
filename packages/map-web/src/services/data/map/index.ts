@@ -1,6 +1,7 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import type { JSONLoader, StorageManager } from '@endfieldmap/tools';
 
+import { LoadingStageId } from '@/const/loading';
 import { ChestRewardDataService } from '@/services/data/map/chest_reward';
 import { CustomPointDataService } from '@/services/data/map/custom_point';
 import { DeltaRobotDataService } from '@/services/data/map/delta_robot';
@@ -14,6 +15,7 @@ import { LangHashDataService } from '@/services/data/map/lang_hash';
 import { MapStateDataService } from '@/services/data/map/map_state';
 import { NoteDataService } from '@/services/data/map/note';
 import { SwiperDataService } from '@/services/data/map/swiper';
+import { loadingManager } from '@/services/loading';
 
 /**
  * 数据服务
@@ -67,30 +69,47 @@ export class MapDataService {
   }
 
   public async init() {
-    await Promise.all([
+    // 所有初始化任务
+    const initTasks = [
       // 初始化 entity 数据
-      this.entityDataService.initFromStorage(),
+      () => this.entityDataService.initFromStorage(),
       // 初始化电线杆预设数据
-      this.electricPoleDataService.initFromStorage(),
+      () => this.electricPoleDataService.initFromStorage(),
       // 初始化自定义标点预设数据
-      this.customPointDataService.initFromStorage(),
+      () => this.customPointDataService.initFromStorage(),
       // 初始化 item 数据（游戏物品）
-      this.itemDataService.init(),
+      () => this.itemDataService.init(),
       // 初始化宝箱奖励数据
-      this.chestRewardDataService.init(),
+      () => this.chestRewardDataService.init(),
       // 初始化副本奖励数据
-      this.dungeonSeriesDataService.init(),
+      () => this.dungeonSeriesDataService.init(),
       // 初始化攻略数据
-      this.guideDataService.init(),
+      () => this.guideDataService.init(),
       // 初始化语言哈希数据
-      this.langHashDataService.init(),
+      () => this.langHashDataService.init(),
       // 初始化网格分级数据
-      this.gridTiersDataService.init(),
+      () => this.gridTiersDataService.init(),
       // 初始化 delta robot 数据
-      this.deltaRobotDataService.init(),
+      () => this.deltaRobotDataService.init(),
       // 初始化情报档案数据
-      this.noteDataService.init(),
-    ]);
+      () => this.noteDataService.init(),
+    ];
+
+    const totalTasks = initTasks.length;
+    let completedTasks = 0;
+
+    // 创建带进度追踪的 promise
+    const trackedPromises = initTasks.map((task) =>
+      task().then((result) => {
+        completedTasks++;
+        // MAP_RENDER 阶段，进度从 10% 到 90%（留 10% 给收尾）
+        const progress = 10 + (completedTasks / totalTasks) * 80;
+        loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, progress);
+        return result;
+      })
+    );
+
+    await Promise.all(trackedPromises);
     this.deleteCacheData();
   }
 
