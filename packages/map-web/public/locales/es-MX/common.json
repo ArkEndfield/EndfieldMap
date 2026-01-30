@@ -24,5 +24,10 @@
       "custom_point_6": "Marcador 6",
       "custom_point_7": "Marcador 7"
     }
+  },
+  "migrate_tip": {
+    "content": "El sitio web acaba de actualizar su estructura de almacenamiento de datos y requiere una migración de datos, de lo contrario los datos pueden perderse. Haga clic en confirmar para iniciar la migración. El proceso de migración puede tardar un poco, por favor sea paciente.",
+    "susscess": "Migración de datos completada. Los datos antiguos se han importado correctamente a la nueva estructura de almacenamiento.",
+    "fail": "La migración de datos falló. Actualice la página e intente de nuevo. Si falla varias veces, contacte al desarrollador."
   }
 }

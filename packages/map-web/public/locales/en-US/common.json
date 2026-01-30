@@ -24,5 +24,10 @@
       "custom_point_6": "Marker 6",
       "custom_point_7": "Marker 7"
     }
+  },
+  "migrate_tip": {
+    "content": "Our website has just upgraded its data storage structure and requires data migration, otherwise data may be lost. Please click confirm to start the migration. The migration process may take some time, please be patient.",
+    "susscess": "Data migration completed. Old data has been successfully imported into the new storage structure.",
+    "fail": "Data migration failed. Please refresh the page and try again. If it fails multiple times, please contact the developer."
   }
 }
