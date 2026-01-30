@@ -1,8 +1,8 @@
 import {
-  toTypedRxJsonSchema,
   type ExtractDocumentTypeFromTypedRxJsonSchema,
-  type RxJsonSchema,
   type RxCollection,
+  type RxJsonSchema,
+  toTypedRxJsonSchema,
 } from 'rxdb';
 
 const markDataSchemaLiteral = {
@@ -18,7 +18,7 @@ const markDataSchemaLiteral = {
   required: ['id', 'entityId', 'mapId', 'marked'],
 } as const;
 
-const markDataSchemaTyped = toTypedRxJsonSchema(markDataSchemaLiteral);
+export const markDataSchemaTyped = toTypedRxJsonSchema(markDataSchemaLiteral);
 
 export type MarkDataSchemaType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof markDataSchemaTyped>;
 

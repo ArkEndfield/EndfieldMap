@@ -1,8 +1,8 @@
 import {
-  toTypedRxJsonSchema,
   type ExtractDocumentTypeFromTypedRxJsonSchema,
-  type RxJsonSchema,
   type RxCollection,
+  type RxJsonSchema,
+  toTypedRxJsonSchema,
 } from 'rxdb';
 
 const customPointNodeSchemaLiteral = {
@@ -10,7 +10,7 @@ const customPointNodeSchemaLiteral = {
   primaryKey: 'id', // 注意：这里需要是唯一的 UUID
   type: 'object',
   properties: {
-    // 物理主键: 建议格式 `${presetId}|${mapId}|${UUID}` 或者是纯 UUID
+    // 物理主键: 建议格式 `${presetId}|${mapId}|${levelLogicId}` 或者是纯 UUID
     id: { type: 'string', maxLength: 128 },
 
     // 外键索引
@@ -19,7 +19,7 @@ const customPointNodeSchemaLiteral = {
 
     // --- 以下复用 CustomPointData 的字段结构 ---
 
-    // 逻辑ID (如果有)
+    // 逻辑ID
     levelLogicId: { type: 'number' },
 
     // 注意：在自定义标点中，这个字段通常是类型 (e.g., 'custom_point_1')
@@ -43,19 +43,18 @@ const customPointNodeSchemaLiteral = {
       type: 'object',
       properties: {
         name: { type: 'string' },
-        // 这里可以显式定义 CustomPoint 特有的属性
       },
       additionalProperties: true, // 允许 EnityProperties 的其他动态属性
     },
   },
-  required: ['id', 'presetId', 'mapId', 'entityDataIdKey', 'position'],
+  required: ['id', 'presetId', 'mapId', 'levelLogicId', 'templateId', 'entityType', 'entityDataIdKey', 'position', 'properties'],
   indexes: [
     'presetId', // 用于加载某个预设的所有点
     ['presetId', 'mapId'], // 用于筛选特定地图的点
   ],
 } as const;
 
-const customPointNodeSchemaTyped = toTypedRxJsonSchema(customPointNodeSchemaLiteral);
+export const customPointNodeSchemaTyped = toTypedRxJsonSchema(customPointNodeSchemaLiteral);
 
 export type CustomPointNodeSchemaType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof customPointNodeSchemaTyped>;
 

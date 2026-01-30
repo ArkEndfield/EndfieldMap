@@ -1,6 +1,6 @@
-import type { ElectricPoleMapData } from '@endfieldmap/map-core';
-
 import type { EXPORT_TYPE_KEY, VersionType } from '@/const/data';
+import type { modes } from '@/const/electric_pole';
+import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/electric_pole';
 
 /**
  * 电线杆预设类型
@@ -8,7 +8,7 @@ import type { EXPORT_TYPE_KEY, VersionType } from '@/const/data';
 export interface ElectricPolePreset {
   id: string;
   name: string;
-  data: ElectricPoleMapData;
+  data: ElectricPoleNodeSchemaType[];
   createdAt: number;
   updatedAt: number;
 }
@@ -18,7 +18,6 @@ export interface ElectricPolePreset {
  */
 export interface ElectricPolePresetStorage {
   presets: ElectricPolePreset[];
-  currentPresetId: string | null;
 }
 
 /**
@@ -31,3 +30,5 @@ export interface ElectricPolePresetExportBundle {
   exportedAt: number;
   presets: Array<Pick<ElectricPolePreset, 'id' | 'name' | 'data' | 'createdAt' | 'updatedAt'>>;
 }
+
+export type ElectricMode = (typeof modes)[number];

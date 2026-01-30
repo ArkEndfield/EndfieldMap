@@ -75,14 +75,6 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
   }
 
   /**
-   * 更改标点类型 (别名，用于兼容)
-   */
-  @action
-  public changePointType(typeId: CustomPointTypeId): void {
-    this.changeType(typeId);
-  }
-
-  /**
    * 重命名
    */
   @action

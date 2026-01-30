@@ -74,7 +74,7 @@ const ElectricPoleList: React.FC = observer(() => {
 
   const handleToggleTypeVisible = (group: ElectricPoleTypeGroup) => {
     const newVisible = !group.allVisible;
-    mapDataService.electricPoleDataService.updateDeviceVisibility(
+    mapDataService.electricPoleDataService.updateItemVisibility(
       adapter.mapController.dataManager.currentMapId,
       group.deviceKey,
       newVisible
@@ -84,7 +84,7 @@ const ElectricPoleList: React.FC = observer(() => {
   const handleToggleAll = () => {
     const newVisible = !allDisplayed;
     groups.forEach((group) => {
-      mapDataService.electricPoleDataService.updateDeviceVisibility(
+      mapDataService.electricPoleDataService.updateItemVisibility(
         adapter.mapController.dataManager.currentMapId,
         group.deviceKey,
         newVisible

@@ -1,5 +1,5 @@
 import type { DataInstance } from '@endfieldmap/map-core';
-import { ElectricPoleKey } from '@endfieldmap/map-core';
+import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { alert } from '@/components/common/alert/alert_api';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { EditIcon } from '@/components/common/icons';
+import { useAdapter } from '@/hooks/use_adapter';
 
 export interface RenameButtonProps {
   entity: DataInstance;
@@ -14,11 +15,13 @@ export interface RenameButtonProps {
 
 export const RenameButton: React.FC<RenameButtonProps> = observer(({ entity }) => {
   const { t } = useTranslation(['popup', 'common']);
-  const hasRename = !!entity?.renameable;
+  const { mapDataService } = useAdapter();
+  const hasRename = entity?.renameable;
   if (!hasRename) return null;
   const entityInfo = entity.entityInfo;
 
   const isElectricPole = entityInfo?.category === ElectricPoleKey;
+  const isCustomPoint = entityInfo?.category === CustomPointKey;
 
   const handleRename = async () => {
     const currentName = entity.name;
@@ -30,7 +33,14 @@ export const RenameButton: React.FC<RenameButtonProps> = observer(({ entity }) =
     });
 
     if (newName && newName !== currentName) {
-      entity.rename(newName);
+      if (isElectricPole) {
+        await mapDataService.electricPoleDataService.renameNode(entity.mapId, entity.id, newName);
+        return;
+      }
+      if (isCustomPoint) {
+        await mapDataService.customPointDataService.renameNode(entity.mapId, entity.id, newName);
+        return;
+      }
     }
   };
 

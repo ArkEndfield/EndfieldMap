@@ -1,20 +1,13 @@
-import { logger, StorageManager } from '@endfieldmap/tools';
-import { computed, observable, runInAction, toJS } from 'mobx';
+import type { EntityData, MapData } from '@endfieldmap/map-core';
+import { LocalStorageValue, logger, StorageManager } from '@endfieldmap/tools';
+import { observable, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
+import type { PresetSchemaType } from '@/services/data/db/schema/preset';
+import type { VisibilityDataSchemaType } from '@/services/data/db/schema/visibility';
+import type { IPresetService, RequiredNodeFields } from '@/services/data/user/preset/_base';
 
-export interface BasePreset<T> {
-  id: string;
-  name: string;
-  data: T;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface BasePresetStorage<TPreset> {
-  presets: TPreset[];
-  currentPresetId: string | null;
-}
+export type VisibilityData = VisibilityDataSchemaType;
 
 export interface BasePresetExportBundle<TPreset> {
   type: string;
@@ -23,55 +16,81 @@ export interface BasePresetExportBundle<TPreset> {
   presets: TPreset[];
 }
 
+/**
+ * 旧版本（0.0.1）的预设导出包格式
+ * data 字段是对象格式: { mapId: nodes[] }
+ * 使用 unknown[] 因为旧数据可能包含不在当前 schema 中的字段
+ */
+export interface LegacyPresetExportBundleV001 {
+  type: string;
+  version: '0.0.1';
+  exportedAt: number;
+  presets: Array<{
+    id: string;
+    name: string;
+    data: Record<string, unknown[]>;
+    createdAt: number;
+    updatedAt: number;
+  }>;
+}
+
 export interface IVisibilityService {
-  getAllMapVisibilityData(): Promise<any[]>;
-  setVisibilityData(mapId: string, entityKey: string, visible: boolean): Promise<any>;
+  getAllMapVisibilityData(): Promise<VisibilityDataSchemaType[]>;
+  setVisibilityData(mapId: string, entityKey: string, visible: boolean): Promise<VisibilityDataSchemaType>;
   addSubscribe(callback: (mapId: string, entityKey: string, visible: boolean) => void): void;
 }
 
 /**
  * 基础预设数据管理器
- * TData: 地图数据类型 (e.g. ElectricPoleMapData, CustomPointMapData)
- * TPreset: 预设对象类型 (e.g. ElectricPolePreset, CustomPointPreset)
+ * TNodeSchema: 节点 Schema 类型 (e.g. ElectricPoleNodeSchemaType, CustomPointNodeSchemaType) - 从 schema 生成，必须包含 RequiredNodeFields
+ * TPreset: 预设对象类型 (e.g. ElectricPolePreset, CustomPointPreset) - 必须包含 PresetSchemaType 字段和 data: TNodeSchema[]
  * TBundle: 导出包类型 (e.g. ElectricPolePresetExportBundle, CustomPointPresetExportBundle)
+ * TPresetService: 预设服务类型 (e.g. ElectricPolePresetDataService, CustomPointPresetDataService)
  */
 export abstract class BasePresetDataService<
-  TData,
-  TPreset extends BasePreset<TData>,
+  TNodeSchema extends RequiredNodeFields,
+  TPreset extends PresetSchemaType & { data: TNodeSchema[] },
   TBundle extends BasePresetExportBundle<TPreset>,
+  TPresetService extends IPresetService<TPreset, TNodeSchema> = IPresetService<TPreset, TNodeSchema>,
 > {
   protected storage: StorageManager;
   protected initialized: boolean = false;
 
-  @observable accessor dataVersion: string = '0.0.1';
+  @observable
+  accessor dataVersion: string = '0.0.2';
 
-  @observable accessor presetStorage: BasePresetStorage<TPreset> = {
-    presets: [],
-    currentPresetId: null,
-  };
+  private _currentPresetId: LocalStorageValue<string | null> | null = null;
+
+  public get currentPresetId(): LocalStorageValue<string | null> {
+    if (!this._currentPresetId) {
+      this._currentPresetId = new LocalStorageValue<string | null>({
+        storageKey: this.currentPresetIdKey,
+        initialValue: null,
+      });
+    }
+    return this._currentPresetId;
+  }
 
   /**
    * 需要子类实现的抽象属性和方法
    */
-  // 对应的 StorageKey
-  protected abstract get storageKey(): string;
   // 对应的导出类型key
   protected abstract get exportTypeKey(): string;
+  // 对应的当前预设id的key
+  protected abstract get currentPresetIdKey(): string;
 
   // 可见性服务
   protected abstract get visibilityService(): IVisibilityService;
+  // 预设数据服务 (从数据库读取)
+  protected abstract get presetService(): TPresetService;
 
-  // 确保数据格式正确
-  protected abstract ensureMapData(data: Partial<TData> | unknown): TData;
   // 应用预设到 adapter
   protected abstract applyPresetToAdapter(preset: TPreset): void;
-  // 获取当前的临时数据（用于保存到预设）
-  protected abstract get temporaryData(): TData;
   // 清除当前的 Active Feature (切换预设时调用)
   protected abstract clearActiveFeature(): void;
 
   // 导入可见性数据到 Adapter
-  protected abstract importVisibilityToAdapter(data: any[]): void;
+  protected abstract importVisibilityToAdapter(data: VisibilityDataSchemaType[]): void;
   // 处理可见性变更订阅
   protected abstract onVisibilityChange(mapId: string, key: string, visible: boolean): void;
 
@@ -100,28 +119,12 @@ export abstract class BasePresetDataService<
     this.storage = storage;
   }
 
-  @computed
-  public get currentPreset(): TPreset | null {
-    return this.presetStorage.presets.find((p) => p.id === this.presetStorage.currentPresetId) ?? null;
-  }
-
-  @computed
-  public get currentPresetId(): string | null {
-    return this.presetStorage.currentPresetId;
-  }
-
-  @computed
-  public get presetList() {
-    return this.presetStorage.presets.map((preset) => ({
-      id: preset.id,
-      name: preset.name,
-    }));
-  }
-
-  @computed
-  public get currentPresetData(): TData | null {
-    const preset = this.currentPreset;
-    return preset ? preset.data : null;
+  /**
+   * 通过 ID 获取预设
+   */
+  protected async getPresetById(id: string | null): Promise<TPreset | null> {
+    if (!id) return null;
+    return await this.presetService.getPresetById(id);
   }
 
   /**
@@ -130,145 +133,95 @@ export abstract class BasePresetDataService<
   public async initPresetFromStorage() {
     if (this.initialized) return;
 
-    const stored = await this.storage.permanentGet<BasePresetStorage<TPreset>>(this.storageKey);
+    // 从数据库加载预设列表，只获取元数据
+    const presets = await this.presetService.getAllPresets();
 
     runInAction(() => {
-      if (stored && Array.isArray(stored.presets)) {
-        const normalizedPresets = stored.presets.map((preset) => ({
-          ...preset,
-          data: this.ensureMapData(preset.data),
-        }));
-        this.presetStorage = {
-          presets: normalizedPresets,
-          currentPresetId: stored.currentPresetId ?? normalizedPresets[0]?.id ?? null,
-        };
+      if (presets.length > 0) {
+        // 验证当前预设 ID 是否有效
+        const currentId = this.currentPresetId.value;
+        const hasCurrentPreset = currentId && presets.some((p) => p.id === currentId);
+        if (!hasCurrentPreset) {
+          this.currentPresetId.value = presets[0]?.id ?? null;
+        }
       } else {
-        this.presetStorage = {
-          presets: [],
-          currentPresetId: null,
-        };
+        this.currentPresetId.value = null;
       }
       this.initialized = true;
     });
+
+    // 初始化后应用当前预设到适配器
+    await this.applyPresetById(this.currentPresetId.value);
   }
 
   /**
    * 创建新的预设
    */
-  public async createPreset(name: string, initialData?: TData | boolean) {
-    const now = Date.now();
-    const useInitialData = !!initialData && initialData !== true;
-    const useCurrentData = initialData === true;
-
-    // 如果 initialData 是数据对象，则使用它
-    // 如果 initialData 是 true，且已初始化，则使用当前临时数据
-    // 否则使用空对象（需要在子类 ensureMapData 中处理空对象的情况，或者这里传一个空对象给 ensureMapData）
-    const baseData = useInitialData
-      ? (initialData as TData)
-      : this.initialized && useCurrentData
-        ? this.temporaryData
-        : ({} as TData);
-
-    const ensuredData = this.ensureMapData(baseData);
-
-    const newPreset = {
-      id: this.generatePresetId(),
-      name,
-      data: ensuredData,
-      createdAt: now,
-      updatedAt: now,
-    } as TPreset;
+  public async createPreset(name: string) {
+    // 通过数据库服务创建预设
+    const newPreset = await this.presetService.createPreset(name, []);
 
     runInAction(() => {
-      this.presetStorage.presets.push(newPreset);
       this.clearActiveFeature();
-      this.presetStorage.currentPresetId = newPreset.id;
+      this.currentPresetId.value = newPreset.id;
     });
 
-    await this.savePresetStorage();
     this.applyPresetToAdapter(newPreset);
-    return newPreset;
   }
 
   /**
    * 切换预设
    */
   public async switchPreset(id: string) {
-    if (this.presetStorage.currentPresetId === id) return;
-    this.clearActiveFeature();
+    if (this.currentPresetId.value === id) return;
 
-    // 在切换预设之前，尝试保存当前数据到当前预设（如果存在）
-    if (this.initialized && this.currentPreset) {
-      try {
-        const currentData = this.temporaryData;
-        const ensured = this.ensureMapData(currentData);
-        runInAction(() => {
-          if (this.currentPreset) {
-            this.currentPreset.data = ensured;
-            this.currentPreset.updatedAt = Date.now();
-          }
-        });
-        // 不等待保存完成，直接继续
-        this.savePresetStorage();
-      } catch (error) {
-        logger.error('[BasePresetDataService|switchPreset] Failed to save current data:', error);
-      }
-    }
-
-    const preset = this.presetStorage.presets.find((p) => p.id === id);
+    // 先检查目标预设是否存在
+    const preset = await this.presetService.getPresetById(id);
     if (!preset) {
       throw new Error(`Preset not found: ${id}`);
     }
 
     runInAction(() => {
-      this.presetStorage.currentPresetId = id;
+      this.clearActiveFeature();
+      this.currentPresetId.value = id;
     });
 
-    await this.savePresetStorage();
-    this.applyPresetToAdapter(toJS(preset));
+    await this.applyPresetById(id);    
   }
 
   /**
    * 删除预设
    */
   public async deletePreset(id: string) {
-    const index = this.presetStorage.presets.findIndex((p) => p.id === id);
-    if (index === -1) {
+    // 先检查预设是否存在
+    const preset = await this.presetService.getPresetById(id);
+    if (!preset) {
       throw new Error(`Preset not found: ${id}`);
     }
 
-    const isCurrent = this.presetStorage.currentPresetId === id;
-    let nextPreset: TPreset | null = null;
+    const isCurrent = this.currentPresetId.value === id;
 
-    runInAction(() => {
-      this.presetStorage.presets.splice(index, 1);
-
-      if (isCurrent) {
-        nextPreset = this.presetStorage.presets[0] ?? null;
-        this.presetStorage.currentPresetId = nextPreset ? nextPreset.id : null;
-        this.clearActiveFeature();
-      } else if (!this.presetStorage.presets.length) {
-        this.presetStorage.currentPresetId = null;
-        this.clearActiveFeature();
-      }
-    });
-
-    await this.savePresetStorage();
+    // 通过数据库服务删除预设
+    await this.presetService.deletePreset(id);
 
     if (isCurrent) {
-      if (nextPreset) {
-        this.applyPresetToAdapter(toJS(nextPreset));
+      // 获取剩余预设列表
+      const remainingPresets = await this.presetService.getAllPresets();
+      const nextPresetId = remainingPresets[0]?.id ?? null;
+
+      runInAction(() => {
+        this.currentPresetId.value = nextPresetId;
+        this.clearActiveFeature();
+      });
+
+      if (nextPresetId) {
+        await this.applyPresetById(nextPresetId);
       } else {
         // 如果没有预设了，应用空数据
-        const emptyData = this.ensureMapData({});
-        // 这一步无法直接调用 adapter 方法，需要子类去清理地图
-        // 但我们可以创建一个空的 dummy preset 传给 applyPresetToAdapter
-        // 或者抛出一个 protected 方法让子类处理 "无预设" 的情况
-        // 这里为了简单，我们构造一个临时的空 Preset 对象
         const emptyPreset = {
           id: 'empty',
           name: 'empty',
-          data: emptyData,
+          data: [] as TNodeSchema[],
           createdAt: 0,
           updatedAt: 0,
         } as TPreset;
@@ -285,7 +238,7 @@ export abstract class BasePresetDataService<
    * 重命名预设
    */
   public async renamePreset(id: string, name: string) {
-    const preset = this.presetStorage.presets.find((p) => p.id === id);
+    const preset = await this.presetService.getPresetById(id);
     if (!preset) {
       throw new Error(`Preset not found: ${id}`);
     }
@@ -293,78 +246,33 @@ export abstract class BasePresetDataService<
     const trimmedName = name.trim();
     if (!trimmedName || trimmedName === preset.name) return;
 
-    runInAction(() => {
-      preset.name = trimmedName;
-      preset.updatedAt = Date.now();
-    });
-
-    await this.savePresetStorage();
-  }
-
-  public async renameCurrentPreset(name: string) {
-    if (!this.currentPresetId) return;
-    await this.renamePreset(this.currentPresetId, name);
-  }
-
-  public async deleteCurrentPreset() {
-    if (!this.currentPresetId) return;
-    await this.deletePreset(this.currentPresetId);
+    // 通过数据库服务更新名称
+    await this.presetService.updatePreset(id, { name: trimmedName });
   }
 
   /**
-   * 应用当前预设到适配器
+   * 通过 ID 应用预设到适配器
+   * 初始化和切换预设时统一调用此方法
    */
-  protected applyCurrentPresetToAdapter() {
-    if (!this.initialized) return;
-    const preset = this.currentPreset;
+  protected async applyPresetById(id: string | null) {
+    if (!id) return;
+    const preset = await this.presetService.getPresetById(id);
     if (!preset) return;
-    this.applyPresetToAdapter(toJS(preset));
-  }
-
-  /**
-   * 保存预设存储结构到存储
-   */
-  protected async savePresetStorage() {
-    const plain = {
-      presets: toJS(this.presetStorage.presets),
-      currentPresetId: toJS(this.presetStorage.currentPresetId),
-    };
-    await this.storage.permanentSet(this.storageKey, plain);
-  }
-
-  /**
-   * 自动保存逻辑 (debounce)
-   * 子类应该调用这个方法来触发自动保存
-   */
-  protected upsertCurrentPresetData(data: TData) {
-    if (!this.initialized) return;
-
-    const ensuredData = this.ensureMapData(data);
-
+    
     runInAction(() => {
-      if (!this.currentPreset) {
-        const now = Date.now();
-        const newPreset = {
-          id: this.generatePresetId(),
-          name: 'Default Preset',
-          data: ensuredData,
-          createdAt: now,
-          updatedAt: now,
-        } as TPreset;
-        this.presetStorage.presets.push(newPreset);
-        this.presetStorage.currentPresetId = newPreset.id;
-      } else {
-        this.currentPreset.data = ensuredData;
-        this.currentPreset.updatedAt = Date.now();
-      }
+      this.applyPresetToAdapter(toJS(preset));
     });
-
-    this.savePresetStorage();
   }
 
-  protected generatePresetId(): string {
-    return `preset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  // region: 节点数据处理
+  public async renameNode(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], newName: string) {
+    const presetId = this.currentPresetId.value;
+    if (!presetId) {
+      throw new Error('No active preset to rename node in');
+    }
+    await this.presetService.renameNode(mapId, presetId, levelLogicId, newName);
   }
+  // endregion
 
   // region: 导入导出
 
@@ -373,8 +281,14 @@ export abstract class BasePresetDataService<
       throw new Error('No presets selected to export');
     }
 
-    const idSet = new Set(ids);
-    const presets = this.presetStorage.presets.filter((p) => idSet.has(p.id));
+    // 从数据库读取预设用于导出（已清理 RxDB 私有字段）
+    const presets: TPreset[] = [];
+    for (const id of ids) {
+      const preset = await this.presetService.getPresetByIdForExport(id);
+      if (preset) {
+        presets.push(preset);
+      }
+    }
 
     if (!presets.length) {
       throw new Error('Selected presets not found');
@@ -383,26 +297,12 @@ export abstract class BasePresetDataService<
     await this.downloadPresetBundle(presets);
   }
 
-  public async exportPreset(id: string) {
-    await this.exportPresets([id]);
-  }
-
-  public async exportCurrentPreset() {
-    if (!this.currentPresetId) {
-      throw new Error('No current preset to export');
-    }
-    await this.exportPresets([this.currentPresetId]);
-  }
-
   protected async downloadPresetBundle(presets: TPreset[]) {
     const bundle = {
       type: this.exportTypeKey,
       version: this.dataVersion,
       exportedAt: Date.now(),
-      presets: presets.map((p) => ({
-        ...toJS(p),
-        data: this.ensureMapData(p.data),
-      })),
+      presets: toJS(presets),
     } as TBundle;
 
     const json = JSON.stringify(bundle, null, 2);
@@ -461,6 +361,11 @@ export abstract class BasePresetDataService<
       throw new Error('Invalid preset bundle format');
     }
 
+    // 根据版本号调用不同的导入逻辑
+    if (bundle.version === '0.0.1') {
+      return await this.importPresetBundleVersion001(bundle as unknown as LegacyPresetExportBundleV001);
+    }
+
     if (bundle.version !== this.dataVersion) {
       logger.warn('[BasePresetDataService|importPresetBundle] Importing preset bundle version mismatch', {
         expected: this.dataVersion,
@@ -468,20 +373,57 @@ export abstract class BasePresetDataService<
       });
     }
 
-    const now = Date.now();
-    const newPresets = bundle.presets.map((preset) => ({
-      ...preset,
-      id: this.generatePresetId(),
-      data: this.ensureMapData(preset.data),
-      createdAt: preset.createdAt || now,
-      updatedAt: preset.updatedAt || now,
-    })) as TPreset[];
+    // 通过数据库服务创建每个预设
+    for (const preset of bundle.presets) {
+      await this.presetService.createPreset(preset.name, preset.data ?? []);
+    }
+  }
 
-    runInAction(() => {
-      this.presetStorage.presets.push(...newPresets);
-    });
+  /**
+   * 导入旧版本（0.0.1）的预设
+   * 旧版本的 data 格式为 { mapId: nodes[] }，需要转换为扁平数组并为每个节点添加 mapId
+   */
+  protected async importPresetBundleVersion001(bundle: LegacyPresetExportBundleV001) {
+    if (!bundle || !Array.isArray(bundle.presets)) {
+      throw new Error('Invalid preset bundle format');
+    }
 
-    await this.savePresetStorage();
+    for (const preset of bundle.presets) {
+      // 将旧版本的对象格式转换为新版本的数组格式
+      const nodes: TNodeSchema[] = [];
+      if (preset.data && typeof preset.data === 'object') {
+        for (const [mapId, mapNodes] of Object.entries(preset.data)) {
+          if (Array.isArray(mapNodes)) {
+            for (const node of mapNodes) {
+              // 过滤掉旧版本中存在但新 schema 不允许的字段 (如 entityInfo)
+              const cleanedNode = this.cleanLegacyNodeData(node, mapId);
+              nodes.push(cleanedNode);
+            }
+          }
+        }
+      }
+
+      await this.presetService.createPreset(preset.name, nodes);
+    }
+  }
+
+  /**
+   * 清理旧版本节点数据，移除不在当前 schema 中的字段
+   */
+  protected cleanLegacyNodeData(node: unknown, mapId: string): TNodeSchema {
+    const nodeData = node as Record<string, unknown>;
+    // 只保留 schema 中定义的字段
+    const cleaned = {
+      levelLogicId: nodeData.levelLogicId,
+      entityDataIdKey: nodeData.entityDataIdKey,
+      templateId: nodeData.templateId,
+      entityType: nodeData.entityType,
+      position: nodeData.position,
+      properties: nodeData.properties,
+      mapId,
+    };
+
+    return cleaned as unknown as TNodeSchema;
   }
   // endregion
 }

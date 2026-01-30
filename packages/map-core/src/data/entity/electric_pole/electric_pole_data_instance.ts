@@ -136,10 +136,12 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
   }
 
   /**
-   * 发出连线到目标对象
+   * 判断是否可以连接到指定对象
+   * @param pole 目标电线杆实例
+   * @returns 是否可以连接
+   * @throws ElectricPoleError 如果不满足连接条件则抛出对应错误
    */
-  @action
-  public connectTo(pole: ElectricPoleDataInstance): void {
+  public canConnectTo(pole: ElectricPoleDataInstance): boolean {
     if (pole.id === this.id) {
       throw new ElectricPoleError('connect_to_self', this.id);
     }
@@ -168,6 +170,14 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
       throw new ElectricPoleError('distance_too_far', this.id);
     }
 
+    return true;
+  }
+
+  /**
+   * 发出连线到目标对象
+   */
+  @action
+  public connectTo(pole: ElectricPoleDataInstance): void {
     if (!Array.isArray(this._data.properties.connections)) {
       this._data.properties.connections = [];
     }

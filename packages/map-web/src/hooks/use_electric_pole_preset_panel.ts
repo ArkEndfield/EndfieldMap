@@ -1,23 +1,26 @@
 import { logger } from '@endfieldmap/tools';
+import { useLiveQuery } from '@tanstack/react-db';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { EXPORT_TYPE_KEY } from '@/const/data';
 import { useAdapter } from '@/hooks/use_adapter';
+import { DataService } from '@/services/data';
 
 export interface PresetItem {
   id: string;
   name: string;
 }
 
-export const usePresetPanel = () => {
+export const useElectricPolePresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
   const { mapDataService } = useAdapter();
   const service = mapDataService.electricPoleDataService;
-  const currentPresetId = service.currentPresetId ?? '';
-  const presets = service.presetList;
-
+  const currentPresetId = service.currentPresetId.value ?? '';
+  const { data: presets } = useLiveQuery((q) =>
+    q.from({ presets: DataService.dbStorage.collections.electricPolePreset.tanStackDbCollection })
+  );
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 

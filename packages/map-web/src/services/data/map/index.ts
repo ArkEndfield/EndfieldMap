@@ -19,8 +19,8 @@ import { SwiperDataService } from '@/services/data/map/swiper';
  * 数据服务
  */
 export class MapDataService {
-  private storage: StorageManager;
-  private jsonLoader: JSONLoader;
+  private readonly storage: StorageManager;
+  private readonly jsonLoader: JSONLoader;
   public static instance?: MapDataService;
 
   public entityDataService: EntityDataService;

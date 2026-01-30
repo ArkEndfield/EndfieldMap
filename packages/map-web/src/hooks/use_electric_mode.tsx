@@ -1,13 +1,11 @@
+import type { ElectricMode } from '@eftypes/electric_pole';
 import type Resources from '@eftypes/resources';
 import { differenceArray } from '@endfieldmap/tools';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
+import { modes } from '@/const/electric_pole';
 import { useAdapter } from '@/hooks/use_adapter';
-
-const modes = ['isCreating', 'isConnecting', 'isDeleting', 'isDeletingConnection'] as const;
-
-export type ElectricMode = (typeof modes)[number];
 
 type ElectricPoleTranslation = Resources['sidebar']['operation']['electric_pole'];
 
@@ -100,47 +98,19 @@ export const useElectricMode = () => {
   const toggleMode = (mode: ElectricMode) => {
     if (!checkCanOperate()) return;
 
-    // 这里会调用 isInMode -> getModeValue -> service.property
-    // 保证了判断的是最新状态
     if (isInOtherElectricPoleMode(mode)) {
       service.stopAllOperation();
     }
 
     adapter.activeFeatureController.clearActiveFeature();
 
-    switch (mode) {
-      case 'isConnecting':
-        service.toggleConnectElectricPole();
-        break;
-      case 'isCreating':
-        service.toggleCreateElectricPole();
-        break;
-      case 'isDeleting':
-        service.toggleDeleteElectricPole();
-        break;
-      case 'isDeletingConnection':
-        service.toggleDeleteConnnection();
-        break;
-    }
+    service.setModeState(mode, !getModeValue(mode));
   };
 
   const changeMode = (mode: ElectricMode) => {
     if (!checkCanOperate()) return;
     service.stopAllOperation();
-    switch (mode) {
-      case 'isConnecting':
-        service.startConnectElectricPole();
-        break;
-      case 'isCreating':
-        service.startCreateElectricPole();
-        break;
-      case 'isDeleting':
-        service.startDeleteElectricPole();
-        break;
-      case 'isDeletingConnection':
-        service.startDeleteConnection();
-        break;
-    }
+    service.setModeState(mode, true);
   };
 
   const stopAllModes = () => {

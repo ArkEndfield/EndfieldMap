@@ -20,7 +20,7 @@ import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
 
 export const LeftContent = observer(({ className }: { className?: string }) => {
-  const { adapter } = useAdapter();
+  const { adapter, mapDataService } = useAdapter();
   const { t } = useTranslation(['popup', 'common']);
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityInfo = activeFeature?.entityInfo;
@@ -28,11 +28,18 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const isCustomPoint = entityInfo?.category === CustomPointKey;
   const { name: displayName, categoryName } = useActiveFeatureName(activeFeature);
 
-  const handleChangePointType = (newType: CustomPointTypeId) => {
+  const handleChangePointType = async (newType: CustomPointTypeId) => {
     if (!activeFeature || !isCustomPoint) return;
 
-    // 使用 DataInstance 的 changeType API
-    (activeFeature as CustomPointDataInstance).changeType?.(newType);
+    try {
+      await mapDataService.customPointDataService.changePointType(
+        activeFeature.mapId,
+        activeFeature.id,
+        newType
+      );
+    } catch (error) {
+      console.error('Failed to change point type:', error);
+    }
   };
 
   const customPointTypeOptions = customPointTypes.map((type) => ({

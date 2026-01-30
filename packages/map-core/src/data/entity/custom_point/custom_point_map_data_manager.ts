@@ -84,6 +84,16 @@ export class CustomPointMapDataManager extends Disposer {
   }
 
   /**
+   * 清空所有地图的数据
+   */
+  @action
+  public clearAllMaps(): void {
+    this.mapManagers.forEach((manager) => {
+      manager.clear();
+    });
+  }
+
+  /**
    * 加载单个地图的数据
    */
   @action

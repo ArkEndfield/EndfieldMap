@@ -1,8 +1,8 @@
 import {
-  toTypedRxJsonSchema,
   type ExtractDocumentTypeFromTypedRxJsonSchema,
-  type RxJsonSchema,
   type RxCollection,
+  type RxJsonSchema,
+  toTypedRxJsonSchema,
 } from 'rxdb';
 
 const visibilityDataSchemaLiteral = {
@@ -18,7 +18,7 @@ const visibilityDataSchemaLiteral = {
   required: ['id', 'entityKey', 'mapId', 'visible'],
 } as const;
 
-const visibilityDataSchemaTyped = toTypedRxJsonSchema(visibilityDataSchemaLiteral);
+export const visibilityDataSchemaTyped = toTypedRxJsonSchema(visibilityDataSchemaLiteral);
 
 export type VisibilityDataSchemaType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof visibilityDataSchemaTyped>;
 

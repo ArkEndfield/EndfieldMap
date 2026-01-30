@@ -9,10 +9,10 @@ import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity
 import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_map_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { ElectricPoleRender } from '@endfieldmap/map-core/render/renderer/entity/electric_pole';
-import type { ElectricPoleData, ElectricPoleMapData, MapData } from '@endfieldmap/map-core/types';
+import type { ElectricPoleData, ElectricPoleMapData, ElectricPoleNodeData, MapData } from '@endfieldmap/map-core/types';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { calculateXYZDistance, logger } from '@endfieldmap/tools';
-import { reaction } from 'mobx';
+import { action, reaction } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 /**
@@ -57,23 +57,29 @@ export class ElectricPoleController extends Disposer {
   // #region 数据操作
 
   /**
-   * 加载电线杆数据（保持原有ID）
+   * 加载电线杆数据（数组格式）
+   * 每条数据需包含 mapId 字段
    */
-  public loadElectricPoleData(data: ElectricPoleMapData): void {
-    for (const [mapId, list] of Object.entries(data)) {
-      const poleList = list as ElectricPoleData[];
+  @action
+  public loadElectricPoleData(data: ElectricPoleNodeData[]): void {
+    // 先清空所有地图的数据
+    this.dataManager.clearAllMaps();
+    // 按 mapId 分组
+    const groupedData: ElectricPoleMapData = {};
+    for (const node of data) {
+      const { mapId, ...poleData } = node;
+      if (!groupedData[mapId]) {
+        groupedData[mapId] = [];
+      }
+      groupedData[mapId]!.push(poleData as ElectricPoleData);
+    }
 
+    // 加载分组后的数据
+    for (const [mapId, list] of Object.entries(groupedData)) {
+      const poleList = list as ElectricPoleData[];
       this.dataManager.loadMapData(mapId, poleList);
       this.syncConnectionsForMap(mapId);
-    }
-  }
-
-  /**
-   * 重置所有电线杆数据
-   */
-  public resetAllElectricPoleData(data: ElectricPoleMapData): void {
-    // 直接加载数据（loadElectricPoleData 内部会清空并重新添加数据）
-    this.loadElectricPoleData(data);
+    }    
   }
 
   /**
@@ -85,13 +91,13 @@ export class ElectricPoleController extends Disposer {
   }
 
   /**
-   * 创建电线杆
+   * 创建电线杆数据
    */
-  public createElectricPole(
+  public createElectricPoleData(
     mapId: MapData['id'],
     position: Coordinate,
     deviceKey: ElectricPoleDeviceKey = DEFAULT_ELECTRIC_POLE_DEVICE_KEY
-  ): ElectricPoleDataInstance | null {
+  ): ElectricPoleData {
     const mapDataInstance = MapDataManager.getInstance();
     const xyzPosition = mapDataInstance.crd2xyz(position, mapId);
 
@@ -133,11 +139,19 @@ export class ElectricPoleController extends Disposer {
       },
     };
 
-    // 添加到数据管理器
+    return data;
+  }
+
+  /**
+   * 将电线杆数据添加到管理器中
+   */
+  public addElectricPoleData(mapId: MapData['id'], data: ElectricPoleData): ElectricPoleDataInstance {
+    const manager = this.dataManager.getMapManager(mapId);
     const instance = manager.addWithConnection(data);
 
     return instance;
   }
+
 
   /**
    * 删除电线杆

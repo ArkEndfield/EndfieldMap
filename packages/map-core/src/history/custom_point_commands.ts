@@ -22,7 +22,7 @@ export class CreateCustomPointCommand implements Command {
   }
 
   execute(): void {
-    this.createdInstance = this.controller.createCustomPoint(this.mapId, this.position, this.type);
+    this.createdInstance = this.controller.addCustomPointData(this.mapId, this.controller.createCustomPointData(this.mapId, this.position, this.type));
   }
 
   undo(): void {
@@ -55,7 +55,7 @@ export class DeleteCustomPointCommand implements Command {
 
   undo(): void {
     if (this.deletedData) {
-      this.controller.addCustomPoint(this.mapId, this.deletedData);
+      this.controller.addCustomPointData(this.mapId, this.deletedData);
     }
   }
 }
@@ -78,7 +78,7 @@ export class BatchCreateCustomPointsCommand implements Command {
   execute(): void {
     this.createdInstances = [];
     for (const { position, type } of this.items) {
-      const instance = this.controller.createCustomPoint(this.mapId, position, type);
+      const instance = this.controller.addCustomPointData(this.mapId, this.controller.createCustomPointData(this.mapId, position, type));
       if (instance) {
         this.createdInstances.push(instance);
       }
@@ -123,7 +123,7 @@ export class BatchDeleteCustomPointsCommand implements Command {
 
   undo(): void {
     for (const data of this.deletedData) {
-      this.controller.addCustomPoint(this.mapId, data);
+      this.controller.addCustomPointData(this.mapId, data);
     }
     this.deletedData = [];
   }

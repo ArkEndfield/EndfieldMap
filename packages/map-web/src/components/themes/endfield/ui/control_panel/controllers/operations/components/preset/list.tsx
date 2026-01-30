@@ -1,7 +1,7 @@
 import { PresetListItem } from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/list_item';
 import { useTranslation } from 'react-i18next';
 
-import type { PresetItem } from '@/hooks/use_preset_panel';
+import type { PresetItem } from '@/hooks/use_electric_pole_preset_panel';
 
 interface PresetListProps {
   presets: PresetItem[];

@@ -1,4 +1,4 @@
-import { type EndfieldMapAdapter, type MapData, type EntityData } from '@endfieldmap/map-core';
+import { type EndfieldMapAdapter, type EntityData,type MapData } from '@endfieldmap/map-core';
 
 import { userService } from '@/services/user';
 

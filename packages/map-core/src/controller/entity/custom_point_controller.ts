@@ -4,7 +4,7 @@ import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/
 import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { CustomPointRender } from '@endfieldmap/map-core/render/renderer/entity/custom_point/';
-import type { CustomPointMapData, MapData } from '@endfieldmap/map-core/types';
+import type { CustomPointMapData, CustomPointNodeData, MapData } from '@endfieldmap/map-core/types';
 import type { CustomPointData, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { logger } from '@endfieldmap/tools';
@@ -49,71 +49,38 @@ export class CustomPointController extends Disposer {
   // #region 数据操作
 
   /**
-   * 初始化自定义标点数据（重新生成ID）
+   * 加载自定义标点数据（数组格式）
+   * 保持原有ID，确保与数据库中的ID一致
    */
   @action
-  public initCustomPointData(data: CustomPointMapData): void {
-    // 全局已使用的ID集合
-    const globalUsedIds = new Set<number>();
+  public loadCustomPointData(data: CustomPointNodeData[]): void {
+    // 先清空所有地图的数据
+    this.dataManager.clearAllMaps();
 
-    // 收集所有现有ID
-    for (const [, manager] of this.dataManager.mapManagers) {
-      for (const instance of manager.instances) {
-        globalUsedIds.add(instance.id);
+    // 按 mapId 分组
+    const groupedData: CustomPointMapData = {};
+    for (const node of data) {
+      const { mapId, ...pointData } = node;
+      if (!groupedData[mapId]) {
+        groupedData[mapId] = [];
       }
+      groupedData[mapId]!.push(pointData as CustomPointData);
     }
 
-    // 处理每个地图的数据
-    for (const [mapId, list] of Object.entries(data)) {
-      const pointList = list as CustomPointData[];
-
-      // 构建旧ID到新ID的映射
-      const idMap = new Map<number, number>();
-
-      for (const point of pointList) {
-        const oldId = point.levelLogicId;
-        const newId = this.generateCustomPointId(globalUsedIds);
-        idMap.set(oldId, newId);
-        globalUsedIds.add(newId);
-      }
-
-      // 重映射数据
-      const remappedList: CustomPointData[] = pointList.map((point) => {
-        const oldId = point.levelLogicId;
-        const newId = idMap.get(oldId)!;
-
-        return {
-          ...point,
-          levelLogicId: newId,
-        };
-      });
-
-      // 加载到数据管理器
-      this.dataManager.loadMapData(mapId, remappedList);
-    }
+    // 加载到数据管理器，保持原有ID
+    for (const [mapId, pointList] of Object.entries(groupedData)) {
+      this.dataManager.loadMapData(mapId, pointList as CustomPointData[]);
+    }    
   }
 
   /**
-   * 加载自定义标点数据（保持原有ID）
+   * 创建自定义标点数据（不添加到管理器）
    */
-  @action
-  public loadCustomPointData(data: CustomPointMapData): void {
-    for (const [mapId, list] of Object.entries(data)) {
-      const pointList = list as CustomPointData[];
-
-      this.dataManager.loadMapData(mapId, pointList);
-    }
-  }
-
-  /**
-   * 创建自定义标点
-   */
-  @action
-  public createCustomPoint(
+  public createCustomPointData(
     mapId: MapData['id'],
     position: Coordinate,
     type: CustomPointTypeId
-  ): CustomPointDataInstance | null {
+  ): CustomPointData {
     const mapDataInstance = MapDataManager.getInstance();
     const xyzPosition = mapDataInstance.crd2xyz(position, mapId);
     const manager = this.dataManager.getMapManager(mapId);
@@ -132,17 +99,14 @@ export class CustomPointController extends Disposer {
       properties: {},
     };
 
-    // 添加到数据管理器
-    const instance = manager.add(data);
-
-    return instance;
+    return data;
   }
 
   /**
-   * 添加自定义标点
+   * 添加自定义标点数据到管理器
    */
   @action
-  public addCustomPoint(mapId: MapData['id'], data: CustomPointData): CustomPointDataInstance | null {
+  public addCustomPointData(mapId: MapData['id'], data: CustomPointData): CustomPointDataInstance {
     const manager = this.dataManager.getMapManager(mapId);
     const instance = manager.add(data);
 

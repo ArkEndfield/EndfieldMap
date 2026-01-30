@@ -85,7 +85,7 @@ const CustomPointList: React.FC = observer(() => {
   const handleToggleTypeVisible = (group: CustomPointTypeGroup) => {
     const newVisible = !group.allVisible;
     // 保存可见性状态 (RxDB 订阅会自动更新实例)
-    mapDataService.customPointDataService.updateCustomPointVisibility(
+    mapDataService.customPointDataService.updateItemVisibility(
       adapter.mapController.dataManager.currentMapId,
       group.entityDataIdKey,
       newVisible
@@ -95,7 +95,7 @@ const CustomPointList: React.FC = observer(() => {
   const handleToggleAll = () => {
     const newVisible = !allDisplayed;
     customPointGroups.forEach((group) => {
-      mapDataService.customPointDataService.updateCustomPointVisibility(
+      mapDataService.customPointDataService.updateItemVisibility(
         adapter.mapController.dataManager.currentMapId,
         group.entityDataIdKey,
         newVisible

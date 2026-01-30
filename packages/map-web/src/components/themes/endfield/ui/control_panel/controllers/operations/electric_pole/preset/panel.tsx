@@ -5,7 +5,7 @@ import PresetSelectBar from '@themes/endfield/ui/control_panel/controllers/opera
 import { observer } from 'mobx-react-lite';
 
 import { ScrollArea } from '@/components/common/scroll_area';
-import { usePresetPanel } from '@/hooks/use_preset_panel';
+import { useElectricPolePresetPanel } from '@/hooks/use_electric_pole_preset_panel';
 
 /**
  * 电线杆预设管理面板
@@ -28,7 +28,7 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
     handleRenamePreset,
     handleClickImport,
     handleImportFileChange,
-  } = usePresetPanel();
+  } = useElectricPolePresetPanel();
 
   return (
     <div className="flex-1 overflow-hidden py-3 flex flex-col gap-2">

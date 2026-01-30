@@ -78,18 +78,6 @@ export class ElectricPoleMapDataManager extends Disposer {
   }
 
   /**
-   * 获取所有地图的数据（用于导出）
-   */
-  @computed
-  get allData(): Record<MapData['id'], ElectricPoleData[]> {
-    const data: Record<MapData['id'], ElectricPoleData[]> = {};
-    for (const [mapId, manager] of this.mapManagers) {
-      data[mapId] = manager.exportData;
-    }
-    return data;
-  }
-
-  /**
    * 加载电线杆数据（不重新生成ID）
    */
   @action
@@ -105,20 +93,13 @@ export class ElectricPoleMapDataManager extends Disposer {
   }
 
   /**
-   * 重置所有数据
+   * 清空所有地图的数据
    */
   @action
-  public resetAllData(data: ElectricPoleMapData): void {
-    this.mapManagers.clear();
-    this.loadData(data);
-  }
-
-  /**
-   * 清除所有数据
-   */
-  @action
-  public clearAll(): void {
-    this.mapManagers.clear();
+  public clearAllMaps(): void {
+    this.mapManagers.forEach((manager) => {
+      manager.clear();
+    });
   }
 
   /**

@@ -1,8 +1,8 @@
 import {
-  toTypedRxJsonSchema,
   type ExtractDocumentTypeFromTypedRxJsonSchema,
-  type RxJsonSchema,
   type RxCollection,
+  type RxJsonSchema,
+  toTypedRxJsonSchema,
 } from 'rxdb';
 
 export const presetSchemaLiteral = {
@@ -18,7 +18,7 @@ export const presetSchemaLiteral = {
   required: ['id', 'name'],
 } as const;
 
-const presetSchemaTyped = toTypedRxJsonSchema(presetSchemaLiteral);
+export const presetSchemaTyped = toTypedRxJsonSchema(presetSchemaLiteral);
 
 export type PresetSchemaType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof presetSchemaTyped>;
 

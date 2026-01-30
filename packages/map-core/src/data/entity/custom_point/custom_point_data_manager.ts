@@ -26,11 +26,13 @@ export class CustomPointDataManager extends BaseDataManager<CustomPointData, Cus
    * 创建自定义标点数据实例
    */
   protected createInstance(data: CustomPointData): CustomPointDataInstance {
-    if (!data.entityInfo) {
-      data.entityInfo = getCustomPointEntityInfo(data.entityDataIdKey);
+    // 复制数据对象，避免修改冻结的对象（如 RxDB documentData）
+    const dataCopy = { ...data };
+    if (!dataCopy.entityInfo) {
+      dataCopy.entityInfo = getCustomPointEntityInfo(dataCopy.entityDataIdKey);
     }
     const instance = new CustomPointDataInstance({
-      data,
+      data: dataCopy,
       mapId: this.mapId,
     });
 

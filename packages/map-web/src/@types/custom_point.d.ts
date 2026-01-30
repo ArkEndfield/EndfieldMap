@@ -1,6 +1,5 @@
-import type { CustomPointMapData } from '@endfieldmap/map-core';
-
 import type { EXPORT_TYPE_KEY } from '@/const/data';
+import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/custom_point';
 
 /**
  * 自定义标点预设
@@ -8,7 +7,7 @@ import type { EXPORT_TYPE_KEY } from '@/const/data';
 export interface CustomPointPreset {
   id: string;
   name: string;
-  data: CustomPointMapData;
+  data: CustomPointNodeSchemaType[];
   createdAt: number;
   updatedAt: number;
 }
@@ -18,7 +17,6 @@ export interface CustomPointPreset {
  */
 export interface CustomPointPresetStorage {
   presets: CustomPointPreset[];
-  currentPresetId: string | null;
 }
 
 /**

@@ -1,48 +1,37 @@
-import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+import { logger, StorageKey } from '@endfieldmap/tools';
+import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
 import { addRxPlugin, createRxDatabase, type RxDatabase } from 'rxdb/plugins/core';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
-import { isDev } from '@/services/env';
-import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
+import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
-import { electricPoleNodeSchema, type ElectricPoleNodeCollection } from '@/services/data/db/schema/electric_pole';
-import { customPointNodeSchema, type CustomPointNodeCollection } from '@/services/data/db/schema/custom_point';
-import { markDataSchema, type MarkDataCollection } from '@/services/data/db/schema/mark';
-import { visibilityDataSchema, type VisibilityDataCollection } from '@/services/data/db/schema/visibility';
-import { presetSchema, type PresetCollection } from '@/services/data/db/schema/preset';
-import { DataService } from '@/services/data';
-import { logger, StorageKey } from '@endfieldmap/tools';
-import type { ElectricPolePreset } from '@/@types/electric_pole';
+import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
+
 import type { CustomPointPreset } from '@/@types/custom_point';
+import type { ElectricPolePreset } from '@/@types/electric_pole';
+import { DataService } from '@/services/data';
+import { Collections } from '@/services/data/db/collections';
+import { collectionsSchema,type DBCollections } from '@/services/data/db/collections.ts';
 import { EntityMarkService } from '@/services/data/user/marked/entity';
+import { isDev } from '@/services/env';
 
 export interface BasePresetStorage<TPreset> {
   presets: TPreset[];
-  currentPresetId: string | null;
 }
-
-export type DBCollections = {
-  electricPoleNode: ElectricPoleNodeCollection;
-  electricPolePreset: PresetCollection;
-  electricPoleVisibility: VisibilityDataCollection;
-
-  customPointNode: CustomPointNodeCollection;
-  customPointPreset: PresetCollection;
-  customPointVisibility: VisibilityDataCollection;
-
-  entityMark: MarkDataCollection;
-  entityVisibility: VisibilityDataCollection;
-};
 
 export class Storage {
   public storage = wrappedValidateAjvStorage({ storage: getRxStorageDexie() });
   private db?: RxDatabase<DBCollections>;
   private isInitialized = false;
+  private inner_collections?: Collections;
 
   constructor() {
     if (isDev) {
       addRxPlugin(RxDBDevModePlugin);
     }
     addRxPlugin(RxDBUpdatePlugin);
+    addRxPlugin(RxDBCleanupPlugin);
+    addRxPlugin(RxDBLeaderElectionPlugin);
   }
 
   public async init() {
@@ -62,32 +51,8 @@ export class Storage {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
-    await this.db.addCollections({
-      electricPoleNode: {
-        schema: electricPoleNodeSchema,
-      },
-      electricPolePreset: {
-        schema: presetSchema,
-      },
-      electricPoleVisibility: {
-        schema: visibilityDataSchema,
-      },
-      customPointNode: {
-        schema: customPointNodeSchema,
-      },
-      customPointPreset: {
-        schema: presetSchema,
-      },
-      customPointVisibility: {
-        schema: visibilityDataSchema,
-      },
-      entityMark: {
-        schema: markDataSchema,
-      },
-      entityVisibility: {
-        schema: visibilityDataSchema,
-      },
-    });
+    await this.db.addCollections(collectionsSchema);
+    this.inner_collections = new Collections(this.db);
   }
 
   public get database() {
@@ -95,6 +60,13 @@ export class Storage {
       throw new Error('Database not initialized');
     }
     return this.db;
+  }
+
+  public get collections() {
+    if (!this.inner_collections || !this.isInitialized) {
+      throw new Error('Collections not initialized');
+    }
+    return this.inner_collections;
   }
 
   private static MIGRATION_KEY = 'endfieldmap:migrated_to_rxdb';

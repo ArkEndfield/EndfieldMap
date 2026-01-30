@@ -49,11 +49,13 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
    * 创建电线杆数据实例
    */
   protected createInstance(data: ElectricPoleData): ElectricPoleDataInstance {
-    if (!data.entityInfo) {
-      data.entityInfo = this.entityInfo;
+    // 复制数据对象，避免修改冻结的对象（如 RxDB documentData）
+    const dataCopy = { ...data };
+    if (!dataCopy.entityInfo) {
+      dataCopy.entityInfo = this.entityInfo;
     }
     const instance = new ElectricPoleDataInstance({
-      data,
+      data: dataCopy,
       mapId: this.mapId,
     });
 

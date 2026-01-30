@@ -1,43 +1,56 @@
 import type { CustomPointPreset, CustomPointPresetExportBundle } from '@eftypes/custom_point';
-import type {
-  Coordinate,
-  CustomPointMapData,
-  CustomPointTypeId,
-  EndfieldMapAdapter,
-  MapData,
-} from '@endfieldmap/map-core';
-import { CustomPointKey, getDefaultCustomPointType, MAP_EVENT } from '@endfieldmap/map-core';
-import { debounce, LocalStorageDB, LocalStorageKey, logger, StorageKey, type StorageManager } from '@endfieldmap/tools';
-import { action, autorun, computed, observable, runInAction } from 'mobx';
+import type { Coordinate, CustomPointTypeId, EndfieldMapAdapter, EntityData, MapData } from '@endfieldmap/map-core';
+import { type CustomPointData,CustomPointKey, getDefaultCustomPointType, MAP_EVENT } from '@endfieldmap/map-core';
+import { LocalStorageDB, LocalStorageKey, logger, type StorageManager } from '@endfieldmap/tools';
+import { action, computed, observable, runInAction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { DEBOUNCE_INTERVAL, EXPORT_TYPE_KEY } from '@/const/data';
-import { BasePresetDataService, type IVisibilityService } from '@/services/data/map/base/base_preset';
+import { DATA_STORAGE_KEY, EXPORT_TYPE_KEY } from '@/const/data';
+import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/custom_point';
+import {
+  BasePresetDataService,
+  type IVisibilityService,
+  type VisibilityData,
+} from '@/services/data/map/base/base_preset';
+import { CustomPointPresetDataService } from '@/services/data/user/preset/custom_point';
 import { userService } from '@/services/user';
 
 /**
  * 自定义标点数据管理器
  */
 export class CustomPointDataService extends BasePresetDataService<
-  CustomPointMapData,
+  CustomPointNodeSchemaType,
   CustomPointPreset,
-  CustomPointPresetExportBundle
+  CustomPointPresetExportBundle,
+  CustomPointPresetDataService
 > {
-  private adapter: EndfieldMapAdapter;
+  private readonly adapter: EndfieldMapAdapter;
 
-  protected get storageKey(): string {
-    return StorageKey.CUSTOM_POINT;
-  }
+  @observable accessor customPointVisibility: boolean = true;
+
+  @observable accessor isCreating: boolean = false;
+  @observable accessor isDeleting: boolean = false;
+  @observable accessor selectedPointType: CustomPointTypeId = getDefaultCustomPointType().id;
+
+  private eventListenerDisposers: Array<() => void> = [];
 
   protected get exportTypeKey(): string {
     return EXPORT_TYPE_KEY.CUSTOM_POINT_PRESET;
+  }
+
+  protected get currentPresetIdKey(): string {
+    return DATA_STORAGE_KEY.CURRENT_CUSTOM_POINT_PRESET_ID;
   }
 
   protected get visibilityService(): IVisibilityService {
     return userService.data.customPointVisibilityService;
   }
 
-  protected importVisibilityToAdapter(data: any[]): void {
+  protected get presetService(): CustomPointPresetDataService {
+    return userService.data.customPointPresetDataService;
+  }
+
+  protected importVisibilityToAdapter(data: VisibilityData[]): void {
     // 转换为 plain object 传递给 Core 层
     const plainData = data.map((doc) => ({
       mapId: doc.mapId,
@@ -51,15 +64,6 @@ export class CustomPointDataService extends BasePresetDataService<
     this.adapter.customPointController.setMapTypeVisible(mapId, key, visible);
   }
 
-  @observable accessor customPointVisibility: boolean = true;
-
-  @observable accessor isCreating: boolean = false;
-  @observable accessor isDeleting: boolean = false;
-  @observable accessor selectedPointType: CustomPointTypeId = getDefaultCustomPointType().id;
-
-  private eventListenerDisposers: Array<() => void> = [];
-  private reactionDisposers: Array<() => void> = [];
-
   constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
     super(storage);
     this.adapter = adapter;
@@ -67,8 +71,6 @@ export class CustomPointDataService extends BasePresetDataService<
   }
 
   private initAdapter() {
-    this.applyCurrentPresetToAdapter();
-    this.initAutoSaveReaction();
     this.initMapClickEvent();
     this.initCustomPointClickEvent();
   }
@@ -78,105 +80,60 @@ export class CustomPointDataService extends BasePresetDataService<
 
     await this.initPresetFromStorage();
 
-    const visibility = await LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY);
+    const visibility = LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY);
 
     runInAction(() => {
       this.customPointVisibility = visibility ?? true;
-      this.initialized = true;
     });
-
-    // 从存储加载数据后，将当前预设应用到地图
-    this.applyCurrentPresetToAdapter();
 
     // 初始化可见性逻辑 (加载 + 订阅)
     await this.initVisibilityLogic();
+
+    this.initDataListeners();
   }
 
-  protected ensureMapData(data: Partial<CustomPointMapData> | unknown): CustomPointMapData {
-    if (!data || typeof data !== 'object') {
-      data = {};
-    }
-    const safeData = data as Partial<CustomPointMapData>;
-    const ensured: Partial<CustomPointMapData> = {};
-    const mapIds = this.adapter.mapController.dataManager.mapIds;
-
-    mapIds.forEach((mapId) => {
-      if (!safeData[mapId]) {
-        ensured[mapId] = [];
-      } else if (Array.isArray(safeData[mapId])) {
-        // 验证并过滤掉无效的自定义标点数据
-        const validPoints = safeData[mapId]!.filter((point) => {
-          // 检查是否有有效的对象
-          if (!point || typeof point !== 'object') {
-            logger.warn('[CustomPointDataService|ensureMapData] Invalid point data (not an object)', {
-              mapId,
-              point,
-            });
-            return false;
-          }
-
-          // 检查坐标是否存在且有效
-          if (!point.position || typeof point.position !== 'object') {
-            logger.warn('[CustomPointDataService|ensureMapData] Missing or invalid position', { mapId, point });
-            return false;
-          }
-
-          // 检查 x 和 y 属性是否存在且为数字
-          if (typeof point.position.x !== 'number' || typeof point.position.y !== 'number') {
-            logger.warn('[CustomPointDataService|ensureMapData] Invalid position x/y values', {
-              mapId,
-              pointId: point.levelLogicId,
-              position: point.position,
-            });
-            return false;
-          }
-
-          // 检查 x 和 y 是否为有效数字（非 NaN, 非 Infinity）
-          if (!Number.isFinite(point.position.x) || !Number.isFinite(point.position.y)) {
-            logger.warn('[CustomPointDataService|ensureMapData] Position contains NaN or Infinity', {
-              mapId,
-              pointId: point.levelLogicId,
-              position: point.position,
-            });
-            return false;
-          }
-
-          return true;
-        });
-
-        // 如果过滤掉了一些无效数据，记录警告
-        const filteredCount = safeData[mapId]!.length - validPoints.length;
-        if (filteredCount > 0) {
-          logger.warn(
-            `[CustomPointDataService|ensureMapData] Filtered out ${filteredCount} invalid custom point(s) from ${mapId}`,
-            safeData[mapId],
-            validPoints
-          );
+  private initDataListeners() {
+    userService.data.customPointPresetDataService.addNodeSubscribe((type, docData, prevData) => {
+      // 先判断是不是当前预设的数据
+      const currentPresetId = this.currentPresetId.value;
+      if (docData.presetId !== currentPresetId) {
+        return;
+      }
+      switch (type) {
+        case 'DELETE':
+          this.adapter.customPointController.deleteCustomPoint(docData.mapId, docData.levelLogicId);
+          this.adapter.hoverFeatureController.clearHoverFeature();
+          break;
+        case 'INSERT': {
+          this.adapter.customPointController.addCustomPointData(docData.mapId, docData as CustomPointData);
+          break;
         }
+        case 'UPDATE': {
+          const manager = this.adapter.customPointController.dataManager.getMapManager(docData.mapId);
+          const instance = manager.getById(docData.levelLogicId);
 
-        ensured[mapId] = validPoints;
-      } else {
-        ensured[mapId] = [];
+          if (instance && prevData) {
+            // 1. 检查是否是重命名
+            if (prevData.properties?.name !== docData.properties?.name) {
+              instance.rename((docData.properties?.name as string) || 'Unnamed Electric Pole');
+            }
+            // 2. 检查是否是类型变更
+            if (prevData.entityDataIdKey !== docData.entityDataIdKey) {
+              instance.changeType(docData.entityDataIdKey as CustomPointTypeId);
+            }
+          }
+          break;
+        }
       }
     });
-
-    return ensured as CustomPointMapData;
   }
-
-  /**
-   * 内部方法-防抖保存预设存储结构到存储
-   */
-  private debouncedSave = debounce((currentData: CustomPointMapData) => {
-    this.upsertCurrentPresetData(currentData);
-  }, DEBOUNCE_INTERVAL);
 
   /**
    * 内部方法-应用预设到适配器
    */
   protected applyPresetToAdapter(preset: CustomPointPreset) {
     try {
-      const data = this.ensureMapData(preset.data);
-      this.adapter.customPointController.initCustomPointData(data);
+      this.adapter.customPointController.loadCustomPointData(preset.data ?? []);
     } catch (error) {
       logger.error('[CustomPointDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data', {
         presetId: preset.id,
@@ -190,16 +147,11 @@ export class CustomPointDataService extends BasePresetDataService<
       alert.info({
         content: `自定义标点预设 "${preset.name}" 数据已损坏，请检查并重新创建预设。`,
         onCancel: () => {
-          const emptyData = this.ensureMapData({} as CustomPointMapData);
-          adapter?.customPointController.initCustomPointData(emptyData);
+          adapter?.customPointController.loadCustomPointData([]);
         },
         cancelText: '删除损坏预设',
       });
     }
-  }
-
-  protected get temporaryData(): CustomPointMapData {
-    return this.adapter.customPointController.dataManager.allData;
   }
   // endregion
 
@@ -265,6 +217,23 @@ export class CustomPointDataService extends BasePresetDataService<
   }
   // endregion
 
+  // region: 修改标点的数据
+  public async changePointType(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], newType: CustomPointTypeId) {
+    const presetId = this.currentPresetId.value;
+    if (!presetId) {
+      logger.warn('[CustomPointDataService|changePointType] No preset selected');
+      return;
+    }
+
+    try {
+      await this.presetService.changeNodeType(mapId, presetId, levelLogicId, newType);
+    } catch (error) {
+      logger.error('[CustomPointDataService|changePointType] Failed to change point type', error);
+      throw error;
+    }
+  }
+  // endregion
+
   // region: 可见性管理
   /**
    * 修改自定义标点可见性
@@ -284,18 +253,6 @@ export class CustomPointDataService extends BasePresetDataService<
     const visible = !this.adapter.customPointController.dataManager.visible;
     this.changeVisibility(visible);
   }
-
-  /**
-   * 更新自定义标点类型的可见性
-   */
-  /**
-   * 更新自定义标点类型的可见性
-   */
-  public updateCustomPointVisibility(mapId: MapData['id'], entityDataIdKey: string, visible: boolean) {
-    // 持久化到数据库
-    // userService.data.customPointVisibilityService.setVisibilityData(mapId, entityDataIdKey, visible);
-    this.updateItemVisibility(mapId, entityDataIdKey, visible);
-  }
   // endregion
 
   // region: 自定义标点增删
@@ -309,11 +266,28 @@ export class CustomPointDataService extends BasePresetDataService<
       throw new Error('CustomPointDataService not initialized');
     }
 
-    // 创建前确保该类型可见
-    this.updateCustomPointVisibility(mapId, this.selectedPointType, true);
+    const currentPresetId = this.currentPresetId.value;
+    if (!currentPresetId) {
+      alert.info({
+        content: '未选择自定义标点预设，无法创建标点，请先创建或选择预设。',
+      });
+      return;
+    }
 
-    const feature = this.adapter.customPointController.createCustomPoint(mapId, coordinate, this.selectedPointType);
-    return feature;
+    // 创建前确保该类型可见
+    await this.updateItemVisibility(mapId, this.selectedPointType, true);
+
+    try {
+      const data = this.adapter.customPointController.createCustomPointData(mapId, coordinate, this.selectedPointType);
+      if (data) {
+        await userService.data.customPointPresetDataService.createNode(mapId, currentPresetId, data);
+      }
+    } catch (error) {
+      logger.error('[CustomPointDataService|createCustomPoint] Failed to create custom point', error);
+      alert.info({
+        content: `创建失败：${error instanceof Error ? error.message : String(error)}`,
+      });
+    }
   }
 
   /**
@@ -326,34 +300,27 @@ export class CustomPointDataService extends BasePresetDataService<
       throw new Error('CustomPointDataService not initialized');
     }
 
-    return this.adapter.customPointController.deleteCustomPoint(mapId, id);
+    const presetId = this.currentPresetId.value;
+    if (!presetId) return;
+
+    await userService.data.customPointPresetDataService.deleteNode(mapId, presetId, id);
   }
   // endregion
 
   // region: 自定义标点事件初始化
-  /**
-   * 使用 MobX reaction 监听数据变化并自动保存
-   */
-  private initAutoSaveReaction() {
-    const dispose = autorun(() => {
-      const data = this.adapter.customPointController.dataManager.allData;
-      this.debouncedSave(data);
-    });
-    this.reactionDisposers.push(dispose);
-  }
 
   /**
    * 初始化地图点击事件监听（用于创建自定义标点）
    */
   private initMapClickEvent() {
-    const dispose = this.adapter.event.on(MAP_EVENT.MAP_CLICK, (event) => {
+    const dispose = this.adapter.event.on(MAP_EVENT.MAP_CLICK, async (event) => {
       if (!this.isCreating) return;
       const mapId = this.adapter.mapController.dataManager.currentMapId;
       const coordinate = event.coordinate;
       if (!coordinate) return;
 
       try {
-        this.createCustomPoint(mapId, coordinate);
+        await this.createCustomPoint(mapId, coordinate);
       } catch (error) {
         logger.error('[CustomPointDataService|initMapClickEvent] Failed to create custom point', error);
         alert.info({
@@ -369,7 +336,7 @@ export class CustomPointDataService extends BasePresetDataService<
    */
   private initCustomPointClickEvent() {
     if (!this.adapter) return;
-    const dispose = this.adapter.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
+    const dispose = this.adapter.event.on(MAP_EVENT.ENTITY_CLICK, async (event) => {
       if (!this.isDeleting) return;
       const instance = event.instance;
       const isCustomPoint = instance.entityInfo.category === CustomPointKey;
@@ -377,7 +344,7 @@ export class CustomPointDataService extends BasePresetDataService<
 
       const mapId = this.adapter.mapController.dataManager.currentMapId;
       try {
-        this.deleteCustomPoint(mapId, instance.id);
+        await this.deleteCustomPoint(mapId, instance.id);
         // 清除 hover 状态
         this.adapter.hoverFeatureController.clearHoverFeature();
       } catch (error) {
@@ -399,7 +366,5 @@ export class CustomPointDataService extends BasePresetDataService<
     this.eventListenerDisposers = [];
     this.initialized = false;
   }
-  // endregion
-
   // endregion
 }

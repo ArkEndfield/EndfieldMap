@@ -23,7 +23,7 @@ export class CreateElectricPoleCommand implements Command {
   }
 
   execute(): void {
-    this.createdInstance = this.controller.createElectricPole(this.mapId, this.position, this.deviceKey);
+    this.createdInstance = this.controller.addElectricPoleData(this.mapId, this.controller.createElectricPoleData(this.mapId, this.position, this.deviceKey));
   }
 
   undo(): void {
@@ -122,7 +122,7 @@ export class BatchCreateElectricPolesCommand implements Command {
     this.createdInstances = [];
     for (const position of this.positions) {
       try {
-        const instance = this.controller.createElectricPole(this.mapId, position, this.deviceKey);
+        const instance = this.controller.addElectricPoleData(this.mapId, this.controller.createElectricPoleData(this.mapId, position, this.deviceKey));
         if (instance) {
           this.createdInstances.push(instance);
         }

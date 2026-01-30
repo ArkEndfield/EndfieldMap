@@ -1,7 +1,7 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey, NoteKey } from '@endfieldmap/map-core/const/map';
-import type { Position } from '@endfieldmap/map-core/types/position';
 import type { MapData } from '@endfieldmap/map-core/types/map';
+import type { Position } from '@endfieldmap/map-core/types/position';
 
 /**
  * 自定义标点类型ID
@@ -293,6 +293,26 @@ export type CustomPointMapData = Partial<Record<MapData['id'], CustomPointData[]
  * 电线杆地图数据类型
  */
 export type ElectricPoleMapData = Partial<Record<MapData['id'], ElectricPoleData[]>>;
+
+/**
+ * 带 mapId 的电线杆节点数据（用于数据库格式）
+ */
+export interface ElectricPoleNodeData extends Omit<ElectricPoleData, 'entityDataIdKey' | 'templateId' | 'entityType'> {
+  entityDataIdKey: string;
+  entityType: string;
+  templateId: string;
+  mapId: MapData['id'];
+}
+
+/**
+ * 带 mapId 的自定义标点节点数据（用于数据库格式）
+ */
+export interface CustomPointNodeData extends Omit<CustomPointData, 'entityDataIdKey' | 'templateId' | 'entityType'> {
+  entityDataIdKey: string;
+  entityType: string;
+  templateId: string;
+  mapId: MapData['id'];
+}
 
 /**
  * 自定义标点类型配置
