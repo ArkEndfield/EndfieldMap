@@ -529,12 +529,14 @@ export class ElectricPoleDataService extends BasePresetDataService<
       const adapter = this.adapter;
       // 通知用户数据可能已损坏
       alert.info({
-        // TODO: i18n
-        content: `电线杆预设 "${preset.name}" 数据已损坏，请检查并重新创建预设。`,
+        content: i18n.t('error:electric_pole.preset_corrupted', {
+          defaultValue: '电线杆预设 "{{name}}" 数据已损坏，请检查并重新创建预设。',
+          name: preset.name,
+        }),
         onCancel: () => {
           adapter?.electricPoleController.loadElectricPoleData([]);
         },
-        cancelText: '删除损坏预设',
+        cancelText: i18n.t('error:electric_pole.delete_corrupted_preset', { defaultValue: '删除损坏预设' }),
       });
     }
   }
