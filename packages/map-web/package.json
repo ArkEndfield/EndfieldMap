@@ -42,6 +42,7 @@
   "devDependencies": {
     "i18next-cli": "^1.25.1",
     "prettier": "3.6.2",
+    "rollup-plugin-visualizer": "^6.0.5",
     "sass-embedded": "^1.93.3",
     "vite-plugin-pwa": "^1.2.0"
   }

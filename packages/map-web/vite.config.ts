@@ -79,24 +79,53 @@ export default defineConfig(({ command, mode }) => {
     },
     build: {
       sourcemap: 'hidden',
-      rolldownOptions: {
+      rollupOptions: {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (id.includes('/react/') || id.includes('/react-dom/')) {
+              // RxJS
+              if (id.includes('/rxjs/')) {
+                return 'rxjs-vendor';
+              }
+              // RxDB 数据库
+              if (id.includes('/rxdb/')) {
+                return 'rxdb-vendor';
+              }
+              // TanStack DB
+              if (id.includes('@tanstack/react-db') || id.includes('@tanstack/rxdb-db-collection')) {
+                return 'tanstack-db-vendor';
+              }
+              // React 核心
+              if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('scheduler')) {
                 return 'react-vendor';
               }
+              // 状态管理
               if (id.includes('/mobx/') || id.includes('/mobx-react-lite/')) {
                 return 'state-vendor';
               }
+              // 动画库
               if (id.includes('/motion/') || id.includes('/gsap/') || id.includes('@gsap')) {
                 return 'ui-vendor';
               }
+              // 国际化
               if (id.includes('/i18next/') || id.includes('/react-i18next/') || id.includes('i18next-')) {
                 return 'i18n-vendor';
               }
-              if (id.includes('/ol/')) {
+              // OpenLayers 地图库
+              if (id.includes('node_modules/ol/') || id.includes('node_modules/ol-')) {
                 return 'map-vendor';
+              }
+              // Swiper 轮播
+              if (id.includes('/swiper/')) {
+                return 'swiper-vendor';
+              }
+              // Sentry 监控
+              if (id.includes('@sentry/')) {
+                return 'sentry-vendor';
+              }
+              // 图片查看器
+              if (id.includes('yet-another-react-lightbox')) {
+                return 'lightbox-vendor';
               }
             }
           },
