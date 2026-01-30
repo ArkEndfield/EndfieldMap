@@ -20,38 +20,11 @@ export class ItemDataService {
         `${assetPath.itemData}/item_table.json`
       ),
     ]);
-    for (const [_, item] of Object.entries(data || {})) {
-      await DataService.dbStorage.database.gameItem.upsert(item);
+    const items = Object.values(data || {});
+    if (items.length > 0) {
+      await DataService.dbStorage.database.gameItem.bulkUpsert(items);
     }
   }
-
-  // public async getItemData() {
-  //   if (this.inited) {
-  //     const data = await this.storage.permanentGet<Record<string, ItemSchemaType>>(StorageKey.ITEM_DATA);
-  //     if (!data) {
-  //       throw new Error('Item data not found');
-  //     } else {
-  //       return data;
-  //     }
-  //   }
-
-  //   if (this.loadingPromise) {
-  //     return this.loadingPromise;
-  //   }
-
-  //   this.loadingPromise = (async () => {
-  //     const assetPath = getAssetUrls();
-  //     const itemData = await this.jsonLoader.loadJSON<Record<string, ItemSchemaType>>(
-  //       `${assetPath.itemData}/item_table.json`
-  //     );
-  //     this.storage.permanentSet(StorageKey.ITEM_DATA, itemData);
-  //     this.inited = true;
-  //     this.loadingPromise = null;
-  //     return itemData;
-  //   })();
-
-  //   return this.loadingPromise;
-  // }
 
   private async getItemDataFromDB(id: string) {
     return await DataService.dbStorage.database.gameItem.findOne({

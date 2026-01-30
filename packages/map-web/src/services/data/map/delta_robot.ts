@@ -25,12 +25,13 @@ export class DeltaRobotDataService {
       this.jsonLoader.loadJSON<Record<string, string[]>>(`${assetURL.miniGameData}/minigame.json`),
     ]);
 
-    // 保存到数据库
-    for (const [id, levels] of Object.entries(levelListData || {})) {
-      await DataService.dbStorage.database.gameDeltaRobotLevelList.upsert({
-        id,
-        levels,
-      });
+    // 批量保存到数据库
+    const levelListItems = Object.entries(levelListData || {}).map(([id, levels]) => ({
+      id,
+      levels,
+    }));
+    if (levelListItems.length > 0) {
+      await DataService.dbStorage.database.gameDeltaRobotLevelList.bulkUpsert(levelListItems);
     }
 
     // 同时保持内存中的副本以供快速访问

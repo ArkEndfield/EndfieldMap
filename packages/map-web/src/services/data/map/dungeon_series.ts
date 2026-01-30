@@ -24,11 +24,9 @@ export class DungeonSeriesDataService {
         `${assetPath.entityData}/dungeon_series.json`
       ),
     ]);
-    for (const [id, dungeonSeries] of Object.entries(data || {})) {
-      await DataService.dbStorage.database.gameDungeonSeries.upsert({
-        id,
-        ...dungeonSeries,
-      });
+    const dungeonSeriesList = Object.values(data || {});
+    if (dungeonSeriesList.length > 0) {
+      await DataService.dbStorage.database.gameDungeonSeries.bulkUpsert(dungeonSeriesList);
     }
   }
 

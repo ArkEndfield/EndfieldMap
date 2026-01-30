@@ -40,11 +40,12 @@ export class ChestRewardDataService {
         `${assetPath.entityData}/reward_table.json`
       ),
     ]);
-    for (const [id, reward] of Object.entries(data || {})) {
-      await DataService.dbStorage.database.gameChestReward.upsert({
-        id,
-        ...reward,
-      });
+    const rewards = Object.entries(data || {}).map(([id, reward]) => ({
+      id,
+      ...reward,
+    }));
+    if (rewards.length > 0) {
+      await DataService.dbStorage.database.gameChestReward.bulkUpsert(rewards);
     }
   }
 

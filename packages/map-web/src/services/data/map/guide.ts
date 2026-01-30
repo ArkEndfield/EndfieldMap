@@ -21,11 +21,12 @@ export class GuideDataService {
         `${assetPath.entityData}/guide.json`
       ),
     ]);
-    for (const [id, guide] of Object.entries(data || {})) {
-      await DataService.dbStorage.database.gameGuide.upsert({
-        id,
-        ...guide,
-      });
+    const guides = Object.entries(data || {}).map(([id, guide]) => ({
+      id,
+      ...guide,
+    }));
+    if (guides.length > 0) {
+      await DataService.dbStorage.database.gameGuide.bulkUpsert(guides);
     }
   }
 
