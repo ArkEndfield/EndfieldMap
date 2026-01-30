@@ -10,6 +10,16 @@
     "connect_failed_with_switch": "接続失敗：{{message}}。切り替えをクリックして、現在接続中の電柱をクリックしたものに変更します",
     "create_failed": "作成失敗：{{message}}",
     "delete_pole": "電柱を削除",
-    "switch": "切り替え"
+    "switch": "切り替え",
+    "no_preset_selected": "電柱プリセットが選択されていません。先にプリセットを作成または選択してください。",
+    "preset_corrupted": "電柱プリセット \"{{name}}\" のデータが破損しています。確認して再作成してください。",
+    "delete_corrupted_preset": "破損したプリセットを削除"
+  },
+  "custom_point": {
+    "no_preset_selected": "カスタムポイントプリセットが選択されていません。先にプリセットを作成または選択してください。",
+    "preset_corrupted": "カスタムポイントプリセット \"{{name}}\" のデータが破損しています。確認して再作成してください。",
+    "delete_corrupted_preset": "破損したプリセットを削除",
+    "create_failed": "作成失敗：{{message}}",
+    "delete_failed": "削除失敗：{{message}}"
   }
 }

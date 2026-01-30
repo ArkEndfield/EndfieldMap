@@ -10,6 +10,16 @@
     "connect_failed_with_switch": "Conexión fallida: {{message}}. Haz clic en cambiar para cambiar el poste actual por el que hiciste clic",
     "create_failed": "Creación fallida: {{message}}",
     "delete_pole": "Eliminar poste",
-    "switch": "Cambiar"
+    "switch": "Cambiar",
+    "no_preset_selected": "No se ha seleccionado un preset de poste eléctrico. Por favor, crea o selecciona un preset primero.",
+    "preset_corrupted": "Los datos del preset de poste eléctrico \"{{name}}\" están dañados. Por favor, verifica y crea el preset de nuevo.",
+    "delete_corrupted_preset": "Eliminar preset dañado"
+  },
+  "custom_point": {
+    "no_preset_selected": "No se ha seleccionado un preset de punto personalizado. Por favor, crea o selecciona un preset primero.",
+    "preset_corrupted": "Los datos del preset de punto personalizado \"{{name}}\" están dañados. Por favor, verifica y crea el preset de nuevo.",
+    "delete_corrupted_preset": "Eliminar preset dañado",
+    "create_failed": "Creación fallida: {{message}}",
+    "delete_failed": "Eliminación fallida: {{message}}"
   }
 }

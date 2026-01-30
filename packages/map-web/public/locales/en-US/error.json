@@ -10,6 +10,16 @@
     "connect_failed_with_switch": "Connection failed: {{message}}. Click switch to change the current connecting pole to the clicked one",
     "create_failed": "Creation failed: {{message}}",
     "delete_pole": "Delete pole",
-    "switch": "Switch"
+    "switch": "Switch",
+    "no_preset_selected": "No electric pole preset selected. Please create or select a preset first.",
+    "preset_corrupted": "Electric pole preset \"{{name}}\" data is corrupted. Please check and recreate the preset.",
+    "delete_corrupted_preset": "Delete corrupted preset"
+  },
+  "custom_point": {
+    "no_preset_selected": "No custom point preset selected. Please create or select a preset first.",
+    "preset_corrupted": "Custom point preset \"{{name}}\" data is corrupted. Please check and recreate the preset.",
+    "delete_corrupted_preset": "Delete corrupted preset",
+    "create_failed": "Creation failed: {{message}}",
+    "delete_failed": "Deletion failed: {{message}}"
   }
 }

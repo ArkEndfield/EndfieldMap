@@ -10,6 +10,16 @@
     "connect_failed_with_switch": "연결 실패: {{message}}. 전환을 클릭하여 현재 연결 중인 전신주를 클릭한 것으로 변경합니다",
     "create_failed": "생성 실패: {{message}}",
     "delete_pole": "전신주 삭제",
-    "switch": "전환"
+    "switch": "전환",
+    "no_preset_selected": "전신주 프리셋이 선택되지 않았습니다. 먼저 프리셋을 생성하거나 선택해주세요.",
+    "preset_corrupted": "전신주 프리셋 \"{{name}}\" 데이터가 손상되었습니다. 확인 후 다시 생성해주세요.",
+    "delete_corrupted_preset": "손상된 프리셋 삭제"
+  },
+  "custom_point": {
+    "no_preset_selected": "사용자 정의 포인트 프리셋이 선택되지 않았습니다. 먼저 프리셋을 생성하거나 선택해주세요.",
+    "preset_corrupted": "사용자 정의 포인트 프리셋 \"{{name}}\" 데이터가 손상되었습니다. 확인 후 다시 생성해주세요.",
+    "delete_corrupted_preset": "손상된 프리셋 삭제",
+    "create_failed": "생성 실패: {{message}}",
+    "delete_failed": "삭제 실패: {{message}}"
   }
 }

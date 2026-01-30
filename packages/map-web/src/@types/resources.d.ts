@@ -34,15 +34,25 @@ interface Resources {
     "select_all": "全选"
   },
   "error": {
+    "custom_point": {
+      "create_failed": "创建失败：{{message}}",
+      "delete_corrupted_preset": "删除损坏预设",
+      "delete_failed": "删除失败：{{message}}",
+      "no_preset_selected": "未选择自定义标点预设，无法创建标点，请先创建或选择预设。",
+      "preset_corrupted": "自定义标点预设 \"{{name}}\" 数据已损坏，请检查并重新创建预设。"
+    },
     "electric_pole": {
       "already_connected": "两个设备已经连接",
       "connect_failed": "连接失败：{{message}}",
       "connect_failed_with_switch": "连接失败：{{message}}，点击切换将当前连接的电线杆切换为点击的电线杆",
       "connect_to_self": "不能连接到自身",
       "create_failed": "创建失败：{{message}}",
+      "delete_corrupted_preset": "删除损坏预设",
       "delete_pole": "删除电线杆",
       "different_connection_type": "不能连接不同类型的设备",
       "distance_too_far": "两个设备之间的距离太远",
+      "no_preset_selected": "未选择电线杆预设，无法创建电线杆，请先创建或选择预设。",
+      "preset_corrupted": "电线杆预设 \"{{name}}\" 数据已损坏，请检查并重新创建预设。",
       "source_slots_full": "当前设备的连接槽位已满",
       "switch": "切换",
       "target_slots_full": "目标设备的连接槽位已满"

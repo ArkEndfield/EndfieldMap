@@ -490,7 +490,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
         const errorMsg = getElectricPoleErrorMessage(error);
         alert.show({
           content: i18n.t('error:electric_pole.connect_failed_with_switch', {
-            defaultValue: '连接失败：{{message}}，点击切换将当前连接的电线杆切换为点击的电线杆',
+            defaultValue: `连接失败：${errorMsg}，点击切换将当前连接的电线杆切换为点击的电线杆`,
             message: errorMsg,
           }),
           cancelText: i18n.t('error:electric_pole.switch', { defaultValue: '切换' }),
