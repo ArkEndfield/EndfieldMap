@@ -75,7 +75,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     server: {
-      allowedHosts: ['oqoq21sr1y-5173.cnb.run', 'oqoq21sr1y-4173.cnb.run'],
+      allowedHosts: ['.cnb.run'],
     },
     build: {
       sourcemap: 'hidden',

@@ -4,7 +4,7 @@
  */
 
 import { observer } from 'mobx-react-lite';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { SoundType } from '@/const/audio_config';
 import { useAudio } from '@/hooks/use_audio';

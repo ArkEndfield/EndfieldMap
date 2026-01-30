@@ -47,7 +47,17 @@ const customPointNodeSchemaLiteral = {
       additionalProperties: true, // 允许 EnityProperties 的其他动态属性
     },
   },
-  required: ['id', 'presetId', 'mapId', 'levelLogicId', 'templateId', 'entityType', 'entityDataIdKey', 'position', 'properties'],
+  required: [
+    'id',
+    'presetId',
+    'mapId',
+    'levelLogicId',
+    'templateId',
+    'entityType',
+    'entityDataIdKey',
+    'position',
+    'properties',
+  ],
   indexes: [
     'presetId', // 用于加载某个预设的所有点
     ['presetId', 'mapId'], // 用于筛选特定地图的点

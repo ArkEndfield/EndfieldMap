@@ -22,14 +22,24 @@ const electricPoleNodeSchemaLiteral = {
     position: {
       type: 'object',
       properties: { x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } },
-      required: ['x', 'y', 'z'  ],
+      required: ['x', 'y', 'z'],
     },
     properties: {
       type: 'object',
       additionalProperties: true,
     },
   },
-  required: ['id', 'presetId', 'mapId', 'levelLogicId', 'entityDataIdKey', 'position', 'templateId', 'entityType', 'properties'],
+  required: [
+    'id',
+    'presetId',
+    'mapId',
+    'levelLogicId',
+    'entityDataIdKey',
+    'position',
+    'templateId',
+    'entityType',
+    'properties',
+  ],
   indexes: [
     'presetId', // 允许快速查找某个预设下的所有点
     ['presetId', 'mapId'], // 允许快速查找某个预设在特定地图下的所有点

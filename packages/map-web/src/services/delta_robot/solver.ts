@@ -3,7 +3,7 @@
  * 数织拼图求解器：使用回溯算法 + 实时约束剪枝
  */
 
-import type { Coord, Grid, ObstacleData,PieceShape } from '@eftypes/delta_robot';
+import type { Coord, Grid, ObstacleData, PieceShape } from '@eftypes/delta_robot';
 
 /**
  * 将坐标列表转换为 2D 矩阵形状

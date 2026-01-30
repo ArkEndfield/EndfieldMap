@@ -8,11 +8,11 @@ import { logger } from '@endfieldmap/tools';
 
 import { LoadingStageId } from '@/const/loading';
 import i18n from '@/i18n';
-import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initCursorEventListeners } from '@/services/cursor';
-import { MapDataService } from '@/services/data/map';
 import { DataService } from '@/services/data';
+import { MapDataService } from '@/services/data/map';
 import { isDev } from '@/services/env';
+import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initHoverFeatureEventListeners } from '@/services/features/hover_feature';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';

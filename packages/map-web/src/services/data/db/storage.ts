@@ -11,7 +11,7 @@ import type { CustomPointPreset } from '@/@types/custom_point';
 import type { ElectricPolePreset } from '@/@types/electric_pole';
 import { DataService } from '@/services/data';
 import { Collections } from '@/services/data/db/collections';
-import { collectionsSchema,type DBCollections } from '@/services/data/db/collections.ts';
+import { collectionsSchema, type DBCollections } from '@/services/data/db/collections.ts';
 import { EntityMarkService } from '@/services/data/user/marked/entity';
 import { isDev } from '@/services/env';
 
@@ -82,17 +82,8 @@ export class Storage {
     // 检查是否已迁移
     const flag = localStorage.getItem(Storage.MIGRATION_KEY);
     if (flag) {
-      const [migrated, timestamp] = flag.split(':');
+      const [migrated] = flag.split(':');
       if (migrated === 'true') {
-        // 检查是否超过 7 天，如果超过，删除所有数据
-        if (timestamp && now - Number(timestamp) > 7 * 24 * 60 * 60 * 1000) {
-          storage.permanentRemove(StorageKey.ELECTRIC_POLE);
-          storage.permanentRemove(StorageKey.ELECTRIC_POLE_VISIBILITY);
-          storage.permanentRemove(StorageKey.CUSTOM_POINT);
-          storage.permanentRemove(StorageKey.CUSTOM_POINT_VISIBILITY);
-          storage.permanentRemove(StorageKey.LAYERS_VISIBILITY);
-          storage.permanentRemove(StorageKey.MARKED_FEATURES);
-        }
         return;
       }
     }
@@ -145,6 +136,7 @@ export class Storage {
           }
         }
       }
+      storage.permanentRemove(StorageKey.ELECTRIC_POLE);
     }
 
     // 2. 迁移 Electric Pole Visibility
@@ -160,6 +152,7 @@ export class Storage {
           });
         }
       }
+      storage.permanentRemove(StorageKey.ELECTRIC_POLE_VISIBILITY);
     }
 
     // 3. 迁移 Custom Point 预设和节点
@@ -193,6 +186,7 @@ export class Storage {
           }
         }
       }
+      storage.permanentRemove(StorageKey.CUSTOM_POINT);
     }
 
     // 4. 迁移 Custom Point Visibility
@@ -208,6 +202,7 @@ export class Storage {
           });
         }
       }
+      storage.permanentRemove(StorageKey.CUSTOM_POINT_VISIBILITY);
     }
 
     // 5. 迁移 Entity Visibility
@@ -223,6 +218,7 @@ export class Storage {
           });
         }
       }
+      storage.permanentRemove(StorageKey.LAYERS_VISIBILITY);
     }
 
     // 6. 迁移 Entity Mark
@@ -239,6 +235,7 @@ export class Storage {
           });
         }
       }
+      storage.permanentRemove(StorageKey.MARKED_FEATURES);
     }
 
     // 标记迁移完成

@@ -1,26 +1,26 @@
-import type { RxCollection, RxDatabase } from 'rxdb';
-import { createCollection } from '@tanstack/react-db';
-import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
-import type { RxDBCollectionConfig } from '@tanstack/rxdb-db-collection';
 import type { Collection as TSCollection } from '@tanstack/react-db';
+import { createCollection } from '@tanstack/react-db';
+import type { RxDBCollectionConfig } from '@tanstack/rxdb-db-collection';
+import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
+import type { RxCollection, RxDatabase } from 'rxdb';
 
 import {
-  electricPoleNodeSchema,
-  type ElectricPoleNodeCollection,
-  type ElectricPoleNodeSchemaType,
-} from '@/services/data/db/schema/electric_pole';
-import {
-  customPointNodeSchema,
   type CustomPointNodeCollection,
+  customPointNodeSchema,
   type CustomPointNodeSchemaType,
 } from '@/services/data/db/schema/custom_point';
-import { markDataSchema, type MarkDataCollection, type MarkDataSchemaType } from '@/services/data/db/schema/mark';
 import {
-  visibilityDataSchema,
+  type ElectricPoleNodeCollection,
+  electricPoleNodeSchema,
+  type ElectricPoleNodeSchemaType,
+} from '@/services/data/db/schema/electric_pole';
+import { type MarkDataCollection, markDataSchema, type MarkDataSchemaType } from '@/services/data/db/schema/mark';
+import { type PresetCollection, presetSchema, type PresetSchemaType } from '@/services/data/db/schema/preset';
+import {
   type VisibilityDataCollection,
+  visibilityDataSchema,
   type VisibilityDataSchemaType,
 } from '@/services/data/db/schema/visibility';
-import { presetSchema, type PresetCollection, type PresetSchemaType } from '@/services/data/db/schema/preset';
 
 export type DBCollections = {
   electricPoleNode: ElectricPoleNodeCollection;

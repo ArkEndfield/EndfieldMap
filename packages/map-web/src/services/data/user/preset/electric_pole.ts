@@ -8,10 +8,7 @@ import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/elect
 import type { NodeSelector } from '@/services/data/user/preset/_base';
 import { BasePresetService } from '@/services/data/user/preset/_base';
 
-export class ElectricPolePresetDataService extends BasePresetService<
-  ElectricPolePreset,
-  ElectricPoleNodeSchemaType
-> {
+export class ElectricPolePresetDataService extends BasePresetService<ElectricPolePreset, ElectricPoleNodeSchemaType> {
   protected get presetDB() {
     return DataService.dbStorage.database.electricPolePreset;
   }
@@ -34,7 +31,9 @@ export class ElectricPolePresetDataService extends BasePresetService<
     targetLevelLogicId: number
   ): Promise<ElectricPoleNodeSchemaType | null> {
     const nodeId = BasePresetService.createId(mapId, presetId, levelLogicId);
-    const doc = await this.nodesDB.findOne({ selector: { id: nodeId } as NodeSelector<ElectricPoleNodeSchemaType> }).exec();
+    const doc = await this.nodesDB
+      .findOne({ selector: { id: nodeId } as NodeSelector<ElectricPoleNodeSchemaType> })
+      .exec();
     if (!doc) {
       logger.warn(`Node not found for connection: ${nodeId}`);
       return null;
@@ -78,7 +77,9 @@ export class ElectricPolePresetDataService extends BasePresetService<
     targetLevelLogicId: number
   ): Promise<ElectricPoleNodeSchemaType | null> {
     const nodeId = BasePresetService.createId(mapId, presetId, levelLogicId);
-    const doc = await this.nodesDB.findOne({ selector: { id: nodeId } as NodeSelector<ElectricPoleNodeSchemaType> }).exec();
+    const doc = await this.nodesDB
+      .findOne({ selector: { id: nodeId } as NodeSelector<ElectricPoleNodeSchemaType> })
+      .exec();
     if (!doc) {
       logger.warn(`Node not found for disconnection: ${nodeId}`);
       return null;

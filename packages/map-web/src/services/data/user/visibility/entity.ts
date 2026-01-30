@@ -1,5 +1,6 @@
-import { DataService } from '@/services/data';
 import type { EntityData, MapData } from '@endfieldmap/map-core';
+
+import { DataService } from '@/services/data';
 
 export class EntityVisibilityService {
   private get db() {

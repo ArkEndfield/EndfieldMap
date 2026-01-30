@@ -1,5 +1,6 @@
-import { DataService } from '@/services/data';
 import type { MapData } from '@endfieldmap/map-core';
+
+import { DataService } from '@/services/data';
 
 export class CustomPointVisibilityService {
   private get db() {

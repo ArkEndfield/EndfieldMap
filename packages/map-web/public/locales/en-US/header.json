@@ -9,9 +9,9 @@
   "settings": {
     "title": "Settings"
   },
-    "head_menu": {
+  "head_menu": {
     "filter": "Resource Filter",
-    "poles": "Poles", 
+    "poles": "Poles",
     "custom": "Custom Points"
   }
 }

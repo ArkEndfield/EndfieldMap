@@ -32,11 +32,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
     if (!activeFeature || !isCustomPoint) return;
 
     try {
-      await mapDataService.customPointDataService.changePointType(
-        activeFeature.mapId,
-        activeFeature.id,
-        newType
-      );
+      await mapDataService.customPointDataService.changePointType(activeFeature.mapId, activeFeature.id, newType);
     } catch (error) {
       console.error('Failed to change point type:', error);
     }

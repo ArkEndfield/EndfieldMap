@@ -28,7 +28,10 @@ export interface RequiredNodeFields {
  * TPreset: 预设类型 (必须包含 PresetSchemaType 的所有字段和 data 字段)
  * TNodeSchema: 节点 Schema 类型
  */
-export interface IPresetService<TPreset extends PresetSchemaType & { data: TNodeSchema[] }, TNodeSchema extends RequiredNodeFields> {
+export interface IPresetService<
+  TPreset extends PresetSchemaType & { data: TNodeSchema[] },
+  TNodeSchema extends RequiredNodeFields,
+> {
   getAllPresets(): Promise<TPreset[]>;
   getPresetById(id: string): Promise<TPreset | null>;
   getPresetByIdForExport(id: string): Promise<TPreset | null>;
@@ -39,8 +42,14 @@ export interface IPresetService<TPreset extends PresetSchemaType & { data: TNode
   // 节点操作
   renameNode(mapId: MapData['id'], presetId: string, levelLogicId: number, newName: string): Promise<void>;
   deleteNode(mapId: MapData['id'], presetId: string, levelLogicId: number): Promise<void>;
-  createNode(mapId: MapData['id'], presetId: string, nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId'>): Promise<TNodeSchema>;
-  addNodeSubscribe(callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void): void;
+  createNode(
+    mapId: MapData['id'],
+    presetId: string,
+    nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId'>
+  ): Promise<TNodeSchema>;
+  addNodeSubscribe(
+    callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void
+  ): void;
 }
 
 /**
@@ -66,7 +75,9 @@ export abstract class BasePresetService<
   protected abstract get presetDB(): RxCollection<PresetSchemaType>;
   protected abstract get nodesDB(): RxCollection<TNodeSchema>;
 
-  public addNodeSubscribe(callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void) {
+  public addNodeSubscribe(
+    callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void
+  ) {
     this.nodesDB.$.subscribe((changeEvent) => {
       // changeEvent.documentData 和 previousDocumentData 已经是普通对象 (RxDocumentData)
       const docData = changeEvent.documentData as TNodeSchema;
@@ -91,19 +102,21 @@ export abstract class BasePresetService<
   public async getAllPresets(): Promise<TPreset[]> {
     const docs = await this.presetDB.find().exec();
     const presets: TPreset[] = [];
-    
+
     for (const doc of docs) {
       const presetData = doc._data as PresetSchemaType;
       // 查询该预设下的所有节点
-      const nodes = await this.nodesDB.find({ selector: { presetId: presetData.id } as NodeSelector<TNodeSchema> }).exec();
-      const data = nodes.map(node => node._data as TNodeSchema);
-      
+      const nodes = await this.nodesDB
+        .find({ selector: { presetId: presetData.id } as NodeSelector<TNodeSchema> })
+        .exec();
+      const data = nodes.map((node) => node._data as TNodeSchema);
+
       presets.push({
         ...presetData,
         data,
       } as TPreset);
     }
-    
+
     return presets;
   }
 
@@ -113,12 +126,12 @@ export abstract class BasePresetService<
   public async getPresetById(id: string): Promise<TPreset | null> {
     const doc = await this.presetDB.findOne({ selector: { id } }).exec();
     if (!doc) return null;
-    
+
     const presetData = doc._data as PresetSchemaType;
     // 查询该预设下的所有节点
     const nodes = await this.nodesDB.find({ selector: { presetId: id } as NodeSelector<TNodeSchema> }).exec();
-    const data = nodes.map(node => node._data as TNodeSchema);
-    
+    const data = nodes.map((node) => node._data as TNodeSchema);
+
     return {
       ...presetData,
       data,
@@ -131,13 +144,13 @@ export abstract class BasePresetService<
   public async getPresetByIdForExport(id: string): Promise<TPreset | null> {
     const doc = await this.presetDB.findOne({ selector: { id } }).exec();
     if (!doc) return null;
-    
+
     // 使用 toJSON() 自动清理 RxDB 私有字段
     const presetData = doc.toJSON() as PresetSchemaType;
     // 查询该预设下的所有节点
     const nodes = await this.nodesDB.find({ selector: { presetId: id } as NodeSelector<TNodeSchema> }).exec();
-    const data = nodes.map(node => node.toJSON() as TNodeSchema);
-    
+    const data = nodes.map((node) => node.toJSON() as TNodeSchema);
+
     return {
       ...presetData,
       data,
@@ -189,7 +202,7 @@ export abstract class BasePresetService<
     // 获取更新后的完整数据
     const presetData = doc._data as PresetSchemaType;
     const nodes = await this.nodesDB.find({ selector: { presetId: id } as NodeSelector<TNodeSchema> }).exec();
-    const data = nodes.map(node => node._data as TNodeSchema);
+    const data = nodes.map((node) => node._data as TNodeSchema);
 
     return {
       ...presetData,
@@ -239,7 +252,6 @@ export abstract class BasePresetService<
 
   // endregion
 
-
   // region: 节点操作
   public async deleteNode(mapId: MapData['id'], presetId: string, levelLogicId: number): Promise<void> {
     const nodeId = BasePresetService.createId(mapId, presetId, levelLogicId);
@@ -251,7 +263,11 @@ export abstract class BasePresetService<
     }
   }
 
-  public async createNode(mapId: MapData['id'], presetId: string, nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId'>): Promise<TNodeSchema> {
+  public async createNode(
+    mapId: MapData['id'],
+    presetId: string,
+    nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId'>
+  ): Promise<TNodeSchema> {
     const nodeId = BasePresetService.createId(mapId, presetId, nodeData.levelLogicId);
     const newNode = await this.nodesDB.insert({
       ...nodeData,
@@ -262,12 +278,7 @@ export abstract class BasePresetService<
     return newNode._data as TNodeSchema;
   }
 
-  public async renameNode(
-    mapId: MapData['id'],
-    presetId: string,
-    levelLogicId: number,
-    newName: string
-  ){
+  public async renameNode(mapId: MapData['id'], presetId: string, levelLogicId: number, newName: string) {
     const nodeId = BasePresetService.createId(mapId, presetId, levelLogicId);
     const doc = await this.nodesDB.findOne({ selector: { id: nodeId } as NodeSelector<TNodeSchema> }).exec();
     if (!doc) {

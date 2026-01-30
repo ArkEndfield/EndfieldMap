@@ -72,10 +72,18 @@ export const AudioSystemDemo = observer(() => {
           <div className="text-sm text-gray-600">
             <p className="font-semibold mb-2">使用说明：</p>
             <ul className="list-disc list-inside space-y-1">
-              <li>确保已将音效文件放置在 <code className="bg-gray-100 px-1 rounded">public/sounds/</code> 目录下</li>
-              <li>在 <code className="bg-gray-100 px-1 rounded">src/const/audio_config.ts</code> 中配置音效类型和路径</li>
-              <li>使用 <code className="bg-gray-100 px-1 rounded">useAudio()</code> hook 在组件中播放音效</li>
-              <li>使用 <code className="bg-gray-100 px-1 rounded">observer()</code> 包装组件以响应 MobX 状态变化</li>
+              <li>
+                确保已将音效文件放置在 <code className="bg-gray-100 px-1 rounded">public/sounds/</code> 目录下
+              </li>
+              <li>
+                在 <code className="bg-gray-100 px-1 rounded">src/const/audio_config.ts</code> 中配置音效类型和路径
+              </li>
+              <li>
+                使用 <code className="bg-gray-100 px-1 rounded">useAudio()</code> hook 在组件中播放音效
+              </li>
+              <li>
+                使用 <code className="bg-gray-100 px-1 rounded">observer()</code> 包装组件以响应 MobX 状态变化
+              </li>
             </ul>
           </div>
         </div>

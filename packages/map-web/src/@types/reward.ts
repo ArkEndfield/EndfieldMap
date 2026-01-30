@@ -1,4 +1,4 @@
-import type { ItemData } from "@eftypes/item";
+import type { ItemData } from '@eftypes/item';
 
 export interface RewardItemWithCountItem {
   id: ItemData['id'];

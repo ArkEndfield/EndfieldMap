@@ -186,7 +186,7 @@ export abstract class BasePresetDataService<
       this.currentPresetId.value = id;
     });
 
-    await this.applyPresetById(id);    
+    await this.applyPresetById(id);
   }
 
   /**
@@ -258,7 +258,7 @@ export abstract class BasePresetDataService<
     if (!id) return;
     const preset = await this.presetService.getPresetById(id);
     if (!preset) return;
-    
+
     runInAction(() => {
       this.applyPresetToAdapter(toJS(preset));
     });

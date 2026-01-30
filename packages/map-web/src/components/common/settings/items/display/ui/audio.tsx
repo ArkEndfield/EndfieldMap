@@ -10,10 +10,7 @@ export const AudioSetting = observer(() => {
   const audioEnabled = uiManager.audioEnabled.value;
 
   return (
-    <SettingItem
-      title={t('display.layout.audio.title')}
-      description={t('display.layout.audio.description')}
-    >
+    <SettingItem title={t('display.layout.audio.title')} description={t('display.layout.audio.description')}>
       <EndfieldSwitch checked={audioEnabled} onChange={() => uiManager.toggleAudio()} />
     </SettingItem>
   );

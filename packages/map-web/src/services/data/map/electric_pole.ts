@@ -18,7 +18,7 @@ import {
   logger,
   type StorageManager,
 } from '@endfieldmap/tools';
-import diff from "microdiff";
+import diff from 'microdiff';
 import { action, computed, observable, reaction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -171,8 +171,10 @@ export class ElectricPoleDataService extends BasePresetDataService<
         }
         case 'UPDATE': {
           if (!prevData) break;
-          const prevConnections: ElectricPoleData['levelLogicId'][] = (prevData.properties?.connections as ElectricPoleData['levelLogicId'][]) ?? [];
-          const currConnections: ElectricPoleData['levelLogicId'][] = (docData.properties?.connections as ElectricPoleData['levelLogicId'][]) ?? [];
+          const prevConnections: ElectricPoleData['levelLogicId'][] =
+            (prevData.properties?.connections as ElectricPoleData['levelLogicId'][]) ?? [];
+          const currConnections: ElectricPoleData['levelLogicId'][] =
+            (docData.properties?.connections as ElectricPoleData['levelLogicId'][]) ?? [];
 
           const manager = this.adapter.electricPoleController.dataManager.getMapManager(docData.mapId);
           const instance = manager.getById(docData.levelLogicId);
@@ -387,7 +389,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
   @action
   public deleteConnection(fromInstance: ElectricPoleDataInstance, targetId: number) {
     if (!this.isDeletingConnection) return;
-    
+
     const presetId = this.currentPresetId.value;
     if (!presetId) return;
 
