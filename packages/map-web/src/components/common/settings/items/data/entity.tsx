@@ -1,4 +1,3 @@
-import { StorageKey } from '@endfieldmap/tools';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -14,8 +13,8 @@ export const EntitySetting = () => {
   const { loading, execute } = usePromiseState({
     fun: () =>
       Promise.all([
-        DataService.storage.permanentRemove(StorageKey.LAYERS_VISIBILITY),
-        DataService.storage.permanentRemove(StorageKey.MARKED_FEATURES),
+        DataService.dbStorage.database.entityMark.find().remove(),
+        DataService.dbStorage.database.entityVisibility.find().remove(),
       ]),
     onSuccess() {
       alert.info({

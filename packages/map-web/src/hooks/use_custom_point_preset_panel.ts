@@ -20,7 +20,7 @@ export const useCustomPointPresetPanel = () => {
   const service = mapDataService.customPointDataService;
   const currentPresetId = service.currentPresetId.value ?? '';
   const { data: presets } = useLiveQuery((q) =>
-    q.from({ presets: DataService.dbStorage.collections.customPointPreset.tanStackDbCollection })
+    q.from({ presets: DataService.dbStorage.collections.user.customPointPreset.tanStackDbCollection })
   );
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);

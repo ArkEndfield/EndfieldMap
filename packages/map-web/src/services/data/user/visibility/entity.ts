@@ -58,7 +58,6 @@ export class EntityVisibilityService {
   }
 
   public async clearAllData() {
-    const docs = await this.db.find().exec();
-    return Promise.all(docs.map((doc) => doc.remove()));
+    await this.db.find().remove();
   }
 }

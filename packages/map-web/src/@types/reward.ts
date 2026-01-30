@@ -1,7 +1,7 @@
-import type { ItemData } from '@eftypes/item';
+import type { ItemSchemaType } from "@/services/data/db/schema/game_data/item";
 
 export interface RewardItemWithCountItem {
-  id: ItemData['id'];
+  id: ItemSchemaType['id'];
   count: number;
 }
 
@@ -10,15 +10,15 @@ export interface RewardItemWithCount {
 }
 
 export interface RewardItemWitoutCount {
-  itemIds: ItemData['id'][];
+  itemIds: ItemSchemaType['id'][];
 }
 
 export type RewardItem = RewardItemWithCount | RewardItemWitoutCount;
 
 export interface BaseDealedRewardItem {
   type: 'withCount' | 'withoutCount';
-  id: ItemData['id'];
-  name: ItemData['name'];
+  id: ItemSchemaType['id'];
+  name: ItemSchemaType['name'];
   icon: string;
 }
 

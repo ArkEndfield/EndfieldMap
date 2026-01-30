@@ -23,6 +23,11 @@ enum StorageKey {
   CUSTOM_POINT = 'custom_point',
   /** 自定义标点类型可见性 */
   CUSTOM_POINT_VISIBILITY = 'custom_point_visibility',
+
+
+  // 游戏数据
+  /** ItemData */
+  ITEM_DATA = 'item_data',
 }
 
 export interface BasePresetStorage<TPreset> {
@@ -254,4 +259,6 @@ async function performMigration(db: RxDatabase<DBCollections>, data: MigrationDa
     }
     storage.permanentRemove(StorageKey.MARKED_FEATURES);
   }
+
+  storage.permanentRemove(StorageKey.ITEM_DATA);
 }

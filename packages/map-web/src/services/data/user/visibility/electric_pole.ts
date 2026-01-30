@@ -58,9 +58,4 @@ export class ElectricPoleVisibilityService {
       }
     });
   }
-
-  public async clearAllData() {
-    const docs = await this.db.find().exec();
-    return Promise.all(docs.map((doc) => doc.remove()));
-  }
 }

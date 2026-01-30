@@ -19,7 +19,7 @@ export const useElectricPolePresetPanel = () => {
   const service = mapDataService.electricPoleDataService;
   const currentPresetId = service.currentPresetId.value ?? '';
   const { data: presets } = useLiveQuery((q) =>
-    q.from({ presets: DataService.dbStorage.collections.electricPolePreset.tanStackDbCollection })
+    q.from({ presets: DataService.dbStorage.collections.user.electricPolePreset.tanStackDbCollection })
   );
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);

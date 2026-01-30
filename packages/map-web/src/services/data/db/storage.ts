@@ -6,15 +6,16 @@ import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
-import { Collections } from '@/services/data/db/collections';
-import { collectionsSchema, type DBCollections } from '@/services/data/db/collections.ts';
+import { GameDataCollections, gameDataCollectionsSchema, UserCollections } from '@/services/data/db/collections';
+import { type DBCollections,userDataCollectionsSchema } from '@/services/data/db/collections.ts';
 import { isDev } from '@/services/env';
 
 export class Storage {
   public storage = wrappedValidateAjvStorage({ storage: getRxStorageDexie() });
   private db?: RxDatabase<DBCollections>;
   private isInitialized = false;
-  private inner_collections?: Collections;
+  private user_collections?: UserCollections;
+  private game_data_collections?: GameDataCollections;
 
   constructor() {
     if (isDev) {
@@ -42,8 +43,12 @@ export class Storage {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
-    await this.db.addCollections(collectionsSchema);
-    this.inner_collections = new Collections(this.db);
+    await Promise.all([
+      this.db.addCollections(userDataCollectionsSchema),
+      this.db.addCollections(gameDataCollectionsSchema),
+    ]);
+    this.user_collections = new UserCollections(this.db);
+    this.game_data_collections = new GameDataCollections(this.db);
   }
 
   public get database() {
@@ -54,10 +59,13 @@ export class Storage {
   }
 
   public get collections() {
-    if (!this.inner_collections || !this.isInitialized) {
+    if (!this.user_collections || !this.game_data_collections || !this.isInitialized) {
       throw new Error('Collections not initialized');
     }
-    return this.inner_collections;
+    return {
+      user: this.user_collections,
+      gameData: this.game_data_collections,
+    }
   }
 
   private async migrate() {

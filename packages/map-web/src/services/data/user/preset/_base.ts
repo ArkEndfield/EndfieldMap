@@ -2,7 +2,7 @@ import type { MapData } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import type { MangoQuerySelector, RxCollection } from 'rxdb';
 
-import type { PresetSchemaType } from '@/services/data/db/schema/preset';
+import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
 
 /**
  * 节点查询选择器类型
@@ -215,14 +215,9 @@ export abstract class BasePresetService<
    */
   public async deletePreset(id: string): Promise<void> {
     // 先删除所有节点
-    const nodes = await this.nodesDB.find({ selector: { presetId: id } as NodeSelector<TNodeSchema> }).exec();
-    await Promise.all(nodes.map((node) => node.remove()));
-
+    await this.nodesDB.find({ selector: { presetId: id } as NodeSelector<TNodeSchema> }).remove();
     // 删除预设记录
-    const doc = await this.presetDB.findOne({ selector: { id } }).exec();
-    if (doc) {
-      await doc.remove();
-    }
+    await this.presetDB.findOne({ selector: { id } })?.remove();
   }
 
   // region: 私有方法
@@ -255,12 +250,7 @@ export abstract class BasePresetService<
   // region: 节点操作
   public async deleteNode(mapId: MapData['id'], presetId: string, levelLogicId: number): Promise<void> {
     const nodeId = BasePresetService.createId(mapId, presetId, levelLogicId);
-    const doc = await this.nodesDB.findOne({ selector: { id: nodeId } as NodeSelector<TNodeSchema> }).exec();
-    if (doc) {
-      await doc.remove();
-    } else {
-      logger.warn(`Node not found for deletion: ${nodeId}`);
-    }
+    await this.nodesDB.findOne({ selector: { id: nodeId } as NodeSelector<TNodeSchema> })?.remove();
   }
 
   public async createNode(

@@ -4,7 +4,7 @@ import type { RxCollection } from 'rxdb';
 
 import type { ElectricPolePreset } from '@/@types/electric_pole';
 import { DataService } from '@/services/data';
-import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/electric_pole';
+import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
 import type { NodeSelector } from '@/services/data/user/preset/_base';
 import { BasePresetService } from '@/services/data/user/preset/_base';
 

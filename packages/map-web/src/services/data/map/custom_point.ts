@@ -6,7 +6,7 @@ import { action, computed, observable, runInAction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DATA_STORAGE_KEY, EXPORT_TYPE_KEY } from '@/const/data';
-import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/custom_point';
+import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
 import {
   BasePresetDataService,
   type IVisibilityService,

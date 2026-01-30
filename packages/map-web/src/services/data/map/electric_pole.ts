@@ -25,7 +25,7 @@ import { alert } from '@/components/common/alert/alert_api';
 import { DATA_STORAGE_KEY, EXPORT_TYPE_KEY } from '@/const/data';
 import { modes } from '@/const/electric_pole';
 import i18n from '@/i18n';
-import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/electric_pole';
+import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
 import {
   BasePresetDataService,
   type IVisibilityService,

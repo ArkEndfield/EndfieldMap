@@ -1,5 +1,5 @@
 import type { EXPORT_TYPE_KEY } from '@/const/data';
-import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/custom_point';
+import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
 
 /**
  * 自定义标点预设

@@ -44,7 +44,7 @@ export class MapDataService {
     this.electricPoleDataService = new ElectricPoleDataService(this.storage, adapter);
     this.customPointDataService = new CustomPointDataService(this.storage, adapter);
 
-    this.itemDataService = new ItemDataService(this.jsonLoader, this.storage);
+    this.itemDataService = new ItemDataService(this.jsonLoader);
     this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.storage, this.itemDataService);
     this.dungeonSeriesDataService = new DungeonSeriesDataService(
       this.jsonLoader,
@@ -76,7 +76,7 @@ export class MapDataService {
       // 初始化自定义标点预设数据
       this.customPointDataService.initFromStorage(),
       // 初始化 item 数据（游戏物品）
-      this.itemDataService.getItemData(),
+      this.itemDataService.init(),
       // 初始化宝箱奖励数据
       this.chestRewardDataService.getRewardsData(),
       // 初始化副本奖励数据

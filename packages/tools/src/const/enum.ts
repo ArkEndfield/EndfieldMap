@@ -6,24 +6,8 @@ export enum StorageType {
 
 // storage key enum
 export enum StorageKey {
-  /** 标记已获取的数据 */
-  MARKED_FEATURES = 'marked_features',
-  /** 筛选显示类型标点的数据 */
-  LAYERS_VISIBILITY = 'layers_visibility',
-
-  /** 电线杆数据 */
-  ELECTRIC_POLE = 'electric_pole',
-  /** 电线杆类型可见性 */
-  ELECTRIC_POLE_VISIBILITY = 'electric_pole_visibility',
-  /** 自定义标点数据 */
-  CUSTOM_POINT = 'custom_point',
-  /** 自定义标点类型可见性 */
-  CUSTOM_POINT_VISIBILITY = 'custom_point_visibility',
-
   /** ChestReward */
   CHEST_REWARD = 'chest_reward',
-  /** ItemData */
-  ITEM_DATA = 'item_data',
   /** DungeonSeries */
   DUNGEON_SERIES = 'dungeon_series',
   /** Guide */

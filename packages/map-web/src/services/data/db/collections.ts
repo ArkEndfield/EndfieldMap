@@ -4,23 +4,24 @@ import type { RxDBCollectionConfig } from '@tanstack/rxdb-db-collection';
 import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
 import type { RxCollection, RxDatabase } from 'rxdb';
 
+import { itemSchema, type ItemSchemaType } from '@/services/data/db/schema/game_data/item';
 import {
   type CustomPointNodeCollection,
   customPointNodeSchema,
   type CustomPointNodeSchemaType,
-} from '@/services/data/db/schema/custom_point';
+} from '@/services/data/db/schema/user_data/custom_point';
 import {
   type ElectricPoleNodeCollection,
   electricPoleNodeSchema,
   type ElectricPoleNodeSchemaType,
-} from '@/services/data/db/schema/electric_pole';
-import { type MarkDataCollection, markDataSchema, type MarkDataSchemaType } from '@/services/data/db/schema/mark';
-import { type PresetCollection, presetSchema, type PresetSchemaType } from '@/services/data/db/schema/preset';
+} from '@/services/data/db/schema/user_data/electric_pole';
+import { type MarkDataCollection, markDataSchema, type MarkDataSchemaType } from '@/services/data/db/schema/user_data/mark';
+import { type PresetCollection, presetSchema, type PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
 import {
   type VisibilityDataCollection,
   visibilityDataSchema,
   type VisibilityDataSchemaType,
-} from '@/services/data/db/schema/visibility';
+} from '@/services/data/db/schema/user_data/visibility';
 
 export type DBCollections = {
   electricPoleNode: ElectricPoleNodeCollection;
@@ -33,9 +34,12 @@ export type DBCollections = {
 
   entityMark: MarkDataCollection;
   entityVisibility: VisibilityDataCollection;
+
+  gameItem: RxCollection<ItemSchemaType>;
 };
 
-export const collectionsSchema = {
+export const userDataCollectionsSchema = {
+  // 用户数据
   electricPoleNode: {
     schema: electricPoleNodeSchema,
   },
@@ -62,7 +66,13 @@ export const collectionsSchema = {
   },
 };
 
-export class Collections {
+export const gameDataCollectionsSchema = {
+  gameItem: {
+    schema: itemSchema,
+  }
+};
+
+export class UserCollections {
   public electricPoleNode: Collection<ElectricPoleNodeSchemaType>;
   public electricPolePreset: Collection<PresetSchemaType>;
   public electricPoleVisibility: Collection<VisibilityDataSchemaType>;
@@ -85,6 +95,14 @@ export class Collections {
 
     this.entityMark = new Collection(db.entityMark);
     this.entityVisibility = new Collection(db.entityVisibility);
+  }
+}
+
+export class GameDataCollections {
+  public gameItem: Collection<ItemSchemaType>;
+
+  constructor(db: RxDatabase<DBCollections>) {
+    this.gameItem = new Collection(db.gameItem);
   }
 }
 

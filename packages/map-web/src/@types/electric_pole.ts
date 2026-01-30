@@ -1,6 +1,6 @@
 import type { EXPORT_TYPE_KEY, VersionType } from '@/const/data';
 import type { modes } from '@/const/electric_pole';
-import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/electric_pole';
+import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
 
 /**
  * 电线杆预设类型
