@@ -1,7 +1,9 @@
-import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
+import type { JSONLoader } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 
 import type { LevelData, ParsedLevel, PieceData } from '@/@types/delta_robot';
+import type { DeltaRobotParsedLevelSchemaType } from '@/services/data/db/schema/game_data/delta_robot';
+import { DataService } from '@/services/data/index';
 import { parseLevelData } from '@/services/delta_robot/loader';
 import { getAssetUrls } from '@/utils/url';
 
@@ -9,19 +11,30 @@ const assetURL = getAssetUrls();
 
 export class DeltaRobotDataService {
   private jsonLoader: JSONLoader;
-  private storage: StorageManager;
   @observable accessor levelList: Record<string, string[]> = {};
 
-  constructor(jsonLoader: JSONLoader, storage: StorageManager) {
+  constructor(jsonLoader: JSONLoader) {
     this.jsonLoader = jsonLoader;
-    this.storage = storage;
   }
 
   @action
   public async init() {
-    const levelListUrl = `${assetURL.miniGameData}/minigame.json`;
-    const levelList = await this.jsonLoader.loadJSON<Record<string, string[]>>(levelListUrl);
-    this.levelList = levelList;
+    // 清空旧数据并加载新数据
+    const [_, levelListData] = await Promise.all([
+      DataService.dbStorage.database.gameDeltaRobotLevelList.find().remove(),
+      this.jsonLoader.loadJSON<Record<string, string[]>>(`${assetURL.miniGameData}/minigame.json`),
+    ]);
+
+    // 保存到数据库
+    for (const [id, levels] of Object.entries(levelListData || {})) {
+      await DataService.dbStorage.database.gameDeltaRobotLevelList.upsert({
+        id,
+        levels,
+      });
+    }
+
+    // 同时保持内存中的副本以供快速访问
+    this.levelList = levelListData || {};
   }
 
   /**
@@ -31,15 +44,32 @@ export class DeltaRobotDataService {
     return this.levelList[id.toString()];
   }
 
+  private async getParsedLevelFromDB(levelId: string) {
+    return await DataService.dbStorage.database.gameDeltaRobotParsedLevel
+      .findOne({
+        selector: { levelId },
+      })
+      .exec();
+  }
+
   /**
    * 获取关卡数据
    * @param levelId 关卡ID
    */
   public async getLevelData(levelId: string): Promise<ParsedLevel | null> {
-    const cached = (await this.storage.permanentGet<Record<string, ParsedLevel>>(StorageKey.DELTA_ROBOT_LEVEL)) || {};
-
-    if (cached[levelId]) {
-      return cached[levelId];
+    // 先从数据库查找缓存
+    const cached = await this.getParsedLevelFromDB(levelId);
+    if (cached) {
+      const data = cached.toJSON();
+      return {
+        sizeX: data.sizeX,
+        sizeY: data.sizeY,
+        groups: data.groups as ParsedLevel['groups'],
+        rowConstraints: data.rowConstraints as ParsedLevel['rowConstraints'],
+        colConstraints: data.colConstraints as ParsedLevel['colConstraints'],
+        obstaclesFlat: data.obstaclesFlat as ParsedLevel['obstaclesFlat'],
+        pieces: data.pieces as ParsedLevel['pieces'],
+      };
     }
 
     try {
@@ -56,8 +86,11 @@ export class DeltaRobotDataService {
       // 解析关卡数据
       const parsed = await parseLevelData(levelData, pieceLoader);
 
-      cached[levelId] = parsed;
-      this.storage.permanentSet(StorageKey.DELTA_ROBOT_LEVEL, cached);
+      // 保存到数据库
+      await DataService.dbStorage.database.gameDeltaRobotParsedLevel.upsert({
+        levelId,
+        ...parsed,
+      } as DeltaRobotParsedLevelSchemaType);
 
       return parsed;
     } catch (error) {

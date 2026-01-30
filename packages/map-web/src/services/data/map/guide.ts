@@ -1,50 +1,44 @@
-import type { GuideInfoDetail } from '@eftypes/guide';
-import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
+import type { JSONLoader } from '@endfieldmap/tools';
 
+import type { GuideInfoDetail } from '@/@types/guide';
+import type { GuideSchemaType } from '@/services/data/db/schema/game_data/guide';
+import { DataService } from '@/services/data/index';
 import { getAssetUrls } from '@/utils/url';
+
+const assetPath = getAssetUrls();
 
 export class GuideDataService {
   private jsonLoader: JSONLoader;
-  private storage: StorageManager;
-  private inited: boolean;
-  private loadingPromise: Promise<Record<string, GuideInfoDetail>> | null = null;
 
-  constructor(jsonLoader: JSONLoader, storage: StorageManager) {
+  constructor(jsonLoader: JSONLoader) {
     this.jsonLoader = jsonLoader;
-    this.storage = storage;
-    this.inited = false;
   }
 
-  public async getGuidesData() {
-    if (this.inited) {
-      const data = await this.storage.permanentGet<Record<number, GuideInfoDetail>>(StorageKey.GUIDE);
-      if (!data) {
-        throw new Error('Guides data not found');
-      } else {
-        return data;
-      }
-    }
-
-    if (this.loadingPromise) {
-      return this.loadingPromise;
-    }
-
-    this.loadingPromise = (async () => {
-      const assetPath = getAssetUrls();
-      const guidesData = await this.jsonLoader.loadJSON<Record<string, GuideInfoDetail>>(
+  public async init() {
+    const [_, data] = await Promise.all([
+      DataService.dbStorage.database.gameGuide.find().remove(),
+      this.jsonLoader.loadJSON<Record<string, Omit<GuideSchemaType, 'id'>>>(
         `${assetPath.entityData}/guide.json`
-      );
-      this.storage.permanentSet(StorageKey.GUIDE, guidesData);
-      this.inited = true;
-      this.loadingPromise = null;
-      return guidesData;
-    })();
-
-    return this.loadingPromise;
+      ),
+    ]);
+    for (const [id, guide] of Object.entries(data || {})) {
+      await DataService.dbStorage.database.gameGuide.upsert({
+        id,
+        ...guide,
+      });
+    }
   }
 
-  public async getGuide(id: number) {
-    const guideData = await this.getGuidesData();
-    return guideData[id];
+  private async getGuideDataFromDB(id: string) {
+    return await DataService.dbStorage.database.gameGuide
+      .findOne({
+        selector: { id },
+      })
+      .exec();
+  }
+
+  public async getGuide(id: number): Promise<GuideInfoDetail | undefined> {
+    const data = await this.getGuideDataFromDB(id.toString());
+    return data?.toJSON() as GuideInfoDetail | undefined;
   }
 }

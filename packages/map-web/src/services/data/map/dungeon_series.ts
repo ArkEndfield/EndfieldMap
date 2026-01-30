@@ -1,56 +1,49 @@
-import type { DungeonSeriesData } from '@eftypes/dungeon_series';
-import type { DealedRewardItem } from '@eftypes/reward';
-import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
+import type { JSONLoader } from '@endfieldmap/tools';
 
+import type { DungeonSeriesSchemaType } from '@/services/data/db/schema/game_data/dungeon_series';
+import { DataService } from '@/services/data/index';
+import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { ChestRewardDataService } from '@/services/data/map/chest_reward';
 import { getAssetUrls } from '@/utils/url';
 
+const assetPath = getAssetUrls();
+
 export class DungeonSeriesDataService {
   private jsonLoader: JSONLoader;
-  private storage: StorageManager;
-  private inited: boolean;
-  private loadingPromise: Promise<Record<string, DungeonSeriesData>> | null = null;
   private chestRewardDataService: ChestRewardDataService;
 
-  constructor(jsonLoader: JSONLoader, storage: StorageManager, chestRewardDataService: ChestRewardDataService) {
+  constructor(jsonLoader: JSONLoader, chestRewardDataService: ChestRewardDataService) {
     this.jsonLoader = jsonLoader;
-    this.storage = storage;
     this.chestRewardDataService = chestRewardDataService;
-    this.inited = false;
   }
 
-  public async getDungeonSeriesData() {
-    if (this.inited) {
-      const data = await this.storage.permanentGet<Record<string, DungeonSeriesData>>(StorageKey.DUNGEON_SERIES);
-      if (!data) {
-        throw new Error('Dungeon Series data not found');
-      } else {
-        return data;
-      }
-    }
-
-    if (this.loadingPromise) {
-      return this.loadingPromise;
-    }
-
-    this.loadingPromise = (async () => {
-      const assetPath = getAssetUrls();
-      const dungeonSeriesData = await this.jsonLoader.loadJSON<Record<string, DungeonSeriesData>>(
+  public async init() {
+    const [_, data] = await Promise.all([
+      DataService.dbStorage.database.gameDungeonSeries.find().remove(),
+      this.jsonLoader.loadJSON<Record<string, Omit<DungeonSeriesSchemaType, 'id'>>>(
         `${assetPath.entityData}/dungeon_series.json`
-      );
-      this.storage.permanentSet(StorageKey.DUNGEON_SERIES, dungeonSeriesData);
-      this.inited = true;
-      this.loadingPromise = null;
-      return dungeonSeriesData;
-    })();
+      ),
+    ]);
+    for (const [id, dungeonSeries] of Object.entries(data || {})) {
+      await DataService.dbStorage.database.gameDungeonSeries.upsert({
+        id,
+        ...dungeonSeries,
+      });
+    }
+  }
 
-    return this.loadingPromise;
+  private async getDungeonSeriesDataFromDB(id: string) {
+    return await DataService.dbStorage.database.gameDungeonSeries
+      .findOne({
+        selector: { id },
+      })
+      .exec();
   }
 
   public async getDungeonSeriesDataById(id?: string) {
     if (!id) return;
-    const dungeonSeriesData = await this.getDungeonSeriesData();
-    return dungeonSeriesData[id];
+    const data = await this.getDungeonSeriesDataFromDB(id);
+    return data?.toJSON();
   }
 
   public async getDungeonRewards(system_inst_key?: string) {

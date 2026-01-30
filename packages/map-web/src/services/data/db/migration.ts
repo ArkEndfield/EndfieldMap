@@ -25,9 +25,17 @@ enum StorageKey {
   CUSTOM_POINT_VISIBILITY = 'custom_point_visibility',
 
 
-  // 游戏数据
+  // 游戏数据（已迁移到 RxDB）
   /** ItemData */
   ITEM_DATA = 'item_data',
+  /** ChestReward */
+  CHEST_REWARD = 'chest_reward',
+  /** DungeonSeries */
+  DUNGEON_SERIES = 'dungeon_series',
+  /** Guide */
+  GUIDE = 'guide',
+  /** DeltaRobotLevel */
+  DELTA_ROBOT_LEVEL = 'delta_robot_level',
 }
 
 export interface BasePresetStorage<TPreset> {
@@ -261,4 +269,8 @@ async function performMigration(db: RxDatabase<DBCollections>, data: MigrationDa
   }
 
   storage.permanentRemove(StorageKey.ITEM_DATA);
+  storage.permanentRemove(StorageKey.CHEST_REWARD);
+  storage.permanentRemove(StorageKey.DUNGEON_SERIES);
+  storage.permanentRemove(StorageKey.GUIDE);
+  storage.permanentRemove(StorageKey.DELTA_ROBOT_LEVEL);
 }

@@ -45,14 +45,13 @@ export class MapDataService {
     this.customPointDataService = new CustomPointDataService(this.storage, adapter);
 
     this.itemDataService = new ItemDataService(this.jsonLoader);
-    this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.storage, this.itemDataService);
+    this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.itemDataService);
     this.dungeonSeriesDataService = new DungeonSeriesDataService(
       this.jsonLoader,
-      this.storage,
       this.chestRewardDataService
     );
-    this.deltaRobotDataService = new DeltaRobotDataService(this.jsonLoader, this.storage);
-    this.guideDataService = new GuideDataService(this.jsonLoader, this.storage);
+    this.deltaRobotDataService = new DeltaRobotDataService(this.jsonLoader);
+    this.guideDataService = new GuideDataService(this.jsonLoader);
     this.langHashDataService = new LangHashDataService(this.jsonLoader);
     this.mapStateDataService = new MapStateDataService(adapter);
     this.swiperDataService = new SwiperDataService();
@@ -78,11 +77,11 @@ export class MapDataService {
       // 初始化 item 数据（游戏物品）
       this.itemDataService.init(),
       // 初始化宝箱奖励数据
-      this.chestRewardDataService.getRewardsData(),
+      this.chestRewardDataService.init(),
       // 初始化副本奖励数据
-      this.dungeonSeriesDataService.getDungeonSeriesData(),
+      this.dungeonSeriesDataService.init(),
       // 初始化攻略数据
-      this.guideDataService.getGuidesData(),
+      this.guideDataService.init(),
       // 初始化语言哈希数据
       this.langHashDataService.init(),
       // 初始化网格分级数据

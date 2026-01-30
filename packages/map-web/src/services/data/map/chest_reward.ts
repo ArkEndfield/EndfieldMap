@@ -1,66 +1,68 @@
-import type {
-  DealedRewardItem,
-  DealedRewardItemWithCount,
-  DealedRewardItemWithoutCount,
-  RewardItem,
-} from '@eftypes/reward';
-import { type JSONLoader, StorageKey, type StorageManager } from '@endfieldmap/tools';
+import type { JSONLoader } from '@endfieldmap/tools';
 
+import type { ChestRewardSchemaType } from '@/services/data/db/schema/game_data/chest_reward';
+import { DataService } from '@/services/data/index';
 import { ItemDataService } from '@/services/data/map/item';
-import { isRewardWithCountType } from '@/utils/reward';
 import { getAssetUrls } from '@/utils/url';
 
-export class ChestRewardDataService {
-  private inited: boolean;
-  private jsonLoader: JSONLoader;
-  private storage: StorageManager;
-  private itemDataService: ItemDataService;
-  private loadingPromise: Promise<Record<string, RewardItem>> | null = null;
+const assetPath = getAssetUrls();
 
-  constructor(jsonLoader: JSONLoader, storage: StorageManager, itemDataService: ItemDataService) {
+export interface DealedRewardItemWithCount {
+  type: 'withCount';
+  id: string;
+  name: string;
+  icon: string;
+  count: number;
+}
+
+export interface DealedRewardItemWithoutCount {
+  type: 'withoutCount';
+  id: string;
+  name: string;
+  icon: string;
+}
+
+export type DealedRewardItem = DealedRewardItemWithCount | DealedRewardItemWithoutCount;
+
+export class ChestRewardDataService {
+  private jsonLoader: JSONLoader;
+  private itemDataService: ItemDataService;
+
+  constructor(jsonLoader: JSONLoader, itemDataService: ItemDataService) {
     this.jsonLoader = jsonLoader;
-    this.storage = storage;
     this.itemDataService = itemDataService;
-    this.inited = false;
   }
 
-  public async getRewardsData() {
-    if (this.inited) {
-      const data = await this.storage.permanentGet<Record<string, RewardItem>>(StorageKey.CHEST_REWARD);
-      if (!data) {
-        throw new Error('Reward data not found');
-      } else {
-        return data;
-      }
-    }
-
-    if (this.loadingPromise) {
-      return this.loadingPromise;
-    }
-
-    this.loadingPromise = (async () => {
-      const assetPath = getAssetUrls();
-      const rewardData = await this.jsonLoader.loadJSON<Record<string, RewardItem>>(
+  public async init() {
+    const [_, data] = await Promise.all([
+      DataService.dbStorage.database.gameChestReward.find().remove(),
+      this.jsonLoader.loadJSON<Record<string, Omit<ChestRewardSchemaType, 'id'>>>(
         `${assetPath.entityData}/reward_table.json`
-      );
-      this.storage.permanentSet(StorageKey.CHEST_REWARD, rewardData);
-      this.inited = true;
-      this.loadingPromise = null;
-      return rewardData;
-    })();
+      ),
+    ]);
+    for (const [id, reward] of Object.entries(data || {})) {
+      await DataService.dbStorage.database.gameChestReward.upsert({
+        id,
+        ...reward,
+      });
+    }
+  }
 
-    return this.loadingPromise;
+  private async getRewardDataFromDB(id: string) {
+    return await DataService.dbStorage.database.gameChestReward.findOne({
+      selector: { id },
+    }).exec();
   }
 
   public async getRewards(reward_id?: string): Promise<DealedRewardItem[]> {
     if (!reward_id) return [];
 
-    const allRewards = await this.getRewardsData();
-    const rewardItem = allRewards[reward_id];
+    const _rewardData = await this.getRewardDataFromDB(reward_id);
+    const rewardItem = _rewardData?.toJSON();
 
     if (!rewardItem) return [];
 
-    if (isRewardWithCountType(rewardItem)) {
+    if (Array.isArray(rewardItem.itemBundles) && rewardItem.itemBundles.length > 0) {
       const promises = rewardItem.itemBundles.map(async (itemBundle) => {
         const item = await this.itemDataService.getItemData(itemBundle.id);
         return {
@@ -73,7 +75,7 @@ export class ChestRewardDataService {
       });
       return Promise.all(promises);
     } else {
-      const promises = rewardItem.itemIds.map(async (id) => {
+      const promises = rewardItem.itemIds!.map(async (id) => {
         const item = await this.itemDataService.getItemData(id);
         return {
           type: 'withoutCount' as const,

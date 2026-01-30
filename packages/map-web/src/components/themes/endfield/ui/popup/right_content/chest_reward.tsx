@@ -1,4 +1,3 @@
-import type { DealedRewardItem } from '@eftypes/reward';
 import type { EntityData } from '@endfieldmap/map-core';
 import { Item } from '@themes/endfield/components/item';
 import { useCallback, useEffect, useState } from 'react';
@@ -6,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { SubPopupTitle } from '@/components/themes/endfield/ui/popup/right_content/title';
 import { useAdapter } from '@/hooks/use_adapter';
+import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { isDealedRewardItemWithCount } from '@/utils/reward';
 
 export const ChestReward = ({ entity }: { entity: EntityData }) => {

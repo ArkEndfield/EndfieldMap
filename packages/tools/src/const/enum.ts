@@ -4,18 +4,6 @@ export enum StorageType {
   PERMANENT = 'permanent',
 }
 
-// storage key enum
-export enum StorageKey {
-  /** ChestReward */
-  CHEST_REWARD = 'chest_reward',
-  /** DungeonSeries */
-  DUNGEON_SERIES = 'dungeon_series',
-  /** Guide */
-  GUIDE = 'guide',
-  /** DeltaRobotLevel */
-  DELTA_ROBOT_LEVEL = 'delta_robot_level',
-}
-
 // local storage type enum
 export enum LocalStorageKey {
   // 地图缩放

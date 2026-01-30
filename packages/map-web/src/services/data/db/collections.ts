@@ -4,6 +4,15 @@ import type { RxDBCollectionConfig } from '@tanstack/rxdb-db-collection';
 import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
 import type { RxCollection, RxDatabase } from 'rxdb';
 
+import { chestRewardSchema, type ChestRewardSchemaType } from '@/services/data/db/schema/game_data/chest_reward';
+import {
+  deltaRobotLevelListSchema,
+  type DeltaRobotLevelListSchemaType,
+  deltaRobotParsedLevelSchema,
+  type DeltaRobotParsedLevelSchemaType,
+} from '@/services/data/db/schema/game_data/delta_robot';
+import { dungeonSeriesSchema, type DungeonSeriesSchemaType } from '@/services/data/db/schema/game_data/dungeon_series';
+import { guideSchema, type GuideSchemaType } from '@/services/data/db/schema/game_data/guide';
 import { itemSchema, type ItemSchemaType } from '@/services/data/db/schema/game_data/item';
 import {
   type CustomPointNodeCollection,
@@ -36,6 +45,11 @@ export type DBCollections = {
   entityVisibility: VisibilityDataCollection;
 
   gameItem: RxCollection<ItemSchemaType>;
+  gameChestReward: RxCollection<ChestRewardSchemaType>;
+  gameDungeonSeries: RxCollection<DungeonSeriesSchemaType>;
+  gameGuide: RxCollection<GuideSchemaType>;
+  gameDeltaRobotLevelList: RxCollection<DeltaRobotLevelListSchemaType>;
+  gameDeltaRobotParsedLevel: RxCollection<DeltaRobotParsedLevelSchemaType>;
 };
 
 export const userDataCollectionsSchema = {
@@ -69,7 +83,22 @@ export const userDataCollectionsSchema = {
 export const gameDataCollectionsSchema = {
   gameItem: {
     schema: itemSchema,
-  }
+  },
+  gameChestReward: {
+    schema: chestRewardSchema,
+  },
+  gameDungeonSeries: {
+    schema: dungeonSeriesSchema,
+  },
+  gameGuide: {
+    schema: guideSchema,
+  },
+  gameDeltaRobotLevelList: {
+    schema: deltaRobotLevelListSchema,
+  },
+  gameDeltaRobotParsedLevel: {
+    schema: deltaRobotParsedLevelSchema,
+  },
 };
 
 export class UserCollections {
@@ -100,9 +129,19 @@ export class UserCollections {
 
 export class GameDataCollections {
   public gameItem: Collection<ItemSchemaType>;
+  public gameChestReward: Collection<ChestRewardSchemaType>;
+  public gameDungeonSeries: Collection<DungeonSeriesSchemaType>;
+  public gameGuide: Collection<GuideSchemaType>;
+  public gameDeltaRobotLevelList: Collection<DeltaRobotLevelListSchemaType>;
+  public gameDeltaRobotParsedLevel: Collection<DeltaRobotParsedLevelSchemaType>;
 
   constructor(db: RxDatabase<DBCollections>) {
     this.gameItem = new Collection(db.gameItem);
+    this.gameChestReward = new Collection(db.gameChestReward);
+    this.gameDungeonSeries = new Collection(db.gameDungeonSeries);
+    this.gameGuide = new Collection(db.gameGuide);
+    this.gameDeltaRobotLevelList = new Collection(db.gameDeltaRobotLevelList);
+    this.gameDeltaRobotParsedLevel = new Collection(db.gameDeltaRobotParsedLevel);
   }
 }
 

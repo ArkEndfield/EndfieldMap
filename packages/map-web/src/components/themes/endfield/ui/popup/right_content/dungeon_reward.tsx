@@ -1,15 +1,17 @@
-import type { DealedRewardItem } from '@eftypes/reward';
 import type { EntityData } from '@endfieldmap/map-core';
 import { Item } from '@themes/endfield/components/item';
 import { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { SubPopupTitle } from '@/components/themes/endfield/ui/popup/right_content/title';
 import { useAdapter } from '@/hooks/use_adapter';
+import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { isDealedRewardItemWithCount } from '@/utils/reward';
 
 export const DungeonReward = ({ entity }: { entity: EntityData }) => {
   const [rewards, setRewards] = useState<Record<string, DealedRewardItem[]>>({});
   const { mapDataService } = useAdapter();
+  const { t } = useTranslation('lang');
 
   const getRewadData = async (id: EntityData['properties']['system_inst_key']) => {
     const rewards = await mapDataService.dungeonSeriesDataService.getDungeonRewards(id);
@@ -44,8 +46,10 @@ export const DungeonReward = ({ entity }: { entity: EntityData }) => {
                   />
                 }
                 count={isDealedRewardItemWithCount(rwd) ? rwd.count : undefined}
-                name="item.${rwd.id}.name"
-              ></Item>
+                name={t(`lang:${rwd.name}`, {
+                  defaultValue: rwd.name,
+                })}
+              />
             ))}
           </div>
         </Fragment>
