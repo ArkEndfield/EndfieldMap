@@ -24,7 +24,11 @@ import {
   electricPoleNodeSchema,
   type ElectricPoleNodeSchemaType,
 } from '@/services/data/db/schema/user_data/electric_pole';
-import { type MarkDataCollection, markDataSchema, type MarkDataSchemaType } from '@/services/data/db/schema/user_data/mark';
+import {
+  type MarkDataCollection,
+  markDataSchema,
+  type MarkDataSchemaType,
+} from '@/services/data/db/schema/user_data/mark';
 import { type PresetCollection, presetSchema, type PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
 import {
   type VisibilityDataCollection,
@@ -128,20 +132,21 @@ export class UserCollections {
 }
 
 export class GameDataCollections {
-  public gameItem: Collection<ItemSchemaType>;
-  public gameChestReward: Collection<ChestRewardSchemaType>;
-  public gameDungeonSeries: Collection<DungeonSeriesSchemaType>;
-  public gameGuide: Collection<GuideSchemaType>;
-  public gameDeltaRobotLevelList: Collection<DeltaRobotLevelListSchemaType>;
-  public gameDeltaRobotParsedLevel: Collection<DeltaRobotParsedLevelSchemaType>;
+  // 游戏数据不需要 TanStack DB 响应式功能，直接使用 RxCollection 以提高性能
+  public gameItem: RxCollection<ItemSchemaType>;
+  public gameChestReward: RxCollection<ChestRewardSchemaType>;
+  public gameDungeonSeries: RxCollection<DungeonSeriesSchemaType>;
+  public gameGuide: RxCollection<GuideSchemaType>;
+  public gameDeltaRobotLevelList: RxCollection<DeltaRobotLevelListSchemaType>;
+  public gameDeltaRobotParsedLevel: RxCollection<DeltaRobotParsedLevelSchemaType>;
 
   constructor(db: RxDatabase<DBCollections>) {
-    this.gameItem = new Collection(db.gameItem);
-    this.gameChestReward = new Collection(db.gameChestReward);
-    this.gameDungeonSeries = new Collection(db.gameDungeonSeries);
-    this.gameGuide = new Collection(db.gameGuide);
-    this.gameDeltaRobotLevelList = new Collection(db.gameDeltaRobotLevelList);
-    this.gameDeltaRobotParsedLevel = new Collection(db.gameDeltaRobotParsedLevel);
+    this.gameItem = db.gameItem;
+    this.gameChestReward = db.gameChestReward;
+    this.gameDungeonSeries = db.gameDungeonSeries;
+    this.gameGuide = db.gameGuide;
+    this.gameDeltaRobotLevelList = db.gameDeltaRobotLevelList;
+    this.gameDeltaRobotParsedLevel = db.gameDeltaRobotParsedLevel;
   }
 }
 

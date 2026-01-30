@@ -7,11 +7,12 @@ import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
 import { GameDataCollections, gameDataCollectionsSchema, UserCollections } from '@/services/data/db/collections';
-import { type DBCollections,userDataCollectionsSchema } from '@/services/data/db/collections.ts';
+import { type DBCollections, userDataCollectionsSchema } from '@/services/data/db/collections.ts';
 import { isDev } from '@/services/env';
 
 export class Storage {
-  public storage = wrappedValidateAjvStorage({ storage: getRxStorageDexie() });
+  // 仅在开发环境使用 AJV 验证，生产环境直接使用 Dexie 存储以提高性能
+  public storage = isDev ? wrappedValidateAjvStorage({ storage: getRxStorageDexie() }) : getRxStorageDexie();
   private db?: RxDatabase<DBCollections>;
   private isInitialized = false;
   private user_collections?: UserCollections;
@@ -65,7 +66,7 @@ export class Storage {
     return {
       user: this.user_collections,
       gameData: this.game_data_collections,
-    }
+    };
   }
 
   private async migrate() {
