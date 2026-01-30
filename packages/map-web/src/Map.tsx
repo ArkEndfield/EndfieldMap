@@ -5,7 +5,6 @@ import { lazy, Suspense, useEffect, useRef } from 'react';
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
 import { SettingsPage } from '@/components/common/settings';
-import ZmdSwiper from '@/components/common/zmd_swiper';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { MapDataService } from '@/services/data/map';
@@ -14,6 +13,7 @@ import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
 
 const DevTools = isDev ? lazy(() => import('@/components/common/dev_tools')) : null;
+const ZmdSwiper = lazy(() => import('@/components/common/zmd_swiper'));
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
@@ -85,7 +85,9 @@ const Controllers = observer(({ adapter, mapDataService }: ControllersProps) => 
           <SettingsPage />
 
           {/* 轮播组件 */}
-          <ZmdSwiper />
+          <Suspense>
+            <ZmdSwiper />
+          </Suspense>
 
           <DevTip />
         </ThemedComponents.RootProvider>
