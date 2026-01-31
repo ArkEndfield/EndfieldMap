@@ -46,7 +46,7 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     key: 'pole',
     name: '电线杆',
     iconPic: 'icon_map_big_pole',
-    rangeMeters: 50,
+    rangeMeters: 30,
     createLimit: false,
     maxConnections: 10,
     connectionType: 'electric',
