@@ -55,6 +55,99 @@ export function needsMigration(): boolean {
 /**
  * 执行数据迁移
  */
+/**
+ * 导出 IndexedDB 数据到 JSON 文件
+ */
+async function exportBackup(dbName: string): Promise<void> {
+  try {
+    const request = window.indexedDB.open(dbName);
+    request.onerror = (e) => {
+      logger.error('[Storage] Failed to open database for backup', e);
+      alert.info({
+        content: i18n.t('migrate_tip.backup_fail') as string,
+      });
+    };
+
+    request.onsuccess = async (e) => {
+      const db = e.target.result as IDBDatabase;
+      const storeNames = Array.from(db.objectStoreNames);
+      const permanentStoreName = 'permanent';
+      const targetStores = storeNames.includes(permanentStoreName) ? [permanentStoreName] : [];
+
+      if (targetStores.length === 0) {
+        logger.error('[Storage] No permanent store found for backup');
+        alert.info({
+          content: i18n.t('migrate_tip.backup_no_store') as string,
+        });
+        db.close();
+        return;
+      }
+
+      const transaction = db.transaction(targetStores, 'readonly');
+      const store = transaction.objectStore(permanentStoreName);
+      const cursorReq = store.openCursor();
+
+      const memoryItems: Array<{ key: IDBValidKey; value: unknown }> = [];
+      let totalItems = 0;
+
+      cursorReq.onsuccess = (evt) => {
+        const cursor = (evt.target as IDBRequest).result;
+        if (cursor) {
+          memoryItems.push({ key: cursor.key, value: cursor.value });
+          totalItems++;
+          cursor.continue();
+        } else {
+          const exportData = {
+            database: dbName,
+            version: db.version,
+            timestamp: new Date().toISOString(),
+            stores: {
+              [permanentStoreName]: memoryItems,
+            },
+          };
+
+          downloadData(exportData, `${dbName}_backup_${formatDate(new Date())}.json`);
+          logger.log(`[Storage] Backup completed: ${totalItems} records`);
+          alert.info({
+            content: i18n.t('migrate_tip.backup_success') as string,
+          });
+          db.close();
+        }
+      };
+
+      cursorReq.onerror = (err) => {
+        logger.error('[Storage] Backup read failed', err);
+        alert.info({
+          content: i18n.t('migrate_tip.backup_fail') as string,
+        });
+      };
+    };
+  } catch (err) {
+    logger.error('[Storage] Backup failed', err);
+    alert.info({
+      content: i18n.t('migrate_tip.backup_fail') as string,
+    });
+  }
+}
+
+function formatDate(date: Date): string {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}_${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+}
+
+function downloadData(data: unknown, filename: string): void {
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 export async function migrateToRxDB(db: RxDatabase<DBCollections>): Promise<void> {
   if (!needsMigration()) {
     return;
@@ -95,7 +188,12 @@ export async function migrateToRxDB(db: RxDatabase<DBCollections>): Promise<void
   alert.confirm({
     content: i18n.t('migrate_tip.content') as string,
     dismissible: false,
-    hideCancel: true,
+    hideCancel: false,
+    cancelText: i18n.t('migrate_tip.backup') as string,
+    onCancel: async () => {
+      await exportBackup('endfieldmap');
+      return true;
+    },
     onConfirm: async () => {
       try {
         await performMigration(db, {
@@ -111,7 +209,7 @@ export async function migrateToRxDB(db: RxDatabase<DBCollections>): Promise<void
         localStorage.setItem(MIGRATION_KEY, 'true');
         logger.log('[Storage] Data migration completed successfully');
         alert.info({
-          content: i18n.t('migrate_tip.susscess') as string,
+          content: i18n.t('migrate_tip.success') as string,
         });
       } catch (error) {
         logger.error('[Storage] Data migration failed', error);
