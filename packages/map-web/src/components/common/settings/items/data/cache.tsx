@@ -5,6 +5,7 @@ import { EndfieldFormButton } from '@/components/common/endfield_components/form
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { usePromiseState } from '@/hooks/use_promise_state';
+import { SETTINGS_KEYS } from '@/const/settings';
 import { DataService } from '@/services/data';
 
 export const CacheSetting = () => {
@@ -29,7 +30,7 @@ export const CacheSetting = () => {
     },
   });
   return (
-    <SettingItem title={t('data.cache.title')} tailDeco>
+    <SettingItem id={SETTINGS_KEYS.DATA.CACHE} title={t('data.cache.title')} tailDeco>
       <EndfieldFormButton onClick={execute} left={loading && <Loading />} variant="primary">
         {t('data.cache.clear')}
       </EndfieldFormButton>

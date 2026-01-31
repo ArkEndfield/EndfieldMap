@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
+import { SETTINGS_KEYS } from '@/const/settings';
 import uiManager from '@/services/ui_manager';
 
 const DARK_MODE_OPTIONS = [
@@ -16,7 +17,7 @@ export const DarkModeSetting = observer(() => {
   const darkMode = uiManager.darkMode.value;
 
   return (
-    <SettingItem title={t('display.layout.dark_mode.title')}>
+    <SettingItem id={SETTINGS_KEYS.DISPLAY.DARK_MODE} title={t('display.layout.dark_mode.title')}>
       <EndfieldToggle
         options={DARK_MODE_OPTIONS.map((option) => ({ label: t(option.label), key: option.key }))}
         activeKey={darkMode}

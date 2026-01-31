@@ -5,6 +5,7 @@ import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
 
 export interface SettingItemProps {
+  id?: string;
   title: React.ReactNode;
   description?: React.ReactNode;
   question?: React.ReactNode;
@@ -56,46 +57,70 @@ const Deco = ({ withTail }: { withTail?: boolean }) => (
   </div>
 );
 
-export const SettingItem = ({
-  title,
-  description,
-  question,
-  children,
-  className,
-  classNames,
-  tailDeco,
-}: SettingItemProps) => {
-  const isMobile = useIsMobile();
-  return (
-    <div
-      className={cn('flex relative p-2 items-center border-[1.5px] rounded-sm bg-white/10 border-white/30', className)}
-    >
-      <Deco withTail={tailDeco} />
-      <div className={cn('flex-1 p-1 relative z-1', classNames?.left?.container)}>
-        <div className={cn('flex md:ml-4', classNames?.left?.title?.container)}>
-          <div className={cn(classNames?.left?.title?.content)}>{title}</div>
-          {question && (
-            <Tooltip
-              tooltip={question}
-              asProps={{
-                className: cn('text-sm', classNames?.left?.title?.question?.tooltip),
-              }}
-            >
-              <ButtonWithAudio className={cn('text-sm', classNames?.left?.title?.question?.button)}>
-                <QuestionIcon />
-              </ButtonWithAudio>
-            </Tooltip>
+import uiManager from '@/services/ui_manager';
+import { observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
+
+export const SettingItem = observer(
+  ({ title, description, question, children, className, classNames, tailDeco, id }: SettingItemProps) => {
+    const isMobile = useIsMobile();
+    const [flashing, setFlashing] = useState(false);
+
+    useEffect(() => {
+      if (id && uiManager.targetSettingItem === id) {
+        setFlashing(true);
+        const timer = setTimeout(() => {
+          setFlashing(false);
+          uiManager.targetSettingItem = null;
+        }, 1000);
+        return () => clearTimeout(timer);
+      }
+    }, [id, uiManager.targetSettingItem]);
+
+    return (
+      <div
+        id={id}
+        data-setting-key={id}
+        className={cn(
+          'flex relative p-2 items-center border-[1.5px] rounded-sm bg-white/10 border-white/30 transition-colors duration-300',
+          flashing && 'bg-yellow-500/30 border-yellow-500',
+          className
+        )}
+      >
+        <Deco withTail={tailDeco} />
+        <div className={cn('flex-1 p-1 relative z-1', classNames?.left?.container)}>
+          <div className={cn('flex md:ml-4', classNames?.left?.title?.container)}>
+            <div className={cn(classNames?.left?.title?.content)}>{title}</div>
+            {question && (
+              <Tooltip
+                tooltip={question}
+                asProps={{
+                  className: cn('text-sm', classNames?.left?.title?.question?.tooltip),
+                }}
+              >
+                <ButtonWithAudio className={cn('text-sm', classNames?.left?.title?.question?.button)}>
+                  <QuestionIcon />
+                </ButtonWithAudio>
+              </Tooltip>
+            )}
+          </div>
+          {description && (
+            <div className={cn('text-xs md:ml-4 text-zinc-300', classNames?.left?.description)}>{description}</div>
           )}
         </div>
-        {description && (
-          <div className={cn('text-xs md:ml-4 text-zinc-300', classNames?.left?.description)}>{description}</div>
+        <div
+          className={cn(
+            'flex shrink-0 grow-0 relative min-w-32 md:min-w-64',
+            isMobile && 'text-sm',
+            classNames?.content
+          )}
+        >
+          {children}
+        </div>
+        {flashing && (
+          <div className="absolute inset-0 z-0 bg-yellow-400/20 animate-pulse pointer-events-none rounded-sm" />
         )}
       </div>
-      <div
-        className={cn('flex shrink-0 grow-0 relative min-w-32 md:min-w-64', isMobile && 'text-sm', classNames?.content)}
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
+    );
+  }
+);

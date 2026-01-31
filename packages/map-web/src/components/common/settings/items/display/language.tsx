@@ -6,6 +6,7 @@ import { TranslateIcon } from '@/components/common/icons';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { languageConfig } from '@/const/language';
+import { SETTINGS_KEYS } from '@/const/settings';
 import { useCurrentLanguage } from '@/hooks/use_current_language';
 import { cn } from '@/utils/style';
 
@@ -34,7 +35,7 @@ export const LanguageSetting = () => {
 
   return (
     <SettingsZone title={t('display.language.title')} icon={<TranslateIcon />}>
-      <SettingItem title={t('display.language.change_language')}>
+      <SettingItem id={SETTINGS_KEYS.DISPLAY.LANGUAGE} title={t('display.language.change_language')}>
         <EndfieldSelect<Language>
           value={currentLocale}
           options={selectOptions}

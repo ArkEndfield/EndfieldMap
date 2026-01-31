@@ -6,6 +6,7 @@ import { EndfieldFormButton } from '@/components/common/endfield_components/form
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { usePromiseState } from '@/hooks/use_promise_state';
+import { SETTINGS_KEYS } from '@/const/settings';
 import { DataService } from '@/services/data';
 
 const clearAll = (confirmText: string): Promise<boolean> => {
@@ -49,7 +50,12 @@ export const AllStorageSetting = () => {
     },
   });
   return (
-    <SettingItem title={t('data.storage_data.title')} description={t('data.storage_data.description')} tailDeco>
+    <SettingItem
+      id={SETTINGS_KEYS.DATA.ALL}
+      title={t('data.storage_data.title')}
+      description={t('data.storage_data.description')}
+      tailDeco
+    >
       <EndfieldFormButton onClick={execute} left={loading && <Loading />} variant="danger">
         {t('data.storage_data.clear')}
       </EndfieldFormButton>

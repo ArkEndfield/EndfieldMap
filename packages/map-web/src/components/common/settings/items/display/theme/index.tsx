@@ -1,3 +1,4 @@
+import { SETTINGS_KEYS } from '@/const/settings';
 import { type ThemeNames, themeNames } from '@themes/index';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,7 @@ export const ThemeSetting = observer(() => {
   };
 
   return (
-    <SettingsZone title={t('display.theme.title')} icon={<ThemeIcon />}>
+    <SettingsZone id={SETTINGS_KEYS.DISPLAY.THEME} title={t('display.theme.title')} icon={<ThemeIcon />}>
       <div className="flex flex-wrap gap-2">
         {Object.values(themeNames).map((name) => (
           <ThemeItem key={name} name={name} active={currentTheme === name} onClick={handleThemeChange} />

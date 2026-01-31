@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
+import { SETTINGS_KEYS } from '@/const/settings';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 
@@ -40,7 +41,12 @@ export const HoverSetting = observer(() => {
   }
 
   return (
-    <SettingItem title={t('map.hover.title')} description={t('map.hover.description')} tailDeco>
+    <SettingItem
+      id={SETTINGS_KEYS.GENERAL.HOVER}
+      title={t('map.hover.title')}
+      description={t('map.hover.description')}
+      tailDeco
+    >
       <EndfieldToggle
         className="min-w-88"
         options={options.map((option) => ({

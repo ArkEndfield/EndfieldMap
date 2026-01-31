@@ -87,6 +87,9 @@ class UIManager {
   }
 
   // region: 设置
+  @observable accessor settingsTab: string = 'general';
+  @observable accessor targetSettingItem: string | null = null;
+
   @action
   public setSettingsShown(shown: boolean) {
     this.settingsShown = shown;
@@ -95,6 +98,15 @@ class UIManager {
   @action
   public toggleSettings() {
     this.settingsShown = !this.settingsShown;
+  }
+
+  @action
+  public navigateSettings(tab: string, item?: string) {
+    this.settingsTab = tab;
+    if (item) {
+      this.targetSettingItem = item;
+    }
+    this.settingsShown = true;
   }
   // endregion
 

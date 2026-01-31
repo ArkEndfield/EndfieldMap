@@ -1,7 +1,7 @@
 import { domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 import { CloseButton } from '@/components/common/close_button';
@@ -53,10 +53,11 @@ const settingList = [
   },
 ] as const;
 
-const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
+const Settings: React.FC<SettingsPageProps> = observer(({ open, onClose }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const isMobile = useIsMobile();
-  const [activeTab, setActiveTab] = useState<(typeof settingList)[number]['key']>(settingList[0].key);
+  const activeTab = uiManager.settingsTab as (typeof settingList)[number]['key'];
+  const setActiveTab = (key: string) => (uiManager.settingsTab = key);
 
   useEffect(() => {
     if (open) {
@@ -78,6 +79,19 @@ const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
       return () => dispose();
     }
   }, [onClose]);
+
+  useEffect(() => {
+    if (open && uiManager.targetSettingItem) {
+      // Small delay to ensure content is rendered
+      const timer = setTimeout(() => {
+        const element = document.getElementById(uiManager.targetSettingItem!);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300); // Wait for animation entrance
+      return () => clearTimeout(timer);
+    }
+  }, [open, uiManager.settingsTab, uiManager.targetSettingItem]);
 
   return (
     <motion.dialog
@@ -114,7 +128,7 @@ const Settings: React.FC<SettingsPageProps> = ({ open, onClose }) => {
       </motion.div>
     </motion.dialog>
   );
-};
+});
 
 export const SettingsPage: React.FC = observer(() => {
   const open = uiManager.settingsShown;
