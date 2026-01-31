@@ -1,7 +1,7 @@
 // 单个分类项接口
 export interface CollectionIdItem {
   id: string;
-  logicId: number;
+  levelLogicId: number;
 }
 
 export interface CategoryItem {
@@ -26,7 +26,7 @@ export interface InvestigateData {
 
 export interface NoteItem {
   id: string;
-  logicId: number;
+  levelLogicId: number;
   name: string;
   icon: string;
   translatedName: string;

@@ -36,12 +36,12 @@ const NoteEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQue
       // 遍历 categories 下的 collectionIdList，建立 id 到 name 的映射
       categories.forEach((category) => {
         const { collectionIdList } = category;
-        collectionIdList.forEach(({ id, logicId }) => {
+        collectionIdList.forEach(({ id, levelLogicId }) => {
           // 使用 lang 命名空间进行翻译
           const translatedName = t(`lang:${name}`, { defaultValue: name });
           const NoteItem: NoteItem = {
             id,
-            logicId,
+            levelLogicId,
             name,
             icon: 'item_read_file',
             translatedName,
@@ -76,7 +76,7 @@ const NoteEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQue
 
   // 点击处理
   const handleClick = (item: NoteItem) => {
-    const id = item.logicId;
+    const id = item.levelLogicId;
     if (id) {
       adapter.moveToEntity(id, true, true, void 0, 5);
     }
@@ -114,7 +114,7 @@ const NoteEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQue
               key={entity.entityDataIdKey}
               entity={entity}
               category={entity.category}
-              active={!!item?.logicId}
+              active={!!item?.levelLogicId}
               onClick={() => {
                 if (item) handleClick(item);
               }}
