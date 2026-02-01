@@ -68,8 +68,15 @@ async function exportBackup(dbName: string): Promise<void> {
       });
     };
 
-    request.onsuccess = async (e) => {
-      const db = e.target.result as IDBDatabase;
+    request.onsuccess = async () => {
+      const db = request.result;
+      if (!db) {
+        logger.error('[Storage] Database not found for backup');
+        alert.info({
+          content: i18n.t('migrate_tip.backup_fail') as string,
+        });
+        return;
+      }
       const storeNames = Array.from(db.objectStoreNames);
       const permanentStoreName = 'permanent';
       const targetStores = storeNames.includes(permanentStoreName) ? [permanentStoreName] : [];
@@ -192,7 +199,7 @@ export async function migrateToRxDB(db: RxDatabase<DBCollections>): Promise<void
     cancelText: i18n.t('migrate_tip.backup') as string,
     onCancel: async () => {
       await exportBackup('endfieldmap');
-      return true;
+      return false;
     },
     onConfirm: async () => {
       try {
