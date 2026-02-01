@@ -1,21 +1,3 @@
 .zmd-swiper-custom {
   --swiper-theme-color: #dfd54a;
 }
-
-.zmd-pagination-container > div {
-  --progress: 0;
-}
-
-.zmd-pagination-container > div::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background-color: #dfd54a;
-  width: calc(var(--progress) * 100%);
-  /* 使用 transform 实现动画，启用 GPU 加速 */
-  transform: translateZ(0);
-  will-change: width;
-  /* 移除 CSS transition，使用 raf 直接更新更高效 */
-}
