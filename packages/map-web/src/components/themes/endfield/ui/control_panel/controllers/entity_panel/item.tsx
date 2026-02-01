@@ -1,6 +1,6 @@
 import { type EntityInfoStats } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import Counter from '@/components/common/count_up';
@@ -25,33 +25,7 @@ interface EntityItemProps {
 const EntityItem = observer(
   ({ hideCount = false, entity, category, active = false, onClick, children, hideMarked = false }: EntityItemProps) => {
     const isMobile = useIsMobile();
-    const textRef = useRef<HTMLDivElement>(null);
-    const [isOverflowing, setIsOverflowing] = useState(false);
-
     const { name: displayName } = useEntityName(entity);
-
-    const checkOverflow = React.useCallback(() => {
-      const el = textRef.current;
-      if (el) {
-        setIsOverflowing(el.scrollWidth > el.clientWidth);
-      }
-    }, []);
-
-    useLayoutEffect(() => {
-      checkOverflow();
-    }, [displayName, checkOverflow]);
-
-    useEffect(() => {
-      const el = textRef.current;
-      if (!el) return;
-
-      const observer = new ResizeObserver(checkOverflow);
-      observer.observe(el);
-
-      return () => {
-        observer.disconnect();
-      };
-    }, [checkOverflow]);
 
     const progressWidth = useMemo(() => {
       if (entity && entity.count > 0) {
@@ -115,26 +89,8 @@ const EntityItem = observer(
           </div>
 
           <div className="flex flex-1 relative items-center justify-between overflow-hidden">
-            <div
-              ref={textRef}
-              className={cn('flex-1 mr-0.5 min-w-0 text-left overflow-hidden', !isOverflowing && 'whitespace-nowrap')}
-              style={
-                isOverflowing
-                  ? {
-                      maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-                      WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-                    }
-                  : undefined
-              }
-            >
-              {isOverflowing ? (
-                <div className="flex w-fit animate-marquee">
-                  <span className="whitespace-nowrap pr-8">{displayName}</span>
-                  <span className="whitespace-nowrap pr-8">{displayName}</span>
-                </div>
-              ) : (
-                displayName
-              )}
+            <div className="flex-1 mr-0.5 min-w-0 text-left truncate">
+              {displayName}
             </div>
 
             {!hideCount && entity && (
