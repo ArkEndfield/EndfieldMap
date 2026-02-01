@@ -4,6 +4,11 @@
 export const isDev = import.meta.env.DEV || new URLSearchParams(window.location.search).get('__DEV__') === 'true';
 
 /**
+ * 是否开启 scan 功能
+ */
+export const isScanEnabled = new URLSearchParams(window.location.search).get('__SCAN__') === 'true';
+
+/**
  * 资源地址host
  */
 export const assetsHost = import.meta.env.VITE_ASSETS_HOST || '';

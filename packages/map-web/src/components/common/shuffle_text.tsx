@@ -5,11 +5,11 @@
 import { domEventListener } from '@endfieldmap/tools';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText as GSAPSplitText } from 'gsap/SplitText';
 import { useEffect, useRef, useState } from 'react';
 
-gsap.registerPlugin(ScrollTrigger, GSAPSplitText);
+// 延迟注册插件标志
+let pluginsRegistered = false;
 
 export interface ShuffleTextProps {
   text: string;
@@ -70,7 +70,9 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
   const wrappersRef = useRef<HTMLElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const playingRef = useRef(false);
-  const hoverHandlerRef = useRef<((e: Event) => void) | null>(null);
+  const hoverDisposerRef = useRef<(() => void) | null>(null);
+  const hasTriggeredRef = useRef(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if ('fonts' in document) {
@@ -84,9 +86,56 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
     }
   }, []);
 
+  // 使用 IntersectionObserver 检测元素是否在视口中
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting);
+        });
+      },
+      {
+        // 元素进入视口 threshold 比例时触发（例如 threshold=0.1 表示 10% 可见时触发）
+        rootMargin: rootMargin,
+        threshold: threshold,
+      }
+    );
+
+    observer.observe(ref.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [threshold, rootMargin]);
+
+  // 只在组件实际需要时才注册 GSAP 插件
+  useEffect(() => {
+    if (isVisible && !pluginsRegistered) {
+      gsap.registerPlugin(GSAPSplitText);
+      pluginsRegistered = true;
+    }
+  }, [isVisible]);
+
   useGSAP(
     () => {
-      if (!ref.current || !text || !fontsLoaded) return;
+      if (!ref.current || !text || !fontsLoaded || !isVisible) {
+        // 当不可见时，暂停循环动画
+        if (!isVisible && tlRef.current && loop) {
+          tlRef.current.pause();
+        }
+        return;
+      }
+
+      // 如果已经触发过且 triggerOnce 为 true，只需恢复动画（如果是 loop 模式）
+      if (hasTriggeredRef.current) {
+        if (loop && tlRef.current) {
+          tlRef.current.resume();
+        }
+        return;
+      }
+
       if (respectReducedMotion && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         onShuffleComplete?.();
         return;
@@ -94,18 +143,10 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
 
       const el = ref.current as HTMLElement;
 
-      const startPct = (1 - threshold) * 100;
-      const mm = /^(-?\d+(?:\.\d+)?)(px|em|rem|%)?$/.exec(rootMargin || '');
-      const mv = mm ? parseFloat(mm[1]) : 0;
-      const mu = mm ? mm[2] || 'px' : 'px';
-      const sign = mv === 0 ? '' : mv < 0 ? `-=${Math.abs(mv)}${mu}` : `+=${mv}${mu}`;
-      const start = `top ${startPct}%${sign}`;
-      let disposer: () => void;
-
       const removeHover = () => {
-        if (hoverHandlerRef.current && ref.current) {
-          ref.current.removeEventListener('mouseenter', hoverHandlerRef.current);
-          hoverHandlerRef.current = null;
+        if (hoverDisposerRef.current) {
+          hoverDisposerRef.current();
+          hoverDisposerRef.current = null;
         }
       };
 
@@ -311,37 +352,31 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
           if (scrambleCharset) randomizeScrambles();
           play();
         };
-        hoverHandlerRef.current = handler;
-        disposer = domEventListener(document, 'mouseenter', handler);
+        hoverDisposerRef.current = domEventListener(ref.current, 'mouseenter', handler);
       };
 
-      const create = () => {
-        build();
-        if (scrambleCharset) randomizeScrambles();
-        play();
-        armHover();
-        setReady(true);
-      };
-
-      const st = ScrollTrigger.create({
-        trigger: el,
-        start,
-        once: triggerOnce,
-        onEnter: create,
-      });
+      // 直接触发动画（不再使用 ScrollTrigger）
+      build();
+      if (scrambleCharset) randomizeScrambles();
+      play();
+      armHover();
+      setReady(true);
+      hasTriggeredRef.current = true;
 
       return () => {
-        st.kill();
         removeHover();
-        teardown();
-        setReady(false);
-        disposer?.();
+        // 只有非循环模式或组件卸载时才完全清理
+        if (!loop) {
+          teardown();
+          setReady(false);
+        }
       };
     },
     {
       dependencies: [
         text,
         duration,
+        isVisible,
         maxDelay,
         ease,
         threshold,
@@ -363,6 +398,20 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
       scope: ref,
     }
   );
+
+  // 组件卸载时彻底清理
+  useEffect(() => {
+    return () => {
+      if (tlRef.current) {
+        tlRef.current.kill();
+        tlRef.current = null;
+      }
+      if (hoverDisposerRef.current) {
+        hoverDisposerRef.current();
+        hoverDisposerRef.current = null;
+      }
+    };
+  }, []);
 
   const baseTw = 'inline-block whitespace-normal break-words will-change-transform uppercase text-2xl leading-none';
   const userHasFont = className && /font[-[]/i.test(className);
