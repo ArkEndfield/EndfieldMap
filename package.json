@@ -52,5 +52,8 @@
       "rxdb",
       "unrs-resolver"
     ]
+  },
+  "dependencies": {
+    "react-scan": "^0.4.3"
   }
 }
