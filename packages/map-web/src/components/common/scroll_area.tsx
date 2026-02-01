@@ -1,5 +1,5 @@
 import { debounce, domEventListener } from '@endfieldmap/tools';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { cn } from '@/utils/style';
 
@@ -81,81 +81,126 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const thumbXRef = useRef<HTMLDivElement>(null);
   const thumbYRef = useRef<HTMLDivElement>(null);
+  const scrollbarXContainerRef = useRef<HTMLDivElement>(null);
+  const scrollbarYContainerRef = useRef<HTMLDivElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout>(null);
-  const isDraggingRef = useRef(false);
   const rafUpdateRef = useRef<number | null>(null);
 
-  const [scrollState, setScrollState] = useState({
-    scrollLeft: 0,
-    scrollTop: 0,
-    scrollWidth: 0,
-    scrollHeight: 0,
-    clientWidth: 0,
-    clientHeight: 0,
+  // 使用 ref 替代 state 存储所有状态
+  const stateRef = useRef({
+    isDragging: null as 'x' | 'y' | null,
+    isHovered: false,
+    isScrolling: false,
+    dimensions: {
+      scrollWidth: 0,
+      scrollHeight: 0,
+      clientWidth: 0,
+      clientHeight: 0,
+    },
   });
 
-  const [isDragging, setIsDragging] = useState<'x' | 'y' | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const isVisible = !autoHide || isHovered || isDragging !== null || isScrolling;
+  // 更新滚动条可见性（通过 DOM 操作）
+  const updateScrollbarVisibility = useCallback(() => {
+    if (!scrollbarXContainerRef.current || !scrollbarYContainerRef.current) return;
 
-  // 缓存上次的状态值，避免不必要的更新
-  const lastScrollStateRef = useRef(scrollState);
+    const { isDragging, isHovered, isScrolling } = stateRef.current;
+    const isVisible = !autoHide || isHovered || isDragging !== null || isScrolling;
 
-  // 计算滚动条尺寸和位置
-  const canScrollX = scrollX && scrollState.scrollWidth > scrollState.clientWidth;
-  const canScrollY = scrollY && scrollState.scrollHeight > scrollState.clientHeight;
+    const opacity = isVisible ? '1' : '0';
+    scrollbarXContainerRef.current.style.opacity = opacity;
+    scrollbarYContainerRef.current.style.opacity = opacity;
+  }, [autoHide]);
 
-  const showBarX = scrollbarX !== 'hidden' && (scrollbarX === 'scrollbar' || (scrollbarX === 'auto' && canScrollX));
-  const showBarY = scrollbarY !== 'hidden' && (scrollbarY === 'scrollbar' || (scrollbarY === 'auto' && canScrollY));
-
-  const thumbWidthPercent = canScrollX ? (scrollState.clientWidth / scrollState.scrollWidth) * 100 : 100;
-  const thumbHeightPercent = canScrollY ? (scrollState.clientHeight / scrollState.scrollHeight) * 100 : 100;
-
-  const thumbLeftPercent =
-    canScrollX && scrollState.scrollWidth > scrollState.clientWidth
-      ? (scrollState.scrollLeft / (scrollState.scrollWidth - scrollState.clientWidth)) * (100 - thumbWidthPercent)
-      : 0;
-  const thumbTopPercent =
-    canScrollY && scrollState.scrollHeight > scrollState.clientHeight
-      ? (scrollState.scrollTop / (scrollState.scrollHeight - scrollState.clientHeight)) * (100 - thumbHeightPercent)
-      : 0;
-
-  // 更新滚动状态（优化版本，避免频繁渲染）
-  const updateScrollState = useCallback((force = false) => {
-    if (!contentRef.current) return;
-
-    const { scrollLeft, scrollTop, scrollWidth, scrollHeight, clientWidth, clientHeight } = contentRef.current;
-    const lastState = lastScrollStateRef.current;
-
-    // 只在值实际变化时才更新，避免不必要的渲染
-    if (
-      !force &&
-      scrollLeft === lastState.scrollLeft &&
-      scrollTop === lastState.scrollTop &&
-      scrollWidth === lastState.scrollWidth &&
-      scrollHeight === lastState.scrollHeight &&
-      clientWidth === lastState.clientWidth &&
-      clientHeight === lastState.clientHeight
-    ) {
-      return;
+  // 更新拖拽状态样式（通过 DOM 操作）
+  const updateThumbDragState = useCallback((axis: 'x' | 'y' | null) => {
+    if (thumbXRef.current) {
+      if (axis === 'x') {
+        thumbXRef.current.classList.add('opacity-90', 'scale-105');
+        thumbXRef.current.classList.remove('opacity-100');
+      } else {
+        thumbXRef.current.classList.remove('opacity-90', 'scale-105');
+        thumbXRef.current.classList.add('opacity-100');
+      }
     }
 
-    const newState = {
-      scrollLeft,
-      scrollTop,
-      scrollWidth,
-      scrollHeight,
-      clientWidth,
-      clientHeight,
-    };
-
-    lastScrollStateRef.current = newState;
-    setScrollState(newState);
+    if (thumbYRef.current) {
+      if (axis === 'y') {
+        thumbYRef.current.classList.add('opacity-90', 'scale-105');
+        thumbYRef.current.classList.remove('opacity-100');
+      } else {
+        thumbYRef.current.classList.remove('opacity-90', 'scale-105');
+        thumbYRef.current.classList.add('opacity-100');
+      }
+    }
   }, []);
 
-  // 防抖版本的更新函数（仅用于 resize/mutation 等非滚动事件）
-  const debouncedUpdateScrollStateRef = useRef<(() => void) | null>(null);
+  // 更新滚动条显示状态和尺寸（通过 DOM 操作）
+  const updateScrollbarState = useCallback(() => {
+    if (!scrollbarXContainerRef.current || !scrollbarYContainerRef.current || !contentRef.current) return;
+
+    const { scrollWidth, scrollHeight, clientWidth, clientHeight } = contentRef.current;
+
+    // 更新 dimensions ref
+    stateRef.current.dimensions = { scrollWidth, scrollHeight, clientWidth, clientHeight };
+
+    // 计算是否可滚动
+    const canScrollX = scrollX && scrollWidth > clientWidth;
+    const canScrollY = scrollY && scrollHeight > clientHeight;
+
+    // 控制滚动条容器显示/隐藏
+    const showBarX = scrollbarX !== 'hidden' && (scrollbarX === 'scrollbar' || (scrollbarX === 'auto' && canScrollX));
+    const showBarY = scrollbarY !== 'hidden' && (scrollbarY === 'scrollbar' || (scrollbarY === 'auto' && canScrollY));
+
+    scrollbarXContainerRef.current.style.display = showBarX ? 'flex' : 'none';
+    scrollbarYContainerRef.current.style.display = showBarY ? 'flex' : 'none';
+
+    // 控制不可滚动时的样式
+    if (!canScrollX) {
+      scrollbarXContainerRef.current.style.opacity = '0.5';
+      scrollbarXContainerRef.current.style.pointerEvents = 'none';
+    } else {
+      scrollbarXContainerRef.current.style.pointerEvents = 'auto';
+    }
+
+    if (!canScrollY) {
+      scrollbarYContainerRef.current.style.opacity = '0.5';
+      scrollbarYContainerRef.current.style.pointerEvents = 'none';
+    } else {
+      scrollbarYContainerRef.current.style.pointerEvents = 'auto';
+    }
+  }, [scrollX, scrollY, scrollbarX, scrollbarY]);
+
+  // 直接操作 DOM 更新滚动条位置，避免重渲染
+  const updateThumbPosition = useCallback(() => {
+    if (!contentRef.current) return;
+    const { scrollLeft, scrollTop, scrollWidth, scrollHeight, clientWidth, clientHeight } = contentRef.current;
+
+    if (thumbXRef.current) {
+      const widthPercent = (clientWidth / scrollWidth) * 100;
+      const leftPercent =
+        scrollWidth > clientWidth ? (scrollLeft / (scrollWidth - clientWidth)) * (100 - widthPercent) : 0;
+      thumbXRef.current.style.left = `${leftPercent}%`;
+      thumbXRef.current.style.width = `${widthPercent}%`;
+    }
+
+    if (thumbYRef.current) {
+      const heightPercent = (clientHeight / scrollHeight) * 100;
+      const topPercent =
+        scrollHeight > clientHeight ? (scrollTop / (scrollHeight - clientHeight)) * (100 - heightPercent) : 0;
+      thumbYRef.current.style.top = `${topPercent}%`;
+      thumbYRef.current.style.height = `${heightPercent}%`;
+    }
+  }, []);
+
+  // 更新尺寸和滚动条状态
+  const updateDimensions = useCallback(() => {
+    updateScrollbarState();
+    updateThumbPosition();
+    updateScrollbarVisibility();
+  }, [updateScrollbarState, updateThumbPosition, updateScrollbarVisibility]);
+
+  // 防抖版本的更新函数
+  const debouncedUpdateDimensionsRef = useRef<(() => void) | null>(null);
 
   // 处理滚动事件（使用 raf 节流）
   const handleScroll = useCallback(() => {
@@ -170,37 +215,32 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       }
 
       const { scrollLeft, scrollTop } = contentRef.current;
-      const lastState = lastScrollStateRef.current;
 
       // 触发外部回调
       if (onScroll) {
         onScroll({ scrollLeft, scrollTop });
       }
 
-      // 只更新滚动位置相关的状态
-      if (scrollLeft !== lastState.scrollLeft || scrollTop !== lastState.scrollTop) {
-        setScrollState((prev) => ({
-          ...prev,
-          scrollLeft,
-          scrollTop,
-        }));
-        lastScrollStateRef.current = { ...lastScrollStateRef.current, scrollLeft, scrollTop };
-      }
+      // 直接更新 thumb 位置，不触发 React 渲染
+      updateThumbPosition();
 
       // 处理自动隐藏
       if (autoHide) {
-        setIsScrolling(true);
+        stateRef.current.isScrolling = true;
+        updateScrollbarVisibility();
+
         if (scrollTimeoutRef.current) {
           clearTimeout(scrollTimeoutRef.current);
         }
         scrollTimeoutRef.current = setTimeout(() => {
-          setIsScrolling(false);
+          stateRef.current.isScrolling = false;
+          updateScrollbarVisibility();
         }, 1000);
       }
 
       rafUpdateRef.current = null;
     });
-  }, [onScroll, autoHide]);
+  }, [onScroll, autoHide, updateThumbPosition, updateScrollbarVisibility]);
 
   // 滚动到指定位置
   const scrollTo = useCallback((options: { left?: number; top?: number; smooth?: boolean }) => {
@@ -280,8 +320,9 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
 
       if (!contentRef.current || !containerRef.current) return;
 
-      isDraggingRef.current = true;
-      setIsDragging(axis);
+      stateRef.current.isDragging = axis;
+      updateThumbDragState(axis);
+      updateScrollbarVisibility();
       onScrollStart?.();
 
       const bar = (axis === 'x' ? thumbXRef : thumbYRef).current?.parentElement;
@@ -337,18 +378,14 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           rafId = null;
         }
 
-        // const finalScroll = axis === 'x' ? contentRef.current.scrollLeft : contentRef.current.scrollTop;
-
-        isDraggingRef.current = false;
-        setIsDragging(null);
+        stateRef.current.isDragging = null;
+        updateThumbDragState(null);
+        updateScrollbarVisibility();
         onScrollEnd?.();
 
-        // 更新状态
+        // 更新状态 (实际上 handleScroll 会处理位置更新，这里主要是做个兜底和清理)
         requestAnimationFrame(() => {
-          if (!contentRef.current) return;
-          const { scrollLeft, scrollTop } = contentRef.current;
-          setScrollState((prev) => ({ ...prev, scrollLeft, scrollTop }));
-          lastScrollStateRef.current = { ...lastScrollStateRef.current, scrollLeft, scrollTop };
+          updateThumbPosition();
         });
 
         disposeFnRef.current?.();
@@ -363,7 +400,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
         if (rafId !== null) cancelAnimationFrame(rafId);
       };
     },
-    [onScrollStart, onScrollEnd]
+    [onScrollStart, onScrollEnd, updateThumbDragState, updateScrollbarVisibility, updateThumbPosition]
   );
 
   // 点击滚动条轨道（直接从 DOM 获取最新值，避免依赖 scrollState）
@@ -393,35 +430,22 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
 
   // 初始化和更新
   useEffect(() => {
-    // 创建防抖函数（增加延迟以减少调用频率）
-    debouncedUpdateScrollStateRef.current = debounce(() => updateScrollState(true), 100) as () => void;
+    // 创建防抖函数
+    debouncedUpdateDimensionsRef.current = debounce(() => updateDimensions(), 100) as () => void;
 
     // 立即更新一次
-    updateScrollState(true);
+    updateDimensions();
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      // 只在尺寸真正变化时更新
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        const currentWidth = contentRef.current?.clientWidth ?? 0;
-        const currentHeight = contentRef.current?.clientHeight ?? 0;
-
-        if (width !== currentWidth || height !== currentHeight) {
-          debouncedUpdateScrollStateRef.current?.();
-          break;
-        }
-      }
+    const resizeObserver = new ResizeObserver(() => {
+      debouncedUpdateDimensionsRef.current?.();
     });
 
-    // 优化 MutationObserver，只监听关键的 DOM 变化
+    // 优化 MutationObserver
     const mutationObserver = new MutationObserver((mutations) => {
-      // 过滤不必要的变更
       const shouldUpdate = mutations.some((mutation) => {
-        // 忽略纯样式属性变化
         if (mutation.type === 'attributes' && mutation.attributeName?.startsWith('data-')) {
           return false;
         }
-        // 子节点列表变化
         if (mutation.type === 'childList') {
           return true;
         }
@@ -429,7 +453,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       });
 
       if (shouldUpdate) {
-        debouncedUpdateScrollStateRef.current?.();
+        debouncedUpdateDimensionsRef.current?.();
       }
     });
 
@@ -437,9 +461,9 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       resizeObserver.observe(contentRef.current);
       mutationObserver.observe(contentRef.current, {
         childList: true,
-        subtree: false, // 不监听子树，减少触发频率
-        attributes: false, // 不监听属性变化
-        characterData: false, // 不监听文本变化
+        subtree: false,
+        attributes: false,
+        characterData: false,
       });
     }
 
@@ -450,19 +474,24 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
     return () => {
       resizeObserver.disconnect();
       mutationObserver.disconnect();
-      // 清理 raf
       if (rafUpdateRef.current !== null) {
         cancelAnimationFrame(rafUpdateRef.current);
       }
     };
-  }, [updateScrollState]);
+  }, [updateDimensions]);
 
   return (
     <div
       ref={containerRef}
       className={cn('relative w-full h-full min-h-0 flex', className)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        stateRef.current.isHovered = true;
+        updateScrollbarVisibility();
+      }}
+      onMouseLeave={() => {
+        stateRef.current.isHovered = false;
+        updateScrollbarVisibility();
+      }}
     >
       {/* 内容区域 */}
       <div
@@ -482,18 +511,16 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       </div>
 
       {/* 垂直滚动条 */}
-      {showBarY && (
-        <div
-          className={cn(
-            'right-1 pl-1 top-0 bottom-0 flex flex-col gap-0.5 transition-opacity duration-300 z-5',
-            scrollBarPlacementStyle === 'block' ? 'relative' : 'absolute',
-            isVisible ? 'opacity-100' : 'opacity-0',
-            !canScrollY && 'opacity-50 pointer-events-none',
-            scrollbarContainerClassName
-          )}
-        >
+      <div
+        ref={scrollbarYContainerRef}
+        className={cn(
+          'right-1 pl-1 top-0 bottom-0 flex flex-col gap-0.5 transition-opacity duration-300 z-5',
+          scrollBarPlacementStyle === 'block' ? 'relative' : 'absolute',
+          scrollbarContainerClassName
+        )}
+      >
           {/* 顶部边缘按钮 */}
-          {showEdgeButtons && canScrollY && (
+          {showEdgeButtons && (
             <button
               className={cn(
                 'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
@@ -511,7 +538,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           )}
 
           {/* 上滚动按钮 */}
-          {showScrollButtons && canScrollY && (
+          {showScrollButtons && (
             <button
               className={cn(
                 'shrink-0 w-3.5 h-3.5 flex items-center justify-center gap-0.5 rounded transition-all',
@@ -542,12 +569,10 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
                   'absolute w-1.25 rounded-full cursor-grab active:cursor-grabbing',
                   'bg-[rgb(252,254,254)] left-1/2 -translate-x-1/2 shadow-[0_0_2px_rgba(0,0,0,0.2)]',
                   'will-change-transform will-change-height will-change-opacity',
-                  isDragging === 'y' ? 'opacity-90 scale-105' : 'opacity-100 hover:opacity-90',
+                  'opacity-100 hover:opacity-90',
                   thumbClassName
                 )}
                 style={{
-                  height: `${thumbHeightPercent}%`,
-                  top: `${thumbTopPercent}%`,
                   transform: 'translateZ(0)',
                 }}
                 onMouseDown={(e) => handleThumbMouseDown('y', e)}
@@ -556,7 +581,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           </div>
 
           {/* 下滚动按钮 */}
-          {showScrollButtons && canScrollY && (
+          {showScrollButtons && (
             <button
               className={cn(
                 'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
@@ -573,7 +598,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           )}
 
           {/* 底部边缘按钮 */}
-          {showEdgeButtons && canScrollY && (
+          {showEdgeButtons && (
             <button
               className={cn(
                 'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
@@ -589,22 +614,19 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
               </svg>
             </button>
           )}
-        </div>
-      )}
+      </div>
 
       {/* 水平滚动条 */}
-      {showBarX && (
-        <div
-          className={cn(
-            'left-0 right-0 bottom-1 pt-1 flex flex-row transition-opacity duration-300 z-5',
-            scrollBarPlacementStyle === 'block' ? 'relative' : 'absolute',
-            isVisible ? 'opacity-100' : 'opacity-0',
-            !canScrollX && 'opacity-50 pointer-events-none',
-            scrollbarContainerClassName
-          )}
-        >
+      <div
+        ref={scrollbarXContainerRef}
+        className={cn(
+          'left-0 right-0 bottom-1 pt-1 flex flex-row transition-opacity duration-300 z-5',
+          scrollBarPlacementStyle === 'block' ? 'relative' : 'absolute',
+          scrollbarContainerClassName
+        )}
+      >
           {/* 左侧边缘按钮 */}
-          {showEdgeButtons && canScrollX && (
+          {showEdgeButtons && (
             <button
               className={cn(
                 'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
@@ -622,7 +644,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           )}
 
           {/* 左滚动按钮 */}
-          {showScrollButtons && canScrollX && (
+          {showScrollButtons && (
             <button
               className={cn(
                 'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
@@ -650,12 +672,10 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
                   'absolute h-1.25 rounded-full cursor-grab active:cursor-grabbing',
                   'bg-[rgb(252,254,254)] top-1/2 -translate-y-1/2 shadow-[0_0_2px_rgba(0,0,0,0.2)]',
                   'will-change-transform will-change-width will-change-opacity',
-                  isDragging === 'x' ? 'opacity-90 scale-105' : 'opacity-100 hover:opacity-90',
+                  'opacity-100 hover:opacity-90',
                   thumbClassName
                 )}
                 style={{
-                  width: `${thumbWidthPercent}%`,
-                  left: `${thumbLeftPercent}%`,
                   transform: 'translateZ(0)',
                 }}
                 onMouseDown={(e) => handleThumbMouseDown('x', e)}
@@ -664,7 +684,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           </div>
 
           {/* 右滚动按钮 */}
-          {showScrollButtons && canScrollX && (
+          {showScrollButtons && (
             <button
               className={cn(
                 'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
@@ -681,7 +701,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           )}
 
           {/* 右侧边缘按钮 */}
-          {showEdgeButtons && canScrollX && (
+          {showEdgeButtons && (
             <button
               className={cn(
                 'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
@@ -697,8 +717,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
               </svg>
             </button>
           )}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
