@@ -17,6 +17,10 @@ const PCControlPanel = observer(() => {
   const shouldPanelOpen = (panel: CurrentOperatePanel) => {
     return isOpen && currentOperatePanel === panel;
   };
+  
+  // 只有当侧边栏打开且不是NONE状态时才显示线条
+  const showDecoration = !isNoneCurrentPanel && isOpen;
+  
   return (
     <>
       <FoldButton
@@ -31,7 +35,8 @@ const PCControlPanel = observer(() => {
         <div
           className={cn(
             'relative grid',
-            'before:absolute before:left-0 before:top-0 before:w-0.5 before:h-full before:bg-[#eee]/20'
+            'before:absolute before:left-0 before:top-0 before:w-0.5 before:bg-[#eee]/20 before:transition-all before:duration-150',
+            showDecoration ? 'before:h-full' : 'before:h-0'
           )}
         >
           <Panel open={shouldPanelOpen(CurrentOperatePanel.FILTER)}>
