@@ -35,7 +35,7 @@ export class KeyboardMoveController {
     this.enable = config.enable ?? true;
 
     this.bindEvents();
-    this.startLoop();
+    // 不在初始化时启动循环，而是在按键按下时才启动
   }
 
   private bindEvents() {
@@ -64,8 +64,14 @@ export class KeyboardMoveController {
     const key = e.key.toLowerCase() as keyof typeof this.keyState;
 
     if (key in this.keyState) {
+      const wasAllFalse = !this.keyState.w && !this.keyState.a && !this.keyState.s && !this.keyState.d;
       this.keyState[key] = true;
       e.preventDefault();
+
+      // 只在从"无按键"变为"有按键"时启动循环
+      if (wasAllFalse && this.rafId === null) {
+        this.startLoop();
+      }
     }
   };
 
@@ -74,10 +80,18 @@ export class KeyboardMoveController {
 
     if (key in this.keyState) {
       this.keyState[key] = false;
+
+      // 如果所有按键都释放了，停止循环
+      if (!this.keyState.w && !this.keyState.a && !this.keyState.s && !this.keyState.d) {
+        this.stopLoop();
+      }
     }
   };
 
   private startLoop() {
+    // 防止重复启动
+    if (this.rafId !== null) return;
+
     const loop = () => {
       if (!this.enable) {
         this.rafId = requestAnimationFrame(loop);
@@ -86,8 +100,9 @@ export class KeyboardMoveController {
 
       const { w, a, s, d } = this.keyState;
 
+      // 没有按键时停止循环
       if (!w && !a && !s && !d) {
-        this.rafId = requestAnimationFrame(loop);
+        this.stopLoop();
         return;
       }
 
@@ -123,6 +138,13 @@ export class KeyboardMoveController {
     this.rafId = requestAnimationFrame(loop);
   }
 
+  private stopLoop() {
+    if (this.rafId !== null) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
+  }
+
   public enableController() {
     this.enable = true;
   }
@@ -130,6 +152,7 @@ export class KeyboardMoveController {
   public disableController() {
     this.enable = false;
     this.resetKeyState();
+    this.stopLoop();
   }
 
   public setSpeed(speed: number) {
@@ -139,11 +162,7 @@ export class KeyboardMoveController {
   public dispose() {
     this.resetKeyState();
     this.unbindEvents();
-
-    if (this.rafId !== null) {
-      cancelAnimationFrame(this.rafId);
-      this.rafId = null;
-    }
+    this.stopLoop();
   }
 
   private resetKeyState() {
