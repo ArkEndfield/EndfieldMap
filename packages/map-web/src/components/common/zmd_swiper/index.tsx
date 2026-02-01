@@ -3,7 +3,7 @@ import './index.css';
 
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -21,44 +21,112 @@ const ZmdSwiper = observer(() => {
   const { mapDataService } = useAdapter();
   const swiperRef = useRef<SwiperType>(null);
   const paginationContainerRef = useRef<HTMLDivElement>(null);
+  const bulletRefs = useRef<HTMLElement[]>([]);
+  const rafRef = useRef<number | null>(null);
+  const lastUpdateRef = useRef({ index: -1, progress: -1 });
   const swiperConfig = mapDataService.swiperDataService.swiperConfig;
 
-  const updatePaginationProgress = useCallback((swiper: SwiperType, progress: number) => {
-    if (!paginationContainerRef.current) return;
-    const activeIndex = swiper.realIndex;
-    const bullets = paginationContainerRef.current.children;
-
-    // 更新所有分页条
-    for (let i = 0; i < bullets.length; i++) {
-      const bullet = bullets[i] as HTMLElement;
-      if (i < activeIndex) {
-        // 当前索引之前的分页条，填充满（100%）
-        bullet.classList.remove('active');
-        bullet.style.setProperty('--progress', '1');
-      } else if (i === activeIndex) {
-        // 当前激活的分页条，显示进度
-        bullet.classList.add('active');
-        bullet.style.setProperty('--progress', String(1 - progress));
-      } else {
-        // 当前索引之后的分页条，保持空（0%）
-        bullet.classList.remove('active');
-        bullet.style.setProperty('--progress', '0');
-      }
+  // 使用 requestAnimationFrame 节流高频更新
+  const scheduleProgressUpdate = useCallback((swiper: SwiperType, progress: number) => {
+    if (rafRef.current !== null) {
+      return;
     }
+
+    const activeIndex = swiper.realIndex;
+    const lastUpdate = lastUpdateRef.current;
+
+    // 如果索引和进度都没变化，跳过更新
+    if (lastUpdate.index === activeIndex && Math.abs(lastUpdate.progress - progress) < 0.001) {
+      return;
+    }
+
+    rafRef.current = requestAnimationFrame(() => {
+      if (!paginationContainerRef.current) return;
+
+      const bullets = bulletRefs.current;
+      const activeBullet = bullets[activeIndex];
+
+      // 只更新当前激活的分页条，减少 DOM 操作
+      if (activeBullet) {
+        activeBullet.classList.add('active');
+        activeBullet.style.setProperty('--progress', String(1 - progress));
+      }
+
+      // 仅在索引变化时更新其他分页条
+      if (lastUpdate.index !== activeIndex) {
+        bullets.forEach((bullet, i) => {
+          if (i < activeIndex) {
+            bullet.classList.remove('active');
+            bullet.style.setProperty('--progress', '1');
+          } else if (i > activeIndex) {
+            bullet.classList.remove('active');
+            bullet.style.setProperty('--progress', '0');
+          }
+        });
+      }
+
+      lastUpdateRef.current = { index: activeIndex, progress };
+      rafRef.current = null;
+    });
   }, []);
 
   const onAutoplayTimeLeft = useCallback(
     (swiper: SwiperType, _time: number, progress: number) => {
-      if (swiperConfig.list.length <= 1) return;
-      // 更新分页条进度
-      updatePaginationProgress(swiper, progress);
+      if (swiperConfig.list.length <= 1 || !expanded) return;
+      scheduleProgressUpdate(swiper, progress);
     },
-    [swiperConfig.list.length, updatePaginationProgress]
+    [swiperConfig.list.length, expanded, scheduleProgressUpdate]
   );
+
+  // 缓存分页条引用
+  useEffect(() => {
+    if (paginationContainerRef.current) {
+      bulletRefs.current = Array.from(paginationContainerRef.current.children) as HTMLElement[];
+    }
+  }, [swiperConfig.list.length]);
 
   if (!swiperConfig.enable || swiperConfig.list.length === 0) {
     return null;
   }
+
+  // 手动切换时立即更新分页
+  const handleSlideChange = useCallback((swiper: SwiperType) => {
+    const activeIndex = swiper.realIndex;
+    const bullets = bulletRefs.current;
+
+    // 重置所有分页条
+    bullets.forEach((bullet, i) => {
+      if (i < activeIndex) {
+        bullet.classList.remove('active');
+        bullet.style.setProperty('--progress', '1');
+      } else if (i === activeIndex) {
+        bullet.classList.add('active');
+        bullet.style.setProperty('--progress', '1');
+      } else {
+        bullet.classList.remove('active');
+        bullet.style.setProperty('--progress', '0');
+      }
+    });
+
+    lastUpdateRef.current = { index: activeIndex, progress: 0 };
+  }, []);
+
+  // 手动点击分页条
+  const handlePaginationClick = useCallback(
+    (index: number) => () => {
+      swiperRef.current?.slideToLoop(index);
+    },
+    []
+  );
+
+  // 清理 raf
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="fixed right-0 h-28 md:h-36 bottom-11 md:bottom-12">
@@ -70,36 +138,27 @@ const ZmdSwiper = observer(() => {
               width: isMobile ? '12rem' : '16rem',
               opacity: 1,
               paddingRight: '1rem',
-              transition: { duration: 0.5, type: 'spring', bounce: 0.25 },
+              transition: { duration: 0.3, ease: 'easeOut' },
             }}
-            exit={{ width: 0, opacity: 0, paddingRight: 0, transition: { duration: 0.3 } }}
-            className="relative ml-auto flex flex-col h-full"
+            exit={{ width: 0, opacity: 0, paddingRight: 0, transition: { duration: 0.2 } }}
+            className="relative ml-auto flex flex-col h-full will-change-transform"
           >
             <div className="flex-1 overflow-hidden">
               <Swiper
                 spaceBetween={30}
                 modules={[Autoplay, Navigation]}
                 loop
+                lazy
+                preloadImages={false}
                 onSwiper={(instance) => {
                   swiperRef.current = instance;
-                  // 初始化第一个分页条为激活状态
-                  if (paginationContainerRef.current?.children[0]) {
-                    (paginationContainerRef.current.children[0] as HTMLElement).classList.add('active');
+                  if (bulletRefs.current[0]) {
+                    bulletRefs.current[0].classList.add('active');
+                    bulletRefs.current[0].style.setProperty('--progress', '1');
                   }
                 }}
-                onSlideChange={(swiper) => {
-                  const activeIndex = swiper.realIndex;
-                  // 如果是循环回到第一张（索引0），重置所有分页条
-                  if (activeIndex === 0 && paginationContainerRef.current) {
-                    const bullets = paginationContainerRef.current.children;
-                    for (let i = 0; i < bullets.length; i++) {
-                      (bullets[i] as HTMLElement).style.setProperty('--progress', '0');
-                    }
-                  }
-                  // 切换幻灯片时更新分页条，初始进度设为0（即填充为100%，因为是1-progress）
-                  updatePaginationProgress(swiper, 0);
-                }}
-                autoplay={{ delay: 2500, disableOnInteraction: false }}
+                onSlideChange={handleSlideChange}
+                autoplay={{ delay: 2500, disableOnInteraction: false, pauseOnMouseEnter: true }}
                 onAutoplayTimeLeft={onAutoplayTimeLeft}
                 className="h-full bg-[#1F1F20] shadow-lg text-white border border-[#ffffff] zmd-swiper-custom"
               >
@@ -112,14 +171,15 @@ const ZmdSwiper = observer(() => {
                       <img
                         src={data.cover}
                         alt=""
-                        className="w-full h-full object-cover hover:scale-105 transition"
+                        className="w-full h-full object-cover will-change-transform"
                         referrerPolicy="no-referrer"
+                        loading="lazy"
                       />
                     </a>
                   </SwiperSlide>
                 ))}
 
-                <div className="absolute right-2 bottom-2 z-1 flex items-center gap-4 bg-black/60 rounded-full p-0.5">
+                <div className="absolute right-2 bottom-2 z-1 flex items-center gap-4 bg-black/60 rounded-full p-0.5 will-change-transform">
                   <ZmdRoundIconButton onClick={() => swiperRef.current?.slidePrev()}>
                     <ChevronUp className="rotate-270 text-xs -ml-0.5" />
                   </ZmdRoundIconButton>
@@ -134,8 +194,8 @@ const ZmdSwiper = observer(() => {
               {swiperConfig.list.map((_, index) => (
                 <div
                   key={index}
-                  className="flex-1 h-0.5 md:h-1 bg-[#818182] relative overflow-hidden cursor-pointer"
-                  onClick={() => swiperRef.current?.slideToLoop(index)}
+                  className="flex-1 h-0.5 md:h-1 bg-[#818182] relative overflow-hidden cursor-pointer will-change-transform"
+                  onClick={handlePaginationClick(index)}
                   data-index={index}
                 />
               ))}
@@ -146,7 +206,7 @@ const ZmdSwiper = observer(() => {
 
       {/* 收缩/展开按钮 */}
       <ZmdRoundIconButton
-        className="absolute right-full mr-1 top-1/2 -translate-y-1/2 z-1 w-4 h-12"
+        className="absolute right-full mr-1 top-1/2 -translate-y-1/2 z-1 w-4 h-12 will-change-transform"
         onClick={() => (uiManager.swiperOpen.value = !uiManager.swiperOpen.value)}
       >
         <ChevronUpTriangle className={cn('transition-transform text-xs', expanded ? 'rotate-90' : 'rotate-270')} />
