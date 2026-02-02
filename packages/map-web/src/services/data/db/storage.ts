@@ -36,8 +36,8 @@ export class Storage {
       storage: this.storage,
     });
     await this.initDBSchema();
-    await this.migrate();
     this.isInitialized = true;
+    await this.migrate();
   }
 
   private async initDBSchema() {

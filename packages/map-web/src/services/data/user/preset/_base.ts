@@ -34,7 +34,11 @@ export interface IPresetService<
 > {
   getPresetById(id: string): Promise<TPreset | null>;
   getPresetByIdForExport(id: string): Promise<TPreset | null>;
-  createPreset(name: string, data: TNodeSchema[]): Promise<TPreset>;
+  createPreset(
+    name: string,
+    data: TNodeSchema[],
+    options?: { id?: string; createdAt?: number; updatedAt?: number }
+  ): Promise<TPreset>;
   updatePreset(id: string, updates: { name?: string }): Promise<TPreset>;
   deletePreset(id: string): Promise<void>;
   getAllPresetMetadata(): Promise<PresetSchemaType[]>;
@@ -141,16 +145,25 @@ export abstract class BasePresetService<
   /**
    * 创建新的预设
    */
-  public async createPreset(name: string, data: TNodeSchema[] = []): Promise<TPreset> {
+  /**
+   * 创建新的预设
+   */
+  public async createPreset(
+    name: string,
+    data: TNodeSchema[] = [],
+    options?: { id?: string; createdAt?: number; updatedAt?: number }
+  ): Promise<TPreset> {
     const now = Date.now();
-    const presetId = this.generatePresetId();
+    const presetId = options?.id ?? this.generatePresetId();
+    const createdAt = options?.createdAt ?? now;
+    const updatedAt = options?.updatedAt ?? now;
 
     // 插入预设元数据
-    const presetDoc = await this.presetDB.insert({
+    const presetDoc = await this.presetDB.upsert({
       id: presetId,
       name,
-      createdAt: now,
-      updatedAt: now,
+      createdAt,
+      updatedAt,
     });
 
     // 插入节点数据
@@ -211,7 +224,7 @@ export abstract class BasePresetService<
     for (const node of data) {
       const nodeId = BasePresetService.createId(node.mapId, presetId, node.levelLogicId ?? 0);
       insertPromises.push(
-        this.nodesDB.insert({
+        this.nodesDB.upsert({
           ...node,
           id: nodeId,
           presetId,

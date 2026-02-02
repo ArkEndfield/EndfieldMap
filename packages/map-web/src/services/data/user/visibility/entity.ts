@@ -17,24 +17,7 @@ export class EntityVisibilityService {
 
   public async setVisibilityData(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean) {
     const idString = EntityVisibilityService.createId(mapId, entityKey);
-    const data = await this.db
-      .findOne({
-        selector: {
-          id: idString,
-          mapId,
-          entityKey,
-        },
-      })
-      .exec();
-    if (data) {
-      await data.update({
-        $set: {
-          visible,
-        },
-      });
-      return data;
-    }
-    return this.db.insert({ id: idString, mapId, entityKey, visible });
+    return this.db.upsert({ id: idString, mapId, entityKey, visible });
   }
 
   public addSubscribe(

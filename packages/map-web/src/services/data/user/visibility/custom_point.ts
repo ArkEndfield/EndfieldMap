@@ -17,24 +17,7 @@ export class CustomPointVisibilityService {
 
   public async setVisibilityData(mapId: MapData['id'], entityKey: string, visible: boolean) {
     const idString = CustomPointVisibilityService.createId(mapId, entityKey);
-    const data = await this.db
-      .findOne({
-        selector: {
-          id: idString,
-          mapId,
-          entityKey,
-        },
-      })
-      .exec();
-    if (data) {
-      await data.update({
-        $set: {
-          visible,
-        },
-      });
-      return data;
-    }
-    return this.db.insert({ id: idString, mapId, entityKey, visible });
+    return this.db.upsert({ id: idString, mapId, entityKey, visible });
   }
 
   public addSubscribe(callback: (mapId: MapData['id'], entityKey: string, visible: boolean) => void) {

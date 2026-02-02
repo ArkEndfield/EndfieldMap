@@ -7,7 +7,7 @@ import { alert } from '@/components/common/alert/alert_api';
 import i18n from '@/i18n';
 import { DataService } from '@/services/data';
 import type { DBCollections } from '@/services/data/db/collections.ts';
-import { EntityMarkService } from '@/services/data/user/marked/entity';
+import { userService } from '@/services/user';
 
 enum StorageKey {
   /** 标记已获取的数据 */
@@ -23,7 +23,6 @@ enum StorageKey {
   CUSTOM_POINT = 'custom_point',
   /** 自定义标点类型可见性 */
   CUSTOM_POINT_VISIBILITY = 'custom_point_visibility',
-
 
   // 游戏数据（已迁移到 RxDB）
   /** ItemData */
@@ -155,7 +154,7 @@ function downloadData(data: unknown, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
-export async function migrateToRxDB(db: RxDatabase<DBCollections>): Promise<void> {
+export async function migrateToRxDB(_db: RxDatabase<DBCollections>): Promise<void> {
   if (!needsMigration()) {
     return;
   }
@@ -203,7 +202,7 @@ export async function migrateToRxDB(db: RxDatabase<DBCollections>): Promise<void
     },
     onConfirm: async () => {
       try {
-        await performMigration(db, {
+        await performMigration({
           electricPolePresetData,
           electricPoleVisibilityData,
           customPointPresetData,
@@ -221,6 +220,7 @@ export async function migrateToRxDB(db: RxDatabase<DBCollections>): Promise<void
       } catch (error) {
         logger.error('[Storage] Data migration failed', error);
         alert.info({
+          dismissible: false,
           content: i18n.t('migrate_tip.fail') as string,
         });
       }
@@ -237,39 +237,44 @@ interface MigrationData {
   entityMarkData: Record<string, Record<number, boolean>> | null;
 }
 
-async function performMigration(db: RxDatabase<DBCollections>, data: MigrationData): Promise<void> {
+async function performMigration(data: MigrationData): Promise<void> {
   const storage = DataService.storage;
+  const {
+    electricPolePresetDataService,
+    electricPoleVisibilityService,
+    customPointPresetDataService,
+    customPointVisibilityService,
+    entityVisibilityService,
+    entityMarkService,
+  } = userService.data;
 
   // 1. 迁移 Electric Pole 预设和节点
   if (data.electricPolePresetData?.presets) {
     for (const preset of data.electricPolePresetData.presets) {
-      // 插入预设元数据
-      await db.electricPolePreset.insert({
-        id: preset.id,
-        name: preset.name,
-        createdAt: preset.createdAt,
-        updatedAt: preset.updatedAt,
-      });
-
-      // 插入节点数据
+      const allNodes: any[] = [];
+      // 处理旧数据结构: data 是 mapId -> nodes 的映射
       if (preset.data) {
-        for (const [mapId, nodes] of Object.entries(preset.data)) {
+        for (const [mapId, nodes] of Object.entries(preset.data as unknown as Record<string, any[]>)) {
           if (!Array.isArray(nodes)) continue;
           for (const node of nodes) {
-            await db.electricPoleNode.insert({
-              id: `${preset.id}|${mapId}|${node.levelLogicId}`,
-              presetId: preset.id,
-              mapId,
+            allNodes.push({
               levelLogicId: node.levelLogicId,
               entityDataIdKey: node.entityDataIdKey,
               templateId: node.templateId,
               entityType: node.entityType,
               position: node.position,
               properties: node.properties,
+              mapId,
+              presetId: preset.id,
             });
           }
         }
       }
+      await electricPolePresetDataService.createPreset(preset.name, allNodes, {
+        id: preset.id,
+        createdAt: preset.createdAt,
+        updatedAt: preset.updatedAt,
+      });
     }
     storage.permanentRemove(StorageKey.ELECTRIC_POLE);
   }
@@ -279,12 +284,7 @@ async function performMigration(db: RxDatabase<DBCollections>, data: MigrationDa
     for (const [mapId, devices] of Object.entries(data.electricPoleVisibilityData)) {
       if (!devices || typeof devices !== 'object') continue;
       for (const [deviceKey, visible] of Object.entries(devices)) {
-        await db.electricPoleVisibility.insert({
-          id: `${mapId}|${deviceKey}`,
-          entityKey: deviceKey,
-          mapId,
-          visible,
-        });
+        await electricPoleVisibilityService.setVisibilityData(mapId, deviceKey, visible);
       }
     }
     storage.permanentRemove(StorageKey.ELECTRIC_POLE_VISIBILITY);
@@ -293,33 +293,29 @@ async function performMigration(db: RxDatabase<DBCollections>, data: MigrationDa
   // 3. 迁移 Custom Point 预设和节点
   if (data.customPointPresetData?.presets) {
     for (const preset of data.customPointPresetData.presets) {
-      // 插入预设元数据
-      await db.customPointPreset.insert({
-        id: preset.id,
-        name: preset.name,
-        createdAt: preset.createdAt,
-        updatedAt: preset.updatedAt,
-      });
-
-      // 插入节点数据
+      const allNodes: any[] = [];
       if (preset.data) {
-        for (const [mapId, nodes] of Object.entries(preset.data)) {
+        for (const [mapId, nodes] of Object.entries(preset.data as unknown as Record<string, any[]>)) {
           if (!Array.isArray(nodes)) continue;
           for (const node of nodes) {
-            await db.customPointNode.insert({
-              id: `${preset.id}|${mapId}|${node.levelLogicId}`,
-              presetId: preset.id,
-              mapId,
+            allNodes.push({
               levelLogicId: node.levelLogicId,
               entityDataIdKey: node.entityDataIdKey,
               templateId: node.templateId,
               entityType: node.entityType,
               position: node.position,
               properties: node.properties,
+              mapId,
+              presetId: preset.id,
             });
           }
         }
       }
+      await customPointPresetDataService.createPreset(preset.name, allNodes, {
+        id: preset.id,
+        createdAt: preset.createdAt,
+        updatedAt: preset.updatedAt,
+      });
     }
     storage.permanentRemove(StorageKey.CUSTOM_POINT);
   }
@@ -329,12 +325,7 @@ async function performMigration(db: RxDatabase<DBCollections>, data: MigrationDa
     for (const [mapId, entities] of Object.entries(data.customPointVisibilityData)) {
       if (!entities || typeof entities !== 'object') continue;
       for (const [entityKey, visible] of Object.entries(entities)) {
-        await db.customPointVisibility.insert({
-          id: `${mapId}|${entityKey}`,
-          entityKey,
-          mapId,
-          visible,
-        });
+        await customPointVisibilityService.setVisibilityData(mapId, entityKey, visible);
       }
     }
     storage.permanentRemove(StorageKey.CUSTOM_POINT_VISIBILITY);
@@ -345,12 +336,7 @@ async function performMigration(db: RxDatabase<DBCollections>, data: MigrationDa
     for (const [mapId, entities] of Object.entries(data.entityVisibilityData)) {
       if (!entities || typeof entities !== 'object') continue;
       for (const [entityKey, visible] of Object.entries(entities)) {
-        await db.entityVisibility.insert({
-          id: `${mapId}|${entityKey}`,
-          entityKey,
-          mapId,
-          visible,
-        });
+        await entityVisibilityService.setVisibilityData(mapId, entityKey, visible);
       }
     }
     storage.permanentRemove(StorageKey.LAYERS_VISIBILITY);
@@ -362,12 +348,7 @@ async function performMigration(db: RxDatabase<DBCollections>, data: MigrationDa
       if (!marks || typeof marks !== 'object') continue;
       for (const [id, marked] of Object.entries(marks)) {
         const entityId = Number(id);
-        await db.entityMark.insert({
-          id: EntityMarkService.createId(mapId, entityId),
-          entityId,
-          mapId,
-          marked,
-        });
+        await entityMarkService.setMarkData(mapId, entityId, marked);
       }
     }
     storage.permanentRemove(StorageKey.MARKED_FEATURES);
