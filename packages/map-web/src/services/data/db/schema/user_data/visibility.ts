@@ -14,8 +14,10 @@ const visibilityDataSchemaLiteral = {
     entityKey: { type: 'string', maxLength: 100 },
     mapId: { type: 'string', maxLength: 100 },
     visible: { type: 'boolean' },
+    createdAt: { type: 'number' },
+    updatedAt: { type: 'number' },
   },
-  required: ['id', 'entityKey', 'mapId', 'visible'],
+  required: ['id', 'entityKey', 'mapId', 'visible', 'createdAt', 'updatedAt'],
 } as const;
 
 export const visibilityDataSchemaTyped = toTypedRxJsonSchema(visibilityDataSchemaLiteral);

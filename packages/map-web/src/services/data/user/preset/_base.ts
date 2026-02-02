@@ -21,6 +21,8 @@ export interface RequiredNodeFields {
   mapId: string;
   levelLogicId: number;
   properties: Record<string, unknown>;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 /**
@@ -107,10 +109,10 @@ export abstract class BasePresetService<
     const doc = await this.presetDB.findOne({ selector: { id } }).exec();
     if (!doc) return null;
 
-    const presetData = doc._data as PresetSchemaType;
+    const presetData = doc.toJSON() as PresetSchemaType;
     // 查询该预设下的所有节点
     const nodes = await this.nodesDB.find({ selector: { presetId: id } as NodeSelector<TNodeSchema> }).exec();
-    const data = nodes.map((node) => node._data as TNodeSchema);
+    const data = nodes.map((node) => node.toJSON() as TNodeSchema);
 
     return {
       ...presetData,
@@ -169,7 +171,7 @@ export abstract class BasePresetService<
     // 插入节点数据
     await this.saveNodesData(presetId, data);
 
-    const presetData = presetDoc._data as PresetSchemaType;
+    const presetData = presetDoc.toJSON() as PresetSchemaType;
     return {
       ...presetData,
       data,
@@ -194,9 +196,9 @@ export abstract class BasePresetService<
     await doc.update({ $set: updateFields });
 
     // 获取更新后的完整数据
-    const presetData = doc._data as PresetSchemaType;
+    const presetData = doc.toJSON() as PresetSchemaType;
     const nodes = await this.nodesDB.find({ selector: { presetId: id } as NodeSelector<TNodeSchema> }).exec();
-    const data = nodes.map((node) => node._data as TNodeSchema);
+    const data = nodes.map((node) => node.toJSON() as TNodeSchema);
 
     return {
       ...presetData,
@@ -228,6 +230,8 @@ export abstract class BasePresetService<
           ...node,
           id: nodeId,
           presetId,
+          createdAt: node.createdAt ?? Date.now(),
+          updatedAt: Date.now(),
         } as TNodeSchema)
       );
     }
@@ -258,8 +262,10 @@ export abstract class BasePresetService<
       id: nodeId,
       presetId,
       mapId,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     } as TNodeSchema);
-    return newNode._data as TNodeSchema;
+    return newNode.toJSON() as TNodeSchema;
   }
 
   public async renameNode(mapId: MapData['id'], presetId: string, levelLogicId: number, newName: string) {
@@ -270,13 +276,15 @@ export abstract class BasePresetService<
       return;
     }
 
-    const currentData = doc._data;
+    const currentData = doc.toJSON();
     const updatedProperties: Record<string, unknown> = {
       ...currentData.properties,
       name: newName,
     };
 
-    await doc.update({ $set: { properties: updatedProperties } as Partial<TNodeSchema> });
+    await doc.update({
+      $set: { properties: updatedProperties, updatedAt: Date.now() },
+    });
   }
   // endregion
 }

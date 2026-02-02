@@ -14,8 +14,10 @@ const markDataSchemaLiteral = {
     entityId: { type: 'number' },
     mapId: { type: 'string', maxLength: 100 },
     marked: { type: 'boolean' },
+    createdAt: { type: 'number' },
+    updatedAt: { type: 'number' },
   },
-  required: ['id', 'entityId', 'mapId', 'marked'],
+  required: ['id', 'entityId', 'mapId', 'marked', 'createdAt', 'updatedAt'],
 } as const;
 
 export const markDataSchemaTyped = toTypedRxJsonSchema(markDataSchemaLiteral);

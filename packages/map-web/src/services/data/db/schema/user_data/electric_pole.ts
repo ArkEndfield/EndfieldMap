@@ -28,6 +28,9 @@ const electricPoleNodeSchemaLiteral = {
       type: 'object',
       additionalProperties: true,
     },
+
+    createdAt: { type: 'number' },
+    updatedAt: { type: 'number' },
   },
   required: [
     'id',
@@ -39,6 +42,8 @@ const electricPoleNodeSchemaLiteral = {
     'templateId',
     'entityType',
     'properties',
+    'createdAt',
+    'updatedAt',
   ],
   indexes: [
     'presetId', // 允许快速查找某个预设下的所有点

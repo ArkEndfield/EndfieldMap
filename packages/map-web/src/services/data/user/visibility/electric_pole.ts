@@ -21,7 +21,12 @@ export class ElectricPoleVisibilityService {
 
   public async setVisibilityData(mapId: MapData['id'], entityKey: string, visible: boolean) {
     const idString = ElectricPoleVisibilityService.createId(mapId, entityKey);
-    return this.db.upsert({ id: idString, mapId, entityKey, visible });
+    const now = Date.now();
+    const doc = await this.db.findOne({ selector: { id: idString } }).exec();
+    if (doc) {
+      return doc.update({ $set: { visible, updatedAt: now } });
+    }
+    return this.db.insert({ id: idString, mapId, entityKey, visible, createdAt: now, updatedAt: now });
   }
 
   public addSubscribe(callback: (mapId: MapData['id'], entityKey: string, visible: boolean) => void) {

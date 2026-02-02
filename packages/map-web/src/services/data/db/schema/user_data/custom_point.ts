@@ -46,6 +46,9 @@ const customPointNodeSchemaLiteral = {
       },
       additionalProperties: true, // 允许 EnityProperties 的其他动态属性
     },
+
+    createdAt: { type: 'number' },
+    updatedAt: { type: 'number' },
   },
   required: [
     'id',
@@ -57,6 +60,8 @@ const customPointNodeSchemaLiteral = {
     'entityDataIdKey',
     'position',
     'properties',
+    'createdAt',
+    'updatedAt',
   ],
   indexes: [
     'presetId', // 用于加载某个预设的所有点

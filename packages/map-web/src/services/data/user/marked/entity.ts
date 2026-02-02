@@ -17,7 +17,12 @@ export class EntityMarkService {
 
   public async setMarkData(mapId: MapData['id'], entityId: EntityData['levelLogicId'], marked: boolean) {
     const idString = EntityMarkService.createId(mapId, entityId);
-    return this.db.upsert({ id: idString, mapId, entityId, marked });
+    const now = Date.now();
+    const doc = await this.db.findOne({ selector: { id: idString } }).exec();
+    if (doc) {
+      return doc.update({ $set: { marked, updatedAt: now } });
+    }
+    return this.db.insert({ id: idString, mapId, entityId, marked, createdAt: now, updatedAt: now });
   }
 
   public addScribe(callback: (mapId: MapData['id'], id: EntityData['levelLogicId'], marked: boolean) => void) {
