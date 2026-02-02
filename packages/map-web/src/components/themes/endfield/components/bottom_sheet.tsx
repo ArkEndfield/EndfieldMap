@@ -70,12 +70,24 @@ export const BottomSheet = ({
   }, [open, collapsed, backdropControls]);
 
   useEffect(() => {
-    sheetControls.start({ y: open ? 0 : '100%' });
-  }, [open, sheetControls]);
+    if (open) {
+      // 先显示sheet，再展开内容（如果不是折叠状态）
+      sheetControls.start({ y: 0 }).then(() => {
+        if (!collapsed) {
+          contentControls.start({ height: '60vh' });
+        }
+      });
+    } else {
+      sheetControls.start({ y: '110%' });
+    }
+  }, [open, sheetControls, contentControls, collapsed]);
 
   useEffect(() => {
-    contentControls.start({ height: collapsed ? 0 : '60vh' });
-  }, [collapsed, contentControls]);
+    // 只在sheet已经打开时响应collapsed变化
+    if (open) {
+      contentControls.start({ height: collapsed ? 0 : '60vh' });
+    }
+  }, [collapsed, contentControls, open]);
 
   const handleToggle = () => {
     if (!dismissible) return;
@@ -83,7 +95,7 @@ export const BottomSheet = ({
   };
 
   return createPortal(
-    <>
+    <div className={cn(!open && 'hidden')}>
       {/* 背景遮罩 - 仅在展开时显示 */}
       <motion.div
         className={cn('fixed inset-0 z-10 bg-black/40 text-white', getClassName(classNames?.backdrop, open))}
@@ -100,7 +112,7 @@ export const BottomSheet = ({
           'pb-8 pt-4',
           getClassName(classNames?.container, open)
         )}
-        initial={{ y: '100%' }}
+        initial={{ y: '110%' }}
         animate={sheetControls}
         style={{ pointerEvents: open ? 'auto' : 'none' }}
         transition={{ type: 'tween', duration: 0.25, ease: 'easeOut' }}
@@ -117,9 +129,7 @@ export const BottomSheet = ({
         {/* 标题按钮区域 */}
         <div className="absolute z-2 -top-2 left-5 w-fit max-w-full bg-[#434343] flex rounded-full text-xs h-4.5 items-center">
           <ZmdRoundIconButton className="z-1 h-5.5 w-18" onClick={handleToggle}>
-            <ChevronUpTriangle
-              className={cn('transition-transform text-sm', collapsed ? 'rotate-0' : 'rotate-180')}
-            />
+            <ChevronUpTriangle className={cn('transition-transform text-sm', collapsed ? 'rotate-0' : 'rotate-180')} />
           </ZmdRoundIconButton>
           <button className={cn('flex-1 truncate', title && 'pl-1 pr-4')} onClick={handleToggle}>
             {title}
@@ -128,12 +138,12 @@ export const BottomSheet = ({
 
         {/* 内容区域 - 使用 height 动画实现折叠/展开 */}
         <motion.div
-          className={cn('overflow-hidden', getClassName(classNames?.content, open))}
-          initial={false}
+          className={cn('overflow-hidden h-full', getClassName(classNames?.content, open))}
+          initial={{ height: 0 }}
           animate={contentControls}
           transition={{ type: 'tween', duration: 0.2, ease: 'easeInOut' }}
         >
-          <div className="h-full">{children}</div>
+          {children}
         </motion.div>
 
         {/* 底部 Logo */}
@@ -141,7 +151,7 @@ export const BottomSheet = ({
           <Logo height="2rem" />
         </div> */}
       </motion.div>
-    </>,
+    </div>,
     document.body
   );
 };

@@ -1,19 +1,45 @@
 import { LeftContentContainer } from '@themes/endfield/ui/popup/left';
-import { RightContentContainer } from '@themes/endfield/ui/popup/right';
-import { useVisibleRightContentItems } from '@themes/endfield/ui/popup/right_content/items';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-
+import { ScrollArea } from '@/components/common/scroll_area';
+import { getRightComponents } from '@/components/common/popup/sub/items';
+import { cn } from '@/utils/style';
 import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
+
+const RightContent: React.FC<{
+  isExpand: boolean;
+  items: React.ReactNode[];
+}> = observer(({ isExpand, items }) => {
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={false}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2, ease: 'easeInOut' }}
+        className={cn(
+          'shrink-0 transition-all duration-300 ease-in-out relative w-78 -z-2 flex h-full',
+          'bg-[#272827] relative',
+          'after:absolute after:opacity-20 after:right-0 after:bottom-0 after:left-0 after:h-24 after:-z-1 after:bg-[url(/images/bg/button-texture.png)] after:bg-cover after:bg-bottom-right after:bg-no-repeat after:mask-[linear-gradient(to_top,black_calc(100%-3rem),transparent)]',
+          isExpand ? 'ml-1' : '-ml-78'
+        )}
+      >
+        <ScrollArea contentClassName="w-full text-white text-xs" scrollbarX="hidden" className="flex-1">
+          {items}
+        </ScrollArea>
+      </motion.div>
+    </AnimatePresence>
+  );
+});
 
 const PCPopup: React.FC = observer(() => {
   const { adapter, mapDataService } = useAdapter();
   const activeFeature = adapter?.activeFeatureController.activeFeature;
   const entity = activeFeature?.data;
-  const { items, showSubPopup } = useVisibleRightContentItems(entity);
+  const subPopupItems = getRightComponents(entity);
+  const showSubPopup = subPopupItems.length > 0;
 
   const container = useMemo(() => {
     const div = document.createElement('div');
@@ -94,7 +120,7 @@ const PCPopup: React.FC = observer(() => {
               />
 
               {/* 右侧展开内容 */}
-              <RightContentContainer isExpand={isExpand && showSubPopup} items={items} />
+              <RightContent isExpand={isExpand && showSubPopup} items={subPopupItems} />
             </motion.div>
           </motion.div>
         )}

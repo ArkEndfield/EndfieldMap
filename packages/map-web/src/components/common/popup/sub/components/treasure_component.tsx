@@ -1,22 +1,24 @@
-import type { EntityData } from '@endfieldmap/map-core';
+import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
+import type { TreasureComponent } from '@/components/common/popup/sub/components/types';
 import { Item } from '@themes/endfield/components/item';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SubPopupTitle } from '@/components/themes/endfield/ui/popup/right_content/title';
+import { SubPopupTitle } from '@/components/common/popup/components/title';
 import { useAdapter } from '@/hooks/use_adapter';
 import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { isDealedRewardItemWithCount } from '@/utils/reward';
 
-export const ChestReward = ({ entity }: { entity: EntityData }) => {
+const TreasureComponent: SubPopupComponentProps<TreasureComponent> = ({ prop }) => {
+  const { reward_id } = prop;
   const [rewards, setRewards] = useState<DealedRewardItem[]>([]);
   const { t } = useTranslation(['popup', 'lang']);
   const { mapDataService } = useAdapter();
 
   const getRewadData = useCallback(async () => {
-    const rewards = await mapDataService.chestRewardDataService.getRewards(entity.properties.reward_id);
+    const rewards = await mapDataService.chestRewardDataService.getRewards(reward_id);
     return rewards;
-  }, [mapDataService.chestRewardDataService, entity]);
+  }, [mapDataService.chestRewardDataService, reward_id]);
 
   useEffect(() => {
     getRewadData().then((data) => {
@@ -56,3 +58,5 @@ export const ChestReward = ({ entity }: { entity: EntityData }) => {
     </div>
   );
 };
+
+export default TreasureComponent;

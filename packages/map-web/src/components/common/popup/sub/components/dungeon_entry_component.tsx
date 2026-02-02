@@ -1,34 +1,37 @@
-import type { EntityData } from '@endfieldmap/map-core';
+import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
+import type { DungeonEntryComponent } from '@/components/common/popup/sub/components/types';
 import { Item } from '@themes/endfield/components/item';
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SubPopupTitle } from '@/components/themes/endfield/ui/popup/right_content/title';
+import { SubPopupTitle } from '@/components/common/popup/components/title';
 import { useAdapter } from '@/hooks/use_adapter';
 import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { isDealedRewardItemWithCount } from '@/utils/reward';
 
-export const DungeonReward = ({ entity }: { entity: EntityData }) => {
+const DungeonEntryComponent: SubPopupComponentProps<DungeonEntryComponent> = ({ prop }) => {
+  const { system_inst_key } = prop;
   const [rewards, setRewards] = useState<Record<string, DealedRewardItem[]>>({});
   const { mapDataService } = useAdapter();
   const { t } = useTranslation('lang');
 
-  const getRewadData = async (id: EntityData['properties']['system_inst_key']) => {
+  const getRewadData = async (id: string) => {
     const rewards = await mapDataService.dungeonSeriesDataService.getDungeonRewards(id);
     return rewards;
   };
 
   useEffect(() => {
-    getRewadData(entity.properties.system_inst_key).then((data) => {
+    getRewadData(system_inst_key).then((data) => {
       if (data) {
         setRewards(data);
       }
     });
-  }, [getRewadData, entity]);
+  }, [getRewadData, system_inst_key]);
 
   if (!rewards || Object.keys(rewards).length <= 0) {
     return <div className="text-center text-gray-400 py-4">暂无奖励信息</div>;
   }
+
   return (
     <div className="last:mb-0">
       {Object.entries(rewards).map(([key, rwds]) => (
@@ -57,3 +60,5 @@ export const DungeonReward = ({ entity }: { entity: EntityData }) => {
     </div>
   );
 };
+
+export default DungeonEntryComponent;

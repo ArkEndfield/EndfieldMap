@@ -79,6 +79,7 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
   const disposeFnRef = useRef<(() => void) | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const childObserverRef = useRef<ResizeObserver | null>(null);
   const thumbXRef = useRef<HTMLDivElement>(null);
   const thumbYRef = useRef<HTMLDivElement>(null);
   const scrollbarXContainerRef = useRef<HTMLDivElement>(null);
@@ -440,6 +441,21 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       debouncedUpdateDimensionsRef.current?.();
     });
 
+    // 用于观察子元素尺寸变化的 ResizeObserver
+    const childResizeObserver = new ResizeObserver(() => {
+      debouncedUpdateDimensionsRef.current?.();
+    });
+    childObserverRef.current = childResizeObserver;
+
+    // 观察子元素变化并为新子元素添加 ResizeObserver
+    const observeChildren = () => {
+      if (!contentRef.current) return;
+      // 观察所有直接子元素的尺寸变化
+      Array.from(contentRef.current.children).forEach((child) => {
+        childResizeObserver.observe(child);
+      });
+    };
+
     // 优化 MutationObserver
     const mutationObserver = new MutationObserver((mutations) => {
       const shouldUpdate = mutations.some((mutation) => {
@@ -453,6 +469,8 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       });
 
       if (shouldUpdate) {
+        // 重新观察子元素
+        observeChildren();
         debouncedUpdateDimensionsRef.current?.();
       }
     });
@@ -461,10 +479,12 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
       resizeObserver.observe(contentRef.current);
       mutationObserver.observe(contentRef.current, {
         childList: true,
-        subtree: false,
+        subtree: true,
         attributes: false,
         characterData: false,
       });
+      // 初始观察子元素
+      observeChildren();
     }
 
     if (containerRef.current) {
@@ -473,6 +493,8 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
 
     return () => {
       resizeObserver.disconnect();
+      childResizeObserver.disconnect();
+      childObserverRef.current = null;
       mutationObserver.disconnect();
       if (rafUpdateRef.current !== null) {
         cancelAnimationFrame(rafUpdateRef.current);
@@ -519,101 +541,98 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           scrollbarContainerClassName
         )}
       >
-          {/* 顶部边缘按钮 */}
-          {showEdgeButtons && (
-            <button
-              className={cn(
-                'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
-                'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
-                buttonClassName
-              )}
-              onClick={() => scrollToEdge('top')}
-              aria-label="滚动到顶部"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 1.5L8 4.5L7 5.5L5 3.5L3 5.5L2 4.5L5 1.5Z" fill="currentColor" />
-                <path d="M5 4.5L8 7.5L7 8.5L5 6.5L3 8.5L2 7.5L5 4.5Z" fill="currentColor" />
-              </svg>
-            </button>
-          )}
+        {/* 顶部边缘按钮 */}
+        {showEdgeButtons && (
+          <button
+            className={cn(
+              'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
+              'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
+              buttonClassName
+            )}
+            onClick={() => scrollToEdge('top')}
+            aria-label="滚动到顶部"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 1.5L8 4.5L7 5.5L5 3.5L3 5.5L2 4.5L5 1.5Z" fill="currentColor" />
+              <path d="M5 4.5L8 7.5L7 8.5L5 6.5L3 8.5L2 7.5L5 4.5Z" fill="currentColor" />
+            </svg>
+          </button>
+        )}
 
-          {/* 上滚动按钮 */}
-          {showScrollButtons && (
-            <button
-              className={cn(
-                'shrink-0 w-3.5 h-3.5 flex items-center justify-center gap-0.5 rounded transition-all',
-                'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
-                buttonClassName
-              )}
-              onClick={() => scrollByAmount('up')}
-              aria-label="向上滚动"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 3L8 6L7 7L5 5L3 7L2 6L5 3Z" fill="currentColor" />
-              </svg>
-            </button>
-          )}
+        {/* 上滚动按钮 */}
+        {showScrollButtons && (
+          <button
+            className={cn(
+              'shrink-0 w-3.5 h-3.5 flex items-center justify-center gap-0.5 rounded transition-all',
+              'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
+              buttonClassName
+            )}
+            onClick={() => scrollByAmount('up')}
+            aria-label="向上滚动"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 3L8 6L7 7L5 5L3 7L2 6L5 3Z" fill="currentColor" />
+            </svg>
+          </button>
+        )}
 
-          {/* 滚动条轨道区域 */}
-          <div className="flex-1 relative min-h-0">
+        {/* 滚动条轨道区域 */}
+        <div className="flex-1 relative min-h-0">
+          <div
+            className={cn('relative w-0.75 rounded-full bg-black/20 h-full left-1/2 -translate-x-1/2', trackClassName)}
+            onClick={(e) => handleBarClick('y', e)}
+          >
             <div
+              ref={thumbYRef}
               className={cn(
-                'relative w-0.75 rounded-full bg-black/20 h-full left-1/2 -translate-x-1/2',
-                trackClassName
+                'absolute w-1.25 rounded-full cursor-grab active:cursor-grabbing',
+                'bg-[rgb(252,254,254)] left-1/2 -translate-x-1/2 shadow-[0_0_2px_rgba(0,0,0,0.2)]',
+                'will-change-transform will-change-height will-change-opacity',
+                'opacity-100 hover:opacity-90',
+                thumbClassName
               )}
-              onClick={(e) => handleBarClick('y', e)}
-            >
-              <div
-                ref={thumbYRef}
-                className={cn(
-                  'absolute w-1.25 rounded-full cursor-grab active:cursor-grabbing',
-                  'bg-[rgb(252,254,254)] left-1/2 -translate-x-1/2 shadow-[0_0_2px_rgba(0,0,0,0.2)]',
-                  'will-change-transform will-change-height will-change-opacity',
-                  'opacity-100 hover:opacity-90',
-                  thumbClassName
-                )}
-                style={{
-                  transform: 'translateZ(0)',
-                }}
-                onMouseDown={(e) => handleThumbMouseDown('y', e)}
-              />
-            </div>
+              style={{
+                transform: 'translateZ(0)',
+              }}
+              onMouseDown={(e) => handleThumbMouseDown('y', e)}
+            />
           </div>
+        </div>
 
-          {/* 下滚动按钮 */}
-          {showScrollButtons && (
-            <button
-              className={cn(
-                'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
-                'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
-                buttonClassName
-              )}
-              onClick={() => scrollByAmount('down')}
-              aria-label="向下滚动"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 7L2 4L3 3L5 5L7 3L8 4L5 7Z" fill="currentColor" />
-              </svg>
-            </button>
-          )}
+        {/* 下滚动按钮 */}
+        {showScrollButtons && (
+          <button
+            className={cn(
+              'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
+              'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
+              buttonClassName
+            )}
+            onClick={() => scrollByAmount('down')}
+            aria-label="向下滚动"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 7L2 4L3 3L5 5L7 3L8 4L5 7Z" fill="currentColor" />
+            </svg>
+          </button>
+        )}
 
-          {/* 底部边缘按钮 */}
-          {showEdgeButtons && (
-            <button
-              className={cn(
-                'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
-                'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
-                buttonClassName
-              )}
-              onClick={() => scrollToEdge('bottom')}
-              aria-label="滚动到底部"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 8.5L2 5.5L3 4.5L5 6.5L7 4.5L8 5.5L5 8.5Z" fill="currentColor" />
-                <path d="M5 5.5L2 2.5L3 1.5L5 3.5L7 1.5L8 2.5L5 5.5Z" fill="currentColor" />
-              </svg>
-            </button>
-          )}
+        {/* 底部边缘按钮 */}
+        {showEdgeButtons && (
+          <button
+            className={cn(
+              'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
+              'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
+              buttonClassName
+            )}
+            onClick={() => scrollToEdge('bottom')}
+            aria-label="滚动到底部"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 8.5L2 5.5L3 4.5L5 6.5L7 4.5L8 5.5L5 8.5Z" fill="currentColor" />
+              <path d="M5 5.5L2 2.5L3 1.5L5 3.5L7 1.5L8 2.5L5 5.5Z" fill="currentColor" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* 水平滚动条 */}
@@ -625,98 +644,98 @@ export const ScrollArea: React.FC<ScrollAreaProps> = ({
           scrollbarContainerClassName
         )}
       >
-          {/* 左侧边缘按钮 */}
-          {showEdgeButtons && (
-            <button
-              className={cn(
-                'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
-                'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
-                buttonClassName
-              )}
-              onClick={() => scrollToEdge('left')}
-              aria-label="滚动到最左边"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1.5 5L4.5 2L5.5 3L3.5 5L5.5 7L4.5 8L1.5 5Z" fill="currentColor" />
-                <path d="M4.5 5L7.5 2L8.5 3L6.5 5L8.5 7L7.5 8L4.5 5Z" fill="currentColor" />
-              </svg>
-            </button>
-          )}
+        {/* 左侧边缘按钮 */}
+        {showEdgeButtons && (
+          <button
+            className={cn(
+              'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
+              'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
+              buttonClassName
+            )}
+            onClick={() => scrollToEdge('left')}
+            aria-label="滚动到最左边"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.5 5L4.5 2L5.5 3L3.5 5L5.5 7L4.5 8L1.5 5Z" fill="currentColor" />
+              <path d="M4.5 5L7.5 2L8.5 3L6.5 5L8.5 7L7.5 8L4.5 5Z" fill="currentColor" />
+            </svg>
+          </button>
+        )}
 
-          {/* 左滚动按钮 */}
-          {showScrollButtons && (
-            <button
-              className={cn(
-                'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
-                'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
-                buttonClassName
-              )}
-              onClick={() => scrollByAmount('left')}
-              aria-label="向左滚动"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 5L6 2L7 3L5 5L7 7L6 8L3 5Z" fill="currentColor" />
-              </svg>
-            </button>
-          )}
+        {/* 左滚动按钮 */}
+        {showScrollButtons && (
+          <button
+            className={cn(
+              'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
+              'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
+              buttonClassName
+            )}
+            onClick={() => scrollByAmount('left')}
+            aria-label="向左滚动"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 5L6 2L7 3L5 5L7 7L6 8L3 5Z" fill="currentColor" />
+            </svg>
+          </button>
+        )}
 
-          {/* 滚动条轨道区域 */}
-          <div className="flex-1 relative min-w-0">
+        {/* 滚动条轨道区域 */}
+        <div className="flex-1 relative min-w-0">
+          <div
+            className={cn('relative h-0.75 rounded-full bg-black/20 w-full top-1/2 -translate-y-1/2', trackClassName)}
+            onClick={(e) => handleBarClick('x', e)}
+          >
             <div
-              className={cn('relative h-0.75 rounded-full bg-black/20 w-full top-1/2 -translate-y-1/2', trackClassName)}
-              onClick={(e) => handleBarClick('x', e)}
-            >
-              <div
-                ref={thumbXRef}
-                className={cn(
-                  'absolute h-1.25 rounded-full cursor-grab active:cursor-grabbing',
-                  'bg-[rgb(252,254,254)] top-1/2 -translate-y-1/2 shadow-[0_0_2px_rgba(0,0,0,0.2)]',
-                  'will-change-transform will-change-width will-change-opacity',
-                  'opacity-100 hover:opacity-90',
-                  thumbClassName
-                )}
-                style={{
-                  transform: 'translateZ(0)',
-                }}
-                onMouseDown={(e) => handleThumbMouseDown('x', e)}
-              />
-            </div>
+              ref={thumbXRef}
+              className={cn(
+                'absolute h-1.25 rounded-full cursor-grab active:cursor-grabbing',
+                'bg-[rgb(252,254,254)] top-1/2 -translate-y-1/2 shadow-[0_0_2px_rgba(0,0,0,0.2)]',
+                'will-change-transform will-change-width will-change-opacity',
+                'opacity-100 hover:opacity-90',
+                thumbClassName
+              )}
+              style={{
+                transform: 'translateZ(0)',
+              }}
+              onMouseDown={(e) => handleThumbMouseDown('x', e)}
+            />
           </div>
+        </div>
 
-          {/* 右滚动按钮 */}
-          {showScrollButtons && (
-            <button
-              className={cn(
-                'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
-                'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
-                buttonClassName
-              )}
-              onClick={() => scrollByAmount('right')}
-              aria-label="向右滚动"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 5L4 8L3 7L5 5L3 3L4 2L7 5Z" fill="currentColor" />
-              </svg>
-            </button>
-          )}
+        {/* 右滚动按钮 */}
+        {showScrollButtons && (
+          <button
+            className={cn(
+              'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
+              'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
+              buttonClassName
+            )}
+            onClick={() => scrollByAmount('right')}
+            aria-label="向右滚动"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 5L4 8L3 7L5 5L3 3L4 2L7 5Z" fill="currentColor" />
+            </svg>
+          </button>
+        )}
 
-          {/* 右侧边缘按钮 */}
-          {showEdgeButtons && (
-            <button
-              className={cn(
-                'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
-                'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
-                buttonClassName
-              )}
-              onClick={() => scrollToEdge('right')}
-              aria-label="滚动到最右边"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.5 5L5.5 8L4.5 7L6.5 5L4.5 3L5.5 2L8.5 5Z" fill="currentColor" />
-                <path d="M5.5 5L2.5 8L1.5 7L3.5 5L1.5 3L2.5 2L5.5 5Z" fill="currentColor" />
-              </svg>
-            </button>
-          )}
+        {/* 右侧边缘按钮 */}
+        {showEdgeButtons && (
+          <button
+            className={cn(
+              'shrink-0 w-3.5 h-3.5 flex items-center justify-center rounded transition-all',
+              'bg-black/20 hover:bg-black/40 active:bg-black/50 text-white/80',
+              buttonClassName
+            )}
+            onClick={() => scrollToEdge('right')}
+            aria-label="滚动到最右边"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8.5 5L5.5 8L4.5 7L6.5 5L4.5 3L5.5 2L8.5 5Z" fill="currentColor" />
+              <path d="M5.5 5L2.5 8L1.5 7L3.5 5L1.5 3L2.5 2L5.5 5Z" fill="currentColor" />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );

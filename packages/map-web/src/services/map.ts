@@ -71,7 +71,7 @@ export class MapService {
     try {
       const jsonLoader = DataService.jsonLoader;
       const [jsonData, infoData] = await Promise.all([
-        jsonLoader.loadJSON<EntityJsonDataList>(`${assets.entityData}/level_entities_filtered.json`),
+        jsonLoader.loadJSON<EntityJsonDataList>(`${assets.entityData}/level_entities_categorized.json`),
         jsonLoader.loadJSON<EntityInfoDataJson>(`${assets.entityData}/entity_info.json`),
       ]);
       if (jsonData && infoData) return [jsonData, infoData];

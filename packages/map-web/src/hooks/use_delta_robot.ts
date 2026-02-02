@@ -6,15 +6,8 @@ import { DeltaRobotStatus } from '@/const/delta_robot';
 import { useAdapter } from '@/hooks/use_adapter';
 import { solvePuzzle } from '@/services/delta_robot/solver';
 
-interface UseDeltaRobotProps {
-  levelLogicId: string | number;
-}
-
-export const useDeltaRobot = ({ levelLogicId }: UseDeltaRobotProps) => {
+export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
   const { mapDataService } = useAdapter();
-  const levelList = mapDataService.deltaRobotDataService.getLevelList(levelLogicId) || [];
-
-  // 状态管理
   const [selectedLevel, setSelectedLevel] = useState<string>(levelList[0] || '');
   const [levelData, setLevelData] = useState<ParsedLevel | null>(null);
   const [solutionGrid, setSolutionGrid] = useState<Grid | null>(null);

@@ -31,6 +31,10 @@ export interface BaseEntityData {
   position: Position;
   /** 属性 */
   properties: Record<string, unknown>;
+  /** 进度锁定条件？ */
+  progressLockCondition: object;
+  /** 组件 */
+  componentProperties: Record<string, unknown>;
 }
 
 export interface EnityProperties {
@@ -57,21 +61,9 @@ export interface EnityProperties {
 }
 
 /**
- * 实体数据，来自于json
+ * 实体数据
  */
-export interface EntityData {
-  /** 逻辑ID */
-  levelLogicId: number;
-  /** 实体数据ID */
-  entityDataIdKey: string;
-  /** 模板ID */
-  templateId: string;
-  /** 实体类型 */
-  entityType: string;
-  /** 位置 */
-  position: Position;
-  /** 默认隐藏 */
-  defaultHide?: boolean;
+export interface EntityData extends BaseEntityData {
   /** 属性 */
   properties: EnityProperties;
   /** Entity信息 */

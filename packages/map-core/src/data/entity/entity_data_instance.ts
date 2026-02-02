@@ -48,14 +48,6 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
   }
 
   /**
-   * 获取是否默认隐藏
-   */
-  @computed
-  get defaultHide(): boolean {
-    return this._data.defaultHide ?? false;
-  }
-
-  /**
    * 获取奖励ID
    */
   @computed

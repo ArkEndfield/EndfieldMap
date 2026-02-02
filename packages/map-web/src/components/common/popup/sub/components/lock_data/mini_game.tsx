@@ -1,5 +1,6 @@
-import type { EntityData } from '@endfieldmap/map-core';
-import { SubPopupTitle } from '@themes/endfield/ui/popup/right_content/title';
+import type { MiniGameLockData } from '@/components/common/popup/sub/components/lock_data/types';
+import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
+import { SubPopupTitle } from '@/components/common/popup/components/title';
 import { useTranslation } from 'react-i18next';
 
 import { DeltaRobotPiece } from '@/components/common/delta_robot/piece';
@@ -11,20 +12,17 @@ import { DeltaRobotStatus } from '@/const/delta_robot';
 import { useDeltaRobot } from '@/hooks/use_delta_robot';
 import { cn } from '@/utils/style';
 
-interface DeltaRobotProps {
-  entity: EntityData;
-}
-
-export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
+export const MiniGameLockComponent: SubPopupComponentProps<MiniGameLockData> = ({ prop }) => {
+  const { miniGameIds } = prop;
   const { t } = useTranslation(['popup', 'lang']);
 
   const { levelList, selectedLevel, setSelectedLevel, levelData, solutionGrid, status, handleSolve, getGroupColor } =
-    useDeltaRobot({ levelLogicId: entity.levelLogicId });
+    useDeltaRobot({ levelList: miniGameIds });
 
   const solving = status === DeltaRobotStatus.Solving;
 
   return (
-    <div className="pb-2">
+    <>
       <SubPopupTitle>{t('popup:robot.solution')}</SubPopupTitle>
       {/* 关卡选择 */}
       <div className="px-4 pt-4 space-y-2 text-gray-300">
@@ -86,6 +84,6 @@ export const DeltaRobot = ({ entity }: DeltaRobotProps) => {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
