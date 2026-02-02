@@ -1,5 +1,4 @@
 import type { JSONLoader } from '@endfieldmap/tools';
-import { action } from 'mobx';
 
 import type { LevelData, ParsedLevel, PieceData } from '@/@types/delta_robot';
 import type { DeltaRobotParsedLevelSchemaType } from '@/services/data/db/schema/game_data/delta_robot';
@@ -14,11 +13,6 @@ export class DeltaRobotDataService {
 
   constructor(jsonLoader: JSONLoader) {
     this.jsonLoader = jsonLoader;
-  }
-
-  @action
-  public async init() {
-    // 清空旧数据并加载新数据
   }
 
   private async getParsedLevelFromDB(levelId: string) {

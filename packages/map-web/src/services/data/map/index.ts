@@ -48,10 +48,7 @@ export class MapDataService {
 
     this.itemDataService = new ItemDataService(this.jsonLoader);
     this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.itemDataService);
-    this.dungeonSeriesDataService = new DungeonSeriesDataService(
-      this.jsonLoader,
-      this.chestRewardDataService
-    );
+    this.dungeonSeriesDataService = new DungeonSeriesDataService(this.jsonLoader, this.chestRewardDataService);
     this.deltaRobotDataService = new DeltaRobotDataService(this.jsonLoader);
     this.guideDataService = new GuideDataService(this.jsonLoader);
     this.langHashDataService = new LangHashDataService(this.jsonLoader);
@@ -89,8 +86,6 @@ export class MapDataService {
       () => this.langHashDataService.init(),
       // 初始化网格分级数据
       () => this.gridTiersDataService.init(),
-      // 初始化 delta robot 数据
-      () => this.deltaRobotDataService.init(),
       // 初始化情报档案数据
       () => this.noteDataService.init(),
     ];
