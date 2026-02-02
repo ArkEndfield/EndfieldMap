@@ -6,8 +6,6 @@ import type { RxCollection, RxDatabase } from 'rxdb';
 
 import { chestRewardSchema, type ChestRewardSchemaType } from '@/services/data/db/schema/game_data/chest_reward';
 import {
-  deltaRobotLevelListSchema,
-  type DeltaRobotLevelListSchemaType,
   deltaRobotParsedLevelSchema,
   type DeltaRobotParsedLevelSchemaType,
 } from '@/services/data/db/schema/game_data/delta_robot';
@@ -52,7 +50,6 @@ export type DBCollections = {
   gameChestReward: RxCollection<ChestRewardSchemaType>;
   gameDungeonSeries: RxCollection<DungeonSeriesSchemaType>;
   gameGuide: RxCollection<GuideSchemaType>;
-  gameDeltaRobotLevelList: RxCollection<DeltaRobotLevelListSchemaType>;
   gameDeltaRobotParsedLevel: RxCollection<DeltaRobotParsedLevelSchemaType>;
 };
 
@@ -97,9 +94,7 @@ export const gameDataCollectionsSchema = {
   gameGuide: {
     schema: guideSchema,
   },
-  gameDeltaRobotLevelList: {
-    schema: deltaRobotLevelListSchema,
-  },
+
   gameDeltaRobotParsedLevel: {
     schema: deltaRobotParsedLevelSchema,
   },
@@ -137,7 +132,6 @@ export class GameDataCollections {
   public gameChestReward: RxCollection<ChestRewardSchemaType>;
   public gameDungeonSeries: RxCollection<DungeonSeriesSchemaType>;
   public gameGuide: RxCollection<GuideSchemaType>;
-  public gameDeltaRobotLevelList: RxCollection<DeltaRobotLevelListSchemaType>;
   public gameDeltaRobotParsedLevel: RxCollection<DeltaRobotParsedLevelSchemaType>;
 
   constructor(db: RxDatabase<DBCollections>) {
@@ -145,7 +139,7 @@ export class GameDataCollections {
     this.gameChestReward = db.gameChestReward;
     this.gameDungeonSeries = db.gameDungeonSeries;
     this.gameGuide = db.gameGuide;
-    this.gameDeltaRobotLevelList = db.gameDeltaRobotLevelList;
+
     this.gameDeltaRobotParsedLevel = db.gameDeltaRobotParsedLevel;
   }
 }

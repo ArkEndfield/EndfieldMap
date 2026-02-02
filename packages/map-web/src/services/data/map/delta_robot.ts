@@ -1,5 +1,5 @@
 import type { JSONLoader } from '@endfieldmap/tools';
-import { action, observable } from 'mobx';
+import { action } from 'mobx';
 
 import type { LevelData, ParsedLevel, PieceData } from '@/@types/delta_robot';
 import type { DeltaRobotParsedLevelSchemaType } from '@/services/data/db/schema/game_data/delta_robot';
@@ -11,7 +11,6 @@ const assetURL = getAssetUrls();
 
 export class DeltaRobotDataService {
   private jsonLoader: JSONLoader;
-  @observable accessor levelList: Record<string, string[]> = {};
 
   constructor(jsonLoader: JSONLoader) {
     this.jsonLoader = jsonLoader;
@@ -20,29 +19,6 @@ export class DeltaRobotDataService {
   @action
   public async init() {
     // 清空旧数据并加载新数据
-    // 清空旧数据并加载新数据
-    const levelListData = await this.jsonLoader.loadJSON<Record<string, string[]>>(
-      `${assetURL.miniGameData}/minigame.json`
-    );
-
-    // 批量保存到数据库
-    const levelListItems = Object.entries(levelListData || {}).map(([id, levels]) => ({
-      id,
-      levels,
-    }));
-    if (levelListItems.length > 0) {
-      await DataService.dbStorage.database.gameDeltaRobotLevelList.bulkUpsert(levelListItems);
-    }
-
-    // 同时保持内存中的副本以供快速访问
-    this.levelList = levelListData || {};
-  }
-
-  /**
-   * 获取关卡列表
-   */
-  public getLevelList(id: string | number) {
-    return this.levelList[id.toString()];
   }
 
   private async getParsedLevelFromDB(levelId: string) {

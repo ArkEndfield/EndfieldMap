@@ -5,31 +5,6 @@ import {
   toTypedRxJsonSchema,
 } from 'rxdb';
 
-// Delta Robot Level List schema (存储 minigame.json 的映射)
-const deltaRobotLevelListSchemaLiteral = {
-  version: 0,
-  primaryKey: 'id',
-  type: 'object',
-  properties: {
-    id: { type: 'string', maxLength: 128 },
-    levels: {
-      type: 'array',
-      items: { type: 'string' },
-    },
-  },
-  required: ['id', 'levels'],
-} as const;
-
-export const deltaRobotLevelListSchemaTyped = toTypedRxJsonSchema(deltaRobotLevelListSchemaLiteral);
-
-export type DeltaRobotLevelListSchemaType = ExtractDocumentTypeFromTypedRxJsonSchema<
-  typeof deltaRobotLevelListSchemaTyped
->;
-
-export const deltaRobotLevelListSchema: RxJsonSchema<DeltaRobotLevelListSchemaType> = deltaRobotLevelListSchemaLiteral;
-
-export type DeltaRobotLevelListCollection = RxCollection<DeltaRobotLevelListSchemaType>;
-
 // Delta Robot Parsed Level schema (存储解析后的关卡数据)
 const deltaRobotParsedLevelSchemaLiteral = {
   version: 0,
