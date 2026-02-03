@@ -25,6 +25,13 @@ const BilibiliIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// Discord 图标
+const DiscordIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={cn('w-4 h-4', className)}>
+    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+  </svg>
+);
+
 // 第三方登录按钮
 const ThirdPartyButton = ({
   icon,
@@ -67,75 +74,219 @@ const LinkButton = ({ children, href }: { children?: React.ReactNode; href: stri
   );
 };
 
+type AuthMode = 'login' | 'register';
+
 export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const { t } = useTranslation('header');
+  const [mode, setMode] = useState<AuthMode>('login');
+
+  // 登录表单状态
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
   const [accountError, setAccountError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+  // 注册表单状态
+  const [regUsername, setRegUsername] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [regUsernameError, setRegUsernameError] = useState('');
+  const [regPasswordError, setRegPasswordError] = useState('');
+
   const [isAgree, setIsAgree] = useState(false);
   const [loading, _setLoading] = useState(false);
+
   const onLogin = async () => {
     alert.info(t('user.not_support_yet'));
   };
+
+  const onRegister = async () => {
+    // 简单校验
+    let hasError = false;
+
+    if (!regUsername.trim()) {
+      setRegUsernameError(t('user.username_required', '请输入用户名'));
+      hasError = true;
+    } else if (regUsername.length < 3) {
+      setRegUsernameError(t('user.username_too_short', '用户名至少3个字符'));
+      hasError = true;
+    }
+
+    if (!regPassword) {
+      setRegPasswordError(t('user.password_required', '请输入密码'));
+      hasError = true;
+    } else if (regPassword.length < 6) {
+      setRegPasswordError(t('user.password_too_short', '密码至少6个字符'));
+      hasError = true;
+    }
+
+    if (!isAgree) {
+      alert.warning(t('user.please_agree', '请先同意用户协议'));
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    alert.info(t('user.not_support_yet'));
+  };
+
+  const switchMode = (newMode: AuthMode) => {
+    setMode(newMode);
+    // 清空错误状态
+    setAccountError('');
+    setPasswordError('');
+    setRegUsernameError('');
+    setRegPasswordError('');
+  };
+
   useEffect(() => {
     // TODO: 先做不支持的提示
     if (open && !isDev) onLogin();
   }, [open]);
+
+  // 重置状态当关闭时
+  useEffect(() => {
+    if (!open) {
+      setMode('login');
+      setAccount('');
+      setPassword('');
+      setRegUsername('');
+      setRegPassword('');
+      setIsAgree(false);
+    }
+  }, [open]);
+
   return (
     <UserModal open={open} onClose={onClose}>
       <div className="mb-10 w-80 max-w-full mx-auto flex flex-col items-center">
         <Logo className="h-10 my-10" />
         <div className="w-full space-y-4">
-          <UserInput
-            label={t('user.username')}
-            placeholder={t('user.username_placeholder')}
-            value={account}
-            onChange={(val) => {
-              setAccount(val);
-              setAccountError('');
-            }}
-            error={!!accountError}
-          />
-          <UserInput
-            label={t('user.password')}
-            placeholder={t('user.password_placeholder')}
-            value={password}
-            onChange={(val) => {
-              setPassword(val);
-              setPasswordError('');
-            }}
-            error={!!passwordError}
-          />
-          <Toggle
-            checked={isAgree}
-            onToggle={() => setIsAgree(!isAgree)}
-            label={
-              <Trans
-                t={t}
-                i18nKey="user.agreement"
-                components={{
-                  agreement: <LinkButton href="" />,
+          {mode === 'login' ? (
+            <>
+              {/* 登录表单 */}
+              <UserInput
+                label={t('user.username')}
+                placeholder={t('user.username_placeholder')}
+                value={account}
+                onChange={(val) => {
+                  setAccount(val);
+                  setAccountError('');
                 }}
+                error={!!accountError}
               />
-            }
-            hideBorder
-            size="sm"
-            className="gap-1 mx-auto bg-black/20 py-1 px-4 rounded-full [text-shadow:0_2px_2px_rgba(0,0,0,0.8)]"
-          />
-          <div className="flex gap-2">
-            <ZmdSquareButton className="text-base" loading={loading} onClick={onLogin}>
-              {t('user.register')}
-            </ZmdSquareButton>
-            <ZmdSquareButton className="flex-1 text-base" type="default" icon={<TickCircleIcon />} loading={loading} onClick={onLogin}>
-              {t('user.login')}
-            </ZmdSquareButton>
-          </div>
+              <UserInput
+                label={t('user.password')}
+                placeholder={t('user.password_placeholder')}
+                type="password"
+                value={password}
+                onChange={(val) => {
+                  setPassword(val);
+                  setPasswordError('');
+                }}
+                error={!!passwordError}
+              />
+              <Toggle
+                checked={isAgree}
+                onToggle={() => setIsAgree(!isAgree)}
+                label={
+                  <Trans
+                    t={t}
+                    i18nKey="user.agreement"
+                    components={{
+                      agreement: <LinkButton href="" />,
+                    }}
+                  />
+                }
+                hideBorder
+                size="sm"
+                className="gap-1 mx-auto bg-black/20 py-1 px-4 rounded-full [text-shadow:0_2px_2px_rgba(0,0,0,0.8)]"
+              />
+              <div className="flex gap-2">
+                <ZmdSquareButton className="text-base" loading={loading} onClick={() => switchMode('register')}>
+                  {t('user.register')}
+                </ZmdSquareButton>
+                <ZmdSquareButton
+                  className="flex-1 text-base"
+                  type="default"
+                  icon={<TickCircleIcon />}
+                  loading={loading}
+                  onClick={onLogin}
+                >
+                  {t('user.login')}
+                </ZmdSquareButton>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* 注册表单 */}
+              <UserInput
+                label={t('user.username')}
+                placeholder={t('user.register_username_placeholder', '请输入用户名（3-20个字符）')}
+                value={regUsername}
+                onChange={(val) => {
+                  setRegUsername(val);
+                  setRegUsernameError('');
+                }}
+                error={!!regUsernameError}
+              />
+              {regUsernameError && <p className="text-red-400 text-xs -mt-2 ml-1">{regUsernameError}</p>}
+
+              <UserInput
+                label={t('user.password')}
+                placeholder={t('user.register_password_placeholder', '请输入密码（至少6个字符）')}
+                value={regPassword}
+                onChange={(val) => {
+                  setRegPassword(val);
+                  setRegPasswordError('');
+                }}
+                error={!!regPasswordError}
+              />
+              {regPasswordError && <p className="text-red-400 text-xs -mt-2 ml-1">{regPasswordError}</p>}
+
+              <Toggle
+                checked={isAgree}
+                onToggle={() => setIsAgree(!isAgree)}
+                label={
+                  <Trans
+                    t={t}
+                    i18nKey="user.agreement"
+                    components={{
+                      agreement: <LinkButton href="" />,
+                    }}
+                  />
+                }
+                hideBorder
+                size="sm"
+                className="gap-1 mx-auto bg-black/20 py-1 px-4 rounded-full [text-shadow:0_2px_2px_rgba(0,0,0,0.8)]"
+              />
+
+              <ZmdSquareButton
+                className="w-full text-base"
+                type="default"
+                icon={<TickCircleIcon />}
+                loading={loading}
+                onClick={onRegister}
+              >
+                {t('user.register_submit', '立即注册')}
+              </ZmdSquareButton>
+
+              {/* 返回登录 */}
+              <div className="text-center">
+                <button
+                  onClick={() => switchMode('login')}
+                  className="text-white/60 hover:text-white text-sm transition-colors"
+                >
+                  {t('user.back_to_login', '已有账号？返回登录')}
+                </button>
+              </div>
+            </>
+          )}
 
           {/* 第三方登录分割线 */}
           <div className="flex items-center gap-3 my-2">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-            <span className="text-white/50 text-xs">{t('user.third_party_login', '或使用以下方式登录')}</span>
+            <span className="text-white/50 text-xs">
+              {t('user.third_party_login', mode === 'login' ? '或使用以下方式登录' : '或使用以下方式注册')}
+            </span>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           </div>
 
@@ -149,6 +300,11 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
             <ThirdPartyButton
               icon={<BilibiliIcon className="text-[#FB7299]" />}
               label="Bilibili"
+              onClick={() => alert.info(t('user.not_support_yet'))}
+            />
+            <ThirdPartyButton
+              icon={<DiscordIcon className="text-[#5865F2]" />}
+              label="Discord"
               onClick={() => alert.info(t('user.not_support_yet'))}
             />
           </div>
