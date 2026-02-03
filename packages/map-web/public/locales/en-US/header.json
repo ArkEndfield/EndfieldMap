@@ -13,5 +13,17 @@
     "filter": "Resource Filter",
     "poles": "Poles",
     "custom": "Custom Points"
+  },
+  "user": {
+    "title": "Account",
+    "not_support_yet": "Login not supported yet",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "username_placeholder": "Enter username",
+    "password_placeholder": "Enter password",
+    "agreement": "You have agreed to our <agreement>User Registration and Login Agreement</agreement>"
   }
 }

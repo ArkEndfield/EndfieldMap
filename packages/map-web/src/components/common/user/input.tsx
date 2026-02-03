@@ -40,7 +40,13 @@ export const UserInput: React.FC<UserInputProps> = ({
       )}
     >
       <label className="shrink-0">{icon}</label>
-      <label className="font-medium shrink-0 text-xl">{label}</label>
+      <label className="font-medium shrink-0 text-xl w-16 flex justify-between">
+        {String(label)
+          .split('')
+          .map((char, i) => (
+            <span key={i}>{char}</span>
+          ))}
+      </label>
       <div className="relative flex-1">
         <input
           ref={inputRef}

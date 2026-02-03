@@ -13,5 +13,17 @@
     "filter": "Filtro de marcadores de recursos",
     "poles": "Gestión de postes",
     "custom": "Marcadores personalizados"
+  },
+  "user": {
+    "title": "Cuenta",
+    "not_support_yet": "Función de inicio de sesión no disponible aún",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "username_placeholder": "Ingrese su nombre de usuario",
+    "password_placeholder": "Ingrese su contraseña",
+    "agreement": "Has aceptado nuestro <agreement>Acuerdo de Registro e Inicio de Sesión de Usuario</agreement>"
   }
 }

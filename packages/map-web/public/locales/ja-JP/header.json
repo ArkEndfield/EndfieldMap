@@ -13,5 +13,17 @@
     "filter": "リソースマーカーのフィルター",
     "poles": "電柱管理",
     "custom": "カスタムマーカー"
+  },
+  "user": {
+    "title": "アカウント",
+    "not_support_yet": "ログイン機能は現在サポートされていません",
+    "login": "ログイン",
+    "register": "登録",
+    "logout": "ログアウト",
+    "username": "ユーザー名",
+    "password": "パスワード",
+    "username_placeholder": "ユーザー名を入力してください",
+    "password_placeholder": "パスワードを入力してください",
+    "agreement": "<agreement>ユーザー登録およびログイン規約</agreement>に同意しました"
   }
 }
