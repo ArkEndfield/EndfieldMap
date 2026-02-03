@@ -1,11 +1,11 @@
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
-import { ColorPicker } from '@/components/common/dev_tools/draws/components/color_picker';
-import { DevToolsCoordType, useCoordType } from '@/components/common/dev_tools/draws/hooks/use_coord_type';
+import { ColorPicker } from '@/components/features/dev_tools/draws/components/color_picker';
+import { DevToolsCoordType, useCoordType } from '@/components/features/dev_tools/draws/hooks/use_coord_type';
 import { useAdapter } from '@/hooks/use_adapter';
 
-export const ShapeDraw = observer(() => {
+export const ZoneDraw = observer(() => {
   const { adapter, mapDataService } = useAdapter();
   const devToolsController = adapter.devToolsController;
   const currentMap = mapDataService.mapStateDataService.currentMap.value;
@@ -15,6 +15,7 @@ export const ShapeDraw = observer(() => {
   const [params, setParams] = useState({
     strokeColor: '#3388ff',
     strokeWidth: 2,
+    fillColor: 'rgba(51, 136, 255, 0.2)',
   });
 
   const handleDraw = () => {
@@ -43,11 +44,12 @@ export const ShapeDraw = observer(() => {
       }
     });
 
-    if (coords.length < 2) return;
+    if (coords.length < 3) return;
 
-    devToolsController.drawLine(coords, {
+    devToolsController.drawPolygon(coords, {
       strokeColor: params.strokeColor,
       strokeWidth: params.strokeWidth,
+      fillColor: params.fillColor,
     });
 
     setCoordInput('');
@@ -63,7 +65,7 @@ export const ShapeDraw = observer(() => {
 
       <div className="space-y-1">
         <label className="block text-gray-400">
-          点位集合（PolyLine）
+          点位集合
           <span className="block text-[10px] text-gray-500">
             {coordType === DevToolsCoordType.Game ? '格式: x, y, z' : '格式: x, y'}
           </span>
@@ -80,12 +82,12 @@ export const ShapeDraw = observer(() => {
 
       <div className="space-y-2 border-t border-white/10 pt-2">
         <ColorPicker
-          label="颜色"
+          label="描边颜色"
           value={params.strokeColor}
           onChange={(color) => setParams({ ...params, strokeColor: color })}
         />
         <div className="space-y-1">
-          <label className="text-gray-400">线宽</label>
+          <label className="text-gray-400">描边宽度</label>
           <input
             type="number"
             className="w-full bg-black/40 border border-white/20 rounded px-2 py-1 outline-none"
@@ -93,6 +95,11 @@ export const ShapeDraw = observer(() => {
             onChange={(e) => setParams({ ...params, strokeWidth: Number(e.target.value) })}
           />
         </div>
+        <ColorPicker
+          label="填充颜色"
+          value={params.fillColor}
+          onChange={(color) => setParams({ ...params, fillColor: color })}
+        />
       </div>
 
       <button
@@ -100,7 +107,7 @@ export const ShapeDraw = observer(() => {
         onClick={handleDraw}
         disabled={!coordInput.trim()}
       >
-        绘制 PolyLine
+        绘制区域
       </button>
     </div>
   );

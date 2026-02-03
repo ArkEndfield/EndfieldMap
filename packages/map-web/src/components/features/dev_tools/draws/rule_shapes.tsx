@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import { useMemo, useState } from 'react';
 
-import { ColorPicker } from '@/components/common/dev_tools/draws/components/color_picker';
-import { DevToolsCoordType, useCoordType } from '@/components/common/dev_tools/draws/hooks/use_coord_type';
+import { ColorPicker } from '@/components/features/dev_tools/draws/components/color_picker';
+import { DevToolsCoordType, useCoordType } from '@/components/features/dev_tools/draws/hooks/use_coord_type';
 import { useAdapter } from '@/hooks/use_adapter';
 
 type RuleShapeType = 'box' | 'sphere';

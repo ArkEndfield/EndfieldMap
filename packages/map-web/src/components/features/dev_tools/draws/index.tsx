@@ -1,10 +1,10 @@
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
-import { PointDraw } from '@/components/common/dev_tools/draws/point';
-import { RuleShapesDraw } from '@/components/common/dev_tools/draws/rule_shapes';
-import { ShapeDraw } from '@/components/common/dev_tools/draws/shape';
-import { ZoneDraw } from '@/components/common/dev_tools/draws/zone';
+import { PointDraw } from '@/components/features/dev_tools/draws/point';
+import { RuleShapesDraw } from '@/components/features/dev_tools/draws/rule_shapes';
+import { ShapeDraw } from '@/components/features/dev_tools/draws/shape';
+import { ZoneDraw } from '@/components/features/dev_tools/draws/zone';
 import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
 

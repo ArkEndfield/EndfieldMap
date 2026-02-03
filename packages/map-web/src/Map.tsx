@@ -12,8 +12,8 @@ import { isDev } from '@/services/env';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
 
-const DevTools = isDev ? lazy(() => import('@/components/common/dev_tools')) : null;
-const ZmdSwiper = lazy(() => import('@/components/common/zmd_swiper'));
+const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
+const ZmdSwiper = lazy(() => import('@/components/features/swiper'));
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
