@@ -26,7 +26,7 @@ const TopDeco = ({ className, reverse }: { className?: string; reverse?: boolean
   <motion.div
     className={cn(
       'w-full h-8 top-0 shrink-0 grow-0 origin-left',
-      'bg-[linear-gradient(45deg,#e0eb28_0,#e0eb28_12.5%,#f3ff2f_12.5%,#f3ff2f_37.5%,#e0eb28_37.5%,#e0eb28_62.5%,#f3ff2f_62.5%,#f3ff2f_87.5%,#e0eb28_87.5%,#e0eb28_100%)]',
+      'bg-[linear-gradient(45deg,#8a7a20_0,#8a7a20_12.5%,#b0a030_12.5%,#b0a030_37.5%,#8a7a20_37.5%,#8a7a20_62.5%,#b0a030_62.5%,#b0a030_87.5%,#8a7a20_87.5%,#8a7a20_100%)]',
       'bg-repeat bg-size-[0.3em_0.3em]',
       reverse
         ? 'mask-[linear-gradient(to_left,black_40%,transparent)]'
@@ -140,8 +140,8 @@ const UserModalInner: React.FC<UserModalProps> = ({
       <PortalContext.Provider value={dialogElement}>
         <motion.div
           className={cn(
-            'bg-[#111] relative overflow-hidden flex flex-col text-white w-3xl xl:w-4xl max-w-full max-h-full',
-            'bg-[repeating-linear-gradient(-45deg,#23232333_0,#23232333_1px,transparent_0,transparent_2px)]',
+            'bg-[#111] relative overflow-hidden flex flex-col text-white w-2xl max-w-full max-h-full',
+            'bg-[repeating-linear-gradient(-45deg,#23232318_0,#23232318_1px,transparent_0,transparent_2px)]',
             className
           )}
           initial={{ opacity: 0, scale: 0.9 }}

@@ -81,11 +81,11 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
             className="gap-1 mx-auto bg-black/20 py-1 px-4 rounded-full [text-shadow:0_2px_2px_rgba(0,0,0,0.8)]"
           />
           <div className="flex gap-2">
-            <ZmdSquareButton className="flex-1 text-base" icon={<TickCircleIcon />} loading={loading} onClick={onLogin}>
-              {t('user.login')}
-            </ZmdSquareButton>
-            <ZmdSquareButton type="default" className="text-base" loading={loading} onClick={onLogin}>
+            <ZmdSquareButton className="text-base" loading={loading} onClick={onLogin}>
               {t('user.register')}
+            </ZmdSquareButton>
+            <ZmdSquareButton className="flex-1 text-base" type="default" icon={<TickCircleIcon />} loading={loading} onClick={onLogin}>
+              {t('user.login')}
             </ZmdSquareButton>
           </div>
         </div>
