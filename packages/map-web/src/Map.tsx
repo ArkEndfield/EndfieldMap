@@ -4,7 +4,7 @@ import { lazy, Suspense, useEffect, useRef } from 'react';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
-import { SettingsPage } from '@/components/common/settings';
+import { SettingsPage } from '@/components/features/settings';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { MapDataService } from '@/services/data/map';

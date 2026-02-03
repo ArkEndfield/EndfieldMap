@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import { UserIcon } from '@/components/common/icons';
-import { AboutTitle } from '@/components/common/settings/items/about/title';
+import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { cn } from '@/utils/style';
 import { getAssetUrls } from '@/utils/url';
 
@@ -14,7 +14,7 @@ export const Recruit = observer(() => {
   const { t } = useTranslation('settings');
 
   return (
-    <div className="flex flex-col items-center pt-8 gap-6 w-full max-w-[500px]">
+    <div className="flex flex-col items-center pt-8 gap-6 w-full max-w-125">
       <AboutTitle>{t('about.recruit.title')}</AboutTitle>
 
       <div
