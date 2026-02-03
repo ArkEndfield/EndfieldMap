@@ -14,7 +14,11 @@ const clearAll = (confirmText: string): Promise<boolean> => {
     alert.confirm({
       content: confirmText,
       async onConfirm() {
-        await Promise.all([LocalStorageDB.clear(), DataService.storage.clearAll()]);
+        await Promise.all([
+          LocalStorageDB.clear(),
+          DataService.storage.clearAll(),
+          DataService.dbStorage.database.remove(),
+        ]);
         resolve(true);
       },
       onCancel() {

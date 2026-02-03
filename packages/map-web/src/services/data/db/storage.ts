@@ -17,6 +17,7 @@ export class Storage {
   private isInitialized = false;
   private user_collections?: UserCollections;
   private game_data_collections?: GameDataCollections;
+  public static dbName = 'endfieldmap';
 
   constructor() {
     if (isDev) {
@@ -32,7 +33,7 @@ export class Storage {
       return;
     }
     this.db = await createRxDatabase<DBCollections>({
-      name: 'endfieldmap',
+      name: Storage.dbName,
       storage: this.storage,
     });
     await this.initDBSchema();
