@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
+import { usePortalContainer } from '@/components/common/portal_context';
 
 const TOOLTIP_OFFSET = 8;
 
@@ -32,6 +33,7 @@ const Tooltip = <T extends React.ElementType = 'div'>({
   const measureRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<number | null>(null);
   const isMobile = useIsMobile();
+  const portalContainer = usePortalContainer();
 
   const disabled = _disabled || (disableOnMobile && isMobile);
 
@@ -215,7 +217,7 @@ const Tooltip = <T extends React.ElementType = 'div'>({
           >
             <div className={cn('px-2 text-sm', classNames?.content)}>{tooltip}</div>
           </div>,
-          document.body
+          portalContainer || document.body
         )}
 
       {createPortal(
@@ -246,7 +248,7 @@ const Tooltip = <T extends React.ElementType = 'div'>({
             </motion.div>
           )}
         </AnimatePresence>,
-        document.body
+        portalContainer || document.body
       )}
     </>
   );

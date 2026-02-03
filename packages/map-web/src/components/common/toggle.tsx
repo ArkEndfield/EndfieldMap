@@ -6,10 +6,12 @@ import { cn } from '@/utils/style';
 
 export interface ToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   checked: boolean;
-  label: string;
+  label: React.ReactNode;
   onToggle: () => void;
   hideBorder?: boolean;
   isIndeterminate?: boolean;
+  size?: 'sm' | 'md';
+  indicatorClassName?: string;
 }
 
 const checkVariants = {
@@ -32,6 +34,8 @@ export const Toggle: React.FC<ToggleProps> = ({
   disabled,
   hideBorder,
   isIndeterminate,
+  size = 'md',
+  indicatorClassName,
   ...props
 }) => {
   return (
@@ -53,8 +57,10 @@ export const Toggle: React.FC<ToggleProps> = ({
     >
       <span
         className={cn(
-          'flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors',
-          checked || isIndeterminate ? 'bg-[#FDFB73]' : 'bg-[#444]'
+          'flex shrink-0 items-center justify-center rounded-full transition-colors',
+          size === 'sm' ? 'h-3 w-3' : 'h-4 w-4',
+          checked || isIndeterminate ? 'bg-[#FDFB73]' : 'bg-[#444]',
+          indicatorClassName
         )}
       >
         <AnimatePresence mode="wait">
@@ -90,7 +96,7 @@ export const Toggle: React.FC<ToggleProps> = ({
           ) : null}
         </AnimatePresence>
       </span>
-      <span className="flex-1 text-left text-sm">{label}</span>
+      <span className={cn('flex-1 text-left', size === 'sm' ? 'text-xs' : 'text-sm')}>{label}</span>
     </ButtonWithAudio>
   );
 };

@@ -1,9 +1,8 @@
-import { type ZmdAlertFullProps } from '@themes/types/alert';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { type ZmdAlertFullProps } from '@/components/themes/types/alert';
 import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
@@ -15,8 +14,6 @@ const DECO_COMMON_LOGO_BG = '/images/bg/deco_common_logo_bg.png';
 
 export const ZmdAlertFull = ({
   open,
-  onOpenChange,
-  dismissible = true,
   hideCancel = false,
   cancelText,
   confirmText,
@@ -24,99 +21,18 @@ export const ZmdAlertFull = ({
   showIcon = true,
   height = 'auto',
   children,
-  onDismiss = () => {},
-  onCancel = () => {},
-  onClose = () => {},
-  onConfirm = () => {},
+  onDismiss,
+  onCancel,
+  onConfirm,
 }: ZmdAlertFullProps) => {
   const { t } = useTranslation();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const handleDismiss = () => {
-    if (!dismissible || isProcessing) return;
+  useEffect(() => {
+    dialogRef.current?.showModal();
+  }, []);
 
-    const result = onDismiss();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
-  const handleClose = () => {
-    if (isProcessing) return;
-
-    const result = onClose();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            onOpenChange?.(false);
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      onOpenChange?.(false);
-    }
-  };
-
-  const handleCancel = () => {
-    if (isProcessing) return;
-
-    const result = onCancel();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
-  const handleConfirm = () => {
-    if (isProcessing) return;
-
-    const result = onConfirm();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
-  return createPortal(
+  return (
     <AnimatePresence>
       {open && (
         <motion.dialog
@@ -127,7 +43,7 @@ export const ZmdAlertFull = ({
           transition={{ duration: 0.05 }}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
-              handleDismiss();
+              onDismiss?.();
             }
           }}
         >
@@ -197,8 +113,8 @@ export const ZmdAlertFull = ({
                           type="default"
                           text={cancelText ?? t('cancel')}
                           showIcon={showIcon}
-                          disabled={isProcessing}
-                          onClick={handleCancel}
+                          disabled={loading}
+                          onClick={() => onCancel?.()}
                           icon={<ZmdAlertCloseIcon />}
                         />
                       </div>
@@ -209,9 +125,9 @@ export const ZmdAlertFull = ({
                         type="primary"
                         text={confirmText ?? t('confirm')}
                         showIcon={showIcon}
-                        loading={isProcessing || loading}
-                        disabled={isProcessing || loading}
-                        onClick={handleConfirm}
+                        loading={loading}
+                        disabled={loading}
+                        onClick={() => onConfirm?.()}
                         icon={<ZmdAlertTickIcon />}
                       />
                     </div>
@@ -222,8 +138,7 @@ export const ZmdAlertFull = ({
           </AnimatePresence>
         </motion.dialog>
       )}
-    </AnimatePresence>,
-    document.body
+    </AnimatePresence>
   );
 };
 

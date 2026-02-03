@@ -54,13 +54,8 @@ export const MiniGameLockComponent: SubPopupComponentProps<MiniGameLockData> = (
           }}
           onClick={handleSolve}
           disabled={!levelData || levelData.pieces.length === 0}
-          icon={
-            solving ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-            ) : (
-              <TickCircleIcon />
-            )
-          }
+          loading={solving}
+          icon={<TickCircleIcon />}
         >
           {solving ? t('popup:robot.solving') : t('popup:robot.start_slove')}
         </ZmdSquareButton>

@@ -13,5 +13,17 @@
     "filter": "资源标点筛选",
     "poles": "电线杆管理",
     "custom": "自定义标点"
+  },
+  "user": {
+    "title": "账户",
+    "not_support_yet": "暂不支持登录功能",
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "username": "用户名",
+    "password": "密码",
+    "username_placeholder": "请输入账号",
+    "password_placeholder": "请输入密码",
+    "agreement": "你已同意我们的<agreement>《用户注册登录协议》</agreement>"
   }
 }

@@ -1,5 +1,5 @@
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { Tooltip } from '@/components/common/tooltip/tooltip';
+import { Tooltip } from '@/components/common/tooltip';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
 

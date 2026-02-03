@@ -77,6 +77,18 @@ interface Resources {
     },
     "settings": {
       "title": "设置"
+    },
+    "user": {
+      "agreement": "你已同意我们的<agreement>《用户注册登录协议》</agreement>",
+      "login": "登录",
+      "logout": "退出登录",
+      "not_support_yet": "暂不支持登录功能",
+      "password": "密码",
+      "password_placeholder": "请输入密码",
+      "register": "注册",
+      "title": "账户",
+      "username": "用户名",
+      "username_placeholder": "请输入账号"
     }
   },
   "lang": {

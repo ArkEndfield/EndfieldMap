@@ -1,4 +1,4 @@
-import { Toggle } from '@themes/endfield/components/toggle';
+import { Toggle } from '@/components/common/toggle';
 import { useTranslation } from 'react-i18next';
 
 interface PresetSelectBarProps {

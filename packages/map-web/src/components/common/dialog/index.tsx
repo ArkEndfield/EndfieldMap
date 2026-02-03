@@ -1,3 +1,4 @@
+import shortcutService from '@/services/shortcut';
 import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -7,7 +8,7 @@ import { EndfieldCloseIcon } from '@/components/common/icons';
 import { type DialogProps } from '@/components/themes/types/dialog';
 import { cn } from '@/utils/style';
 
-import { ScrollArea } from '../scroll_area';
+import { ScrollArea } from '@/components/common/scroll_area';
 
 const CloseButton: React.FC<{
   onClick?: () => void;
@@ -210,7 +211,7 @@ const DialogInner: React.FC<DialogProps> = ({
 };
 
 export const Dialog: React.FC<DialogProps> = (props) => {
-  const { open, onOpenChange, dismissible = true, onDismiss = () => {}, onClose = () => {} } = props;
+  const { open, onOpenChange, dismissible = true, onDismiss = () => {}, onClose = () => {}, keyboardCloseable } = props;
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleClose = () => {
@@ -254,6 +255,43 @@ export const Dialog: React.FC<DialogProps> = (props) => {
       handleClose();
     }
   };
+
+  const handleKeyboardClose = () => {
+    if (isProcessing) return;
+
+    // If keyboardCloseable is explicitly set, use it. Otherwise, fall back to dismissible behavior
+    const shouldAllowKeyboardClose = keyboardCloseable !== undefined ? keyboardCloseable : dismissible;
+    if (!shouldAllowKeyboardClose) return;
+
+    const result = onDismiss();
+    if (result instanceof Promise) {
+      setIsProcessing(true);
+      result
+        .then((res) => {
+          setIsProcessing(false);
+          if (res !== false) {
+            handleClose();
+          }
+        })
+        .catch(() => {
+          setIsProcessing(false);
+        });
+    } else if (result !== false) {
+      handleClose();
+    }
+  };
+
+  useEffect(() => {
+    const shouldListen = keyboardCloseable !== undefined ? keyboardCloseable : dismissible;
+
+    if (!shouldListen) return;
+    const dispose = shortcutService.register('Escape', (e: KeyboardEvent) => {
+      e.preventDefault();
+      handleKeyboardClose();
+      return true;
+    });
+    return () => dispose();
+  }, [dismissible, keyboardCloseable, isProcessing]);
 
   return (
     <AnimatePresence>

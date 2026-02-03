@@ -1,4 +1,4 @@
-import { domEventListener } from '@endfieldmap/tools';
+import shortcutService from '@/services/shortcut';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
@@ -68,16 +68,12 @@ const Settings: React.FC<SettingsPageProps> = observer(({ open, onClose }) => {
   }, [open]);
 
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog) {
-      const dispose = domEventListener(dialog, 'keydown', (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          onClose();
-        }
-      });
-      return () => dispose();
-    }
+    const dispose = shortcutService.register('Escape', (e: KeyboardEvent) => {
+      e.preventDefault();
+      onClose();
+      return true;
+    });
+    return () => dispose();
   }, [onClose]);
 
   useEffect(() => {

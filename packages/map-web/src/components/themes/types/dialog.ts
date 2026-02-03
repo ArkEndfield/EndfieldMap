@@ -21,4 +21,5 @@ export interface DialogProps {
   };
   onDismiss?: () => boolean | void | Promise<boolean | void>;
   onClose?: () => boolean | void | Promise<boolean | void>;
+  keyboardCloseable?: boolean;
 }

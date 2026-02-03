@@ -4,7 +4,8 @@ import { menus } from '@themes/endfield/ui/menus/left/list';
 
 import { cn } from '@/utils/style';
 
-const Menu = menus[1];
+const SettingsMenu = menus[1];
+const UserMenu = menus[2];
 
 export default function MobileMenus() {
   return (
@@ -17,9 +18,14 @@ export default function MobileMenus() {
       <div className="absolute bottom-0 h-1 flex items-stretch left-4 right-4 bg-[#fffa00]" />
       <OperateList
         endContent={
-          <MenuContainer>
-            <Menu />
-          </MenuContainer>
+          <>
+            <MenuContainer rightBorder>
+              <SettingsMenu />
+            </MenuContainer>
+            <MenuContainer>
+              <UserMenu />
+            </MenuContainer>
+          </>
         }
       />
     </div>

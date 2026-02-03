@@ -21,6 +21,7 @@ export interface ZmdAlertProps {
   onCancel?: () => boolean | void | Promise<boolean | void>;
   onClose?: () => boolean | void | Promise<boolean | void>;
   onConfirm?: () => boolean | void | Promise<boolean | void>;
+  keyboardCloseable?: boolean;
 }
 
 export interface ZmdAlertFullProps {
@@ -38,6 +39,7 @@ export interface ZmdAlertFullProps {
   onCancel?: () => boolean | void | Promise<boolean | void>;
   onClose?: () => boolean | void | Promise<boolean | void>;
   onConfirm?: () => boolean | void | Promise<boolean | void>;
+  keyboardCloseable?: boolean;
 }
 
 export interface PromptInputProps {

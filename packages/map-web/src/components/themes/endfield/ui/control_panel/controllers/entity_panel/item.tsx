@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import Counter from '@/components/common/count_up';
-import { Tooltip } from '@/components/common/tooltip/tooltip';
+import { Tooltip } from '@/components/common/tooltip';
 import { SoundType } from '@/const/audio_config';
 import { useEntityName } from '@/hooks/use_entity_name';
 import { useIsMobile } from '@/hooks/use_is_mobile';
@@ -89,9 +89,7 @@ const EntityItem = observer(
           </div>
 
           <div className="flex flex-1 relative items-center justify-between overflow-hidden">
-            <div className="flex-1 mr-0.5 min-w-0 text-left truncate">
-              {displayName}
-            </div>
+            <div className="flex-1 mr-0.5 min-w-0 text-left truncate">{displayName}</div>
 
             {!hideCount && entity && (
               <div

@@ -1,9 +1,8 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type ZmdAlertProps } from '@/components/common/alert/alert';
+import { type ZmdAlertProps } from '@themes/types/alert';
 import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { cn } from '@/utils/style';
@@ -16,29 +15,20 @@ const GLITCH_OPACITY = [0, 1, 1, 0, 0, 1, 1, 0, 0, 1];
 const GLITCH_TIMES = [0, 0.48, 0.82, 0.85, 0.87, 0.9, 0.92, 0.95, 0.97, 1];
 const GLITCH_DURATION = 0.205;
 
-const AlertInner: React.FC<
-  ZmdAlertProps & {
-    handleClose: () => void;
-    handleDismiss: () => void;
-    handleCancel: () => void;
-    handleConfirm: () => void;
-    isProcessing: boolean;
-  }
-> = ({
+const AlertInner: React.FC<ZmdAlertProps> = ({
   open,
   hideCancel,
   cancelText,
   confirmText,
   loading,
   showIcon,
-  width,
+  width = '30em',
   height,
   children,
   classNames,
-  handleDismiss,
-  handleCancel,
-  handleConfirm,
-  isProcessing,
+  onDismiss,
+  onCancel,
+  onConfirm,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { t } = useTranslation();
@@ -58,7 +48,7 @@ const AlertInner: React.FC<
       )}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
-          handleDismiss();
+          onDismiss?.();
         }
       }}
     >
@@ -128,8 +118,8 @@ const AlertInner: React.FC<
               type="default"
               text={cancelText ?? t('cancel')}
               showIcon={showIcon}
-              disabled={isProcessing}
-              onClick={handleCancel}
+              disabled={loading}
+              onClick={() => onCancel?.()}
               icon={<ZmdAlertCloseIcon />}
               classNames={{
                 button: 'w-1/2',
@@ -140,9 +130,9 @@ const AlertInner: React.FC<
             type="primary"
             text={confirmText ?? t('confirm')}
             showIcon={showIcon}
-            loading={isProcessing || loading}
-            disabled={isProcessing || loading}
-            onClick={handleConfirm}
+            loading={loading}
+            disabled={loading}
+            onClick={() => onConfirm?.()}
             icon={<ZmdAlertTickIcon />}
             classNames={{
               button: 'w-1/2',
@@ -154,141 +144,8 @@ const AlertInner: React.FC<
   );
 };
 
-export const ZmdAlert: React.FC<ZmdAlertProps> = ({
-  open,
-  onOpenChange,
-  dismissible = true,
-  hideCancel = false,
-  cancelText,
-  confirmText,
-  loading = false,
-  showIcon = true,
-  width = '30em',
-  height = 'auto',
-  onDismiss = () => {},
-  onCancel = () => {},
-  onClose = () => {},
-  onConfirm = () => {},
-  children,
-  classNames,
-}) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  // Logic Handlers
-  const handleClose = () => {
-    if (isProcessing) return;
-
-    const result = onClose();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            onOpenChange?.(false);
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      onOpenChange?.(false);
-    }
-  };
-
-  const handleDismiss = () => {
-    if (!dismissible || isProcessing) return;
-
-    const result = onDismiss();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
-  const handleCancelInternal = () => {
-    if (isProcessing) return;
-
-    const result = onCancel();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
-  const handleConfirmInternal = () => {
-    if (isProcessing) return;
-
-    const result = onConfirm();
-    if (result instanceof Promise) {
-      setIsProcessing(true);
-      result
-        .then((res) => {
-          setIsProcessing(false);
-          if (res !== false) {
-            handleClose();
-          }
-        })
-        .catch(() => {
-          setIsProcessing(false);
-        });
-    } else if (result !== false) {
-      handleClose();
-    }
-  };
-
-  return createPortal(
-    <AnimatePresence>
-      {open && (
-        <AlertInner
-          open={open}
-          onOpenChange={onOpenChange}
-          dismissible={dismissible}
-          hideCancel={hideCancel}
-          cancelText={cancelText}
-          confirmText={confirmText}
-          loading={loading}
-          showIcon={showIcon}
-          width={width}
-          height={height}
-          onDismiss={onDismiss}
-          onCancel={onCancel}
-          onClose={onClose}
-          onConfirm={onConfirm}
-          children={children}
-          classNames={classNames}
-          handleClose={handleClose}
-          handleDismiss={handleDismiss}
-          handleCancel={handleCancelInternal}
-          handleConfirm={handleConfirmInternal}
-          isProcessing={isProcessing}
-        />
-      )}
-    </AnimatePresence>,
-    document.body
-  );
+export const ZmdAlert: React.FC<ZmdAlertProps> = (props) => {
+  return <AnimatePresence>{props.open && <AlertInner {...props} />}</AnimatePresence>;
 };
 
 export default ZmdAlert;
