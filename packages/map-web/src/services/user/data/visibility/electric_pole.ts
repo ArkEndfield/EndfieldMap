@@ -1,8 +1,11 @@
 import type { MapData } from '@endfieldmap/map-core';
 
 import { DataService } from '@/services/data';
+import { BaseUserDataService } from '@/services/user/data/_base';
 
-export class ElectricPoleVisibilityService {
+export type ElectricPoleVisibilityCallback = (mapId: MapData['id'], entityKey: string, visible: boolean) => void;
+
+export class ElectricPoleVisibilityService extends BaseUserDataService {
   private get db() {
     return DataService.dbStorage.database.electricPoleVisibility;
   }
@@ -29,22 +32,44 @@ export class ElectricPoleVisibilityService {
     return this.db.insert({ id: idString, mapId, entityKey, visible, createdAt: now, updatedAt: now });
   }
 
-  public addSubscribe(callback: (mapId: MapData['id'], entityKey: string, visible: boolean) => void) {
-    this.db.$.subscribe((changeEvent) => {
-      switch (changeEvent.operation) {
-        case 'INSERT':
-        case 'UPDATE':
-          callback(
-            changeEvent.documentData.mapId,
-            changeEvent.documentData.entityKey,
-            changeEvent.documentData.visible
-          );
-          break;
-        case 'DELETE':
-          callback(changeEvent.documentData.mapId, changeEvent.documentData.entityKey, false);
-          break;
+  /**
+   * 添加数据变化订阅
+   */
+  public addSubscribe(callback: ElectricPoleVisibilityCallback) {
+    this.callbacks.push(callback);
+    this.registerDBSubscriptions();
+  }
+
+  /**
+   * 注册数据库订阅
+   */
+  protected registerDBSubscriptions(): void {
+    // 清除旧的订阅
+    this.clearSubscriptions();
+
+    const sub = this.db.$.subscribe((changeEvent) => {
+      for (const callback of this.callbacks as ElectricPoleVisibilityCallback[]) {
+        try {
+          switch (changeEvent.operation) {
+            case 'INSERT':
+            case 'UPDATE':
+              callback(
+                changeEvent.documentData.mapId,
+                changeEvent.documentData.entityKey,
+                changeEvent.documentData.visible
+              );
+              break;
+            case 'DELETE':
+              callback(changeEvent.documentData.mapId, changeEvent.documentData.entityKey, false);
+              break;
+          }
+        } catch (e) {
+          // 忽略回调错误
+        }
       }
     });
+
+    this.subscriptions.push(sub);
   }
 
   public clearAllData() {

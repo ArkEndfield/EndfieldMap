@@ -23,12 +23,12 @@ export class GuideDataService {
       ...guide,
     }));
     if (guides.length > 0) {
-      await DataService.dbStorage.database.gameGuide.bulkUpsert(guides);
+      await DataService.dbStorage.gameDatabase.gameGuide.bulkUpsert(guides);
     }
   }
 
   private async getGuideDataFromDB(id: string) {
-    return await DataService.dbStorage.database.gameGuide
+    return await DataService.dbStorage.gameDatabase.gameGuide
       .findOne({
         selector: { id },
       })

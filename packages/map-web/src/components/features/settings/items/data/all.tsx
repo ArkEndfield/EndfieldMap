@@ -14,10 +14,19 @@ const clearAll = (confirmText: string): Promise<boolean> => {
     alert.confirm({
       content: confirmText,
       async onConfirm() {
+        const db = DataService.dbStorage.database;
+        // 清空用户数据库中的所有数据（触发删除事件）
         await Promise.all([
           LocalStorageDB.clear(),
           DataService.storage.clearAll(),
-          DataService.dbStorage.database.remove(),
+          db.electricPoleNode.find().remove(),
+          db.electricPolePreset.find().remove(),
+          db.electricPoleVisibility.find().remove(),
+          db.customPointNode.find().remove(),
+          db.customPointPreset.find().remove(),
+          db.customPointVisibility.find().remove(),
+          db.entityMark.find().remove(),
+          db.entityVisibility.find().remove(),
         ]);
         resolve(true);
       },

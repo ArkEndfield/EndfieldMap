@@ -1,8 +1,11 @@
 import type { EntityData, MapData } from '@endfieldmap/map-core';
 
 import { DataService } from '@/services/data';
+import { BaseUserDataService } from '@/services/user/data/_base';
 
-export class EntityMarkService {
+export type EntityMarkCallback = (mapId: MapData['id'], id: EntityData['levelLogicId'], marked: boolean) => void;
+
+export class EntityMarkService extends BaseUserDataService {
   private get db() {
     return DataService.dbStorage.database.entityMark;
   }
@@ -25,18 +28,51 @@ export class EntityMarkService {
     return this.db.insert({ id: idString, mapId, entityId, marked, createdAt: now, updatedAt: now });
   }
 
-  public addScribe(callback: (mapId: MapData['id'], id: EntityData['levelLogicId'], marked: boolean) => void) {
-    this.db.$.subscribe((changeEvent) => {
-      switch (changeEvent.operation) {
-        case 'INSERT':
-        case 'UPDATE':
-          callback(changeEvent.documentData.mapId, changeEvent.documentData.entityId, changeEvent.documentData.marked);
-          break;
-        case 'DELETE':
-          callback(changeEvent.documentData.mapId, changeEvent.documentData.entityId, false);
-          break;
+  /**
+   * 添加数据变化订阅
+   */
+  public addSubscribe(callback: EntityMarkCallback) {
+    this.callbacks.push(callback);
+    this.registerDBSubscriptions();
+  }
+
+  /**
+   * 注册数据库订阅
+   */
+  protected registerDBSubscriptions(): void {
+    // 清除旧的订阅
+    this.clearSubscriptions();
+
+    const sub = this.db.$.subscribe((changeEvent) => {
+      for (const callback of this.callbacks as EntityMarkCallback[]) {
+        try {
+          switch (changeEvent.operation) {
+            case 'INSERT':
+            case 'UPDATE':
+              callback(
+                changeEvent.documentData.mapId,
+                changeEvent.documentData.entityId,
+                changeEvent.documentData.marked
+              );
+              break;
+            case 'DELETE':
+              callback(changeEvent.documentData.mapId, changeEvent.documentData.entityId, false);
+              break;
+          }
+        } catch (e) {
+          // 忽略回调错误
+        }
       }
     });
+
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * @deprecated 使用 addSubscribe 代替
+   */
+  public addScribe(callback: EntityMarkCallback) {
+    this.addSubscribe(callback);
   }
 
   public clearAllData() {

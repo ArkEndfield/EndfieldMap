@@ -42,12 +42,12 @@ export class ChestRewardDataService {
       ...reward,
     }));
     if (rewards.length > 0) {
-      await DataService.dbStorage.database.gameChestReward.bulkUpsert(rewards);
+      await DataService.dbStorage.gameDatabase.gameChestReward.bulkUpsert(rewards);
     }
   }
 
   private async getRewardDataFromDB(id: string) {
-    return await DataService.dbStorage.database.gameChestReward
+    return await DataService.dbStorage.gameDatabase.gameChestReward
       .findOne({
         selector: { id },
       })

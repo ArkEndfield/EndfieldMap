@@ -1,6 +1,7 @@
 import type { MapData } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import type { MangoQuerySelector, RxCollection } from 'rxdb';
+import type { Subscription } from 'rxjs';
 
 import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
 
@@ -58,6 +59,17 @@ export interface IPresetService<
   ): void;
 }
 
+export type NodeSubscribeCallback<TNodeSchema> = (
+  operation: 'INSERT' | 'UPDATE' | 'DELETE',
+  docData: TNodeSchema,
+  prevData?: TNodeSchema
+) => void;
+
+export type PresetSubscribeCallback = (
+  operation: 'INSERT' | 'UPDATE' | 'DELETE',
+  docData: PresetSchemaType
+) => void;
+
 /**
  * 预设数据服务基类
  * TPreset: 预设类型 (e.g. ElectricPolePreset, CustomPointPreset) - 必须包含 data: TNodeSchema[]
@@ -68,6 +80,13 @@ export abstract class BasePresetService<
   TNodeSchema extends RequiredNodeFields,
 > implements IPresetService<TPreset, TNodeSchema>
 {
+  // 存储订阅
+  protected subscriptions: Subscription[] = [];
+  // 存储节点回调
+  protected nodeCallbacks: NodeSubscribeCallback<TNodeSchema>[] = [];
+  // 存储预设回调
+  protected presetCallbacks: PresetSubscribeCallback[] = [];
+
   /**
    * 创建节点 ID
    */
@@ -81,47 +100,99 @@ export abstract class BasePresetService<
   protected abstract get presetDB(): RxCollection<PresetSchemaType>;
   protected abstract get nodesDB(): RxCollection<TNodeSchema>;
 
-  public addNodeSubscribe(
-    callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void
-  ) {
-    this.nodesDB.$.subscribe((changeEvent) => {
-      // changeEvent.documentData 和 previousDocumentData 已经是普通对象 (RxDocumentData)
-      const docData = changeEvent.documentData as TNodeSchema;
-      const prevData = changeEvent.previousDocumentData as TNodeSchema | undefined;
-      switch (changeEvent.operation) {
-        case 'INSERT':
-          callback('INSERT', docData);
-          break;
-        case 'DELETE':
-          callback('DELETE', docData);
-          break;
-        case 'UPDATE':
-          callback('UPDATE', docData, prevData);
-          break;
+  /**
+   * 清除所有订阅
+   */
+  protected clearSubscriptions(): void {
+    for (const sub of this.subscriptions) {
+      try {
+        sub.unsubscribe();
+      } catch (e) {
+        logger.warn('[BasePresetService] Failed to unsubscribe', e);
       }
-    });
+    }
+    this.subscriptions = [];
+  }
+
+  /**
+   * 注册数据库订阅
+   */
+  protected registerDBSubscriptions(): void {
+    // 清除旧的订阅
+    this.clearSubscriptions();
+
+    // 订阅节点变化
+    if (this.nodeCallbacks.length > 0) {
+      const nodeSub = this.nodesDB.$.subscribe((changeEvent) => {
+        const docData = changeEvent.documentData as TNodeSchema;
+        const prevData = changeEvent.previousDocumentData as TNodeSchema | undefined;
+        for (const callback of this.nodeCallbacks) {
+          try {
+            switch (changeEvent.operation) {
+              case 'INSERT':
+                callback('INSERT', docData);
+                break;
+              case 'DELETE':
+                callback('DELETE', docData);
+                break;
+              case 'UPDATE':
+                callback('UPDATE', docData, prevData);
+                break;
+            }
+          } catch (e) {
+            // 忽略回调错误
+          }
+        }
+      });
+      this.subscriptions.push(nodeSub);
+    }
+
+    // 订阅预设变化
+    if (this.presetCallbacks.length > 0) {
+      const presetSub = this.presetDB.$.subscribe((changeEvent) => {
+        const docData = changeEvent.documentData as PresetSchemaType;
+        for (const callback of this.presetCallbacks) {
+          try {
+            switch (changeEvent.operation) {
+              case 'INSERT':
+                callback('INSERT', docData);
+                break;
+              case 'DELETE':
+                callback('DELETE', docData);
+                break;
+              case 'UPDATE':
+                callback('UPDATE', docData);
+                break;
+            }
+          } catch (e) {
+            // 忽略回调错误
+          }
+        }
+      });
+      this.subscriptions.push(presetSub);
+    }
+  }
+
+  /**
+   * 更新数据库连接
+   * 在用户登录/登出时调用，重新注册监听器
+   */
+  public updateDB(): void {
+    logger.info(`[${this.constructor.name}] Updating database connection`);
+    this.registerDBSubscriptions();
+  }
+
+  public addNodeSubscribe(callback: NodeSubscribeCallback<TNodeSchema>) {
+    this.nodeCallbacks.push(callback);
+    this.registerDBSubscriptions();
   }
 
   /**
    * 订阅预设变化事件
    */
-  public addPresetSubscribe(
-    callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: PresetSchemaType) => void
-  ) {
-    this.presetDB.$.subscribe((changeEvent) => {
-      const docData = changeEvent.documentData as PresetSchemaType;
-      switch (changeEvent.operation) {
-        case 'INSERT':
-          callback('INSERT', docData);
-          break;
-        case 'DELETE':
-          callback('DELETE', docData);
-          break;
-        case 'UPDATE':
-          callback('UPDATE', docData);
-          break;
-      }
-    });
+  public addPresetSubscribe(callback: PresetSubscribeCallback) {
+    this.presetCallbacks.push(callback);
+    this.registerDBSubscriptions();
   }
 
   /**

@@ -19,12 +19,12 @@ export class ItemDataService {
     );
     const items = Object.values(data || {});
     if (items.length > 0) {
-      await DataService.dbStorage.database.gameItem.bulkUpsert(items);
+      await DataService.dbStorage.gameDatabase.gameItem.bulkUpsert(items);
     }
   }
 
   private async getItemDataFromDB(id: string) {
-    return await DataService.dbStorage.database.gameItem
+    return await DataService.dbStorage.gameDatabase.gameItem
       .findOne({
         selector: { id },
       })

@@ -16,7 +16,7 @@ export class DeltaRobotDataService {
   }
 
   private async getParsedLevelFromDB(levelId: string) {
-    return await DataService.dbStorage.database.gameDeltaRobotParsedLevel
+    return await DataService.dbStorage.gameDatabase.gameDeltaRobotParsedLevel
       .findOne({
         selector: { levelId },
       })
@@ -58,7 +58,7 @@ export class DeltaRobotDataService {
       const parsed = await parseLevelData(levelData, pieceLoader);
 
       // 保存到数据库
-      await DataService.dbStorage.database.gameDeltaRobotParsedLevel.upsert({
+      await DataService.dbStorage.gameDatabase.gameDeltaRobotParsedLevel.upsert({
         levelId,
         ...parsed,
       } as DeltaRobotParsedLevelSchemaType);

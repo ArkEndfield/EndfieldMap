@@ -6,7 +6,7 @@ import type { ElectricPolePreset } from '@/@types/electric_pole';
 import { alert } from '@/components/common/alert/alert_api';
 import i18n from '@/i18n';
 import { DataService } from '@/services/data';
-import type { DBCollections } from '@/services/data/db/collections.ts';
+import type { GameDataDBCollections } from '@/services/data/db/collections.ts';
 import { userService } from '@/services/user';
 
 enum StorageKey {
@@ -154,7 +154,7 @@ function downloadData(data: unknown, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
-export async function migrateToRxDB(_db: RxDatabase<DBCollections>): Promise<void> {
+export async function migrateToRxDB(_db: RxDatabase<GameDataDBCollections>): Promise<void> {
   if (!needsMigration()) {
     return;
   }

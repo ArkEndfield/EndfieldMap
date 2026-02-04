@@ -23,12 +23,12 @@ export class DungeonSeriesDataService {
     );
     const dungeonSeriesList = Object.values(data || {});
     if (dungeonSeriesList.length > 0) {
-      await DataService.dbStorage.database.gameDungeonSeries.bulkUpsert(dungeonSeriesList);
+      await DataService.dbStorage.gameDatabase.gameDungeonSeries.bulkUpsert(dungeonSeriesList);
     }
   }
 
   private async getDungeonSeriesDataFromDB(id: string) {
-    return await DataService.dbStorage.database.gameDungeonSeries
+    return await DataService.dbStorage.gameDatabase.gameDungeonSeries
       .findOne({
         selector: { id },
       })

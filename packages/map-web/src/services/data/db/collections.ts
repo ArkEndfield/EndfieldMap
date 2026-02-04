@@ -34,7 +34,10 @@ import {
   type VisibilityDataSchemaType,
 } from '@/services/data/db/schema/user_data/visibility';
 
-export type DBCollections = {
+/**
+ * 用户数据数据库 Collections 类型定义
+ */
+export type UserDataDBCollections = {
   electricPoleNode: ElectricPoleNodeCollection;
   electricPolePreset: PresetCollection;
   electricPoleVisibility: VisibilityDataCollection;
@@ -45,13 +48,23 @@ export type DBCollections = {
 
   entityMark: MarkDataCollection;
   entityVisibility: VisibilityDataCollection;
+};
 
+/**
+ * 游戏静态数据数据库 Collections 类型定义
+ */
+export type GameDataDBCollections = {
   gameItem: RxCollection<ItemSchemaType>;
   gameChestReward: RxCollection<ChestRewardSchemaType>;
   gameDungeonSeries: RxCollection<DungeonSeriesSchemaType>;
   gameGuide: RxCollection<GuideSchemaType>;
   gameDeltaRobotParsedLevel: RxCollection<DeltaRobotParsedLevelSchemaType>;
 };
+
+/**
+ * @deprecated 使用 UserDataDBCollections 和 GameDataDBCollections 代替
+ */
+export type DBCollections = UserDataDBCollections & GameDataDBCollections;
 
 export const userDataCollectionsSchema = {
   // 用户数据
@@ -112,7 +125,7 @@ export class UserCollections {
   public entityMark: Collection<MarkDataSchemaType>;
   public entityVisibility: Collection<VisibilityDataSchemaType>;
 
-  constructor(db: RxDatabase<DBCollections>) {
+  constructor(db: RxDatabase<UserDataDBCollections>) {
     this.electricPoleNode = new Collection(db.electricPoleNode);
     this.electricPolePreset = new Collection(db.electricPolePreset);
     this.electricPoleVisibility = new Collection(db.electricPoleVisibility);
@@ -134,7 +147,7 @@ export class GameDataCollections {
   public gameGuide: RxCollection<GuideSchemaType>;
   public gameDeltaRobotParsedLevel: RxCollection<DeltaRobotParsedLevelSchemaType>;
 
-  constructor(db: RxDatabase<DBCollections>) {
+  constructor(db: RxDatabase<GameDataDBCollections>) {
     this.gameItem = db.gameItem;
     this.gameChestReward = db.gameChestReward;
     this.gameDungeonSeries = db.gameDungeonSeries;
