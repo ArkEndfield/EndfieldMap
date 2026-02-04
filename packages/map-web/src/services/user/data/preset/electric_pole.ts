@@ -5,8 +5,8 @@ import type { RxCollection } from 'rxdb';
 import type { ElectricPolePreset } from '@/@types/electric_pole';
 import { DataService } from '@/services/data';
 import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
-import type { NodeSelector } from '@/services/data/user/preset/_base';
-import { BasePresetService } from '@/services/data/user/preset/_base';
+import type { NodeSelector } from '@/services/user/data/preset/_base';
+import { BasePresetService } from '@/services/user/data/preset/_base';
 
 export class ElectricPolePresetDataService extends BasePresetService<ElectricPolePreset, ElectricPoleNodeSchemaType> {
   protected get presetDB() {
@@ -107,5 +107,9 @@ export class ElectricPolePresetDataService extends BasePresetService<ElectricPol
     });
 
     return doc._data as ElectricPoleNodeSchemaType;
+  }
+
+  public clearAllData() {
+    return this.presetDB.find().remove();
   }
 }

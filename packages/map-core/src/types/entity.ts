@@ -73,7 +73,7 @@ export interface EntityData extends BaseEntityData {
 /**
  * 电线杆数据
  */
-export interface ElectricPoleData extends EntityData {
+export interface ElectricPoleData extends Omit<EntityData, 'componentPropertiests' | 'progressLockCondition' | 'componentProperties'> {
   entityDataIdKey: typeof ElectricPoleIdKey;
   entityType: '#ElectricPole';
   templateId: typeof ElectricPoleKey;
@@ -92,7 +92,7 @@ export interface ElectricPoleData extends EntityData {
 /**
  * 自定义标点数据
  */
-export interface CustomPointData extends EntityData {
+export interface CustomPointData extends Omit<EntityData, 'componentPropertiests' | 'progressLockCondition' | 'componentProperties'> {
   entityDataIdKey: CustomPointTypeId;
   entityType: '#CustomPoint';
   templateId: typeof CustomPointKey;

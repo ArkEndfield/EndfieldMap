@@ -7,3 +7,7 @@ export enum UILocalStorageKey {
   SWIPER_OPEN = 'swiperOpen',
   ENABLE_TIER = 'enableTier',
 }
+
+export enum UserLocalStorageKey {
+  TOKEN = 'userToken',
+}

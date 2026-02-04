@@ -2,9 +2,9 @@ import type { MapData } from '@endfieldmap/map-core';
 
 import { DataService } from '@/services/data';
 
-export class CustomPointVisibilityService {
+export class ElectricPoleVisibilityService {
   private get db() {
-    return DataService.dbStorage.database.customPointVisibility;
+    return DataService.dbStorage.database.electricPoleVisibility;
   }
 
   public static createId(mapId: MapData['id'], entityKey: string) {
@@ -15,8 +15,12 @@ export class CustomPointVisibilityService {
     return this.db.find().exec();
   }
 
+  public getMapVisibilityData(mapId: MapData['id']) {
+    return this.db.find({ selector: { mapId } }).exec();
+  }
+
   public async setVisibilityData(mapId: MapData['id'], entityKey: string, visible: boolean) {
-    const idString = CustomPointVisibilityService.createId(mapId, entityKey);
+    const idString = ElectricPoleVisibilityService.createId(mapId, entityKey);
     const now = Date.now();
     const doc = await this.db.findOne({ selector: { id: idString } }).exec();
     if (doc) {
@@ -41,5 +45,9 @@ export class CustomPointVisibilityService {
           break;
       }
     });
+  }
+
+  public clearAllData() {
+    return this.db.find().remove();
   }
 }

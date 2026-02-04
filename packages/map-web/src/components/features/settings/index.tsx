@@ -1,4 +1,3 @@
-import shortcutService from '@/services/shortcut';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
@@ -8,12 +7,14 @@ import { CloseButton } from '@/components/common/close_button';
 import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@/components/common/icons';
 import { ContentWrapper } from '@/components/common/settings/components/content_wrapper';
 import { BgDeco } from '@/components/common/settings/components/deco';
+import { type TabItem, TabList } from '@/components/common/settings/tabs';
 import { AboutPage } from '@/components/features/settings/items/about';
 import { DataSettings } from '@/components/features/settings/items/data';
 import { DisplaySettings } from '@/components/features/settings/items/display';
 import { MapSettings } from '@/components/features/settings/items/map';
-import { type TabItem, TabList } from '@/components/common/settings/tabs';
+import { SETTINGS_PAGE } from '@/const/settings';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import shortcutService from '@/services/shortcut';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
 
@@ -32,22 +33,22 @@ export interface SettingItem<T extends string> extends TabItem<T> {
 
 const settingList = [
   {
-    key: 'general',
+    key: SETTINGS_PAGE.GENERAL,
     icon: <MapIcon />,
     Component: MapSettings,
   },
   {
-    key: 'display',
+    key: SETTINGS_PAGE.DISPLAY,
     icon: <LayoutAndLanguageIcon />,
     Component: DisplaySettings,
   },
   {
-    key: 'data',
+    key: SETTINGS_PAGE.DATA,
     icon: <DataBaseIcon />,
     Component: DataSettings,
   },
   {
-    key: 'about',
+    key: SETTINGS_PAGE.ABOUT,
     icon: <QuestionIcon />,
     Component: AboutPage,
   },
@@ -57,7 +58,7 @@ const Settings: React.FC<SettingsPageProps> = observer(({ open, onClose }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const isMobile = useIsMobile();
   const activeTab = uiManager.settingsTab as (typeof settingList)[number]['key'];
-  const setActiveTab = (key: string) => (uiManager.settingsTab = key);
+  const setActiveTab = (key: string) => (uiManager.navigateSettings(key));
 
   useEffect(() => {
     if (open) {
@@ -87,7 +88,7 @@ const Settings: React.FC<SettingsPageProps> = observer(({ open, onClose }) => {
       }, 300); // Wait for animation entrance
       return () => clearTimeout(timer);
     }
-  }, [open, uiManager.settingsTab, uiManager.targetSettingItem]);
+  }, [open]);
 
   return (
     <motion.dialog

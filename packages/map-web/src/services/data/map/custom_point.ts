@@ -13,8 +13,8 @@ import {
   type IVisibilityService,
   type VisibilityData,
 } from '@/services/data/map/base/base_preset';
-import { CustomPointPresetDataService } from '@/services/data/user/preset/custom_point';
 import { userService } from '@/services/user';
+import { CustomPointPresetDataService } from '@/services/user/data/preset/custom_point';
 
 /**
  * 自定义标点数据管理器
@@ -94,6 +94,7 @@ export class CustomPointDataService extends BasePresetDataService<
   }
 
   private initDataListeners() {
+    // 监听节点变化
     userService.data.customPointPresetDataService.addNodeSubscribe((type, docData, prevData) => {
       // 先判断是不是当前预设的数据
       const currentPresetId = this.currentPresetId.value;
@@ -125,6 +126,13 @@ export class CustomPointDataService extends BasePresetDataService<
           }
           break;
         }
+      }
+    });
+
+    // 监听预设删除事件，如果当前预设被删除则重置状态
+    userService.data.customPointPresetDataService.addPresetSubscribe((type, docData) => {
+      if (type === 'DELETE' && docData.id === this.currentPresetId.value) {
+        this.reset();
       }
     });
   }
@@ -384,6 +392,17 @@ export class CustomPointDataService extends BasePresetDataService<
     this.eventListenerDisposers.forEach((dispose) => dispose());
     this.eventListenerDisposers = [];
     this.initialized = false;
+  }
+
+  /**
+   * 重置预设服务状态
+   * 重写基类方法，额外重置自定义标点特有的状态
+   */
+  public override reset() {
+    // 先停止所有自定义标点操作模式
+    this.stopAllOperation();
+    // 调用基类的 reset 方法
+    super.reset();
   }
   // endregion
 }

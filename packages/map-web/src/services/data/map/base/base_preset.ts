@@ -5,7 +5,7 @@ import { observable, runInAction, toJS } from 'mobx';
 import { alert } from '@/components/common/alert/alert_api';
 import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
 import type { VisibilityDataSchemaType } from '@/services/data/db/schema/user_data/visibility';
-import type { IPresetService, RequiredNodeFields } from '@/services/data/user/preset/_base';
+import type { IPresetService, RequiredNodeFields } from '@/services/user/data/preset/_base';
 
 export type VisibilityData = VisibilityDataSchemaType;
 
@@ -152,6 +152,38 @@ export abstract class BasePresetDataService<
 
     // 初始化后应用当前预设到适配器
     await this.applyPresetById(this.currentPresetId.value);
+  }
+
+  /**
+   * 重置预设服务状态
+   * 用于清除所有数据后重置状态（停止操作模式、清除当前预设、清除渲染）
+   */
+  public reset() {
+    runInAction(() => {
+      // 1. 停止所有操作模式
+      this.clearActiveFeature();
+
+      // 2. 重置当前预设 ID
+      this.currentPresetId.value = null;
+
+      // 3. 重置初始化状态
+      this.initialized = false;
+    });
+
+    // 4. 应用空预设到适配器，清除渲染
+    const emptyPreset = {
+      id: 'empty',
+      name: 'empty',
+      data: [] as TNodeSchema[],
+      createdAt: 0,
+      updatedAt: 0,
+    } as TPreset;
+
+    try {
+      this.applyPresetToAdapter(emptyPreset);
+    } catch (e) {
+      logger.warn('[BasePresetDataService] Failed to apply empty preset during reset', e);
+    }
   }
 
   /**

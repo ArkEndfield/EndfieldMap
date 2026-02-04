@@ -38,4 +38,8 @@ export class EntityMarkService {
       }
     });
   }
+
+  public clearAllData() {
+    return this.db.find().remove();
+  }
 }

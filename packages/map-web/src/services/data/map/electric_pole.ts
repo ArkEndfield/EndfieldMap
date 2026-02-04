@@ -31,8 +31,8 @@ import {
   type IVisibilityService,
   type VisibilityData,
 } from '@/services/data/map/base/base_preset';
-import { ElectricPolePresetDataService } from '@/services/data/user/preset/electric_pole';
 import { userService } from '@/services/user';
+import { ElectricPolePresetDataService } from '@/services/user/data/preset/electric_pole';
 
 /**
  * 获取电线杆错误的 i18n 消息
@@ -147,6 +147,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
   }
 
   private initDataListeners() {
+    // 监听节点变化
     userService.data.electricPolePresetDataService.addNodeSubscribe((type, docData, prevData) => {
       // 先判断是不是当前预设的数据
       const currentPresetId = this.currentPresetId.value;
@@ -213,6 +214,13 @@ export class ElectricPoleDataService extends BasePresetDataService<
           }
           break;
         }
+      }
+    });
+
+    // 监听预设删除事件，如果当前预设被删除则重置状态
+    userService.data.electricPolePresetDataService.addPresetSubscribe((type, docData) => {
+      if (type === 'DELETE' && docData.id === this.currentPresetId.value) {
+        this.reset();
       }
     });
   }
@@ -539,6 +547,17 @@ export class ElectricPoleDataService extends BasePresetDataService<
         cancelText: i18n.t('error:electric_pole.delete_corrupted_preset', { defaultValue: '删除损坏预设' }),
       });
     }
+  }
+
+  /**
+   * 重置预设服务状态
+   * 重写基类方法，额外重置电线杆特有的状态
+   */
+  public override reset() {
+    // 先停止所有电线杆操作模式
+    this.stopAllOperation();
+    // 调用基类的 reset 方法
+    super.reset();
   }
   // endregion
 }

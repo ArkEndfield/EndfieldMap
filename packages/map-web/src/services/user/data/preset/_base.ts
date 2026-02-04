@@ -51,7 +51,7 @@ export interface IPresetService<
   createNode(
     mapId: MapData['id'],
     presetId: string,
-    nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId'>
+    nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId' | 'createdAt' | 'updatedAt'>
   ): Promise<TNodeSchema>;
   addNodeSubscribe(
     callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void
@@ -97,6 +97,28 @@ export abstract class BasePresetService<
           break;
         case 'UPDATE':
           callback('UPDATE', docData, prevData);
+          break;
+      }
+    });
+  }
+
+  /**
+   * 订阅预设变化事件
+   */
+  public addPresetSubscribe(
+    callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: PresetSchemaType) => void
+  ) {
+    this.presetDB.$.subscribe((changeEvent) => {
+      const docData = changeEvent.documentData as PresetSchemaType;
+      switch (changeEvent.operation) {
+        case 'INSERT':
+          callback('INSERT', docData);
+          break;
+        case 'DELETE':
+          callback('DELETE', docData);
+          break;
+        case 'UPDATE':
+          callback('UPDATE', docData);
           break;
       }
     });
@@ -254,7 +276,7 @@ export abstract class BasePresetService<
   public async createNode(
     mapId: MapData['id'],
     presetId: string,
-    nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId'>
+    nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId' | 'createdAt' | 'updatedAt'>
   ): Promise<TNodeSchema> {
     const nodeId = BasePresetService.createId(mapId, presetId, nodeData.levelLogicId);
     const newNode = await this.nodesDB.insert({

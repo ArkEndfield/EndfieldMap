@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { alert } from '@/components/common/alert/alert_api';
 import { BilibiliIcon, DiscordIcon, Logo, QQIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';
-import { LoginForm } from '@/components/features/user/form/login';
-import { RegisterForm } from '@/components/features/user/form/register';
+import { LoginForm } from '@/components/features/user/login/login';
+import { RegisterForm } from '@/components/features/user/login/register';
 import { isDev } from '@/services/env';
 import { cn } from '@/utils/style';
 

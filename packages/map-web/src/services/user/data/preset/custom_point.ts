@@ -5,7 +5,7 @@ import type { RxCollection } from 'rxdb';
 import type { CustomPointPreset } from '@/@types/custom_point';
 import { DataService } from '@/services/data';
 import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
-import { BasePresetService, type NodeSelector } from '@/services/data/user/preset/_base';
+import { BasePresetService, type NodeSelector } from '@/services/user/data/preset/_base';
 
 export class CustomPointPresetDataService extends BasePresetService<CustomPointPreset, CustomPointNodeSchemaType> {
   protected get presetDB() {
@@ -27,5 +27,9 @@ export class CustomPointPresetDataService extends BasePresetService<CustomPointP
     }
 
     await doc.update({ $set: { entityDataIdKey: newType } });
+  }
+
+  public clearAllData() {
+    return this.presetDB.find().remove();
   }
 }

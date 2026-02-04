@@ -1,4 +1,4 @@
-import type { ContributorInfo } from '@/components/common/settings/items/about/contributor';
+import type { ContributorInfo } from '@/components/features/settings/items/about/contributor';
 import { getAssetUrls } from '@/utils/url';
 
 const avatarURL = getAssetUrls().avatar;
@@ -43,6 +43,12 @@ export const contributors: ContributorInfo[] = [
     name: '佑木いずみ',
     avatar: 'https://i0.hdslb.com/bfs/face/e54beaed3b037b0b5cc9b3d33cd4950a0d0887cd.jpg',
     home: 'https://space.bilibili.com/184934952',
+    noReferrer: true,
+  },
+  {
+    name: 'Wuyi无疑',
+    avatar: 'https://avatars.githubusercontent.com/u/55526518?v=4',
+    home: 'https://github.com/KimigaiiWuyi',
     noReferrer: true,
   },
 ];
