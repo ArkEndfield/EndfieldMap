@@ -45,17 +45,21 @@ export const LoginForm = observer(({ isAgree, onAgreeChange, onSwitchToRegister,
   const onLogin = handleSubmit(async (data) => {
     setLoading(true);
     try {
-      await userService.auth.login(data.username, data.password);
+      await userService.login(data.username, data.password);
       // alert.info(t('user.not_support_yet'));
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert.info(t(error.message, {
-          defaultValue: error.message,
-        }));
+        alert.info(
+          t(error.message, {
+            defaultValue: error.message,
+          })
+        );
       } else {
-        alert.info(t('user.unknown_error', {
-          defaultValue: '未知错误',
-        }));
+        alert.info(
+          t('user.unknown_error', {
+            defaultValue: '未知错误',
+          })
+        );
       }
     } finally {
       setLoading(false);

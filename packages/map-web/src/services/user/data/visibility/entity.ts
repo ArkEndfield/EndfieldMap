@@ -9,7 +9,7 @@ export type EntityVisibilityCallback = (
   visible: boolean
 ) => void;
 
-export class EntityVisibilityService extends BaseUserDataService {
+export class EntityVisibilityService extends BaseUserDataService<EntityVisibilityCallback> {
   private get db() {
     return DataService.dbStorage.database.entityVisibility;
   }

@@ -27,9 +27,10 @@ export class UserService {
    * @param username 用户名
    * @param password 密码
    */
-  public async login(username: string, password: string): Promise<boolean> {
+  public async login(username: string, password: string): Promise<void> {
     logger.info('[UserService] Logging in user:', username);
-    return await this.auth.login(username, password);
+    await this.auth.login(username, password);
+    await this.switchUserDB();
   }
 
   /**
@@ -44,7 +45,7 @@ export class UserService {
     logger.info('[UserService] Initializing user database for uid:', uid);
 
     // 创建用户数据库（不迁移本地数据）
-    await DataService.dbStorage.createUserDB(uid, false);
+    await DataService.dbStorage.createUserDB(false);
 
     // 更新所有服务的数据库连接
     this.data.updateDB();
@@ -64,13 +65,13 @@ export class UserService {
     logger.info('[UserService] Switching user database to uid:', uid);
 
     // 创建用户数据库并迁移本地数据
-    await DataService.dbStorage.createUserDB(uid, true);
+    await DataService.dbStorage.createUserDB(true);
 
     // 更新所有服务的数据库连接
     this.data.updateDB();
 
     // 执行数据迁移到用户数据库
-    await DataService.dbStorage.migrateToUser();
+    await DataService.dbStorage.migrateUserData();
 
     logger.info('[UserService] User database switched');
   }
@@ -87,31 +88,17 @@ export class UserService {
     await this.auth.logout();
 
     // 销毁用户数据库
-    await DataService.dbStorage.removeUserDB(migrateData);
+    await DataService.dbStorage.createUserDB(migrateData);
 
     // 更新所有服务的数据库连接
     this.data.updateDB();
 
     // 如果需要迁移，执行数据迁移到本地数据库
     if (migrateData) {
-      await DataService.dbStorage.migrateToLocal();
+      await DataService.dbStorage.migrateUserData();
     }
 
     logger.info('[UserService] User logged out');
-  }
-
-  /**
-   * 检查是否有待处理的数据迁移
-   */
-  public hasPendingMigration(): boolean {
-    return DataService.dbStorage.hasPendingMigration();
-  }
-
-  /**
-   * 清除待迁移数据
-   */
-  public clearPendingMigration(): void {
-    DataService.dbStorage.clearPendingMigration();
   }
 }
 

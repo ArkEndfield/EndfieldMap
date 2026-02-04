@@ -5,7 +5,7 @@ import { BaseUserDataService } from '@/services/user/data/_base';
 
 export type EntityMarkCallback = (mapId: MapData['id'], id: EntityData['levelLogicId'], marked: boolean) => void;
 
-export class EntityMarkService extends BaseUserDataService {
+export class EntityMarkService extends BaseUserDataService<EntityMarkCallback> {
   private get db() {
     return DataService.dbStorage.database.entityMark;
   }

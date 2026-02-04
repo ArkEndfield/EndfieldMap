@@ -5,7 +5,7 @@ import { BaseUserDataService } from '@/services/user/data/_base';
 
 export type ElectricPoleVisibilityCallback = (mapId: MapData['id'], entityKey: string, visible: boolean) => void;
 
-export class ElectricPoleVisibilityService extends BaseUserDataService {
+export class ElectricPoleVisibilityService extends BaseUserDataService<ElectricPoleVisibilityCallback> {
   private get db() {
     return DataService.dbStorage.database.electricPoleVisibility;
   }

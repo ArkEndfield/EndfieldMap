@@ -65,10 +65,7 @@ export type NodeSubscribeCallback<TNodeSchema> = (
   prevData?: TNodeSchema
 ) => void;
 
-export type PresetSubscribeCallback = (
-  operation: 'INSERT' | 'UPDATE' | 'DELETE',
-  docData: PresetSchemaType
-) => void;
+export type PresetSubscribeCallback = (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: PresetSchemaType) => void;
 
 /**
  * 预设数据服务基类

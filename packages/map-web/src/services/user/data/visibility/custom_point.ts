@@ -5,7 +5,7 @@ import { BaseUserDataService } from '@/services/user/data/_base';
 
 export type CustomPointVisibilityCallback = (mapId: MapData['id'], entityKey: string, visible: boolean) => void;
 
-export class CustomPointVisibilityService extends BaseUserDataService {
+export class CustomPointVisibilityService extends BaseUserDataService<CustomPointVisibilityCallback> {
   private get db() {
     return DataService.dbStorage.database.customPointVisibility;
   }

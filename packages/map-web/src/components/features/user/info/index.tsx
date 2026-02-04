@@ -51,11 +51,10 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
           content: '是否要清除本地数据（不会清除云端数据）？',
           dismissible: false,
           onConfirm: async () => {
-            await userService.auth.logout();
-            await userService.data.clearAllData();
+            await userService.logout();
           },
           onCancel: async () => {
-            await userService.auth.logout();
+            await userService.logout();
           },
         });
       },
@@ -80,7 +79,12 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
         <UidList uidList={mockUidList} onDeleteUid={handleDeleteUid} onSwitchUid={handleSwitchToUid} />
 
         {/* 右侧 - 操作面板 */}
-        <ActionPanel syncedDataCount={1456} onLogout={handleLogout} onLogin={handleLogin} onSwitchUid={handleSwitchUid} />
+        <ActionPanel
+          syncedDataCount={1456}
+          onLogout={handleLogout}
+          onLogin={handleLogin}
+          onSwitchUid={handleSwitchUid}
+        />
       </div>
     </UserModal>
   );

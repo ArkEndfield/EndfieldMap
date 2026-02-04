@@ -3,17 +3,17 @@ import type { Subscription } from 'rxjs';
 
 import { DataService } from '@/services/data';
 
+type BaseCallback<T> = T extends (...args: infer P) => void ? (...args: P) => void : never;
 /**
  * 用户数据服务基类
  * 提供数据库切换时的监听器管理功能
  */
-export abstract class BaseUserDataService {
+export abstract class BaseUserDataService<T> {
   // 存储 RxDB 订阅，用于在数据库切换时取消订阅
   protected subscriptions: Subscription[] = [];
 
   // 存储外部注册的回调函数
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected callbacks: Array<(...args: any[]) => void> = [];
+  protected callbacks: Array<BaseCallback<T>> = [];
 
   /**
    * 子类需要实现的方法：注册数据库监听
