@@ -40,11 +40,9 @@ import {
 export type UserDataDBCollections = {
   electricPoleNode: ElectricPoleNodeCollection;
   electricPolePreset: PresetCollection;
-  electricPoleVisibility: VisibilityDataCollection;
 
   customPointNode: CustomPointNodeCollection;
   customPointPreset: PresetCollection;
-  customPointVisibility: VisibilityDataCollection;
 
   entityMark: MarkDataCollection;
   entityVisibility: VisibilityDataCollection;
@@ -67,24 +65,17 @@ export type GameDataDBCollections = {
 export type DBCollections = UserDataDBCollections & GameDataDBCollections;
 
 export const userDataCollectionsSchema = {
-  // 用户数据
   electricPoleNode: {
     schema: electricPoleNodeSchema,
   },
   electricPolePreset: {
     schema: presetSchema,
   },
-  electricPoleVisibility: {
-    schema: visibilityDataSchema,
-  },
   customPointNode: {
     schema: customPointNodeSchema,
   },
   customPointPreset: {
     schema: presetSchema,
-  },
-  customPointVisibility: {
-    schema: visibilityDataSchema,
   },
   entityMark: {
     schema: markDataSchema,
@@ -116,11 +107,9 @@ export const gameDataCollectionsSchema = {
 export class UserCollections {
   public electricPoleNode: Collection<ElectricPoleNodeSchemaType>;
   public electricPolePreset: Collection<PresetSchemaType>;
-  public electricPoleVisibility: Collection<VisibilityDataSchemaType>;
 
   public customPointNode: Collection<CustomPointNodeSchemaType>;
   public customPointPreset: Collection<PresetSchemaType>;
-  public customPointVisibility: Collection<VisibilityDataSchemaType>;
 
   public entityMark: Collection<MarkDataSchemaType>;
   public entityVisibility: Collection<VisibilityDataSchemaType>;
@@ -128,11 +117,9 @@ export class UserCollections {
   constructor(db: RxDatabase<UserDataDBCollections>) {
     this.electricPoleNode = new Collection(db.electricPoleNode);
     this.electricPolePreset = new Collection(db.electricPolePreset);
-    this.electricPoleVisibility = new Collection(db.electricPoleVisibility);
 
     this.customPointNode = new Collection(db.customPointNode);
     this.customPointPreset = new Collection(db.customPointPreset);
-    this.customPointVisibility = new Collection(db.customPointVisibility);
 
     this.entityMark = new Collection(db.entityMark);
     this.entityVisibility = new Collection(db.entityVisibility);

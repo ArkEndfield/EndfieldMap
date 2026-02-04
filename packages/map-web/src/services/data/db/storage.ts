@@ -19,15 +19,13 @@ import {
 import { isDev } from '@/services/env';
 
 /**
- * 用户数据快照，用于迁移
+ * 用户数据快照，用于迁移与云端同步（电线杆/自定义标点可见性均在 entityVisibility 中）
  */
 interface UserDataSnapshot {
   electricPoleNode: unknown[];
   electricPolePreset: unknown[];
-  electricPoleVisibility: unknown[];
   customPointNode: unknown[];
   customPointPreset: unknown[];
-  customPointVisibility: unknown[];
   entityMark: unknown[];
   entityVisibility: unknown[];
 }
@@ -212,10 +210,8 @@ export class Storage {
     const [
       electricPoleNode,
       electricPolePreset,
-      electricPoleVisibility,
       customPointNode,
       customPointPreset,
-      customPointVisibility,
       entityMark,
       entityVisibility,
     ] = await Promise.all([
@@ -227,19 +223,11 @@ export class Storage {
         .find()
         .exec()
         .then((docs) => docs.map((d) => d.toJSON())),
-      db.electricPoleVisibility
-        .find()
-        .exec()
-        .then((docs) => docs.map((d) => d.toJSON())),
       db.customPointNode
         .find()
         .exec()
         .then((docs) => docs.map((d) => d.toJSON())),
       db.customPointPreset
-        .find()
-        .exec()
-        .then((docs) => docs.map((d) => d.toJSON())),
-      db.customPointVisibility
         .find()
         .exec()
         .then((docs) => docs.map((d) => d.toJSON())),
@@ -256,10 +244,8 @@ export class Storage {
     return {
       electricPoleNode,
       electricPolePreset,
-      electricPoleVisibility,
       customPointNode,
       customPointPreset,
-      customPointVisibility,
       entityMark,
       entityVisibility,
     };
@@ -272,10 +258,8 @@ export class Storage {
     await Promise.all([
       db.electricPoleNode.bulkInsert(snapshot.electricPoleNode as never[]),
       db.electricPolePreset.bulkInsert(snapshot.electricPolePreset as never[]),
-      db.electricPoleVisibility.bulkInsert(snapshot.electricPoleVisibility as never[]),
       db.customPointNode.bulkInsert(snapshot.customPointNode as never[]),
       db.customPointPreset.bulkInsert(snapshot.customPointPreset as never[]),
-      db.customPointVisibility.bulkInsert(snapshot.customPointVisibility as never[]),
       db.entityMark.bulkInsert(snapshot.entityMark as never[]),
       db.entityVisibility.bulkInsert(snapshot.entityVisibility as never[]),
     ]);
@@ -288,10 +272,8 @@ export class Storage {
     await Promise.all([
       db.electricPoleNode.find().remove(),
       db.electricPolePreset.find().remove(),
-      db.electricPoleVisibility.find().remove(),
       db.customPointNode.find().remove(),
       db.customPointPreset.find().remove(),
-      db.customPointVisibility.find().remove(),
       db.entityMark.find().remove(),
       db.entityVisibility.find().remove(),
     ]);

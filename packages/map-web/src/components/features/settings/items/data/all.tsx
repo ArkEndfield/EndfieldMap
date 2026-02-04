@@ -21,10 +21,8 @@ const clearAll = (confirmText: string): Promise<boolean> => {
           DataService.storage.clearAll(),
           db.electricPoleNode.find().remove(),
           db.electricPolePreset.find().remove(),
-          db.electricPoleVisibility.find().remove(),
           db.customPointNode.find().remove(),
           db.customPointPreset.find().remove(),
-          db.customPointVisibility.find().remove(),
           db.entityMark.find().remove(),
           db.entityVisibility.find().remove(),
         ]);

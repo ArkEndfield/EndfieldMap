@@ -136,7 +136,7 @@ export abstract class BasePresetService<
                 callback('UPDATE', docData, prevData);
                 break;
             }
-          } catch (e) {
+          } catch (_e) {
             // 忽略回调错误
           }
         }
@@ -161,7 +161,7 @@ export abstract class BasePresetService<
                 callback('UPDATE', docData);
                 break;
             }
-          } catch (e) {
+          } catch (_e) {
             // 忽略回调错误
           }
         }

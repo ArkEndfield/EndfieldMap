@@ -3,15 +3,15 @@ import { logger } from '@endfieldmap/tools';
 import { EntityMarkService } from '@/services/user/data/marked/entity';
 import { CustomPointPresetDataService } from '@/services/user/data/preset/custom_point';
 import { ElectricPolePresetDataService } from '@/services/user/data/preset/electric_pole';
-import { CustomPointVisibilityService } from '@/services/user/data/visibility/custom_point';
-import { ElectricPoleVisibilityService } from '@/services/user/data/visibility/electric_pole';
-import { EntityVisibilityService } from '@/services/user/data/visibility/entity';
+import { EntityVisibilityService, ScopedEntityVisibilityService } from '@/services/user/data/visibility/entity';
 
 export class UserDataService {
   public entityMarkService = new EntityMarkService();
   public entityVisibilityService = new EntityVisibilityService();
-  public customPointVisibilityService = new CustomPointVisibilityService();
-  public electricPoleVisibilityService = new ElectricPoleVisibilityService();
+  /** 电线杆类型可见性（存于 entityVisibility，key 前缀 electric_pole:） */
+  public electricPoleVisibilityService = new ScopedEntityVisibilityService('electric_pole:');
+  /** 自定义标点类型可见性（存于 entityVisibility，key 前缀 custom_point:） */
+  public customPointVisibilityService = new ScopedEntityVisibilityService('custom_point:');
   public customPointPresetDataService = new CustomPointPresetDataService();
   public electricPolePresetDataService = new ElectricPolePresetDataService();
 
