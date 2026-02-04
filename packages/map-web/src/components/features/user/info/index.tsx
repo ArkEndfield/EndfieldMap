@@ -51,10 +51,10 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
           content: '是否要清除本地数据（不会清除云端数据）？',
           dismissible: false,
           onConfirm: async () => {
-            await userService.logout();
+            await userService.logout(false);
           },
           onCancel: async () => {
-            await userService.logout();
+            await userService.logout(true);
           },
         });
       },

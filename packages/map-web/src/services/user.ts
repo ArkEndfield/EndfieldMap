@@ -34,35 +34,11 @@ export class UserService {
   }
 
   /**
-   * 初始化用户数据库
-   * 在用户首次登录后调用，创建用户数据库
-   * TODO: 需要从后端获取真实的 uid
-   */
-  public async initUserDB(): Promise<void> {
-    // TODO: 从后端获取真实的 uid，目前写死测试值
-    const uid = 123456;
-
-    logger.info('[UserService] Initializing user database for uid:', uid);
-
-    // 创建用户数据库（不迁移本地数据）
-    await DataService.dbStorage.createUserDB(false);
-
-    // 更新所有服务的数据库连接
-    this.data.updateDB();
-
-    logger.info('[UserService] User database initialized');
-  }
-
-  /**
    * 切换用户数据库
    * 在用户切换账号时调用，迁移本地数据到新用户数据库
-   * TODO: 需要从后端获取真实的 uid
    */
   public async switchUserDB(): Promise<void> {
-    // TODO: 从后端获取真实的 uid，目前写死测试值
-    const uid = 234567;
-
-    logger.info('[UserService] Switching user database to uid:', uid);
+    logger.info('[UserService] Switching user database');
 
     // 创建用户数据库并迁移本地数据
     await DataService.dbStorage.createUserDB(true);
