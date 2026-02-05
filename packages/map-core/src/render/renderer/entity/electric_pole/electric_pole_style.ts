@@ -39,14 +39,6 @@ export class ElectricPoleStyleProvider {
   /** 图标大小 */
   private iconSize: number;
 
-  /** 背景样式 */
-  private static readonly NORMAL_STYLE_BG = createBaseEntityBackgroundStyle(
-    ENTITY_RADIUS,
-    DEFAULT_STROKE_WIDTH,
-    DEFAULT_FILL_COLOR,
-    DEFAULT_STROKE_COLOR
-  );
-
   /** 阴影样式 */
   private static BASE_BACKDROP_STYLE: Style[] = [];
 
@@ -104,7 +96,12 @@ export class ElectricPoleStyleProvider {
       return cachedStyle;
     }
 
-    const bgStyles = ElectricPoleStyleProvider.NORMAL_STYLE_BG;
+    const bgStyles = createBaseEntityBackgroundStyle(
+      ENTITY_RADIUS,
+      DEFAULT_STROKE_WIDTH,
+      DEFAULT_FILL_COLOR,
+      DEFAULT_STROKE_COLOR
+    );
     const iconStyle = this.getOrCreateIconStyle(dataInstance.deviceKey);
     const styles: Style[] = this.enableShadow
       ? [...ElectricPoleStyleProvider.BASE_BACKDROP_STYLE, ...bgStyles, iconStyle]

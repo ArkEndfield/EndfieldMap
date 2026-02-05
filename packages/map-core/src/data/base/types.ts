@@ -1,5 +1,5 @@
 import type { MapData } from '@endfieldmap/map-core/types';
-import type { EntityData } from '@endfieldmap/map-core/types/entity';
+import type { BaseEntityDataWithInfo } from '@endfieldmap/map-core/types/entity';
 
 /**
  * 数据实例状态接口
@@ -19,7 +19,7 @@ export interface DataInstanceState {
 /**
  * 数据实例配置接口
  */
-export interface DataInstanceConfig<T extends EntityData> {
+export interface DataInstanceConfig<T extends BaseEntityDataWithInfo> {
   /** 原始数据 */
   data: T;
   /** 地图索引 */
@@ -37,7 +37,7 @@ export interface DataManagerConfig {
 /**
  * 数据状态变化事件详情
  */
-export interface DataStateChangeDetail<T extends EntityData = EntityData> {
+export interface DataStateChangeDetail<T extends BaseEntityDataWithInfo = BaseEntityDataWithInfo> {
   /** 数据实例ID */
   id: number;
   /** 变化的属性名 */

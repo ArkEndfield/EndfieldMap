@@ -53,8 +53,6 @@ export abstract class BasePresetDataService<
   TBundle extends BasePresetExportBundle<TPreset>,
   TPresetService extends IPresetService<TPreset, TNodeSchema> = IPresetService<TPreset, TNodeSchema>,
 > {
-  protected initialized: boolean = false;
-
   @observable
   accessor dataVersion: string = '0.0.2';
 
@@ -128,8 +126,6 @@ export abstract class BasePresetDataService<
    * 从 Storage 初始化预设
    */
   public async initPresetFromStorage() {
-    if (this.initialized) return;
-
     // 从数据库加载预设列表，只获取元数据
     const presets = await this.presetService.getAllPresetMetadata();
 
@@ -144,7 +140,6 @@ export abstract class BasePresetDataService<
       } else {
         this.currentPresetId.value = null;
       }
-      this.initialized = true;
     });
 
     // 初始化后应用当前预设到适配器
@@ -162,9 +157,6 @@ export abstract class BasePresetDataService<
 
       // 2. 重置当前预设 ID
       this.currentPresetId.value = null;
-
-      // 3. 重置初始化状态
-      this.initialized = false;
     });
 
     // 4. 应用空预设到适配器，清除渲染

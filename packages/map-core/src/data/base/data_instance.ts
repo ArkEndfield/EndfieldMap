@@ -1,6 +1,6 @@
 import type { DataInstanceConfig, DataInstanceState } from '@endfieldmap/map-core/data/base/types';
 import type { MapData } from '@endfieldmap/map-core/types';
-import type { EntityData } from '@endfieldmap/map-core/types/entity';
+import type { BaseEntityData } from '@endfieldmap/map-core/types/entity';
 import { logger } from '@endfieldmap/tools';
 import { action, computed, observable, toJS } from 'mobx';
 
@@ -9,7 +9,7 @@ import { action, computed, observable, toJS } from 'mobx';
  * 负责管理单个数据项的状态和数据
  * 使用 MobX 装饰器实现响应式
  */
-export abstract class BaseDataInstance<T extends EntityData> {
+export abstract class BaseDataInstance<T extends BaseEntityData> {
   /** 地图ID */
   public readonly mapId: MapData['id'];
 

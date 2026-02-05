@@ -5,42 +5,25 @@ import { UserModal } from '@/components/common/user/modal';
 import { userService } from '@/services/user';
 
 import { ActionPanel } from './action_panel';
-import type { UidData, UserData } from './types';
 import { UidList } from './uid_list';
 import { UserProfile } from './user_profile';
 
 // ==================== 主组件 ====================
 export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  // 模拟数据
-  const mockUser: UserData = {
-    avatar: '/images/avatar/default.png',
-    nickname: '我是小白啦啦啦',
-    uid: '14785123',
-    isSynced: true,
-    boundUidCount: 5,
-  };
-
-  const mockUidList: UidData[] = [
-    { uid: '100740568', dataCount: 1057, isActive: true },
-    { uid: '100740568', dataCount: 1057 },
-    { uid: '100740568', dataCount: 1057 },
-    { uid: '100740568', dataCount: 1057 },
-    { uid: '100740568', dataCount: 1057 },
-    { uid: '100740568', dataCount: 1057 },
-    { uid: '100740568', dataCount: 1057 },
-  ];
+  const uidList = userService.auth.uidList;
+  const uidInfo = userService.auth.currentUidInfo;
 
   // 事件处理函数
-  const handleSync = () => {
-    console.log('同步数据');
-  };
+  // const handleSync = () => {
+  //   console.log('同步数据');
+  // };
 
   const handleDeleteUid = (uid: string) => {
     console.log('删除绑定:', uid);
   };
 
   const handleSwitchToUid = (uid: string) => {
-    console.log('切换到UID:', uid);
+    userService.switchUid(uid);
   };
 
   const handleLogout = async () => {
@@ -73,10 +56,15 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
     <UserModal open={open} onClose={onClose} className="w-4xl">
       <div className="flex gap-6 p-6 h-80">
         {/* 左侧 - 用户资料 */}
-        <UserProfile user={mockUser} onSync={handleSync} />
+        <UserProfile uidInfo={uidInfo} />
 
         {/* 中间 - UID 列表 */}
-        <UidList uidList={mockUidList} onDeleteUid={handleDeleteUid} onSwitchUid={handleSwitchToUid} />
+        <UidList
+          uidList={uidList}
+          activeUid={uidInfo?.uid}
+          onDeleteUid={handleDeleteUid}
+          onSwitchUid={handleSwitchToUid}
+        />
 
         {/* 右侧 - 操作面板 */}
         <ActionPanel

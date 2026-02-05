@@ -31,10 +31,11 @@ export interface BaseEntityData {
   position: Position;
   /** 属性 */
   properties: Record<string, unknown>;
-  /** 进度锁定条件？ */
-  progressLockCondition: object;
-  /** 组件 */
-  componentProperties: Record<string, unknown>;
+}
+
+export interface BaseEntityDataWithInfo extends BaseEntityData {
+  /** Entity信息 */
+  entityInfo?: EntityInfoData;
 }
 
 export interface EnityProperties {
@@ -63,17 +64,19 @@ export interface EnityProperties {
 /**
  * 实体数据
  */
-export interface EntityData extends BaseEntityData {
+export interface EntityData extends BaseEntityDataWithInfo {
   /** 属性 */
   properties: EnityProperties;
-  /** Entity信息 */
-  entityInfo?: EntityInfoData;
+  /** 进度锁定条件？ */
+  progressLockCondition: object;
+  /** 组件 */
+  componentProperties: Record<string, unknown>;
 }
 
 /**
  * 电线杆数据
  */
-export interface ElectricPoleData extends Omit<EntityData, 'componentPropertiests' | 'progressLockCondition' | 'componentProperties'> {
+export interface ElectricPoleData extends BaseEntityDataWithInfo {
   entityDataIdKey: typeof ElectricPoleIdKey;
   entityType: '#ElectricPole';
   templateId: typeof ElectricPoleKey;
@@ -92,7 +95,7 @@ export interface ElectricPoleData extends Omit<EntityData, 'componentPropertiest
 /**
  * 自定义标点数据
  */
-export interface CustomPointData extends Omit<EntityData, 'componentPropertiests' | 'progressLockCondition' | 'componentProperties'> {
+export interface CustomPointData extends BaseEntityDataWithInfo {
   entityDataIdKey: CustomPointTypeId;
   entityType: '#CustomPoint';
   templateId: typeof CustomPointKey;

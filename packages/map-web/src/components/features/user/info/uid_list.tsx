@@ -4,28 +4,29 @@ import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';
 
 import { CheckIcon, SyncIcon } from './icons';
-import type { UidData } from './types';
+import type { UidInfo } from '@/@types/user';
 
 // ==================== UID 列表项组件 ====================
 interface UidListItemProps {
-  data: UidData;
+  data: UidInfo;
+  isActive: boolean;
   onDelete?: () => void;
   onSwitch?: () => void;
 }
 
-export const UidListItem = ({ data, onDelete, onSwitch }: UidListItemProps) => (
+export const UidListItem = ({ data, isActive, onDelete, onSwitch }: UidListItemProps) => (
   <div
     className={cn(
       'flex items-center gap-3 px-3 py-2 transition-colors',
       'bg-black/30 hover:bg-black/50 border border-white/5',
-      data.isActive && 'border-[#FDFB73]/30 bg-[#FDFB73]/5'
+      isActive && 'border-[#FDFB73]/30 bg-[#FDFB73]/5'
     )}
   >
     {/* 勾选图标 */}
     <div
       className={cn(
         'w-5 h-5 rounded-full flex items-center justify-center shrink-0',
-        data.isActive ? 'bg-[#FDFB73] text-black' : 'bg-white/10 text-white/30'
+        isActive ? 'bg-[#FDFB73] text-black' : 'bg-white/10 text-white/30'
       )}
     >
       <CheckIcon className="w-3 h-3" />
@@ -35,9 +36,6 @@ export const UidListItem = ({ data, onDelete, onSwitch }: UidListItemProps) => (
     <div className="flex-1 min-w-0">
       <span className="text-white font-medium">UID {data.uid}</span>
     </div>
-
-    {/* 数据条数 */}
-    <span className="text-white/60 text-sm shrink-0">{data.dataCount}条数据</span>
 
     {/* 操作按钮 */}
     <div className="flex items-center gap-2 shrink-0">
@@ -59,12 +57,13 @@ export const UidListItem = ({ data, onDelete, onSwitch }: UidListItemProps) => (
 
 // ==================== UID 列表组件 ====================
 interface UidListProps {
-  uidList: UidData[];
+  uidList: UidInfo[];
+  activeUid?: UidInfo['uid'];
   onDeleteUid?: (uid: string) => void;
   onSwitchUid?: (uid: string) => void;
 }
 
-export const UidList = ({ uidList, onDeleteUid, onSwitchUid }: UidListProps) => (
+export const UidList = ({ uidList, activeUid, onDeleteUid, onSwitchUid }: UidListProps) => (
   <motion.div
     className="flex-1 flex flex-col min-w-0 min-h-0"
     initial={{ opacity: 0, y: 20 }}
@@ -85,6 +84,7 @@ export const UidList = ({ uidList, onDeleteUid, onSwitchUid }: UidListProps) => 
         {uidList.map((item) => (
           <UidListItem
             key={item.uid}
+            isActive={item.uid === activeUid}
             data={item}
             onDelete={() => onDeleteUid?.(item.uid)}
             onSwitch={() => onSwitchUid?.(item.uid)}

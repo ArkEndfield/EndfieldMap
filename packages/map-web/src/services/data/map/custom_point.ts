@@ -77,8 +77,6 @@ export class CustomPointDataService extends BasePresetDataService<
   }
 
   public async initFromStorage() {
-    if (this.initialized) return;
-
     await this.initPresetFromStorage();
 
     const visibility = LocalStorageDB.get<boolean>(LocalStorageKey.CUSTOM_POINT_DISPLAY);
@@ -278,10 +276,6 @@ export class CustomPointDataService extends BasePresetDataService<
    * @param coordinate 坐标
    */
   public async createCustomPoint(mapId: MapData['id'], coordinate: Coordinate) {
-    if (!this.initialized) {
-      throw new Error('CustomPointDataService not initialized');
-    }
-
     const currentPresetId = this.currentPresetId.value;
     if (!currentPresetId) {
       alert.info({
@@ -317,10 +311,6 @@ export class CustomPointDataService extends BasePresetDataService<
    * @param id 自定义标点ID
    */
   public async deleteCustomPoint(mapId: MapData['id'], id: number) {
-    if (!this.initialized) {
-      throw new Error('CustomPointDataService not initialized');
-    }
-
     const presetId = this.currentPresetId.value;
     if (!presetId) return;
 
@@ -391,7 +381,6 @@ export class CustomPointDataService extends BasePresetDataService<
     // 清理所有事件监听器
     this.eventListenerDisposers.forEach((dispose) => dispose());
     this.eventListenerDisposers = [];
-    this.initialized = false;
   }
 
   /**

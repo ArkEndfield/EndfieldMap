@@ -20,10 +20,17 @@ import type { Coordinate } from 'ol/coordinate';
  * 负责管理单个电线杆的数据和状态
  */
 export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData> {
-  /** Entity信息 */
   @computed
   get entityInfo(): EntityInfoData {
-    return this._data.entityInfo!;
+    const originalInfo = this._data.entityInfo!;
+    const config = getElectricPoleDeviceConfig(this.deviceKey);
+    return {
+      ...originalInfo,
+      entityInfo: {
+        ...originalInfo.entityInfo,
+        pic: config.iconPic,
+      },
+    };
   }
 
   /** 是否可标记（电线杆不支持标记） */

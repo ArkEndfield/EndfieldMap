@@ -1,9 +1,12 @@
+import { getElectricPoleDeviceConfig } from '@endfieldmap/map-core/const/electric_pole';
+import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
 import type {
   ElectricPoleDataInstance,
   ElectricPoleDataManager,
 } from '@endfieldmap/map-core/data/entity/electric_pole';
 import { type IReactionDisposer, reaction } from 'mobx';
 import { Feature } from 'ol';
+import type { FeatureLike } from 'ol/Feature';
 import { Circle as CircleGeom } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -52,22 +55,11 @@ export class ElectricPoleZoneRenderer {
   /** MobX disposers */
   private disposers: IReactionDisposer[] = [];
 
-  /** 区域样式 */
-  private readonly zoneStyle: Style;
+  /** 样式缓存 */
+  private styleCache: Map<string, Style> = new Map();
 
   constructor(config: ElectricPoleZoneRendererConfig) {
     this.dataManager = config.dataManager;
-
-    // 创建样式
-    this.zoneStyle = new Style({
-      fill: new Fill({
-        color: config.fillColor ?? 'rgba(255, 215, 0, 0.15)',
-      }),
-      stroke: new Stroke({
-        color: config.strokeColor ?? 'rgba(255, 215, 0, 0.5)',
-        width: 1,
-      }),
-    });
 
     // 初始化数据源
     this.source = new VectorSource();
@@ -75,7 +67,7 @@ export class ElectricPoleZoneRenderer {
     // 初始化图层
     this.layer = new VectorLayer({
       source: this.source,
-      style: this.zoneStyle,
+      style: (feature) => this.getStyle(feature),
       visible: true,
       zIndex: 3,
     });
@@ -85,6 +77,32 @@ export class ElectricPoleZoneRenderer {
 
     // 设置数据变化监听
     this.setupDataManagerReaction();
+  }
+
+  private getStyle(feature: FeatureLike): Style {
+    const dataInstance = feature.get(EntityInstanceKey) as ElectricPoleDataInstance | undefined;
+    if (!dataInstance) {
+      // should not happen
+      return new Style();
+    }
+
+    const config = getElectricPoleDeviceConfig(dataInstance.deviceKey);
+    const cacheKey = dataInstance.deviceKey;
+
+    let style = this.styleCache.get(cacheKey);
+    if (!style) {
+      style = new Style({
+        fill: new Fill({
+          color: config.fillColor || 'rgba(255, 215, 0, 0.15)',
+        }),
+        stroke: new Stroke({
+          color: config.strokeColor || 'rgba(255, 215, 0, 0.5)',
+          width: 1,
+        }),
+      });
+      this.styleCache.set(cacheKey, style);
+    }
+    return style;
   }
 
   /**
@@ -101,6 +119,7 @@ export class ElectricPoleZoneRenderer {
    */
   private addFeatureForInstance(dataInstance: ElectricPoleDataInstance): void {
     const feature = new Feature();
+    feature.set(EntityInstanceKey, dataInstance);
     feature.setGeometry(
       dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined
     );

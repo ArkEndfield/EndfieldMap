@@ -3,6 +3,8 @@ import { logger } from '@endfieldmap/tools';
 import { DataService } from '@/services/data';
 import { UserAuthService } from '@/services/user/auth';
 import { UserDataService } from '@/services/user/data';
+import { alert } from '@/components/common/alert/alert_api';
+import type { UidInfo } from '@eftypes/user';
 
 export class UserService {
   public static instance: UserService;
@@ -12,6 +14,7 @@ export class UserService {
   constructor() {
     this.auth = new UserAuthService();
     this.data = new UserDataService();
+    this.updateUidList(false);
   }
 
   public static getInstance() {
@@ -30,26 +33,139 @@ export class UserService {
   public async login(username: string, password: string): Promise<void> {
     logger.info('[UserService] Logging in user:', username);
     await this.auth.login(username, password);
-    await this.switchUserDB();
+    await this.updateUidList();
+  }
+
+  /**
+   * 更新 uid 列表，然后根据当前 uid 切换数据库
+   * @param autoSwitch 是否自动切换 uid
+   * @returns
+   */
+  public async updateUidList(autoSwitch: boolean = true) {
+    // 没登录就不用初始化了
+    if (!this.auth.isLogin) {
+      this.stopSync();
+      return;
+    }
+    // 获取绑定的 uid 列表
+    await this.auth.fetchUidList();
+    // 获取存储的当前 uid
+    let currentUid = this.auth.currentUid.value;
+    // 如果没有 uid
+    if (!currentUid) {
+      if (this.auth.uidList.length <= 0 || !autoSwitch) {
+        // 如果没有 uid，说明是第一次登录，不进行同步
+        this.stopSync();
+        return;
+      }
+      // 默认选择第一个，开启同步
+      await this.switchUid(this.auth.uidList[0].uid);
+      return;
+    }
+    // 查找当前 uid 是否在 uid 列表中，这里不用else是因为如果没有uid的话，上面的操作已经切换了，这里肯定有一个当前uid
+    const findUid = this.auth.uidList.find((uid) => uid.uid === currentUid);
+    // 如果不在，可能是删掉了 uid，删掉本地存储的当前 uid
+    if (!findUid) {
+      this.stopSync();
+      this.auth.switchUid(void 0);
+      return;
+    }
+    // 如果在，说明还是有效的，开始同步
+    this.startSync();
+  }
+
+  /**
+   * 停止数据同步
+   */
+  private stopSync() {
+    // TODO: 数据同步，先判断有没有同步，有就关闭，没有就不处理
+  }
+
+  /**
+   * 开启数据同步
+   */
+  private startSync() {
+    // TODO: 数据同步，如果已经有同步了，就先关闭之前的
+  }
+
+  /**
+   * 切换uid的确认框
+   * @param uid uid
+   * @returns
+   */
+  private confirmModal(uid?: UidInfo['uid']) {
+    return new Promise<number>((resolve) => {
+      if (!uid) {
+        // 如果没有 Uid，可能是在initUidList检测到当前uid没了，可能是解绑了，直接返回1让本地留存
+        alert.info('当前没有绑定的 uid，本地数据将被保留');
+        resolve(1);
+        return;
+      }
+      alert.confirm({
+        // TODO: i18n
+        content: `确定要切换到 uid ${uid} 吗？`,
+        dismissible: false,
+        onConfirm: async () => {
+          alert.confirm({
+            dismissible: false,
+            content: `是否保留当前数据到 uid ${uid} ？`,
+            onConfirm: async () => {
+              resolve(1);
+            },
+            onCancel: async () => {
+              resolve(2);
+            },
+          });
+        },
+        onCancel: async () => {
+          resolve(-1);
+        },
+      });
+    });
   }
 
   /**
    * 切换用户数据库
    * 在用户切换账号时调用，迁移本地数据到新用户数据库
    */
-  public async switchUserDB(): Promise<void> {
+  public async switchUid(uid: UidInfo['uid']): Promise<void> {
     logger.info('[UserService] Switching user database');
 
-    // 创建用户数据库并迁移本地数据
-    await DataService.dbStorage.createUserDB(true);
+    const result = await this.confirmModal(uid);
 
-    // 更新所有服务的数据库连接
-    this.data.updateDB();
+    if (result && result > 0) {
+      const migrate = result === 1 ? true : false;
+      this.auth.switchUid(uid);
+      // 创建用户数据库并迁移本地数据
+      await DataService.dbStorage.createUserDB(migrate);
+      // 更新所有服务的数据库连接
+      this.data.updateDB();
+      // 执行数据迁移到用户数据库
+      await DataService.dbStorage.migrateUserData();
+      // 如果有uid，开启同步
+      if (uid) {
+        this.startSync();
+      }
+      logger.info('[UserService] User database switched');
+    }
+  }
 
-    // 执行数据迁移到用户数据库
-    await DataService.dbStorage.migrateUserData();
+  /**
+   * 绑定uid
+   * @param uid
+   */
+  public async bindUid(uid: UidInfo['uid']) {
+    await this.auth.bindUid(uid);
+    await this.updateUidList();
+  }
 
-    logger.info('[UserService] User database switched');
+  /**
+   * 解绑uid
+   * @param uid
+   */
+  public async unbindUid(uid: UidInfo['uid']) {
+    await this.auth.unbindUid(uid);
+    await this.updateUidList();
   }
 
   /**

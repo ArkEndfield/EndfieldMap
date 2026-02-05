@@ -38,7 +38,7 @@ export class CustomPointDataManager extends BaseDataManager<CustomPointData, Cus
 
     // 应用可见性
     const typeId = instance.typeId; // 假设 CustomPointDataInstance 有 typeId (对应 entityDataIdKey)
-    const isVisible = this.typeVisibility.get(typeId) ?? true;
+    const isVisible = this.typeVisibility.get(typeId) ?? false;
     instance.setVisible(isVisible);
 
     return instance;
@@ -63,7 +63,7 @@ export class CustomPointDataManager extends BaseDataManager<CustomPointData, Cus
    * 获取指定类型的可见性
    */
   public getTypeVisible(typeId: string): boolean {
-    return this.typeVisibility.get(typeId) ?? true;
+    return this.typeVisibility.get(typeId) ?? false;
   }
 
   /**

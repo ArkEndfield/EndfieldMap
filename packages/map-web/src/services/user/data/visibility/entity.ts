@@ -42,6 +42,10 @@ export class EntityVisibilityService extends BaseUserDataService<EntityVisibilit
     this.clearSubscriptions();
 
     const sub = this.db.$.subscribe((changeEvent) => {
+      const entityKey = changeEvent.documentData.entityKey;
+      // 跳过带前缀的 key（如 electric_pole:xxx），这些由 ScopedEntityVisibilityService 处理
+      if (entityKey.includes(':')) return;
+
       for (const callback of this.callbacks as EntityVisibilityCallback[]) {
         try {
           switch (changeEvent.operation) {
@@ -49,16 +53,12 @@ export class EntityVisibilityService extends BaseUserDataService<EntityVisibilit
             case 'UPDATE':
               callback(
                 changeEvent.documentData.mapId,
-                changeEvent.documentData.entityKey as EntityData['entityDataIdKey'],
+                entityKey as EntityData['entityDataIdKey'],
                 changeEvent.documentData.visible
               );
               break;
             case 'DELETE':
-              callback(
-                changeEvent.documentData.mapId,
-                changeEvent.documentData.entityKey as EntityData['entityDataIdKey'],
-                false
-              );
+              callback(changeEvent.documentData.mapId, entityKey as EntityData['entityDataIdKey'], false);
               break;
           }
         } catch (_e) {

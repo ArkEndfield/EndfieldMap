@@ -61,7 +61,7 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
 
     // 应用可见性
     const deviceKey = instance.deviceKey;
-    const isVisible = this.deviceVisibility.get(deviceKey) ?? true;
+    const isVisible = this.deviceVisibility.get(deviceKey) ?? false;
     instance.setVisible(isVisible);
 
     return instance;
@@ -204,7 +204,7 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
    * 获取指定设备类型的可见性
    */
   public getDeviceVisible(deviceKey: ElectricPoleDeviceKey): boolean {
-    return this.deviceVisibility.get(deviceKey) ?? true;
+    return this.deviceVisibility.get(deviceKey) ?? false;
   }
 
   /**

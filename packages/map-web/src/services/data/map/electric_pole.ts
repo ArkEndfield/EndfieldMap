@@ -122,8 +122,6 @@ export class ElectricPoleDataService extends BasePresetDataService<
   // region: 数据处理和获取
 
   public async initFromStorage() {
-    if (this.initialized) return;
-
     await this.initPresetFromStorage();
 
     // 初始化可见性逻辑 (加载 + 订阅)

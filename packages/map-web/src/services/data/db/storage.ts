@@ -1,5 +1,5 @@
 import { logger } from '@endfieldmap/tools';
-import { computed, makeObservable, observable } from 'mobx';
+import { computed, makeObservable, observable, runInAction } from 'mobx';
 import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
 import { addRxPlugin, createRxDatabase, type RxDatabase } from 'rxdb/plugins/core';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
@@ -181,12 +181,14 @@ export class Storage {
 
     // 创建新的 user_db
     logger.info(`[Storage] Creating user database: ${dbName}`);
-    this.user_db = await createRxDatabase<UserDataDBCollections>({
-      name: dbName,
-      storage: this.storage,
+    runInAction(async () => {
+      this.user_db = await createRxDatabase<UserDataDBCollections>({
+        name: dbName,
+        storage: this.storage,
+      });
+      await this.user_db.addCollections(userDataCollectionsSchema);
+      this.user_collections = new UserCollections(this.user_db);
     });
-    await this.user_db.addCollections(userDataCollectionsSchema);
-    this.user_collections = new UserCollections(this.user_db);
   }
 
   /**

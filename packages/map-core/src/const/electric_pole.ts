@@ -37,46 +37,56 @@ export interface ElectricPoleDeviceConfig {
   maxConnections: false | number;
   /** 连接类型：同类型之间可互连（例如 pole 与 repeater 属于 electric） */
   connectionType: ElectricPoleConnectionType;
-  /** 可选：直接覆盖某个地图下的范围半径（地图坐标单位） */
-  rangeRadiusByMapId?: Partial<Record<MapData['id'], number>>;
+  /** 填充色 (RGBA) */
+  fillColor?: string;
+  /** 描边色 (Hex/RGBA) */
+  strokeColor?: string;
 }
 
 export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, ElectricPoleDeviceConfig> = {
   pole: {
     key: 'pole',
     name: '电线杆',
-    iconPic: 'icon_map_big_pole',
+    iconPic: 'electric_pole',
     rangeMeters: 30,
     createLimit: false,
     maxConnections: 10,
     connectionType: 'electric',
+    fillColor: 'rgba(228, 169, 21, 0.15)',
+    strokeColor: '#E4A915',
   },
   repeater: {
     key: 'repeater',
     name: '中继器',
-    iconPic: 'icon_map_big_pole',
+    iconPic: 'electric_repeater',
     rangeMeters: 80,
     createLimit: false,
     maxConnections: 100,
     connectionType: 'electric',
+    fillColor: 'rgba(36, 136, 255, 0.15)',
+    strokeColor: '#2488FF',
   },
   zipline_80: {
     key: 'zipline_80',
     name: '滑索(80m)',
-    iconPic: 'icon_map_big_pole',
+    iconPic: 'electric_slider_80',
     rangeMeters: 80,
     createLimit: false,
     maxConnections: false,
     connectionType: 'zipline',
+    fillColor: 'rgba(129, 211, 0, 0.15)',
+    strokeColor: '#81D300',
   },
   zipline_110: {
     key: 'zipline_110',
     name: '滑索(110m)',
-    iconPic: 'icon_map_big_pole',
+    iconPic: 'electric_slider_110',
     rangeMeters: 110,
     createLimit: false,
     maxConnections: false,
     connectionType: 'zipline',
+    fillColor: 'rgba(0, 194, 120, 0.15)',
+    strokeColor: '#00C278',
   },
 };
 
