@@ -35,9 +35,11 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
           dismissible: false,
           onConfirm: async () => {
             await userService.logout(false);
+            return true;
           },
           onCancel: async () => {
             await userService.logout(true);
+            return true;
           },
         });
       },

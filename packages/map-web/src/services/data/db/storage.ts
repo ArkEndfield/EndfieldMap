@@ -181,13 +181,15 @@ export class Storage {
 
     // 创建新的 user_db
     logger.info(`[Storage] Creating user database: ${dbName}`);
-    runInAction(async () => {
-      this.user_db = await createRxDatabase<UserDataDBCollections>({
-        name: dbName,
-        storage: this.storage,
-      });
-      await this.user_db.addCollections(userDataCollectionsSchema);
-      this.user_collections = new UserCollections(this.user_db);
+    const newDb = await createRxDatabase<UserDataDBCollections>({
+      name: dbName,
+      storage: this.storage,
+    });
+    await newDb.addCollections(userDataCollectionsSchema);
+
+    runInAction(() => {
+      this.user_db = newDb;
+      this.user_collections = new UserCollections(newDb);
     });
   }
 
