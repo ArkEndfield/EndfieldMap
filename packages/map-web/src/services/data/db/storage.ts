@@ -207,39 +207,33 @@ export class Storage {
    * 创建用户数据快照
    */
   private async snapshotUserData(db: RxDatabase<UserDataDBCollections>): Promise<UserDataSnapshot> {
-    const [
-      electricPoleNode,
-      electricPolePreset,
-      customPointNode,
-      customPointPreset,
-      entityMark,
-      entityVisibility,
-    ] = await Promise.all([
-      db.electricPoleNode
-        .find()
-        .exec()
-        .then((docs) => docs.map((d) => d.toJSON())),
-      db.electricPolePreset
-        .find()
-        .exec()
-        .then((docs) => docs.map((d) => d.toJSON())),
-      db.customPointNode
-        .find()
-        .exec()
-        .then((docs) => docs.map((d) => d.toJSON())),
-      db.customPointPreset
-        .find()
-        .exec()
-        .then((docs) => docs.map((d) => d.toJSON())),
-      db.entityMark
-        .find()
-        .exec()
-        .then((docs) => docs.map((d) => d.toJSON())),
-      db.entityVisibility
-        .find()
-        .exec()
-        .then((docs) => docs.map((d) => d.toJSON())),
-    ]);
+    const [electricPoleNode, electricPolePreset, customPointNode, customPointPreset, entityMark, entityVisibility] =
+      await Promise.all([
+        db.electricPoleNode
+          .find()
+          .exec()
+          .then((docs) => docs.map((d) => d.toJSON())),
+        db.electricPolePreset
+          .find()
+          .exec()
+          .then((docs) => docs.map((d) => d.toJSON())),
+        db.customPointNode
+          .find()
+          .exec()
+          .then((docs) => docs.map((d) => d.toJSON())),
+        db.customPointPreset
+          .find()
+          .exec()
+          .then((docs) => docs.map((d) => d.toJSON())),
+        db.entityMark
+          .find()
+          .exec()
+          .then((docs) => docs.map((d) => d.toJSON())),
+        db.entityVisibility
+          .find()
+          .exec()
+          .then((docs) => docs.map((d) => d.toJSON())),
+      ]);
 
     return {
       electricPoleNode,
@@ -268,7 +262,8 @@ export class Storage {
   /**
    * 清空用户数据并触发删除事件
    */
-  private async clearUserDataWithEvents(db: RxDatabase<UserDataDBCollections>): Promise<void> {
+  public async clearUserDataWithEvents(_db?: RxDatabase<UserDataDBCollections>): Promise<void> {
+    const db = _db ?? this.database;
     await Promise.all([
       db.electricPoleNode.find().remove(),
       db.electricPolePreset.find().remove(),
@@ -288,7 +283,7 @@ export class Storage {
     }
 
     // 动态导入迁移模块，避免影响主要功能加载
-    const { migrateToRxDB } = await import('@/services/data/db/migration');
-    await migrateToRxDB();
+    const { Migration } = await import('@/services/data/db/migration');
+    await Migration.migrate();
   }
 }

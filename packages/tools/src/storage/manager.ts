@@ -404,6 +404,45 @@ export class StorageManager {
   }
 
   /**
+   * 获取指定类型的所有原始存储项（包含 key, value, timestamp, expiry）
+   * 用于备份
+   */
+  public async getAllRawItems(type: StorageType): Promise<Array<{ key: IDBValidKey; value: unknown }>> {
+    await this.ensureInitialized();
+
+    return new Promise((resolve, reject) => {
+      if (!this.db) {
+        reject(new Error('数据库未初始化'));
+        return;
+      }
+
+      const transaction = this.db.transaction([type], 'readonly');
+      const store = transaction.objectStore(type);
+      const request = store.openCursor();
+      const items: Array<{ key: IDBValidKey; value: unknown }> = [];
+
+      request.onsuccess = (event) => {
+        const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+        if (cursor) {
+          items.push({ key: cursor.key, value: cursor.value });
+          cursor.continue();
+        } else {
+          resolve(items);
+        }
+      };
+
+      request.onerror = () => reject(new Error(`获取所有原始项失败: ${request.error?.message || '未知错误'}`));
+    });
+  }
+
+  /**
+   * 获取所有永久存储的原始项语法糖
+   */
+  public async permanentGetAllRawItems(): Promise<Array<{ key: IDBValidKey; value: unknown }>> {
+    return await this.getAllRawItems(StorageType.PERMANENT);
+  }
+
+  /**
    * 关闭数据库连接
    */
   public close(): void {

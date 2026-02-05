@@ -124,11 +124,7 @@ export class MapService {
       loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
 
       loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 10);
-      this.mapDataService = await MapDataService.createInstance(
-        this.adapter!,
-        DataService.storage,
-        DataService.jsonLoader
-      );
+      this.mapDataService = await MapDataService.createInstance(this.adapter!, DataService.jsonLoader);
       loadingManager.completeStage(LoadingStageId.MAP_RENDER);
       loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);
       // 初始化激活feature事件监听器，用于设置和清除激活的feature

@@ -1,7 +1,7 @@
 import type { CustomPointPreset, CustomPointPresetExportBundle } from '@eftypes/custom_point';
 import type { Coordinate, CustomPointTypeId, EndfieldMapAdapter, EntityData, MapData } from '@endfieldmap/map-core';
 import { type CustomPointData, CustomPointKey, getDefaultCustomPointType, MAP_EVENT } from '@endfieldmap/map-core';
-import { LocalStorageDB, LocalStorageKey, logger, type StorageManager } from '@endfieldmap/tools';
+import { LocalStorageDB, LocalStorageKey, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -65,8 +65,8 @@ export class CustomPointDataService extends BasePresetDataService<
     this.adapter.customPointController.setMapTypeVisible(mapId, key, visible);
   }
 
-  constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
-    super(storage);
+  constructor(adapter: EndfieldMapAdapter) {
+    super();
     this.adapter = adapter;
     this.initAdapter();
   }

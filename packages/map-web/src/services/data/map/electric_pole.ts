@@ -10,14 +10,7 @@ import {
   isSameElectricPoleConnectionType,
   MAP_EVENT,
 } from '@endfieldmap/map-core';
-import {
-  calculateDistance,
-  ElectricPoleError,
-  LocalStorageDB,
-  LocalStorageKey,
-  logger,
-  type StorageManager,
-} from '@endfieldmap/tools';
+import { calculateDistance, ElectricPoleError, LocalStorageDB, LocalStorageKey, logger } from '@endfieldmap/tools';
 import diff from 'microdiff';
 import { action, computed, observable, reaction } from 'mobx';
 
@@ -101,8 +94,8 @@ export class ElectricPoleDataService extends BasePresetDataService<
   /** 连线点击事件是否已初始化 */
   private connectionClickEventInitialized: boolean = false;
 
-  constructor(storage: StorageManager, adapter: EndfieldMapAdapter) {
-    super(storage);
+  constructor(adapter: EndfieldMapAdapter) {
+    super();
     this.adapter = adapter;
     this.initAdapter();
   }

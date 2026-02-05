@@ -1,5 +1,5 @@
 import type { EntityData, MapData } from '@endfieldmap/map-core';
-import { LocalStorageValue, logger, StorageManager } from '@endfieldmap/tools';
+import { downloadData, LocalStorageValue, logger } from '@endfieldmap/tools';
 import { observable, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -53,7 +53,6 @@ export abstract class BasePresetDataService<
   TBundle extends BasePresetExportBundle<TPreset>,
   TPresetService extends IPresetService<TPreset, TNodeSchema> = IPresetService<TPreset, TNodeSchema>,
 > {
-  protected storage: StorageManager;
   protected initialized: boolean = false;
 
   @observable
@@ -115,9 +114,7 @@ export abstract class BasePresetDataService<
     await this.visibilityService.setVisibilityData(mapId, key, visible);
   }
 
-  constructor(storage: StorageManager) {
-    this.storage = storage;
-  }
+  constructor() {}
 
   /**
    * 通过 ID 获取预设
@@ -337,9 +334,6 @@ export abstract class BasePresetDataService<
       presets: toJS(presets),
     } as TBundle;
 
-    const json = JSON.stringify(bundle, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-
     let filename: string;
     if (presets.length === 1) {
       const preset = presets[0];
@@ -348,44 +342,8 @@ export abstract class BasePresetDataService<
       filename = `${this.exportTypeKey}_presets_${presets.length}_${Date.now()}.json`;
     }
 
-    if ('showSaveFilePicker' in window) {
-      try {
-        const handle = await window.showSaveFilePicker({
-          suggestedName: filename,
-          types: [
-            {
-              description: 'JSON Files',
-              accept: { 'application/json': ['.json'] },
-            },
-          ],
-        });
-
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-        alert.info('导出成功');
-        return;
-      } catch (error) {
-        // 如果用户取消了保存，直接返回，不再执行后续降级逻辑
-        if (error instanceof Error && error.name === 'AbortError') {
-          return;
-        }
-
-        logger.warn(
-          '[BasePresetDataService|downloadPresetBundle] File System Access API failed, falling back to <a> tag download',
-          error
-        );
-      }
-    }
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    await downloadData(bundle, filename);
+    alert.info('导出成功');
   }
 
   public async importPresetBundle(bundle: TBundle) {

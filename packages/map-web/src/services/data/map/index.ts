@@ -1,5 +1,5 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
-import type { JSONLoader, StorageManager } from '@endfieldmap/tools';
+import type { JSONLoader } from '@endfieldmap/tools';
 
 import { LoadingStageId } from '@/const/loading';
 import { ChestRewardDataService } from '@/services/data/map/chest_reward';
@@ -21,7 +21,6 @@ import { loadingManager } from '@/services/loading';
  * 数据服务
  */
 export class MapDataService {
-  private readonly storage: StorageManager;
   private readonly jsonLoader: JSONLoader;
   public static instance?: MapDataService;
 
@@ -39,12 +38,11 @@ export class MapDataService {
   public gridTiersDataService: GridTiersDataService;
   public noteDataService: NoteDataService;
 
-  constructor(adapter: EndfieldMapAdapter, storage: StorageManager, jsonLoader: JSONLoader) {
-    this.storage = storage;
+  constructor(adapter: EndfieldMapAdapter, jsonLoader: JSONLoader) {
     this.jsonLoader = jsonLoader;
     this.entityDataService = new EntityDataService(adapter);
-    this.electricPoleDataService = new ElectricPoleDataService(this.storage, adapter);
-    this.customPointDataService = new CustomPointDataService(this.storage, adapter);
+    this.electricPoleDataService = new ElectricPoleDataService(adapter);
+    this.customPointDataService = new CustomPointDataService(adapter);
 
     this.itemDataService = new ItemDataService(this.jsonLoader);
     this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.itemDataService);
@@ -58,9 +56,9 @@ export class MapDataService {
     this.noteDataService = new NoteDataService(this.jsonLoader);
   }
 
-  public static async createInstance(adapter: EndfieldMapAdapter, storage: StorageManager, jsonLoader: JSONLoader) {
+  public static async createInstance(adapter: EndfieldMapAdapter, jsonLoader: JSONLoader) {
     if (MapDataService.instance) return MapDataService.instance;
-    const instance = new MapDataService(adapter, storage, jsonLoader);
+    const instance = new MapDataService(adapter, jsonLoader);
     await instance.init();
     return instance;
   }
@@ -105,13 +103,6 @@ export class MapDataService {
     );
 
     await Promise.all(trackedPromises);
-    this.deleteCacheData();
-  }
-
-  private deleteCacheData() {
-    // TODO: 旧版本数据迁移
-    // 先前缓存了 lang_hash，但是现在不需要了，因为其本身就写入内存里了
-    this.storage.permanentRemove('lang_hash');
   }
 
   /**

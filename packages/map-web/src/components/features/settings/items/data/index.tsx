@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { AllStorageSetting } from '@/components/features/settings/items/data/all';
-import { CacheSetting } from '@/components/features/settings/items/data/cache';
 import { EntitySetting } from '@/components/features/settings/items/data/entity';
 import { StateSetting } from '@/components/features/settings/items/data/state';
 
@@ -11,7 +10,6 @@ export const DataSettings = observer(() => {
   const { t } = useTranslation('settings');
   return (
     <SettingsZone title={t('data.title')}>
-      <CacheSetting />
       <StateSetting />
       <EntitySetting />
       <AllStorageSetting />

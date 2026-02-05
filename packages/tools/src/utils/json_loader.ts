@@ -1,8 +1,6 @@
 import type { LoadingState } from '@endfieldmap/tools/const/enum';
-import { StorageType } from '@endfieldmap/tools/const/enum';
 import { JSONLoaderError } from '@endfieldmap/tools/const/error';
-import type { StorageManager } from '@endfieldmap/tools/storage/manager';
-import { getVersionInfo,isDev } from '@endfieldmap/tools/utils/runtime';
+import { getVersionInfo } from '@endfieldmap/tools/utils/runtime';
 
 // 定义加载结果类型
 export interface LoadResult<T> {
@@ -11,17 +9,7 @@ export interface LoadResult<T> {
   state: LoadingState;
 }
 
-export interface JSONLoaderConfig {
-  storage: StorageManager;
-}
-
 export class JSONLoader {
-  public storage: StorageManager;
-
-  constructor(config: JSONLoaderConfig) {
-    this.storage = config.storage;
-  }
-
   /**
    * 给URL添加版本号或时间戳参数
    * @param url 原始URL
@@ -43,32 +31,16 @@ export class JSONLoader {
   public async loadJSON<T>(url: string, maxRetries: number = 5, retryDelay: number = 1000): Promise<T> {
     let retries = 0;
 
-    // 使用添加了版本号/时间戳的URL作为Cache Key
+    // 使用添加了版本号/时间戳的URL
     const versionedURL = this.addVersionToURL(url);
-
-    // 检查IndexedDB缓存
-    if (!isDev) {
-      const cachedData = await this.storage.get<T>(versionedURL, StorageType.TEMPORARY);
-      if (cachedData !== null) {
-        return cachedData;
-      }
-    }
 
     while (retries < maxRetries) {
       try {
-        // 使用添加了版本号/时间戳的URL进行请求
         const response = await fetch(versionedURL);
         if (!response.ok) {
           throw new JSONLoaderError(`HTTP error! status: ${response.status}`, url);
         }
-        const data = await response.json();
-
-        if (!isDev) {
-          // 存入IndexedDB缓存
-          await this.storage.set(versionedURL, data, { type: StorageType.TEMPORARY });
-        }
-
-        return data;
+        return await response.json();
       } catch (error) {
         retries++;
         if (retries === maxRetries) {
@@ -80,18 +52,5 @@ export class JSONLoader {
     }
 
     throw new JSONLoaderError('Unexpected error in loadJSON', url);
-  }
-
-  /**
-   * 从IndexedDB缓存中清除特定URL的JSON数据
-   * @param url 要清除缓存的URL
-   */
-  public async clearJSONCache(url?: string) {
-    if (url) {
-      // 清除特定URL的缓存
-      await this.storage.set(url, null, { type: StorageType.TEMPORARY });
-    } else {
-      await this.storage.clear(StorageType.TEMPORARY);
-    }
   }
 }
