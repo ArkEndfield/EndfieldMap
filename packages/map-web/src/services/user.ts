@@ -5,6 +5,7 @@ import { UserAuthService } from '@/services/user/auth';
 import { UserDataService } from '@/services/user/data';
 import { alert } from '@/components/common/alert/alert_api';
 import type { UidInfo } from '@eftypes/user';
+import { serverService } from '@/services/server';
 
 export class UserService {
   public static instance: UserService;
@@ -14,7 +15,20 @@ export class UserService {
   constructor() {
     this.auth = new UserAuthService();
     this.data = new UserDataService();
+    serverService.setToken(this.auth.token.value);
     this.updateUidList(false);
+    // Register handlers
+    serverService.setUnauthorizedHandler(() => {
+      logger.warn('Unauthorized, logging out');
+      // TODO: i18n
+      alert.info('登录信息已过期，请重新登录');
+      this.logout();
+    });
+
+    serverService.setOnTokenRefreshed((newToken) => {
+      logger.info('Token refreshed');
+      this.auth.token.value = newToken;
+    });
   }
 
   public static getInstance() {
@@ -33,6 +47,19 @@ export class UserService {
   public async login(username: string, password: string): Promise<void> {
     logger.info('[UserService] Logging in user:', username);
     await this.auth.login(username, password);
+    serverService.setToken(this.auth.token.value);
+    await this.updateUidList();
+  }
+
+  /**
+   * 用户注册
+   * @param username 用户名
+   * @param password 密码
+   */
+  public async register(username: string, password: string): Promise<void> {
+    logger.info('[UserService] Registering user:', username);
+    await this.auth.register(username, password);
+    serverService.setToken(this.auth.token.value);
     await this.updateUidList();
   }
 
@@ -48,7 +75,7 @@ export class UserService {
       return;
     }
     // 获取绑定的 uid 列表
-    await this.auth.fetchUidList();
+    await Promise.all([this.auth.fetchUidList(), this.auth.fetchUserInfo()]);
     // 获取存储的当前 uid
     let currentUid = this.auth.currentUid.value;
     // 如果没有 uid
@@ -151,7 +178,7 @@ export class UserService {
   }
 
   /**
-   * 绑定uid
+   * TODO: 绑定uid
    * @param uid
    */
   public async bindUid(uid: UidInfo['uid']) {
@@ -179,6 +206,8 @@ export class UserService {
     // 调用 auth.logout
     await this.auth.logout();
 
+    serverService.setToken(null);
+
     // 销毁用户数据库
     await DataService.dbStorage.createUserDB(migrateData);
 
@@ -189,6 +218,9 @@ export class UserService {
     if (migrateData) {
       await DataService.dbStorage.migrateUserData();
     }
+
+    // 重置登出状态，允许下次登录后再次触发 logout
+    serverService.resetLogoutState();
 
     logger.info('[UserService] User logged out');
   }

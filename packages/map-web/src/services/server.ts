@@ -3,45 +3,269 @@ import { backendHost } from '@/services/env';
 
 class ServerService {
   constructor() {}
+  private token: string | null = null;
+  private onUnauthorized: (() => void) | null = null;
+  private onTokenRefreshed: ((token: string) => void) | null = null;
+  private isRefreshing: boolean = false;
+  // 是否正在执行登出操作，用于防止多个请求同时触发 logout
+  private isLoggingOut: boolean = false;
+  private requestsQueue: Array<{
+    resolve: (token: string) => void;
+    reject: (reason?: unknown) => void;
+  }> = [];
 
-  private unauthorizedHandler() {
-    // TODO
+  /**
+   * 设置当前 Token
+   */
+  public setToken(token: string | null) {
+    this.token = token;
   }
 
-  public async request<T>(url: string, options?: RequestInit): Promise<ServerResponse<T>> {
+  /**
+   * 设置 401 未授权处理器（通常是 logout）
+   */
+  public setUnauthorizedHandler(handler: () => void) {
+    this.onUnauthorized = handler;
+  }
+
+  /**
+   * 重置登出状态
+   * 在 logout 完成后调用，允许后续再次触发 logout
+   */
+  public resetLogoutState() {
+    this.isLoggingOut = false;
+  }
+
+  /**
+   * 安全地触发登出操作
+   * 防止多个请求同时触发多次 logout
+   */
+  private triggerLogout() {
+    if (this.isLoggingOut) {
+      return;
+    }
+    this.isLoggingOut = true;
+    this.onUnauthorized?.();
+  }
+
+  /**
+   * 设置 Token 刷新成功后的回调
+   */
+  public setOnTokenRefreshed(handler: (token: string) => void) {
+    this.onTokenRefreshed = handler;
+  }
+
+  /**
+   * 等待 Token 刷新完成
+   * 如果正在刷新，返回一个 Promise 等待新 Token
+   * 如果没有刷新，返回 null
+   */
+  private waitForTokenRefresh(): Promise<string> | null {
+    if (!this.isRefreshing) {
+      return null;
+    }
+
+    return new Promise<string>((resolve, reject) => {
+      this.requestsQueue.push({ resolve, reject });
+    });
+  }
+
+  /**
+   * 处理队列中的请求
+   */
+  private processQueue(error?: unknown) {
+    if (error) {
+      this.requestsQueue.forEach(({ reject }) => reject(error));
+    } else {
+      this.requestsQueue.forEach(({ resolve }) => resolve(this.token!));
+    }
+    this.requestsQueue = [];
+  }
+
+  /**
+   * 处理 401 未授权响应
+   * 发起刷新 Token 请求，成功后重试原始请求
+   * @param url 请求的 URL
+   * @param options 请求选项
+   * @param backendMessage 后端返回的错误消息
+   */
+  private async unauthorizedHandler<T>(url: string, options?: RequestInit, backendMessage?: string): Promise<T> {
+    // 如果没有 Token（登录/注册失败），直接拒绝，不尝试刷新
+    if (!this.token) {
+      // 如果是登录/注册请求，显示后端返回的 message
+      if (url.includes('/auth/login') || url.includes('/auth/register')) {
+        throw new Error(backendMessage || 'Unknown Error');
+      }
+      // 其他情况显示未登录
+      throw new Error('Not Login');
+    }
+
+    // 如果刷新 Token 的请求返回 401，直接 logout，防止无限循环
+    if (url.includes('/auth/refresh')) {
+      this.triggerLogout();
+      throw new Error(backendMessage || 'Unknown Error');
+    }
+
+    // 如果正在刷新 Token，等待刷新完成后重试
+    const waitPromise = this.waitForTokenRefresh();
+    if (waitPromise) {
+      const newToken = await waitPromise;
+      const retryOptions = {
+        ...options,
+        headers: {
+          ...options?.headers,
+          Authorization: `Bearer ${newToken}`,
+        },
+      };
+      return this.request<T>(url, retryOptions);
+    }
+
+    // 开始刷新 Token
+    this.isRefreshing = true;
+
     try {
-      const fullURL = new URL(url, backendHost || window.location.origin);
-      const response = await fetch(fullURL, options);
-
-      // Handle 401 specifically
-      if (response.status === 401) {
-        if (this.unauthorizedHandler) {
-          this.unauthorizedHandler();
+      const refreshResponse = await this.request<ServerResponse<{ token: string; expire: string }>>(
+        `/api/v1/auth/refresh`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.token}`,
+          },
         }
-        throw new Error('Token expired');
+      );
+
+      if (refreshResponse.code !== 0) {
+        throw new Error(refreshResponse.message || 'Unknown Error');
       }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const response = refreshResponse.data;
+
+      if (response?.token) {
+        this.token = response.token;
+        this.isRefreshing = false;
+
+        this.onTokenRefreshed?.(this.token);
+        this.processQueue();
+
+        // 重试原始请求
+        const retryOptions = {
+          ...options,
+          headers: {
+            ...options?.headers,
+            Authorization: `Bearer ${this.token}`,
+          },
+        };
+
+        return this.request<T>(url, retryOptions);
       }
 
-      const data = (await response.json()) as ServerResponse<T>;
-
-      if (data.code !== 200) {
-        // Handle application-level 401 if code matches
-        if (data.code === 401) {
-          if (this.unauthorizedHandler) {
-            this.unauthorizedHandler();
-          }
-        }
-        throw new Error(data.message || 'Server error');
-      }
-
-      return data;
+      throw new Error(refreshResponse.message || 'Unknown Error');
     } catch (error) {
-      console.error('Request failed:', error);
+      this.isRefreshing = false;
+      this.processQueue(error);
+      this.triggerLogout();
       throw error;
     }
+  }
+
+  /**
+   * 底层请求方法
+   * 不自动添加 Token 和 API 前缀
+   */
+  public async request<T>(url: string, options?: RequestInit): Promise<T> {
+    const fullURL = new URL(url, backendHost || window.location.origin);
+    const response = await fetch(fullURL, options);
+
+    if (response.status === 401) {
+      // 解析响应体获取后端返回的 message
+      let backendMessage: string | undefined;
+      try {
+        const errorData = await response.json();
+        backendMessage = errorData?.message;
+      } catch {
+        // 解析失败时忽略，使用默认消息
+      }
+      return this.unauthorizedHandler<T>(url, options, backendMessage);
+    }
+
+    if (!response.ok) {
+      // 尝试获取后端返回的错误消息
+      try {
+        const errorData = await response.json();
+        throw new Error(errorData?.message || 'Unknown Error');
+      } catch (e) {
+        if (e instanceof Error && e.message !== 'Unknown Error') {
+          throw e;
+        }
+        throw new Error('Unknown Error');
+      }
+    }
+
+    return (await response.json()) as T;
+  }
+
+  /**
+   * API 请求方法
+   * 自动添加 /api/v1 前缀和 Authorization 头
+   * 如果正在刷新 Token，会等待刷新完成后再发起请求
+   */
+  public async apiRequest<T>(url: string, _options?: RequestInit) {
+    // 如果正在刷新 Token，等待刷新完成
+    const waitPromise = this.waitForTokenRefresh();
+    if (waitPromise) {
+      const newToken = await waitPromise;
+      // 使用新 Token 发起请求
+      const options = {
+        ...(_options || {}),
+        headers: {
+          ...(_options?.headers || {}),
+          Authorization: `Bearer ${newToken}`,
+        },
+      };
+      const fullApiUrl = `/api/v1${url}`;
+      const data = await this.request<ServerResponse<T>>(fullApiUrl, options);
+
+      if (data.code !== 0) {
+        throw new Error(data.message || 'Unknown Error');
+      }
+
+      return data.data;
+    }
+
+    // 正常请求流程
+    const options = {
+      ...(_options || {}),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(_options?.headers || {}),
+        Authorization: this.token ? `Bearer ${this.token}` : '',
+      },
+    };
+
+    const fullApiUrl = `/api/v1${url}`;
+    const data = await this.request<ServerResponse<T>>(fullApiUrl, options);
+
+    if (data.code !== 0) {
+      throw new Error(data.message || 'Unknown Error');
+    }
+
+    return data.data;
+  }
+
+  public async apiPost<T, D = unknown>(url: string, data?: D, options?: RequestInit) {
+    return this.apiRequest<T>(url, {
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined,
+      ...options,
+    });
+  }
+
+  public async apiGet<T>(url: string, options?: RequestInit) {
+    return this.apiRequest<T>(url, {
+      method: 'GET',
+      ...options,
+    });
   }
 }
 

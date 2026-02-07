@@ -19,6 +19,8 @@ export interface UserModalProps {
   className?: string;
   /** 背景遮罩的类名 */
   backdropClassName?: string;
+  /** 是否允许键盘 ESC 关闭，默认 true */
+  keyboardCloseable?: boolean;
   children?: React.ReactNode;
 }
 
@@ -80,6 +82,7 @@ const UserModalInner: React.FC<UserModalProps> = ({
   onOpenChange,
   className,
   backdropClassName,
+  keyboardCloseable = true,
   children,
 }) => {
   const [dialogElement, setDialogElement] = useState<HTMLDialogElement | null>(null);
@@ -120,13 +123,13 @@ const UserModalInner: React.FC<UserModalProps> = ({
   };
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !keyboardCloseable) return;
     const dispose = shortcutService.register('Escape', () => {
       handleClose();
       return true;
     });
     return () => dispose();
-  }, [open, handleClose]);
+  }, [open, keyboardCloseable, handleClose]);
 
   return (
     <dialog

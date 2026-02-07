@@ -2,7 +2,8 @@ import { LocalStorageValue, logger } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 
 import { UserLocalStorageKey } from '@/const/storage';
-import type { UidInfo } from '@eftypes/user';
+import type { UidInfo, UserInfo } from '@eftypes/user';
+import { serverService } from '@/services/server';
 
 export class UserAuthService {
   public token: LocalStorageValue<string | null> = new LocalStorageValue<string | null>({
@@ -18,6 +19,11 @@ export class UserAuthService {
   @observable
   accessor uidList: UidInfo[] = [];
 
+  @observable
+  accessor userInfo: UserInfo | null = null;
+
+  constructor() {}
+
   @computed
   public get isLogin() {
     return !!this.token.value;
@@ -30,17 +36,21 @@ export class UserAuthService {
 
   @action
   public async login(username: string, password: string) {
-    // const token = await this.authService.login(username, password);
-    this.token.value = username + password;
-    logger.info(`login: ${username}, ${password}`);
+    const { token } = await serverService.apiPost<{ token: string; expire: string }>('/auth/login', {
+      username,
+      password,
+    });
+    this.token.value = token;
     return true;
   }
 
   @action
   public async register(username: string, password: string) {
-    // const token = await this.authService.register(username, password);
-    // this.token.value = token;
-    logger.info(`register: ${username}, ${password}`);
+    const { token } = await serverService.apiPost<{ token: string; expire: string }>('/auth/register', {
+      username,
+      password,
+    });
+    this.token.value = token;
     return true;
   }
 
@@ -62,18 +72,16 @@ export class UserAuthService {
     if (!this.isLogin) {
       throw new Error('user.not_login');
     }
-    this.uidList = [
-      {
-        uid: '100000000001',
-        nickname: 'test1',
-        avatar: '',
-      },
-      {
-        uid: '100000000002',
-        nickname: 'test2',
-        avatar: '',
-      },
-    ];
+    const { list } = await serverService.apiGet<{ list: UidInfo[] }>('/user/game-roles');
+    this.uidList = list;
+  }
+
+  @action
+  public async fetchUserInfo() {
+    if (!this.isLogin) {
+      throw new Error('user.not_login');
+    }
+    this.userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
   }
 
   public async bindUid(_uid: UidInfo['uid']) {
@@ -83,20 +91,25 @@ export class UserAuthService {
     // WARNING: 不要在这里更新 uid 列表，在外部会进行fetch的！
   }
 
-  @action
-  public async unbindUid(_uid: UidInfo['uid']) {
+  public async unbindUid(uid: UidInfo['uid']) {
     if (!this.isLogin) {
       throw new Error('user.not_login');
     }
-    // WARNING: 不要在这里更新 uid 列表，在外部会进行fetch的！
+    await serverService.apiPost('/user/game-roles/unbind', { role_id: uid });
   }
 
   @action
   public async logout() {
-    this.token.value = null;
-    this.currentUid.value = null;
-    this.uidList = [];
-    logger.info('logout');
-    return true;
+    try {
+      await serverService.apiPost('/auth/logout');
+    } catch (error) {
+      logger.error('logout error', error);
+    } finally {
+      this.token.value = null;
+      this.currentUid.value = null;
+      this.uidList = [];
+      logger.info('logout');
+      return true;
+    }
   }
 }

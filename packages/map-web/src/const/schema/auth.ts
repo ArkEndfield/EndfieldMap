@@ -3,6 +3,7 @@ import * as z from 'zod';
 export const loginSchema = z.object({
   username: z.string().min(1, '请输入用户名'),
   password: z.string().min(1, '请输入密码'),
+  agree: z.boolean().refine((value) => value, '请同意用户协议'),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
@@ -13,10 +14,8 @@ export const registerSchema = z.object({
     .min(3, '用户名至少3个字符')
     .max(20, '用户名最多20个字符')
     .regex(/^[a-zA-Z0-9_]+$/, '用户名只能包含字母、数字和下划线'),
-  password: z
-    .string()
-    .min(6, '密码至少6个字符')
-    .max(50, '密码最多50个字符'),
+  password: z.string().min(6, '密码至少6个字符').max(50, '密码最多50个字符'),
+  agree: z.boolean().refine((value) => value, '请同意用户协议'),
 });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;

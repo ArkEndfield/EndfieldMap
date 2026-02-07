@@ -65,8 +65,6 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
   const { t } = useTranslation('header');
   const [mode, setMode] = useState<AuthMode>('login');
 
-  const [isAgree, setIsAgree] = useState(false);
-
   const switchMode = (newMode: AuthMode) => {
     setMode(newMode);
   };
@@ -74,7 +72,6 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
   // 重置状态的函数
   const resetState = useCallback(() => {
     setMode('login');
-    setIsAgree(false);
   }, []);
 
   useEffect(() => {
@@ -98,28 +95,14 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
         <Logo className="h-10 my-10" />
         <div className="w-full space-y-4 overflow-hidden">
           {/* 表单滑动容器 */}
-          <motion.div
-            className="flex w-[200%]"
-            animate={{ x: slideX }}
-            transition={slideTransition}
-          >
+          <motion.div className="flex w-[200%]" animate={{ x: slideX }} transition={slideTransition}>
             {/* 登录表单 */}
             <div className="w-1/2 space-y-4 px-0.5">
-              <LoginForm
-                isAgree={isAgree}
-                onAgreeChange={setIsAgree}
-                onSwitchToRegister={() => switchMode('register')}
-                LinkButton={LinkButton}
-              />
+              <LoginForm onSwitchToRegister={() => switchMode('register')} LinkButton={LinkButton} />
             </div>
             {/* 注册表单 */}
             <div className="w-1/2 space-y-4 px-0.5">
-              <RegisterForm
-                isAgree={isAgree}
-                onAgreeChange={setIsAgree}
-                onSwitchToLogin={() => switchMode('login')}
-                LinkButton={LinkButton}
-              />
+              <RegisterForm onSwitchToLogin={() => switchMode('login')} LinkButton={LinkButton} />
             </div>
           </motion.div>
 

@@ -1,18 +1,21 @@
 import { motion } from 'motion/react';
 
-import { CheckIcon } from '@/components/features/user/info/icons';
 import { cn } from '@/utils/style';
-import type { UidInfo } from '@eftypes/user';
+import type { UidInfo, UserInfo } from '@eftypes/user';
+import { CheckCircleIcon } from '@/components/common/icons';
 
 // ==================== 用户头像组件 ====================
-interface UserAvatarProps {
+const UserAvatar = ({
+  src,
+  alt = '用户头像',
+  size = 'lg',
+  className,
+}: {
   src?: string;
   alt?: string;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
-}
-
-export const UserAvatar = ({ src, alt = '用户头像', size = 'lg', className }: UserAvatarProps) => {
+}) => {
   const sizeStyles = {
     sm: 'w-10 h-10',
     md: 'w-16 h-16',
@@ -32,7 +35,12 @@ export const UserAvatar = ({ src, alt = '用户头像', size = 'lg', className }
         {/* 内层深色边框 */}
         <div className="w-full h-full rounded-full bg-[#111] p-0.5">
           {/* 头像图片 */}
-          <img src={src} alt={alt} className="w-full h-full rounded-full object-cover" />
+          <img
+            src={src || 'https://bbs.hycdn.cn/asset/endfield.png'}
+            alt={alt}
+            className="w-full h-full rounded-full object-cover"
+            referrerPolicy="no-referrer"
+          />
         </div>
       </div>
     </div>
@@ -40,26 +48,17 @@ export const UserAvatar = ({ src, alt = '用户头像', size = 'lg', className }
 };
 
 // ==================== 同步状态徽章 ====================
-interface SyncBadgeProps {
-  isSynced: boolean;
-  className?: string;
-}
-
-export const SyncBadge = ({ isSynced, className }: SyncBadgeProps) => (
+const SyncBadge = ({ isSynced, className }: { isSynced: boolean; className?: string }) => (
   <span
     className={cn('inline-flex items-center gap-1 text-xs', isSynced ? 'text-[#01ffa2]' : 'text-white/50', className)}
   >
-    {isSynced && <CheckIcon className="w-3 h-3" />}
+    {isSynced && <CheckCircleIcon className="w-3 h-3" />}
     {isSynced ? '已同步' : '未同步'}
   </span>
 );
 
 // ==================== 用户资料组件 ====================
-interface UserProfileProps {
-  uidInfo?: UidInfo;
-}
-
-export const UserProfile = ({ uidInfo }: UserProfileProps) => (
+export const UserProfile = ({ uidInfo, userInfo }: { uidInfo?: UidInfo; userInfo: UserInfo }) => (
   <motion.div
     className={cn(
       'relative flex flex-col items-center gap-3 w-48 shrink-0 py-5 px-4',
@@ -79,12 +78,13 @@ export const UserProfile = ({ uidInfo }: UserProfileProps) => (
     <UserAvatar src={uidInfo?.avatar} />
 
     {/* 用户昵称 */}
-    <h3 className="text-[#FDFB73] text-lg font-bold tracking-wide">{uidInfo?.nickname || 'UnSelectBind'}</h3>
+    <h3 className="text-[#FDFB73] text-lg font-bold tracking-wide">{userInfo.nickname || '未命名'}</h3>
+    {uidInfo?.nickname && <h3 className="tracking-wide">{uidInfo.nickname}</h3>}
 
     {/* UID 和同步状态 */}
     <div className="flex flex-col items-center gap-1 text-sm">
       <div className="flex items-center gap-2">
-        <span className="text-white/80">UID: {uidInfo?.uid || 'UnSelectBind'}</span>
+        {uidInfo?.uid && <span className="text-white/80">UID: {uidInfo.uid}</span>}
         {/* <SyncBadge isSynced={user.isSynced} /> */}
       </div>
       {/* <span className="text-white/50 text-xs">当前绑定UID: {user.boundUidCount}</span> */}

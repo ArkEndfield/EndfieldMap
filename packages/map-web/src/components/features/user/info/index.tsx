@@ -1,17 +1,24 @@
+import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
+import { Dialog } from '@/components/common/dialog';
+import { BindIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';
 import { userService } from '@/services/user';
 
 import { ActionPanel } from './action_panel';
-import { UidList } from './uid_list';
+import { UidList } from '../uid_list';
 import { UserProfile } from './user_profile';
+import { BindUid } from '../bind_uid';
 
 // ==================== 主组件 ====================
 export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClose: () => void }) => {
+  const [bindUidOpen, setBindUidOpen] = useState(false);
+
   const uidList = userService.auth.uidList;
   const uidInfo = userService.auth.currentUidInfo;
+  const userInfo = userService.auth.userInfo;
 
   // 事件处理函数
   // const handleSync = () => {
@@ -46,36 +53,68 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
     });
   };
 
-  const handleLogin = () => {
-    console.log('登录');
+  const handleBindUid = () => {
+    setBindUidOpen(true);
   };
 
-  const handleSwitchUid = () => {
-    console.log('切换UID');
+  const handleBindUidClose = () => {
+    setBindUidOpen(false);
   };
+
+  const handleEditInfo = () => {
+    console.log('修改信息');
+  };
+
+  if (!userInfo) {
+    return null;
+  }
 
   return (
-    <UserModal open={open} onClose={onClose} className="w-4xl">
-      <div className="flex gap-6 p-6 h-80">
-        {/* 左侧 - 用户资料 */}
-        <UserProfile uidInfo={uidInfo} />
+    <>
+      <UserModal open={open} onClose={onClose} className="w-4xl" keyboardCloseable={!bindUidOpen}>
+        <div className="flex gap-6 p-6 h-80">
+          {/* 左侧 - 用户资料 */}
+          <UserProfile uidInfo={uidInfo} userInfo={userInfo} />
 
-        {/* 中间 - UID 列表 */}
-        <UidList
-          uidList={uidList}
-          activeUid={uidInfo?.uid}
-          onDeleteUid={handleDeleteUid}
-          onSwitchUid={handleSwitchToUid}
-        />
+          {/* 中间 - UID 列表 */}
+          <UidList
+            uidList={uidList}
+            isChecked={(data) => data.uid === uidInfo?.uid}
+            renderActions={(data) => (
+              <>
+                <button
+                  onClick={() => handleDeleteUid(data.uid)}
+                  className="px-2 py-1 text-xs text-[#FDFB73]/70 hover:text-[#FDFB73] border border-[#FDFB73]/30 hover:border-[#FDFB73]/60 rounded transition-colors"
+                >
+                  删除绑定
+                </button>
+                <button
+                  onClick={() => handleSwitchToUid(data.uid)}
+                  className="px-2 py-1 text-xs text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded transition-colors"
+                >
+                  切换UID
+                </button>
+              </>
+            )}
+          />
 
-        {/* 右侧 - 操作面板 */}
-        <ActionPanel
-          syncedDataCount={1456}
-          onLogout={handleLogout}
-          onLogin={handleLogin}
-          onSwitchUid={handleSwitchUid}
-        />
-      </div>
-    </UserModal>
+          {/* 右侧 - 操作面板 */}
+          <ActionPanel onLogout={handleLogout} onBindUid={handleBindUid} onEditInfo={handleEditInfo} />
+        </div>
+      </UserModal>
+
+      {/* 绑定 UID 对话框 */}
+      <Dialog
+        dismissible={false}
+        keyboardCloseable
+        open={bindUidOpen}
+        onOpenChange={setBindUidOpen}
+        onClose={handleBindUidClose}
+        icon={<BindIcon />}
+        width="25rem"
+      >
+        <BindUid onSuccess={handleBindUidClose} />
+      </Dialog>
+    </>
   );
 });
