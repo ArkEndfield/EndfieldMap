@@ -4,6 +4,7 @@ import { action, computed, observable } from 'mobx';
 import { UserLocalStorageKey } from '@/const/storage';
 import type { UidInfo, UserInfo } from '@eftypes/user';
 import { serverService } from '@/services/server';
+import type { BindType } from '@/@types/game_role';
 
 export class UserAuthService {
   public token: LocalStorageValue<string | null> = new LocalStorageValue<string | null>({
@@ -84,16 +85,12 @@ export class UserAuthService {
     this.userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
   }
 
-  public async bindUid(_uid: UidInfo['uid'], type: 'qrcode' | 'token') {
+  public async bindUid(uid: UidInfo['uid'], type: BindType) {
     if (!this.isLogin) {
       throw new Error('user.not_login');
     }
     // WARNING: 不要在这里更新 uid 列表，在外部会进行fetch的！
-    if (type === 'qrcode') {
-      await serverService.apiPost('/user/game-roles/scan/bind', { role_id: _uid });
-    } else {
-      await serverService.apiPost('/user/game-roles/bind', { role_id: _uid });
-    }
+    await serverService.apiPost('/user/game-roles/bind', { role_id: uid, form: type });
   }
 
   public async unbindUid(uid: UidInfo['uid']) {

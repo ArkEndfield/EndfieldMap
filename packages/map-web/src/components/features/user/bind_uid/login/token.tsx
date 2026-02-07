@@ -1,48 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 
-import { serverService } from '@/services/server';
-import { catchErrorWithTip } from '@/utils/handler';
 import { cn } from '@/utils/style';
 
-import type { GameRole } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { alert } from '@/components/common/alert/alert_api';
 
 interface TokenLoginProps {
-  /** 登录成功回调，返回可绑定的角色列表 */
-  onLogin: (roles: GameRole[]) => void;
-  /** 加载状态变化回调 */
-  onLoadingChange?: (loading: boolean) => void;
+  /** 登录成功回调，返回 token */
+  onLogin: (token: string) => void;
+  /** 错误信息 */
+  errorMessage: string | null;
 }
 
 /**
  * Token 登录组件
  * 用户输入鹰角 Token 获取可绑定的游戏角色列表
  */
-export const TokenLogin = ({ onLogin, onLoadingChange }: TokenLoginProps) => {
+export const TokenLogin = ({ onLogin, errorMessage }: TokenLoginProps) => {
   const [token, setToken] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
-    if (!token.trim() || loading) return;
-
-    setLoading(true);
-    onLoadingChange?.(true);
-
-    const result = await catchErrorWithTip(async () => {
-      const response = await serverService.apiPost<{ roles: GameRole[] }>('/user/game-roles/bindable', {
-        hypergryph_token: token.trim(),
-      });
-      return response?.roles ?? [];
-    });
-
-    setLoading(false);
-    onLoadingChange?.(false);
-
-    if (result && result.length >= 0) {
-      onLogin(result);
-    }
+  const handleSubmit = () => {
+    if (!token.trim()) return;
+    onLogin(token.trim());
   };
+
+  useEffect(() => {
+    if (errorMessage) {
+      alert.info(errorMessage);
+    }
+  }, [errorMessage]);
 
   return (
     <motion.div
@@ -70,24 +57,22 @@ export const TokenLogin = ({ onLogin, onLoadingChange }: TokenLoginProps) => {
           'shadow-[inset_0_0_3px_#b9b9b9]',
           'hover:bg-[#f0f0f0] hover:shadow-[inset_0_0_0_1px_#fefefe,0_0_4px_rgba(0,0,0,0.3)]',
           'active:bg-[#cfcdcd] active:shadow-[inset_0_0_3px_#b9b9b9]',
-          'focus:bg-[#e8e6e6] focus:shadow-[inset_0_0_3px_#b9b9b9]',
-          'disabled:opacity-60 disabled:cursor-not-allowed'
+          'focus:bg-[#e8e6e6] focus:shadow-[inset_0_0_3px_#b9b9b9]'
         )}
-        disabled={loading}
       />
 
       {/* 提交按钮 */}
       <ButtonWithAudio
         onClick={handleSubmit}
-        disabled={!token.trim() || loading}
+        disabled={!token.trim()}
         className={cn(
           'w-full py-2.5 text-sm font-medium rounded transition-all',
-          token.trim() && !loading
+          token.trim()
             ? 'bg-[#363636] text-[#FDFB73] hover:bg-[#484848]'
             : 'bg-gray-200 text-gray-400 cursor-not-allowed'
         )}
       >
-        {loading ? '获取中...' : '获取角色列表'}
+        获取角色列表
       </ButtonWithAudio>
     </motion.div>
   );

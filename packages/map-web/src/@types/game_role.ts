@@ -42,3 +42,8 @@ export interface ScanStatusResponse {
   /** 扫码成功时返回，用于获取角色列表 */
   scan_code: string | null;
 }
+
+/**
+ * 绑定类型
+ */
+export type BindType = 'scan' | 'token';

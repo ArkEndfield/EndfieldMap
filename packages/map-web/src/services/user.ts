@@ -6,6 +6,7 @@ import { UserDataService } from '@/services/user/data';
 import { alert } from '@/components/common/alert/alert_api';
 import type { UidInfo } from '@eftypes/user';
 import { serverService } from '@/services/server';
+import type { BindType } from '@/@types/game_role';
 
 export class UserService {
   public static instance: UserService;
@@ -181,7 +182,7 @@ export class UserService {
    * 绑定uid
    * @param uid
    */
-  public async bindUid(uid: UidInfo['uid'], type: 'qrcode' | 'token') {
+  public async bindUid(uid: UidInfo['uid'], type: BindType) {
     await this.auth.bindUid(uid, type);
     await this.updateUidList();
   }

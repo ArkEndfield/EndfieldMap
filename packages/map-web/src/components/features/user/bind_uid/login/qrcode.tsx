@@ -5,24 +5,26 @@ import { QRCodeSVG } from 'qrcode.react';
 import { serverService } from '@/services/server';
 import { cn } from '@/utils/style';
 
-import type { GameRole, ScanInfo, ScanStatusResponse } from '@/@types/game_role';
+import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 
 /** 轮询间隔（毫秒） */
 const POLL_INTERVAL = 2000;
 
 interface QRCodeLoginProps {
-  /** 登录成功回调，返回可绑定的角色列表和 scan_code */
-  onLogin: (roles: GameRole[], scanCode: string) => void;
+  /** 扫码成功回调，返回 scan_code */
+  onLogin: (scanCode: string) => void;
   /** 加载状态变化回调 */
   onLoadingChange?: (loading: boolean) => void;
+  /** 错误信息，用于重置二维码状态 */
+  errorMessage?: string | null;
 }
 
 /**
  * 扫码登录组件
  * 生成二维码，用户扫码后获取可绑定的游戏角色列表
  */
-export const QRCodeLogin = ({ onLogin, onLoadingChange }: QRCodeLoginProps) => {
+export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLoginProps) => {
   const [scanInfo, setScanInfo] = useState<ScanInfo | null>(null);
   const [status, setStatus] = useState<'loading' | 'pending' | 'confirmed' | 'expired'>('loading');
   const [error, setError] = useState<string | null>(null);
@@ -102,35 +104,10 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange }: QRCodeLoginProps) => {
         break;
 
       case 'confirmed':
-        // 扫码成功，获取角色列表
+        // 扫码成功，回调 scan_code
         if (result.scan_code) {
           setStatus('confirmed');
-          onLoadingChange?.(true);
-
-          try {
-            const rolesResult = await serverService.apiPost<{ roles: GameRole[] }>('/user/game-roles/scan/roles', {
-              scan_code: result.scan_code,
-            });
-
-            onLoadingChange?.(false);
-
-            if (!isMountedRef.current) return;
-
-            if (rolesResult?.roles) {
-              onLogin(rolesResult.roles, result.scan_code);
-            } else {
-              // 获取角色列表失败，重置二维码状态
-              setError('获取角色列表失败，请重试');
-              setStatus('expired');
-            }
-          } catch (err) {
-            onLoadingChange?.(false);
-
-            if (!isMountedRef.current) return;
-
-            setError(err instanceof Error ? err.message : '获取角色列表失败，请重试');
-            setStatus('expired');
-          }
+          onLogin(result.scan_code);
         }
         break;
 
@@ -139,7 +116,15 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange }: QRCodeLoginProps) => {
         setStatus('expired');
         break;
     }
-  }, [scanInfo, onLogin, onLoadingChange]);
+  }, [scanInfo, onLogin]);
+
+  // 监听外部错误信息，用于重置二维码状态
+  useEffect(() => {
+    if (errorMessage) {
+      setError(errorMessage);
+      setStatus('expired');
+    }
+  }, [errorMessage]);
 
   // 开始轮询
   useEffect(() => {

@@ -1,19 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 
+import { serverService } from '@/services/server';
 import { cn } from '@/utils/style';
 
-import type { GameRole } from '@/@types/game_role';
+import type { BindType, GameRole } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 
-import { QRCodeLogin } from './qrcode';
-import { TokenLogin } from './token';
-
-type LoginMethod = 'qrcode' | 'token';
+import { QRCodeLogin } from '@/components/features/user/bind_uid/login/qrcode';
+import { TokenLogin } from '@/components/features/user/bind_uid/login/token';
 
 interface LoginProps {
   /** 登录成功回调 */
-  onLogin: (roles: GameRole[], loginMethod: LoginMethod, scanCode?: string) => void;
+  onLogin: (roles: GameRole[], loginMethod: BindType, scanCode?: string) => void;
 }
 
 /**
@@ -21,27 +20,60 @@ interface LoginProps {
  * 提供扫码和 Token 两种登录方式的切换
  */
 export const Login = ({ onLogin }: LoginProps) => {
-  const [method, setMethod] = useState<LoginMethod>('qrcode');
+  const [method, setMethod] = useState<BindType>('scan');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleQRCodeLogin = (roles: GameRole[], scanCode: string) => {
-    onLogin(roles, 'qrcode', scanCode);
+  /**
+   * 获取可绑定的游戏角色列表
+   * @param form 登录方式：scan 或 token
+   * @param credential 凭证：scan_code 或 hypergryph_token
+   */
+  const fetchBindableRoles = async (form: BindType, credential: string): Promise<GameRole[] | undefined> => {
+    const params =
+      form === 'scan' ? { form: 'scan', scan_code: credential } : { form: 'token', hypergryph_token: credential };
+    const response = await serverService.apiPost<{ roles: GameRole[] }>('/user/game-roles/bindable', params);
+    return response?.roles ?? [];
   };
 
-  const handleTokenLogin = (roles: GameRole[]) => {
-    onLogin(roles, 'token');
+  const handleLogin = async (form: BindType, credential: string) => {
+    setError(null);
+    setLoading(true);
+    try {
+      const roles = await fetchBindableRoles(form, credential);
+      if (roles && roles.length >= 0) {
+        onLogin(roles, form, credential);
+      } else {
+        // TODO: i18n
+        setError('没有找到可绑定的角色');
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : '获取角色列表失败，请重试');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleQRCodeLogin = (scanCode: string) => handleLogin('scan', scanCode);
+
+  const handleTokenLogin = (token: string) => handleLogin('token', token);
+
+  useEffect(() => {
+    return () => {
+      setError(null);
+    };
+  }, [method]);
 
   return (
     <div className="flex flex-col min-h-75">
       {/* Tab 切换 */}
       <div className="flex border-b border-gray-200 shrink-0">
         <ButtonWithAudio
-          onClick={() => setMethod('qrcode')}
+          onClick={() => setMethod('scan')}
           disabled={loading}
           className={cn(
             'flex-1 py-3 text-sm font-medium transition-colors border-b-2',
-            method === 'qrcode'
+            method === 'scan'
               ? 'text-[#363636] border-[#FDFB73] bg-[#FDFB73]/10'
               : 'text-gray-500 border-transparent hover:text-gray-700'
           )}
@@ -65,13 +97,13 @@ export const Login = ({ onLogin }: LoginProps) => {
       {/* 登录内容 */}
       <div className="flex-1 overflow-hidden">
         <AnimatePresence mode="wait">
-          {method === 'qrcode' ? (
-            <motion.div key="qrcode">
-              <QRCodeLogin onLogin={handleQRCodeLogin} onLoadingChange={setLoading} />
+          {method === 'scan' ? (
+            <motion.div key="scan">
+              <QRCodeLogin onLogin={handleQRCodeLogin} onLoadingChange={setLoading} errorMessage={error} />
             </motion.div>
           ) : (
             <motion.div key="token">
-              <TokenLogin onLogin={handleTokenLogin} onLoadingChange={setLoading} />
+              <TokenLogin onLogin={handleTokenLogin} errorMessage={error} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -79,5 +111,3 @@ export const Login = ({ onLogin }: LoginProps) => {
     </div>
   );
 };
-
-export type { LoginMethod };

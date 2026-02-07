@@ -5,10 +5,11 @@ import { userService } from '@/services/user';
 import { catchErrorWithTip } from '@/utils/handler';
 import { alert } from '@/components/common/alert/alert_api';
 
-import type { GameRole } from '@/@types/game_role';
+import type { BindType, GameRole } from '@/@types/game_role';
 
-import { BindUidList } from './bind_uid_list';
-import { Login, type LoginMethod } from './login';
+import { BindUidList } from '@/components/features/user/bind_uid/bind_uid_list';
+import { Login } from '@/components/features/user/bind_uid/login';
+import { observer } from 'mobx-react-lite';
 
 type View = 'login' | 'list';
 
@@ -16,17 +17,17 @@ type View = 'login' | 'list';
  * UID 绑定主入口组件
  * 控制登录视图和绑定列表视图的切换
  */
-export const BindUid = () => {
+export const BindUid = observer(() => {
   const [view, setView] = useState<View>('login');
   const [roles, setRoles] = useState<GameRole[]>([]);
-  const [loginMethod, setLoginMethod] = useState<LoginMethod>('qrcode');
+  const [loginMethod, setLoginMethod] = useState<BindType>('scan');
   const [binding, setBinding] = useState(false);
 
   // 获取已绑定的 UID 列表
   const boundUids = userService.auth.uidList.map((item) => item.uid);
 
   // 登录成功处理
-  const handleLogin = (roleList: GameRole[], method: LoginMethod, _code?: string) => {
+  const handleLogin = (roleList: GameRole[], method: BindType, _code?: string) => {
     setRoles(roleList);
     setLoginMethod(method);
     setView('list');
@@ -88,4 +89,4 @@ export const BindUid = () => {
       </AnimatePresence>
     </div>
   );
-};
+});
