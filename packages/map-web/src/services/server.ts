@@ -290,7 +290,14 @@ class ServerService {
     }
     const params = new URLSearchParams();
     if (checkpoint) {
-      params.set('checkpoint_updated_at', checkpoint.updated_at.toString());
+      // RxDB 内部使用 camelCase (updatedAt)，但 SyncCheckpoint 类型使用 snake_case (updated_at)
+      // 这里需要兼容两种情况
+      const updatedAt =
+        (checkpoint as { updated_at?: number; updatedAt?: number }).updated_at ??
+        (checkpoint as { updated_at?: number; updatedAt?: number }).updatedAt;
+      if (updatedAt !== undefined) {
+        params.set('checkpoint_updated_at', updatedAt.toString());
+      }
       params.set('checkpoint_id', checkpoint.id);
     }
     params.set('limit', limit.toString());

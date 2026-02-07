@@ -99,6 +99,7 @@ export class UserService {
       return;
     }
     // 如果在，说明还是有效的，开始同步
+    serverService.setUid(currentUid);
     this.startSync();
   }
 
