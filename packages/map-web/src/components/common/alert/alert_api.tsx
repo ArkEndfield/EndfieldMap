@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 
 import { ZmdAlert } from '@/components/common/alert/alert';
-import { PromptInput } from '@/components/common/alert/input';
+import { Input } from '@/components/common/input';
 
 interface AlertInstance {
   destroy: () => void;
@@ -149,7 +149,7 @@ class AlertManager {
       this.createAlert({
         ...promptConfig,
         content: (
-          <PromptInput
+          <Input
             placeholder={promptConfig.placeholder}
             defaultValue={promptConfig.defaultValue}
             inputType={promptConfig.inputType}

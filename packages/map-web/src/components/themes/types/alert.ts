@@ -41,15 +41,3 @@ export interface ZmdAlertFullProps {
   onConfirm?: () => boolean | void | Promise<boolean | void>;
   keyboardCloseable?: boolean;
 }
-
-export interface PromptInputProps {
-  placeholder?: string;
-  defaultValue?: string;
-  inputType?: string;
-  maxLength?: number;
-  minLength?: number;
-  pattern?: string;
-  inputClassName?: string;
-  onValueChange: (value: string) => void;
-  content?: ReactNode;
-}

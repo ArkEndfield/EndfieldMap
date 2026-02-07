@@ -1,5 +1,6 @@
 import { alert } from '@/components/common/alert/alert_api';
 import i18n from '@/i18n';
+import type { FieldErrors, FieldValues } from 'react-hook-form';
 
 /**
  * 捕获函数执行过程中的错误，并显示错误提示
@@ -42,9 +43,9 @@ export const catchErrorWithTip = async <T>(func: () => T | Promise<T>): Promise<
  * 捕获表单验证错误
  * @param errors - 表单验证错误
  */
-export const onFormInvalid = <T>(errors: FieldErrors<T>) => {
+export const onFormInvalid = <T extends FieldValues = FieldValues>(errors: FieldErrors<T>) => {
   const firstError = Object.values(errors)[0];
-  if (firstError?.message) {
+  if (firstError?.message && typeof firstError.message === 'string') {
     alert.info(firstError.message);
   }
 };

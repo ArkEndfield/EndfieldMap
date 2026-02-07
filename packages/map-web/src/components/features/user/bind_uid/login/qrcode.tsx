@@ -3,7 +3,6 @@ import { motion } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
 
 import { serverService } from '@/services/server';
-import { catchErrorWithTip } from '@/utils/handler';
 import { cn } from '@/utils/style';
 
 import type { GameRole, ScanInfo, ScanStatusResponse } from '@/@types/game_role';
@@ -73,17 +72,26 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange }: QRCodeLoginProps) => {
   const checkStatus = useCallback(async () => {
     if (!scanInfo || !isMountedRef.current) return;
 
-    const result = await catchErrorWithTip(async () => {
-      return await serverService.apiGet<ScanStatusResponse>(
+    let result: ScanStatusResponse | null = null;
+    try {
+      result = await serverService.apiGet<ScanStatusResponse>(
         `/user/game-roles/scan/status?scan_id=${encodeURIComponent(scanInfo.scan_id)}`
       );
-    });
+    } catch (err) {
+      if (!isMountedRef.current) return;
+
+      // 请求失败，显示错误信息并停止轮询
+      setError(err instanceof Error ? err.message : '查询状态失败');
+      setStatus('expired');
+      return;
+    }
 
     if (!isMountedRef.current) return;
 
     if (!result) {
-      // 请求失败，继续轮询
-      pollTimerRef.current = setTimeout(checkStatus, POLL_INTERVAL);
+      // 请求失败，显示错误信息
+      setError('查询状态失败');
+      setStatus('expired');
       return;
     }
 
@@ -185,9 +193,6 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange }: QRCodeLoginProps) => {
           </div>
         )}
       </div>
-
-      {/* 状态提示 */}
-      {status === 'pending' && <div className="text-xs text-gray-400">等待扫码...</div>}
     </motion.div>
   );
 };

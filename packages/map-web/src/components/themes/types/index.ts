@@ -1,4 +1,5 @@
-import type { PromptInputProps, ZmdAlertFullProps, ZmdAlertProps } from '@themes/types/alert';
+import type { ZmdAlertFullProps, ZmdAlertProps } from '@themes/types/alert';
+import type { InputProps } from '@themes/types/input';
 import type { ThemeRootContextProps } from '@themes/types/context';
 import type { TooltipProps } from '@themes/types/tooltip';
 import type { FC, LazyExoticComponent } from 'react';
@@ -12,7 +13,7 @@ export enum ComponentType {
   MENUS = 'Menus',
   ALERT = 'Alert',
   ALERT_FULL = 'AlertFull',
-  ALERT_PROMPT_INPUT = 'AlertPromptInput',
+  INPUT = 'Input',
   TOOLTIP = 'Tooltip',
   ROOT_PROVIDER = 'RootProvider',
   TIER_MANAGER = 'TierManager',
@@ -28,7 +29,7 @@ export interface ThemedComponentMap {
   [ComponentType.ZOOM_CONTROLLER]: LazyExoticComponent<FC<object>>;
   [ComponentType.ALERT]: LazyExoticComponent<FC<ZmdAlertProps>>;
   [ComponentType.ALERT_FULL]: LazyExoticComponent<FC<ZmdAlertFullProps>>;
-  [ComponentType.ALERT_PROMPT_INPUT]: LazyExoticComponent<FC<PromptInputProps>>;
+  [ComponentType.INPUT]: LazyExoticComponent<FC<InputProps>>;
   [ComponentType.TOOLTIP]: LazyExoticComponent<
     <T extends React.ElementType>(props: TooltipProps<T>) => React.ReactElement | null
   >;

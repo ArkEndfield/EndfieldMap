@@ -1,9 +1,9 @@
-import type { PromptInputProps } from '@themes/types/alert';
+import type { InputProps } from '@themes/types/input';
 import { useState } from 'react';
 
 import { cn } from '@/utils/style';
 
-export const PromptInput = ({
+export const EndfieldInput = ({
   placeholder,
   defaultValue = '',
   inputType = 'text',
@@ -13,7 +13,7 @@ export const PromptInput = ({
   inputClassName,
   onValueChange,
   content,
-}: PromptInputProps) => {
+}: InputProps) => {
   const [value, setValue] = useState(defaultValue);
 
   return (
@@ -22,12 +22,13 @@ export const PromptInput = ({
       <input
         type={inputType}
         className={cn(
-          'px-4 mx-1 py-2 outline-none transition-all duration-200 text-sm',
-          'bg-[#f2f1ef] text-[#2a2728] placeholder-[#a0a2a3]',
+          'px-3 py-1.5 outline-none transition-all duration-200 text-sm',
+          'bg-[#e8e6e6] text-[#2a2728] placeholder-[#a0a2a3]',
           'rounded-full',
-          'shadow-[0_0_0_0.1em_#f2f1ef,0_0_0_0.1em_#a0a2a3_inset]',
-          'focus:shadow-[0_0_0_1px_#FDFB73AA,0_0_8px_#FDFB73AA,0_0_0_0.1em_#a0a2a3_inset]',
-          'focus:bg-[#fefcfc]',
+          'shadow-[inset_0_0_3px_#b9b9b9]',
+          'hover:bg-[#f0f0f0] hover:shadow-[inset_0_0_0_1px_#fefefe,0_0_4px_rgba(0,0,0,0.3)]',
+          'active:bg-[#cfcdcd] active:shadow-[inset_0_0_3px_#b9b9b9]',
+          'focus:bg-[#e8e6e6] focus:shadow-[inset_0_0_3px_#b9b9b9]',
           inputClassName
         )}
         placeholder={placeholder}
@@ -52,4 +53,4 @@ export const PromptInput = ({
   );
 };
 
-export default PromptInput;
+export default EndfieldInput;

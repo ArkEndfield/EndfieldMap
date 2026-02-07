@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 
-import { ActionButton } from './action_button';
+import { ActionButton } from '@/components/features/user/info/action_button';
 import { EditIcon, LogoutIcon, PlusIcon } from '@/components/common/icons';
 
 // ==================== 操作面板组件 ====================

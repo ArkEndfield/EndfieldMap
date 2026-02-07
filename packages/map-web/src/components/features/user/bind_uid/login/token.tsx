@@ -64,10 +64,14 @@ export const TokenLogin = ({ onLogin, onLoadingChange }: TokenLoginProps) => {
         onChange={(e) => setToken(e.target.value)}
         placeholder="请输入 hypergryph_token..."
         className={cn(
-          'w-full h-24 p-3 text-sm resize-none',
-          'bg-gray-100 border border-gray-300 rounded',
-          'focus:outline-none focus:border-[#FDFB73] focus:ring-1 focus:ring-[#FDFB73]/50',
-          'placeholder:text-gray-400'
+          'w-full h-24 p-3 text-sm resize-none outline-none transition-all duration-200',
+          'bg-[#e8e6e6] text-[#2a2728] placeholder-[#a0a2a3]',
+          'rounded-lg',
+          'shadow-[inset_0_0_3px_#b9b9b9]',
+          'hover:bg-[#f0f0f0] hover:shadow-[inset_0_0_0_1px_#fefefe,0_0_4px_rgba(0,0,0,0.3)]',
+          'active:bg-[#cfcdcd] active:shadow-[inset_0_0_3px_#b9b9b9]',
+          'focus:bg-[#e8e6e6] focus:shadow-[inset_0_0_3px_#b9b9b9]',
+          'disabled:opacity-60 disabled:cursor-not-allowed'
         )}
         disabled={loading}
       />

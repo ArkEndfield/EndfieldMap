@@ -142,8 +142,8 @@ class UIManager {
       alert: {
         Alert: components.get(ComponentType.ALERT),
         AlertFull: components.get(ComponentType.ALERT_FULL),
-        AlertPromptInput: components.get(ComponentType.ALERT_PROMPT_INPUT),
       },
+      Input: components.get(ComponentType.INPUT),
       tooltip: {
         Tooltip: components.get(ComponentType.TOOLTIP),
       },

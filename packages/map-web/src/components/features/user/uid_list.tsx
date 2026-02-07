@@ -37,6 +37,11 @@ const UidListItem = ({
       <CheckCircleIcon className="w-3 h-3" />
     </button>
 
+    {/* 头像 */}
+    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
+      <img src={data.avatar} alt="" className="w-full h-full object-cover" />
+    </div>
+
     {/* UID 信息 */}
     <div className="flex-1 min-w-0">
       <span className="text-white font-medium">UID {data.uid}</span>

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 
-import { serverService } from '@/services/server';
 import { userService } from '@/services/user';
 import { catchErrorWithTip } from '@/utils/handler';
 import { alert } from '@/components/common/alert/alert_api';
@@ -13,16 +12,11 @@ import { Login, type LoginMethod } from './login';
 
 type View = 'login' | 'list';
 
-interface BindUidProps {
-  /** 绑定成功后的回调 */
-  onSuccess?: () => void;
-}
-
 /**
  * UID 绑定主入口组件
  * 控制登录视图和绑定列表视图的切换
  */
-export const BindUid = ({ onSuccess }: BindUidProps) => {
+export const BindUid = () => {
   const [view, setView] = useState<View>('login');
   const [roles, setRoles] = useState<GameRole[]>([]);
   const [loginMethod, setLoginMethod] = useState<LoginMethod>('qrcode');
@@ -50,28 +44,17 @@ export const BindUid = ({ onSuccess }: BindUidProps) => {
 
     setBinding(true);
 
-    const result = await catchErrorWithTip(async () => {
+    await catchErrorWithTip(async () => {
       // 根据登录方式选择不同的绑定接口
-      if (loginMethod === 'qrcode') {
-        await serverService.apiPost('/user/game-roles/scan/bind', { role_id: roleId });
-      } else {
-        await serverService.apiPost('/user/game-roles/bind', { role_id: roleId });
-      }
-      return true;
+      await userService.bindUid(roleId, loginMethod);
+      alert.info('绑定成功');
     });
 
     setBinding(false);
-
-    if (result) {
-      alert.info('绑定成功');
-      // 刷新 UID 列表
-      await userService.updateUidList(false);
-      onSuccess?.();
-    }
   };
 
   return (
-    <div className="min-h-87.5">
+    <div className="h-full min-h-72">
       <AnimatePresence mode="wait">
         {view === 'login' ? (
           <motion.div
@@ -80,6 +63,7 @@ export const BindUid = ({ onSuccess }: BindUidProps) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
+            className="h-full"
           >
             <Login onLogin={handleLogin} />
           </motion.div>
@@ -90,6 +74,7 @@ export const BindUid = ({ onSuccess }: BindUidProps) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
+            className="h-full"
           >
             <BindUidList
               roles={roles}

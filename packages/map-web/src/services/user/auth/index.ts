@@ -84,11 +84,16 @@ export class UserAuthService {
     this.userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
   }
 
-  public async bindUid(_uid: UidInfo['uid']) {
+  public async bindUid(_uid: UidInfo['uid'], type: 'qrcode' | 'token') {
     if (!this.isLogin) {
       throw new Error('user.not_login');
     }
     // WARNING: 不要在这里更新 uid 列表，在外部会进行fetch的！
+    if (type === 'qrcode') {
+      await serverService.apiPost('/user/game-roles/scan/bind', { role_id: _uid });
+    } else {
+      await serverService.apiPost('/user/game-roles/bind', { role_id: _uid });
+    }
   }
 
   public async unbindUid(uid: UidInfo['uid']) {

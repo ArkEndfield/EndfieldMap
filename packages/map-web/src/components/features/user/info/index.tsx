@@ -7,10 +7,11 @@ import { BindIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';
 import { userService } from '@/services/user';
 
-import { ActionPanel } from './action_panel';
-import { UidList } from '../uid_list';
-import { UserProfile } from './user_profile';
-import { BindUid } from '../bind_uid';
+import { ActionPanel } from '@/components/features/user/info/action_panel';
+import { UidList } from '@/components/features/user/uid_list';
+import { UserProfile } from '@/components/features/user/info/user_profile';
+import { BindUid } from '@/components/features/user/bind_uid';
+import { catchErrorWithTip } from '@/utils/handler';
 
 // ==================== 主组件 ====================
 export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClose: () => void }) => {
@@ -26,7 +27,15 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
   // };
 
   const handleDeleteUid = (uid: string) => {
-    console.log('删除绑定:', uid);
+    alert.confirm({
+      content: '确定要解除绑定吗？',
+      onConfirm: async () => {
+        catchErrorWithTip(async () => {
+          await userService.unbindUid(uid);
+        });
+        return true;
+      },
+    });
   };
 
   const handleSwitchToUid = (uid: string) => {
@@ -86,7 +95,7 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
                   onClick={() => handleDeleteUid(data.uid)}
                   className="px-2 py-1 text-xs text-[#FDFB73]/70 hover:text-[#FDFB73] border border-[#FDFB73]/30 hover:border-[#FDFB73]/60 rounded transition-colors"
                 >
-                  删除绑定
+                  解除绑定
                 </button>
                 <button
                   onClick={() => handleSwitchToUid(data.uid)}
@@ -113,7 +122,7 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
         icon={<BindIcon />}
         width="25rem"
       >
-        <BindUid onSuccess={handleBindUidClose} />
+        <BindUid />
       </Dialog>
     </>
   );

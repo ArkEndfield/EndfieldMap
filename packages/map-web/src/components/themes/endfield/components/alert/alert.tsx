@@ -100,7 +100,7 @@ const AlertInner: React.FC<ZmdAlertProps> = ({
           }}
           exit={{ opacity: 0, transition: { duration: 0.15 } }}
         >
-          <div className="flex-1 py-4 text-[#2a2728] overflow-auto">{children}</div>
+          <div className="flex-1 py-4 text-[#2a2728]">{children}</div>
         </motion.div>
 
         {/* Actions */}

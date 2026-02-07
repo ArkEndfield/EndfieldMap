@@ -9,7 +9,7 @@ const Menus = lazy(() => import('@themes/endfield/ui/menus'));
 const ControlPanel = lazy(() => import('@themes/endfield/ui/control_panel'));
 const Alert = lazy(() => import('@themes/endfield/components/alert/alert'));
 const AlertFull = lazy(() => import('@themes/endfield/components/alert/alert_full'));
-const AlertPromptInput = lazy(() => import('@themes/endfield/components/alert/input'));
+const EndfieldInput = lazy(() => import('@/components/themes/endfield/components/input'));
 const Tooltip = lazy(() => import('@themes/endfield/components/tooltip'));
 const ThemeRootProvider = lazy(() => import('@themes/endfield/components/root_provider'));
 const TierManager = lazy(() => import('@themes/endfield/ui/tier_manager'));
@@ -24,7 +24,7 @@ const endfieldTheme: ThemedComponentMap = {
   [ComponentType.MENUS]: Menus,
   [ComponentType.ALERT]: Alert,
   [ComponentType.ALERT_FULL]: AlertFull,
-  [ComponentType.ALERT_PROMPT_INPUT]: AlertPromptInput,
+  [ComponentType.INPUT]: EndfieldInput,
   [ComponentType.TOOLTIP]: Tooltip,
   [ComponentType.ROOT_PROVIDER]: ThemeRootProvider,
   [ComponentType.TIER_MANAGER]: TierManager,

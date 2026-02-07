@@ -178,11 +178,11 @@ export class UserService {
   }
 
   /**
-   * TODO: 绑定uid
+   * 绑定uid
    * @param uid
    */
-  public async bindUid(uid: UidInfo['uid']) {
-    await this.auth.bindUid(uid);
+  public async bindUid(uid: UidInfo['uid'], type: 'qrcode' | 'token') {
+    await this.auth.bindUid(uid, type);
     await this.updateUidList();
   }
 
