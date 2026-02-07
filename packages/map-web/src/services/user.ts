@@ -213,6 +213,9 @@ export class UserService {
   public async logout(migrateData: boolean = true): Promise<void> {
     logger.info('[UserService] Logging out user, migrate data:', migrateData);
 
+    // 先停止数据同步
+    await this.stopSync();
+
     // 调用 auth.logout
     await this.auth.logout();
 
