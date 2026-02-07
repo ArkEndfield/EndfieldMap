@@ -99,16 +99,29 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange }: QRCodeLoginProps) => {
           setStatus('confirmed');
           onLoadingChange?.(true);
 
-          const rolesResult = await catchErrorWithTip(async () => {
-            return await serverService.apiPost<{ roles: GameRole[] }>('/user/game-roles/scan/roles', {
+          try {
+            const rolesResult = await serverService.apiPost<{ roles: GameRole[] }>('/user/game-roles/scan/roles', {
               scan_code: result.scan_code,
             });
-          });
 
-          onLoadingChange?.(false);
+            onLoadingChange?.(false);
 
-          if (rolesResult?.roles && isMountedRef.current) {
-            onLogin(rolesResult.roles, result.scan_code);
+            if (!isMountedRef.current) return;
+
+            if (rolesResult?.roles) {
+              onLogin(rolesResult.roles, result.scan_code);
+            } else {
+              // 获取角色列表失败，重置二维码状态
+              setError('获取角色列表失败，请重试');
+              setStatus('expired');
+            }
+          } catch (err) {
+            onLoadingChange?.(false);
+
+            if (!isMountedRef.current) return;
+
+            setError(err instanceof Error ? err.message : '获取角色列表失败，请重试');
+            setStatus('expired');
           }
         }
         break;
