@@ -1,9 +1,11 @@
 import type { ServerResponse } from '@eftypes/server';
+import type { PullResponse, PushDocumentRow, PushResponse, SyncCheckpoint, SyncCollectionName } from '@eftypes/sync';
 import { backendHost } from '@/services/env';
 
 class ServerService {
   constructor() {}
   private token: string | null = null;
+  private uid: string | null = null;
   private onUnauthorized: (() => void) | null = null;
   private onTokenRefreshed: ((token: string) => void) | null = null;
   private isRefreshing: boolean = false;
@@ -19,6 +21,10 @@ class ServerService {
    */
   public setToken(token: string | null) {
     this.token = token;
+  }
+
+  public setUid(uid?: string | null) {
+    this.uid = uid || null;
   }
 
   /**
@@ -266,6 +272,45 @@ class ServerService {
       method: 'GET',
       ...options,
     });
+  }
+
+  /**
+   * 同步拉取 - 从服务端拉取指定 collection 的文档
+   * @param collection 集合名称
+   * @param checkpoint 检查点（用于增量同步）
+   * @param limit 每次拉取数量
+   */
+  public async syncPull(
+    collection: SyncCollectionName,
+    checkpoint: SyncCheckpoint | null,
+    limit: number = 50
+  ): Promise<PullResponse> {
+    if (!this.uid) {
+      throw new Error('User not logged in');
+    }
+    const params = new URLSearchParams();
+    if (checkpoint) {
+      params.set('checkpoint_updated_at', checkpoint.updated_at.toString());
+      params.set('checkpoint_id', checkpoint.id);
+    }
+    params.set('limit', limit.toString());
+    params.set('role_id', this.uid);
+
+    return this.apiGet<PullResponse>(`/sync/${collection}/pull?${params.toString()}`);
+  }
+
+  /**
+   * 同步推送 - 向服务端推送文档更改
+   * @param collection 集合名称
+   * @param docs 推送的文档列表
+   */
+  public async syncPush(collection: SyncCollectionName, docs: PushDocumentRow[]): Promise<PushResponse> {
+    if (!this.uid) {
+      throw new Error('User not logged in');
+    }
+    const params = new URLSearchParams();
+    params.set('role_id', this.uid);
+    return this.apiPost<PushResponse>(`/sync/${collection}/push?${params.toString()}`, { docs });
   }
 }
 

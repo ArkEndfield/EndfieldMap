@@ -105,15 +105,22 @@ export class UserService {
   /**
    * 停止数据同步
    */
-  private stopSync() {
-    // TODO: 数据同步，先判断有没有同步，有就关闭，没有就不处理
+  private async stopSync() {
+    await this.data.syncService.stopSync();
   }
 
   /**
    * 开启数据同步
    */
-  private startSync() {
-    // TODO: 数据同步，如果已经有同步了，就先关闭之前的
+  private async startSync() {
+    await this.data.syncService.startSync();
+  }
+
+  /**
+   * 手动触发同步
+   */
+  public async triggerSync() {
+    await this.data.syncService.triggerSync();
   }
 
   /**
@@ -164,15 +171,16 @@ export class UserService {
     if (result && result > 0) {
       const migrate = result === 1 ? true : false;
       this.auth.switchUid(uid);
+      serverService.setUid(uid);
       // 创建用户数据库并迁移本地数据
       await DataService.dbStorage.createUserDB(migrate);
       // 更新所有服务的数据库连接
-      this.data.updateDB();
+      await this.data.updateDB();
       // 执行数据迁移到用户数据库
       await DataService.dbStorage.migrateUserData();
       // 如果有uid，开启同步
       if (uid) {
-        this.startSync();
+        await this.startSync();
       }
       logger.info('[UserService] User database switched');
     }
@@ -213,7 +221,7 @@ export class UserService {
     await DataService.dbStorage.createUserDB(migrateData);
 
     // 更新所有服务的数据库连接
-    this.data.updateDB();
+    await this.data.updateDB();
 
     // 如果需要迁移，执行数据迁移到本地数据库
     if (migrateData) {

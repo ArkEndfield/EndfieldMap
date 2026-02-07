@@ -3,6 +3,7 @@ import { logger } from '@endfieldmap/tools';
 import { EntityMarkService } from '@/services/user/data/marked/entity';
 import { CustomPointPresetDataService } from '@/services/user/data/preset/custom_point';
 import { ElectricPolePresetDataService } from '@/services/user/data/preset/electric_pole';
+import { SyncService } from '@/services/user/data/sync';
 import { EntityVisibilityService, ScopedEntityVisibilityService } from '@/services/user/data/visibility/entity';
 
 export class UserDataService {
@@ -15,12 +16,18 @@ export class UserDataService {
   public customPointPresetDataService = new CustomPointPresetDataService();
   public electricPolePresetDataService = new ElectricPolePresetDataService();
 
+  /** 数据同步服务 */
+  public syncService = new SyncService();
+
   /**
    * 更新所有服务的数据库连接
    * 在用户登录/登出时调用
    */
-  public updateDB() {
+  public async updateDB() {
     logger.info('[UserDataService] Updating all service database connections');
+
+    // 先停止同步
+    await this.syncService.stopSync();
 
     // 更新所有服务的数据库连接
     this.entityMarkService.updateDB();
