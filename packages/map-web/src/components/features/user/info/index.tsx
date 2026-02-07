@@ -98,6 +98,7 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
                   解除绑定
                 </button>
                 <button
+                  hidden={data.uid === uidInfo?.uid}
                   onClick={() => handleSwitchToUid(data.uid)}
                   className="px-2 py-1 text-xs text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded transition-colors"
                 >

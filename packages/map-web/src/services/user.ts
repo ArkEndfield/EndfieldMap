@@ -95,7 +95,7 @@ export class UserService {
     // 如果不在，可能是删掉了 uid，删掉本地存储的当前 uid
     if (!findUid) {
       this.stopSync();
-      this.auth.switchUid(void 0);
+      this.switchUid(void 0);
       return;
     }
     // 如果在，说明还是有效的，开始同步
@@ -125,7 +125,7 @@ export class UserService {
     return new Promise<number>((resolve) => {
       if (!uid) {
         // 如果没有 Uid，可能是在initUidList检测到当前uid没了，可能是解绑了，直接返回1让本地留存
-        alert.info('当前没有绑定的 uid，本地数据将被保留');
+        alert.info('当前没有选择绑定的 uid，本地数据将被保留');
         resolve(1);
         return;
       }
@@ -156,7 +156,7 @@ export class UserService {
    * 切换用户数据库
    * 在用户切换账号时调用，迁移本地数据到新用户数据库
    */
-  public async switchUid(uid: UidInfo['uid']): Promise<void> {
+  public async switchUid(uid?: UidInfo['uid']): Promise<void> {
     logger.info('[UserService] Switching user database');
 
     const result = await this.confirmModal(uid);

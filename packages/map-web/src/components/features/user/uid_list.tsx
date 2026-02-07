@@ -85,7 +85,7 @@ export const UidList = ({
         <span className="text-white/50 text-xs">未绑定UID</span>
       </div>
     ) : (
-      <ScrollArea className="flex-1 min-h-0" scrollY scrollX={false} scrollbarY="auto" contentClassName="pr-2">
+      <ScrollArea className="flex-1 min-h-0 mt-2" scrollY scrollX={false} scrollbarY="auto" contentClassName="pr-2">
         <div className="flex flex-col gap-2">
           {uidList.map((item) => (
             <UidListItem
