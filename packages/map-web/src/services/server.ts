@@ -269,8 +269,8 @@ class ServerService {
         headers: {
           ...(_options?.headers || {}),
           Authorization: `Bearer ${newToken}`,
-          lang: currentLocale,
-          uid: this.uid || '',
+          Lang: currentLocale,
+          Uid: this.uid || '',
         },
       };
       const fullApiUrl = `/api/v1${url}`;
@@ -296,8 +296,8 @@ class ServerService {
         'Content-Type': 'application/json',
         ...(_options?.headers || {}),
         Authorization: this.token ? `Bearer ${this.token}` : '',
-        lang: currentLocale,
-        uid: this.uid || '',
+        Lang: currentLocale,
+        Uid: this.uid || '',
       },
     };
 

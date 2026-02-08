@@ -46,20 +46,16 @@ export const UserInput: React.FC<UserInputProps> = ({
     <div
       onClick={handleWrapperClick}
       className={cn(
-        'relative flex items-center gap-2 py-1 pl-2 pr-6 group/input transition-colors duration-300',
+        'relative col-span-2 grid grid-cols-subgrid items-center py-1 pl-2 pr-6 group/input transition-colors duration-300',
         'before:absolute before:inset-0 before:-z-10 before:bg-black/20 before:transition-colors before:duration-300',
         'before:[clip-path:polygon(0.5rem_0,100%_0,100%_calc(100%-0.5rem),calc(100%-0.5rem)_100%,0_100%,0_0.5rem)]',
         'hover:before:bg-black/40'
       )}
     >
-      <label className="shrink-0">{icon}</label>
-      <label className="font-medium shrink-0 text-lg w-16 flex justify-between">
-        {String(label)
-          .split('')
-          .map((char, i) => (
-            <span key={i}>{char}</span>
-          ))}
-      </label>
+      <div className="flex items-center gap-2">
+        <label className="shrink-0">{icon}</label>
+        <label className="font-medium shrink-0 text-lg whitespace-nowrap">{label}</label>
+      </div>
       <div className="relative flex-1">
         <input
           ref={inputRef}

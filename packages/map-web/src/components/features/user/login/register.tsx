@@ -42,34 +42,35 @@ export const RegisterForm = observer(({ onSwitchToLogin, LinkButton }: RegisterF
 
   return (
     <>
-      <Controller
-        name="username"
-        control={control}
-        render={({ field }) => (
-          <UserInput
-            label={t('user.username')}
-            placeholder={t('user.register_username_placeholder')}
-            value={field.value}
-            onChange={field.onChange}
-            error={!!errors.username}
-          />
-        )}
-      />
-
-      <Controller
-        name="password"
-        control={control}
-        render={({ field }) => (
-          <UserInput
-            label={t('user.password')}
-            placeholder={t('user.register_password_placeholder')}
-            type="password"
-            value={field.value}
-            onChange={field.onChange}
-            error={!!errors.password}
-          />
-        )}
-      />
+      <div className="grid grid-cols-[auto_1fr] gap-y-2">
+        <Controller
+          name="username"
+          control={control}
+          render={({ field }) => (
+            <UserInput
+              label={t('user.username')}
+              placeholder={t('user.register_username_placeholder')}
+              value={field.value}
+              onChange={field.onChange}
+              error={!!errors.username}
+            />
+          )}
+        />
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <UserInput
+              label={t('user.password')}
+              placeholder={t('user.register_password_placeholder')}
+              type="password"
+              value={field.value}
+              onChange={field.onChange}
+              error={!!errors.password}
+            />
+          )}
+        />
+      </div>
 
       <Controller
         name="agree"
