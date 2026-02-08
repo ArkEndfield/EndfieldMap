@@ -206,6 +206,15 @@ export class UserService {
   }
 
   /**
+   * 更新用户信息
+   * @param data 更新数据，目前仅支持 nickname
+   */
+  public async updateUserInfo(data: { nickname?: string }) {
+    await this.auth.updateUserInfo(data);
+    await this.auth.fetchUserInfo();
+  }
+
+  /**
    * 用户登出
    * 销毁用户数据库，迁移数据到本地数据库
    * @param migrateData 是否迁移用户数据到本地，默认为 true

@@ -114,4 +114,18 @@ export class UserAuthService {
       return true;
     }
   }
+
+  /**
+   * 更新用户信息
+   * @param data 更新数据，目前仅支持 nickname
+   */
+  public async updateUserInfo(data: { nickname?: string }) {
+    if (!this.isLogin) {
+      throw new Error('user.not_login');
+    }
+    if (!this.userInfo) {
+      throw new Error('user.no_user_info');
+    }
+    await serverService.apiPut(`/users/${this.userInfo.id}`, data);
+  }
 }

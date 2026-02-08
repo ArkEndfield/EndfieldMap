@@ -19,7 +19,8 @@ export const ActionButton = ({
   icon,
   className,
 }: ActionButtonProps) => {
-  const baseStyles = 'flex items-center justify-center gap-1.5 font-medium transition-all duration-200 rounded';
+  const baseStyles =
+    'flex items-center justify-center gap-1.5 font-medium transition-all duration-200 rounded relative group/action-button';
 
   const variantStyles = {
     primary: 'bg-[#FDFB73] text-black hover:bg-[#e5e366] active:bg-[#ccc95a]',
@@ -33,8 +34,21 @@ export const ActionButton = ({
     md: 'px-4 py-1.5 text-sm',
   };
 
+  const decorationStyles = {
+    primary: 'bg-black',
+    secondary: 'bg-[#FEFA53]',
+    outline: 'bg-[#FDFB73]',
+    danger: 'bg-white',
+  };
+
   return (
     <ButtonWithAudio onClick={onClick} className={cn(baseStyles, variantStyles[variant], sizeStyles[size], className)}>
+      <div
+        className={cn(
+          'absolute left-1 top-2 bottom-2 w-1 rounded-full transition-all duration-200 group-hover/action-button:top-1.5 group-hover/action-button:bottom-1.5',
+          decorationStyles[variant]
+        )}
+      />
       {icon && <span className="w-4 h-4">{icon}</span>}
       <span className="w-16">{children}</span>
     </ButtonWithAudio>

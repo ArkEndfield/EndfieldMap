@@ -5,8 +5,8 @@ import { cn } from '@/utils/style';
 import type { UidInfo, UserInfo } from '@eftypes/user';
 import { SyncStatus } from '@eftypes/sync';
 import { CheckCircleIcon, RefreshIcon } from '@/components/common/icons';
-import { ActionButton } from '@/components/features/user/info/action_button';
 import { userService } from '@/services/user';
+import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 
 // ==================== 用户头像组件 ====================
 const UserAvatar = ({
@@ -52,13 +52,36 @@ const UserAvatar = ({
 };
 
 // ==================== 同步状态徽章 ====================
+
+// 同步中的三点浮动动画组件
+const SyncingDots = () => (
+  <span className="inline-flex items-center gap-0.5 h-4">
+    {[0, 1, 2].map((i) => (
+      <motion.span
+        key={i}
+        className="w-1 h-1 rounded-full bg-[#FDFB73]"
+        animate={{
+          y: [0, -3, 0, 0],
+        }}
+        transition={{
+          duration: 1.2,
+          repeat: Infinity,
+          delay: i * 0.15,
+          ease: 'easeInOut',
+          times: [0, 0.2, 0.4, 1],
+        }}
+      />
+    ))}
+  </span>
+);
+
 const SyncBadge = observer(({ className }: { className?: string }) => {
   const syncService = userService.data.syncService;
   const status = syncService.status;
 
   const statusConfig = {
     [SyncStatus.Idle]: { text: '已同步', color: 'text-[#01ffa2]', icon: true },
-    [SyncStatus.Syncing]: { text: '同步中...', color: 'text-[#FDFB73]', icon: false },
+    [SyncStatus.Syncing]: { text: '', color: 'text-[#FDFB73]', icon: false },
     [SyncStatus.Error]: { text: '同步失败', color: 'text-red-400', icon: false },
     [SyncStatus.Offline]: { text: '离线', color: 'text-white/50', icon: false },
   };
@@ -68,8 +91,7 @@ const SyncBadge = observer(({ className }: { className?: string }) => {
   return (
     <span className={cn('inline-flex items-center gap-1 text-xs', config.color, className)}>
       {config.icon && <CheckCircleIcon className="w-3 h-3" />}
-      {status === SyncStatus.Syncing && <RefreshIcon className="w-3 h-3 animate-spin" />}
-      {config.text}
+      {status === SyncStatus.Syncing ? <SyncingDots /> : config.text}
     </span>
   );
 });
@@ -111,20 +133,18 @@ export const UserProfile = observer(({ uidInfo, userInfo }: { uidInfo?: UidInfo;
         <div className="flex items-center gap-2">
           {uidInfo?.uid && <span className="text-white/80">UID: {uidInfo.uid}</span>}
         </div>
-        {uidInfo?.uid && <SyncBadge />}
+        {uidInfo?.uid ? (
+          <SyncBadge />
+        ) : (
+          <span className="text-white/80 text-xs text-center">切换一个UID后开始同步数据</span>
+        )}
       </div>
 
       {/* 立即同步按钮 */}
       {uidInfo?.uid && (
-        <ActionButton
-          variant="outline"
-          size="md"
-          icon={<RefreshIcon className={cn('w-full h-full', isSyncing && 'animate-spin')} />}
-          onClick={handleSync}
-          className="mt-2"
-        >
+        <ZmdSquareButton icon={<RefreshIcon />} onClick={handleSync} className="mt-2 w-full" loading={isSyncing}>
           {isSyncing ? '同步中' : '立即同步'}
-        </ActionButton>
+        </ZmdSquareButton>
       )}
     </motion.div>
   );

@@ -1,5 +1,9 @@
 import { cn } from '@/utils/style';
 import { useState, useRef } from 'react';
+import { useAudio } from '@/hooks/use_audio';
+import { SoundType } from '@/const/audio_config';
+import { VisibleIcon, InVisibleIcon } from '@/components/common/icons';
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 
 export interface UserInputProps {
   icon?: React.ReactNode;
@@ -9,6 +13,7 @@ export interface UserInputProps {
   value: string;
   error?: boolean;
   onChange: (value: string) => void;
+  soundType?: SoundType;
 }
 
 const DefaultIcon = () => (
@@ -25,13 +30,21 @@ export const UserInput: React.FC<UserInputProps> = ({
   value,
   error,
   onChange,
+  soundType = SoundType.CLICK,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const { play } = useAudio();
+
+  const handleWrapperClick = () => {
+    inputRef.current?.focus();
+    play(soundType);
+  };
 
   return (
     <div
-      onClick={() => inputRef.current?.focus()}
+      onClick={handleWrapperClick}
       className={cn(
         'relative flex items-center gap-2 py-1 pl-2 pr-6 group/input transition-colors duration-300',
         'before:absolute before:inset-0 before:-z-10 before:bg-black/20 before:transition-colors before:duration-300',
@@ -50,14 +63,26 @@ export const UserInput: React.FC<UserInputProps> = ({
       <div className="relative flex-1">
         <input
           ref={inputRef}
-          type={type}
+          type={type === 'password' && showPassword ? 'text' : type}
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="block w-full outline-0 border-none bg-transparent text-sm pt-0.5 pb-1.5 ml-1"
+          className="block w-full outline-0 border-none bg-transparent text-sm pt-0.5 pb-1.5 ml-1 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden"
         />
+        {type === 'password' && (
+          <ButtonWithAudio
+            type="button"
+            className="absolute right-0 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors cursor-pointer z-10"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowPassword(!showPassword);
+            }}
+          >
+            {showPassword ? <VisibleIcon /> : <InVisibleIcon />}
+          </ButtonWithAudio>
+        )}
 
         {/* 底部边框底层 */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-[#f0fd2d]" />

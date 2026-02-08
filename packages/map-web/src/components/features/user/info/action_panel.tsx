@@ -20,7 +20,7 @@ export const ActionPanel = ({ onBindUid, onEditInfo, onLogout }: ActionPanelProp
     {/* 标题区域 */}
     <div className="text-right">
       <h2 className="text-[#FDFB73] text-3xl font-bold tracking-wider">个人信息</h2>
-      <p className="text-white/30 text-xs mt-1 font-mono tracking-widest">PROFILE_SYSTEM</p>
+      <p className="text-white/30 text-xs mt-1 font-[Outfit] tracking-widest">PROFILE</p>
     </div>
 
     {/* 操作按钮组 */}

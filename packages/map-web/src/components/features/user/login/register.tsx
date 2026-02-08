@@ -48,7 +48,7 @@ export const RegisterForm = observer(({ onSwitchToLogin, LinkButton }: RegisterF
         render={({ field }) => (
           <UserInput
             label={t('user.username')}
-            placeholder={t('user.register_username_placeholder', '请输入用户名（3-20个字符）')}
+            placeholder={t('user.register_username_placeholder', '请输入用户名')}
             value={field.value}
             onChange={field.onChange}
             error={!!errors.username}
@@ -62,7 +62,7 @@ export const RegisterForm = observer(({ onSwitchToLogin, LinkButton }: RegisterF
         render={({ field }) => (
           <UserInput
             label={t('user.password')}
-            placeholder={t('user.register_password_placeholder', '请输入密码（至少6个字符）')}
+            placeholder={t('user.register_password_placeholder', '请输入密码')}
             type="password"
             value={field.value}
             onChange={field.onChange}

@@ -7,8 +7,8 @@ import { alert } from '@/components/common/alert/alert_api';
 
 import type { BindType, GameRole } from '@/@types/game_role';
 
-import { BindUidList } from '@/components/features/user/bind_uid/bind_uid_list';
-import { Login } from '@/components/features/user/bind_uid/login';
+import { BindUidList } from '@/components/features/user/info/bind_uid/bind_uid_list';
+import { Login } from '@/components/features/user/info/bind_uid/login';
 import { observer } from 'mobx-react-lite';
 
 type View = 'login' | 'list';

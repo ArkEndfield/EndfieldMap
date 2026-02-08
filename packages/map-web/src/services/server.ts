@@ -274,6 +274,21 @@ class ServerService {
     });
   }
 
+  public async apiPut<T, D = unknown>(url: string, data?: D, options?: RequestInit) {
+    return this.apiRequest<T>(url, {
+      method: 'PUT',
+      body: data ? JSON.stringify(data) : undefined,
+      ...options,
+    });
+  }
+
+  public async apiDelete<T>(url: string, options?: RequestInit) {
+    return this.apiRequest<T>(url, {
+      method: 'DELETE',
+      ...options,
+    });
+  }
+
   /**
    * 同步拉取 - 从服务端拉取指定 collection 的文档
    * @param collection 集合名称

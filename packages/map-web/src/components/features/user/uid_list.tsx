@@ -5,6 +5,7 @@ import { cn } from '@/utils/style';
 
 import type { UidInfo } from '@/@types/user';
 import { BindIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
 
 // ==================== UID 列表项组件 ====================
 const UidListItem = ({
@@ -21,8 +22,8 @@ const UidListItem = ({
   <div
     className={cn(
       'flex items-center gap-3 px-3 py-2 transition-colors',
-      'bg-black/30 hover:bg-black/50 border border-white/5',
-      isChecked && 'border-[#FDFB73]/30 bg-[#FDFB73]/5'
+      'bg-black/30 border border-white/5',
+      isChecked ? 'border-[#FDFB73]/30 bg-[#FDFB73]/5' : 'hover:bg-black/50'
     )}
   >
     {/* 勾选图标 */}
@@ -38,8 +39,14 @@ const UidListItem = ({
     </button>
 
     {/* 头像 */}
-    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
-      <img src={data.avatar} alt="" className="w-full h-full object-cover" />
+    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-white/10 flex items-center justify-center">
+      {data.avatar ? (
+        <img src={data.avatar} alt="" className="w-full h-full object-cover" />
+      ) : (
+        <svg className="w-5 h-5 text-white/30" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+      )}
     </div>
 
     {/* UID 信息 */}
@@ -48,7 +55,9 @@ const UidListItem = ({
     </div>
 
     {/* 操作按钮 */}
-    {renderActions && <div className="flex items-center gap-2 shrink-0">{renderActions(data)}</div>}
+    {renderActions && (
+      <ButtonWithAudio className="flex items-center gap-2 shrink-0">{renderActions(data)}</ButtonWithAudio>
+    )}
   </div>
 );
 
@@ -65,7 +74,7 @@ export const UidList = ({
   renderActions?: (data: UidInfo) => React.ReactNode;
 }) => (
   <motion.div
-    className="flex-1 flex flex-col min-w-0 min-h-0"
+    className="flex-1 flex flex-col min-w-0 min-h-0 font-[Outfit]"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.3, delay: 0.2 }}

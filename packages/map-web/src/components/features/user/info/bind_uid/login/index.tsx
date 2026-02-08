@@ -7,8 +7,10 @@ import { cn } from '@/utils/style';
 import type { BindType, GameRole } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 
-import { QRCodeLogin } from '@/components/features/user/bind_uid/login/qrcode';
-import { TokenLogin } from '@/components/features/user/bind_uid/login/token';
+import { QRCodeLogin } from '@/components/features/user/info/bind_uid/login/qrcode';
+import { TokenLogin } from '@/components/features/user/info/bind_uid/login/token';
+import { SoundType } from '@/const/audio_config';
+import { KeyIcon, ScanIcon } from '@/components/common/icons';
 
 interface LoginProps {
   /** 登录成功回调 */
@@ -71,25 +73,29 @@ export const Login = ({ onLogin }: LoginProps) => {
         <ButtonWithAudio
           onClick={() => setMethod('scan')}
           disabled={loading}
+          soundType={SoundType.TICK}
           className={cn(
-            'flex-1 py-3 text-sm font-medium transition-colors border-b-2',
+            'flex-1 py-3 text-sm font-medium transition-colors border-b-2 flex items-center justify-center gap-1',
             method === 'scan'
               ? 'text-[#363636] border-[#FDFB73] bg-[#FDFB73]/10'
               : 'text-gray-500 border-transparent hover:text-gray-700'
           )}
         >
+          <ScanIcon className="w-3.5 h-3.5 mr-1" />
           扫码登录
         </ButtonWithAudio>
         <ButtonWithAudio
           onClick={() => setMethod('token')}
           disabled={loading}
+          soundType={SoundType.TICK}
           className={cn(
-            'flex-1 py-3 text-sm font-medium transition-colors border-b-2',
+            'flex-1 py-3 text-sm font-medium transition-colors border-b-2 flex items-center justify-center gap-1',
             method === 'token'
               ? 'text-[#363636] border-[#FDFB73] bg-[#FDFB73]/10'
               : 'text-gray-500 border-transparent hover:text-gray-700'
           )}
         >
+          <KeyIcon />
           Token 登录
         </ButtonWithAudio>
       </div>

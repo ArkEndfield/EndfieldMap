@@ -3,19 +3,21 @@ import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { Dialog } from '@/components/common/dialog';
-import { BindIcon } from '@/components/common/icons';
+import { BindIcon, EditIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';
 import { userService } from '@/services/user';
 
 import { ActionPanel } from '@/components/features/user/info/action_panel';
 import { UidList } from '@/components/features/user/uid_list';
 import { UserProfile } from '@/components/features/user/info/user_profile';
-import { BindUid } from '@/components/features/user/bind_uid';
+import { BindUid } from '@/components/features/user/info/bind_uid';
+import { Settings } from '@/components/features/user/info/settings';
 import { catchErrorWithTip } from '@/utils/handler';
 
 // ==================== 主组件 ====================
 export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const [bindUidOpen, setBindUidOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const uidList = userService.auth.uidList;
   const uidInfo = userService.auth.currentUidInfo;
@@ -71,7 +73,11 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
   };
 
   const handleEditInfo = () => {
-    console.log('修改信息');
+    setSettingsOpen(true);
+  };
+
+  const handleSettingsClose = () => {
+    setSettingsOpen(false);
   };
 
   if (!userInfo) {
@@ -80,7 +86,7 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
 
   return (
     <>
-      <UserModal open={open} onClose={onClose} className="w-4xl" keyboardCloseable={!bindUidOpen}>
+      <UserModal open={open} onClose={onClose} className="w-4xl" keyboardCloseable={!bindUidOpen && !settingsOpen}>
         <div className="flex gap-6 p-6 h-80">
           {/* 左侧 - 用户资料 */}
           <UserProfile uidInfo={uidInfo} userInfo={userInfo} />
@@ -124,6 +130,20 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
         width="25rem"
       >
         <BindUid />
+      </Dialog>
+
+      {/* 修改信息对话框 */}
+      <Dialog
+        dismissible={false}
+        keyboardCloseable
+        title="修改信息"
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        onClose={handleSettingsClose}
+        icon={<EditIcon />}
+        width="28rem"
+      >
+        <Settings />
       </Dialog>
     </>
   );

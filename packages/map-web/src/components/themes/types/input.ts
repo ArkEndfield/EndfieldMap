@@ -1,4 +1,8 @@
+import { SoundType } from '@/const/audio_config';
+
 export interface InputProps {
+  disabled?: boolean;
+  soundType?: SoundType;
   placeholder?: string;
   defaultValue?: string;
   inputType?: string;
