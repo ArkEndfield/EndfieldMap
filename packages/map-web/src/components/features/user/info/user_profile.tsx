@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { cn } from '@/utils/style';
 import type { UidInfo, UserInfo } from '@eftypes/user';
 import { SyncStatus } from '@eftypes/sync';
-import { CheckCircleIcon, RefreshIcon } from '@/components/common/icons';
+import { CheckCircleIcon, SyncIcon } from '@/components/common/icons';
 import { userService } from '@/services/user';
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 
@@ -142,7 +142,7 @@ export const UserProfile = observer(({ uidInfo, userInfo }: { uidInfo?: UidInfo;
 
       {/* 立即同步按钮 */}
       {uidInfo?.uid && (
-        <ZmdSquareButton icon={<RefreshIcon />} onClick={handleSync} className="mt-2 w-full" loading={isSyncing}>
+        <ZmdSquareButton icon={<SyncIcon />} onClick={handleSync} className="mt-2 w-full" loading={isSyncing}>
           {isSyncing ? '同步中' : '立即同步'}
         </ZmdSquareButton>
       )}

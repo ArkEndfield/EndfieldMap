@@ -1,6 +1,8 @@
 import type { ServerResponse } from '@eftypes/server';
 import type { PullResponse, PushDocumentRow, PushResponse, SyncCheckpoint, SyncCollectionName } from '@eftypes/sync';
 import { backendHost } from '@/services/env';
+import i18n from '@/i18n';
+import { getLanguage } from '@/utils/language';
 
 class ServerService {
   constructor() {}
@@ -239,6 +241,8 @@ class ServerService {
       return data.data;
     }
 
+    const currentLocale = getLanguage(i18n.languages);
+
     // 正常请求流程
     const options = {
       ...(_options || {}),
@@ -246,6 +250,7 @@ class ServerService {
         'Content-Type': 'application/json',
         ...(_options?.headers || {}),
         Authorization: this.token ? `Bearer ${this.token}` : '',
+        lang: currentLocale,
       },
     };
 
