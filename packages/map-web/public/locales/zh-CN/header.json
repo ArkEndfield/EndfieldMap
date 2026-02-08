@@ -30,7 +30,7 @@
     "username_placeholder": "请输入账号",
     "password_placeholder": "请输入密码",
     "agreement": "你已同意我们的<agreement>《用户注册登录协议》</agreement>",
-    "switch_confirm": "切换到 uid {{uid}} 吗？",
+    "switch_confirm": "切换到 uid {{uid}} 以开始同步吗？",
     "switch_confirm_keep": "是否保留当前数据到 uid {{uid}} ？",
     "no_uid_select_and_keep_data": "当前没有选择绑定的 uid，本地数据将被保留",
     "use_third_part_login_tip": "使用第三方登录",
@@ -55,6 +55,7 @@
       }
     },
     "uid": {
+      "default": "内置UID",
       "bind": "绑定UID",
       "list": "绑定的UID列表",
       "not_bind": "未绑定UID",

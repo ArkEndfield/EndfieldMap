@@ -30,7 +30,7 @@
     "username_placeholder": "Enter username",
     "password_placeholder": "Enter password",
     "agreement": "You have agreed to our <agreement>User Registration and Login Agreement</agreement>",
-    "switch_confirm": "Switch to UID {{uid}}?",
+    "switch_confirm": "Switch to UID {{uid}} to start syncing?",
     "switch_confirm_keep": "Do you want to keep the current data for UID {{uid}}?",
     "no_uid_select_and_keep_data": "No UID is currently selected, local data will be retained",
     "use_third_part_login_tip": "Use third-party login",
@@ -55,6 +55,7 @@
       }
     },
     "uid": {
+      "default": "Built-in UID",
       "bind": "Bind UID",
       "list": "Bound UID List",
       "not_bind": "No UID Bound",

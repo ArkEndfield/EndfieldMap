@@ -95,6 +95,7 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
             renderActions={(data) => (
               <>
                 <button
+                  hidden={data.is_default}
                   onClick={() => handleDeleteUid(data.uid)}
                   className="px-2 py-1 text-xs text-[#FDFB73]/70 hover:text-[#FDFB73] border border-[#FDFB73]/30 hover:border-[#FDFB73]/60 rounded transition-colors"
                 >

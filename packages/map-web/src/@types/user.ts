@@ -2,6 +2,7 @@ export type UidInfo = {
   uid: string;
   nickname: string;
   avatar: string;
+  is_default: boolean;
 };
 
 export type UserInfo = {

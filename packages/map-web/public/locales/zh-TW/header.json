@@ -30,7 +30,7 @@
     "username_placeholder": "請輸入帳號",
     "password_placeholder": "請輸入密碼",
     "agreement": "你已同意我們的<agreement>《使用者註冊登入協議》</agreement>",
-    "switch_confirm": "切換到 UID {{uid}} 嗎？",
+    "switch_confirm": "切換到 UID {{uid}} 以開始同步嗎？",
     "switch_confirm_keep": "是否保留當前資料到 UID {{uid}} ？",
     "no_uid_select_and_keep_data": "當前沒有選擇綁定的 UID，本機資料將被保留",
     "use_third_part_login_tip": "使用第三方登入",
@@ -55,9 +55,10 @@
       }
     },
     "uid": {
-      "bind": "綁定UID",
-      "list": "綁定的UID列表",
-      "not_bind": "未綁定UID",
+      "default": "內建 UID",
+      "bind": "綁定 UID",
+      "list": "綁定的 UID 列表",
+      "not_bind": "未綁定 UID",
       "unbind_confirm": "確定要解除綁定嗎？",
       "delete": "解除綁定",
       "switch": "切換UID",

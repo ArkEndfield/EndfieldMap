@@ -137,7 +137,7 @@ interface Resources {
       "register_submit": "立即注册",
       "register_username_placeholder": "请输入用户名",
       "remove_account": "注销账户",
-      "switch_confirm": "切换到 uid {{uid}} 吗？",
+      "switch_confirm": "切换到 uid {{uid}} 以开始同步吗？",
       "switch_confirm_keep": "是否保留当前数据到 uid {{uid}} ？",
       "sync": {
         "no_uid_tip": "切换一个UID后开始同步数据",
@@ -153,6 +153,7 @@ interface Resources {
       "uid": {
         "bind": "绑定UID",
         "bind_success": "绑定成功",
+        "default": "内置UID",
         "delete": "解除绑定",
         "get_roles_failed": "获取角色列表失败，请重试",
         "list": "绑定的UID列表",

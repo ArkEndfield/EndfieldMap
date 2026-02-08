@@ -30,7 +30,7 @@
     "username_placeholder": "Ingrese su nombre de usuario",
     "password_placeholder": "Ingrese su contraseña",
     "agreement": "Has aceptado nuestro <agreement>Acuerdo de Registro e Inicio de Sesión de Usuario</agreement>",
-    "switch_confirm": "¿Cambiar a UID {{uid}}?",
+    "switch_confirm": "¿Cambiar a UID {{uid}} para comenzar a sincronizar?",
     "switch_confirm_keep": "¿Desea mantener los datos actuales para UID {{uid}}?",
     "no_uid_select_and_keep_data": "No se ha seleccionado ningún UID, los datos locales se conservarán",
     "use_third_part_login_tip": "Usar inicio de sesión de terceros",
@@ -55,6 +55,7 @@
       }
     },
     "uid": {
+      "default": "UID incorporado",
       "bind": "Vincular UID",
       "list": "Lista de UID vinculados",
       "not_bind": "UID no vinculado",

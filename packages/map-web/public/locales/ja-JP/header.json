@@ -30,7 +30,7 @@
     "username_placeholder": "ユーザー名を入力してください",
     "password_placeholder": "パスワードを入力してください",
     "agreement": "<agreement>ユーザー登録およびログイン規約</agreement>に同意しました",
-    "switch_confirm": "UID {{uid}} に切り替えますか？",
+    "switch_confirm": "UID {{uid}} に切り替えて同期を開始しますか？",
     "switch_confirm_keep": "現在のデータをUID {{uid}} に保持しますか？",
     "no_uid_select_and_keep_data": "現在UIDが選択されていません。ローカルデータは保持されます",
     "use_third_part_login_tip": "サードパーティログインを使用",
@@ -55,6 +55,7 @@
       }
     },
     "uid": {
+      "default": "ビルトインUID",
       "bind": "UIDを紐付け",
       "list": "紐付けられたUIDリスト",
       "not_bind": "UIDが紐付けられていません",
