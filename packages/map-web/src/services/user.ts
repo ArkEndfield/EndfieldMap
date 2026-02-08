@@ -69,6 +69,17 @@ export class UserService {
   }
 
   /**
+   * 用户三方登录
+   * @param token 三方登录返回的 token
+   */
+  public async thirdparty(token: string): Promise<void> {
+    logger.info('[UserService] Adding user');
+    this.auth.token.value = token;
+    serverService.setToken(this.auth.token.value);
+    await this.updateUidList();
+  }
+
+  /**
    * 更新 uid 列表，然后根据当前 uid 切换数据库
    * @param autoSwitch 是否自动切换 uid
    * @returns

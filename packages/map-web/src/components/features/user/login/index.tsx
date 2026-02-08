@@ -2,40 +2,12 @@ import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { alert } from '@/components/common/alert/alert_api';
 import { BilibiliIcon, DiscordIcon, Logo, QQIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';
 import { LoginForm } from '@/components/features/user/login/login';
 import { RegisterForm } from '@/components/features/user/login/register';
-import { cn } from '@/utils/style';
+import { ThirdPartyButton } from '@/components/features/user/login/third_party';
 
-// 第三方登录按钮
-const ThirdPartyButton = ({
-  icon,
-  label,
-  onClick,
-  className,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-  className?: string;
-}) => (
-  <button
-    onClick={onClick}
-    className={cn(
-      'flex items-center justify-center gap-1.5 px-3 py-1.5 rounded',
-      'bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30',
-      'text-white/90 hover:text-white text-xs font-medium',
-      'transition-all duration-200 ease-out',
-      'backdrop-blur-sm',
-      className
-    )}
-  >
-    <span className="text-lg">{icon}</span>
-    <span>{label}</span>
-  </button>
-);
 
 const LinkButton = ({ children, href }: { children?: React.ReactNode; href: string }) => {
   return (
@@ -117,17 +89,14 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
             <ThirdPartyButton
               icon={<QQIcon className="text-[#12B7F5]" />}
               label="QQ"
-              onClick={() => alert.info(t('user.not_support_yet'))}
             />
             <ThirdPartyButton
               icon={<BilibiliIcon className="text-[#FB7299]" />}
               label="Bilibili"
-              onClick={() => alert.info(t('user.not_support_yet'))}
             />
             <ThirdPartyButton
               icon={<DiscordIcon className="text-[#5865F2]" />}
               label="Discord"
-              onClick={() => alert.info(t('user.not_support_yet'))}
             />
           </div>
         </div>
