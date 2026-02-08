@@ -21,5 +21,28 @@
     "delete_corrupted_preset": "破損したプリセットを削除",
     "create_failed": "作成失敗：{{message}}",
     "delete_failed": "削除失敗：{{message}}"
+  },
+  "not_login": "ログインしていません",
+  "not_bind_uid": "UIDが紐付けられていません",
+  "unknown": "不明なエラー",
+  "login_expired": "ログインの有効期限が切れました。再度ログインしてください",
+  "no_user_info": "ユーザー情報が存在しません",
+  "sync_failed_too_much": "同期の失敗回数が多すぎるため、自動同期が停止しました。ネットワーク接続を確認してから「今すぐ同期」をクリックして再試行してください。問題が解決しない場合は、コミュニティに参加してフィードバックをお寄せください。",
+  "qr_code": {
+    "generate": "QRコードの生成に失敗しました",
+    "query_status": "ステータスの照会に失敗しました",
+    "expired": "QRコードの有効期限が切れました"
+  },
+  "schema": {
+    "username_too_short": "ユーザー名は3文字以上である必要があります",
+    "username_too_long": "ユーザー名は20文字以下である必要があります",
+    "username_invalid": "ユーザー名には英字、数字、アンダースコアのみ使用できます",
+    "password_too_short": "パスワードは6文字以上である必要があります",
+    "password_too_long": "パスワードは50文字以下である必要があります",
+    "password_mismatch": "パスワードが一致しません",
+    "agree_required": "利用規約に同意してください",
+    "old_password_required": "現在のパスワードを入力してください",
+    "new_password_too_short": "新しいパスワードは6文字以上である必要があります",
+    "confirm_password_required": "新しいパスワードを確認してください"
   }
 }

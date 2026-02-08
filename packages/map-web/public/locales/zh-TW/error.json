@@ -21,5 +21,28 @@
     "delete_corrupted_preset": "刪除損壞預設",
     "create_failed": "創建失敗：{{message}}",
     "delete_failed": "刪除失敗：{{message}}"
+  },
+  "not_login": "未登入",
+  "not_bind_uid": "未綁定 UID",
+  "unknown": "未知錯誤",
+  "login_expired": "登入已過期，請重新登入",
+  "no_user_info": "使用者資訊不存在",
+  "sync_failed_too_much": "同步失敗次數過多，已自動停止同步。請檢查網路連線後點擊「立即同步」重試，如果仍有問題，請加入社群反饋。",
+  "qr_code": {
+    "generate": "產生二維碼失敗",
+    "query_status": "查詢狀態失敗",
+    "expired": "二維碼已過期"
+  },
+  "schema": {
+    "username_too_short": "使用者名稱至少3個字元",
+    "username_too_long": "使用者名稱最多20個字元",
+    "username_invalid": "使用者名稱只能包含字母、數字和底線",
+    "password_too_short": "密碼至少6位",
+    "password_too_long": "密碼最多50位",
+    "password_mismatch": "兩次輸入的密碼不一致",
+    "agree_required": "請同意使用者協議",
+    "old_password_required": "請輸入舊密碼",
+    "new_password_too_short": "新密碼至少6位",
+    "confirm_password_required": "請確認新密碼"
   }
 }

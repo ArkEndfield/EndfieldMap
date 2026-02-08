@@ -10,6 +10,7 @@ import type { BindType, GameRole } from '@/@types/game_role';
 import { BindUidList } from '@/components/features/user/info/bind_uid/bind_uid_list';
 import { Login } from '@/components/features/user/info/bind_uid/login';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 type View = 'login' | 'list';
 
@@ -22,6 +23,7 @@ export const BindUid = observer(() => {
   const [roles, setRoles] = useState<GameRole[]>([]);
   const [loginMethod, setLoginMethod] = useState<BindType>('scan');
   const [binding, setBinding] = useState(false);
+  const { t } = useTranslation('header');
 
   // 获取已绑定的 UID 列表
   const boundUids = userService.auth.uidList.map((item) => item.uid);
@@ -48,7 +50,7 @@ export const BindUid = observer(() => {
     await catchErrorWithTip(async () => {
       // 根据登录方式选择不同的绑定接口
       await userService.bindUid(roleId, loginMethod);
-      alert.info('绑定成功');
+      alert.info(t('user.uid.bind_success'));
     });
 
     setBinding(false);

@@ -7,6 +7,9 @@
   "rename": "Renombrar",
   "delete": "Eliminar",
   "batch_delete": "Eliminar en lote",
+  "yes": "Sí",
+  "no": "No",
+  "back_after_time": "Regreso automático en {{time}}",
   "operate": {
     "mark": "Marcar",
     "marked": "Marcado",

@@ -16,14 +16,77 @@
   },
   "user": {
     "title": "帳戶",
+    "bind": "綁定",
+    "binded": "已綁定",
     "not_support_yet": "暫不支援登入功能",
     "login": "登入",
     "register": "註冊",
     "logout": "登出",
+    "logout_confirm": "確定要登出嗎？",
+    "logout_confirm_clear_data": "是否要清除本機資料（不會清除雲端資料）？",
     "username": "使用者名稱",
+    "nickname": "暱稱",
     "password": "密碼",
     "username_placeholder": "請輸入帳號",
     "password_placeholder": "請輸入密碼",
-    "agreement": "你已同意我們的<agreement>《使用者註冊登入協議》</agreement>"
+    "agreement": "你已同意我們的<agreement>《使用者註冊登入協議》</agreement>",
+    "switch_confirm": "切換到 UID {{uid}} 嗎？",
+    "switch_confirm_keep": "是否保留當前資料到 UID {{uid}} ？",
+    "no_uid_select_and_keep_data": "當前沒有選擇綁定的 UID，本機資料將被保留",
+    "use_third_part_login_tip": "使用第三方登入",
+    "use_third_part_register_tip": "使用第三方註冊",
+    "register_username_placeholder": "請輸入使用者名稱",
+    "register_password_placeholder": "請輸入密碼",
+    "register_submit": "立即註冊",
+    "back_to_login": "已有帳號？返回登入",
+    "remove_account": "註銷帳戶",
+    "info": {
+      "title": "個人資訊",
+      "edit": "修改資訊",
+      "nickname": {
+        "edit_tip": "請輸入新的暱稱",
+        "edit_success": "暱稱修改成功"
+      },
+      "password": {
+        "edit": "修改密碼",
+        "old": "舊密碼",
+        "new": "新密碼",
+        "confirm": "確認新密碼"
+      }
+    },
+    "uid": {
+      "bind": "綁定UID",
+      "list": "綁定的UID列表",
+      "not_bind": "未綁定UID",
+      "unbind_confirm": "確定要解除綁定嗎？",
+      "delete": "解除綁定",
+      "switch": "切換UID",
+      "no_roles_to_bind": "當前沒有可綁定的角色",
+      "bind_success": "綁定成功",
+      "scan_login": "掃碼登入",
+      "token_login": "Token 登入",
+      "get_roles_failed": "取得角色列表失敗，請重試",
+      "qr_code": {
+        "tip": "請使用森空島 APP 掃描二維碼",
+        "refresh": "重新整理二維碼",
+        "success": "掃碼成功"
+      },
+      "token": {
+        "tip": "請輸入鷹角網路通行證 Token",
+        "placeholder": "請輸入 hypergryph_token...",
+        "submit": "取得角色列表",
+        "how_to_get": "如何取得"
+      }
+    },
+    "sync": {
+      "state": {
+        "idle": "已同步",
+        "syncing": "同步中",
+        "error": "同步失敗",
+        "offline": "離線"
+      },
+      "start_now": "立即同步",
+      "no_uid_tip": "切換一個UID後開始同步資料"
+    }
   }
 }

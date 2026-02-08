@@ -7,6 +7,9 @@
   "rename": "이름 변경",
   "delete": "삭제",
   "batch_delete": "일괄 삭제",
+  "yes": "예",
+  "no": "아니요",
+  "back_after_time": "{{time}} 후 자동 복귀",
   "operate": {
     "mark": "표시",
     "marked": "표시됨",

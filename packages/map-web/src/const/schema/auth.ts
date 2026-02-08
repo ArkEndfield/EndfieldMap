@@ -1,9 +1,9 @@
 import * as z from 'zod';
-// TODO: i18n
+
 export const loginSchema = z.object({
-  username: z.string().min(1, '请输入用户名'),
-  password: z.string().min(1, '请输入密码'),
-  agree: z.boolean().refine((value) => value, '请同意用户协议'),
+  username: z.string().min(1, 'username_too_short'),
+  password: z.string().min(1, 'password_too_short'),
+  agree: z.boolean().refine((value) => value, 'agree_required'),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
@@ -11,11 +11,24 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 export const registerSchema = z.object({
   username: z
     .string()
-    .min(3, '用户名至少3个字符')
-    .max(20, '用户名最多20个字符')
-    .regex(/^[a-zA-Z0-9_]+$/, '用户名只能包含字母、数字和下划线'),
-  password: z.string().min(6, '密码至少6个字符').max(50, '密码最多50个字符'),
-  agree: z.boolean().refine((value) => value, '请同意用户协议'),
+    .min(3, 'username_too_short')
+    .max(20, 'username_too_long')
+    .regex(/^[a-zA-Z0-9_]+$/, 'username_invalid'),
+  password: z.string().min(6, 'password_too_short').max(50, 'password_too_long'),
+  agree: z.boolean().refine((value) => value, 'agree_required'),
 });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
+
+export const changePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(1, 'old_password_required'),
+    newPassword: z.string().min(6, 'new_password_too_short'),
+    confirmPassword: z.string().min(1, 'confirm_password_required'),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'password_mismatch',
+    path: ['confirmPassword'],
+  });
+
+export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;

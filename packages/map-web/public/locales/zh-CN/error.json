@@ -21,5 +21,28 @@
     "delete_corrupted_preset": "删除损坏预设",
     "create_failed": "创建失败：{{message}}",
     "delete_failed": "删除失败：{{message}}"
+  },
+  "not_login": "未登录",
+  "not_bind_uid": "未绑定 uid",
+  "unknown": "未知错误",
+  "login_expired": "登录已过期，请重新登录",
+  "no_user_info": "用户信息不存在",
+  "sync_failed_too_much": "同步失败次数过多，已自动停止同步。请检查网络连接后点击\"立即同步\"重试，如果仍然有问题，请加入社群反馈。",
+  "qr_code": {
+    "generate": "生成二维码失败",
+    "query_status": "查询状态失败",
+    "expired": "二维码已过期"
+  },
+  "schema": {
+    "username_too_short": "用户名至少3个字符",
+    "username_too_long": "用户名最多20个字符",
+    "username_invalid": "用户名只能包含字母、数字和下划线",
+    "password_too_short": "密码至少6位",
+    "password_too_long": "密码最多50位",
+    "password_mismatch": "两次输入的密码不一致",
+    "agree_required": "请同意用户协议",
+    "old_password_required": "请输入旧密码",
+    "new_password_too_short": "新密码至少6位",
+    "confirm_password_required": "请确认新密码"
   }
 }

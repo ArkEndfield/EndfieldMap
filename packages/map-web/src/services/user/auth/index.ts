@@ -1,6 +1,6 @@
 import { LocalStorageValue, logger } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
-
+import i18n from '@/i18n';
 import { UserLocalStorageKey } from '@/const/storage';
 import type { UidInfo, UserInfo } from '@eftypes/user';
 import { serverService } from '@/services/server';
@@ -63,7 +63,12 @@ export class UserAuthService {
     }
     const findUid = this.uidList.find((uidInfo) => uidInfo.uid === uid);
     if (!findUid) {
-      throw new Error('user.not_bind');
+      throw new Error(
+        i18n.t('not_bind_uid', {
+          ns: 'error',
+          defaultValue: '未绑定 uid',
+        })
+      );
     }
     this.currentUid.value = uid;
   }
@@ -71,7 +76,12 @@ export class UserAuthService {
   @action
   public async fetchUidList() {
     if (!this.isLogin) {
-      throw new Error('user.not_login');
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
     const { list } = await serverService.apiGet<{ list: UidInfo[] }>('/user/game-roles');
     this.uidList = list;
@@ -80,14 +90,24 @@ export class UserAuthService {
   @action
   public async fetchUserInfo() {
     if (!this.isLogin) {
-      throw new Error('user.not_login');
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
     this.userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
   }
 
   public async bindUid(uid: UidInfo['uid'], type: BindType) {
     if (!this.isLogin) {
-      throw new Error('user.not_login');
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
     // WARNING: 不要在这里更新 uid 列表，在外部会进行fetch的！
     await serverService.apiPost('/user/game-roles/bind', { role_id: uid, form: type });
@@ -95,7 +115,12 @@ export class UserAuthService {
 
   public async unbindUid(uid: UidInfo['uid']) {
     if (!this.isLogin) {
-      throw new Error('user.not_login');
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
     await serverService.apiPost('/user/game-roles/unbind', { role_id: uid });
   }
@@ -121,10 +146,20 @@ export class UserAuthService {
    */
   public async updateUserInfo(data: { nickname?: string }) {
     if (!this.isLogin) {
-      throw new Error('user.not_login');
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
     if (!this.userInfo) {
-      throw new Error('user.no_user_info');
+      throw new Error(
+        i18n.t('no_user_info', {
+          ns: 'error',
+          defaultValue: '用户信息不存在',
+        })
+      );
     }
     await serverService.apiPut(`/users/${this.userInfo.id}`, data);
   }

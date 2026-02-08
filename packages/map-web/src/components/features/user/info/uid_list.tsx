@@ -5,7 +5,7 @@ import { cn } from '@/utils/style';
 
 import type { UidInfo } from '@/@types/user';
 import { BindIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { useTranslation } from 'react-i18next';
 
 // ==================== UID 列表项组件 ====================
 const UidListItem = ({
@@ -55,9 +55,7 @@ const UidListItem = ({
     </div>
 
     {/* 操作按钮 */}
-    {renderActions && (
-      <ButtonWithAudio className="flex items-center gap-2 shrink-0">{renderActions(data)}</ButtonWithAudio>
-    )}
+    {renderActions && <div className="flex items-center gap-2 shrink-0">{renderActions(data)}</div>}
   </div>
 );
 
@@ -72,41 +70,44 @@ export const UidList = ({
   isChecked?: (data: UidInfo) => boolean;
   onCheckChange?: (data: UidInfo) => void;
   renderActions?: (data: UidInfo) => React.ReactNode;
-}) => (
-  <motion.div
-    className="flex-1 flex flex-col min-w-0 min-h-0 font-[Outfit]"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3, delay: 0.2 }}
-  >
-    {/* 列表标题 */}
-    <div className="flex items-center gap-2 shrink-0">
-      <div className="w-5 h-5 rounded-full bg-[#FDFB73] text-black flex items-center justify-center">
-        <BindIcon />
-      </div>
-      <h4 className="text-white font-medium">绑定的UID列表</h4>
-    </div>
-
-    {/* UID 列表滚动区域 */}
-    {uidList.length === 0 ? (
-      <div className="flex-1 flex flex-col items-center justify-center gap-2">
-        <QuestionIcon className="w-6 h-6" />
-        <span className="text-white/50 text-xs">未绑定UID</span>
-      </div>
-    ) : (
-      <ScrollArea className="flex-1 min-h-0 mt-2" scrollY scrollX={false} scrollbarY="auto" contentClassName="pr-2">
-        <div className="flex flex-col gap-2">
-          {uidList.map((item) => (
-            <UidListItem
-              key={item.uid}
-              data={item}
-              isChecked={isChecked?.(item) ?? false}
-              onCheckChange={onCheckChange}
-              renderActions={renderActions}
-            />
-          ))}
+}) => {
+  const { t } = useTranslation('header');
+  return (
+    <motion.div
+      className="flex-1 flex flex-col min-w-0 min-h-0 font-[Outfit]"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
+    >
+      {/* 列表标题 */}
+      <div className="flex items-center gap-2 shrink-0">
+        <div className="w-5 h-5 rounded-full bg-[#FDFB73] text-black flex items-center justify-center">
+          <BindIcon />
         </div>
-      </ScrollArea>
-    )}
-  </motion.div>
-);
+        <h4 className="text-white font-medium">{t('user.uid.list')}</h4>
+      </div>
+
+      {/* UID 列表滚动区域 */}
+      {uidList.length === 0 ? (
+        <div className="flex-1 flex flex-col items-center justify-center gap-2">
+          <QuestionIcon className="w-6 h-6" />
+          <span className="text-white/50 text-xs">{t('user.uid.not_bind')}</span>
+        </div>
+      ) : (
+        <ScrollArea className="flex-1 min-h-0 mt-2" scrollY scrollX={false} scrollbarY="auto" contentClassName="pr-2">
+          <div className="flex flex-col gap-2">
+            {uidList.map((item) => (
+              <UidListItem
+                key={item.uid}
+                data={item}
+                isChecked={isChecked?.(item) ?? false}
+                onCheckChange={onCheckChange}
+                renderActions={renderActions}
+              />
+            ))}
+          </div>
+        </ScrollArea>
+      )}
+    </motion.div>
+  );
+};

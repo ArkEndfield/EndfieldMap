@@ -16,14 +16,77 @@
   },
   "user": {
     "title": "Account",
+    "bind": "Bind",
+    "binded": "Bound",
     "not_support_yet": "Login not supported yet",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
+    "logout_confirm": "Are you sure you want to log out?",
+    "logout_confirm_clear_data": "Do you want to clear local data (cloud data will not be deleted)?",
     "username": "Username",
+    "nickname": "Nickname",
     "password": "Password",
     "username_placeholder": "Enter username",
     "password_placeholder": "Enter password",
-    "agreement": "You have agreed to our <agreement>User Registration and Login Agreement</agreement>"
+    "agreement": "You have agreed to our <agreement>User Registration and Login Agreement</agreement>",
+    "switch_confirm": "Switch to UID {{uid}}?",
+    "switch_confirm_keep": "Do you want to keep the current data for UID {{uid}}?",
+    "no_uid_select_and_keep_data": "No UID is currently selected, local data will be retained",
+    "use_third_part_login_tip": "Use third-party login",
+    "use_third_part_register_tip": "Use third-party registration",
+    "register_username_placeholder": "Enter username",
+    "register_password_placeholder": "Enter password",
+    "register_submit": "Register Now",
+    "back_to_login": "Already have an account? Back to login",
+    "remove_account": "Delete Account",
+    "info": {
+      "title": "Personal Information",
+      "edit": "Edit Info",
+      "nickname": {
+        "edit_tip": "Please enter a new nickname",
+        "edit_success": "Nickname changed successfully"
+      },
+      "password": {
+        "edit": "Change Password",
+        "old": "Old Password",
+        "new": "New Password",
+        "confirm": "Confirm New Password"
+      }
+    },
+    "uid": {
+      "bind": "Bind UID",
+      "list": "Bound UID List",
+      "not_bind": "No UID Bound",
+      "unbind_confirm": "Are you sure you want to unbind?",
+      "delete": "Unbind",
+      "switch": "Switch UID",
+      "no_roles_to_bind": "No roles available to bind",
+      "bind_success": "Binding successful",
+      "scan_login": "Scan Login",
+      "token_login": "Token Login",
+      "get_roles_failed": "Failed to get role list, please try again",
+      "qr_code": {
+        "tip": "Please scan the QR code using the Skland App",
+        "refresh": "Refresh QR Code",
+        "success": "Scan successful"
+      },
+      "token": {
+        "tip": "Please enter Hypergryph Network Token",
+        "placeholder": "Enter hypergryph_token...",
+        "submit": "Get Role List",
+        "how_to_get": "How to get"
+      }
+    },
+    "sync": {
+      "state": {
+        "idle": "Synced",
+        "syncing": "Syncing",
+        "error": "Sync Failed",
+        "offline": "Offline"
+      },
+      "start_now": "Sync Now",
+      "no_uid_tip": "Switch to a UID to start syncing data"
+    }
   }
 }

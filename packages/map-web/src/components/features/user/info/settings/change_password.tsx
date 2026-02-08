@@ -9,27 +9,19 @@ import { KeyIcon } from '@/components/common/icons';
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { Input } from '@/components/common/input';
 import { onFormInvalid } from '@/utils/handler';
+import { useTranslation } from 'react-i18next';
+import { changePasswordSchema } from '@/const/schema/auth';
 
-const schema = z
-  .object({
-    oldPassword: z.string().min(1, '请输入旧密码'),
-    newPassword: z.string().min(6, '新密码至少6位'),
-    confirmPassword: z.string().min(1, '请确认新密码'),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: '两次输入的密码不一致',
-    path: ['confirmPassword'],
-  });
-
-type FormData = z.infer<typeof schema>;
+type FormData = z.infer<typeof changePasswordSchema>;
 
 export interface ChangePasswordFormRef {
   submit: () => Promise<boolean>;
 }
 
 const ChangePasswordForm = forwardRef<ChangePasswordFormRef>((_, ref) => {
+  const { t } = useTranslation('header');
   const { control, handleSubmit } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: {
       oldPassword: '',
       newPassword: '',
@@ -63,8 +55,8 @@ const ChangePasswordForm = forwardRef<ChangePasswordFormRef>((_, ref) => {
             {...field}
             onValueChange={onChange}
             inputType="password"
-            placeholder="旧密码"
-            content={<div className="text-black/60 text-xs">旧密码</div>}
+            placeholder={t('user.info.password.old')}
+            content={<div className="text-black/60 text-xs">{t('user.info.password.old')}</div>}
           />
         )}
       />
@@ -77,8 +69,8 @@ const ChangePasswordForm = forwardRef<ChangePasswordFormRef>((_, ref) => {
             {...field}
             onValueChange={onChange}
             inputType="password"
-            placeholder="新密码"
-            content={<div className="text-black/60 text-xs">新密码</div>}
+            placeholder={t('user.info.password.new')}
+            content={<div className="text-black/60 text-xs">{t('user.info.password.new')}</div>}
           />
         )}
       />
@@ -91,8 +83,8 @@ const ChangePasswordForm = forwardRef<ChangePasswordFormRef>((_, ref) => {
             {...field}
             onValueChange={onChange}
             inputType="password"
-            placeholder="确认新密码"
-            content={<div className="text-black/60 text-xs">确认新密码</div>}
+            placeholder={t('user.info.password.confirm')}
+            content={<div className="text-black/60 text-xs">{t('user.info.password.confirm')}</div>}
           />
         )}
       />
@@ -101,13 +93,15 @@ const ChangePasswordForm = forwardRef<ChangePasswordFormRef>((_, ref) => {
 });
 
 export const ChangePassword = observer(() => {
+  const { t } = useTranslation('header');
+
   const handleClick = () => {
     let formRef: ChangePasswordFormRef | null = null;
     alert.confirm({
       width: '25rem',
       content: (
         <div className="flex flex-col gap-2">
-          <div className="text-lg font-bold text-center mb-2">修改密码</div>
+          <div className="text-lg font-bold text-center mb-2">{t('user.info.password.edit')}</div>
           <ChangePasswordForm
             ref={(ref) => {
               formRef = ref;
@@ -126,7 +120,7 @@ export const ChangePassword = observer(() => {
 
   return (
     <ZmdSquareButton type="primary" icon={<KeyIcon />} onClick={handleClick} className="flex-2 text-base py-2">
-      修改密码
+      {t('user.info.password.edit')}
     </ZmdSquareButton>
   );
 });

@@ -7,6 +7,9 @@
   "rename": "Rename",
   "delete": "Delete",
   "batch_delete": "Batch Delete",
+  "yes": "Yes",
+  "no": "No",
+  "back_after_time": "Auto return in {{time}}",
   "operate": {
     "mark": "Mark",
     "marked": "Marked",

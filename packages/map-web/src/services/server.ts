@@ -102,16 +102,32 @@ class ServerService {
     if (!this.token) {
       // 如果是登录/注册请求，显示后端返回的 message
       if (url.includes('/auth/login') || url.includes('/auth/register')) {
-        throw new Error(backendMessage || 'Unknown Error');
+        throw new Error(
+          backendMessage ||
+            i18n.t('unknown', {
+              ns: 'error',
+              defaultValue: '未知错误',
+            })
+        );
       }
       // 其他情况显示未登录
-      throw new Error('Not Login');
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
 
     // 如果刷新 Token 的请求返回 401，直接 logout，防止无限循环
     if (url.includes('/auth/refresh')) {
       this.triggerLogout();
-      throw new Error(backendMessage || 'Unknown Error');
+      throw new Error(
+        i18n.t('unknown', {
+          ns: 'error',
+          defaultValue: '未知错误',
+        })
+      );
     }
 
     // 如果正在刷新 Token，等待刷新完成后重试
@@ -144,7 +160,13 @@ class ServerService {
       );
 
       if (refreshResponse.code !== 0) {
-        throw new Error(refreshResponse.message || 'Unknown Error');
+        throw new Error(
+          refreshResponse.message ||
+            i18n.t('unknown', {
+              ns: 'error',
+              defaultValue: '未知错误',
+            })
+        );
       }
 
       const response = refreshResponse.data;
@@ -168,7 +190,13 @@ class ServerService {
         return this.request<T>(url, retryOptions);
       }
 
-      throw new Error(refreshResponse.message || 'Unknown Error');
+      throw new Error(
+        refreshResponse.message ||
+          i18n.t('unknown', {
+            ns: 'error',
+            defaultValue: '未知错误',
+          })
+      );
     } catch (error) {
       this.isRefreshing = false;
       this.processQueue(error);
@@ -201,12 +229,23 @@ class ServerService {
       // 尝试获取后端返回的错误消息
       try {
         const errorData = await response.json();
-        throw new Error(errorData?.message || 'Unknown Error');
+        throw new Error(
+          errorData?.message ||
+            i18n.t('unknown', {
+              ns: 'error',
+              defaultValue: '未知错误',
+            })
+        );
       } catch (e) {
-        if (e instanceof Error && e.message !== 'Unknown Error') {
+        if (e instanceof Error) {
           throw e;
         }
-        throw new Error('Unknown Error');
+        throw new Error(
+          i18n.t('unknown', {
+            ns: 'error',
+            defaultValue: '未知错误',
+          })
+        );
       }
     }
 
@@ -219,6 +258,7 @@ class ServerService {
    * 如果正在刷新 Token，会等待刷新完成后再发起请求
    */
   public async apiRequest<T>(url: string, _options?: RequestInit) {
+    const currentLocale = getLanguage(i18n.languages);
     // 如果正在刷新 Token，等待刷新完成
     const waitPromise = this.waitForTokenRefresh();
     if (waitPromise) {
@@ -229,19 +269,25 @@ class ServerService {
         headers: {
           ...(_options?.headers || {}),
           Authorization: `Bearer ${newToken}`,
+          lang: currentLocale,
+          uid: this.uid || '',
         },
       };
       const fullApiUrl = `/api/v1${url}`;
       const data = await this.request<ServerResponse<T>>(fullApiUrl, options);
 
       if (data.code !== 0) {
-        throw new Error(data.message || 'Unknown Error');
+        throw new Error(
+          data.message ||
+            i18n.t('unknown', {
+              ns: 'error',
+              defaultValue: '未知错误',
+            })
+        );
       }
 
       return data.data;
     }
-
-    const currentLocale = getLanguage(i18n.languages);
 
     // 正常请求流程
     const options = {
@@ -251,6 +297,7 @@ class ServerService {
         ...(_options?.headers || {}),
         Authorization: this.token ? `Bearer ${this.token}` : '',
         lang: currentLocale,
+        uid: this.uid || '',
       },
     };
 
@@ -258,7 +305,13 @@ class ServerService {
     const data = await this.request<ServerResponse<T>>(fullApiUrl, options);
 
     if (data.code !== 0) {
-      throw new Error(data.message || 'Unknown Error');
+      throw new Error(
+        data.message ||
+          i18n.t('unknown', {
+            ns: 'error',
+            defaultValue: '未知错误',
+          })
+      );
     }
 
     return data.data;
@@ -306,7 +359,12 @@ class ServerService {
     limit: number = 50
   ): Promise<PullResponse> {
     if (!this.uid) {
-      throw new Error('User not logged in');
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
     const params = new URLSearchParams();
     if (checkpoint) {
@@ -333,7 +391,12 @@ class ServerService {
    */
   public async syncPush(collection: SyncCollectionName, docs: PushDocumentRow[]): Promise<PushResponse> {
     if (!this.uid) {
-      throw new Error('User not logged in');
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
     const params = new URLSearchParams();
     params.set('role_id', this.uid);

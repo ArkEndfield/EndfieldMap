@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import { logger } from '@endfieldmap/tools';
 
 import { DataService } from '@/services/data';
@@ -21,8 +22,11 @@ export class UserService {
     // Register handlers
     serverService.setUnauthorizedHandler(() => {
       logger.warn('Unauthorized, logging out');
-      // TODO: i18n
-      alert.info('登录信息已过期，请重新登录');
+      alert.info(
+        i18n.t('login_expired', {
+          ns: 'error',
+        })
+      );
       this.logout();
     });
 
@@ -133,18 +137,27 @@ export class UserService {
     return new Promise<number>((resolve) => {
       if (!uid) {
         // 如果没有 Uid，可能是在initUidList检测到当前uid没了，可能是解绑了，直接返回1让本地留存
-        alert.info('当前没有选择绑定的 uid，本地数据将被保留');
+        alert.info(
+          i18n.t('user.no_uid_select_and_keep_data', {
+            ns: 'header',
+          })
+        );
         resolve(1);
         return;
       }
       alert.confirm({
-        // TODO: i18n
-        content: `确定要切换到 uid ${uid} 吗？`,
+        content: i18n.t('user.switch_confirm', {
+          ns: 'header',
+          uid,
+        }),
         dismissible: false,
         onConfirm: async () => {
           alert.confirm({
             dismissible: false,
-            content: `是否保留当前数据到 uid ${uid} ？`,
+            content: i18n.t('user.switch_confirm_keep', {
+              ns: 'header',
+              uid,
+            }),
             onConfirm: async () => {
               resolve(1);
             },

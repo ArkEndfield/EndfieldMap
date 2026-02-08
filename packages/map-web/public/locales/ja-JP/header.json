@@ -16,14 +16,77 @@
   },
   "user": {
     "title": "アカウント",
+    "bind": "紐付け",
+    "binded": "紐付け済み",
     "not_support_yet": "ログイン機能は現在サポートされていません",
     "login": "ログイン",
     "register": "登録",
     "logout": "ログアウト",
+    "logout_confirm": "ログアウトしてもよろしいですか？",
+    "logout_confirm_clear_data": "ローカルデータを削除しますか（クラウドデータは削除されません）？",
     "username": "ユーザー名",
+    "nickname": "ニックネーム",
     "password": "パスワード",
     "username_placeholder": "ユーザー名を入力してください",
     "password_placeholder": "パスワードを入力してください",
-    "agreement": "<agreement>ユーザー登録およびログイン規約</agreement>に同意しました"
+    "agreement": "<agreement>ユーザー登録およびログイン規約</agreement>に同意しました",
+    "switch_confirm": "UID {{uid}} に切り替えますか？",
+    "switch_confirm_keep": "現在のデータをUID {{uid}} に保持しますか？",
+    "no_uid_select_and_keep_data": "現在UIDが選択されていません。ローカルデータは保持されます",
+    "use_third_part_login_tip": "サードパーティログインを使用",
+    "use_third_part_register_tip": "サードパーティ登録を使用",
+    "register_username_placeholder": "ユーザー名を入力してください",
+    "register_password_placeholder": "パスワードを入力してください",
+    "register_submit": "今すぐ登録",
+    "back_to_login": "アカウントをお持ちですか？ログインに戻る",
+    "remove_account": "アカウント削除",
+    "info": {
+      "title": "個人情報",
+      "edit": "情報を編集",
+      "nickname": {
+        "edit_tip": "新しいニックネームを入力してください",
+        "edit_success": "ニックネームが変更されました"
+      },
+      "password": {
+        "edit": "パスワード変更",
+        "old": "現在のパスワード",
+        "new": "新しいパスワード",
+        "confirm": "新しいパスワードを確認"
+      }
+    },
+    "uid": {
+      "bind": "UIDを紐付け",
+      "list": "紐付けられたUIDリスト",
+      "not_bind": "UIDが紐付けられていません",
+      "unbind_confirm": "紐付けを解除してもよろしいですか？",
+      "delete": "紐付け解除",
+      "switch": "UID切り替え",
+      "no_roles_to_bind": "紐付け可能なロールがありません",
+      "bind_success": "紐付けに成功しました",
+      "scan_login": "スキャンログイン",
+      "token_login": "トークンログイン",
+      "get_roles_failed": "ロールリストの取得に失敗しました。再試行してください",
+      "qr_code": {
+        "tip": "Sklandアプリを使用してQRコードをスキャンしてください",
+        "refresh": "QRコードを更新",
+        "success": "スキャン成功"
+      },
+      "token": {
+        "tip": "Hypergryphネットワークトークンを入力してください",
+        "placeholder": "hypergryph_tokenを入力...",
+        "submit": "ロールリストを取得",
+        "how_to_get": "取得方法"
+      }
+    },
+    "sync": {
+      "state": {
+        "idle": "同期済み",
+        "syncing": "同期中",
+        "error": "同期失敗",
+        "offline": "オフライン"
+      },
+      "start_now": "今すぐ同期",
+      "no_uid_tip": "データの同期を開始するにはUIDに切り替えてください"
+    }
   }
 }

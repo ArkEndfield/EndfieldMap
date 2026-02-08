@@ -3,6 +3,7 @@ import { computed, makeObservable, observable, runInAction } from 'mobx';
 import { replicateRxCollection, type RxReplicationState } from 'rxdb/plugins/replication';
 import type { RxCollection, WithDeleted } from 'rxdb';
 
+import i18n from '@/i18n';
 import { DataService } from '@/services/data';
 import { serverService } from '@/services/server';
 import { alert } from '@/components/common/alert/alert_api';
@@ -113,6 +114,12 @@ export class SyncService {
     if (this.isSyncing) {
       logger.warn('[SyncService] Sync already running, stopping first...');
       await this.stopSync();
+    }
+
+    // 检查数据库是否已初始化
+    if (!DataService.dbStorage.user_db) {
+      logger.warn('[SyncService] User database not initialized yet, skipping sync start');
+      return;
     }
 
     logger.info('[SyncService] Starting sync...');
@@ -238,7 +245,11 @@ export class SyncService {
       await this.stopSync(true); // 保持错误状态
       // TODO: i18n
       alert.info(
-        '同步失败次数过多，已自动停止同步。请检查网络连接后点击"立即同步"重试，如果仍然有问题，请加入社群反馈。'
+        i18n.t('sync_failed_too_much', {
+          ns: 'error',
+          defaultValue:
+            '同步失败次数过多，已自动停止同步。请检查网络连接后点击"立即同步"重试，如果仍然有问题，请加入社群反馈。',
+        })
       );
     }
   }

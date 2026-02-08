@@ -7,6 +7,9 @@
   "rename": "重命名",
   "delete": "删除",
   "batch_delete": "批量删除",
+  "yes": "是",
+  "no": "否",
+  "back_after_time": "{{time}} 后自动返回",
   "operate": {
     "mark": "标记",
     "marked": "已标记",

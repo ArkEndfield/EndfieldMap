@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -7,7 +7,6 @@ import { BilibiliIcon, DiscordIcon, Logo, QQIcon } from '@/components/common/ico
 import { UserModal } from '@/components/common/user/modal';
 import { LoginForm } from '@/components/features/user/login/login';
 import { RegisterForm } from '@/components/features/user/login/register';
-import { isDev } from '@/services/env';
 import { cn } from '@/utils/style';
 
 // 第三方登录按钮
@@ -74,11 +73,6 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
     setMode('login');
   }, []);
 
-  useEffect(() => {
-    // TODO: 先做不支持的提示
-    if (open && !isDev) alert.info(t('user.not_support_yet'));
-  }, [open, t]);
-
   // 处理关闭时重置状态
   const handleClose = useCallback(() => {
     onClose();
@@ -111,7 +105,8 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
             <div className="flex-1 h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
             <span className="text-white/50 text-xs">
               {t('user.third_party_login', {
-                defaultValue: mode === 'login' ? '或使用以下方式登录' : '或使用以下方式注册',
+                defaultValue:
+                  mode === 'login' ? t('user.use_third_part_login_tip') : t('user.use_third_part_register_tip'),
               })}
             </span>
             <div className="flex-1 h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />

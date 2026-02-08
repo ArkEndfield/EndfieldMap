@@ -8,12 +8,14 @@ import { userService } from '@/services/user';
 
 import { BaseInfo } from '@/components/features/user/info/settings/base_info';
 import { ChangePassword } from '@/components/features/user/info/settings/change_password';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 用户设置面板组件
  */
 export const Settings = observer(() => {
   const userInfo = userService.auth.userInfo;
+  const { t } = useTranslation('header');
 
   if (!userInfo) {
     return null;
@@ -49,7 +51,7 @@ export const Settings = observer(() => {
             className="flex-1 text-base py-2"
             classNames={{ text: 'text-red-500' }}
           >
-            注销账户
+            {t('user.remove_account')}
           </ZmdSquareButton>
         </div>
       </div>

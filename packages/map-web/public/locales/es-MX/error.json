@@ -21,5 +21,28 @@
     "delete_corrupted_preset": "Eliminar preset dañado",
     "create_failed": "Creación fallida: {{message}}",
     "delete_failed": "Eliminación fallida: {{message}}"
+  },
+  "not_login": "No ha iniciado sesión",
+  "not_bind_uid": "UID no vinculado",
+  "unknown": "Error desconocido",
+  "login_expired": "La sesión ha expirado, por favor inicie sesión de nuevo",
+  "no_user_info": "La información del usuario no existe",
+  "sync_failed_too_much": "Demasiados errores de sincronización, la sincronización automática se ha detenido. Verifique su conexión de red y haga clic en \"Sincronizar ahora\" para reintentar. Si el problema persiste, únase a la comunidad para reportarlo.",
+  "qr_code": {
+    "generate": "Error al generar el código QR",
+    "query_status": "Error al consultar el estado",
+    "expired": "El código QR ha expirado"
+  },
+  "schema": {
+    "username_too_short": "El nombre de usuario debe tener al menos 3 caracteres",
+    "username_too_long": "El nombre de usuario debe tener máximo 20 caracteres",
+    "username_invalid": "El nombre de usuario solo puede contener letras, números y guiones bajos",
+    "password_too_short": "La contraseña debe tener al menos 6 caracteres",
+    "password_too_long": "La contraseña debe tener máximo 50 caracteres",
+    "password_mismatch": "Las contraseñas no coinciden",
+    "agree_required": "Por favor acepte el acuerdo de usuario",
+    "old_password_required": "Por favor ingrese su contraseña actual",
+    "new_password_too_short": "La nueva contraseña debe tener al menos 6 caracteres",
+    "confirm_password_required": "Por favor confirme su nueva contraseña"
   }
 }

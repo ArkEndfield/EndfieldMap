@@ -46,6 +46,11 @@ export const catchErrorWithTip = async <T>(func: () => T | Promise<T>): Promise<
 export const onFormInvalid = <T extends FieldValues = FieldValues>(errors: FieldErrors<T>) => {
   const firstError = Object.values(errors)[0];
   if (firstError?.message && typeof firstError.message === 'string') {
-    alert.info(firstError.message);
+    alert.info(
+      i18n.t(`schema.${firstError.message}`, {
+        defaultValue: firstError.message,
+        ns: 'error',
+      })
+    );
   }
 };

@@ -16,14 +16,77 @@
   },
   "user": {
     "title": "Cuenta",
+    "bind": "Vincular",
+    "binded": "Vinculado",
     "not_support_yet": "Función de inicio de sesión no disponible aún",
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "logout": "Cerrar sesión",
+    "logout_confirm": "¿Está seguro de que desea cerrar sesión?",
+    "logout_confirm_clear_data": "¿Desea eliminar los datos locales (los datos en la nube no se eliminarán)?",
     "username": "Nombre de usuario",
+    "nickname": "Apodo",
     "password": "Contraseña",
     "username_placeholder": "Ingrese su nombre de usuario",
     "password_placeholder": "Ingrese su contraseña",
-    "agreement": "Has aceptado nuestro <agreement>Acuerdo de Registro e Inicio de Sesión de Usuario</agreement>"
+    "agreement": "Has aceptado nuestro <agreement>Acuerdo de Registro e Inicio de Sesión de Usuario</agreement>",
+    "switch_confirm": "¿Cambiar a UID {{uid}}?",
+    "switch_confirm_keep": "¿Desea mantener los datos actuales para UID {{uid}}?",
+    "no_uid_select_and_keep_data": "No se ha seleccionado ningún UID, los datos locales se conservarán",
+    "use_third_part_login_tip": "Usar inicio de sesión de terceros",
+    "use_third_part_register_tip": "Usar registro de terceros",
+    "register_username_placeholder": "Ingrese nombre de usuario",
+    "register_password_placeholder": "Ingrese contraseña",
+    "register_submit": "Registrarse ahora",
+    "back_to_login": "¿Ya tiene una cuenta? Volver a iniciar sesión",
+    "remove_account": "Eliminar cuenta",
+    "info": {
+      "title": "Información personal",
+      "edit": "Editar información",
+      "nickname": {
+        "edit_tip": "Ingrese un nuevo apodo",
+        "edit_success": "Apodo cambiado exitosamente"
+      },
+      "password": {
+        "edit": "Cambiar contraseña",
+        "old": "Contraseña actual",
+        "new": "Nueva contraseña",
+        "confirm": "Confirmar nueva contraseña"
+      }
+    },
+    "uid": {
+      "bind": "Vincular UID",
+      "list": "Lista de UID vinculados",
+      "not_bind": "UID no vinculado",
+      "unbind_confirm": "¿Está seguro de que desea desvincular?",
+      "delete": "Desvincular",
+      "switch": "Cambiar UID",
+      "no_roles_to_bind": "No hay roles disponibles para vincular",
+      "bind_success": "Vinculación exitosa",
+      "scan_login": "Escanear para iniciar sesión",
+      "token_login": "Inicio de sesión con token",
+      "get_roles_failed": "Error al obtener la lista de roles, intente de nuevo",
+      "qr_code": {
+        "tip": "Escanee el código QR usando la aplicación Skland",
+        "refresh": "Actualizar código QR",
+        "success": "Escaneo exitoso"
+      },
+      "token": {
+        "tip": "Ingrese el token de red Hypergryph",
+        "placeholder": "Ingrese hypergryph_token...",
+        "submit": "Obtener lista de roles",
+        "how_to_get": "Cómo obtener"
+      }
+    },
+    "sync": {
+      "state": {
+        "idle": "Sincronizado",
+        "syncing": "Sincronizando",
+        "error": "Error de sincronización",
+        "offline": "Sin conexión"
+      },
+      "start_now": "Sincronizar ahora",
+      "no_uid_tip": "Cambie a un UID para comenzar a sincronizar datos"
+    }
   }
 }

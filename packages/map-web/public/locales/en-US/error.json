@@ -21,5 +21,28 @@
     "delete_corrupted_preset": "Delete corrupted preset",
     "create_failed": "Creation failed: {{message}}",
     "delete_failed": "Deletion failed: {{message}}"
+  },
+  "not_login": "Not logged in",
+  "not_bind_uid": "UID not bound",
+  "unknown": "Unknown error",
+  "login_expired": "Login expired, please log in again",
+  "no_user_info": "User information does not exist",
+  "sync_failed_too_much": "Sync failed too many times, auto-sync has been stopped. Please check your network connection and click \"Sync Now\" to retry. If the problem persists, please join the community to provide feedback.",
+  "qr_code": {
+    "generate": "Failed to generate QR code",
+    "query_status": "Failed to query status",
+    "expired": "QR code has expired"
+  },
+  "schema": {
+    "username_too_short": "Username must be at least 3 characters",
+    "username_too_long": "Username must be at most 20 characters",
+    "username_invalid": "Username can only contain letters, numbers, and underscores",
+    "password_too_short": "Password must be at least 6 characters",
+    "password_too_long": "Password must be at most 50 characters",
+    "password_mismatch": "Passwords do not match",
+    "agree_required": "Please agree to the user agreement",
+    "old_password_required": "Please enter your old password",
+    "new_password_too_short": "New password must be at least 6 characters",
+    "confirm_password_required": "Please confirm your new password"
   }
 }

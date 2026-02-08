@@ -7,6 +7,7 @@ import { SyncStatus } from '@eftypes/sync';
 import { CheckCircleIcon, SyncIcon } from '@/components/common/icons';
 import { userService } from '@/services/user';
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { useTranslation } from 'react-i18next';
 
 // ==================== 用户头像组件 ====================
 const UserAvatar = ({
@@ -78,12 +79,13 @@ const SyncingDots = () => (
 const SyncBadge = observer(({ className }: { className?: string }) => {
   const syncService = userService.data.syncService;
   const status = syncService.status;
+  const { t } = useTranslation('header');
 
   const statusConfig = {
-    [SyncStatus.Idle]: { text: '已同步', color: 'text-[#01ffa2]', icon: true },
+    [SyncStatus.Idle]: { text: t('user.sync.state.idle'), color: 'text-[#01ffa2]', icon: true },
     [SyncStatus.Syncing]: { text: '', color: 'text-[#FDFB73]', icon: false },
-    [SyncStatus.Error]: { text: '同步失败', color: 'text-red-400', icon: false },
-    [SyncStatus.Offline]: { text: '离线', color: 'text-white/50', icon: false },
+    [SyncStatus.Error]: { text: t('user.sync.state.error'), color: 'text-red-400', icon: false },
+    [SyncStatus.Offline]: { text: t('user.sync.state.offline'), color: 'text-white/50', icon: false },
   };
 
   const config = statusConfig[status];
@@ -100,6 +102,7 @@ const SyncBadge = observer(({ className }: { className?: string }) => {
 export const UserProfile = observer(({ uidInfo, userInfo }: { uidInfo?: UidInfo; userInfo: UserInfo }) => {
   const syncService = userService.data.syncService;
   const isSyncing = syncService.status === SyncStatus.Syncing;
+  const { t } = useTranslation('header');
 
   const handleSync = async () => {
     await userService.triggerSync();
@@ -125,7 +128,7 @@ export const UserProfile = observer(({ uidInfo, userInfo }: { uidInfo?: UidInfo;
       <UserAvatar src={uidInfo?.avatar} />
 
       {/* 用户昵称 */}
-      <h3 className="text-[#FDFB73] text-lg font-bold tracking-wide">{userInfo.nickname || '未命名'}</h3>
+      <h3 className="text-[#FDFB73] text-lg font-bold tracking-wide">{userInfo.nickname}</h3>
       {uidInfo?.nickname && <h3 className="tracking-wide">{uidInfo.nickname}</h3>}
 
       {/* UID 和同步状态 */}
@@ -136,14 +139,14 @@ export const UserProfile = observer(({ uidInfo, userInfo }: { uidInfo?: UidInfo;
         {uidInfo?.uid ? (
           <SyncBadge />
         ) : (
-          <span className="text-white/80 text-xs text-center">切换一个UID后开始同步数据</span>
+          <span className="text-white/80 text-xs text-center">{t('user.sync.no_uid_tip')}</span>
         )}
       </div>
 
       {/* 立即同步按钮 */}
       {uidInfo?.uid && (
         <ZmdSquareButton icon={<SyncIcon />} onClick={handleSync} className="mt-2 w-full" loading={isSyncing}>
-          {isSyncing ? '同步中' : '立即同步'}
+          {isSyncing ? t('user.sync.state.syncing') : t('user.sync.start_now')}
         </ZmdSquareButton>
       )}
     </motion.div>

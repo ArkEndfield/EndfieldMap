@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/utils/style';
 
@@ -19,6 +20,7 @@ interface TokenLoginProps {
  */
 export const TokenLogin = ({ onLogin, errorMessage }: TokenLoginProps) => {
   const [token, setToken] = useState('');
+  const { t } = useTranslation('header');
 
   const handleSubmit = () => {
     if (!token.trim()) return;
@@ -41,15 +43,15 @@ export const TokenLogin = ({ onLogin, errorMessage }: TokenLoginProps) => {
     >
       {/* 说明文字 */}
       <div className="text-sm text-gray-600">
-        <p>请输入您的鹰角网络通行证 Token</p>
-        <p className="text-xs text-gray-400 mt-1">如何获取</p>
+        <p>{t('user.uid.token.tip')}</p>
+        <p className="text-xs text-gray-400 mt-1">{t('user.uid.token.how_to_get')}</p>
       </div>
 
       {/* Token 输入框 */}
       <textarea
         value={token}
         onChange={(e) => setToken(e.target.value)}
-        placeholder="请输入 hypergryph_token..."
+        placeholder={t('user.uid.token.placeholder')}
         className={cn(
           'w-full h-24 p-3 text-sm resize-none outline-none transition-all duration-200',
           'bg-[#e8e6e6] text-[#2a2728] placeholder-[#a0a2a3]',
@@ -72,7 +74,7 @@ export const TokenLogin = ({ onLogin, errorMessage }: TokenLoginProps) => {
             : 'bg-gray-200 text-gray-400 cursor-not-allowed'
         )}
       >
-        获取角色列表
+        {t('user.uid.token.submit')}
       </ButtonWithAudio>
     </motion.div>
   );

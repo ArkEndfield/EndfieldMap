@@ -7,6 +7,7 @@ import { cn } from '@/utils/style';
 
 import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { useTranslation } from 'react-i18next';
 
 /** 轮询间隔（毫秒） */
 const POLL_INTERVAL = 2000;
@@ -28,6 +29,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
   const [scanInfo, setScanInfo] = useState<ScanInfo | null>(null);
   const [status, setStatus] = useState<'loading' | 'pending' | 'confirmed' | 'expired'>('loading');
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation(['header', 'error']);
 
   const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
@@ -58,14 +60,14 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
         setScanInfo(result);
         setStatus('pending');
       } else {
-        setError('生成二维码失败');
+        setError(t('error:qr_code.generate'));
         setStatus('expired');
       }
     } catch (err) {
       if (!isMountedRef.current) return;
 
       onLoadingChange?.(false);
-      setError(err instanceof Error ? err.message : '生成二维码失败');
+      setError(err instanceof Error ? err.message : t('error:qr_code.generate'));
       setStatus('expired');
     }
   }, [clearPollTimer, onLoadingChange]);
@@ -83,7 +85,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
       if (!isMountedRef.current) return;
 
       // 请求失败，显示错误信息并停止轮询
-      setError(err instanceof Error ? err.message : '查询状态失败');
+      setError(err instanceof Error ? err.message : t('error:qr_code.query_status'));
       setStatus('expired');
       return;
     }
@@ -92,7 +94,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
 
     if (!result) {
       // 请求失败，显示错误信息
-      setError('查询状态失败');
+      setError(t('error:qr_code.query_status'));
       setStatus('expired');
       return;
     }
@@ -154,26 +156,28 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
       transition={{ duration: 0.2 }}
     >
       {/* 说明文字 */}
-      <div className="text-sm text-gray-600 text-center">
-        <p>请使用森空岛 APP 扫描二维码</p>
-      </div>
+      <div className="text-sm text-gray-600 text-center">{t('header:user.uid.qr_code.tip')}</div>
 
       {/* 二维码区域 */}
       <div className={cn('relative w-48 h-48 flex items-center justify-center', 'bg-white border-2 border-gray-200')}>
         {status === 'loading' && <div className="w-6 h-6 rounded-full border-t-2 border-gray-200 animate-spin" />}
 
-        {status === 'pending' && scanInfo && <QRCodeSVG value={scanInfo.scan_url} size={176} level="M" />}
+        {status === 'pending' && scanInfo && (
+          <QRCodeSVG value={scanInfo.scan_url} size={176} className="w-full" level="M" />
+        )}
 
-        {status === 'confirmed' && <div className="text-green-500 text-sm font-medium">扫码成功</div>}
+        {status === 'confirmed' && (
+          <div className="text-green-500 text-sm font-medium">{t('header:user.uid.qr_code.success')}</div>
+        )}
 
         {status === 'expired' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90">
-            <div className="text-gray-500 text-sm mb-2">{error || '二维码已过期'}</div>
+            <div className="text-gray-500 text-sm mb-2">{error || t('error:qr_code.expired')}</div>
             <ButtonWithAudio
               onClick={generateQRCode}
               className="px-4 py-1.5 text-xs bg-[#363636] text-[#FDFB73] rounded hover:bg-[#484848]"
             >
-              刷新二维码
+              {t('header:user.uid.qr_code.refresh')}
             </ButtonWithAudio>
           </div>
         )}

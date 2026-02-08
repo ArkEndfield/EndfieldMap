@@ -9,6 +9,7 @@ import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ArrowLeftIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { useTranslation } from 'react-i18next';
 
 interface BindUidListProps {
   /** 可绑定的角色列表 */
@@ -36,61 +37,66 @@ const RoleListItem = ({
   isBound: boolean;
   onBind: () => void;
   loading?: boolean;
-}) => (
-  <div className="flex items-center gap-3 px-3 py-2 relative">
-    {/* 背景层 - 应用 mask 渐变 */}
-    <div
-      className={cn(
-        'absolute inset-0 border rounded-l-lg transition-colors border-r-0',
-        'mask-[linear-gradient(to_right,black_70%,transparent)]',
-        isBound ? 'border-[#E8C832] bg-[#E8C832]/10' : 'border-black group-hover:border-black/10 bg-black/5'
-      )}
-    />
-    {/* 左侧装饰 */}
-    <div className={cn('absolute -left-0.5 top-4 bottom-4 w-1 rounded-full', isBound ? 'bg-[#E8C832]' : 'bg-black')} />
-
-    {/* 头像占位 */}
-    <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center shrink-0 overflow-hidden">
-      <svg className="w-5 h-5 text-black/30" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-      </svg>
-    </div>
-
-    {/* 角色信息 */}
-    <div className="flex-1 min-w-0">
-      <div className="flex items-center gap-2">
-        <span className="text-black font-medium">{role.nick_name}</span>
-        <span className="text-xs rounded-sm font-medium text-[#E8C832] bg-black px-1.5 py-0.5 tracking-wider">
-          LV.{role.level}
-        </span>
-      </div>
-      <div className="text-xs text-black/50">
-        UID {role.role_id} · {role.server_name}
-      </div>
-    </div>
-
-    {/* 绑定按钮 */}
-    {!isBound && (
-      <ButtonWithAudio
-        onClick={onBind}
-        disabled={loading}
+}) => {
+  const { t } = useTranslation('header');
+  return (
+    <div className="flex items-center gap-3 px-3 py-2 relative">
+      {/* 背景层 - 应用 mask 渐变 */}
+      <div
         className={cn(
-          'px-3 py-1.5 text-xs font-medium rounded transition-colors',
-          loading ? 'bg-black/10 text-black/30 cursor-not-allowed' : 'bg-[#E8C832] text-black hover:bg-[#E8C832]/80'
+          'absolute inset-0 border rounded-l-lg transition-colors border-r-0',
+          'mask-[linear-gradient(to_right,black_70%,transparent)]',
+          isBound ? 'border-[#E8C832] bg-[#E8C832]/10' : 'border-black group-hover:border-black/10 bg-black/5'
         )}
-      >
-        绑定
-      </ButtonWithAudio>
-    )}
+      />
+      {/* 左侧装饰 */}
+      <div
+        className={cn('absolute -left-0.5 top-4 bottom-4 w-1 rounded-full', isBound ? 'bg-[#E8C832]' : 'bg-black')}
+      />
 
-    {isBound && (
-      <span className="text-xs text-[#E8C832] font-medium bg-[#E8C832]/10 border border-[#E8C832]/30 px-2 py-0.5 rounded-sm flex items-center gap-1">
-        <CheckCircleIcon className="w-3 h-3" />
-        已绑定
-      </span>
-    )}
-  </div>
-);
+      {/* 头像占位 */}
+      <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center shrink-0 overflow-hidden">
+        <svg className="w-5 h-5 text-black/30" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+      </div>
+
+      {/* 角色信息 */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="text-black font-medium">{role.nick_name}</span>
+          <span className="text-xs rounded-sm font-medium text-[#E8C832] bg-black px-1.5 py-0.5 tracking-wider">
+            LV.{role.level}
+          </span>
+        </div>
+        <div className="text-xs text-black/50">
+          UID {role.role_id} · {role.server_name}
+        </div>
+      </div>
+
+      {/* 绑定按钮 */}
+      {!isBound && (
+        <ButtonWithAudio
+          onClick={onBind}
+          disabled={loading}
+          className={cn(
+            'px-3 py-1.5 text-xs font-medium rounded transition-colors',
+            loading ? 'bg-black/10 text-black/30 cursor-not-allowed' : 'bg-[#E8C832] text-black hover:bg-[#E8C832]/80'
+          )}
+        >
+          {t('user.bind')}
+        </ButtonWithAudio>
+      )}
+
+      {isBound && (
+        <span className="text-xs text-[#E8C832] font-medium bg-[#E8C832]/10 border border-[#E8C832]/30 px-2 py-0.5 rounded-sm flex items-center gap-1">
+          <CheckCircleIcon className="w-3 h-3" />
+          {t('user.binded')}
+        </span>
+      )}
+    </div>
+  );
+};
 
 /**
  * 可绑定 UID 列表组件
@@ -106,6 +112,7 @@ const formatRemainingTime = (seconds: number) => {
 
 export const BindUidList = ({ roles, boundUids, onBind, onBack, loading }: BindUidListProps) => {
   const [remainingSeconds, setRemainingSeconds] = useState(AUTO_RETURN_SECONDS);
+  const { t } = useTranslation(['common', 'header']);
 
   // 倒计时逻辑
   useEffect(() => {
@@ -136,14 +143,16 @@ export const BindUidList = ({ roles, boundUids, onBind, onBack, loading }: BindU
         <ZmdRoundIconButton onClick={onBack}>
           <ArrowLeftIcon />
         </ZmdRoundIconButton>
-        <span className="text-xs text-black/50">{formatRemainingTime(remainingSeconds)} 后自动返回</span>
+        <span className="text-xs text-black/50">
+          {t('common:back_after_time', { time: formatRemainingTime(remainingSeconds) })}
+        </span>
       </div>
 
       {/* 列表内容 */}
       {roles.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-2 text-black/50">
           <QuestionIcon className="w-6 h-6" />
-          <span className="text-xs">没有可绑定的角色</span>
+          <span className="text-xs">{t('header:user.uid.no_roles_to_bind')}</span>
         </div>
       ) : (
         <ScrollArea className="flex-1 min-h-0" scrollY scrollX={false} scrollbarY="auto">

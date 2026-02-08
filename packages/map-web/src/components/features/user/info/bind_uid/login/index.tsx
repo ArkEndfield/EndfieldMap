@@ -11,20 +11,22 @@ import { QRCodeLogin } from '@/components/features/user/info/bind_uid/login/qrco
 import { TokenLogin } from '@/components/features/user/info/bind_uid/login/token';
 import { SoundType } from '@/const/audio_config';
 import { KeyIcon, ScanIcon } from '@/components/common/icons';
-
-interface LoginProps {
-  /** 登录成功回调 */
-  onLogin: (roles: GameRole[], loginMethod: BindType, scanCode?: string) => void;
-}
+import { useTranslation } from 'react-i18next';
 
 /**
  * 登录入口组件
  * 提供扫码和 Token 两种登录方式的切换
  */
-export const Login = ({ onLogin }: LoginProps) => {
+export const Login = ({
+  onLogin,
+}: {
+  /** 登录成功回调 */
+  onLogin: (roles: GameRole[], loginMethod: BindType, scanCode?: string) => void;
+}) => {
   const [method, setMethod] = useState<BindType>('scan');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation('header');
 
   /**
    * 获取可绑定的游戏角色列表
@@ -46,11 +48,10 @@ export const Login = ({ onLogin }: LoginProps) => {
       if (roles && roles.length >= 0) {
         onLogin(roles, form, credential);
       } else {
-        // TODO: i18n
-        setError('没有找到可绑定的角色');
+        setError(t('user.uid.no_roles_to_bind'));
       }
     } catch (error) {
-      setError(error instanceof Error ? error.message : '获取角色列表失败，请重试');
+      setError(error instanceof Error ? error.message : t('user.uid.get_roles_failed'));
     } finally {
       setLoading(false);
     }
@@ -82,7 +83,7 @@ export const Login = ({ onLogin }: LoginProps) => {
           )}
         >
           <ScanIcon className="w-3.5 h-3.5 mr-1" />
-          扫码登录
+          {t('user.uid.scan_login')}
         </ButtonWithAudio>
         <ButtonWithAudio
           onClick={() => setMethod('token')}
@@ -96,7 +97,7 @@ export const Login = ({ onLogin }: LoginProps) => {
           )}
         >
           <KeyIcon />
-          Token 登录
+          {t('user.uid.token_login')}
         </ButtonWithAudio>
       </div>
 

@@ -7,6 +7,9 @@
   "rename": "名前変更",
   "delete": "削除",
   "batch_delete": "一括削除",
+  "yes": "はい",
+  "no": "いいえ",
+  "back_after_time": "{{time}}後に自動で戻ります",
   "operate": {
     "mark": "マーク",
     "marked": "マーク済み",

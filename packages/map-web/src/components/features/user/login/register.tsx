@@ -48,7 +48,7 @@ export const RegisterForm = observer(({ onSwitchToLogin, LinkButton }: RegisterF
         render={({ field }) => (
           <UserInput
             label={t('user.username')}
-            placeholder={t('user.register_username_placeholder', '请输入用户名')}
+            placeholder={t('user.register_username_placeholder')}
             value={field.value}
             onChange={field.onChange}
             error={!!errors.username}
@@ -62,7 +62,7 @@ export const RegisterForm = observer(({ onSwitchToLogin, LinkButton }: RegisterF
         render={({ field }) => (
           <UserInput
             label={t('user.password')}
-            placeholder={t('user.register_password_placeholder', '请输入密码')}
+            placeholder={t('user.register_password_placeholder')}
             type="password"
             value={field.value}
             onChange={field.onChange}
@@ -101,13 +101,13 @@ export const RegisterForm = observer(({ onSwitchToLogin, LinkButton }: RegisterF
         loading={loading}
         onClick={onRegister}
       >
-        {t('user.register_submit', '立即注册')}
+        {t('user.register_submit')}
       </ZmdSquareButton>
 
       {/* 返回登录 */}
       <div className="text-center">
         <button onClick={onSwitchToLogin} className="text-white/60 hover:text-white text-sm transition-colors">
-          {t('user.back_to_login', '已有账号？返回登录')}
+          {t('user.back_to_login')}
         </button>
       </div>
     </>
