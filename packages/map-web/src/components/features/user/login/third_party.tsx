@@ -16,7 +16,7 @@ export const ThirdPartyButton = ({
     const urls = {
       qq: '/',
       bilibili: '/',
-      discord: 'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fdiscord%2Fauthorize&scope=email+identify',
+      discord: 'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fdiscord%2Fcallback&scope=email+identify',
     };
     return urls[provider as keyof typeof urls];
   };
