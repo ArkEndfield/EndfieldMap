@@ -8,9 +8,10 @@ import { alert } from '@/components/common/alert/alert_api';
 import { KeyIcon } from '@/components/common/icons';
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { Input } from '@/components/common/input';
-import { onFormInvalid } from '@/utils/handler';
+import { catchErrorWithTip, onFormInvalid } from '@/utils/handler';
 import { useTranslation } from 'react-i18next';
 import { changePasswordSchema } from '@/const/schema/auth';
+import { userService } from '@/services/user';
 
 type FormData = z.infer<typeof changePasswordSchema>;
 
@@ -30,11 +31,9 @@ const ChangePasswordForm = forwardRef<ChangePasswordFormRef>((_, ref) => {
   });
 
   const onSubmit = async (data: FormData) => {
-    // TODO: 调用修改密码接口
-    console.log(data);
-    alert.info('修改密码功能暂未开放');
-    return true;
+    return !!(await catchErrorWithTip(() => userService.changePassword(data.oldPassword, data.newPassword)));
   };
+
   useImperativeHandle(ref, () => ({
     submit: async () => {
       let success = false;

@@ -17,7 +17,7 @@ import type { FieldErrors, FieldValues } from 'react-hook-form';
  * const value = await catchErrorWithTip(() => computeValue());
  * // value 类型: number | undefined
  */
-export const catchErrorWithTip = async <T>(func: () => T | Promise<T>): Promise<T | undefined> => {
+export const catchErrorWithTip = async <T>(func: () => T | Promise<T>): Promise<T | boolean> => {
   try {
     const result = await func();
     return result;
@@ -35,7 +35,7 @@ export const catchErrorWithTip = async <T>(func: () => T | Promise<T>): Promise<
         })
       );
     }
-    return undefined;
+    return false;
   }
 };
 
@@ -50,7 +50,7 @@ export const onFormInvalid = <T extends FieldValues = FieldValues>(errors: Field
       i18n.t(`schema.${firstError.message}`, {
         defaultValue: firstError.message,
         ns: 'error',
-      })
+      }) as unknown as string
     );
   }
 };

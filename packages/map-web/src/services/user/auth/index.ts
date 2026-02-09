@@ -25,16 +25,22 @@ export class UserAuthService {
 
   constructor() {}
 
+  // region: 登录相关
+
+  /**
+   * 是否已登录
+   */
   @computed
   public get isLogin() {
     return !!this.token.value;
   }
 
-  @computed
-  public get currentUidInfo() {
-    return this.uidList.find((uidInfo) => uidInfo.uid === this.currentUid.value);
-  }
-
+  /**
+   * 登录
+   * @param username 用户名
+   * @param password 密码
+   * @returns
+   */
   @action
   public async login(username: string, password: string) {
     const { token } = await serverService.apiPost<{ token: string; expire: string }>('/auth/login', {
@@ -45,6 +51,12 @@ export class UserAuthService {
     return true;
   }
 
+  /**
+   * 注册
+   * @param username 用户名
+   * @param password 密码
+   * @returns
+   */
   @action
   public async register(username: string, password: string) {
     const { token } = await serverService.apiPost<{ token: string; expire: string }>('/auth/register', {
@@ -55,6 +67,40 @@ export class UserAuthService {
     return true;
   }
 
+  /**
+   * 退出登录
+   */
+  @action
+  public async logout() {
+    try {
+      await serverService.apiPost('/auth/logout');
+    } catch (error) {
+      logger.error('logout error', error);
+    } finally {
+      this.token.value = null;
+      this.currentUid.value = null;
+      this.uidList = [];
+      logger.info('logout');
+      return true;
+    }
+  }
+
+  // endregion
+
+  // region: UID 相关
+
+  /**
+   * 当前的UID信息
+   */
+  @computed
+  public get currentUidInfo() {
+    return this.uidList.find((uidInfo) => uidInfo.uid === this.currentUid.value);
+  }
+
+  /**
+   * 切换 uid
+   * @param uid 要切换的 uid
+   */
   @action
   public switchUid(uid?: UidInfo['uid']) {
     if (!uid) {
@@ -73,6 +119,9 @@ export class UserAuthService {
     this.currentUid.value = uid;
   }
 
+  /**
+   * 获取 uid 列表
+   */
   @action
   public async fetchUidList() {
     if (!this.isLogin) {
@@ -87,19 +136,11 @@ export class UserAuthService {
     this.uidList = list;
   }
 
-  @action
-  public async fetchUserInfo() {
-    if (!this.isLogin) {
-      throw new Error(
-        i18n.t('not_login', {
-          ns: 'error',
-          defaultValue: '未登录',
-        })
-      );
-    }
-    this.userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
-  }
-
+  /**
+   * 绑定 uid
+   * @param uid 要绑定的 uid
+   * @param type 绑定类型
+   */
   public async bindUid(uid: UidInfo['uid'], type: BindType) {
     if (!this.isLogin) {
       throw new Error(
@@ -109,10 +150,13 @@ export class UserAuthService {
         })
       );
     }
-    // WARNING: 不要在这里更新 uid 列表，在外部会进行fetch的！
     await serverService.apiPost('/user/game-roles/bind', { role_id: uid, form: type });
   }
 
+  /**
+   * 解绑 uid
+   * @param uid 要解绑的 uid
+   */
   public async unbindUid(uid: UidInfo['uid']) {
     if (!this.isLogin) {
       throw new Error(
@@ -125,19 +169,24 @@ export class UserAuthService {
     await serverService.apiPost('/user/game-roles/unbind', { role_id: uid });
   }
 
+  // endregion
+
+  // region: 用户信息相关
+
+  /**
+   * 获取用户信息
+   */
   @action
-  public async logout() {
-    try {
-      await serverService.apiPost('/auth/logout');
-    } catch (error) {
-      logger.error('logout error', error);
-    } finally {
-      this.token.value = null;
-      this.currentUid.value = null;
-      this.uidList = [];
-      logger.info('logout');
-      return true;
+  public async fetchUserInfo() {
+    if (!this.isLogin) {
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
     }
+    this.userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
   }
 
   /**
@@ -163,4 +212,25 @@ export class UserAuthService {
     }
     await serverService.apiPut(`/users/${this.userInfo.id}`, data);
   }
+
+  /**
+   * 修改密码
+   * @param oldPassword 旧密码
+   * @param newPassword 新密码
+   */
+  public async changePassword(oldPassword: string, newPassword: string) {
+    if (!this.isLogin) {
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
+    }
+    await serverService.apiPost('/user/change-password', {
+      old_password: oldPassword,
+      new_password: newPassword,
+    });
+  }
+  // endregion
 }
