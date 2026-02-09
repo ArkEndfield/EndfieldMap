@@ -40,6 +40,9 @@ const CustomPointPresetPanel: React.FC = observer(() => {
   };
 
   const handleShare = (id: string, name: string) => {
+    if (!mapDataService.customPointDataService.canShare) {
+      return;
+    }
     let shareName = name;
 
     alert.confirm({
@@ -52,16 +55,7 @@ const CustomPointPresetPanel: React.FC = observer(() => {
           }}
         />
       ),
-      onConfirm: async () => {
-        if (!shareName.trim()) {
-          return false;
-        }
-        const data = await mapDataService.customPointDataService.getPresetById(id);
-        if (!data) {
-          return;
-        }
-        alert.info('分享成功' + JSON.stringify({ data: data.data, name: shareName, type: 'custom_point' }));
-      },
+      onConfirm: () => mapDataService.customPointDataService.sharePreset(id, shareName),
     });
   };
 

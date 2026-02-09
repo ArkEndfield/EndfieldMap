@@ -505,6 +505,19 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
   // endregion
 
+  // region: 分享处理
+  public override async sharePresetToServer(data: ElectricPoleNodeSchemaType[], name: string, type?: string) {
+    // TODO: 实现分享逻辑
+    // 等待两秒
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 2000);
+    });
+    alert.info('分享成功' + JSON.stringify({ data, name, type }));
+  }
+  // endregion
+
   // region: 内部工具方法
 
   /**

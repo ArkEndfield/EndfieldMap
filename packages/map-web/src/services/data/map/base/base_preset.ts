@@ -6,6 +6,8 @@ import { alert } from '@/components/common/alert/alert_api';
 import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
 import type { VisibilityDataSchemaType } from '@/services/data/db/schema/user_data/visibility';
 import type { IPresetService, RequiredNodeFields } from '@/services/user/data/preset/_base';
+import { userService } from '@/services/user';
+import i18n from '@/i18n';
 
 export type VisibilityData = VisibilityDataSchemaType;
 
@@ -412,5 +414,30 @@ export abstract class BasePresetDataService<
 
     return cleaned as unknown as TNodeSchema;
   }
+  // endregion
+
+  // region: 分享处理
+  public get canShare() {
+    if (!userService.auth.isLogin) {
+      alert.info(i18n.t('not_login', { ns: 'error' }));
+      return false;
+    }
+
+    return true;
+  }
+
+  public async sharePreset(id: string, name: string, type?: string): Promise<boolean> {
+    if (!name.trim()) {
+      return false;
+    }
+    const data = await this.getPresetById(id);
+    if (!data) {
+      return false;
+    }
+    await this.sharePresetToServer(data.data, name, type);
+    return true;
+  }
+
+  protected abstract sharePresetToServer(data: TNodeSchema[], name: string, type?: string): Promise<void>;
   // endregion
 }

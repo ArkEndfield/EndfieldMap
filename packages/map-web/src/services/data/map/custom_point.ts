@@ -318,7 +318,20 @@ export class CustomPointDataService extends BasePresetDataService<
   }
   // endregion
 
-  // region: 自定义标点事件初始化
+  // region: 分享处理
+  public override async sharePresetToServer(data: CustomPointNodeSchemaType[], name: string) {
+    // TODO: 实现分享逻辑
+    // 等待两秒
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 2000);
+    });
+    alert.info('分享成功' + JSON.stringify({ data, name }));
+  }
+  // endregion
+
+  // region: 内部方法
 
   /**
    * 初始化地图点击事件监听（用于创建自定义标点）

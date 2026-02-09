@@ -40,6 +40,9 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
   };
 
   const handleShare = (id: string, name: string) => {
+    if (!mapDataService.electricPoleDataService.canShare) {
+      return;
+    }
     let shareName = name;
     let shareType: 'electric_pole' | 'zipline' = 'electric_pole';
 
@@ -57,16 +60,7 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
           }}
         />
       ),
-      onConfirm: async () => {
-        if (!shareName.trim()) {
-          return false;
-        }
-        const data = await mapDataService.electricPoleDataService.getPresetById(id);
-        if (!data) {
-          return;
-        }
-        alert.info('分享成功' + JSON.stringify({ data: data.data, name: shareName, type: shareType }));
-      },
+      onConfirm: () => mapDataService.electricPoleDataService.sharePreset(id, shareName, shareType),
     });
   };
 
