@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<body style=" background-color: rgb(30, 30, 30)">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh ;font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas;">
+        <svg class="icon" style="width: 20%;height: 20%;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle cx="512" cy="512" r="512" fill="#4CAF50"/><path d="M879.7 193.8l-495 495-240.4-240.4-70.7 70.7L314 759.5l70.7 70.7 70.7-70.7 495-495z" fill="#FFFFFF        "></path></svg>
+        <h2 style="color: white;">Authorized! Logging in...</h2>
+    </div>
+    <script>
+        const callbackUrl = 'https://api.zmdmap.com/api/v1/auth/oauth/discord/callback';
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.toString()) {
+                console.log('current params:', Object.fromEntries(params.entries()));
+                const queryString = new URLSearchParams(params).toString();
+                const fullUrl = `${callbackUrl}?${queryString}`;
+                
+
+                fetch(fullUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('success:', data);
+                        window.opener.postMessage({
+                            type: 'LOGIN_SUCCESS',
+                            userInfo: { token: data.code }
+                            }, '*');
+                    })
+                    .catch(error => {
+                        console.error('failed:', error);
+                        alert('Login failed');
+                        window.opener.postMessage({
+                            type: 'LOGIN_FAILED', error: error}, '*');
+                    });
+            } else {
+                console.warn('no params found');
+                alert('no params found');
+            }
+        });
+    </script>
+</body>
+</html>
