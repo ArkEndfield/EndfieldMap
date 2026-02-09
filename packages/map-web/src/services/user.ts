@@ -230,12 +230,20 @@ export class UserService {
   }
 
   /**
-   * 更新用户信息
-   * @param data 更新数据，目前仅支持 nickname
+   * 修改昵称
+   * @param nickname 昵称
    */
-  public async updateUserInfo(data: { nickname?: string }) {
-    await this.auth.updateUserInfo(data);
+  public async changeNickname(nickname: string) {
+    await this.auth.changeNickname(nickname);
     await this.auth.fetchUserInfo();
+  }
+
+  /**
+   * 删除账号
+   */
+  public async deleteAccount() {
+    await this.auth.deleteAccount();
+    await this.logout();
   }
 
   /**

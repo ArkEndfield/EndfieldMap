@@ -1,5 +1,5 @@
 import { LocalStorageValue, logger } from '@endfieldmap/tools';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import i18n from '@/i18n';
 import { UserLocalStorageKey } from '@/const/storage';
 import type { UidInfo, UserInfo } from '@eftypes/user';
@@ -85,6 +85,17 @@ export class UserAuthService {
     }
   }
 
+  public async deleteAccount() {
+    if (!this.isLogin) {
+      throw new Error(
+        i18n.t('not_login', {
+          ns: 'error',
+          defaultValue: '未登录',
+        })
+      );
+    }
+    await serverService.apiPost('/user/delete');
+  }
   // endregion
 
   // region: UID 相关
@@ -176,7 +187,6 @@ export class UserAuthService {
   /**
    * 获取用户信息
    */
-  @action
   public async fetchUserInfo() {
     if (!this.isLogin) {
       throw new Error(
@@ -186,14 +196,17 @@ export class UserAuthService {
         })
       );
     }
-    this.userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
+    const userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
+    runInAction(() => {
+      this.userInfo = userInfo;
+    });
   }
 
   /**
-   * 更新用户信息
-   * @param data 更新数据，目前仅支持 nickname
+   * 修改昵称
+   * @param nickname 新昵称
    */
-  public async updateUserInfo(data: { nickname?: string }) {
+  public async changeNickname(nickname: string) {
     if (!this.isLogin) {
       throw new Error(
         i18n.t('not_login', {
@@ -210,7 +223,7 @@ export class UserAuthService {
         })
       );
     }
-    await serverService.apiPut(`/users/${this.userInfo.id}`, data);
+    await serverService.apiPost(`/user/change-nickname`, { nickname });
   }
 
   /**

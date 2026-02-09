@@ -39,7 +39,11 @@
     "register_password_placeholder": "Enter password",
     "register_submit": "Register Now",
     "back_to_login": "Already have an account? Back to login",
-    "remove_account": "Delete Account",
+    "remove_account": {
+      "title": "Delete Account",
+      "confirm": "Are you sure you want to delete your account?",
+      "success": "Account deleted successfully"
+    },
     "info": {
       "title": "Personal Information",
       "edit": "Edit Info",

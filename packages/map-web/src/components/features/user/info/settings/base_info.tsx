@@ -34,14 +34,17 @@ export const BaseInfo = observer(() => {
 
   /** 修改昵称 */
   const handleEditNickname = async () => {
-    const nickname = await alert.prompt({
+    await alert.prompt({
       content: t('user.info.nickname.edit_tip'),
       defaultValue: userInfo.nickname || '',
-    });
-    if (!nickname) return;
-    catchErrorWithTip(async () => {
-      await userService.updateUserInfo({ nickname });
-      alert.info(t('user.info.nickname.edit_success'));
+      onConfirm: async (value) => {
+        if (!value) return false;
+        return await catchErrorWithTip(async () => {
+          await userService.changeNickname(value);
+          alert.info(t('user.info.nickname.edit_success'));
+          return true;
+        });
+      },
     });
   };
 

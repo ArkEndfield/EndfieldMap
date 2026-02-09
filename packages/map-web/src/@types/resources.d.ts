@@ -137,7 +137,11 @@ interface Resources {
       "register_password_placeholder": "请输入密码",
       "register_submit": "立即注册",
       "register_username_placeholder": "请输入用户名",
-      "remove_account": "注销账户",
+      "remove_account": {
+        "confirm": "确定要注销账户吗？",
+        "success": "账户注销成功",
+        "title": "注销账户"
+      },
       "switch_confirm": "切换到 uid {{uid}} 以开始同步吗？",
       "switch_confirm_keep": "是否保留当前数据到 uid {{uid}} ？",
       "sync": {

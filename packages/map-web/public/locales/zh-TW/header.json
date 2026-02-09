@@ -39,7 +39,11 @@
     "register_password_placeholder": "請輸入密碼",
     "register_submit": "立即註冊",
     "back_to_login": "已有帳號？返回登入",
-    "remove_account": "註銷帳戶",
+    "remove_account": {
+      "title": "註銷帳戶",
+      "confirm": "確定要註銷帳戶嗎？",
+      "success": "帳戶註銷成功"
+    },
     "info": {
       "title": "個人資訊",
       "edit": "修改資訊",

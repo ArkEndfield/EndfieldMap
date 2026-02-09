@@ -14,7 +14,7 @@ interface AlertConfig extends Omit<ZmdAlertProps, 'open' | 'onOpenChange'> {
   content?: ReactNode;
 }
 
-interface PromptConfig extends Omit<AlertConfig, 'content'> {
+interface PromptConfig extends Omit<AlertConfig, 'content' | 'onConfirm'> {
   content?: ReactNode;
   placeholder?: string;
   defaultValue?: string;
@@ -24,6 +24,7 @@ interface PromptConfig extends Omit<AlertConfig, 'content'> {
   minLength?: number;
   pattern?: string;
   inputClassName?: string;
+  onConfirm?: (value: string) => boolean | Promise<boolean>;
 }
 
 class AlertManager {
@@ -167,7 +168,7 @@ class AlertManager {
           if (promptConfig.required && !inputValue.trim()) {
             return false;
           }
-          const result = await promptConfig.onConfirm?.();
+          const result = await promptConfig.onConfirm?.(inputValue);
           if (result !== false) {
             resolve(inputValue);
           }

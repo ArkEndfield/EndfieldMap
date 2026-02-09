@@ -39,7 +39,11 @@
     "register_password_placeholder": "パスワードを入力してください",
     "register_submit": "今すぐ登録",
     "back_to_login": "アカウントをお持ちですか？ログインに戻る",
-    "remove_account": "アカウント削除",
+    "remove_account": {
+      "title": "アカウント削除",
+      "confirm": "本当にアカウントを削除しますか？",
+      "success": "アカウントを削除しました"
+    },
     "info": {
       "title": "個人情報",
       "edit": "情報を編集",

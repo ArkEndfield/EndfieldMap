@@ -39,7 +39,11 @@
     "register_password_placeholder": "Ingrese contraseña",
     "register_submit": "Registrarse ahora",
     "back_to_login": "¿Ya tiene una cuenta? Volver a iniciar sesión",
-    "remove_account": "Eliminar cuenta",
+    "remove_account": {
+      "title": "Eliminar cuenta",
+      "confirm": "¿Está seguro de que desea eliminar su cuenta?",
+      "success": "Cuenta eliminada con éxito"
+    },
     "info": {
       "title": "Información personal",
       "edit": "Editar información",

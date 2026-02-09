@@ -39,7 +39,11 @@
     "register_password_placeholder": "请输入密码",
     "register_submit": "立即注册",
     "back_to_login": "已有账号？返回登录",
-    "remove_account": "注销账户",
+    "remove_account": {
+      "title": "注销账户",
+      "confirm": "确定要注销账户吗？",
+      "success": "账户注销成功"
+    },
     "info": {
       "title": "个人信息",
       "edit": "修改信息",
