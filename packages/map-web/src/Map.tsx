@@ -14,6 +14,7 @@ import { cn } from '@/utils/style';
 
 const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
 const ZmdSwiper = lazy(() => import('@/components/features/swiper'));
+const PresetStore = lazy(() => import('@/components/features/preset_store'));
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
@@ -91,6 +92,11 @@ const Controllers = observer(({ adapter, mapDataService }: ControllersProps) => 
 
           <DevTip />
         </ThemedComponents.RootProvider>
+      </Suspense>
+
+      {/* 预设商店 - 全局组件 */}
+      <Suspense>
+        <PresetStore />
       </Suspense>
     </AdapterProvider>
   );

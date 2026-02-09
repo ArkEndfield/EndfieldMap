@@ -3,6 +3,7 @@ import { getThemedComponents, type ThemeNames, themeNames } from '@themes/index'
 import { ComponentType } from '@themes/types';
 import { action, computed, observable } from 'mobx';
 
+import type { PresetStoreTab } from '@/@types/preset_store';
 import { UILocalStorageKey } from '@/const/storage';
 import { DARK_MODE } from '@/const/ui';
 import audioService from '@/services/audio_service';
@@ -107,6 +108,29 @@ class UIManager {
       this.targetSettingItem = item;
     }
     this.settingsShown = true;
+  }
+  // endregion
+
+  // region: 预设商店
+  @observable accessor presetStoreOpen: boolean = false;
+  @observable accessor presetStoreTab: PresetStoreTab = 'electric_pole';
+
+  @action
+  public openPresetStore(tab?: PresetStoreTab) {
+    if (tab) {
+      this.presetStoreTab = tab;
+    }
+    this.presetStoreOpen = true;
+  }
+
+  @action
+  public closePresetStore() {
+    this.presetStoreOpen = false;
+  }
+
+  @action
+  public switchPresetStoreTab(tab: PresetStoreTab) {
+    this.presetStoreTab = tab;
   }
   // endregion
 

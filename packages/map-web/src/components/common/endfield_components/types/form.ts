@@ -25,6 +25,13 @@ export interface EndfieldSelectProps<T extends string> {
   value: T;
   disabled?: boolean;
   className?: string;
+  classNames?: {
+    container?: string;
+    trigger?: string;
+    option?: string;
+    optionContainer?: string;
+    optionScrollArea?: string;
+  };
   onChange: (value: T) => void;
 }
 

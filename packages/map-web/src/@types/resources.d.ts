@@ -38,6 +38,7 @@ interface Resources {
     },
     "rename": "重命名",
     "select_all": "全选",
+    "share": "分享",
     "yes": "是"
   },
   "error": {
@@ -5896,6 +5897,8 @@ interface Resources {
       "selected_feature": "已选中 {{val, number}} 个标点",
       "selecting_operating_tip": "正在处于批量操作状态，请先结束批量操作"
     },
+    "preset_store": "预设商店",
+    "preset_store_mine": "我的",
     "unfold": "展开"
   }
 }

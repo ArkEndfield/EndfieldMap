@@ -1,4 +1,6 @@
 {
+  "preset_store": "預設商店",
+  "preset_store_mine": "我的",
   "fold": "折疊",
   "unfold": "展開",
   "filter": {

@@ -1,4 +1,6 @@
 {
+  "preset_store": "Tienda de preajustes",
+  "preset_store_mine": "Mis preajustes",
   "fold": "Plegar",
   "unfold": "Desplegar",
   "filter": {

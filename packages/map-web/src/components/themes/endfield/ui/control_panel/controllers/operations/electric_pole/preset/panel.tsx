@@ -4,8 +4,12 @@ import PresetHeader from '@themes/endfield/ui/control_panel/controllers/operatio
 import PresetSelectBar from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/select_bar';
 import { observer } from 'mobx-react-lite';
 
+import { alert } from '@/components/common/alert/alert_api';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useElectricPolePresetPanel } from '@/hooks/use_electric_pole_preset_panel';
+import uiManager from '@/services/ui_manager';
+import { useAdapter } from '@/hooks/use_adapter';
+import SharePresetForm from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/share_form';
 
 /**
  * 电线杆预设管理面板
@@ -29,6 +33,42 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
     handleClickImport,
     handleImportFileChange,
   } = useElectricPolePresetPanel();
+  const { mapDataService } = useAdapter();
+
+  const handleOpenStore = () => {
+    uiManager.openPresetStore('electric_pole');
+  };
+
+  const handleShare = (id: string, name: string) => {
+    let shareName = name;
+    let shareType: 'electric_pole' | 'zipline' = 'electric_pole';
+
+    alert.confirm({
+      dismissible: false,
+      content: (
+        <SharePresetForm
+          defaultName={name}
+          defaultType={shareType}
+          onNameChange={(value) => {
+            shareName = value;
+          }}
+          onTypeChange={(value) => {
+            shareType = value;
+          }}
+        />
+      ),
+      onConfirm: async () => {
+        if (!shareName.trim()) {
+          return false;
+        }
+        const data = await mapDataService.electricPoleDataService.getPresetById(id);
+        if (!data) {
+          return;
+        }
+        alert.info('分享成功' + JSON.stringify({ data: data.data, name: shareName, type: shareType }));
+      },
+    });
+  };
 
   return (
     <div className="flex-1 overflow-hidden py-3 flex flex-col gap-2">
@@ -55,6 +95,7 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
           onToggleSelect={handleToggleSelect}
           onRename={handleRenamePreset}
           onDelete={handleDeletePreset}
+          onShare={handleShare}
         />
       </ScrollArea>
 
@@ -64,6 +105,7 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
           onExport={handleExportSelected}
           onDelete={handleDeleteSelected}
           onImport={handleClickImport}
+          onOpenStore={handleOpenStore}
         />
       </div>
 

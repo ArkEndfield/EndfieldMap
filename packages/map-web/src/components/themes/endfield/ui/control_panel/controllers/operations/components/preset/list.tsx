@@ -11,6 +11,7 @@ interface PresetListProps {
   onToggleSelect: (id: string) => void;
   onRename: (id: string) => void;
   onDelete: (id: string) => void;
+  onShare: (id: string, name: string) => void;
 }
 
 const EmptyPresetList = () => {
@@ -31,6 +32,7 @@ const PresetList: React.FC<PresetListProps> = ({
   onToggleSelect,
   onRename,
   onDelete,
+  onShare,
 }) => {
   if (presets.length === 0) {
     return <EmptyPresetList />;
@@ -49,6 +51,7 @@ const PresetList: React.FC<PresetListProps> = ({
           onToggleSelect={() => onToggleSelect(preset.id)}
           onRename={() => onRename(preset.id)}
           onDelete={() => onDelete(preset.id)}
+          onShare={() => onShare(preset.id, preset.name)}
         />
       ))}
     </div>

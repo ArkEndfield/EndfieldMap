@@ -1,4 +1,6 @@
 {
+  "preset_store": "Магазин пресетов",
+  "preset_store_mine": "Мои пресеты",
   "fold": "Свернуть",
   "unfold": "Развернуть",
   "filter": {

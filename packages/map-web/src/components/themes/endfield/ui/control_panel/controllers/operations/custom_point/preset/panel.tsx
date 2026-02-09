@@ -1,11 +1,15 @@
 import PresetList from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/list';
 import PresetToolbar from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/toolbar';
 import PresetHeader from '@themes/endfield/ui/control_panel/controllers/operations/custom_point/preset/header';
+import SharePresetForm from '@themes/endfield/ui/control_panel/controllers/operations/custom_point/preset/share_form';
 import PresetSelectBar from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/select_bar';
 import { observer } from 'mobx-react-lite';
 
+import { alert } from '@/components/common/alert/alert_api';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useCustomPointPresetPanel } from '@/hooks/use_custom_point_preset_panel';
+import uiManager from '@/services/ui_manager';
+import { useAdapter } from '@/hooks/use_adapter';
 
 /**
  * 自定义标点预设管理面板
@@ -29,6 +33,37 @@ const CustomPointPresetPanel: React.FC = observer(() => {
     handleClickImport,
     handleImportFileChange,
   } = useCustomPointPresetPanel();
+  const { mapDataService } = useAdapter();
+
+  const handleOpenStore = () => {
+    uiManager.openPresetStore('custom_point');
+  };
+
+  const handleShare = (id: string, name: string) => {
+    let shareName = name;
+
+    alert.confirm({
+      dismissible: false,
+      content: (
+        <SharePresetForm
+          defaultName={name}
+          onNameChange={(value) => {
+            shareName = value;
+          }}
+        />
+      ),
+      onConfirm: async () => {
+        if (!shareName.trim()) {
+          return false;
+        }
+        const data = await mapDataService.customPointDataService.getPresetById(id);
+        if (!data) {
+          return;
+        }
+        alert.info('分享成功' + JSON.stringify({ data: data.data, name: shareName, type: 'custom_point' }));
+      },
+    });
+  };
 
   return (
     <div className="flex-1 overflow-hidden py-3 flex flex-col gap-2">
@@ -55,6 +90,7 @@ const CustomPointPresetPanel: React.FC = observer(() => {
           onToggleSelect={handleToggleSelect}
           onRename={handleRenamePreset}
           onDelete={handleDeletePreset}
+          onShare={handleShare}
         />
       </ScrollArea>
 
@@ -64,6 +100,7 @@ const CustomPointPresetPanel: React.FC = observer(() => {
           onExport={handleExportSelected}
           onDelete={handleDeleteSelected}
           onImport={handleClickImport}
+          onOpenStore={handleOpenStore}
         />
       </div>
 

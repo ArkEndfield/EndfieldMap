@@ -1,4 +1,6 @@
 {
+  "preset_store": "프리셋 스토어",
+  "preset_store_mine": "나의 프리셋",
   "fold": "접기",
   "unfold": "펼치기",
   "filter": {
