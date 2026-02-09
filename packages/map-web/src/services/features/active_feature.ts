@@ -1,6 +1,8 @@
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
 import { ElectricPoleKey, type EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
 
+import { SoundType } from '@/const/audio_config';
+import audioService from '@/services/audio_service';
 import type { MapDataService } from '@/services/data/map';
 
 /**
@@ -28,6 +30,7 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter, map
     }
 
     adapter.activeFeatureController.setActiveFeature(instance);
+    audioService.play(SoundType.TICK);
   });
 
   // 监听map_click事件，清除active_feature
