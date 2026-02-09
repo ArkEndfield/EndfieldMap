@@ -3,29 +3,29 @@ import { useTranslation } from 'react-i18next';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { ZmdSquareIconButton } from '@/components/common/endfield_components/button/square_icon_button';
-import { BatchDeleteIcon, ExportIcon, ImportIcon } from '@/components/common/icons';
+import { BatchDeleteIcon, ExportIcon, ImportIcon, StoreIcon } from '@/components/common/icons';
 
 interface PresetToolbarProps {
   hasSelection: boolean;
   onExport: () => void;
   onDelete: () => void;
   onImport: () => void;
+  onOpenStore: () => void;
 }
 
-const PresetToolbar: React.FC<PresetToolbarProps> = ({ hasSelection, onExport, onDelete, onImport }) => {
+const PresetToolbar: React.FC<PresetToolbarProps> = ({ hasSelection, onExport, onDelete, onImport, onOpenStore }) => {
   const { t } = useTranslation(['common', 'sidebar']);
 
   return (
     <div className="flex gap-2 justify-between items-center">
-      <ZmdSquareButton
-        type="default"
-        onClick={onExport}
-        disabled={!hasSelection}
-        icon={<ExportIcon />}
-        className="flex-1"
-      >
-        {t('sidebar:operation.electric_pole.preset.export_select')}
+      <ZmdSquareButton type="default" onClick={onOpenStore} icon={<StoreIcon />} className="flex-1">
+        {t('sidebar:preset_store')}
       </ZmdSquareButton>
+      <Tooltip tooltip={t('sidebar:operation.electric_pole.preset.export_select')} placement="top">
+        <ZmdSquareIconButton onClick={onExport} disabled={!hasSelection} className="text-lg w-8 h-8">
+          <ExportIcon />
+        </ZmdSquareIconButton>
+      </Tooltip>
       <Tooltip tooltip={t('batch_delete')} placement="top">
         <ZmdSquareIconButton onClick={onDelete} disabled={!hasSelection} className="text-lg w-8 h-8 text-[#ff4d4f]">
           <BatchDeleteIcon />

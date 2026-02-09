@@ -1,4 +1,6 @@
 {
+  "preset_store": "Preset Store",
+  "preset_store_mine": "My Presets",
   "fold": "Fold",
   "unfold": "Unfold",
   "filter": {

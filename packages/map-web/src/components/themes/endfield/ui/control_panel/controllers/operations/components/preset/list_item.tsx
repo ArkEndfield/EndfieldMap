@@ -1,9 +1,12 @@
 import { numberPadString } from '@endfieldmap/tools';
+import Tooltip from '@themes/endfield/components/tooltip';
 import { AnimatePresence, motion } from 'motion/react';
 import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { EditIcon, ShareIcon, TrashIcon } from '@/components/common/icons';
 import { cn } from '@/utils/style';
 
 export interface PresetListItemProps {
@@ -15,6 +18,7 @@ export interface PresetListItemProps {
   onToggleSelect?: () => void;
   onRename?: () => void;
   onDelete?: () => void;
+  onShare?: () => void;
 }
 
 const checkVariants = {
@@ -39,6 +43,7 @@ export const PresetListItem = ({
   onClick,
   onRename,
   onDelete,
+  onShare,
   onToggleSelect,
 }: PresetListItemProps) => {
   const { t } = useTranslation();
@@ -46,7 +51,7 @@ export const PresetListItem = ({
     if (!active) onClick?.();
   };
   return (
-    <div className="w-full h-[52px] relative font-[Outfit] overflow-hidden flex items-center" onClick={handleClick}>
+    <div className="w-full h-13 relative font-[Outfit] overflow-hidden flex items-center" onClick={handleClick}>
       <div className="absolute top-0 left-0 w-full h-full text-[#525252] text-[25px]">
         <div className="absolute top-0 left-0 rounded-xs bg-linear-[91.97deg] from-[#a5a5a5] to-[#454545] w-full h-full" />
         <div className="absolute -top-25 -left-6 rounded-full border-9 border-black box-border w-37 h-37 shrink-0 opacity-15" />
@@ -62,7 +67,7 @@ export const PresetListItem = ({
       </div>
 
       <div className="relative ml-3 h-full py-1 text-[#525252] flex-1 w-full flex items-center gap-1">
-        <div className="rounded-[3px] relative rounded-tr-[14px] bg-[#eaeaea]/75 h-full w-39 flex items-center">
+        <div className="rounded-[3px] relative rounded-tr-[14px] bg-[#eaeaea]/75 h-full w-46 flex items-center">
           <div className="absolute bottom-2.5 w-full bg-[#f5f5f5]/30 h-px" />
           <div className="absolute bottom-1 w-full bg-[#f5f5f5]/30 h-1" />
           <svg
@@ -123,25 +128,49 @@ export const PresetListItem = ({
             </div>
           </div>
         </div>
-        <div className="self-stretch h-full flex-1 shrink-0 flex items-end justify-end gap-1 mr-2 relative">
+
+        <div className="self-stretch h-full flex-1 shrink-0 flex justify-end items-center mr-2 pt-1 gap-1 relative">
           <div className="absolute top-0 left-2 right-0 flex gap-1">
             <div className="w-px h-px bg-[#fcfb1e]" />
             <div className="w-3 h-px bg-[#d9d9d9]/30" />
             <div className="flex-1 h-px bg-[#d9d9d9]/30" />
           </div>
-
-          <ButtonWithAudio
-            onClick={getHandledFunction(onRename)}
-            className="bg-[#323232] hover:bg-[#282828] active:bg-[#323232] rounded-full text-[#fcfb1e] py-1 px-2 text-xs w-14"
+          <Tooltip
+            tooltip={t('share')}
+            placement="right"
+            keepOnHover={false}
+            as={ZmdRoundIconButton}
+            asProps={{
+              className: 'w-5.5 h-5.5 p-1',
+              onClick: getHandledFunction(onShare),
+            }}
           >
-            {t('rename')}
-          </ButtonWithAudio>
-          <ButtonWithAudio
-            onClick={getHandledFunction(onDelete)}
-            className="bg-[#323232] hover:bg-[#282828] active:bg-[#323232] rounded-full text-[#fcfb1e] py-1 px-2 text-xs w-14"
+            <ShareIcon className="w-full h-full" />
+          </Tooltip>
+          <Tooltip
+            tooltip={t('rename')}
+            placement="right"
+            keepOnHover={false}
+            as={ZmdRoundIconButton}
+            asProps={{
+              className: 'w-5.5 h-5.5 p-1',
+              onClick: getHandledFunction(onRename),
+            }}
           >
-            {t('delete')}
-          </ButtonWithAudio>
+            <EditIcon className="w-full h-full" />
+          </Tooltip>
+          <Tooltip
+            tooltip={t('delete')}
+            placement="right"
+            keepOnHover={false}
+            as={ZmdRoundIconButton}
+            asProps={{
+              className: 'w-5.5 h-5.5 p-1 text-red-500',
+              onClick: getHandledFunction(onDelete),
+            }}
+          >
+            <TrashIcon className="w-full h-full" />
+          </Tooltip>
         </div>
       </div>
     </div>

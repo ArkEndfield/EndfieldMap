@@ -95,6 +95,7 @@ export const EndfieldSelect = <T extends string>({
   onChange,
   disabled,
   className,
+  classNames,
 }: EndfieldSelectProps<T>) => {
   const [open, setOpen] = useState(false);
   const selectContainerRef = useRef<HTMLDivElement>(null);
@@ -128,8 +129,14 @@ export const EndfieldSelect = <T extends string>({
     return domEventListener(document, 'mousedown', handleClickOutside);
   }, []);
   return (
-    <div className={cn('relative w-full text-[#373537]', open && 'z-3', className)}>
-      <Trigger expand={open} ref={triggerRef} onClick={toggleSelect} disabled={disabled}>
+    <div className={cn('relative w-full text-[#373537]', open && 'z-3', className, classNames?.container)}>
+      <Trigger
+        expand={open}
+        ref={triggerRef}
+        onClick={toggleSelect}
+        disabled={disabled}
+        className={classNames?.trigger}
+      >
         {currentValueLabel}
       </Trigger>
       <AnimatePresence>
@@ -155,10 +162,13 @@ export const EndfieldSelect = <T extends string>({
               originY: 0,
             }}
             ref={selectContainerRef}
-            className="absolute top-1/2 left-0 min-w-full flex flex-col w-max z-0 bg-[#D4D2D3] rounded-b-md shadow-md overflow-hidden max-h-64"
+            className={cn(
+              'absolute top-1/2 left-0 min-w-full flex flex-col w-max z-0 bg-[#D4D2D3] rounded-b-md shadow-md overflow-hidden max-h-64',
+              classNames?.optionContainer
+            )}
           >
             <div className="h-5.5 shrink-0 grow-0"></div>
-            <ScrollArea className="flex-1 w-full h-full overflow-hidden">
+            <ScrollArea className={cn('flex-1 w-full h-full overflow-hidden', classNames?.optionScrollArea)}>
               {options.map((item) => (
                 <Option
                   key={item.value}
@@ -167,6 +177,7 @@ export const EndfieldSelect = <T extends string>({
                   select={value === item.value}
                   left={item.left}
                   right={item.right}
+                  className={classNames?.option}
                 >
                   {item.label}
                 </Option>

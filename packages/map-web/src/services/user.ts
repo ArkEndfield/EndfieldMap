@@ -167,7 +167,7 @@ export class UserService {
             dismissible: false,
             content: i18n.t('user.switch_confirm_keep', {
               ns: 'header',
-              uid,
+              uid: uid === '0' ? i18n.t('user.uid.default', { ns: 'header' }) : uid,
             }),
             onConfirm: async () => {
               resolve(1);

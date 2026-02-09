@@ -113,15 +113,6 @@ export abstract class BasePresetDataService<
   }
 
   constructor() {}
-
-  /**
-   * 通过 ID 获取预设
-   */
-  protected async getPresetById(id: string | null): Promise<TPreset | null> {
-    if (!id) return null;
-    return await this.presetService.getPresetById(id);
-  }
-
   /**
    * 从 Storage 初始化预设
    */
@@ -296,6 +287,20 @@ export abstract class BasePresetDataService<
   // endregion
 
   // region: 导入导出
+  /**
+   * 通过 ID 获取预设
+   */
+  public async getPresetById(id: string | null): Promise<TPreset | null> {
+    if (!id) return null;
+    return await this.presetService.getPresetById(id);
+  }
+
+  /**
+   * 导入预设
+   */
+  public async importPreset(name: string, data: TNodeSchema[]) {
+    await this.presetService.createPreset(name, data);
+  }
 
   public async exportPresets(ids: string[]) {
     if (!ids.length) {
@@ -305,7 +310,7 @@ export abstract class BasePresetDataService<
     // 从数据库读取预设用于导出（已清理 RxDB 私有字段）
     const presets: TPreset[] = [];
     for (const id of ids) {
-      const preset = await this.presetService.getPresetByIdForExport(id);
+      const preset = await this.getPresetById(id);
       if (preset) {
         presets.push(preset);
       }
@@ -357,7 +362,7 @@ export abstract class BasePresetDataService<
 
     // 通过数据库服务创建每个预设
     for (const preset of bundle.presets) {
-      await this.presetService.createPreset(preset.name, preset.data ?? []);
+      await this.importPreset(preset.name, preset.data ?? []);
     }
   }
 
@@ -385,7 +390,7 @@ export abstract class BasePresetDataService<
         }
       }
 
-      await this.presetService.createPreset(preset.name, nodes);
+      await this.importPreset(preset.name, nodes);
     }
   }
 

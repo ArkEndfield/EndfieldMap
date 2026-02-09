@@ -17,10 +17,10 @@ const PCControlPanel = observer(() => {
   const shouldPanelOpen = (panel: CurrentOperatePanel) => {
     return isOpen && currentOperatePanel === panel;
   };
-  
+
   // 只有当侧边栏打开且不是NONE状态时才显示线条
   const showDecoration = !isNoneCurrentPanel && isOpen;
-  
+
   return (
     <>
       <FoldButton

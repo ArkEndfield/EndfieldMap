@@ -1,4 +1,6 @@
 {
+  "preset_store": "プリセットストア",
+  "preset_store_mine": "マイプリセット",
   "fold": "折りたたむ",
   "unfold": "展開",
   "filter": {
