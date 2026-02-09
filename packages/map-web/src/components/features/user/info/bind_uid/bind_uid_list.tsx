@@ -44,7 +44,7 @@ const RoleListItem = ({
       {/* 背景层 - 应用 mask 渐变 */}
       <div
         className={cn(
-          'absolute inset-0 border rounded-l-lg transition-colors border-r-0',
+          'absolute inset-0 border rounded-l-lg transition-colors border-r-0 z-0',
           'mask-[linear-gradient(to_right,black_70%,transparent)]',
           isBound ? 'border-[#E8C832] bg-[#E8C832]/10' : 'border-black group-hover:border-black/10 bg-black/5'
         )}
@@ -55,14 +55,14 @@ const RoleListItem = ({
       />
 
       {/* 头像占位 */}
-      <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center shrink-0 overflow-hidden">
+      <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center shrink-0 overflow-hidden relative z-1">
         <svg className="w-5 h-5 text-black/30" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
         </svg>
       </div>
 
       {/* 角色信息 */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 relative z-1">
         <div className="flex items-center gap-2">
           <span className="text-black font-medium">{role.nick_name}</span>
           <span className="text-xs rounded-sm font-medium text-[#E8C832] bg-black px-1.5 py-0.5 tracking-wider">
@@ -80,7 +80,7 @@ const RoleListItem = ({
           onClick={onBind}
           disabled={loading}
           className={cn(
-            'px-3 py-1.5 text-xs font-medium rounded transition-colors',
+            'px-3 py-1.5 text-xs font-medium rounded transition-colors relative z-1',
             loading ? 'bg-black/10 text-black/30 cursor-not-allowed' : 'bg-[#E8C832] text-black hover:bg-[#E8C832]/80'
           )}
         >
