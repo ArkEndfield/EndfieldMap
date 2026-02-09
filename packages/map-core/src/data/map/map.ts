@@ -8,34 +8,17 @@ export class MapDataManager {
   @observable accessor version: MapDataJson['version'];
   @observable accessor currentMapId: MapData['id'];
 
-  public static instance: MapDataManager;
-
   /**
-   * 地图数据，单例，务必在adapter里面初始化，请勿在其他地方初始化，如需使用请使用 getInstance
+   * 地图数据管理器
    * @param data 地图数据
    */
   constructor(data: MapDataJson) {
-    if (MapDataManager.instance) {
-      throw new Error('MapDataManager instance already exists');
-    }
     if (!data.data || !data.version) {
       throw new Error('Invalid map data');
     }
     this.data = data.data;
     this.version = data.version;
     this.currentMapId = data.data[0].id;
-    MapDataManager.instance = this;
-  }
-
-  /**
-   * 获取单例
-   * @returns MapDataManager 实例
-   */
-  public static getInstance() {
-    if (!MapDataManager.instance) {
-      throw new Error('MapDataManager instance not initialized');
-    }
-    return MapDataManager.instance;
   }
 
   /**

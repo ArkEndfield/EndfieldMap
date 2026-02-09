@@ -1,22 +1,33 @@
 import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { CustomPointRenderer } from '@endfieldmap/map-core/render/renderer/entity/custom_point/custom_point_renderer';
 import type { MapData } from '@endfieldmap/map-core/types';
 import VectorLayer from 'ol/layer/Vector';
 
+export interface CustomPointRenderConfig {
+  dataManager: CustomPointMapDataManager;
+  mapDataManager: MapDataManager;
+  mapInstance: EndfieldMap;
+  asset: { entityImage: string };
+}
+
 export class CustomPointRender {
   public renderInstances: Map<MapData['id'], CustomPointRenderer> = new Map();
   private renderInstance: VectorLayer | null = null;
+  private mapDataManager: MapDataManager;
+  private mapInstance: EndfieldMap;
 
-  constructor(dataManager: CustomPointMapDataManager) {
-    const mapDataManager = MapDataManager.getInstance();
-    mapDataManager.data.forEach((item) => {
+  constructor(config: CustomPointRenderConfig) {
+    this.mapDataManager = config.mapDataManager;
+    this.mapInstance = config.mapInstance;
+    this.mapDataManager.data.forEach((item) => {
       this.renderInstances.set(
         item.id,
         new CustomPointRenderer({
-          dataManager: dataManager.getMapManager(item.id),
+          dataManager: config.dataManager.getMapManager(item.id),
           iconSize: 20, // TODO: 以后调整
+          asset: config.asset,
         })
       );
     });
@@ -27,8 +38,7 @@ export class CustomPointRender {
     const customPointInstance = this.getCustomPointInstance(mapId);
     if (customPointInstance) {
       this.clearLayer();
-      const mapInstance = EndfieldMap.getInstance();
-      mapInstance.map.addLayer(customPointInstance.layer);
+      this.mapInstance.map.addLayer(customPointInstance.layer);
       this.renderInstance = customPointInstance.layer;
     }
   }
@@ -43,8 +53,7 @@ export class CustomPointRender {
 
   /** 获取当前地图 */
   public get currentCustomPointInstance() {
-    const mapDataManager = MapDataManager.getInstance();
-    return this.getCustomPointInstance(mapDataManager.currentMapId);
+    return this.getCustomPointInstance(this.mapDataManager.currentMapId);
   }
 
   /**
@@ -59,9 +68,8 @@ export class CustomPointRender {
 
   /** 清除图层 */
   public clearLayer() {
-    const mapInstance = EndfieldMap.getInstance();
     if (this.renderInstance) {
-      mapInstance.map.removeLayer(this.renderInstance);
+      this.mapInstance.map.removeLayer(this.renderInstance);
       this.renderInstance = null;
     }
   }

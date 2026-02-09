@@ -65,11 +65,11 @@ export interface MapData {
   /** 用户缩放配置 */
   zoom?: {
     /** 默认缩放大小 */
-    default: number;
+    default?: number;
     /** 最小缩放大小 */
-    min: number;
+    min?: number;
     /** 最大缩放大小 */
-    max: number;
+    max?: number;
   };
 }
 

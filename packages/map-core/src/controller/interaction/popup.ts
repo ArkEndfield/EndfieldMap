@@ -1,7 +1,7 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { DEFAULT_ICON_SIZE } from '@endfieldmap/map-core/const/map';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { DataInstance, DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
 import type { Coordinate } from 'ol/coordinate';
@@ -19,8 +19,14 @@ export class PopupController {
   private currentFeature: DataInstance | null = null;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
+  /** 地图实例 */
+  private mapInstance: EndfieldMap;
+  /** 事件发射器 */
+  private emitter: EndfieldMapEmitter;
 
-  constructor() {
+  constructor(mapInstance: EndfieldMap, emitter: EndfieldMapEmitter) {
+    this.mapInstance = mapInstance;
+    this.emitter = emitter;
     this.registerEventHandlers();
   }
 
@@ -29,7 +35,7 @@ export class PopupController {
    */
   private registerEventHandlers() {
     // 监听激活feature变化事件，更新Overlay位置
-    const disposeActiveFeatureChange = mapEventEmitter.on(MAP_EVENT.ACTIVE_FEATURE_CHANGE, (event) => {
+    const disposeActiveFeatureChange = this.emitter.on(MAP_EVENT.ACTIVE_FEATURE_CHANGE, (event) => {
       const { newFeature, coordinate } = event;
       this.currentFeature = newFeature;
 
@@ -69,10 +75,9 @@ export class PopupController {
    * @param element HTML元素
    */
   public setOverlayElement(element: HTMLElement | null) {
-    const mapInstance = EndfieldMap.getInstance();
     // 清理旧的overlay
     if (this.overlay) {
-      mapInstance.map.removeOverlay(this.overlay);
+      this.mapInstance.map.removeOverlay(this.overlay);
       this.overlay = null;
     }
 
@@ -87,7 +92,7 @@ export class PopupController {
       className: 'endfieldmap-popup-overlay',
     });
 
-    mapInstance.map.addOverlay(this.overlay);
+    this.mapInstance.map.addOverlay(this.overlay);
 
     // 如果有当前feature，立即更新位置
     if (this.currentFeature) {
@@ -123,14 +128,13 @@ export class PopupController {
    * 销毁控制器，清理资源
    */
   public dispose() {
-    const mapInstance = EndfieldMap.getInstance();
     // 清理事件监听器
     this.disposeListeners.forEach((dispose) => dispose());
     this.disposeListeners = [];
 
     // 清理overlay
     if (this.overlay) {
-      mapInstance.map.removeOverlay(this.overlay);
+      this.mapInstance.map.removeOverlay(this.overlay);
       this.overlay = null;
     }
 

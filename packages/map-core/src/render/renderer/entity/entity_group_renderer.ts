@@ -8,7 +8,7 @@ import {
   MarkedFeatureFilterMode,
 } from '@endfieldmap/map-core/const/map';
 import type { EntityDataInstance, EntityGroupManager } from '@endfieldmap/map-core/data/entity';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { type IReactionDisposer, reaction } from 'mobx';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
@@ -39,6 +39,8 @@ export interface EntityGroupRendererConfig {
   enableShadow?: boolean;
   /** 样式缓存最大数量 */
   maxStyleCacheSize?: number;
+  /** 地图数据管理器 */
+  mapDataManager?: MapDataManager;
 }
 
 /**
@@ -147,8 +149,7 @@ export class EntityGroupRenderer {
    */
   private addFeatureForInstance(dataInstance: EntityDataInstance): void {
     const feature = new Feature();
-    const mapDataManager = MapDataManager.getInstance();
-    const coordinates = mapDataManager.xyz2crd(dataInstance.position, this.dataManager.mapId);
+    const coordinates = dataInstance.coordinates;
     feature.setGeometry(new Point(coordinates));
     feature.set(FeatureTypeKey, FeatureType.ENTITY);
     feature.set(EntityInstanceKey, dataInstance);

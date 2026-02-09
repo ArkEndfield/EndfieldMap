@@ -1,14 +1,14 @@
 import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import {
   type EntityHitTestResult,
   hitTestEntitiesAt,
   selectTopmostHitResult,
 } from '@endfieldmap/map-core/event/entity_hit_test';
 import { HoverLayer } from '@endfieldmap/map-core/render/layers/hover';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { HitTestableLayer } from '@endfieldmap/map-core/types';
 import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
@@ -22,6 +22,8 @@ export interface HoverFeatureControllerConfig {
   getCustomPointLayers: () => HitTestableLayer[];
   checkIsActive?: (instance: DataInstance) => boolean;
   disableHoverFeature?: boolean;
+  mapInstance: EndfieldMap;
+  emitter: EndfieldMapEmitter;
 }
 
 /**
@@ -49,6 +51,10 @@ export class HoverFeatureController {
   private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
   /** Hover图层 */
   public hoverLayer: HoverLayer;
+  /** 地图实例 */
+  private mapInstance: EndfieldMap;
+  /** 事件发射器 */
+  private emitter: EndfieldMapEmitter;
 
   constructor(config: HoverFeatureControllerConfig) {
     this.getEntityLayers = config.getEntityLayers;
@@ -56,13 +62,14 @@ export class HoverFeatureController {
     this.getCustomPointLayers = config.getCustomPointLayers;
     this.checkIsActive = config.checkIsActive;
     this.disabled = config.disableHoverFeature ?? false;
+    this.mapInstance = config.mapInstance;
+    this.emitter = config.emitter;
     this.updateDebouncedHoverHandler();
 
     // 创建HoverLayer实例
     this.hoverLayer = new HoverLayer();
-    const mapInstance = EndfieldMap.getInstance();
     // 将HoverLayer添加到地图
-    mapInstance.map.addLayer(this.hoverLayer.layer);
+    this.mapInstance.map.addLayer(this.hoverLayer.layer);
 
     if (!this.disabled) {
       this.registerEventHandlers();
@@ -88,7 +95,7 @@ export class HoverFeatureController {
     const coordinate = event.coordinate as Coordinate | undefined;
     if (!coordinate) {
       // 发出清除hover的事件
-      mapEventEmitter.fire(MAP_EVENT.ENTITY_HOVER, {
+      this.emitter.fire(MAP_EVENT.ENTITY_HOVER, {
         instance: null,
         coordinate: null,
         event,
@@ -112,7 +119,7 @@ export class HoverFeatureController {
 
     // 如果没有命中任何feature，发出清除hover的事件
     if (allHoveredFeatures.length === 0) {
-      mapEventEmitter.fire(MAP_EVENT.ENTITY_HOVER, {
+      this.emitter.fire(MAP_EVENT.ENTITY_HOVER, {
         instance: null,
         coordinate: null,
         event,
@@ -123,7 +130,7 @@ export class HoverFeatureController {
     // 选择最上层的 layer（基于 z-index 和添加顺序）
     const selectedLayerFeatures = selectTopmostHitResult(allHoveredFeatures);
     if (!selectedLayerFeatures) {
-      mapEventEmitter.fire(MAP_EVENT.ENTITY_HOVER, {
+      this.emitter.fire(MAP_EVENT.ENTITY_HOVER, {
         instance: null,
         coordinate: null,
         event,
@@ -152,7 +159,7 @@ export class HoverFeatureController {
     }
 
     // 发出ENTITY_HOVER事件，由UI层处理设置hover状态
-    mapEventEmitter.fire(MAP_EVENT.ENTITY_HOVER, {
+    this.emitter.fire(MAP_EVENT.ENTITY_HOVER, {
       instance: dataInstance,
       coordinate: hoverCoordinate,
       event,
@@ -167,7 +174,7 @@ export class HoverFeatureController {
       return;
     }
     // 监听MAP_HOVER事件：使用统一的实体命中检测（与 click 共享）
-    const disposeHover = mapEventEmitter.on(MAP_EVENT.MAP_HOVER, (detail) => {
+    const disposeHover = this.emitter.on(MAP_EVENT.MAP_HOVER, (detail) => {
       if (this.debounceTime > 0 && this.debouncedHandleHover) {
         this.debouncedHandleHover(detail);
       } else {
@@ -176,7 +183,7 @@ export class HoverFeatureController {
     });
 
     // 监听选择开始事件
-    const disposeSelectionStart = mapEventEmitter.on(MAP_EVENT.SELECTION_START, () => {
+    const disposeSelectionStart = this.emitter.on(MAP_EVENT.SELECTION_START, () => {
       if (this.hoverFeature) {
         logger.debug('[HoverFeatureController] Clearing hover feature because selection started');
         this.clearHoverFeature();
@@ -184,7 +191,7 @@ export class HoverFeatureController {
     });
 
     // 监听聚合点击事件
-    const disposeClusterClick = mapEventEmitter.on(MAP_EVENT.CLUSTER_CLICK, () => {
+    const disposeClusterClick = this.emitter.on(MAP_EVENT.CLUSTER_CLICK, () => {
       if (this.hoverFeature) {
         logger.debug('[HoverFeatureController] Clearing hover feature because cluster was clicked');
         this.clearHoverFeature();
@@ -192,7 +199,7 @@ export class HoverFeatureController {
     });
 
     // 监听缩放变化事件：缩放会导致聚合拆分/重组，此时原有 hover 圈位置通常已不再对应实际实体
-    const disposeZoomChange = mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, () => {
+    const disposeZoomChange = this.emitter.on(MAP_EVENT.ZOOM_CHANGE, () => {
       if (this.hoverFeature) {
         logger.debug('[HoverFeatureController] Clearing hover feature because zoom changed');
         this.clearHoverFeature();
@@ -200,7 +207,7 @@ export class HoverFeatureController {
     });
 
     // 监听激活特征变化事件：如果当前 hover 的实体被激活，则立即清除 hover 效果
-    const disposeActiveFeatureChange = mapEventEmitter.on(MAP_EVENT.ACTIVE_FEATURE_CHANGE, ({ newFeature }) => {
+    const disposeActiveFeatureChange = this.emitter.on(MAP_EVENT.ACTIVE_FEATURE_CHANGE, ({ newFeature }) => {
       if (newFeature && newFeature === this.hoverFeature) {
         logger.debug('[HoverFeatureController] Clearing hover feature because it was activated');
         this.clearHoverFeature();
@@ -256,7 +263,7 @@ export class HoverFeatureController {
     }
 
     // 发出hover feature变化事件
-    mapEventEmitter.fire(MAP_EVENT.HOVER_FEATURE_CHANGE, {
+    this.emitter.fire(MAP_EVENT.HOVER_FEATURE_CHANGE, {
       oldFeature,
       newFeature: feature,
       coordinate: hoverCoordinate,
@@ -275,13 +282,12 @@ export class HoverFeatureController {
    * 销毁控制器，清理事件监听器
    */
   public dispose() {
-    const mapInstance = EndfieldMap.getInstance();
     this.unregisterEventHandlers();
     this.clearHoverFeature();
     // 隐藏hover效果
     this.hoverLayer.hideHover();
     // 从地图中移除hover图层
-    mapInstance.map.removeLayer(this.hoverLayer.layer);
+    this.mapInstance.map.removeLayer(this.hoverLayer.layer);
   }
 
   /**

@@ -125,3 +125,19 @@ export type MapEventListener<T extends keyof MapEventEmitter> = (event: MapEvent
 export type MapEventListenerUnion = MapEventListener<keyof MapEventEmitter>;
 
 export type DisposeListener = () => void;
+
+/**
+ * MAP_HOVER 事件的 detail 类型
+ */
+export type MapHoverEventDetail = {
+  event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+};
+
+/**
+ * ENTITY_CLICK 事件的 detail 类型
+ */
+export type EntityEventDetail = {
+  instance: DataInstance;
+  feature: FeatureLike;
+  event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
+};

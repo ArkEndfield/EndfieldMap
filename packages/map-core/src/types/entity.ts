@@ -1,5 +1,6 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import type { CustomPointKey, ElectricPoleIdKey, ElectricPoleKey, NoteKey } from '@endfieldmap/map-core/const/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types/map';
 import type { Position } from '@endfieldmap/map-core/types/position';
 
@@ -210,6 +211,7 @@ export interface EntityInfoItemData<T extends BaseEntityData = EntityData> {
 export interface EntityDataInstanceConfig {
   data: EntityData;
   mapId: MapData['id'];
+  mapDataManager: MapDataManager;
 }
 
 /**
@@ -218,6 +220,7 @@ export interface EntityDataInstanceConfig {
 export interface CustomPointDataInstanceConfig {
   data: CustomPointData;
   mapId: MapData['id'];
+  mapDataManager: MapDataManager;
 }
 
 /**
@@ -226,6 +229,7 @@ export interface CustomPointDataInstanceConfig {
 export interface ElectricPoleDataInstanceConfig {
   data: ElectricPoleData;
   mapId: MapData['id'];
+  mapDataManager: MapDataManager;
 }
 
 /**
@@ -234,6 +238,7 @@ export interface ElectricPoleDataInstanceConfig {
 export interface EntityDataManagerConfig {
   mapId: MapData['id'];
   entityInfo: EntityInfoData;
+  mapDataManager: MapDataManager;
 }
 
 /**
@@ -242,6 +247,7 @@ export interface EntityDataManagerConfig {
 export interface CustomPointDataManagerConfig {
   mapId: MapData['id'];
   initialData?: CustomPointData[];
+  mapDataManager: MapDataManager;
 }
 
 /**
@@ -250,6 +256,7 @@ export interface CustomPointDataManagerConfig {
 export interface ElectricPoleDataManagerConfig {
   mapId: MapData['id'];
   initialData?: ElectricPoleData[];
+  mapDataManager: MapDataManager;
 }
 
 /**
@@ -262,6 +269,7 @@ export interface EntityGroupManagerConfig {
   entityInfo: EntityInfoData;
   category: Category;
   initialData?: EntityData[];
+  mapDataManager: MapDataManager;
 }
 
 /**

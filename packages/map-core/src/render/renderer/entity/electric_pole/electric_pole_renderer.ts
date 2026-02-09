@@ -31,6 +31,8 @@ export interface ElectricPoleRendererConfig {
   renderBuffer?: number;
   /** 是否启用阴影 */
   enableShadow?: boolean;
+  /** 实体图片路径 */
+  entityImagePath?: string;
 }
 
 /**
@@ -99,6 +101,7 @@ export class ElectricPoleRenderer {
     this.styleProvider = new ElectricPoleStyleProvider({
       iconSize: config.iconSize,
       enableShadow: config.enableShadow,
+      entityImagePath: config.entityImagePath,
     });
 
     // 初始化数据源

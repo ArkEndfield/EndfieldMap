@@ -5,7 +5,7 @@ import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import {
   type EntityHitTestResult,
   hitTestEntitiesAt,
@@ -17,24 +17,27 @@ export interface EventControllerConfig {
   entityController: EntityController;
   electricPoleController: ElectricPoleController;
   customPointController: CustomPointController;
+  emitter: EndfieldMapEmitter;
 }
 
 export class EventController {
   private entityController: EntityController;
   private electricPoleController: ElectricPoleController;
   private customPointController: CustomPointController;
+  private emitter: EndfieldMapEmitter;
 
   constructor(config: EventControllerConfig) {
     this.entityController = config.entityController;
     this.electricPoleController = config.electricPoleController;
     this.customPointController = config.customPointController;
+    this.emitter = config.emitter;
     this.registerClickEventHandlers();
     this.registerContextMenuEventHandlers();
   }
 
   private registerClickEventHandlers() {
     // 点击事件
-    mapEventEmitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
+    this.emitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
       const electricPoleLayers = this.electricPoleController.currentRenderer?.visible
         ? [this.electricPoleController.currentRenderer]
         : [];
@@ -64,7 +67,7 @@ export class EventController {
         const instance = feature.get(EntityInstanceKey) as ElectricPoleDataInstance;
         const targetId = feature.get(ConnectionTargetIdKey);
         if (typeof targetId !== 'number') return;
-        mapEventEmitter.fire(MAP_EVENT.CONNECTION_CLICK, {
+        this.emitter.fire(MAP_EVENT.CONNECTION_CLICK, {
           feature: feature,
           instance,
           targetId,
@@ -84,7 +87,7 @@ export class EventController {
         const coordinates = features.map((r) => r.getGeometry()?.getCoordinates?.()).filter((coord) => !!coord);
         const extent = boundingExtent(coordinates);
         const instances = features.map((r) => r.get(EntityInstanceKey) as EntityDataInstance);
-        mapEventEmitter.fire(MAP_EVENT.CLUSTER_CLICK, {
+        this.emitter.fire(MAP_EVENT.CLUSTER_CLICK, {
           features,
           instances,
           coordinates,
@@ -98,7 +101,7 @@ export class EventController {
         // 标记事件已被处理，防止被视为地图空白处点击
         event.hasHit = true;
 
-        mapEventEmitter.fire(MAP_EVENT.ENTITY_CLICK, {
+        this.emitter.fire(MAP_EVENT.ENTITY_CLICK, {
           instance,
           feature,
           event,
@@ -108,7 +111,7 @@ export class EventController {
   }
 
   private registerContextMenuEventHandlers() {
-    mapEventEmitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
+    this.emitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
       const electricPoleLayers = this.electricPoleController.currentRenderer?.visible
         ? [this.electricPoleController.currentRenderer]
         : [];
@@ -135,7 +138,7 @@ export class EventController {
         const clickedFeatures = await renderer.getConnectionFeatures(detail.pixel);
         if (clickedFeatures.length === 0) return;
 
-        mapEventEmitter.fire(MAP_EVENT.CONNECTION_CONTEXT_MENU, {
+        this.emitter.fire(MAP_EVENT.CONNECTION_CONTEXT_MENU, {
           feature: clickedFeatures[0],
           renderer,
           event: detail,
@@ -152,7 +155,7 @@ export class EventController {
       const feature = features[0];
       const instance = feature.get(EntityInstanceKey) as EntityDataInstance;
 
-      mapEventEmitter.fire(MAP_EVENT.ENTITY_CONTEXT_MENU, {
+      this.emitter.fire(MAP_EVENT.ENTITY_CONTEXT_MENU, {
         instance,
         feature,
         layer: selectedLayerFeatures.layer,

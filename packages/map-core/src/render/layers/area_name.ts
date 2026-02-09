@@ -1,5 +1,5 @@
 import { FeatureType, FeatureTypeKey, LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import type { MapBaseRegionData, MapData, OverrideRegionData } from '@endfieldmap/map-core/types';
 import { Feature } from 'ol';
@@ -48,9 +48,12 @@ export class AreaNameLayer extends SingleLayerBase {
   public config: AreaNameLayerConfig;
   /** features */
   public nameFeatures: Feature[] = [];
+  /** 地图数据管理器 */
+  public readonly mapDataManager: MapDataManager;
 
-  constructor(config?: AreaNameLayerConfig) {
+  constructor(mapDataManager: MapDataManager, config?: AreaNameLayerConfig) {
     super();
+    this.mapDataManager = mapDataManager;
     this.vectorSource = new VectorSource();
     this.config = config ?? {};
     this.layer = new VectorLayer({
@@ -96,9 +99,8 @@ export class AreaNameLayer extends SingleLayerBase {
     this.nameFeatures = [];
     for (const region of data) {
       if (!region.name || !region.position) continue;
-      const mapDataManager = MapDataManager.getInstance();
       const areaNameFeature = new Feature({
-        geometry: new Point(mapDataManager.xyz2crd(region.position, mapId)),
+        geometry: new Point(this.mapDataManager.xyz2crd(region.position, mapId)),
       });
       areaNameFeature.setStyle(this.createAreaNameStyle(region.name));
       areaNameFeature.set(FeatureTypeKey, FeatureType.AREA_NAME);

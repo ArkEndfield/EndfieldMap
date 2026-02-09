@@ -1,3 +1,4 @@
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types';
 import type { BaseEntityDataWithInfo } from '@endfieldmap/map-core/types/entity';
 
@@ -24,6 +25,8 @@ export interface DataInstanceConfig<T extends BaseEntityDataWithInfo> {
   data: T;
   /** 地图索引 */
   mapId: MapData['id'];
+  /** 地图数据管理器 */
+  mapDataManager: MapDataManager;
 }
 
 /**
@@ -32,6 +35,8 @@ export interface DataInstanceConfig<T extends BaseEntityDataWithInfo> {
 export interface DataManagerConfig {
   /** 地图索引 */
   mapId: MapData['id'];
+  /** 地图数据管理器 */
+  mapDataManager: MapDataManager;
 }
 
 /**

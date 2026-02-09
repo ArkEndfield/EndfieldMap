@@ -1,13 +1,15 @@
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { TierDataManager } from '@endfieldmap/map-core/data/tier';
 import { TierLayer } from '@endfieldmap/map-core/render/layers/tier';
 import { TierOverlayMaskLayer } from '@endfieldmap/map-core/render/layers/tier_overlay_mask';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { MapData } from '@endfieldmap/map-core/types';
 import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
 import type { Coordinate } from 'ol/coordinate';
 
 export interface TierControllerConfig {
+  mapDataManager: MapDataManager;
+  mapInstance: EndfieldMap;
   opacity?: number;
   maskFillColor?: string;
 }
@@ -16,10 +18,14 @@ export class TierController {
   public tierDataManager: TierDataManager;
   public tierLayer: TierLayer;
   public tierOverlayMaskLayer: TierOverlayMaskLayer;
+  private mapDataManager: MapDataManager;
+  private mapInstance: EndfieldMap;
 
-  constructor() {
-    this.tierDataManager = new TierDataManager();
-    this.tierLayer = new TierLayer(this.tierDataManager);
+  constructor(config: TierControllerConfig) {
+    this.mapDataManager = config.mapDataManager;
+    this.mapInstance = config.mapInstance;
+    this.tierDataManager = new TierDataManager(config.mapDataManager);
+    this.tierLayer = new TierLayer(this.tierDataManager, config.mapDataManager);
     this.tierOverlayMaskLayer = new TierOverlayMaskLayer({
       opacity: 0.72, // TODO: 可配置
       fillColor: 'rgba(0, 0, 0, 1)', // TODO: 可配置
@@ -37,10 +43,8 @@ export class TierController {
 
     this.tierOverlayMaskLayer.show();
     await this.tierLayer.renderTier();
-    const mapInstance = EndfieldMap.getInstance();
-    const mapDataManager = MapDataManager.getInstance();
-    mapInstance.view.animate({
-      center: mapDataManager.xyz2crd({ x: center[0], y: 0, z: center[1] }, mapId),
+    this.mapInstance.view.animate({
+      center: this.mapDataManager.xyz2crd({ x: center[0], y: 0, z: center[1] }, mapId),
       duration: 300,
     });
   }

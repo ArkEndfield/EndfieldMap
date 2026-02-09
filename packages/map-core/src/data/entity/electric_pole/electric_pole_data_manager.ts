@@ -36,7 +36,7 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
   accessor deviceVisibility: Map<ElectricPoleDeviceKey, boolean> = new Map();
 
   constructor(config: ElectricPoleDataManagerConfig) {
-    super({ mapId: config.mapId });
+    super({ mapId: config.mapId, mapDataManager: config.mapDataManager });
     this.entityInfo = DEFAULT_ELECTRIC_POLE_ENTITY_INFO;
 
     // 初始化数据
@@ -57,6 +57,7 @@ export class ElectricPoleDataManager extends BaseDataManager<ElectricPoleData, E
     const instance = new ElectricPoleDataInstance({
       data: dataCopy,
       mapId: this.mapId,
+      mapDataManager: this.mapDataManager,
     });
 
     // 应用可见性

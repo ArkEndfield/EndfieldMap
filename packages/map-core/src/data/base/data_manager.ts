@@ -1,5 +1,6 @@
 import type { BaseDataInstance } from '@endfieldmap/map-core/data/base/data_instance';
 import type { DataManagerConfig } from '@endfieldmap/map-core/data/base/types';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types';
 import type { BaseEntityDataWithInfo } from '@endfieldmap/map-core/types/entity';
 import { action, computed, observable } from 'mobx';
@@ -13,6 +14,9 @@ export abstract class BaseDataManager<T extends BaseEntityDataWithInfo, I extend
   /** 地图ID */
   public readonly mapId: MapData['id'];
 
+  /** 地图数据管理器 */
+  public readonly mapDataManager: MapDataManager;
+
   /** 数据实例集合 */
   @observable
   accessor instances: I[] = [];
@@ -22,6 +26,7 @@ export abstract class BaseDataManager<T extends BaseEntityDataWithInfo, I extend
 
   constructor(config: DataManagerConfig) {
     this.mapId = config.mapId;
+    this.mapDataManager = config.mapDataManager;
   }
 
   /**

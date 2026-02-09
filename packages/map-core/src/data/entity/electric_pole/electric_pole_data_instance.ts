@@ -5,7 +5,6 @@ import {
   LEGACY_ELECTRIC_POLE_DEVICE_KEY,
 } from '@endfieldmap/map-core/const/electric_pole';
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type {
   ElectricPoleData,
   ElectricPoleDataInstanceConfig,
@@ -54,6 +53,7 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
     super({
       data: config.data,
       mapId: config.mapId,
+      mapDataManager: config.mapDataManager,
     });
   }
 
@@ -62,8 +62,7 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
    */
   @computed
   get coordinates(): Coordinate {
-    const mapDataInstance = MapDataManager.getInstance();
-    return mapDataInstance.xyz2crd(this._data.position, this.mapId);
+    return this.mapDataManager.xyz2crd(this._data.position, this.mapId);
   }
 
   /**
@@ -83,7 +82,7 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
    */
   @computed
   get zoneRadius(): number {
-    return MapDataManager.getInstance().getElectricPoleRangeRadius(this.mapId, this.deviceKey);
+    return this.mapDataManager.getElectricPoleRangeRadius(this.mapId, this.deviceKey);
   }
 
   /**

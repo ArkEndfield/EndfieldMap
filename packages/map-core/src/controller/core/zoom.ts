@@ -1,5 +1,5 @@
 import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, MAP_EVENT } from '@endfieldmap/map-core/const';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import Control from 'ol/control/Control';
 import type Map from 'ol/Map';
 import type View from 'ol/View';
@@ -14,14 +14,17 @@ export class ZoomController extends Control {
   private view: View | null = null;
   private zoomChangeCallbacks: Set<ZoomChangeCallback> = new Set();
   private resolutionListener: (() => void) | null = null;
+  private emitter: EndfieldMapEmitter;
 
-  constructor() {
+  constructor(emitter: EndfieldMapEmitter) {
     // 创建一个空的 div 作为容器
     const element = document.createElement('div');
 
     super({
       element: element,
     });
+
+    this.emitter = emitter;
   }
 
   /**
@@ -30,7 +33,7 @@ export class ZoomController extends Control {
   public setMap(map: Map | null): void {
     // 清理旧的监听器
     if (this.resolutionListener) {
-      mapEventEmitter.off(MAP_EVENT.ZOOM_CHANGE, this.resolutionListener);
+      this.emitter.off(MAP_EVENT.ZOOM_CHANGE, this.resolutionListener);
       this.resolutionListener = null;
     }
 
@@ -43,7 +46,7 @@ export class ZoomController extends Control {
         this.notifyZoomChange();
       };
 
-      mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, this.resolutionListener);
+      this.emitter.on(MAP_EVENT.ZOOM_CHANGE, this.resolutionListener);
 
       // 初始化时通知一次
       this.notifyZoomChange();

@@ -1,4 +1,4 @@
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { domEventListener } from '@endfieldmap/tools';
 import type View from 'ol/View';
 
@@ -7,6 +7,8 @@ export interface KeyboardMoveControllerConfig {
   speed?: number;
   /** 是否启用（默认 true） */
   enable?: boolean;
+  /** 地图实例 */
+  mapInstance: EndfieldMap;
 }
 
 /**
@@ -29,8 +31,7 @@ export class KeyboardMoveController {
   private rafId: number | null = null;
 
   constructor(config: KeyboardMoveControllerConfig) {
-    const mapInstance = EndfieldMap.getInstance();
-    this.view = mapInstance.map.getView();
+    this.view = config.mapInstance.map.getView();
     this.speed = config.speed ?? 1;
     this.enable = config.enable ?? true;
 

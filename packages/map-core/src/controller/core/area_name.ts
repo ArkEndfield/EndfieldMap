@@ -1,32 +1,40 @@
 import { Disposer } from '@endfieldmap/map-core/commom/disposer';
 import { DEFAULT_ZOOM } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import type { AreaNameFeatureStyle, AreaNameLayerConfig } from '@endfieldmap/map-core/render/layers/area_name';
 import { AreaNameLayer } from '@endfieldmap/map-core/render/layers/area_name';
 import { reaction } from 'mobx';
+
+export interface AreaNameControllerConfig extends AreaNameLayerConfig {
+  mapDataManager: MapDataManager;
+  emitter: EndfieldMapEmitter;
+}
 
 export class AreaNameController extends Disposer {
   public areaNameLayer: AreaNameLayer;
   private getNameFunction?: <T extends string>(name: T) => string;
   private currentZoom: number = DEFAULT_ZOOM;
+  private mapDataManager: MapDataManager;
+  private emitter: EndfieldMapEmitter;
 
-  constructor(config: AreaNameLayerConfig) {
+  constructor(config: AreaNameControllerConfig) {
     super();
-    this.areaNameLayer = new AreaNameLayer({
+    this.mapDataManager = config.mapDataManager;
+    this.emitter = config.emitter;
+    this.areaNameLayer = new AreaNameLayer(config.mapDataManager, {
       ...config,
       getName: (name) => this.getName(name),
     });
-    mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, this.setAreaName.bind(this));
+    this.emitter.on(MAP_EVENT.ZOOM_CHANGE, this.setAreaName.bind(this));
     this.initListener();
   }
 
   private initListener() {
-    const mapData = MapDataManager.getInstance();
     this.disposers.push(
       reaction(
-        () => mapData.currentMapId,
+        () => this.mapDataManager.currentMapId,
         () => {
           this.refresh();
         }
@@ -45,12 +53,11 @@ export class AreaNameController extends Disposer {
 
   public async setAreaName(_zoom?: number) {
     if (!this.getNameFunction) return;
-    const zoom = _zoom ?? MapDataManager.getInstance().currentMap?.zoom?.default ?? DEFAULT_ZOOM;
-    const mapDataManager = MapDataManager.getInstance();
-    const currentMapId = mapDataManager.currentMapId;
+    const zoom = _zoom ?? this.mapDataManager.currentMap?.zoom?.default ?? DEFAULT_ZOOM;
+    const currentMapId = this.mapDataManager.currentMapId;
     if (!currentMapId) return;
 
-    const regions = mapDataManager.currentMap?.regions;
+    const regions = this.mapDataManager.currentMap?.regions;
     if (!regions) return;
 
     this.currentZoom = zoom;

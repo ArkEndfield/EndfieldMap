@@ -1,7 +1,7 @@
 import { DEFAULT_CLUSTER_DISTANCE, MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { EntityDataInstance } from '@endfieldmap/map-core/data/entity/entity_data_instance';
 import { EntityGroupManager } from '@endfieldmap/map-core/data/entity/entity_group_manager';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types';
 import type {
   Category,
@@ -21,6 +21,9 @@ import { action, computed, observable, runInAction } from 'mobx';
 export class EntityMapDataManager {
   /** 是否已加载 */
   public dataLoaded: boolean = false;
+
+  /** 地图数据管理器 */
+  public readonly mapDataManager: MapDataManager;
 
   /** 地图数据：mapId -> entityDataIdKey -> EntityGroupManager */
   @observable
@@ -44,7 +47,9 @@ export class EntityMapDataManager {
   /** 上次聚合距离 */
   public lastClusterDistance: number = 0;
 
-  constructor() {}
+  constructor(mapDataManager: MapDataManager) {
+    this.mapDataManager = mapDataManager;
+  }
 
   /**
    * 加载数据
@@ -106,6 +111,7 @@ export class EntityMapDataManager {
               entityInfo,
               category,
               initialData: entities,
+              mapDataManager: this.mapDataManager,
             });
 
             groupManagerMap.set(entityDataIdKey, groupManager);
@@ -140,8 +146,7 @@ export class EntityMapDataManager {
    */
   @computed
   get currentGroupManagers(): EntityGroupManager[] {
-    const mapDataInstance = MapDataManager.getInstance();
-    const mapId = mapDataInstance.currentMapId;
+    const mapId = this.mapDataManager.currentMapId;
     const managers = this.mapData.get(mapId);
     return managers ? Array.from(managers.values()) : [];
   }

@@ -152,7 +152,3 @@ export class EndfieldMapEmitter {
     return this.listenerCount(event) > 0;
   }
 }
-
-const mapEventEmitter = new EndfieldMapEmitter();
-
-export default mapEventEmitter;

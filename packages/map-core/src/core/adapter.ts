@@ -20,8 +20,7 @@ import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import { EndfieldMapEvent } from '@endfieldmap/map-core/event/map';
 import type { MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core/types/map';
 import type { JSONLoader, LoggerReporter } from '@endfieldmap/tools';
@@ -32,7 +31,6 @@ export interface AdapterConfig {
   data: MapDataJson;
   container: HTMLElement;
   asset: EndfieldMapAssetConfig;
-  jsonLoader: JSONLoader;
   map?: SimpleMapConfig;
   consolaReporter?: LoggerReporter;
   popup?: {
@@ -47,8 +45,6 @@ export class EndfieldMapAdapter {
   public container: HTMLElement;
   /** 静态资源管理器 */
   public asset: EndfieldMapAsset;
-  /** JSON加载器 */
-  public jsonLoader: JSONLoader;
   /** 地图控制器 */
   public mapController: MapController;
   /** 图层管理器 */
@@ -96,26 +92,50 @@ export class EndfieldMapAdapter {
     const mapConfig: SimpleMapConfig = {
       ...(config.map || {}),
     };
-    this.event = mapEventEmitter;
+    this.event = new EndfieldMapEmitter();
     this.container = config.container;
     this.asset = new EndfieldMapAsset(config.asset);
-    this.jsonLoader = config.jsonLoader;
     this.mapController = new MapController({
       data: config.data,
       mapConfig: {
         container: this.container,
         ...mapConfig,
       },
+      asset: this.asset,
+      emitter: this.event,
     });
-    this.eventManager = new EndfieldMapEvent();
-    this.layerController = new EndfieldMapLayerController();
-    this.areaNameController = new AreaNameController({});
-    this.entityController = new EntityController();
-    this.electricPoleController = new ElectricPoleController();
-    this.customPointController = new CustomPointController();
-    this.tierController = new TierController();
+
+    // 提取核心实例，方便后续传递
+    const mapDataManager = this.mapController.dataManager;
+    const mapInstance = this.mapController.olMapRenderer;
+
+    this.eventManager = new EndfieldMapEvent(mapInstance, this.event);
+    this.layerController = new EndfieldMapLayerController(mapInstance);
+    this.areaNameController = new AreaNameController({ mapDataManager, emitter: this.event });
+    this.entityController = new EntityController({
+      mapDataManager,
+      mapInstance,
+      asset: this.asset,
+      emitter: this.event,
+    });
+    this.electricPoleController = new ElectricPoleController({
+      mapDataManager,
+      mapInstance,
+      asset: this.asset,
+    });
+    this.customPointController = new CustomPointController({
+      mapDataManager,
+      mapInstance,
+      asset: this.asset,
+    });
+    this.tierController = new TierController({
+      mapDataManager,
+      mapInstance,
+    });
     this.activeFeatureController = new ActiveFeatureController({
       disableActiveFeature: config.map?.disableActiveFeature,
+      mapInstance,
+      emitter: this.event,
     });
     this.hoverFeatureController = new HoverFeatureController({
       getEntityLayers: () => this.entityController?.render.currentRenderer || [],
@@ -125,28 +145,27 @@ export class EndfieldMapAdapter {
         this.customPointController?.currentRenderer ? [this.customPointController.currentRenderer] : [],
       checkIsActive: (instance) => this.activeFeatureController.activeFeature === instance,
       disableHoverFeature: config.map?.disableHoverFeature,
+      mapInstance,
+      emitter: this.event,
     });
     this.hoverConnectionController = new HoverConnectionController({
       getConnectionLayer: () => this.electricPoleController?.currentRenderer || null,
       disableHoverConnection: config.map?.disableHoverFeature,
+      emitter: this.event,
     });
-    // this.dataController = new DataController({
-    //   entityController: this.entityController,
-    //   electricPoleController: this.electricPoleController,
-    //   customPointController: this.customPointController,
-    // });
     this.eventController = new EventController({
       entityController: this.entityController,
       electricPoleController: this.electricPoleController,
       customPointController: this.customPointController,
+      emitter: this.event,
     });
     // 初始化popup控制器（默认启用）
     if (config.popup?.enabled !== false) {
-      this.popupController = new PopupController();
+      this.popupController = new PopupController(mapInstance, this.event);
     }
 
     // 初始化缩放控制器
-    this.zoomController = new ZoomController();
+    this.zoomController = new ZoomController(this.event);
     // 注册缩放控件到地图 TODO: 不知道后面可不可以去掉
     this.mapController.olMapRenderer.map.addControl(this.zoomController);
 
@@ -156,11 +175,12 @@ export class EndfieldMapAdapter {
 
     this.KeyboardMoveController = new KeyboardMoveController({
       speed: 0.5,
+      mapInstance,
     });
 
     // 开发模式下初始化 DevTools 控制器
     if (config.isDev) {
-      this.devToolsController = new DevToolsController();
+      this.devToolsController = new DevToolsController({ mapInstance });
     }
   }
 

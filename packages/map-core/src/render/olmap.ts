@@ -6,7 +6,7 @@ import {
   DEFAULT_ROTATION,
   DEFAULT_ZOOM,
 } from '@endfieldmap/map-core/const/map';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import { EndfieldSelectionInteraction } from '@endfieldmap/map-core/event/selection';
 import type { DisposeListener } from '@endfieldmap/map-core/types/event';
 import type { MapConfig } from '@endfieldmap/map-core/types/map';
@@ -31,11 +31,6 @@ export class EndfieldMap {
   public map: Map;
   /** 视图 */
   public view: View;
-  /** 交互 */
-  public static interactions = interactionDefaults({
-    altShiftDragRotate: false,
-    pinchRotate: false,
-  });
   /** 投影 */
   public static projection = new Projection({
     code: 'SIMPLE',
@@ -52,11 +47,12 @@ export class EndfieldMap {
   @observable accessor adjustView: boolean;
   /** 地图视图调整监听器释放函数 */
   private disposeAdjustViewListener?: DisposeListener;
+  /** 事件发射器 */
+  private emitter: EndfieldMapEmitter;
 
-  public static instance: EndfieldMap;
-
-  constructor(config: MapConfig) {
+  constructor(config: MapConfig, emitter: EndfieldMapEmitter) {
     this.config = config;
+    this.emitter = emitter;
     this.control = new Control({
       element: this.config.controlElement,
     });
@@ -72,27 +68,22 @@ export class EndfieldMap {
       rotation: DEFAULT_ROTATION,
       enableRotation: false,
     });
+    const interactions = interactionDefaults({
+      altShiftDragRotate: false,
+      pinchRotate: false,
+    });
     this.map = new Map({
       target: this.config.container,
       view: this.view,
-      interactions: EndfieldMap.interactions,
+      interactions,
       controls: [this.control],
       overlays: [this.overlay],
     });
-    this.selection = new EndfieldSelectionInteraction();
-    EndfieldMap.interactions.push(this.selection.select);
-    EndfieldMap.interactions.push(this.selection.dragBox);
+    this.selection = new EndfieldSelectionInteraction(this, emitter);
+    interactions.push(this.selection.select);
+    interactions.push(this.selection.dragBox);
 
     this.adjustView = false;
-
-    EndfieldMap.instance = this;
-  }
-
-  public static getInstance() {
-    if (!this.instance) {
-      throw new Error('EndfieldMap instance not initialized');
-    }
-    return this.instance;
   }
 
   /**
@@ -164,7 +155,7 @@ export class EndfieldMap {
   public setAdjustView(adjust: boolean): void {
     if (adjust) {
       this.setDynamicConstraint();
-      this.disposeAdjustViewListener = mapEventEmitter.on(MAP_EVENT.MAP_MOVE_END, this.setDynamicConstraint.bind(this));
+      this.disposeAdjustViewListener = this.emitter.on(MAP_EVENT.MAP_MOVE_END, this.setDynamicConstraint.bind(this));
     } else {
       this.disposeAdjustViewListener?.();
       this.disposeAdjustViewListener = undefined;

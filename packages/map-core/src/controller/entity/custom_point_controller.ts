@@ -2,7 +2,9 @@ import { Disposer } from '@endfieldmap/map-core/commom/disposer';
 import { CustomPointKey } from '@endfieldmap/map-core/const/map';
 import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_instance';
 import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { CustomPointRender } from '@endfieldmap/map-core/render/renderer/entity/custom_point/';
 import type { CustomPointMapData, CustomPointNodeData, MapData } from '@endfieldmap/map-core/types';
 import type { CustomPointData, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
@@ -10,6 +12,12 @@ import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { logger } from '@endfieldmap/tools';
 import { action, reaction } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
+
+export interface CustomPointControllerConfig {
+  mapDataManager: MapDataManager;
+  mapInstance: EndfieldMap;
+  asset: EndfieldMapAsset;
+}
 
 /**
  * 自定义标点控制器
@@ -22,18 +30,25 @@ export class CustomPointController extends Disposer {
   /** 渲染器 */
   private render: CustomPointRender;
 
-  constructor() {
+  private mapDataManager: MapDataManager;
+
+  constructor(config: CustomPointControllerConfig) {
     super();
-    this.dataManager = new CustomPointMapDataManager();
-    this.render = new CustomPointRender(this.dataManager);
+    this.mapDataManager = config.mapDataManager;
+    this.dataManager = new CustomPointMapDataManager(config.mapDataManager);
+    this.render = new CustomPointRender({
+      dataManager: this.dataManager,
+      mapDataManager: config.mapDataManager,
+      mapInstance: config.mapInstance,
+      asset: config.asset,
+    });
     this.initListeners();
   }
 
   private initListeners() {
-    const mapDataManager = MapDataManager.getInstance();
     // mobx 监听 currentMap
     const disposer = reaction(
-      () => mapDataManager.currentMapId,
+      () => this.mapDataManager.currentMapId,
       (mapId) => {
         this.render.render(mapId);
       },
@@ -81,8 +96,7 @@ export class CustomPointController extends Disposer {
     position: Coordinate,
     type: CustomPointTypeId
   ): CustomPointData {
-    const mapDataInstance = MapDataManager.getInstance();
-    const xyzPosition = mapDataInstance.crd2xyz(position, mapId);
+    const xyzPosition = this.mapDataManager.crd2xyz(position, mapId);
     const manager = this.dataManager.getMapManager(mapId);
 
     // 生成新ID

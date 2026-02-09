@@ -37,6 +37,8 @@ export interface ElectricPoleDeviceConfig {
   maxConnections: false | number;
   /** 连接类型：同类型之间可互连（例如 pole 与 repeater 属于 electric） */
   connectionType: ElectricPoleConnectionType;
+  /** 按地图 ID 覆盖范围半径（可选） */
+  rangeRadiusByMapId?: Partial<Record<MapData['id'], number>>;
   /** 填充色 (RGBA) */
   fillColor?: string;
   /** 描边色 (Hex/RGBA) */

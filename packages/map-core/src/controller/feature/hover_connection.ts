@@ -1,5 +1,5 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer';
 import type { DisposeListener, MapHoverEventDetail } from '@endfieldmap/map-core/types/event';
 import { debounce, logger } from '@endfieldmap/tools';
@@ -9,6 +9,7 @@ import type { FeatureLike } from 'ol/Feature';
 export interface HoverConnectionControllerConfig {
   getConnectionLayer: () => ElectricPoleRenderer | null;
   disableHoverConnection?: boolean;
+  emitter: EndfieldMapEmitter;
 }
 
 /**
@@ -30,10 +31,13 @@ export class HoverConnectionController {
   private getConnectionLayer: () => ElectricPoleRenderer | null;
   /** 防抖后的hover处理函数 */
   private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
+  /** 事件发射器 */
+  private emitter: EndfieldMapEmitter;
 
   constructor(config: HoverConnectionControllerConfig) {
     this.getConnectionLayer = config.getConnectionLayer;
     this.disabled = config.disableHoverConnection ?? false;
+    this.emitter = config.emitter;
     this.updateDebouncedHoverHandler();
     if (!this.disabled) {
       this.registerEventHandlers();
@@ -59,7 +63,7 @@ export class HoverConnectionController {
     const coordinate = event.coordinate;
     if (!coordinate) {
       // 发出清除hover的事件
-      mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+      this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
         feature: null,
         renderer: null,
         event,
@@ -70,7 +74,7 @@ export class HoverConnectionController {
     const connectionRenderer = this.getConnectionLayer();
     if (!connectionRenderer || !connectionRenderer.getConnectionVisible()) {
       // 发出清除hover的事件
-      mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+      this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
         feature: null,
         renderer: null,
         event,
@@ -81,7 +85,7 @@ export class HoverConnectionController {
     const clickedFeatures = await connectionRenderer.connectionLayer.getFeatures(event.pixel as [number, number]);
     if (clickedFeatures.length === 0) {
       // 发出清除hover的事件
-      mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+      this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
         feature: null,
         renderer: null,
         event,
@@ -93,7 +97,7 @@ export class HoverConnectionController {
     const feature = clickedFeatures[0];
 
     // 发出CONNECTION_HOVER事件，由UI层处理设置hover状态
-    mapEventEmitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+    this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
       feature,
       renderer: connectionRenderer,
       event,
@@ -109,7 +113,7 @@ export class HoverConnectionController {
     }
 
     // 监听MAP_HOVER事件：检测连接线的hover
-    const disposeHover = mapEventEmitter.on(MAP_EVENT.MAP_HOVER, (detail) => {
+    const disposeHover = this.emitter.on(MAP_EVENT.MAP_HOVER, (detail) => {
       if (this.debounceTime > 0 && this.debouncedHandleHover) {
         this.debouncedHandleHover(detail);
       } else {
@@ -118,7 +122,7 @@ export class HoverConnectionController {
     });
 
     // 监听选择开始事件
-    const disposeSelectionStart = mapEventEmitter.on(MAP_EVENT.SELECTION_START, () => {
+    const disposeSelectionStart = this.emitter.on(MAP_EVENT.SELECTION_START, () => {
       if (this.hoverFeature) {
         logger.debug('[HoverConnectionController] Clearing hover connection because selection started');
         this.clearHoverConnection();
@@ -126,7 +130,7 @@ export class HoverConnectionController {
     });
 
     // 监听缩放变化事件
-    const disposeZoomChange = mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, () => {
+    const disposeZoomChange = this.emitter.on(MAP_EVENT.ZOOM_CHANGE, () => {
       if (this.hoverFeature) {
         logger.debug('[HoverConnectionController] Clearing hover connection because zoom changed');
         this.clearHoverConnection();
@@ -173,7 +177,7 @@ export class HoverConnectionController {
     }
 
     // 发出hover connection变化事件
-    mapEventEmitter.fire(MAP_EVENT.HOVER_CONNECTION_CHANGE, {
+    this.emitter.fire(MAP_EVENT.HOVER_CONNECTION_CHANGE, {
       oldFeature,
       newFeature: feature,
       renderer,

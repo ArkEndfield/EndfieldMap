@@ -107,7 +107,6 @@ export class MapService {
         container: this.container,
         data: this.mapData,
         asset: assets,
-        jsonLoader: DataService.jsonLoader,
         consolaReporter: sentryReporter,
         isDev: isDev,
       });

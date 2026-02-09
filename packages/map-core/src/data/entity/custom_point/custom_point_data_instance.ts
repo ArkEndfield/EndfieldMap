@@ -4,7 +4,6 @@ import {
   getCustomPointEntityInfo,
   isValidCustomPointType,
 } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_config';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { CustomPointData, CustomPointTypeId, EntityInfoData } from '@endfieldmap/map-core/types/entity';
 import { action, computed } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
@@ -34,8 +33,7 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
    */
   @computed
   get coordinates(): Coordinate {
-    const mapDataManager = MapDataManager.getInstance();
-    return mapDataManager.xyz2crd(this._data.position, this.mapId);
+    return this.mapDataManager.xyz2crd(this._data.position, this.mapId);
   }
 
   /**

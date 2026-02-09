@@ -7,7 +7,6 @@ import {
   DEFAULT_STROKE_WIDTH,
   EntityInstanceKey,
 } from '@endfieldmap/map-core/const/map';
-import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import {
   createBaseEntityBackgroundStyle,
@@ -24,6 +23,7 @@ const ENTITY_RADIUS = ENTITY_SIZE / 2;
 export interface ElectricPoleStyleConfig {
   iconSize?: number;
   enableShadow?: boolean;
+  entityImagePath?: string;
 }
 
 export class ElectricPoleStyleProvider {
@@ -38,6 +38,9 @@ export class ElectricPoleStyleProvider {
 
   /** 图标大小 */
   private iconSize: number;
+
+  /** 实体图片路径 */
+  private entityImagePath: string;
 
   /** 阴影样式 */
   private static BASE_BACKDROP_STYLE: Style[] = [];
@@ -61,6 +64,7 @@ export class ElectricPoleStyleProvider {
   constructor(config: ElectricPoleStyleConfig) {
     this.enableShadow = config.enableShadow ?? false;
     this.iconSize = config.iconSize ?? DEFAULT_ICON_SIZE;
+    this.entityImagePath = config.entityImagePath ?? '';
 
     // 初始化阴影样式
     if (this.enableShadow && ElectricPoleStyleProvider.BASE_BACKDROP_STYLE.length === 0) {
@@ -114,10 +118,9 @@ export class ElectricPoleStyleProvider {
   private getOrCreateIconStyle(deviceKey: ElectricPoleDeviceKey): Style {
     const cached = this.iconStyleCache.get(deviceKey);
     if (cached) return cached;
-    const imagePath = EndfieldMapAsset.getInstance().entityImage;
     const { iconPic } = getElectricPoleDeviceConfig(deviceKey);
     const style = createEntityIconStyles({
-      url: `${imagePath}/${iconPic}.png`,
+      url: `${this.entityImagePath}/${iconPic}.png`,
       size: this.iconSize,
       radius: ENTITY_RADIUS,
       borderWidth: 3,

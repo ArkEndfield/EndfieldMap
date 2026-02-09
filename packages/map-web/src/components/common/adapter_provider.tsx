@@ -1,15 +1,11 @@
-import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import type { ReactNode } from 'react';
 
-import { AdapterContext } from '@/context/adapter';
-import type { MapDataService } from '@/services/data/map';
+import { AdapterContext, type AdapterContextProps } from '@/context/adapter';
 
-export interface AdapterProviderProps {
-  adapter: EndfieldMapAdapter;
-  mapDataService: MapDataService;
+export interface AdapterProviderProps extends AdapterContextProps {
   children: ReactNode;
 }
 
-export function AdapterProvider({ adapter, mapDataService, children }: AdapterProviderProps) {
-  return <AdapterContext.Provider value={{ adapter, mapDataService }}>{children}</AdapterContext.Provider>;
+export function AdapterProvider({ adapter, mapDataService, mapService, children }: AdapterProviderProps) {
+  return <AdapterContext.Provider value={{ adapter, mapDataService, mapService }}>{children}</AdapterContext.Provider>;
 }

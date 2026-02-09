@@ -11,6 +11,7 @@ import { MapDataService } from '@/services/data/map';
 import { isDev } from '@/services/env';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
+import type { MapService } from '@/services/map';
 
 const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
 const ZmdSwiper = lazy(() => import('@/components/features/swiper'));
@@ -19,9 +20,10 @@ const PresetStore = lazy(() => import('@/components/features/preset_store'));
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
   mapDataService: MapDataService;
+  mapService: MapService;
 }
 
-const Controllers = observer(({ adapter, mapDataService }: ControllersProps) => {
+const Controllers = observer(({ adapter, mapDataService, mapService }: ControllersProps) => {
   const isMobile = useIsMobile();
   const enableHover = adapter.enableHover;
   const hoverHitTestTime = mapDataService.mapStateDataService.hoverTime.value;
@@ -36,7 +38,7 @@ const Controllers = observer(({ adapter, mapDataService }: ControllersProps) => 
   }, [adapter, enableHover, hoverHitTestTime, isMobile]);
 
   return (
-    <AdapterProvider adapter={adapter} mapDataService={mapDataService}>
+    <AdapterProvider adapter={adapter} mapDataService={mapDataService} mapService={mapService}>
       <Suspense>
         <ThemedComponents.RootProvider mapDataService={mapDataService}>
           {/* 弹窗组件 */}
@@ -104,7 +106,7 @@ const Controllers = observer(({ adapter, mapDataService }: ControllersProps) => 
 
 function EndfieldMap() {
   const container = useRef<HTMLDivElement>(null);
-  const { adapter, mapDataService } = useMapAdapter(container);
+  const { adapter, mapDataService, mapService } = useMapAdapter(container);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -118,7 +120,9 @@ function EndfieldMap() {
       ></div>
 
       {/* 控制组件 */}
-      {adapter && mapDataService && <Controllers adapter={adapter} mapDataService={mapDataService} />}
+      {adapter && mapDataService && mapService && (
+        <Controllers adapter={adapter} mapDataService={mapDataService} mapService={mapService} />
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { TierDataInstance, TierDataManager } from '@endfieldmap/map-core/data/tier';
 import { SingleLayerBase } from '@endfieldmap/map-core/render/layers/_base';
 import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
@@ -10,15 +10,18 @@ import { ImageStatic } from 'ol/source';
 
 export interface TierLayerConfig {
   tierDataManager: TierDataManager;
+  mapDataManager: MapDataManager;
 }
 
 export class TierLayer extends SingleLayerBase {
   public layer: ImageLayer<ImageStatic>;
   private tierDataManager: TierDataManager;
+  private mapDataManager: MapDataManager;
 
-  constructor(tierDataManager: TierDataManager) {
+  constructor(tierDataManager: TierDataManager, mapDataManager: MapDataManager) {
     super();
     this.tierDataManager = tierDataManager;
+    this.mapDataManager = mapDataManager;
     this.layer = new ImageLayer({
       zIndex: -1,
     });
@@ -34,8 +37,7 @@ export class TierLayer extends SingleLayerBase {
       }
 
       // TODO: 不知道可不可能有什么潜在问题
-      const mapDataManager = MapDataManager.getInstance();
-      const mapData = mapDataManager.getMapData(tier.mapId);
+      const mapData = this.mapDataManager.getMapData(tier.mapId);
       if (!mapData) {
         logger.error('[EndfieldMap | tier] mapData not found', tier);
         resolve(null);

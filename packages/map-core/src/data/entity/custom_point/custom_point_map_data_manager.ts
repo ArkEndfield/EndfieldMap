@@ -1,7 +1,7 @@
 import { Disposer } from '@endfieldmap/map-core/commom/disposer';
 import { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_instance';
 import { CustomPointDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_manager';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types';
 import type { CustomPointData, CustomPointMapData } from '@endfieldmap/map-core/types/entity';
 import { action, computed, observable } from 'mobx';
@@ -19,16 +19,19 @@ export class CustomPointMapDataManager extends Disposer {
   @observable
   accessor visible: boolean = true;
 
-  constructor() {
+  /** 地图数据管理器 */
+  public readonly mapDataManager: MapDataManager;
+
+  constructor(mapDataManager: MapDataManager) {
     super();
+    this.mapDataManager = mapDataManager;
     this.initData();
   }
 
   private initData() {
-    const mapData = MapDataManager.getInstance();
-    const mapIds = mapData.mapIds;
+    const mapIds = this.mapDataManager.mapIds;
     for (const mapId of mapIds) {
-      const manager = new CustomPointDataManager({ mapId });
+      const manager = new CustomPointDataManager({ mapId, mapDataManager: this.mapDataManager });
       this.mapManagers.set(mapId, manager);
     }
   }
@@ -40,7 +43,7 @@ export class CustomPointMapDataManager extends Disposer {
   public getMapManager(mapId: MapData['id']): CustomPointDataManager {
     let manager = this.mapManagers.get(mapId);
     if (!manager) {
-      manager = new CustomPointDataManager({ mapId });
+      manager = new CustomPointDataManager({ mapId, mapDataManager: this.mapDataManager });
       this.mapManagers.set(mapId, manager);
     }
     return manager;
@@ -51,8 +54,7 @@ export class CustomPointMapDataManager extends Disposer {
    */
   @computed
   get currentManager(): CustomPointDataManager {
-    const mapData = MapDataManager.getInstance();
-    const currentMapId = mapData.currentMapId;
+    const currentMapId = this.mapDataManager.currentMapId;
     return this.getMapManager(currentMapId);
   }
 
@@ -78,6 +80,7 @@ export class CustomPointMapDataManager extends Disposer {
       const manager = new CustomPointDataManager({
         mapId,
         initialData: pointList,
+        mapDataManager: this.mapDataManager,
       });
       this.mapManagers.set(mapId, manager);
     }

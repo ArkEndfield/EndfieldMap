@@ -7,13 +7,21 @@ import {
 import { ElectricPoleIdKey, ElectricPoleKey } from '@endfieldmap/map-core/const/map';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_map_data_manager';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { ElectricPoleRender } from '@endfieldmap/map-core/render/renderer/entity/electric_pole';
 import type { ElectricPoleData, ElectricPoleMapData, ElectricPoleNodeData, MapData } from '@endfieldmap/map-core/types';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { calculateXYZDistance, logger } from '@endfieldmap/tools';
 import { action, reaction } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
+
+export interface ElectricPoleControllerConfig {
+  mapDataManager: MapDataManager;
+  mapInstance: EndfieldMap;
+  asset: EndfieldMapAsset;
+}
 
 /**
  * 电线杆控制器
@@ -26,18 +34,25 @@ export class ElectricPoleController extends Disposer {
   /** 渲染器缓存 */
   private render: ElectricPoleRender;
 
-  constructor() {
+  private mapDataManager: MapDataManager;
+
+  constructor(config: ElectricPoleControllerConfig) {
     super();
-    this.dataManager = new ElectricPoleMapDataManager();
-    this.render = new ElectricPoleRender(this.dataManager);
+    this.mapDataManager = config.mapDataManager;
+    this.dataManager = new ElectricPoleMapDataManager(config.mapDataManager);
+    this.render = new ElectricPoleRender({
+      dataManager: this.dataManager,
+      mapDataManager: config.mapDataManager,
+      mapInstance: config.mapInstance,
+      entityImagePath: config.asset.entityImage,
+    });
     this.initListeners();
   }
 
   private initListeners() {
-    const mapDataManager = MapDataManager.getInstance();
     // mobx 监听 currentMap
     const disposer = reaction(
-      () => mapDataManager.currentMapId,
+      () => this.mapDataManager.currentMapId,
       (mapId) => {
         this.render.render(mapId);
       },
@@ -98,8 +113,7 @@ export class ElectricPoleController extends Disposer {
     position: Coordinate,
     deviceKey: ElectricPoleDeviceKey = DEFAULT_ELECTRIC_POLE_DEVICE_KEY
   ): ElectricPoleData {
-    const mapDataInstance = MapDataManager.getInstance();
-    const xyzPosition = mapDataInstance.crd2xyz(position, mapId);
+    const xyzPosition = this.mapDataManager.crd2xyz(position, mapId);
 
     // 检查是否存在重复（0.5 单位内认为是重复点击）
     const manager = this.dataManager.getMapManager(mapId);

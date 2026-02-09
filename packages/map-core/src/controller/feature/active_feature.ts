@@ -1,14 +1,16 @@
 import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH } from '@endfieldmap/map-core/const';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import { ActiveLayer } from '@endfieldmap/map-core/render/layers/active';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { DataInstance, DisposeListener } from '@endfieldmap/map-core/types/event';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 
 export interface ActiveFeatureControllerConfig {
   disableActiveFeature?: boolean;
+  mapInstance: EndfieldMap;
+  emitter: EndfieldMapEmitter;
 }
 
 /**
@@ -24,15 +26,20 @@ export class ActiveFeatureController {
   private disabled: boolean = false;
   /** Active图层 */
   public activeLayer: ActiveLayer;
+  /** 地图实例 */
+  private mapInstance: EndfieldMap;
+  /** 事件发射器 */
+  private emitter: EndfieldMapEmitter;
 
   constructor(config: ActiveFeatureControllerConfig) {
     this.disabled = config.disableActiveFeature ?? false;
+    this.mapInstance = config.mapInstance;
+    this.emitter = config.emitter;
 
     // 创建ActiveLayer实例
     this.activeLayer = new ActiveLayer();
-    const mapInstance = EndfieldMap.getInstance();
     // 将ActiveLayer添加到地图
-    mapInstance.map.addLayer(this.activeLayer.layer);
+    this.mapInstance.map.addLayer(this.activeLayer.layer);
 
     if (!this.disabled) {
       this.registerEventHandlers();
@@ -44,7 +51,7 @@ export class ActiveFeatureController {
    */
   private registerEventHandlers() {
     // 监听选择开始事件
-    const disposeSelectionStart = mapEventEmitter.on(MAP_EVENT.SELECTION_START, () => {
+    const disposeSelectionStart = this.emitter.on(MAP_EVENT.SELECTION_START, () => {
       if (this.activeFeature) {
         logger.debug('[ActiveFeatureController] Clearing active feature because selection started');
         this.clearActiveFeature();
@@ -94,7 +101,7 @@ export class ActiveFeatureController {
     }
 
     // 发出激活feature变化事件
-    mapEventEmitter.fire(MAP_EVENT.ACTIVE_FEATURE_CHANGE, {
+    this.emitter.fire(MAP_EVENT.ACTIVE_FEATURE_CHANGE, {
       oldFeature,
       newFeature: feature,
       coordinate,
@@ -113,13 +120,12 @@ export class ActiveFeatureController {
    * 销毁控制器，清理事件监听器
    */
   public dispose() {
-    const mapInstance = EndfieldMap.getInstance();
     this.unregisterEventHandlers();
     this.clearActiveFeature();
     // 隐藏active效果
     this.activeLayer.hideActive();
     // 从地图中移除active图层
-    mapInstance.map.removeLayer(this.activeLayer.layer);
+    this.mapInstance.map.removeLayer(this.activeLayer.layer);
   }
 
   /**

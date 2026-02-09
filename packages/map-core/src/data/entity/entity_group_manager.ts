@@ -29,7 +29,7 @@ export class EntityGroupManager extends BaseDataManager<EntityData, EntityDataIn
   accessor groupVisible: boolean = false;
 
   constructor(config: EntityGroupManagerConfig) {
-    super({ mapId: config.mapId });
+    super({ mapId: config.mapId, mapDataManager: config.mapDataManager });
     this.entityDataIdKey = config.entityDataIdKey;
     this.entityInfo = config.entityInfo;
     this.category = config.category;
@@ -47,6 +47,7 @@ export class EntityGroupManager extends BaseDataManager<EntityData, EntityDataIn
     return new EntityDataInstance({
       data,
       mapId: this.mapId,
+      mapDataManager: this.mapDataManager,
     });
   }
 

@@ -1,4 +1,4 @@
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { TierDataInstance } from '@endfieldmap/map-core/data/tier/tier_data_instance';
 import type { MapData } from '@endfieldmap/map-core/types/map';
 import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
@@ -8,8 +8,10 @@ export class TierDataManager {
   public tiers: Map<MapData['id'], Map<string, Map<string, TierDataInstance>>> = new Map();
   @observable accessor activeTier: string | null = null;
   @observable accessor activeSubTier: string | null = null;
+  public readonly mapDataManager: MapDataManager;
 
-  constructor() {
+  constructor(mapDataManager: MapDataManager) {
+    this.mapDataManager = mapDataManager;
     makeObservable(this, {
       addTier: action,
       removeTier: action,
@@ -25,7 +27,7 @@ export class TierDataManager {
     const position = [data.lb[0], data.lb[1]];
 
     for (const item of items) {
-      const instance = new TierDataInstance(mapId, item, position);
+      const instance = new TierDataInstance(mapId, item, position, this.mapDataManager);
       instances.set(instance.id, instance);
     }
 
@@ -78,8 +80,7 @@ export class TierDataManager {
   get currentActiveTier(): TierDataInstance | null {
     const id = this.activeTier;
     const subId = this.activeSubTier;
-    const mapDataManager = MapDataManager.getInstance();
-    const mapId = mapDataManager.currentMapId;
+    const mapId = this.mapDataManager.currentMapId;
 
     if (!id || !mapId || !subId) return null;
 

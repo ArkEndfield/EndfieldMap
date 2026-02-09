@@ -10,7 +10,7 @@ import { action, computed, observable } from 'mobx';
  */
 export class CustomPointDataManager extends BaseDataManager<CustomPointData, CustomPointDataInstance> {
   constructor(config: CustomPointDataManagerConfig) {
-    super({ mapId: config.mapId });
+    super({ mapId: config.mapId, mapDataManager: config.mapDataManager });
 
     // 初始化数据
     if (config.initialData && config.initialData.length > 0) {
@@ -34,6 +34,7 @@ export class CustomPointDataManager extends BaseDataManager<CustomPointData, Cus
     const instance = new CustomPointDataInstance({
       data: dataCopy,
       mapId: this.mapId,
+      mapDataManager: this.mapDataManager,
     });
 
     // 应用可见性

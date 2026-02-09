@@ -2,7 +2,7 @@ import { Disposer } from '@endfieldmap/map-core/commom/disposer';
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_instance';
 import { ElectricPoleDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_manager';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types';
 import type { ElectricPoleData, ElectricPoleMapData } from '@endfieldmap/map-core/types/entity';
 import { action, computed, observable } from 'mobx';
@@ -24,16 +24,19 @@ export class ElectricPoleMapDataManager extends Disposer {
   @observable
   accessor zoneVisible: boolean = true;
 
-  constructor() {
+  /** 地图数据管理器 */
+  public readonly mapDataManager: MapDataManager;
+
+  constructor(mapDataManager: MapDataManager) {
     super();
+    this.mapDataManager = mapDataManager;
     this.initData();
   }
 
   private initData() {
-    const mapData = MapDataManager.getInstance();
-    const mapIds = mapData.mapIds;
+    const mapIds = this.mapDataManager.mapIds;
     for (const mapId of mapIds) {
-      const manager = new ElectricPoleDataManager({ mapId });
+      const manager = new ElectricPoleDataManager({ mapId, mapDataManager: this.mapDataManager });
       this.mapManagers.set(mapId, manager);
     }
   }
@@ -45,7 +48,7 @@ export class ElectricPoleMapDataManager extends Disposer {
   public getMapManager(mapId: MapData['id']): ElectricPoleDataManager {
     let manager = this.mapManagers.get(mapId);
     if (!manager) {
-      manager = new ElectricPoleDataManager({ mapId });
+      manager = new ElectricPoleDataManager({ mapId, mapDataManager: this.mapDataManager });
       this.mapManagers.set(mapId, manager);
     }
     return manager;
@@ -64,8 +67,7 @@ export class ElectricPoleMapDataManager extends Disposer {
    */
   @computed
   get currentManager(): ElectricPoleDataManager | undefined {
-    const mapDataInstance = MapDataManager.getInstance();
-    const currentMapId = mapDataInstance.currentMapId;
+    const currentMapId = this.mapDataManager.currentMapId;
     return this.getMapManager(currentMapId);
   }
 
@@ -87,6 +89,7 @@ export class ElectricPoleMapDataManager extends Disposer {
       const manager = new ElectricPoleDataManager({
         mapId,
         initialData: poleList,
+        mapDataManager: this.mapDataManager,
       });
       this.mapManagers.set(mapId, manager);
     }

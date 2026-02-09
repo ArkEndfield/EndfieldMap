@@ -1,29 +1,40 @@
 import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_map_data_manager';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { ElectricPoleRenderer } from '@endfieldmap/map-core/render/renderer/entity/electric_pole/electric_pole_renderer';
 import { ElectricPoleZoneRenderer } from '@endfieldmap/map-core/render/renderer/entity/electric_pole/electric_pole_zone_renderer';
 import type { MapData } from '@endfieldmap/map-core/types';
 import VectorLayer from 'ol/layer/Vector';
 
+export interface ElectricPoleRenderConfig {
+  dataManager: ElectricPoleMapDataManager;
+  mapDataManager: MapDataManager;
+  mapInstance: EndfieldMap;
+  entityImagePath?: string;
+}
+
 export class ElectricPoleRender {
   public renderInstances: Map<MapData['id'], ElectricPoleRenderer> = new Map();
   public zoneRenderInstances: Map<MapData['id'], ElectricPoleZoneRenderer> = new Map();
   private renders: VectorLayer[] = [];
+  private mapDataManager: MapDataManager;
+  private mapInstance: EndfieldMap;
 
-  constructor(dataManager: ElectricPoleMapDataManager) {
-    const mapDataManager = MapDataManager.getInstance();
-    mapDataManager.data.forEach((item) => {
+  constructor(config: ElectricPoleRenderConfig) {
+    this.mapDataManager = config.mapDataManager;
+    this.mapInstance = config.mapInstance;
+    this.mapDataManager.data.forEach((item) => {
       this.renderInstances.set(
         item.id,
         new ElectricPoleRenderer({
-          dataManager: dataManager.getMapManager(item.id),
+          dataManager: config.dataManager.getMapManager(item.id),
+          entityImagePath: config.entityImagePath,
         })
       );
       this.zoneRenderInstances.set(
         item.id,
         new ElectricPoleZoneRenderer({
-          dataManager: dataManager.getMapManager(item.id),
+          dataManager: config.dataManager.getMapManager(item.id),
         })
       );
     });
@@ -34,10 +45,9 @@ export class ElectricPoleRender {
     const electricPoleInstance = this.getElectricPoleInstance(mapId);
     if (electricPoleInstance) {
       this.clearLayer();
-      const mapInstance = EndfieldMap.getInstance();
-      mapInstance.map.addLayer(electricPoleInstance.pole.entityLayer);
-      mapInstance.map.addLayer(electricPoleInstance.pole.connectionLayer);
-      mapInstance.map.addLayer(electricPoleInstance.zone.layer);
+      this.mapInstance.map.addLayer(electricPoleInstance.pole.entityLayer);
+      this.mapInstance.map.addLayer(electricPoleInstance.pole.connectionLayer);
+      this.mapInstance.map.addLayer(electricPoleInstance.zone.layer);
       this.renders.push(
         electricPoleInstance.pole.entityLayer,
         electricPoleInstance.pole.connectionLayer,
@@ -73,8 +83,7 @@ export class ElectricPoleRender {
 
   /** 获取当前地图 */
   public get currentElectricPoleInstance() {
-    const mapDataManager = MapDataManager.getInstance();
-    return this.getElectricPoleInstance(mapDataManager.currentMapId);
+    return this.getElectricPoleInstance(this.mapDataManager.currentMapId);
   }
 
   /**
@@ -98,9 +107,8 @@ export class ElectricPoleRender {
 
   /** 清除图层 */
   public clearLayer() {
-    const mapInstance = EndfieldMap.getInstance();
     this.renders.forEach((render) => {
-      mapInstance.map.removeLayer(render);
+      this.mapInstance.map.removeLayer(render);
     });
     this.renders = [];
   }

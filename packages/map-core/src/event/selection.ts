@@ -1,7 +1,7 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { DisposeListener, EntityEventDetail } from '@endfieldmap/map-core/types/event';
 import { action, observable } from 'mobx';
@@ -20,8 +20,12 @@ export class EndfieldSelectionInteraction {
   private _disposeEntityClickListener?: DisposeListener;
   public select: Select;
   public dragBox: DragBox;
+  private mapInstance: EndfieldMap;
+  private emitter: EndfieldMapEmitter;
 
-  constructor() {
+  constructor(mapInstance: EndfieldMap, emitter: EndfieldMapEmitter) {
+    this.mapInstance = mapInstance;
+    this.emitter = emitter;
     this.select = new Select({
       multi: true,
       condition: () => false,
@@ -53,7 +57,7 @@ export class EndfieldSelectionInteraction {
   }
 
   private initClickListener() {
-    this._disposeEntityClickListener = mapEventEmitter.on(MAP_EVENT.ENTITY_CLICK, (detail: EntityEventDetail) => {
+    this._disposeEntityClickListener = this.emitter.on(MAP_EVENT.ENTITY_CLICK, (detail: EntityEventDetail) => {
       if (this.isSelecting) {
         this.toggleFeatureSelection(detail.feature as Feature<Geometry>, true);
       }
@@ -88,7 +92,7 @@ export class EndfieldSelectionInteraction {
   }
 
   private updateMapFeatureSelection() {
-    const map = EndfieldMap.getInstance().map;
+    const map = this.mapInstance.map;
 
     const selectedSingleFeatures = this.collectSingleFeatures(this.select.getFeatures().getArray());
 
@@ -110,7 +114,7 @@ export class EndfieldSelectionInteraction {
   }
 
   private handleDragBoxEnd() {
-    const map = EndfieldMap.getInstance().map;
+    const map = this.mapInstance.map;
 
     const boxExtent = this.dragBox.getGeometry().getExtent();
     const view = map.getView();
@@ -141,7 +145,7 @@ export class EndfieldSelectionInteraction {
     world: number,
     worldWidth: number
   ) {
-    const map = EndfieldMap.getInstance().map;
+    const map = this.mapInstance.map;
     map.getAllLayers().forEach((layer) => {
       if (!('getSource' in layer)) return;
 
@@ -226,7 +230,7 @@ export class EndfieldSelectionInteraction {
   @action
   public startSelecting() {
     this.isSelecting = true;
-    mapEventEmitter.fire(MAP_EVENT.SELECTION_START, undefined);
+    this.emitter.fire(MAP_EVENT.SELECTION_START, undefined);
   }
 
   @action

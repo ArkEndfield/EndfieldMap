@@ -7,7 +7,7 @@ import {
   SetDevToolsFeatureVisibilityCommand,
 } from '@endfieldmap/map-core/history/dev_tools_commands';
 import { HistoryManager } from '@endfieldmap/map-core/history/history_manager';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { DevToolsRenderer } from '@endfieldmap/map-core/render/renderer/dev_tools_renderer';
 import {
   DevToolsFeatureBaseStyleKey,
@@ -34,6 +34,8 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 export interface DevToolsControllerConfig {
   /** 历史记录最大数量 */
   maxHistory?: number;
+  /** 地图实例 */
+  mapInstance: EndfieldMap;
 }
 
 /**
@@ -61,13 +63,16 @@ export class DevToolsController implements DevToolsControllerInterface {
   @observable
   accessor layerAdded = false;
 
-  constructor(config?: DevToolsControllerConfig) {
-    const mapInstance = EndfieldMap.getInstance();
+  /** 地图实例 */
+  private mapInstance: EndfieldMap;
+
+  constructor(config: DevToolsControllerConfig) {
+    this.mapInstance = config.mapInstance;
     this.renderer = new DevToolsRenderer();
     this.historyManager = new HistoryManager(config?.maxHistory ?? 50);
 
     // 添加图层到地图
-    mapInstance.map.addLayer(this.renderer.layer);
+    this.mapInstance.map.addLayer(this.renderer.layer);
     this.layerAdded = true;
 
     logger.debug('[DevToolsController] Initialized');
@@ -507,9 +512,8 @@ export class DevToolsController implements DevToolsControllerInterface {
    */
   @action
   public dispose(): void {
-    const mapInstance = EndfieldMap.getInstance();
     if (this.layerAdded) {
-      mapInstance.map.removeLayer(this.renderer.layer);
+      this.mapInstance.map.removeLayer(this.renderer.layer);
       this.layerAdded = false;
     }
     this.renderer.dispose();

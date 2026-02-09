@@ -7,24 +7,32 @@ import {
   MapType,
   MapTypeKey,
 } from '@endfieldmap/map-core/const/map';
-import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { MapData } from '@endfieldmap/map-core/types/map';
 import { tileLoadFunction } from '@endfieldmap/map-core/utils/image';
 import TileLayer from 'ol/layer/Tile';
 import { XYZ } from 'ol/source';
 
+export interface MapRenderConfig {
+  mapDataManager: MapDataManager;
+  mapInstance: EndfieldMap;
+  asset: EndfieldMapAsset;
+}
+
 export class MapRender {
   private renderInstances: Map<MapData['id'], SingleMapRender> = new Map();
   /** 图层实例 */
   public layer: TileLayer;
   private dataManager: MapDataManager;
+  private mapInstance: EndfieldMap;
 
-  constructor() {
-    this.dataManager = MapDataManager.getInstance();
+  constructor(config: MapRenderConfig) {
+    this.dataManager = config.mapDataManager;
+    this.mapInstance = config.mapInstance;
     this.dataManager.data.forEach((item) => {
-      this.renderInstances.set(item.id, new SingleMapRender(item));
+      this.renderInstances.set(item.id, new SingleMapRender(item, config.mapDataManager, config.mapInstance, config.asset));
     });
 
     this.layer = new TileLayer({
@@ -36,8 +44,7 @@ export class MapRender {
     this.layer.set(LayerTypeKey, LayerType.MAP);
     this.layer.set(MapTypeKey, MapType.MAP);
 
-    const mapInstance = EndfieldMap.getInstance();
-    mapInstance.map.addLayer(this.layer);
+    this.mapInstance.map.addLayer(this.layer);
   }
 
   /** 渲染地图 */
@@ -56,8 +63,7 @@ export class MapRender {
   }
 
   public dispose() {
-    const mapInstance = EndfieldMap.getInstance();
-    mapInstance.map.removeLayer(this.layer);
+    this.mapInstance.map.removeLayer(this.layer);
     this.layer.dispose();
   }
 }
@@ -65,10 +71,13 @@ export class MapRender {
 export class SingleMapRender {
   private data: MapData;
   public tileSource: XYZ;
+  private mapDataManager: MapDataManager;
+  private mapInstance: EndfieldMap;
 
-  constructor(data: MapData) {
+  constructor(data: MapData, mapDataManager: MapDataManager, mapInstance: EndfieldMap, asset: EndfieldMapAsset) {
     this.data = data;
-    const asset = EndfieldMapAsset.getInstance();
+    this.mapDataManager = mapDataManager;
+    this.mapInstance = mapInstance;
     this.tileSource = new XYZ({
       projection: EndfieldMap.projection,
       url: `${asset.mapImage}/${this.data.id}/{z}/{y}/{x}.png`,
@@ -84,14 +93,12 @@ export class SingleMapRender {
   }
 
   get defaultCenterCRD() {
-    const mapDataInstance = MapDataManager.getInstance();
-    return mapDataInstance.xyz2crd(this.data.center, this.data.id);
+    return this.mapDataManager.xyz2crd(this.data.center, this.data.id);
   }
 
   /** 渲染函数 */
   public render() {
-    const olMapInstance = EndfieldMap.getInstance();
-    const map = olMapInstance.map;
+    const map = this.mapInstance.map;
     map.getView().setCenter(this.defaultCenterCRD);
     map.getView().setZoom(this.data.zoom?.default || DEFAULT_ZOOM);
     map.getView().setMaxZoom(this.data.zoom?.max || DEFAULT_MAX_ZOOM);

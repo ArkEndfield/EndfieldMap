@@ -14,6 +14,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   const mapDataService = useRef<MapDataService | null>(null);
   const [adapterReactive, setAdapterReactive] = useState<EndfieldMapAdapter | null>(null);
   const [mapDataServiceReactive, setMapDataServiceReactive] = useState<MapDataService | null>(null);
+  const [mapServiceReactive, setMapServiceReactive] = useState<MapService | null>(null);
   const isMobile = useIsMobile();
   /**
    * 初始化地图函数
@@ -29,6 +30,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     mapDataService.current = efDataService;
     setAdapterReactive(efAdapter);
     setMapDataServiceReactive(efDataService);
+    setMapServiceReactive(mapService);
   };
 
   useEffect(() => {
@@ -59,5 +61,6 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   return {
     adapter: adapterReactive,
     mapDataService: mapDataServiceReactive,
+    mapService: mapServiceReactive,
   };
 }

@@ -1,6 +1,7 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import { MapRender } from '@endfieldmap/map-core/render/map';
 import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { MapConfig, MapDataJson } from '@endfieldmap/map-core/types/map';
@@ -9,23 +10,31 @@ import type { Coordinate } from 'ol/coordinate';
 export interface MapControllerConfig {
   mapConfig: Omit<MapConfig, 'mapImageUrl'>;
   data: MapDataJson;
+  asset: EndfieldMapAsset;
+  emitter: EndfieldMapEmitter;
 }
 
 export class MapController {
   public olMapRenderer: EndfieldMap;
   public mapRenderer: MapRender;
   public dataManager: MapDataManager;
+  private emitter: EndfieldMapEmitter;
 
   constructor(config: MapControllerConfig) {
     const { mapConfig } = config;
+    this.emitter = config.emitter;
     this.dataManager = new MapDataManager(config.data);
-    this.olMapRenderer = new EndfieldMap(mapConfig);
-    this.mapRenderer = new MapRender();
+    this.olMapRenderer = new EndfieldMap(mapConfig, this.emitter);
+    this.mapRenderer = new MapRender({
+      mapDataManager: this.dataManager,
+      mapInstance: this.olMapRenderer,
+      asset: config.asset,
+    });
     this.registerEventHandler();
   }
 
   private registerEventHandler() {
-    mapEventEmitter.on(MAP_EVENT.CLUSTER_CLICK, (event) => {
+    this.emitter.on(MAP_EVENT.CLUSTER_CLICK, (event) => {
       const { extent } = event;
       this.olMapRenderer.view.fit(extent, { duration: 500, padding: [50, 50, 50, 50], maxZoom: 6 });
     });

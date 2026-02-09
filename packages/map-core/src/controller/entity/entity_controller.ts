@@ -2,11 +2,20 @@ import { Disposer } from '@endfieldmap/map-core/commom/disposer';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { EntityMapDataManager } from '@endfieldmap/map-core/data/entity';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { EntityRender } from '@endfieldmap/map-core/render/renderer/entity/entity';
 import type { EntityData, EntityInfoDataJson, EntityJsonDataList, MapData } from '@endfieldmap/map-core/types';
 import { action, reaction } from 'mobx';
+
+export interface EntityControllerConfig {
+  mapDataManager: MapDataManager;
+  mapInstance: EndfieldMap;
+  asset: EndfieldMapAsset;
+  emitter: EndfieldMapEmitter;
+}
 
 /**
  * Entity控制器
@@ -22,10 +31,21 @@ export class EntityController extends Disposer {
 
   public render: EntityRender;
 
-  constructor() {
+  private mapDataManager: MapDataManager;
+
+  private emitter: EndfieldMapEmitter;
+
+  constructor(config: EntityControllerConfig) {
     super();
-    this.dataManager = new EntityMapDataManager();
-    this.render = new EntityRender(this.dataManager);
+    this.mapDataManager = config.mapDataManager;
+    this.emitter = config.emitter;
+    this.dataManager = new EntityMapDataManager(config.mapDataManager);
+    this.render = new EntityRender({
+      dataManager: this.dataManager,
+      mapDataManager: config.mapDataManager,
+      mapInstance: config.mapInstance,
+      asset: config.asset,
+    });
 
     this.registerEventHandlers();
   }
@@ -34,9 +54,8 @@ export class EntityController extends Disposer {
    * 注册事件处理器
    */
   private registerEventHandlers(): void {
-    const mapDataManager = MapDataManager.getInstance();
     // 监听缩放变化
-    mapEventEmitter.on(MAP_EVENT.ZOOM_CHANGE, (zoom) => {
+    this.emitter.on(MAP_EVENT.ZOOM_CHANGE, (zoom) => {
       this.currentZoom = zoom;
       this.updateClusterDistance();
     });
@@ -44,7 +63,7 @@ export class EntityController extends Disposer {
     // 监听地图切换
     this.disposers.push(
       reaction(
-        () => mapDataManager.currentMapId,
+        () => this.mapDataManager.currentMapId,
         async () => {
           // load data
           if (!this.dataManager.dataLoaded) {

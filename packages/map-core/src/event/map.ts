@@ -1,8 +1,7 @@
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { DEFAULT_ZOOM } from '@endfieldmap/map-core/const/map';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import mapEventEmitter from '@endfieldmap/map-core/event/emitter';
-import { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
+import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import type { MapContextMenuEventDetail } from '@endfieldmap/map-core/types/event';
 import type { Map as OlMap, MapBrowserEvent, View } from 'ol';
 
@@ -21,20 +20,18 @@ export class EndfieldMapEvent {
   /** 事件 */
   public event: EndfieldMapEmitter;
 
-  constructor() {
-    const mapInstance = EndfieldMap.getInstance();
+  constructor(mapInstance: EndfieldMap, emitter: EndfieldMapEmitter) {
     const map = mapInstance.map;
     const view = mapInstance.view;
     this.onMap = map.on.bind(map);
     this.onView = view.on.bind(view);
     this.offMap = map.un.bind(map);
     this.offView = view.un.bind(view);
-    this.event = mapEventEmitter;
-    this.initEmitter();
+    this.event = emitter;
+    this.initEmitter(mapInstance);
   }
 
-  private initEmitter() {
-    const mapInstance = EndfieldMap.getInstance();
+  private initEmitter(mapInstance: EndfieldMap) {
     const map = mapInstance.map;
     const view = mapInstance.view;
     this.onView('change:resolution', () => {

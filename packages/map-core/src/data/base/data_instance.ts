@@ -1,4 +1,5 @@
 import type { DataInstanceConfig, DataInstanceState } from '@endfieldmap/map-core/data/base/types';
+import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types';
 import type { BaseEntityData } from '@endfieldmap/map-core/types/entity';
 import { logger } from '@endfieldmap/tools';
@@ -12,6 +13,9 @@ import { action, computed, observable, toJS } from 'mobx';
 export abstract class BaseDataInstance<T extends BaseEntityData> {
   /** 地图ID */
   public readonly mapId: MapData['id'];
+
+  /** 地图数据管理器 */
+  public readonly mapDataManager: MapDataManager;
 
   /** 是否可激活 */
   public readonly activable: boolean = true;
@@ -47,6 +51,7 @@ export abstract class BaseDataInstance<T extends BaseEntityData> {
   constructor(config: DataInstanceConfig<T>) {
     this._data = config.data;
     this.mapId = config.mapId;
+    this.mapDataManager = config.mapDataManager;
   }
 
   /**
