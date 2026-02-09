@@ -21,14 +21,14 @@
                         console.log('success:', data);
                         window.opener.postMessage({
                             type: 'LOGIN_SUCCESS',
-                            userInfo: { token: data.code }
+                            userInfo: { token: data.data.token }
                             }, '*');
                     })
                     .catch(error => {
                         console.error('failed:', error);
-                        alert('Login failed');
                         window.opener.postMessage({
                             type: 'LOGIN_FAILED', error: error}, '*');
+                        alert('Login failed');
                     });
             } else {
                 console.warn('no params found');
