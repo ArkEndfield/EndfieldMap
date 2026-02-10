@@ -2,8 +2,8 @@
 <html>
 <body style=" background-color: rgb(30, 30, 30)">
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh ;font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas;">
-        <svg class="icon" style="width: 20%;height: 20%;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle cx="512" cy="512" r="512" fill="#4CAF50"/><path d="M879.7 193.8l-495 495-240.4-240.4-70.7 70.7L314 759.5l70.7 70.7 70.7-70.7 495-495z" fill="#FFFFFF        "></path></svg>
-        <h2 style="color: white;">Authorized! Logging in...</h2>
+        <svg id="icon" style="width: 20%; height: 20%;" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 48 48"><path fill="#4caf50" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#ffffff" d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"></path></svg>
+        <h2 id="status" style="color: white;">Authorized! Logging in...</h2>
     </div>
     <script>
         const callbackUrl = 'https://api.zmdmap.com/api/v1/auth/oauth/discord/callback';
@@ -14,7 +14,6 @@
                 const queryString = new URLSearchParams(params).toString();
                 const fullUrl = `${callbackUrl}?${queryString}`;
                 
-
                 fetch(fullUrl)
                     .then(response => response.json())
                     .then(data => {
@@ -28,11 +27,13 @@
                         console.error('failed:', error);
                         window.opener.postMessage({
                             type: 'LOGIN_FAILED', error: error}, '*');
-                        alert('Login failed');
+                            document.getElementById('icon').outerHTML = '<svg xmlns="http://www.w3.org/2000/svg" style="width: 20%; height: 20%;" viewBox="0 0 48 48"><path fill="#f44336" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#fff" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"></path><path fill="#fff" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"></path></svg>'
+                            document.getElementById('status').textContent = 'Login failed. Please try again.';
                     });
             } else {
                 console.warn('no params found');
-                alert('no params found');
+                document.getElementById('icon').outerHTML = '<svg xmlns="http://www.w3.org/2000/svg" style="width: 20%; height: 20%;" viewBox="0 0 48 48"><path fill="#f44336" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#fff" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"></path><path fill="#fff" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"></path></svg>'
+                document.getElementById('status').textContent = 'No authorization code. Please try again.';
             }
         });
     </script>

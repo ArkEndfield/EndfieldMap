@@ -16,7 +16,7 @@ export const ThirdPartyButton = ({
     const urls = {
       qq: '/',
       bilibili: '/',
-      discord: 'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fdiscord.html&scope=identify',
+      discord: 'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&redirect_uri=https%3A%2F%2Fzmdmap.com%2Fdiscord.html&scope=identify',
     };
     return urls[provider as keyof typeof urls];
   };
