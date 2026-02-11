@@ -14,8 +14,8 @@ import { presetService } from '@/services/preset';
 import { catchErrorWithTip } from '@/utils/handler';
 
 const FILTER_OPTIONS: { key: ElectricPoleType; labelKey: string }[] = [
-  { key: 'pole', labelKey: 'sidebar:operation.electric_pole.filter.pole' },
-  { key: 'zipline', labelKey: 'sidebar:operation.electric_pole.filter.zipline' },
+  { key: 'pole', labelKey: 'sidebar:preset_store.sub_type.pole' },
+  { key: 'zipline', labelKey: 'sidebar:preset_store.sub_type.zipline' },
 ];
 
 interface ElectricPoleStoreProps {
