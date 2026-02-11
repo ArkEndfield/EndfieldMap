@@ -5928,6 +5928,13 @@ interface Resources {
     "preset_store": {
       "delete": "删除",
       "description": "描述",
+      "edit": "编辑",
+      "edit_form": {
+        "description": "描述",
+        "is_public": "公开",
+        "name": "名称"
+      },
+      "edit_success": "编辑成功",
       "import": "导入",
       "import_success": "导入成功",
       "imports": "导入次数",

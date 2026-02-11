@@ -12,6 +12,13 @@
     "views": "Просмотры",
     "imports": "Импорты",
     "delete": "Удалить",
+    "edit": "Редактировать",
+    "edit_form": {
+      "name": "Название",
+      "description": "Описание",
+      "is_public": "Публичный"
+    },
+    "edit_success": "Редактирование успешно",
     "preset_type": {
       "electric_pole": "Электрический столб",
       "custom_point": "Пользовательская точка"

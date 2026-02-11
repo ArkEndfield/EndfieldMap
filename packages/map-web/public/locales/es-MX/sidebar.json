@@ -12,6 +12,13 @@
     "views": "Vistas",
     "imports": "Importaciones",
     "delete": "Eliminar",
+    "edit": "Editar",
+    "edit_form": {
+      "name": "Nombre",
+      "description": "Descripción",
+      "is_public": "Público"
+    },
+    "edit_success": "Edición exitosa",
     "preset_type": {
       "electric_pole": "Poste eléctrico",
       "custom_point": "Punto personalizado"

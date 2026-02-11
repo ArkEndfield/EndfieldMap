@@ -12,6 +12,13 @@
     "views": "Views",
     "imports": "Imports",
     "delete": "Delete",
+    "edit": "Edit",
+    "edit_form": {
+      "name": "Name",
+      "description": "Description",
+      "is_public": "Public"
+    },
+    "edit_success": "Edit successful",
     "preset_type": {
       "electric_pole": "Electric Pole",
       "custom_point": "Custom Point"

@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { PresetStoreResponseItem } from '@/@types/preset_store';
 import { alert } from '@/components/common/alert/alert_api';
@@ -9,8 +10,8 @@ import { PresetStoreItem } from '@/components/common/preset_store/item';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useMineStore } from '@/hooks/use_preset_store';
 
-import { EditPresetForm } from './edit_form';
-import { MineFilters } from './mine_filters';
+import { EditPresetForm } from '@/components/features/preset_store/mine/edit_form';
+import { MineFilters } from '@/components/features/preset_store/mine/mine_filters';
 
 interface MineStoreProps {
   show: boolean;
@@ -18,6 +19,7 @@ interface MineStoreProps {
 }
 
 export const MineStore = observer(({ show, onOpen }: MineStoreProps) => {
+  const { t } = useTranslation('sidebar');
   const {
     activeTab,
     presetType,
@@ -33,9 +35,7 @@ export const MineStore = observer(({ show, onOpen }: MineStoreProps) => {
   } = useMineStore({ show, onOpen });
 
   const isLoading =
-    activeTab === 'uploads'
-      ? uploadsPagination.loadStatus === 'loading'
-      : favoritesPagination.loadStatus === 'loading';
+    activeTab === 'uploads' ? uploadsPagination.loadStatus === 'loading' : favoritesPagination.loadStatus === 'loading';
 
   const openEditDialog = useCallback(
     (id: number) => {
@@ -71,7 +71,7 @@ export const MineStore = observer(({ show, onOpen }: MineStoreProps) => {
             is_public: editIsPublic,
           });
           if (success) {
-            alert.info('编辑成功');
+            alert.info(t('preset_store.edit_success'));
           }
           return success;
         },

@@ -12,6 +12,13 @@
     "views": "瀏覽",
     "imports": "匯入次數",
     "delete": "刪除",
+    "edit": "編輯",
+    "edit_form": {
+      "name": "名稱",
+      "description": "描述",
+      "is_public": "公開"
+    },
+    "edit_success": "編輯成功",
     "preset_type": {
       "electric_pole": "電線桿",
       "custom_point": "自訂標點"

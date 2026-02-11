@@ -12,6 +12,13 @@
     "views": "閲覧数",
     "imports": "インポート数",
     "delete": "削除",
+    "edit": "編集",
+    "edit_form": {
+      "name": "名前",
+      "description": "説明",
+      "is_public": "公開"
+    },
+    "edit_success": "編集成功",
     "preset_type": {
       "electric_pole": "電柱",
       "custom_point": "カスタムポイント"

@@ -12,6 +12,13 @@
     "views": "浏览",
     "imports": "导入次数",
     "delete": "删除",
+    "edit": "编辑",
+    "edit_form": {
+      "name": "名称",
+      "description": "描述",
+      "is_public": "公开"
+    },
+    "edit_success": "编辑成功",
     "preset_type": {
       "electric_pole": "电线杆",
       "custom_point": "自定义标点"
