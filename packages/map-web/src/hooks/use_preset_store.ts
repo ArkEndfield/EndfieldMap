@@ -40,9 +40,7 @@ export interface UseMineStoreOptions {
 /**
  * 乐观更新操作类型
  */
-export type OptimisticOperation<T> =
-  | { type: 'update'; data: Partial<T> }
-  | { type: 'remove' };
+export type OptimisticOperation<T> = { type: 'update'; data: Partial<T> } | { type: 'remove' };
 
 /**
  * 通用乐观更新 Hook
@@ -203,18 +201,21 @@ export function usePagination<T extends { id: string | number }>(
 
   const displayData = useMemo(() => optimistic.merge(data), [optimistic, data]);
 
-  return {
-    data,
-    displayData,
-    currentPage,
-    totalPages,
-    loadStatus,
-    errorMessage,
-    pageSize,
-    load,
-    retry,
-    optimistic,
-  };
+  return useMemo(
+    () => ({
+      data,
+      displayData,
+      currentPage,
+      totalPages,
+      loadStatus,
+      errorMessage,
+      pageSize,
+      load,
+      retry,
+      optimistic,
+    }),
+    [data, displayData, currentPage, totalPages, loadStatus, errorMessage, pageSize, load, retry, optimistic]
+  );
 }
 
 // ============================================================================
@@ -283,6 +284,9 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
   const uploadsPagination = usePagination(fetchUploadsData, { pageSize: 12 });
   const favoritesPagination = usePagination(fetchFavoritesData, { pageSize: 12 });
 
+  const { load: loadUploads } = uploadsPagination;
+  const { load: loadFavorites } = favoritesPagination;
+
   // 当 show 从 false 变为 true 时，刷新当前 tab 的数据
   useEffect(() => {
     const wasHidden = !prevShowRef.current;
@@ -291,12 +295,12 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
     if (show && wasHidden) {
       // 从隐藏变为显示，刷新当前 tab
       if (activeTab === 'uploads') {
-        uploadsPagination.load(1);
+        loadUploads(1);
       } else {
-        favoritesPagination.load(1);
+        loadFavorites(1);
       }
     }
-  }, [show, activeTab, uploadsPagination.load, favoritesPagination.load]);
+  }, [show, activeTab, loadUploads, loadFavorites]);
 
   // 预设类型变化时重新加载第一页
   const isFirstLoadRef = useRef(true);
@@ -307,12 +311,12 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
     }
     if (show) {
       if (activeTab === 'uploads') {
-        uploadsPagination.load(1);
+        loadUploads(1);
       } else {
-        favoritesPagination.load(1);
+        loadFavorites(1);
       }
     }
-  }, [presetType, show, activeTab, uploadsPagination.load, favoritesPagination.load]);
+  }, [presetType, show, activeTab, loadUploads, loadFavorites]);
 
   const handleTabChange = useCallback((tab: MineTab) => {
     setActiveTab(tab);

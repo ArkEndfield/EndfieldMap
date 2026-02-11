@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { EndfieldCloseIcon } from '@/components/common/icons';
@@ -201,7 +201,7 @@ export const Dialog: React.FC<DialogProps> = (props) => {
   const { open, onOpenChange, dismissible = true, onDismiss = () => {}, onClose = () => {}, keyboardCloseable } = props;
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (isProcessing) return;
 
     const result = onClose();
@@ -220,9 +220,9 @@ export const Dialog: React.FC<DialogProps> = (props) => {
     } else if (result !== false) {
       onOpenChange?.(false);
     }
-  };
+  }, [isProcessing, onClose, onOpenChange]);
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     if (!dismissible || isProcessing) return;
 
     const result = onDismiss();
@@ -241,9 +241,9 @@ export const Dialog: React.FC<DialogProps> = (props) => {
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [dismissible, isProcessing, onDismiss, handleClose]);
 
-  const handleKeyboardClose = () => {
+  const handleKeyboardClose = useCallback(() => {
     if (isProcessing) return;
 
     // If keyboardCloseable is explicitly set, use it. Otherwise, fall back to dismissible behavior
@@ -266,7 +266,7 @@ export const Dialog: React.FC<DialogProps> = (props) => {
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [isProcessing, keyboardCloseable, dismissible, onDismiss, handleClose]);
 
   useEffect(() => {
     const shouldListen = keyboardCloseable !== undefined ? keyboardCloseable : dismissible;
@@ -278,7 +278,7 @@ export const Dialog: React.FC<DialogProps> = (props) => {
       return true;
     });
     return () => dispose();
-  }, [dismissible, keyboardCloseable, isProcessing]);
+  }, [dismissible, keyboardCloseable, handleKeyboardClose]);
 
   return (
     <AnimatePresence>

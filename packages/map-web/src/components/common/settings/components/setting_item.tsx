@@ -76,7 +76,7 @@ export const SettingItem = observer(
         }, 1000);
         return () => clearTimeout(timer);
       }
-    }, [id, uiManager.targetSettingItem]);
+    }, [id]);
 
     return (
       <div

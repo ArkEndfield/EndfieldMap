@@ -22,7 +22,7 @@ export const FlashWrapper = observer(({ id, children, className }: FlashWrapperP
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [id, uiManager.targetSettingItem]);
+  }, [id]);
 
   return (
     <div

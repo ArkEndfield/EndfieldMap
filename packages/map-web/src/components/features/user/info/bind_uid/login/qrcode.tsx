@@ -69,7 +69,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
       setError(err instanceof Error ? err.message : t('error:qr_code.generate'));
       setStatus('expired');
     }
-  }, [clearPollTimer, onLoadingChange]);
+  }, [clearPollTimer, onLoadingChange, t]);
 
   // 检查扫码状态
   const checkStatus = useCallback(async () => {
@@ -100,8 +100,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
 
     switch (result.status) {
       case 'pending':
-        // 继续轮询
-        pollTimerRef.current = setTimeout(checkStatus, POLL_INTERVAL);
+        // status保持pending，useEffect会自动触发下一次轮询
         break;
 
       case 'confirmed':
@@ -117,7 +116,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
         setStatus('expired');
         break;
     }
-  }, [scanInfo, onLogin]);
+  }, [scanInfo, onLogin, t]);
 
   // 监听外部错误信息，用于重置二维码状态
   useEffect(() => {
@@ -127,13 +126,18 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
     }
   }, [errorMessage]);
 
-  // 开始轮询
+  // 轮询逻辑
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
     if (status === 'pending' && scanInfo) {
-      pollTimerRef.current = setTimeout(checkStatus, POLL_INTERVAL);
+      timer = setTimeout(checkStatus, POLL_INTERVAL);
     }
-    return clearPollTimer;
-  }, [status, scanInfo, checkStatus, clearPollTimer]);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [status, scanInfo, checkStatus]);
 
   // 初始化生成二维码
   useEffect(() => {
@@ -144,7 +148,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
       isMountedRef.current = false;
       clearPollTimer();
     };
-  }, []);
+  }, [generateQRCode, clearPollTimer]);
 
   return (
     <motion.div

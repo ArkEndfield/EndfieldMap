@@ -139,7 +139,7 @@ export function usePreviewAdapter(options: UsePreviewAdapterOptions) {
       adapterRef.current = null;
       initedRef.current = false;
     };
-  }, []);
+  }, [containerRef, mapData, entity, customPointPreset, electricPolePreset, initialMapId]);
 
   return { adapter };
 }

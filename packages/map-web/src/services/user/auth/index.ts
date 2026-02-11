@@ -82,8 +82,8 @@ export class UserAuthService {
       this.currentUid.value = null;
       this.uidList = [];
       logger.info('logout');
-      return true;
     }
+    return true;
   }
 
   public async deleteAccount() {

@@ -1,6 +1,6 @@
 import { type ZmdAlertProps } from '@themes/types/alert';
 import { observer } from 'mobx-react-lite';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import shortcutService from '@/services/shortcut';
@@ -33,7 +33,7 @@ export const ZmdAlert = ({
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Logic Handlers
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (isProcessing) return;
 
     const result = onClose();
@@ -52,9 +52,9 @@ export const ZmdAlert = ({
     } else if (result !== false) {
       props.onOpenChange?.(false);
     }
-  };
+  }, [isProcessing, onClose, props]);
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     if (!dismissible || isProcessing) return;
 
     const result = onDismiss();
@@ -73,9 +73,9 @@ export const ZmdAlert = ({
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [dismissible, isProcessing, onDismiss, handleClose]);
 
-  const handleKeyboardClose = () => {
+  const handleKeyboardClose = useCallback(() => {
     if (isProcessing) return;
 
     // If keyboardCloseable is explicitly set, use it. Otherwise, fall back to dismissible behavior
@@ -98,9 +98,9 @@ export const ZmdAlert = ({
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [isProcessing, keyboardCloseable, dismissible, onDismiss, handleClose]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     if (isProcessing) return;
 
     const result = onCancel();
@@ -119,9 +119,9 @@ export const ZmdAlert = ({
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [isProcessing, onCancel, handleClose]);
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     if (isProcessing) return;
 
     const result = onConfirm();
@@ -140,7 +140,7 @@ export const ZmdAlert = ({
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [isProcessing, onConfirm, handleClose]);
 
   useEffect(() => {
     // If keyboardCloseable is provided, use it. Otherwise, use dismissible.
@@ -153,7 +153,7 @@ export const ZmdAlert = ({
       return true;
     });
     return () => dispose();
-  }, [props.open, dismissible, keyboardCloseable, isProcessing]);
+  }, [props.open, dismissible, keyboardCloseable, isProcessing, handleKeyboardClose]);
 
   return createPortal(
     <AlertRenderer

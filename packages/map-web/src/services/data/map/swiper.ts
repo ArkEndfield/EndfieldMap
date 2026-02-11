@@ -1,7 +1,6 @@
 // import { logger } from '@endfieldmap/tools';
+import type { SwiperConfig } from '@eftypes/swiper';
 import { observable } from 'mobx';
-
-import type { SwiperConfig } from '@/@types/swiper';
 // import { getBackendUrl } from '@/utils/url';
 
 export class SwiperDataService {

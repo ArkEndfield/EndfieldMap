@@ -15,10 +15,13 @@ const DungeonEntryComponent: SubPopupComponentProps<DungeonEntryComponent> = ({ 
   const { mapDataService } = useAdapter();
   const { t } = useTranslation('lang');
 
-  const getRewadData = async (id: string) => {
-    const rewards = await mapDataService.dungeonSeriesDataService.getDungeonRewards(id);
-    return rewards;
-  };
+  const getRewadData = useCallback(
+    async (id: string) => {
+      const rewards = await mapDataService.dungeonSeriesDataService.getDungeonRewards(id);
+      return rewards;
+    },
+    [mapDataService.dungeonSeriesDataService]
+  );
 
   useEffect(() => {
     getRewadData(system_inst_key).then((data) => {

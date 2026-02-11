@@ -10,7 +10,7 @@ export const useMapChange = () => {
   const mapName = adapter.mapController.dataManager.currentMap?.name || 'Unknown';
 
   const changeMap = (newMapId: MapData['id']) => {
-    mapDataService.mapStateDataService.currentMap.value = newMapId;
+    mapDataService.mapStateDataService.setCurrentMap(newMapId);
     setShowChangeAnimation(true);
 
     setTimeout(() => {

@@ -42,7 +42,7 @@ export const SettingsZone: React.FC<SettingsZoneProps> = observer(
         }, 1000);
         return () => clearTimeout(timer);
       }
-    }, [id, uiManager.targetSettingItem]);
+    }, [id]);
 
     return (
       <div

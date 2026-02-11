@@ -16,7 +16,7 @@ export const MiniGameLockComponent: SubPopupComponentProps<MiniGameLockData> = (
   const { miniGameIds } = prop;
   const { t } = useTranslation(['popup', 'lang']);
 
-  const { levelList, selectedLevel, setSelectedLevel, levelData, solutionGrid, status, handleSolve, getGroupColor } =
+  const { levelList, selectedLevel, selectLevel, levelData, solutionGrid, status, handleSolve, getGroupColor } =
     useDeltaRobot({ levelList: miniGameIds });
 
   const solving = status === DeltaRobotStatus.Solving;
@@ -33,7 +33,7 @@ export const MiniGameLockComponent: SubPopupComponentProps<MiniGameLockData> = (
             value: id,
             label: t('popup:robot.level_item', { level: index + 1 }),
           }))}
-          onChange={(val) => setSelectedLevel(val)}
+          onChange={(val) => selectLevel(val)}
           className="w-full"
         />
         {/* 库存列表 */}
