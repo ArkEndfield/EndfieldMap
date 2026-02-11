@@ -48,6 +48,7 @@ export const MineStore = observer(({ show, onOpen }: MineStoreProps) => {
 
       alert.confirm({
         dismissible: false,
+        keyboardCloseable: true,
         content: (
           <EditPresetForm
             defaultName={item.name}
