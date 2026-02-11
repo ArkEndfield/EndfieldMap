@@ -1,4 +1,4 @@
-import { useCallback,useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { CustomPointPreset } from '@/@types/custom_point';
@@ -147,15 +147,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
         <div className="flex-1 flex items-center justify-center">
           <div className="flex items-center gap-2 text-gray-500">
             <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-                fill="none"
-              />
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -183,11 +175,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
         </div>
         <div className="flex-1 flex flex-col items-center justify-center gap-3">
           <div className="text-red-500 text-sm">{error || t('common:load_error', { defaultValue: '加载失败' })}</div>
-          <ZmdRoundButton
-            type="secondary"
-            onClick={onBack}
-            showIcon={false}
-          >
+          <ZmdRoundButton type="default" onClick={onBack} showIcon={false}>
             {t('common:back', { defaultValue: '返回' })}
           </ZmdRoundButton>
         </div>
@@ -276,7 +264,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
               <h3 className="text-sm font-medium text-[#363636]">
                 {t('sidebar:preset_store.preview', { defaultValue: '预览' })}
               </h3>
-              <div className="w-full h-64 rounded-sm overflow-hidden border border-gray-200">
+              <div className="w-lg h-92 mx-auto max-w-full rounded-sm overflow-hidden border border-gray-200">
                 <MapPreview
                   mapData={previewMapData}
                   electricPolePreset={previewPreset.electricPolePreset}
@@ -290,12 +278,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
 
       {/* Footer */}
       <div className="flex items-center justify-end gap-2 px-4 py-2 border-t border-gray-200 bg-gray-50 shrink-0">
-        <ZmdRoundButton
-          icon={<ImportIcon />}
-          loading={importing}
-          disabled={importing}
-          onClick={handleImport}
-        >
+        <ZmdRoundButton icon={<ImportIcon />} loading={importing} disabled={importing} onClick={handleImport}>
           {t('sidebar:preset_store.import', { defaultValue: '导入' })}
         </ZmdRoundButton>
       </div>
