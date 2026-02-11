@@ -335,7 +335,7 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
     async (id: number) => {
       const result = await catchErrorWithTip(() => presetService.deleteSharePreset(id));
 
-      if (result) {
+      if (result !== false) {
         // 成功后重新加载，处理页数边界情况
         const { currentPage, totalPages, displayData, load } = uploadsPagination;
         // 如果当前页只剩一条数据且不是第一页，删除后应该跳到上一页
@@ -372,7 +372,7 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
         // 在收藏页面取消点赞 = 移除收藏，不需要乐观更新
         const result = await catchErrorWithTip(() => presetService.unlikePreset(id));
 
-        if (result) {
+        if (result !== false) {
           // 成功后重新加载，处理页数边界情况
           const { currentPage, totalPages, displayData, load } = favoritesPagination;
           const shouldGoToPrevPage = displayData.length === 1 && currentPage > 1 && currentPage === totalPages;

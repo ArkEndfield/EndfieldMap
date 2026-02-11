@@ -8,6 +8,8 @@ export type ElectricPoleType = 'pole' | 'zipline';
 /** 预设类型：电线杆或自定义标点 */
 export type PresetType = 'electric_pole' | 'custom_point';
 
+export type MineTab = 'uploads' | 'favorites';
+
 export interface PresetStoreSearchOptions {
   keyword?: string;
   sortBy?: 'like_count' | 'created_at';
@@ -26,6 +28,7 @@ export interface PresetStoreResponseItem {
   like_count: number;
   view_count: number;
   user_id: number;
+  user_nickname: string;
   created_at: number;
   updated_at: number;
   is_liked: boolean;

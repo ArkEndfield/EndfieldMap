@@ -1,6 +1,4 @@
-import type { PresetType } from '@/@types/preset_store';
-
-export type MineTab = 'uploads' | 'favorites';
+import type { MineTab, PresetType } from '@eftypes/preset_store';
 
 export const TAB_OPTIONS: { key: MineTab; labelKey: string }[] = [
   { key: 'uploads', labelKey: 'sidebar:preset_store.mine_uploads' },

@@ -2,9 +2,11 @@ import { useTranslation } from 'react-i18next';
 
 import type { PresetStoreResponseItem } from '@/@types/preset_store';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { ImportIcon, UserIcon, ViewAltIcon } from '@/components/common/icons';
+import { ImportIcon, UserIcon, ViewAltIcon, EditIcon } from '@/components/common/icons';
 import { SoundType } from '@/const/audio_config';
 import { cn } from '@/utils/style';
+import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { Tooltip } from '@/components/common/tooltip';
 
 export interface PresetStoreItemProps {
   item: PresetStoreResponseItem;
@@ -12,6 +14,8 @@ export interface PresetStoreItemProps {
   onOpen?: (id: number) => void;
   /** 删除回调，仅在「我的上传」中显示删除按钮 */
   onDelete?: (id: number) => void;
+  /** 编辑回调 */
+  onEdit?: (id: number) => void;
 }
 
 const HeartIcon = ({ filled, className }: { filled?: boolean; className?: string }) => (
@@ -46,10 +50,7 @@ const TrashIcon = ({ className }: { className?: string }) => (
     height="1em"
     className={className}
   >
-    <path
-      d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
-      fill="currentColor"
-    />
+    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor" />
   </svg>
 );
 
@@ -87,7 +88,7 @@ const formatDate = (timestamp: number): string => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 
-export const PresetStoreItem = ({ item, onLike, onOpen, onDelete }: PresetStoreItemProps) => {
+export const PresetStoreItem = ({ item, onLike, onOpen, onDelete, onEdit }: PresetStoreItemProps) => {
   const { t } = useTranslation(['sidebar']);
 
   return (
@@ -110,6 +111,36 @@ export const PresetStoreItem = ({ item, onLike, onOpen, onDelete }: PresetStoreI
       <div className="absolute z-2 w-1 h-0.75 bg-[#888787] right-1 bottom-1 pointer-events-none" />
       <div className="absolute z-2 w-1 h-0.75 bg-[#888787] left-1 bottom-1 pointer-events-none" />
 
+      <div className="absolute right-1 top-1 z-2 flex gap-1">
+        {/* 删除按钮 */}
+        {onDelete && (
+          <Tooltip
+            as={ZmdRoundIconButton}
+            tooltip={t('sidebar:preset_store.delete', { defaultValue: '删除' })}
+            asProps={{
+              onClick: () => onDelete(item.id),
+              className: 'absolute right-1 top-1 z-2',
+            }}
+          >
+            <TrashIcon className="text-xs text-[#ff3d3d]" />
+          </Tooltip>
+        )}
+
+        {/* 编辑按钮 */}
+        {onEdit && (
+          <Tooltip
+            as={ZmdRoundIconButton}
+            tooltip={t('sidebar:preset_store.edit', { defaultValue: '编辑' })}
+            asProps={{
+              onClick: () => onEdit(item.id),
+              className: 'absolute right-6 top-1 z-2',
+            }}
+          >
+            <EditIcon className="text-xs" />
+          </Tooltip>
+        )}
+      </div>
+
       {/* 内容区 */}
       <ButtonWithAudio
         onClick={() => onOpen?.(item.id)}
@@ -121,7 +152,7 @@ export const PresetStoreItem = ({ item, onLike, onOpen, onDelete }: PresetStoreI
         </div>
 
         {/* 描述 */}
-        <p className="text-xs opacity-50 leading-relaxed line-clamp-2 flex-1">{item.description}</p>
+        <p className="text-xs opacity-50 leading-relaxed line-clamp-2 flex-1 break-all">{item.description}</p>
       </ButtonWithAudio>
 
       {/* 底部信息 */}
@@ -138,7 +169,7 @@ export const PresetStoreItem = ({ item, onLike, onOpen, onDelete }: PresetStoreI
           <div className="flex items-center gap-1 bg-[#313131] px-2 py-0.5 rounded-full group-hover/preset-store-item:bg-[#F4F4F0]">
             <UserIcon className="shrink-0" />
             <span className="truncate max-w-20 text-[#F4F4F0] group-hover/preset-store-item:text-[#313131]">
-              {item.user_id}
+              {item.user_nickname}
             </span>
           </div>
         </div>
@@ -173,18 +204,6 @@ export const PresetStoreItem = ({ item, onLike, onOpen, onDelete }: PresetStoreI
               <HeartIcon filled={item.is_liked} className="text-xs" />
               <span>{formatCount(item.like_count)}</span>
             </ButtonWithAudio>
-
-            {/* 删除按钮 */}
-            {onDelete && (
-              <ButtonWithAudio
-                soundType={SoundType.TICK}
-                className="flex items-center gap-0.5 rounded-xs transition-colors duration-200 cursor-pointer pointer-events-auto hover:text-[#ff4757]"
-                onClick={() => onDelete(item.id)}
-                title={t('sidebar:preset_store.delete', { defaultValue: '删除' })}
-              >
-                <TrashIcon className="text-xs" />
-              </ButtonWithAudio>
-            )}
           </div>
         </div>
       </div>

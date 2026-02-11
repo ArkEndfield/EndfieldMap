@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 
-import type { PresetType } from '@/@types/preset_store';
+import type { MineTab, PresetType } from '@eftypes/preset_store';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
 import { RefreshIcon } from '@/components/common/icons';
 
-import { type MineTab, PRESET_TYPE_OPTIONS, TAB_OPTIONS } from './types';
+import { PRESET_TYPE_OPTIONS, TAB_OPTIONS } from '@/const/preset_store';
 
 interface MineFiltersProps {
   activeTab: MineTab;
