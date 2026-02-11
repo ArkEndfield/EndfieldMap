@@ -10,11 +10,11 @@ import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
 import {
   GameDataCollections,
-  UserCollections,
-  type GameDataDBCollections,
-  type UserDataDBCollections,
   gameDataCollectionsSchema,
+  type GameDataDBCollections,
+  UserCollections,
   userDataCollectionsSchema,
+  type UserDataDBCollections,
 } from '@/services/data/db/collections';
 import { isDev } from '@/services/env';
 

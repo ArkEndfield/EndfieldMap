@@ -1,4 +1,3 @@
-import shortcutService from '@/services/shortcut';
 import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -6,9 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { EndfieldCloseIcon } from '@/components/common/icons';
 import { type DialogProps } from '@/components/themes/types/dialog';
+import shortcutService from '@/services/shortcut';
 import { cn } from '@/utils/style';
-
-import { ScrollArea } from '@/components/common/scroll_area';
 
 const CloseButton: React.FC<{
   onClick?: () => void;
@@ -70,6 +68,7 @@ const DialogInner: React.FC<DialogProps> = ({
   width,
   height,
   children,
+  className,
   classNames,
   onClose,
   onDismiss,
@@ -98,6 +97,7 @@ const DialogInner: React.FC<DialogProps> = ({
       <motion.div
         className={cn(
           'flex flex-col max-w-full max-h-full w-3xl',
+          className,
           classNames?.header && typeof classNames.header === 'function' ? classNames.header(open) : classNames?.header
         )}
         style={{ width, height }}
@@ -161,20 +161,7 @@ const DialogInner: React.FC<DialogProps> = ({
               : classNames?.contentContainer
           )}
         >
-          <ScrollArea
-            className={cn(
-              classNames?.content && typeof classNames.content === 'function'
-                ? classNames.content(open)
-                : classNames?.content
-            )}
-            contentClassName={cn(
-              classNames?.scrollContent && typeof classNames.scrollContent === 'function'
-                ? classNames.scrollContent(open)
-                : classNames?.scrollContent
-            )}
-          >
-            {children}
-          </ScrollArea>
+          {children}
           <motion.div
             className="absolute bottom-0 right-[1.275rem] h-1 w-60 origin-right bg-[linear-gradient(90deg,#00ffa2,#00ffa2_42.5%,#ffff21_42.5%,#ffff21_79.2%,#ff00f0_79.2%)]"
             initial={{ scaleX: 0 }}

@@ -1,4 +1,5 @@
 import type { EntityData, MapData } from '@endfieldmap/map-core';
+import { logger } from '@endfieldmap/tools';
 
 import { DataService } from '@/services/data';
 import { BaseUserDataService } from '@/services/user/data/_base';
@@ -61,6 +62,7 @@ export class EntityMarkService extends BaseUserDataService<EntityMarkCallback> {
           }
         } catch (e) {
           // 忽略回调错误
+          logger.error('[EntityMarkService] Callback error', e);
         }
       }
     });

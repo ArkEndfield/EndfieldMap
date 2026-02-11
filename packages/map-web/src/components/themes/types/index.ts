@@ -1,6 +1,6 @@
 import type { ZmdAlertFullProps, ZmdAlertProps } from '@themes/types/alert';
-import type { InputProps } from '@themes/types/input';
 import type { ThemeRootContextProps } from '@themes/types/context';
+import type { InputProps } from '@themes/types/input';
 import type { TooltipProps } from '@themes/types/tooltip';
 import type { FC, LazyExoticComponent } from 'react';
 

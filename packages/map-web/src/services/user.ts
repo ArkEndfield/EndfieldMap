@@ -1,13 +1,13 @@
-import i18n from '@/i18n';
+import type { UidInfo } from '@eftypes/user';
 import { logger } from '@endfieldmap/tools';
 
+import type { BindType } from '@/@types/game_role';
+import { alert } from '@/components/common/alert/alert_api';
+import i18n from '@/i18n';
 import { DataService } from '@/services/data';
+import { serverService } from '@/services/server';
 import { UserAuthService } from '@/services/user/auth';
 import { UserDataService } from '@/services/user/data';
-import { alert } from '@/components/common/alert/alert_api';
-import type { UidInfo } from '@eftypes/user';
-import { serverService } from '@/services/server';
-import type { BindType } from '@/@types/game_role';
 
 export class UserService {
   public static instance: UserService;
@@ -93,7 +93,7 @@ export class UserService {
     // 获取绑定的 uid 列表
     await Promise.all([this.auth.fetchUidList(), this.auth.fetchUserInfo()]);
     // 获取存储的当前 uid
-    let currentUid = this.auth.currentUid.value;
+    const currentUid = this.auth.currentUid.value;
     // 如果没有 uid
     if (!currentUid) {
       if (this.auth.uidList.length <= 0 || !autoSwitch) {

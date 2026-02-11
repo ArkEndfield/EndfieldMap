@@ -13,6 +13,7 @@ import {
   type IVisibilityService,
   type VisibilityData,
 } from '@/services/data/map/base/base_preset';
+import { presetService } from '@/services/preset';
 import { userService } from '@/services/user';
 import { CustomPointPresetDataService } from '@/services/user/data/preset/custom_point';
 
@@ -319,15 +320,8 @@ export class CustomPointDataService extends BasePresetDataService<
   // endregion
 
   // region: 分享处理
-  public override async sharePresetToServer(data: CustomPointNodeSchemaType[], name: string) {
-    // TODO: 实现分享逻辑
-    // 等待两秒
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 2000);
-    });
-    alert.info('分享成功' + JSON.stringify({ data, name }));
+  public override sharePresetToServer(data: CustomPointNodeSchemaType[], name: string, description: string) {
+    return presetService.shareCustomPointPreset(name, description, data);
   }
   // endregion
 

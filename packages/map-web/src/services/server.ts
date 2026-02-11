@@ -1,7 +1,8 @@
 import type { ServerResponse } from '@eftypes/server';
 import type { PullResponse, PushDocumentRow, PushResponse, SyncCheckpoint, SyncCollectionName } from '@eftypes/sync';
-import { backendHost } from '@/services/env';
+
 import i18n from '@/i18n';
+import { backendHost } from '@/services/env';
 import { getLanguage } from '@/utils/language';
 
 class ServerService {
@@ -325,8 +326,25 @@ class ServerService {
     });
   }
 
-  public async apiGet<T>(url: string, options?: RequestInit) {
-    return this.apiRequest<T>(url, {
+  public async apiGet<T>(
+    url: string,
+    params?: Record<string, string | number | boolean | undefined | null> | URLSearchParams,
+    options?: RequestInit
+  ) {
+    const searchParams = new URLSearchParams();
+    if (params instanceof URLSearchParams) {
+      params.forEach((value, key) => {
+        searchParams.append(key, value);
+      });
+    } else if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+    }
+    const paramsString = searchParams.toString();
+    return this.apiRequest<T>(`${url}${paramsString ? `?${paramsString}` : ''}`, {
       method: 'GET',
       ...options,
     });
@@ -381,7 +399,7 @@ class ServerService {
     params.set('limit', limit.toString());
     params.set('role_id', this.uid);
 
-    return this.apiGet<PullResponse>(`/sync/${collection}/pull?${params.toString()}`);
+    return this.apiGet<PullResponse>(`/sync/${collection}/pull`, params);
   }
 
   /**

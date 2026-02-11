@@ -1,27 +1,37 @@
+import type { FieldErrors, FieldValues } from 'react-hook-form';
+
 import { alert } from '@/components/common/alert/alert_api';
 import i18n from '@/i18n';
-import type { FieldErrors, FieldValues } from 'react-hook-form';
 
 /**
  * 捕获函数执行过程中的错误，并显示错误提示
  * @template T - 函数返回值类型
  * @param func - 要执行的函数，可以是同步或异步函数
- * @returns 如果执行成功返回函数结果，如果出错返回 undefined
+ * @param onError - 可选的错误回调函数，在显示错误提示后执行
+ * @returns 如果执行成功返回函数结果，如果出错返回 false
  *
  * @example
  * // 异步函数
  * const result = await catchErrorWithTip(async () => fetchData());
- * // result 类型: Data | undefined
+ * // result 类型: Data | false
  *
- * // 同步函数
- * const value = await catchErrorWithTip(() => computeValue());
- * // value 类型: number | undefined
+ * // 带错误回调（用于乐观更新回滚）
+ * const result = await catchErrorWithTip(
+ *   async () => likePreset(id),
+ *   () => revertOptimisticUpdate(id)
+ * );
  */
-export const catchErrorWithTip = async <T>(func: () => T | Promise<T>): Promise<T | boolean> => {
+export const catchErrorWithTip = async <T>(
+  func: () => T | Promise<T>,
+  onError?: (error: unknown) => void
+): Promise<T | false> => {
   try {
     const result = await func();
     return result;
   } catch (error: unknown) {
+    // 执行错误回调（如乐观更新回滚）
+    onError?.(error);
+
     if (error instanceof Error) {
       alert.info(
         i18n.t(error.message, {

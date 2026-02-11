@@ -1,6 +1,26 @@
 {
-  "preset_store": "预设商店",
-  "preset_store_mine": "我的",
+  "preset_store": {
+    "title": "预设商店",
+    "mine": "我的",
+    "mine_uploads": "我的上传",
+    "mine_favorites": "我的收藏",
+    "description": "描述",
+    "type": "类型",
+    "preview": "预览",
+    "import": "导入",
+    "import_success": "导入成功",
+    "views": "浏览",
+    "imports": "导入次数",
+    "delete": "删除",
+    "preset_type": {
+      "electric_pole": "电线杆",
+      "custom_point": "自定义标点"
+    },
+    "sub_type": {
+      "pole": "电线杆",
+      "zipline": "滑索"
+    }
+  },
   "fold": "折叠",
   "unfold": "展开",
   "filter": {
@@ -31,6 +51,7 @@
     }
   },
   "operation": {
+    "refresh": "刷新",
     "selected_feature": "已选中 {{val, number}} 个标点",
     "multi_operation": "批量操作",
     "cancel_operation": "取消操作",
@@ -47,6 +68,14 @@
     "electric_pole": {
       "display": "显示电线杆",
       "no_data": "暂无电线杆数据",
+      "filter": {
+        "pole": "电线杆",
+        "zipline": "滑索"
+      },
+      "sub_type": {
+        "pole": "电线杆",
+        "zipline": "滑索"
+      },
       "create": {
         "start": "创建",
         "auto_connect": "自动连接",

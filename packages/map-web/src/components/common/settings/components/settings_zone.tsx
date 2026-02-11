@@ -1,7 +1,8 @@
-import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
+
+import uiManager from '@/services/ui_manager';
+import { cn } from '@/utils/style';
 
 export interface SettingsZoneProps {
   id?: string;

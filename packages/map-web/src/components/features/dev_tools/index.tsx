@@ -3,9 +3,9 @@ import { domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
+import { CogIcon, EditIcon, MinusIcon } from '@/components/common/icons';
 import { DevToolsDrawPanel } from '@/components/features/dev_tools/draw_panel';
 import { TierControls } from '@/components/features/dev_tools/views/tier_controller';
-import { CogIcon, EditIcon, MinusIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
 

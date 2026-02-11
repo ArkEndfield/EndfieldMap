@@ -1,17 +1,15 @@
-import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-
-import { serverService } from '@/services/server';
-import { cn } from '@/utils/style';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { BindType, GameRole } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
-
+import { KeyIcon, ScanIcon } from '@/components/common/icons';
 import { QRCodeLogin } from '@/components/features/user/info/bind_uid/login/qrcode';
 import { TokenLogin } from '@/components/features/user/info/bind_uid/login/token';
 import { SoundType } from '@/const/audio_config';
-import { KeyIcon, ScanIcon } from '@/components/common/icons';
-import { useTranslation } from 'react-i18next';
+import { serverService } from '@/services/server';
+import { cn } from '@/utils/style';
 
 /**
  * 登录入口组件

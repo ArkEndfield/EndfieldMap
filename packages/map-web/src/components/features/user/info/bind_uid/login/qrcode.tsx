@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
-
-import { serverService } from '@/services/server';
-import { cn } from '@/utils/style';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { useTranslation } from 'react-i18next';
+import { serverService } from '@/services/server';
+import { cn } from '@/utils/style';
 
 /** 轮询间隔（毫秒） */
 const POLL_INTERVAL = 2000;

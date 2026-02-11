@@ -7,9 +7,10 @@ import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { ScrollArea } from '@/components/common/scroll_area';
+import { useAdapter } from '@/hooks/use_adapter';
 import { useCustomPointPresetPanel } from '@/hooks/use_custom_point_preset_panel';
 import uiManager from '@/services/ui_manager';
-import { useAdapter } from '@/hooks/use_adapter';
+import { catchErrorWithTip } from '@/utils/handler';
 
 /**
  * 自定义标点预设管理面板
@@ -44,18 +45,27 @@ const CustomPointPresetPanel: React.FC = observer(() => {
       return;
     }
     let shareName = name;
+    let shareDescription = '';
 
     alert.confirm({
       dismissible: false,
       content: (
         <SharePresetForm
           defaultName={name}
+          defaultDescription={shareDescription}
           onNameChange={(value) => {
             shareName = value;
           }}
+          onDescriptionChange={(value) => {
+            shareDescription = value;
+          }}
         />
       ),
-      onConfirm: () => mapDataService.customPointDataService.sharePreset(id, shareName),
+      onConfirm: () =>
+        catchErrorWithTip(async () => {
+          await mapDataService.customPointDataService.sharePreset(id, shareName, shareDescription);
+          alert.info('分享成功');
+        }),
     });
   };
 

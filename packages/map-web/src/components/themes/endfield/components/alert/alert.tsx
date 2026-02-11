@@ -1,8 +1,8 @@
+import { type ZmdAlertProps } from '@themes/types/alert';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type ZmdAlertProps } from '@themes/types/alert';
 import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { cn } from '@/utils/style';

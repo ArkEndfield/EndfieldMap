@@ -9,9 +9,9 @@ import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { MapDataService } from '@/services/data/map';
 import { isDev } from '@/services/env';
+import type { MapService } from '@/services/map';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
-import type { MapService } from '@/services/map';
 
 const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
 const ZmdSwiper = lazy(() => import('@/components/features/swiper'));

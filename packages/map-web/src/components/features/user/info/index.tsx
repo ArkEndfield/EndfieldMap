@@ -1,18 +1,17 @@
-import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { Dialog } from '@/components/common/dialog';
 import { BindIcon, EditIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';
-import { userService } from '@/services/user';
-import { useTranslation } from 'react-i18next';
-
 import { ActionPanel } from '@/components/features/user/info/action_panel';
-import { UidList } from '@/components/features/user/info/uid_list';
-import { UserProfile } from '@/components/features/user/info/user_profile';
 import { BindUid } from '@/components/features/user/info/bind_uid';
 import { Settings } from '@/components/features/user/info/settings';
+import { UidList } from '@/components/features/user/info/uid_list';
+import { UserProfile } from '@/components/features/user/info/user_profile';
+import { userService } from '@/services/user';
 import { catchErrorWithTip } from '@/utils/handler';
 
 // ==================== 主组件 ====================

@@ -5,8 +5,8 @@ import { alert } from '@/components/common/alert/alert_api';
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
-import { usePromiseState } from '@/hooks/use_promise_state';
 import { SETTINGS_KEYS } from '@/const/settings';
+import { usePromiseState } from '@/hooks/use_promise_state';
 import { DataService } from '@/services/data';
 
 const clearAll = (confirmText: string): Promise<boolean> => {

@@ -10,7 +10,22 @@
   "batch_delete": "일괄 삭제",
   "yes": "예",
   "no": "아니요",
+  "back": "뒤로",
+  "loading": "로딩 중...",
+  "load_error": "로드 실패",
+  "retry": "재시도",
+  "refresh": "새로고침",
+  "no_data": "데이터 없음",
+  "prev_page": "이전",
+  "next_page": "다음",
+  "search_placeholder": "검색...",
   "back_after_time": "{{time}} 후 자동 복귀",
+  "sort": {
+    "asc": "오름차순",
+    "desc": "내림차순",
+    "like_count": "인기순",
+    "created_at": "날짜순"
+  },
   "operate": {
     "mark": "표시",
     "marked": "표시됨",

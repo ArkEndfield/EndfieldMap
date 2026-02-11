@@ -1,10 +1,11 @@
+import type { UidInfo, UserInfo } from '@eftypes/user';
 import { LocalStorageValue, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
-import i18n from '@/i18n';
-import { UserLocalStorageKey } from '@/const/storage';
-import type { UidInfo, UserInfo } from '@eftypes/user';
-import { serverService } from '@/services/server';
+
 import type { BindType } from '@/@types/game_role';
+import { UserLocalStorageKey } from '@/const/storage';
+import i18n from '@/i18n';
+import { serverService } from '@/services/server';
 
 export class UserAuthService {
   public token: LocalStorageValue<string | null> = new LocalStorageValue<string | null>({

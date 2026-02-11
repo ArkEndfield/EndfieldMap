@@ -1,4 +1,5 @@
 export * from '@endfieldmap/tools/utils/browser';
+export * from '@endfieldmap/tools/utils/data';
 export * from '@endfieldmap/tools/utils/dom';
 export * from '@endfieldmap/tools/utils/format';
 export * from '@endfieldmap/tools/utils/image_pool';
@@ -7,4 +8,3 @@ export * from '@endfieldmap/tools/utils/map_data';
 export * from '@endfieldmap/tools/utils/object';
 export * from '@endfieldmap/tools/utils/optimization';
 export * from '@endfieldmap/tools/utils/runtime';
-export * from '@endfieldmap/tools/utils/data';

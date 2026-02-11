@@ -1,6 +1,34 @@
+import { logger } from '@endfieldmap/tools';
+
 import { SETTINGS_KEYS, SETTINGS_PAGE } from '@/const/settings';
 import uiManager from '@/services/ui_manager';
-import { logger } from '@endfieldmap/tools';
+
+const containsValue = (obj: unknown, value: string): boolean => {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+  for (const v of Object.values(obj)) {
+    if (v === value) {
+      return true;
+    }
+    if (typeof v === 'object') {
+      if (containsValue(v, value)) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+// 检查是否是设置项
+const findPageForKey = (itemKey: string) => {
+  for (const [page, items] of Object.entries(SETTINGS_KEYS)) {
+    if (containsValue(items, itemKey)) {
+      return SETTINGS_PAGE[page as keyof typeof SETTINGS_PAGE];
+    }
+  }
+  return null;
+};
 
 export const useSettingNavigate = () => {
   const navigate = (key: string) => {
@@ -10,34 +38,6 @@ export const useSettingNavigate = () => {
       uiManager.navigateSettings(key);
       return;
     }
-
-    // 检查是否是设置项
-    const findPageForKey = (itemKey: string) => {
-      const containsValue = (obj: any, value: string): boolean => {
-        if (typeof obj !== 'object' || obj === null) {
-          return false;
-        }
-        for (const v of Object.values(obj)) {
-          if (v === value) {
-            return true;
-          }
-          if (typeof v === 'object') {
-            if (containsValue(v, value)) {
-              return true;
-            }
-          }
-        }
-        return false;
-      };
-
-      for (const [page, items] of Object.entries(SETTINGS_KEYS)) {
-        if (containsValue(items, itemKey)) {
-          return SETTINGS_PAGE[page as keyof typeof SETTINGS_PAGE];
-        }
-      }
-      return null;
-    };
-
     const page = findPageForKey(key);
     if (page) {
       uiManager.navigateSettings(page, key);

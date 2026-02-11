@@ -10,7 +10,22 @@
   "batch_delete": "Массовое удаление",
   "yes": "Да",
   "no": "Нет",
+  "back": "Назад",
+  "loading": "Загрузка...",
+  "load_error": "Ошибка загрузки",
+  "retry": "Повторить",
+  "refresh": "Обновить",
+  "no_data": "Нет данных",
+  "prev_page": "Назад",
+  "next_page": "Далее",
+  "search_placeholder": "Поиск...",
   "back_after_time": "Автоматический возврат через {{time}}",
+  "sort": {
+    "asc": "По возрастанию",
+    "desc": "По убыванию",
+    "like_count": "По популярности",
+    "created_at": "По дате"
+  },
   "operate": {
     "mark": "Отметить",
     "marked": "Отмечено",

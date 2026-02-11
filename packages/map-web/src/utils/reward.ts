@@ -1,6 +1,7 @@
-import type { DealedRewardItem, DealedRewardItemWithCount } from '@/services/data/map/chest_reward';
-import type { ChestRewardSchemaType } from '@/services/data/db/schema/game_data/chest_reward';
 import type { EntityData } from '@endfieldmap/map-core';
+
+import type { ChestRewardSchemaType } from '@/services/data/db/schema/game_data/chest_reward';
+import type { DealedRewardItem, DealedRewardItemWithCount } from '@/services/data/map/chest_reward';
 
 export function isRewardWithCountType(item: ChestRewardSchemaType): boolean {
   return Array.isArray(item.itemBundles) && item.itemBundles.length > 0;

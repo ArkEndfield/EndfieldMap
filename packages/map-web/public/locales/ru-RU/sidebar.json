@@ -1,6 +1,26 @@
 {
-  "preset_store": "Магазин пресетов",
-  "preset_store_mine": "Мои пресеты",
+  "preset_store": {
+    "title": "Магазин пресетов",
+    "mine": "Мои пресеты",
+    "mine_uploads": "Мои загрузки",
+    "mine_favorites": "Мои избранные",
+    "description": "Описание",
+    "type": "Тип",
+    "preview": "Предпросмотр",
+    "import": "Импорт",
+    "import_success": "Импорт успешен",
+    "views": "Просмотры",
+    "imports": "Импорты",
+    "delete": "Удалить",
+    "preset_type": {
+      "electric_pole": "Электрический столб",
+      "custom_point": "Пользовательская точка"
+    },
+    "sub_type": {
+      "pole": "Столб",
+      "zipline": "Трос"
+    }
+  },
   "fold": "Свернуть",
   "unfold": "Развернуть",
   "filter": {
@@ -25,10 +45,13 @@
       "system": "Ежедневное подземелье",
       "other": "Другое",
       "#electric_pole": "Электрический столб",
-      "#custom_point": "Пользовательская точка"
+      "#custom_point": "Пользовательская точка",
+      "#note": "Архив разведки",
+      "#egg": "Яйцо"
     }
   },
   "operation": {
+    "refresh": "Обновить",
     "selected_feature": "Выбрано меток: {{val, number}}",
     "multi_operation": "Массовая операция",
     "cancel_operation": "Отменить операцию",

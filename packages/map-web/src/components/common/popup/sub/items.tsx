@@ -1,5 +1,5 @@
 import type { EntityData } from '@endfieldmap/map-core';
-import { lazy, type ElementType } from 'react';
+import { type ElementType,lazy } from 'react';
 
 export const rightContentMap = {
   InteractiveLockComponent: lazy(() => import('@/components/common/popup/sub/components/interactive_lock_component')),

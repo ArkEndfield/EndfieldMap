@@ -2,10 +2,10 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type ZmdAlertFullProps } from '@/components/themes/types/alert';
 import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@/components/common/endfield_components/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
+import { type ZmdAlertFullProps } from '@/components/themes/types/alert';
 import { cn } from '@/utils/style';
 
 const ALERT_BANNER_BG_LEFT = '/images/bg/alert/alert_banner_bg_left.png';

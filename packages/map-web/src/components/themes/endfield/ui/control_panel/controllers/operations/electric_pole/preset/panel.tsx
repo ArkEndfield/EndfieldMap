@@ -1,15 +1,17 @@
+import type { ElectricPoleType } from '@eftypes/preset_store';
 import PresetList from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/list';
 import PresetToolbar from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/toolbar';
 import PresetHeader from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/header';
 import PresetSelectBar from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/select_bar';
+import SharePresetForm from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/share_form';
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { ScrollArea } from '@/components/common/scroll_area';
+import { useAdapter } from '@/hooks/use_adapter';
 import { useElectricPolePresetPanel } from '@/hooks/use_electric_pole_preset_panel';
 import uiManager from '@/services/ui_manager';
-import { useAdapter } from '@/hooks/use_adapter';
-import SharePresetForm from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/share_form';
+import { catchErrorWithTip } from '@/utils/handler';
 
 /**
  * 电线杆预设管理面板
@@ -44,7 +46,8 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
       return;
     }
     let shareName = name;
-    let shareType: 'electric_pole' | 'zipline' = 'electric_pole';
+    let shareType: ElectricPoleType = 'pole';
+    let shareDescription = '';
 
     alert.confirm({
       dismissible: false,
@@ -52,15 +55,23 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
         <SharePresetForm
           defaultName={name}
           defaultType={shareType}
+          defaultDescription={shareDescription}
           onNameChange={(value) => {
             shareName = value;
           }}
           onTypeChange={(value) => {
             shareType = value;
           }}
+          onDescriptionChange={(value) => {
+            shareDescription = value;
+          }}
         />
       ),
-      onConfirm: () => mapDataService.electricPoleDataService.sharePreset(id, shareName, shareType),
+      onConfirm: () =>
+        catchErrorWithTip(async () => {
+          await mapDataService.electricPoleDataService.sharePreset(id, shareName, shareDescription, shareType);
+          alert.info('分享成功');
+        }),
     });
   };
 

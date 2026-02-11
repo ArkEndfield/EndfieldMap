@@ -57,9 +57,10 @@ const Deco = ({ withTail }: { withTail?: boolean }) => (
   </div>
 );
 
-import uiManager from '@/services/ui_manager';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
+
+import uiManager from '@/services/ui_manager';
 
 export const SettingItem = observer(
   ({ title, description, question, children, className, classNames, tailDeco, id }: SettingItemProps) => {

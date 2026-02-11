@@ -10,7 +10,22 @@
   "batch_delete": "批量删除",
   "yes": "是",
   "no": "否",
+  "back": "返回",
+  "loading": "加载中...",
+  "load_error": "加载失败",
+  "retry": "重试",
+  "refresh": "刷新",
+  "no_data": "暂无数据",
+  "prev_page": "上一页",
+  "next_page": "下一页",
+  "search_placeholder": "搜索...",
   "back_after_time": "{{time}} 后自动返回",
+  "sort": {
+    "asc": "升序",
+    "desc": "降序",
+    "like_count": "热度",
+    "created_at": "时间"
+  },
   "operate": {
     "mark": "标记",
     "marked": "已标记",

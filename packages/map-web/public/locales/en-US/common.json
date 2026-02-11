@@ -10,7 +10,22 @@
   "batch_delete": "Batch Delete",
   "yes": "Yes",
   "no": "No",
+  "back": "Back",
+  "loading": "Loading...",
+  "load_error": "Load failed",
+  "retry": "Retry",
+  "refresh": "Refresh",
+  "no_data": "No data",
+  "prev_page": "Previous",
+  "next_page": "Next",
+  "search_placeholder": "Search...",
   "back_after_time": "Auto return in {{time}}",
+  "sort": {
+    "asc": "Ascending",
+    "desc": "Descending",
+    "like_count": "Popularity",
+    "created_at": "Date"
+  },
   "operate": {
     "mark": "Mark",
     "marked": "Marked",

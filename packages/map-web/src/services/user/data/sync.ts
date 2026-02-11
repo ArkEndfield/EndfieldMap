@@ -1,19 +1,19 @@
+import {
+  RXDB_TO_BACKEND_COLLECTION,
+  type SyncCheckpoint,
+  type SyncCollectionName,
+  type SyncDocumentState,
+  SyncStatus,
+} from '@eftypes/sync';
 import { logger } from '@endfieldmap/tools';
 import { computed, makeObservable, observable, runInAction } from 'mobx';
-import { replicateRxCollection, type RxReplicationState } from 'rxdb/plugins/replication';
 import type { RxCollection, WithDeleted } from 'rxdb';
+import { replicateRxCollection, type RxReplicationState } from 'rxdb/plugins/replication';
 
+import { alert } from '@/components/common/alert/alert_api';
 import i18n from '@/i18n';
 import { DataService } from '@/services/data';
 import { serverService } from '@/services/server';
-import { alert } from '@/components/common/alert/alert_api';
-import {
-  SyncStatus,
-  RXDB_TO_BACKEND_COLLECTION,
-  type SyncCheckpoint,
-  type SyncDocumentState,
-  type SyncCollectionName,
-} from '@eftypes/sync';
 
 /** 同步文档类型，包含 _deleted 标记 */
 type SyncDocument = WithDeleted<Record<string, unknown>>;

@@ -1,13 +1,13 @@
-import { motion } from 'motion/react';
-import { observer } from 'mobx-react-lite';
-
-import { cn } from '@/utils/style';
-import type { UidInfo, UserInfo } from '@eftypes/user';
 import { SyncStatus } from '@eftypes/sync';
+import type { UidInfo, UserInfo } from '@eftypes/user';
+import { observer } from 'mobx-react-lite';
+import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
+
+import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { CheckCircleIcon, SyncIcon } from '@/components/common/icons';
 import { userService } from '@/services/user';
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
-import { useTranslation } from 'react-i18next';
+import { cn } from '@/utils/style';
 
 // ==================== 用户头像组件 ====================
 const UserAvatar = ({

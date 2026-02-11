@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { cn } from '@/utils/style';
-
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { alert } from '@/components/common/alert/alert_api';
+import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { cn } from '@/utils/style';
 
 interface TokenLoginProps {
   /** 登录成功回调，返回 token */

@@ -6,10 +6,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
+import { getRightComponents } from '@/components/common/popup/sub/items';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
-
-import { getRightComponents } from '@/components/common/popup/sub/items';
 
 const Content = ({ showSubPage, items }: { showSubPage: boolean; items: React.ReactNode[] }) => {
   return (

@@ -1,11 +1,10 @@
 import { motion } from 'motion/react';
-
-import { ScrollArea } from '@/components/common/scroll_area';
-import { cn } from '@/utils/style';
+import { useTranslation } from 'react-i18next';
 
 import type { UidInfo } from '@/@types/user';
 import { BindIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
-import { useTranslation } from 'react-i18next';
+import { ScrollArea } from '@/components/common/scroll_area';
+import { cn } from '@/utils/style';
 
 // ==================== UID 列表项组件 ====================
 const UidListItem = ({

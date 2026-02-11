@@ -10,7 +10,22 @@
   "batch_delete": "Eliminar en lote",
   "yes": "Sí",
   "no": "No",
+  "back": "Volver",
+  "loading": "Cargando...",
+  "load_error": "Error al cargar",
+  "retry": "Reintentar",
+  "refresh": "Actualizar",
+  "no_data": "Sin datos",
+  "prev_page": "Anterior",
+  "next_page": "Siguiente",
+  "search_placeholder": "Buscar...",
   "back_after_time": "Regreso automático en {{time}}",
+  "sort": {
+    "asc": "Ascendente",
+    "desc": "Descendente",
+    "like_count": "Popularidad",
+    "created_at": "Fecha"
+  },
   "operate": {
     "mark": "Marcar",
     "marked": "Marcado",

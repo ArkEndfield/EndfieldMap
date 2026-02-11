@@ -1,7 +1,6 @@
-import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
-import type { InteractiveLockComponent } from '@/components/common/popup/sub/components/types';
-
 import { MiniGameLockComponent } from '@/components/common/popup/sub/components/lock_data/mini_game';
+import type { InteractiveLockComponent } from '@/components/common/popup/sub/components/types';
+import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
 
 const InteractiveLockComponent: SubPopupComponentProps<InteractiveLockComponent> = ({ prop }) => {
   const { lockData } = prop;
