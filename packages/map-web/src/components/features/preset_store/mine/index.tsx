@@ -3,11 +3,13 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useCallback } from 'react';
 
 import type { PresetStoreResponseItem } from '@/@types/preset_store';
+import { alert } from '@/components/common/alert/alert_api';
 import { Pagination } from '@/components/common/pagination';
 import { PresetStoreItem } from '@/components/common/preset_store/item';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useMineStore } from '@/hooks/use_preset_store';
 
+import { EditPresetForm } from './edit_form';
 import { MineFilters } from './mine_filters';
 
 interface MineStoreProps {
@@ -27,12 +29,56 @@ export const MineStore = observer(({ show, onOpen }: MineStoreProps) => {
     handleDelete,
     handleLike,
     handleRefresh,
+    handleEdit,
   } = useMineStore({ show, onOpen });
 
   const isLoading =
     activeTab === 'uploads'
       ? uploadsPagination.loadStatus === 'loading'
       : favoritesPagination.loadStatus === 'loading';
+
+  const openEditDialog = useCallback(
+    (id: number) => {
+      const item = uploadsPagination.displayData.find((i) => i.id === id);
+      if (!item) return;
+
+      let editName = item.name;
+      let editDescription = item.description;
+      let editIsPublic = item.is_public;
+
+      alert.confirm({
+        dismissible: false,
+        content: (
+          <EditPresetForm
+            defaultName={item.name}
+            defaultDescription={item.description}
+            defaultIsPublic={item.is_public}
+            onNameChange={(value) => {
+              editName = value;
+            }}
+            onDescriptionChange={(value) => {
+              editDescription = value;
+            }}
+            onIsPublicChange={(value) => {
+              editIsPublic = value;
+            }}
+          />
+        ),
+        onConfirm: async () => {
+          const success = await handleEdit(id, {
+            name: editName,
+            description: editDescription,
+            is_public: editIsPublic,
+          });
+          if (success) {
+            alert.info('编辑成功');
+          }
+          return success;
+        },
+      });
+    },
+    [uploadsPagination.displayData, handleEdit]
+  );
 
   // 渲染上传列表项
   const renderUploadsItems = useCallback(
@@ -45,11 +91,12 @@ export const MineStore = observer(({ show, onOpen }: MineStoreProps) => {
             onOpen={handleOpen}
             onLike={handleLike}
             onDelete={handleDelete}
+            onEdit={openEditDialog}
           />
         ))}
       </ScrollArea>
     ),
-    [handleOpen, handleLike, handleDelete]
+    [handleOpen, handleLike, handleDelete, openEditDialog]
   );
 
   // 渲染收藏列表项

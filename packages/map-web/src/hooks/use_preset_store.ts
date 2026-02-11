@@ -4,9 +4,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import type { PresetStoreResponseItem, PresetStoreSearchOptions, PresetType } from '@/@types/preset_store';
+import type { MineTab, PresetStoreResponseItem, PresetStoreSearchOptions, PresetType } from '@eftypes/preset_store';
 import type { PaginationLoadStatus } from '@/components/common/pagination';
-import type { MineTab } from '@/components/features/preset_store/mine/types';
 import { presetService } from '@/services/preset';
 import { catchErrorWithTip } from '@/utils/handler';
 
@@ -391,6 +390,21 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
     }
   }, [activeTab, uploadsPagination, favoritesPagination]);
 
+  const handleEdit = useCallback(
+    async (id: number, data: { name: string; description: string; is_public: boolean }) => {
+      const result = await catchErrorWithTip(async () => {
+        await presetService.updateSharePreset(id, data);
+      });
+
+      if (result !== false) {
+        uploadsPagination.load(uploadsPagination.currentPage);
+      }
+
+      return result !== false;
+    },
+    [uploadsPagination]
+  );
+
   return {
     activeTab,
     presetType,
@@ -402,5 +416,6 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
     handleDelete,
     handleLike,
     handleRefresh,
+    handleEdit,
   };
 }

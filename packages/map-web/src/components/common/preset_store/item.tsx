@@ -119,7 +119,6 @@ export const PresetStoreItem = ({ item, onLike, onOpen, onDelete, onEdit }: Pres
             tooltip={t('sidebar:preset_store.delete', { defaultValue: '删除' })}
             asProps={{
               onClick: () => onDelete(item.id),
-              className: 'absolute right-1 top-1 z-2',
             }}
           >
             <TrashIcon className="text-xs text-[#ff3d3d]" />
@@ -133,7 +132,6 @@ export const PresetStoreItem = ({ item, onLike, onOpen, onDelete, onEdit }: Pres
             tooltip={t('sidebar:preset_store.edit', { defaultValue: '编辑' })}
             asProps={{
               onClick: () => onEdit(item.id),
-              className: 'absolute right-6 top-1 z-2',
             }}
           >
             <EditIcon className="text-xs" />
