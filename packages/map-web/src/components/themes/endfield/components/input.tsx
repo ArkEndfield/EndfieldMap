@@ -2,10 +2,11 @@ import type { InputProps } from '@themes/types/input';
 import { useState } from 'react';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { InVisibleIcon,VisibleIcon } from '@/components/common/icons';
+import { InVisibleIcon, VisibleIcon } from '@/components/common/icons';
 import { SoundType } from '@/const/audio_config';
 import { useAudio } from '@/hooks/use_audio';
 import { cn } from '@/utils/style';
+import { useWindow } from '@/context/window';
 
 export const EndfieldInput = ({
   placeholder,
@@ -25,6 +26,7 @@ export const EndfieldInput = ({
   const [value, setValue] = useState(defaultValue);
   const [showPassword, setShowPassword] = useState(false);
   const { play } = useAudio();
+  const currentWindow = useWindow();
 
   const commonProps = {
     className: cn(
@@ -58,7 +60,7 @@ export const EndfieldInput = ({
     onKeyDown: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (e.key === 'Enter' && inputType !== 'textarea') {
         e.preventDefault();
-        const confirmBtn = document.querySelector<HTMLButtonElement>('[data-alert-confirm]');
+        const confirmBtn = currentWindow.document.querySelector<HTMLButtonElement>('[data-alert-confirm]');
         confirmBtn?.click();
       }
     },

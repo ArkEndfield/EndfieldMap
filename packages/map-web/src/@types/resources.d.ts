@@ -41,6 +41,10 @@ interface Resources {
       "rename": "重命名",
       "unmark": "取消标记"
     },
+    "pip": {
+      "back": "返回标签页",
+      "playing": "地图正在画中画模式播放"
+    },
     "prev_page": "上一页",
     "refresh": "刷新",
     "rename": "重命名",
@@ -5746,6 +5750,8 @@ interface Resources {
         "title": "视图自动调整"
       },
       "cluster": "标点聚合",
+      "enter_pip": "开启画中画",
+      "exit_pip": "退出画中画",
       "hover": {
         "description": "鼠标在地图标点上的悬停检测响应时间，时间越短性能需求越高",
         "title": "鼠标悬停检测响应时间",

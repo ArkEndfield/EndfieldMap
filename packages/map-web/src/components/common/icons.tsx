@@ -799,6 +799,20 @@ export const BatchDeleteIcon = (props: IconProps) => (
   </svg>
 );
 
+export const PiPIcon = (props: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
+    <g>
+      <path
+        d="M21 9V6C21 4.34315 19.6569 3 18 3H6C4.34315 3 3 4.34315 3 6V18C3 19.6569 4.34315 21 6 21H9M21 9V18C21 19.6569 19.6569 21 18 21H12C10.3431 21 9 19.6569 9 18V12C9 10.3431 10.3431 9 12 9H18C19.6569 9 21 10.3431 21 12V9Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+  </svg>
+);
+
 export const EditConnectIcon = (props: IconProps) => (
   <svg
     fill="currentColor"

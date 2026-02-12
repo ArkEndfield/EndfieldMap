@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CogIcon, EditIcon, MinusIcon } from '@/components/common/icons';
 import { DevToolsDrawPanel } from '@/components/features/dev_tools/draw_panel';
 import { TierControls } from '@/components/features/dev_tools/views/tier_controller';
+import { useWindow } from '@/context/window';
 import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
 
@@ -13,21 +14,22 @@ import { cn } from '@/utils/style';
 const DevToolsPanel = observer(() => {
   const { mapDataService } = useAdapter();
   const devToolsState = mapDataService.mapStateDataService.devToolsState;
+  const currentWindow = useWindow();
 
   const [position, setPosition] = useState(devToolsState?.value?.position || { right: 20, top: 20 });
   const [isDragging, setIsDragging] = useState(false);
 
-  const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
+  const [windowSize, setWindowSize] = useState({ w: currentWindow.innerWidth, h: currentWindow.innerHeight });
 
   const dragStartOffset = useRef({ right: 0, top: 0 });
   const ref = useRef<HTMLDivElement>(null);
 
   // 同步数据
   useEffect(() => {
-    const handleResize = () => setWindowSize({ w: window.innerWidth, h: window.innerHeight });
-    const dispose = domEventListener(window, 'resize', handleResize);
+    const handleResize = () => setWindowSize({ w: currentWindow.innerWidth, h: currentWindow.innerHeight });
+    const dispose = domEventListener(currentWindow, 'resize', handleResize);
     return () => dispose?.();
-  }, []);
+  }, [currentWindow]);
 
   useEffect(() => {
     if (!devToolsState?.value?.position || isDragging) return;
@@ -39,8 +41,8 @@ const DevToolsPanel = observer(() => {
         const width = ref.current.offsetWidth;
         const height = ref.current.offsetHeight;
 
-        const currentWinW = window.innerWidth;
-        const currentWinH = window.innerHeight;
+        const currentWinW = currentWindow.innerWidth;
+        const currentWinH = currentWindow.innerHeight;
 
         const maxTop = currentWinH - height;
         const maxRight = currentWinW - width;
@@ -56,7 +58,7 @@ const DevToolsPanel = observer(() => {
 
     const timer = setTimeout(updatePosition, 0);
     return () => clearTimeout(timer);
-  }, [devToolsState?.value?.position, devToolsState?.value?.panelCollapsed, windowSize, isDragging]);
+  }, [devToolsState?.value?.position, devToolsState?.value?.panelCollapsed, windowSize, isDragging, currentWindow]);
 
   const dragStartMousePos = useRef({ x: 0, y: 0 });
   const hasMoved = useRef(false);
@@ -68,8 +70,8 @@ const DevToolsPanel = observer(() => {
 
     const rect = ref.current?.getBoundingClientRect();
     if (rect) {
-      const currentRightVal = window.innerWidth - rect.right;
-      const mouseDistFromWindowRight = window.innerWidth - clientX;
+      const currentRightVal = currentWindow.innerWidth - rect.right;
+      const mouseDistFromWindowRight = currentWindow.innerWidth - clientX;
       dragStartOffset.current = {
         right: mouseDistFromWindowRight - currentRightVal,
         top: clientY - rect.top,
@@ -100,7 +102,7 @@ const DevToolsPanel = observer(() => {
           }
         }
 
-        const mouseDistFromWindowRight = window.innerWidth - clientX;
+        const mouseDistFromWindowRight = currentWindow.innerWidth - clientX;
         let newRight = mouseDistFromWindowRight - dragStartOffset.current.right;
         let newTop = clientY - dragStartOffset.current.top;
 
@@ -108,8 +110,8 @@ const DevToolsPanel = observer(() => {
         if (ref.current) {
           const width = ref.current.offsetWidth;
           const height = ref.current.offsetHeight;
-          const maxRight = window.innerWidth - width;
-          const maxTop = window.innerHeight - height;
+          const maxRight = currentWindow.innerWidth - width;
+          const maxTop = currentWindow.innerHeight - height;
 
           newRight = Math.max(0, Math.min(newRight, maxRight));
           newTop = Math.max(0, Math.min(newTop, maxTop));
@@ -130,12 +132,12 @@ const DevToolsPanel = observer(() => {
         }
       };
 
-      const d1 = domEventListener(window, 'mousemove', (e) => {
+      const d1 = domEventListener(currentWindow, 'mousemove', (e) => {
         handleMove(e.clientX, e.clientY);
       });
-      const d2 = domEventListener(window, 'mouseup', handleEnd);
+      const d2 = domEventListener(currentWindow, 'mouseup', handleEnd);
       const d3 = domEventListener(
-        window,
+        currentWindow,
         'touchmove',
         (e: TouchEvent) => {
           if (e.touches.length === 1) {
@@ -145,8 +147,8 @@ const DevToolsPanel = observer(() => {
         },
         { passive: true }
       );
-      const d4 = domEventListener(window, 'touchend', handleEnd);
-      const d5 = domEventListener(window, 'touchcancel', handleEnd);
+      const d4 = domEventListener(currentWindow, 'touchend', handleEnd);
+      const d5 = domEventListener(currentWindow, 'touchcancel', handleEnd);
 
       return () => {
         d1?.();

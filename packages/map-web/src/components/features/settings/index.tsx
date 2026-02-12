@@ -58,7 +58,7 @@ const Settings: React.FC<SettingsPageProps> = observer(({ open, onClose }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const isMobile = useIsMobile();
   const activeTab = uiManager.settingsTab as (typeof settingList)[number]['key'];
-  const setActiveTab = (key: string) => (uiManager.navigateSettings(key));
+  const setActiveTab = (key: string) => uiManager.navigateSettings(key);
 
   useEffect(() => {
     if (open) {
@@ -127,11 +127,14 @@ const Settings: React.FC<SettingsPageProps> = observer(({ open, onClose }) => {
   );
 });
 
+import { useWindow } from '@/context/window';
+
 export const SettingsPage: React.FC = observer(() => {
   const open = uiManager.settingsShown;
+  const currentWindow = useWindow();
   const onClose = () => uiManager.setSettingsShown(false);
   return createPortal(
     <AnimatePresence>{open && <Settings open={open} onClose={onClose} />}</AnimatePresence>,
-    document.body
+    currentWindow.document.body
   );
 });

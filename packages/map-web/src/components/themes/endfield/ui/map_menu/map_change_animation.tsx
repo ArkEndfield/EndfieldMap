@@ -1,3 +1,4 @@
+import { useWindow } from '@/context/window';
 import type { MapData } from '@endfieldmap/map-core';
 import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
@@ -10,6 +11,7 @@ interface MapChangeAnimationProps {
 
 export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({ showChangeAnimation, mapName }) => {
   const { t } = useTranslation(['header', 'lang']);
+  const currentWindow = useWindow();
 
   return createPortal(
     <motion.div
@@ -115,6 +117,6 @@ export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({ showChan
         </div>
       </motion.div>
     </motion.div>,
-    document.body
+    currentWindow.document.body
   );
 };

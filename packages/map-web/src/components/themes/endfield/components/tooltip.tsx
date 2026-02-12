@@ -5,6 +5,7 @@ import React, { createElement, useCallback, useEffect, useRef, useState } from '
 import { createPortal } from 'react-dom';
 
 import { usePortalContainer } from '@/components/common/portal_context';
+import { useWindow } from '@/context/window';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
 
@@ -34,6 +35,7 @@ const Tooltip = <T extends React.ElementType = 'div'>({
   const closeTimerRef = useRef<number | null>(null);
   const isMobile = useIsMobile();
   const portalContainer = usePortalContainer();
+  const currentWindow = useWindow();
 
   const disabled = _disabled || (disableOnMobile && isMobile);
 
@@ -42,8 +44,8 @@ const Tooltip = <T extends React.ElementType = 'div'>({
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const tooltipRect = measureRef.current.getBoundingClientRect();
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+    const viewportWidth = currentWindow.innerWidth;
+    const viewportHeight = currentWindow.innerHeight;
 
     let top = 0;
     let left = 0;
@@ -147,7 +149,7 @@ const Tooltip = <T extends React.ElementType = 'div'>({
 
     setPosition({ top, left });
     setContentWidth(tooltipRect.width);
-  }, [placement, offset]);
+  }, [placement, offset, currentWindow]);
 
   useEffect(() => {
     if (isOpen) {
@@ -155,8 +157,8 @@ const Tooltip = <T extends React.ElementType = 'div'>({
         calculatePosition();
       }, 0);
 
-      const unbindScroll = domEventListener(window, 'scroll', calculatePosition, { capture: true });
-      const unbindResize = domEventListener(window, 'resize', calculatePosition);
+      const unbindScroll = domEventListener(currentWindow, 'scroll', calculatePosition, { capture: true });
+      const unbindResize = domEventListener(currentWindow, 'resize', calculatePosition);
 
       return () => {
         clearTimeout(timer);
@@ -164,7 +166,7 @@ const Tooltip = <T extends React.ElementType = 'div'>({
         unbindResize();
       };
     }
-  }, [isOpen, calculatePosition, tooltip]);
+  }, [isOpen, calculatePosition, tooltip, currentWindow]);
 
   const handleMouseEnter = () => {
     if (disabled) return;
@@ -217,7 +219,7 @@ const Tooltip = <T extends React.ElementType = 'div'>({
           >
             <div className={cn('px-2 text-sm', classNames?.content)}>{tooltip}</div>
           </div>,
-          portalContainer || document.body
+          portalContainer || currentWindow.document.body
         )}
 
       {createPortal(
@@ -248,7 +250,7 @@ const Tooltip = <T extends React.ElementType = 'div'>({
             </motion.div>
           )}
         </AnimatePresence>,
-        portalContainer || document.body
+        portalContainer || currentWindow.document.body
       )}
     </>
   );

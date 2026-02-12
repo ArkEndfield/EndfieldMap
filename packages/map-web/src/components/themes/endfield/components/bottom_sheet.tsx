@@ -50,6 +50,8 @@ const getClassName = (
   return className;
 };
 
+import { useWindow } from '@/context/window';
+
 export const BottomSheet = ({
   title,
   open,
@@ -64,6 +66,7 @@ export const BottomSheet = ({
   const backdropControls = useAnimation();
   const sheetControls = useAnimation();
   const contentControls = useAnimation();
+  const currentWindow = useWindow();
 
   useEffect(() => {
     backdropControls.start({ opacity: open && !collapsed ? 1 : 0 });
@@ -152,6 +155,6 @@ export const BottomSheet = ({
         </div> */}
       </motion.div>
     </div>,
-    document.body
+    currentWindow.document.body
   );
 };

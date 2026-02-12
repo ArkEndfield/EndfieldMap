@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
 
 import { CloseButton } from '@/components/common/close_button';
+import { useWindow } from '@/context/window';
 import { cn } from '@/utils/style';
 
 export const OperationTip = ({
@@ -15,8 +16,10 @@ export const OperationTip = ({
   open: boolean;
   onClose: () => void;
   className?: string;
-}) =>
-  createPortal(
+}) => {
+  const currentWindow = useWindow();
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -45,5 +48,6 @@ export const OperationTip = ({
         </motion.div>
       )}
     </AnimatePresence>,
-    document.body
+    currentWindow.document.body
   );
+};

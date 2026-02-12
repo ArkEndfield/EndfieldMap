@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { useWindow } from '@/context/window';
 import shortcutService from '@/services/shortcut';
 import uiManager from '@/services/ui_manager';
 
@@ -31,6 +32,7 @@ export const ZmdAlert = ({
   ...props
 }: ZmdAlertProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const currentWindow = useWindow();
 
   // Logic Handlers
   const handleClose = useCallback(() => {
@@ -165,6 +167,6 @@ export const ZmdAlert = ({
       onClose={handleClose}
       onConfirm={handleConfirm}
     />,
-    document.body
+    currentWindow.document.body
   );
 };
