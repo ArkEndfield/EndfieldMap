@@ -10,11 +10,15 @@ import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import { Point } from 'ol/geom';
+import VectorLayer from 'ol/layer/Vector';
 import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import { Cluster } from 'ol/source';
 import VectorSource from 'ol/source/Vector';
 
-import { createEntityGroupWebGLStyle } from '@endfieldmap/map-core/render/renderer/entity/common/entity_group_style';
+import {
+  createClusterBadgeCanvasStyle,
+  createEntityGroupWebGLStyle,
+} from '@endfieldmap/map-core/render/renderer/entity/common/entity_group_style';
 
 /**
  * Entity组渲染器配置
@@ -76,8 +80,11 @@ export interface FeatureStateUpdate {
  * - 通过 Controller 显式调用 addFeatures/removeFeatures/updateFeatureState 更新渲染
  */
 export class EntityGroupRenderer {
-  /** 图层实例 */
+  /** WebGL 图层（主要渲染层） */
   public readonly layer: WebGLVectorLayer;
+
+  /** Canvas 图层（聚合 badge 文本层） */
+  public readonly badgeLayer: VectorLayer;
 
   /** 基础数据源 */
   private readonly baseSource: VectorSource;
@@ -106,7 +113,7 @@ export class EntityGroupRenderer {
       enableShadow: config.enableShadow,
     });
 
-    // 初始化 WebGL 图层 — 始终使用 clusterSource 作为数据源
+    // 初始化 WebGL 图层 — 主要渲染层
     this.layer = new WebGLVectorLayer({
       source: this.clusterSource,
       style: flatStyles,
@@ -115,6 +122,15 @@ export class EntityGroupRenderer {
       disableHitDetection: false,
     });
     this.layer.set(LayerTypeKey, LayerType.ENTITY);
+
+    // 初始化 Canvas 图层 — 聚合 badge 文本层
+    this.badgeLayer = new VectorLayer({
+      source: this.clusterSource,
+      style: createClusterBadgeCanvasStyle(),
+      visible: config.initialVisible ?? true,
+      zIndex: 6, // 确保在 WebGL 层之上
+    });
+    this.badgeLayer.set(LayerTypeKey, LayerType.ENTITY);
   }
 
   // #region 公共 API —— 由 Controller 调用
@@ -216,6 +232,7 @@ export class EntityGroupRenderer {
    */
   public setVisible(visible: boolean): void {
     this.layer.setVisible(visible);
+    this.badgeLayer.setVisible(visible);
   }
 
   /**
@@ -250,6 +267,7 @@ export class EntityGroupRenderer {
    */
   public refresh(): void {
     this.layer.changed();
+    this.badgeLayer.changed();
     this.clusterSource.changed();
   }
 
@@ -260,6 +278,7 @@ export class EntityGroupRenderer {
     this.featureMap.clear();
     this.baseSource.clear();
     this.layer.dispose();
+    this.badgeLayer.dispose();
   }
 
   // #endregion

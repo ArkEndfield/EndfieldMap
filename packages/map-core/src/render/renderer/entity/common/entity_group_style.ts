@@ -5,6 +5,12 @@ import {
   DEFAULT_STROKE_COLOR,
   DEFAULT_STROKE_WIDTH,
 } from '@endfieldmap/map-core/const/map';
+import type { Feature } from 'ol';
+import CircleStyle from 'ol/style/Circle';
+import Fill from 'ol/style/Fill';
+import Stroke from 'ol/style/Stroke';
+import Style from 'ol/style/Style';
+import Text from 'ol/style/Text';
 import type { ColorExpression, FlatStyle, NumberExpression } from 'ol/style/flat';
 
 const ENTITY_SIZE = DEFAULT_ICON_SIZE;
@@ -158,28 +164,67 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
     'icon-opacity': OPACITY_EXPRESSION,
   } as FlatStyle);
 
-  // 8. 聚合 badge 圆形（仅在 clusterSize > 1 时显示）
-  // 通过 opacity 控制显隐：clusterSize > 1 时显示，否则隐藏
-  styles.push({
-    'circle-radius': [
-      'interpolate',
-      ['linear'],
-      ['get', 'clusterSize'],
-      2,
-      8, // 2个点: 半径8
-      10,
-      10, // 10个点: 半径10
-      50,
-      12, // 50个点: 半径12
-      100,
-      14, // 100+个点: 半径14
-    ] as NumberExpression,
-    'circle-fill-color': [0xe0, 0x40, 0x40, 1],
-    'circle-stroke-color': [0xff, 0xff, 0xff, 1],
-    'circle-stroke-width': 1.5,
-    'circle-displacement': [radius, displacementY + radius],
-    'circle-opacity': ['case', ['>', ['get', 'clusterSize'], 1], 1, 0] as NumberExpression,
-  } as FlatStyle);
+  // 8. 聚合 badge 在单独的 Canvas 图层中渲染（支持文本）
 
   return styles;
+}
+
+/**
+ * 创建聚合 badge 的 Canvas 样式函数
+ * Canvas 支持文本渲染,用于在聚合点上显示数量
+ */
+export function createClusterBadgeCanvasStyle() {
+  const radius = ENTITY_RADIUS;
+  const strokeWidth = DEFAULT_STROKE_WIDTH;
+  const displacementY = radius + strokeWidth * 2;
+
+  return (feature: Feature) => {
+    const clusterSize = feature.get('clusterSize') as number;
+
+    // 只为聚合要素（size > 1）显示 badge
+    if (!clusterSize || clusterSize <= 1) {
+      return null;
+    }
+
+    const text = clusterSize > 999 ? '999+' : clusterSize.toString();
+    // 缩小字体大小
+    const fontSize = clusterSize > 99 ? 8 : clusterSize > 9 ? 9 : 10;
+
+    // Badge 圆形半径
+    const badgeRadius = 7;
+
+    // 使用标点装饰的颜色风格
+    const fillColor = hexToRgba(DEFAULT_FILL_COLOR);
+    const strokeColor = hexToRgba(DEFAULT_STROKE_COLOR);
+
+    // 返回两个样式：一个用于圆形，一个用于文本
+    return [
+      // 圆形背景
+      new Style({
+        image: new CircleStyle({
+          radius: badgeRadius,
+          fill: new Fill({ color: `rgba(${strokeColor[0]}, ${strokeColor[1]}, ${strokeColor[2]}, ${strokeColor[3]})` }),
+          stroke: new Stroke({
+            color: `rgba(${fillColor[0]}, ${fillColor[1]}, ${fillColor[2]}, ${fillColor[3]})`,
+            width: 2.5,
+          }),
+          // 圆形偏移：Y轴使用正值
+          displacement: [radius, displacementY + radius],
+        }),
+      }),
+      // 文本
+      new Style({
+        text: new Text({
+          text: text,
+          font: `bold ${fontSize}px Outfit, Arial, sans-serif`,
+          fill: new Fill({ color: '#ffffff' }),
+          textAlign: 'center',
+          textBaseline: 'middle',
+          // 文本偏移：Y轴使用负值
+          offsetX: radius,
+          offsetY: -(displacementY + radius),
+        }),
+      }),
+    ];
+  };
 }
