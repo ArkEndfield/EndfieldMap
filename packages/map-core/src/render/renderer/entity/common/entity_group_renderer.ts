@@ -142,7 +142,6 @@ export class EntityGroupRenderer {
     for (const item of items) {
       this.addSingleFeature(item);
     }
-    this.clusterSource.refresh();
   }
 
   /**
@@ -156,7 +155,6 @@ export class EntityGroupRenderer {
         this.featureMap.delete(id);
       }
     }
-    this.clusterSource.refresh();
   }
 
   /**
@@ -164,40 +162,25 @@ export class EntityGroupRenderer {
    * 将状态更新写入 feature 属性，WebGL 表达式自动响应
    * @param id feature ID
    * @param state 状态更新
-   * @param immediateRefresh 是否立即刷新 cluster（默认 true）。批量更新时传 false，最后统一刷新
    */
-  public updateFeatureState(id: number, state: FeatureStateUpdate, immediateRefresh: boolean = true): void {
+  public updateFeatureState(id: number, state: FeatureStateUpdate): void {
     const feature = this.featureMap.get(id);
     if (!feature) return;
 
-    // let needClusterRefresh = false;
-
     if (state.visible !== undefined) {
       feature.set('visible', state.visible ? 1 : 0, true);
-      // visible 变化影响 geometryFunction 的过滤
-      // needClusterRefresh = true;
     }
     if (state.marked !== undefined) {
       feature.set('marked', state.marked ? 1 : 0, true);
-      // marked 变化影响 cluster 的 markedState 计算
-      // needClusterRefresh = true;
     }
     if (state.selected !== undefined) {
       feature.set('selected', state.selected ? 1 : 0, true);
-      // selected 变化影响 cluster 的 selected 属性
-      // needClusterRefresh = true;
     }
     if (state.active !== undefined) {
       feature.set('active', state.active ? 1 : 0, true);
-      // active 变化影响 cluster 的 active 属性
-      // needClusterRefresh = true;
     }
 
     feature.changed();
-
-    if (immediateRefresh) {
-      this.clusterSource.refresh();
-    }
   }
 
   /**
@@ -230,8 +213,6 @@ export class EntityGroupRenderer {
    */
   public setClusterDistance(distance: number): void {
     this.clusterSource.setDistance(Math.max(0, distance));
-    this.clusterSource.refresh();
-    this.layer.changed();
   }
 
   /**
@@ -358,16 +339,10 @@ export class EntityGroupRenderer {
 
         const hasActive = subFeatures.some((f) => f.get('active') === 1) ? 1 : 0;
 
-        // marked 保持兼容性（有任何一个marked就是1）
         clusterFeature.set('marked', markedCount > 0 ? 1 : 0, true);
-        // markedState 用于更精细的透明度控制
         clusterFeature.set('markedState', markedState, true);
-
-        // selected 保持兼容性（有任何一个selected就是1）
         clusterFeature.set('selected', selectedCount > 0 ? 1 : 0, true);
-        // selectedState 用于更精细的透明度控制
         clusterFeature.set('selectedState', selectedState, true);
-
         clusterFeature.set('active', hasActive, true);
       }
     };

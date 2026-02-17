@@ -357,7 +357,7 @@ export class EntityController extends Disposer {
       for (const renderer of renderers) {
         // 更新所有 features
         for (const update of updates) {
-          renderer.updateFeatureState(update.id, { selected: update.selected }, false);
+          renderer.updateFeatureState(update.id, { selected: update.selected });
         }
       }
     }
