@@ -5,11 +5,11 @@ import {
   DEFAULT_STROKE_COLOR,
   DEFAULT_STROKE_WIDTH,
 } from '@endfieldmap/map-core/const/map';
-import type { Feature } from 'ol';
+import { FeatureLike } from 'ol/Feature';
 import CircleStyle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
-import Style from 'ol/style/Style';
+import Style, { StyleFunction } from 'ol/style/Style';
 import Text from 'ol/style/Text';
 import type { ColorExpression, FlatStyle, NumberExpression } from 'ol/style/flat';
 
@@ -47,19 +47,43 @@ function hexToRgba(color: string): [number, number, number, number] {
 }
 
 /**
- * WebGL 样式中用于控制 opacity 的表达式
- * 根据 feature 上的 selected / marked 属性动态计算透明度
+ * WebGL 样式中用于控制填充和图标 opacity 的表达式
+ * 只根据 markedState 计算透明度，不受 selectedState 影响
  *
- * selected=1 → 不透明 (1.0)
- * marked=1 且未选中 → 半透明 (0.4)
+ * markedState=2 (全部marked) → 半透明 (0.4)
+ * markedState=1 (部分marked) → 较透明 (0.6)
  * 默认 → 不透明 (1.0)
  */
-const OPACITY_EXPRESSION = [
+const FILL_OPACITY_EXPRESSION = [
   'case',
-  ['==', ['get', 'selected'], 1],
-  1,
-  ['==', ['get', 'marked'], 1],
+  ['==', ['get', 'markedState'], 2],
   0.4,
+  ['==', ['get', 'markedState'], 1],
+  0.6,
+  1,
+] as NumberExpression;
+
+/**
+ * WebGL 样式中用于控制描边 opacity 的表达式
+ * 根据 selectedState 和 markedState 计算透明度
+ *
+ * 优先级（从高到低）：
+ * 1. selectedState=2 (全部selected) → 不透明 (1.0)
+ * 2. selectedState=1 (部分selected) → 较透明 (0.7)
+ * 3. markedState=2 (全部marked) → 半透明 (0.4)
+ * 4. markedState=1 (部分marked) → 较透明 (0.6)
+ * 5. 默认 → 不透明 (1.0)
+ */
+const STROKE_OPACITY_EXPRESSION = [
+  'case',
+  ['==', ['get', 'selectedState'], 2],
+  1,
+  ['==', ['get', 'selectedState'], 1],
+  0.7,
+  ['==', ['get', 'markedState'], 2],
+  0.4,
+  ['==', ['get', 'markedState'], 1],
+  0.6,
   1,
 ] as NumberExpression;
 
@@ -95,7 +119,7 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
       'circle-radius': radius,
       'circle-fill-color': [0, 0, 0, 0.3],
       'circle-displacement': [0, displacementY],
-      'circle-opacity': OPACITY_EXPRESSION,
+      'circle-opacity': FILL_OPACITY_EXPRESSION,
     } as FlatStyle);
   }
 
@@ -110,17 +134,24 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
     ] as ColorExpression,
     'circle-stroke-width': strokeWidth,
     'circle-displacement': [0, displacementY],
-    'circle-opacity': OPACITY_EXPRESSION,
+    'circle-opacity': STROKE_OPACITY_EXPRESSION,
   } as FlatStyle);
 
-  // 3. 背景圆填充层
+  // 3a. 背景圆填充层（只有填充，无描边）
   styles.push({
     'circle-radius': radius + strokeWidth,
     'circle-fill-color': [...fillColor],
+    'circle-displacement': [0, displacementY],
+    'circle-opacity': FILL_OPACITY_EXPRESSION,
+  } as FlatStyle);
+
+  // 3b. 背景圆描边层（只有描边，无填充）
+  styles.push({
+    'circle-radius': radius + strokeWidth,
     'circle-stroke-color': STROKE_COLOR_EXPRESSION,
     'circle-stroke-width': strokeWidth,
     'circle-displacement': [0, displacementY],
-    'circle-opacity': OPACITY_EXPRESSION,
+    'circle-opacity': STROKE_OPACITY_EXPRESSION,
   } as FlatStyle);
 
   // 4. 左三角装饰
@@ -130,7 +161,7 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
     'shape-angle': 0.5 * Math.PI,
     'shape-fill-color': STROKE_COLOR_EXPRESSION,
     'shape-displacement': [-radius, displacementY],
-    'shape-opacity': OPACITY_EXPRESSION,
+    'shape-opacity': STROKE_OPACITY_EXPRESSION,
   } as FlatStyle);
 
   // 5. 右三角装饰
@@ -140,7 +171,7 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
     'shape-angle': -0.5 * Math.PI,
     'shape-fill-color': STROKE_COLOR_EXPRESSION,
     'shape-displacement': [radius, displacementY],
-    'shape-opacity': OPACITY_EXPRESSION,
+    'shape-opacity': STROKE_OPACITY_EXPRESSION,
   } as FlatStyle);
 
   // 6. 底部三角指示器
@@ -151,7 +182,7 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
     'shape-rotation': Math.PI,
     'shape-fill-color': STROKE_COLOR_EXPRESSION,
     'shape-displacement': [0, -1.5],
-    'shape-opacity': OPACITY_EXPRESSION,
+    'shape-opacity': STROKE_OPACITY_EXPRESSION,
   } as FlatStyle);
 
   // 7. 图标层
@@ -161,7 +192,7 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
     'icon-width': ENTITY_SIZE,
     'icon-height': ENTITY_SIZE,
     'icon-displacement': [0, displacementY],
-    'icon-opacity': OPACITY_EXPRESSION,
+    'icon-opacity': FILL_OPACITY_EXPRESSION,
   } as FlatStyle);
 
   // 8. 聚合 badge 在单独的 Canvas 图层中渲染（支持文本）
@@ -173,17 +204,17 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
  * 创建聚合 badge 的 Canvas 样式函数
  * Canvas 支持文本渲染,用于在聚合点上显示数量
  */
-export function createClusterBadgeCanvasStyle() {
+export function createClusterBadgeCanvasStyle(): StyleFunction {
   const radius = ENTITY_RADIUS;
   const strokeWidth = DEFAULT_STROKE_WIDTH;
   const displacementY = radius + strokeWidth * 2;
 
-  return (feature: Feature) => {
+  return (feature: FeatureLike) => {
     const clusterSize = feature.get('clusterSize') as number;
 
     // 只为聚合要素（size > 1）显示 badge
     if (!clusterSize || clusterSize <= 1) {
-      return null;
+      return [];
     }
 
     const text = clusterSize > 999 ? '999+' : clusterSize.toString();
@@ -193,7 +224,7 @@ export function createClusterBadgeCanvasStyle() {
     // Badge 圆形半径
     const badgeRadius = 7;
 
-    // 使用标点装饰的颜色风格
+    // 使用固定的颜色风格，不受 selected 状态影响
     const fillColor = hexToRgba(DEFAULT_FILL_COLOR);
     const strokeColor = hexToRgba(DEFAULT_STROKE_COLOR);
 

@@ -162,31 +162,40 @@ export class EntityGroupRenderer {
   /**
    * 更新单个 feature 的状态
    * 将状态更新写入 feature 属性，WebGL 表达式自动响应
+   * @param id feature ID
+   * @param state 状态更新
+   * @param immediateRefresh 是否立即刷新 cluster（默认 true）。批量更新时传 false，最后统一刷新
    */
-  public updateFeatureState(id: number, state: FeatureStateUpdate): void {
+  public updateFeatureState(id: number, state: FeatureStateUpdate, immediateRefresh: boolean = true): void {
     const feature = this.featureMap.get(id);
     if (!feature) return;
 
-    let needClusterRefresh = false;
+    // let needClusterRefresh = false;
 
     if (state.visible !== undefined) {
       feature.set('visible', state.visible ? 1 : 0, true);
       // visible 变化影响 geometryFunction 的过滤
-      needClusterRefresh = true;
+      // needClusterRefresh = true;
     }
     if (state.marked !== undefined) {
       feature.set('marked', state.marked ? 1 : 0, true);
+      // marked 变化影响 cluster 的 markedState 计算
+      // needClusterRefresh = true;
     }
     if (state.selected !== undefined) {
       feature.set('selected', state.selected ? 1 : 0, true);
+      // selected 变化影响 cluster 的 selected 属性
+      // needClusterRefresh = true;
     }
     if (state.active !== undefined) {
       feature.set('active', state.active ? 1 : 0, true);
+      // active 变化影响 cluster 的 active 属性
+      // needClusterRefresh = true;
     }
 
     feature.changed();
 
-    if (needClusterRefresh) {
+    if (immediateRefresh) {
       this.clusterSource.refresh();
     }
   }
@@ -212,8 +221,6 @@ export class EntityGroupRenderer {
         feature.set('active', state.active ? 1 : 0, true);
       }
     }
-
-    this.clusterSource.refresh();
     this.layer.changed();
   }
 
@@ -331,11 +338,36 @@ export class EntityGroupRenderer {
       clusterFeature.set('clusterSize', size, true);
 
       if (subFeatures && subFeatures.length > 0) {
-        const hasMarked = subFeatures.some((f) => f.get('marked') === 1) ? 1 : 0;
-        const hasSelected = subFeatures.some((f) => f.get('selected') === 1) ? 1 : 0;
+        // 计算 marked 状态：0=都不是, 1=部分marked, 2=全部marked
+        const markedCount = subFeatures.filter((f) => f.get('marked') === 1).length;
+        let markedState = 0;
+        if (markedCount === subFeatures.length) {
+          markedState = 2; // 全部marked
+        } else if (markedCount > 0) {
+          markedState = 1; // 部分marked
+        }
+
+        // 计算 selected 状态：0=都不是, 1=部分selected, 2=全部selected
+        const selectedCount = subFeatures.filter((f) => f.get('selected') === 1).length;
+        let selectedState = 0;
+        if (selectedCount === subFeatures.length) {
+          selectedState = 2; // 全部selected
+        } else if (selectedCount > 0) {
+          selectedState = 1; // 部分selected
+        }
+
         const hasActive = subFeatures.some((f) => f.get('active') === 1) ? 1 : 0;
-        clusterFeature.set('marked', hasMarked, true);
-        clusterFeature.set('selected', hasSelected, true);
+
+        // marked 保持兼容性（有任何一个marked就是1）
+        clusterFeature.set('marked', markedCount > 0 ? 1 : 0, true);
+        // markedState 用于更精细的透明度控制
+        clusterFeature.set('markedState', markedState, true);
+
+        // selected 保持兼容性（有任何一个selected就是1）
+        clusterFeature.set('selected', selectedCount > 0 ? 1 : 0, true);
+        // selectedState 用于更精细的透明度控制
+        clusterFeature.set('selectedState', selectedState, true);
+
         clusterFeature.set('active', hasActive, true);
       }
     };

@@ -306,6 +306,78 @@ export class EntityController extends Disposer {
     this.applyMarkedFilterMode();
   }
 
+  /**
+   * 设置 Selected 状态
+   * 同时更新数据和渲染
+   */
+  public setSelected(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], selected: boolean): void {
+    const instance = this.dataManager.getInstanceById(mapId, levelLogicId);
+    if (instance) {
+      instance.setSelected(selected);
+      // 同步渲染
+      this.render.updateFeatureState(mapId, instance.id, {
+        selected: instance.selected,
+      });
+    }
+  }
+
+  /**
+   * 批量设置 Selected 状态
+   * 用于选择交互，可以更高效地批量更新
+   */
+  public batchSetSelected(
+    items: Array<{ mapId: MapData['id']; levelLogicId: EntityData['levelLogicId']; selected: boolean }>
+  ): void {
+    // 按 mapId 分组
+    const groupedByMap = new Map<MapData['id'], Array<{ id: number; selected: boolean }>>();
+
+    for (const item of items) {
+      const instance = this.dataManager.getInstanceById(item.mapId, item.levelLogicId);
+      if (!instance) continue;
+
+      // 状态没变化，跳过
+      if (instance.selected === item.selected) continue;
+
+      // 更新数据
+      instance.setSelected(item.selected);
+
+      // 收集渲染更新信息
+      if (!groupedByMap.has(item.mapId)) {
+        groupedByMap.set(item.mapId, []);
+      }
+      groupedByMap.get(item.mapId)!.push({
+        id: instance.id,
+        selected: instance.selected,
+      });
+    }
+
+    // 批量同步渲染（每个地图只刷新一次）
+    for (const [mapId, updates] of groupedByMap) {
+      const renderers = this.render.getRenderers(mapId);
+      for (const renderer of renderers) {
+        // 更新所有 features
+        for (const update of updates) {
+          renderer.updateFeatureState(update.id, { selected: update.selected }, false);
+        }
+      }
+    }
+  }
+
+  /**
+   * 设置 Active 状态
+   * 同时更新数据和渲染
+   */
+  public setActive(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], active: boolean): void {
+    const instance = this.dataManager.getInstanceById(mapId, levelLogicId);
+    if (instance) {
+      instance.setActive(active);
+      // 同步渲染
+      this.render.updateFeatureState(mapId, instance.id, {
+        active: instance.active,
+      });
+    }
+  }
+
   // #endregion
 
   // #region 数据导入导出

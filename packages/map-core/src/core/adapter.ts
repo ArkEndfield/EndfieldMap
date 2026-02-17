@@ -1,4 +1,4 @@
-import { LayerType } from '@endfieldmap/map-core/const';
+import { EntityInstanceKey, LayerType } from '@endfieldmap/map-core/const';
 import { AreaNameController } from '@endfieldmap/map-core/controller/core/area_name';
 import { EndfieldMapLayerController } from '@endfieldmap/map-core/controller/core/layer';
 import { MapController } from '@endfieldmap/map-core/controller/core/map';
@@ -180,6 +180,36 @@ export class EndfieldMapAdapter {
     if (config.isDev) {
       this.devToolsController = new DevToolsController({ mapInstance });
     }
+
+    // 设置 selection 的回调，通过 controller 批量更新 selected 状态
+    let updateTimer: ReturnType<typeof setTimeout> | null = null;
+    const pendingUpdates = new Map<string, { mapId: MapData['id']; levelLogicId: number; selected: boolean }>();
+
+    mapInstance.selection.setOnSelectionChange((feature, selected) => {
+      const dataInstance = feature.get(EntityInstanceKey) as EntityDataInstance | undefined;
+      if (!dataInstance) return;
+
+      // 状态没变化，跳过
+      if (dataInstance.selected === selected) return;
+
+      const mapId = this.mapController.dataManager.currentMapId;
+      const levelLogicId = dataInstance.id;
+      const key = `${mapId}-${levelLogicId}`;
+
+      // 收集待更新的项
+      pendingUpdates.set(key, { mapId, levelLogicId, selected });
+
+      // 使用 requestAnimationFrame 批量更新
+      if (!updateTimer) {
+        updateTimer = requestAnimationFrame(() => {
+          if (pendingUpdates.size > 0) {
+            this.entityController.batchSetSelected(Array.from(pendingUpdates.values()));
+            pendingUpdates.clear();
+          }
+          updateTimer = null;
+        }) as any;
+      }
+    });
   }
 
   /**

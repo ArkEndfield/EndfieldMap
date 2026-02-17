@@ -22,6 +22,7 @@ export class EndfieldSelectionInteraction {
   public dragBox: DragBox;
   private mapInstance: EndfieldMap;
   private emitter: EndfieldMapEmitter;
+  private onSelectionChange?: (feature: Feature<Geometry>, selected: boolean) => void;
 
   constructor(mapInstance: EndfieldMap, emitter: EndfieldMapEmitter) {
     this.mapInstance = mapInstance;
@@ -40,6 +41,13 @@ export class EndfieldSelectionInteraction {
     this.initDragBox();
     this.initSelectionListener();
     this.initClickListener();
+  }
+
+  /**
+   * 设置选择状态变化的回调函数
+   */
+  public setOnSelectionChange(callback: (feature: Feature<Geometry>, selected: boolean) => void): void {
+    this.onSelectionChange = callback;
   }
 
   private initSelectionListener() {
@@ -102,8 +110,15 @@ export class EndfieldSelectionInteraction {
       if (!source?.getFeatures) return;
 
       source.getFeatures().forEach((feature: Feature<Geometry>) => {
-        const dataInstance = feature.get(EntityInstanceKey) as DataInstance | undefined;
-        dataInstance?.setSelected?.(selectedSingleFeatures.has(feature));
+        const selected = selectedSingleFeatures.has(feature);
+        // 使用回调通知 controller 更新状态
+        if (this.onSelectionChange) {
+          this.onSelectionChange(feature, selected);
+        } else {
+          // 回退：直接修改（为了兼容性，但应该通过 controller）
+          const dataInstance = feature.get(EntityInstanceKey) as DataInstance | undefined;
+          dataInstance?.setSelected?.(selected);
+        }
       });
     });
   }
