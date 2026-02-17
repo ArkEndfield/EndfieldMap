@@ -5,12 +5,14 @@ import {
   getElectricPoleDeviceConfig,
 } from '@endfieldmap/map-core/const/electric_pole';
 import { ElectricPoleIdKey, ElectricPoleKey } from '@endfieldmap/map-core/const/map';
+import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
 import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_map_data_manager';
-import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { ElectricPoleRender } from '@endfieldmap/map-core/render/renderer/entity/electric_pole';
+import type { ElectricPoleFeatureData } from '@endfieldmap/map-core/render/renderer/entity/electric_pole/electric_pole_renderer';
+import type { ZoneData } from '@endfieldmap/map-core/render/renderer/entity/electric_pole/electric_pole_zone_renderer';
 import type { ElectricPoleData, ElectricPoleMapData, ElectricPoleNodeData, MapData } from '@endfieldmap/map-core/types';
 import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
 import { calculateXYZDistance, logger } from '@endfieldmap/tools';
@@ -25,25 +27,33 @@ export interface ElectricPoleControllerConfig {
 
 /**
  * 电线杆控制器
- * 负责协调ElectricPoleDataManager和ElectricPoleRenderer
+ * 负责协调 ElectricPoleDataManager 和 ElectricPoleRenderer
+ *
+ * 设计原则：
+ * - Controller 是数据与渲染的唯一协调者
+ * - 所有数据变更通过 Controller 路由
+ * - 渲染器通过 Controller 显式调用更新
  */
 export class ElectricPoleController extends Disposer {
   /** 数据管理器 */
   public readonly dataManager: ElectricPoleMapDataManager;
 
   /** 渲染器缓存 */
-  private render: ElectricPoleRender;
+  public render: ElectricPoleRender;
 
   private mapDataManager: MapDataManager;
+  private asset: EndfieldMapAsset;
+  private mapInstance: EndfieldMap;
 
   constructor(config: ElectricPoleControllerConfig) {
     super();
     this.mapDataManager = config.mapDataManager;
+    this.mapInstance = config.mapInstance;
+    this.asset = config.asset;
     this.dataManager = new ElectricPoleMapDataManager(config.mapDataManager);
     this.render = new ElectricPoleRender({
-      dataManager: this.dataManager,
-      mapDataManager: config.mapDataManager,
       mapInstance: config.mapInstance,
+      mapIds: config.mapDataManager.mapIds,
       entityImagePath: config.asset.entityImage,
     });
     this.initListeners();
@@ -54,7 +64,7 @@ export class ElectricPoleController extends Disposer {
     const disposer = reaction(
       () => this.mapDataManager.currentMapId,
       (mapId) => {
-        this.render.render(mapId);
+        this.render.switchMap(mapId);
       },
       { fireImmediately: true }
     );
@@ -94,7 +104,89 @@ export class ElectricPoleController extends Disposer {
       const poleList = list as ElectricPoleData[];
       this.dataManager.loadMapData(mapId, poleList);
       this.syncConnectionsForMap(mapId);
-    }    
+    }
+
+    // 初始化渲染器
+    this.initializeRenderers();
+
+    // 切换到当前地图
+    this.render.switchMap(this.mapDataManager.currentMapId);
+  }
+
+  /**
+   * 初始化所有渲染器
+   */
+  private initializeRenderers(): void {
+    const imagePath = this.asset.entityImage;
+    const mapIds = Array.from(this.dataManager.mapManagers.keys());
+
+    // 重建 render
+    this.render.dispose();
+    this.render = new ElectricPoleRender({
+      mapInstance: this.mapInstance,
+      mapIds,
+      entityImagePath: imagePath,
+    });
+
+    for (const mapId of mapIds) {
+      const manager = this.dataManager.getMapManager(mapId);
+
+      // 按 deviceKey 分组
+      const instancesByDevice = new Map<string, ElectricPoleDataInstance[]>();
+      for (const instance of manager.instances) {
+        const deviceKey = instance.deviceKey;
+        if (!instancesByDevice.has(deviceKey)) {
+          instancesByDevice.set(deviceKey, []);
+        }
+        instancesByDevice.get(deviceKey)!.push(instance);
+      }
+
+      // 为每种设备类型创建渲染器
+      for (const [deviceKey, instances] of instancesByDevice) {
+        const config = getElectricPoleDeviceConfig(deviceKey as ElectricPoleDeviceKey);
+        const deviceVisible = this.dataManager.getDeviceVisible(deviceKey as ElectricPoleDeviceKey);
+
+        const renderers = this.render.createRenderer(mapId, deviceKey, {
+          iconPath: `${imagePath}/${config.iconPic}.png`,
+          initialVisible: deviceVisible && this.dataManager.visible,
+          zoneVisible: this.dataManager.zoneVisible && deviceVisible && this.dataManager.visible,
+        });
+
+        // 生成 FeatureData 并批量添加
+        const featureDataList: ElectricPoleFeatureData[] = instances.map((instance) => ({
+          id: instance.id,
+          coordinates: instance.coordinates,
+          dataInstance: instance,
+          visible: instance.visible,
+          active: instance.active,
+        }));
+        renderers.pole.addFeatures(featureDataList);
+
+        // 生成 ZoneData 并批量添加
+        const zoneDataList: ZoneData[] = instances.map((instance) => ({
+          id: instance.id,
+          coordinates: instance.coordinates,
+          radius: instance.zoneRadius,
+          dataInstance: instance,
+          visible: instance.visible,
+        }));
+        renderers.zone.addZones(zoneDataList);
+
+        // 添加连线（只有当起点和终点都可见时才添加）
+        for (const instance of instances) {
+          for (const target of instance.outgoingConnections) {
+            if (instance.visible && target.visible) {
+              renderers.pole.addConnection({
+                fromInstance: instance,
+                fromCoordinates: instance.coordinates,
+                targetId: target.id,
+                targetCoordinates: target.coordinates,
+              });
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -157,19 +249,138 @@ export class ElectricPoleController extends Disposer {
   }
 
   /**
-   * 将电线杆数据添加到管理器中
+   * 将电线杆数据添加到管理器中，同时同步渲染器
    */
+  @action
   public addElectricPoleData(mapId: MapData['id'], data: ElectricPoleData): ElectricPoleDataInstance {
     const manager = this.dataManager.getMapManager(mapId);
     const instance = manager.addWithConnection(data);
+    const deviceKey = instance.deviceKey;
+
+    // 确保渲染器存在
+    let renderers = this.render.getRenderer(mapId, deviceKey);
+    if (!renderers) {
+      const config = getElectricPoleDeviceConfig(deviceKey);
+      const imagePath = this.asset.entityImage;
+      renderers = this.render.createRenderer(mapId, deviceKey, {
+        iconPath: `${imagePath}/${config.iconPic}.png`,
+        initialVisible: this.dataManager.visible,
+        zoneVisible: this.dataManager.zoneVisible && this.dataManager.visible,
+      });
+
+      if (this.mapDataManager.currentMapId === mapId) {
+        this.render.switchMap(mapId);
+      }
+    }
+
+    // 添加点 feature
+    renderers.pole.addFeatures([
+      {
+        id: instance.id,
+        coordinates: instance.coordinates,
+        dataInstance: instance,
+        visible: instance.visible,
+        active: instance.active,
+      },
+    ]);
+
+    // 添加 zone
+    renderers.zone.addZones([
+      {
+        id: instance.id,
+        coordinates: instance.coordinates,
+        radius: instance.zoneRadius,
+        dataInstance: instance,
+        visible: instance.visible,
+      },
+    ]);
+
+    // 添加连线（outgoing connections）
+    for (const target of instance.outgoingConnections) {
+      if (instance.visible && target.visible) {
+        renderers.pole.addConnection({
+          fromInstance: instance,
+          fromCoordinates: instance.coordinates,
+          targetId: target.id,
+          targetCoordinates: target.coordinates,
+        });
+      }
+    }
+
+    // 添加反向连线（incoming connections）
+    // 其他电线杆可能已经指向这个新建的电线杆
+    for (const source of instance.incomingConnections) {
+      // 查找源电线杆的渲染器
+      const sourceRenderers = this.render.getRenderer(mapId, source.deviceKey);
+      if (sourceRenderers && source.visible && instance.visible) {
+        sourceRenderers.pole.addConnection({
+          fromInstance: source,
+          fromCoordinates: source.coordinates,
+          targetId: instance.id,
+          targetCoordinates: instance.coordinates,
+        });
+      }
+    }
 
     return instance;
   }
 
+  /**
+   * 建立两个电线杆之间的连接（数据 + 渲染同步）
+   */
+  @action
+  public connectElectricPoles(mapId: MapData['id'], fromId: number, toId: number): void {
+    const manager = this.dataManager.getMapManager(mapId);
+    const fromInstance = manager.getById(fromId);
+    const toInstance = manager.getById(toId);
+
+    if (!fromInstance || !toInstance) {
+      logger.error('[ElectricPoleController] Instance not found for connection', { mapId, fromId, toId });
+      return;
+    }
+
+    // 数据层：建立连接
+    fromInstance.connectTo(toInstance);
+
+    // 渲染层：添加连线
+    const renderers = this.render.getRenderer(mapId, fromInstance.deviceKey);
+    if (renderers && fromInstance.visible && toInstance.visible) {
+      renderers.pole.addConnection({
+        fromInstance,
+        fromCoordinates: fromInstance.coordinates,
+        targetId: toInstance.id,
+        targetCoordinates: toInstance.coordinates,
+      });
+    }
+  }
 
   /**
-   * 删除电线杆
+   * 断开两个电线杆之间的连接（数据 + 渲染同步）
    */
+  @action
+  public disconnectElectricPoles(mapId: MapData['id'], fromId: number, toId: number): void {
+    const manager = this.dataManager.getMapManager(mapId);
+    const fromInstance = manager.getById(fromId);
+
+    if (!fromInstance) {
+      logger.error('[ElectricPoleController] Instance not found for disconnection', { mapId, fromId, toId });
+      return;
+    }
+
+    // 数据层：断开连接
+    fromInstance.disconnectOutgoingTo(toId);
+
+    // 渲染层：移除连线
+    const renderers = this.render.getRenderer(mapId, fromInstance.deviceKey);
+    if (renderers) {
+      renderers.pole.removeConnection(fromId, toId);
+    }
+  }
+
+  /**
+   * 删除电线杆，同时同步渲染器
+   */
+  @action
   public deleteElectricPole(mapId: MapData['id'], id: number): boolean {
     const manager = this.dataManager.getMapManager(mapId);
     const instance = manager.getById(id);
@@ -179,8 +390,19 @@ export class ElectricPoleController extends Disposer {
       return false;
     }
 
-    // 清理连接关系 + 从管理器中移除
-    return manager.removeWithCleanup(id);
+    const deviceKey = instance.deviceKey;
+
+    // 从数据管理器移除（含清理连接关系）
+    const result = manager.removeWithCleanup(id);
+
+    // 从渲染器移除
+    const renderers = this.render.getRenderer(mapId, deviceKey);
+    if (renderers) {
+      renderers.pole.removeFeatures([id]);
+      renderers.zone.removeZones([id]);
+    }
+
+    return result;
   }
 
   /**
@@ -216,6 +438,9 @@ export class ElectricPoleController extends Disposer {
     this.dataManager.setVisible(visible);
 
     this.render.setVisible(visible);
+
+    // 同步 zone 可见性
+    this.render.setZoneVisible(this.dataManager.zoneVisible && visible);
   }
 
   /**
@@ -223,6 +448,11 @@ export class ElectricPoleController extends Disposer {
    */
   public setDeviceVisible(deviceKey: ElectricPoleDeviceKey, visible: boolean): void {
     this.dataManager.setDeviceVisible(deviceKey, visible);
+
+    // 同步渲染器：需要同步所有地图中该设备类型的渲染
+    for (const [mapId, manager] of this.dataManager.mapManagers) {
+      this.syncDeviceVisibilityToRenderer(mapId, deviceKey, visible);
+    }
   }
 
   /**
@@ -230,6 +460,9 @@ export class ElectricPoleController extends Disposer {
    */
   public setMapDeviceVisible(mapId: MapData['id'], deviceKey: ElectricPoleDeviceKey, visible: boolean): void {
     this.dataManager.setMapDeviceVisible(mapId, deviceKey, visible);
+
+    // 同步渲染器
+    this.syncDeviceVisibilityToRenderer(mapId, deviceKey, visible);
   }
 
   /**
@@ -244,6 +477,55 @@ export class ElectricPoleController extends Disposer {
    */
   public importVisibility(data: { mapId: MapData['id']; entityKey: string; visible: boolean }[]): void {
     this.dataManager.importVisibilityData(data);
+
+    // 同步渲染器
+    for (const item of data) {
+      this.syncDeviceVisibilityToRenderer(item.mapId, item.entityKey, item.visible);
+    }
   }
+
+  /**
+   * 同步设备可见性到渲染器
+   * 当设备类型的可见性变化时，需要：
+   * 1. 更新图层可见性
+   * 2. 更新每个 feature 的 visible 状态
+   * 3. 更新连线和 zone 的可见性
+   */
+  private syncDeviceVisibilityToRenderer(mapId: MapData['id'], deviceKey: string, visible: boolean): void {
+    const renderers = this.render.getRenderer(mapId, deviceKey);
+    if (!renderers) return;
+
+    // 1. 设置图层整体可见性
+    renderers.pole.setVisible(visible);
+    renderers.zone.setVisible(visible);
+
+    // 2. 更新每个 feature 的 visible 属性（供 WebGL 表达式使用）
+    const manager = this.dataManager.getMapManager(mapId);
+    const instances = manager.instances.filter((i) => i.deviceKey === deviceKey);
+
+    for (const instance of instances) {
+      // 更新点 feature 的可见性
+      renderers.pole.updateFeatureState(instance.id, {
+        visible: instance.visible,
+      });
+
+      // 更新 zone 的可见性
+      renderers.zone.updateZoneVisibility(instance.id, instance.visible, instance.coordinates, instance.zoneRadius);
+
+      // 更新连线：移除旧连线，根据新的可见性重新添加
+      for (const target of instance.outgoingConnections) {
+        renderers.pole.removeConnection(instance.id, target.id);
+        if (instance.visible && target.visible) {
+          renderers.pole.addConnection({
+            fromInstance: instance,
+            fromCoordinates: instance.coordinates,
+            targetId: target.id,
+            targetCoordinates: target.coordinates,
+          });
+        }
+      }
+    }
+  }
+
   // #endregion
 }

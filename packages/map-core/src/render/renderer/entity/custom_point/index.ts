@@ -1,84 +1,178 @@
-import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
 import { CustomPointRenderer } from '@endfieldmap/map-core/render/renderer/entity/custom_point/custom_point_renderer';
 import type { MapData } from '@endfieldmap/map-core/types';
-import VectorLayer from 'ol/layer/Vector';
+import type WebGLVectorLayer from 'ol/layer/WebGLVector';
 
 export interface CustomPointRenderConfig {
-  dataManager: CustomPointMapDataManager;
-  mapDataManager: MapDataManager;
   mapInstance: EndfieldMap;
+  mapIds: MapData['id'][];
   asset: { entityImage: string };
 }
 
+/**
+ * 自定义标点渲染管理器
+ * 管理所有地图的自定义标点渲染器
+ *
+ * 设计原则：
+ * - 不持有 DataManager 引用
+ * - 通过 Controller 显式创建渲染器和管理图层
+ */
 export class CustomPointRender {
-  public renderInstances: Map<MapData['id'], CustomPointRenderer> = new Map();
-  private renderInstance: VectorLayer | null = null;
-  private mapDataManager: MapDataManager;
+  /** 每个地图每种类型的渲染器：mapId -> (typeId -> CustomPointRenderer) */
+  private renders: Map<MapData['id'], Map<string, CustomPointRenderer>> = new Map();
+
+  /** 当前显示的图层 */
+  private currentLayers: WebGLVectorLayer[] = [];
+
+  /** 地图实例 */
   private mapInstance: EndfieldMap;
 
+  /** 资源路径 */
+  private asset: { entityImage: string };
+
   constructor(config: CustomPointRenderConfig) {
-    this.mapDataManager = config.mapDataManager;
     this.mapInstance = config.mapInstance;
-    this.mapDataManager.data.forEach((item) => {
-      this.renderInstances.set(
-        item.id,
-        new CustomPointRenderer({
-          dataManager: config.dataManager.getMapManager(item.id),
-          iconSize: 20, // TODO: 以后调整
-          asset: config.asset,
-        })
-      );
-    });
-  }
+    this.asset = config.asset;
 
-  /** 渲染地图 */
-  public render(mapId: MapData['id']) {
-    const customPointInstance = this.getCustomPointInstance(mapId);
-    if (customPointInstance) {
-      this.clearLayer();
-      this.mapInstance.map.addLayer(customPointInstance.layer);
-      this.renderInstance = customPointInstance.layer;
+    // 为每个地图初始化空的渲染器 map
+    for (const mapId of config.mapIds) {
+      this.renders.set(mapId, new Map());
     }
-  }
-
-  public getCustomPointInstance(mapId: MapData['id']) {
-    const instance = this.renderInstances.get(mapId);
-    if (!instance) {
-      throw new Error(`CustomPointRender: current map ${mapId} not found`);
-    }
-    return instance;
-  }
-
-  /** 获取当前地图 */
-  public get currentCustomPointInstance() {
-    return this.getCustomPointInstance(this.mapDataManager.currentMapId);
   }
 
   /**
-   * 设置可见性
-   * @param visible 可见性
+   * 为指定地图创建指定类型的渲染器
    */
-  public setVisible(visible: boolean) {
-    this.renderInstances.forEach((instance) => {
-      instance.setVisible(visible);
+  public createRenderer(
+    mapId: MapData['id'],
+    typeId: string,
+    config: { iconPath: string; initialVisible?: boolean }
+  ): CustomPointRenderer {
+    let mapRenderers = this.renders.get(mapId);
+    if (!mapRenderers) {
+      mapRenderers = new Map();
+      this.renders.set(mapId, mapRenderers);
+    }
+
+    // 如果已存在，先销毁
+    const existing = mapRenderers.get(typeId);
+    if (existing) {
+      existing.dispose();
+    }
+
+    const renderer = new CustomPointRenderer({
+      iconPath: config.iconPath,
+      initialVisible: config.initialVisible,
     });
+
+    mapRenderers.set(typeId, renderer);
+    return renderer;
   }
 
-  /** 清除图层 */
-  public clearLayer() {
-    if (this.renderInstance) {
-      this.mapInstance.map.removeLayer(this.renderInstance);
-      this.renderInstance = null;
+  /**
+   * 获取指定地图指定类型的渲染器
+   */
+  public getRenderer(mapId: MapData['id'], typeId: string): CustomPointRenderer | undefined {
+    return this.renders.get(mapId)?.get(typeId);
+  }
+
+  /**
+   * 获取指定地图的所有渲染器
+   */
+  public getRenderers(mapId: MapData['id']): CustomPointRenderer[] {
+    const mapRenderers = this.renders.get(mapId);
+    if (!mapRenderers) return [];
+    return Array.from(mapRenderers.values());
+  }
+
+  /**
+   * 切换地图：移除旧图层，添加新图层
+   */
+  public switchMap(mapId: MapData['id']): void {
+    // 移除旧图层
+    for (const layer of this.currentLayers) {
+      this.mapInstance.map.removeLayer(layer);
+    }
+    this.currentLayers = [];
+
+    // 添加新图层
+    const mapRenderers = this.renders.get(mapId);
+    if (mapRenderers) {
+      for (const renderer of mapRenderers.values()) {
+        this.mapInstance.map.addLayer(renderer.layer);
+        this.currentLayers.push(renderer.layer);
+      }
     }
   }
 
-  /** 释放资源 */
-  public dispose() {
+  /**
+   * 获取当前显示的渲染器列表（用于 hit test）
+   */
+  public get currentRenderer(): CustomPointRenderer[] {
+    const renderers: CustomPointRenderer[] = [];
+    for (const [, mapRenderers] of this.renders) {
+      for (const renderer of mapRenderers.values()) {
+        if (this.currentLayers.includes(renderer.layer)) {
+          renderers.push(renderer);
+        }
+      }
+    }
+    return renderers;
+  }
+
+  /**
+   * 获取资源路径
+   */
+  public get entityImagePath(): string {
+    return this.asset.entityImage;
+  }
+
+  /**
+   * 设置指定地图所有渲染器的可见性
+   */
+  public setGroupVisible(mapId: MapData['id'], typeId: string, visible: boolean): void {
+    const renderer = this.renders.get(mapId)?.get(typeId);
+    if (renderer) {
+      renderer.setVisible(visible);
+    }
+  }
+
+  /**
+   * 更新指定地图指定 feature 的状态
+   */
+  public updateFeatureState(
+    mapId: MapData['id'],
+    featureId: number,
+    state: { visible?: boolean; active?: boolean }
+  ): void {
+    const mapRenderers = this.renders.get(mapId);
+    if (mapRenderers) {
+      for (const renderer of mapRenderers.values()) {
+        renderer.updateFeatureState(featureId, state);
+      }
+    }
+  }
+
+  /**
+   * 清除所有图层
+   */
+  public clearLayer(): void {
+    for (const layer of this.currentLayers) {
+      this.mapInstance.map.removeLayer(layer);
+    }
+    this.currentLayers = [];
+  }
+
+  /**
+   * 销毁所有渲染器
+   */
+  public dispose(): void {
     this.clearLayer();
-    this.renderInstances.forEach((instance) => {
-      instance.dispose();
-    });
+    for (const [, mapRenderers] of this.renders) {
+      for (const renderer of mapRenderers.values()) {
+        renderer.dispose();
+      }
+    }
+    this.renders.clear();
   }
 }

@@ -1,5 +1,6 @@
 import type { Coordinate } from 'ol/coordinate';
 import type VectorLayer from 'ol/layer/Vector';
+import type WebGLVectorLayer from 'ol/layer/WebGLVector';
 
 /**
  * 可 Hit Test 的图层接口
@@ -7,7 +8,7 @@ import type VectorLayer from 'ol/layer/Vector';
  */
 export interface HitTestableLayer {
   /** 图层实例 */
-  layer: VectorLayer;
+  layer: VectorLayer | WebGLVectorLayer;
   /** 可见性 */
   visible: boolean;
   /** 获取最接近指定坐标的聚合中心坐标（可选，仅聚合图层需要） */

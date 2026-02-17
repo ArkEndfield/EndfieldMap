@@ -6,65 +6,145 @@ import {
   LayerType,
   LayerTypeKey,
 } from '@endfieldmap/map-core/const/map';
-import type {
-  ElectricPoleDataInstance,
-  ElectricPoleDataManager,
-} from '@endfieldmap/map-core/data/entity/electric_pole';
-import { action, type IReactionDisposer, observable, reaction } from 'mobx';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
+
+import {
+  CONNECTION_STYLE_HOVER,
+  CONNECTION_STYLE_NORMAL,
+} from '@endfieldmap/map-core/render/renderer/entity/electric_pole/electric_pole_style';
+
+import { logger } from '@endfieldmap/tools';
+import { action, observable } from 'mobx';
 import { Feature } from 'ol';
+import type { Coordinate } from 'ol/coordinate';
 import type { FeatureLike } from 'ol/Feature';
 import { LineString, Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
+import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import VectorSource from 'ol/source/Vector';
+import Stroke from 'ol/style/Stroke';
+import Style from 'ol/style/Style';
 
-import { ElectricPoleStyleProvider } from './electric_pole_style';
+import { createElectricPoleWebGLStyle } from './electric_pole_webgl_style';
 
 /**
  * 电线杆渲染器配置
  */
 export interface ElectricPoleRendererConfig {
-  /** 数据管理器 */
-  dataManager: ElectricPoleDataManager;
-  /** 图标大小 */
-  iconSize?: number;
+  /** 图标路径 */
+  iconPath: string;
   /** 渲染缓冲区 */
   renderBuffer?: number;
   /** 是否启用阴影 */
   enableShadow?: boolean;
-  /** 实体图片路径 */
-  entityImagePath?: string;
+  /** 初始可见性 */
+  initialVisible?: boolean;
 }
 
 /**
- * Feature映射信息
+ * 添加 Feature 所需的数据
  */
-interface FeatureMapping {
-  /** 点feature */
-  pointFeature: Feature;
-  /** 连线features（targetId -> feature） */
-  connectionFeatures: Map<number, Feature>;
-  /** 数据实例 */
+export interface ElectricPoleFeatureData {
+  /** 数据实例ID */
+  id: number;
+  /** 坐标 */
+  coordinates: Coordinate;
+  /** 数据实例引用（供 hit test 使用） */
   dataInstance: ElectricPoleDataInstance;
-  /** reaction disposer */
-  disposer: IReactionDisposer;
+  /** 是否可见 */
+  visible: boolean;
+  /** 是否激活 */
+  active: boolean;
 }
 
 /**
- * 电线杆渲染器
- * 负责渲染电线杆实体和连接线
+ * Feature 状态更新
+ */
+export interface ElectricPoleFeatureStateUpdate {
+  visible?: boolean;
+  active?: boolean;
+}
+
+/**
+ * 连线数据
+ */
+export interface ConnectionData {
+  /** 起始实例 */
+  fromInstance: ElectricPoleDataInstance;
+  /** 起始坐标 */
+  fromCoordinates: Coordinate;
+  /** 目标实例ID */
+  targetId: number;
+  /** 目标坐标 */
+  targetCoordinates: Coordinate;
+}
+
+/**
+ * 电线杆渲染器（WebGL 点层 + VectorLayer 连线层）
+ *
+ * 设计原则：
+ * - 不持有 DataManager 引用
+ * - 不包含 MobX 监听（仅保留 hoveredFeature observable）
+ * - 通过 Controller 显式调用 addFeatures/removeFeatures/updateFeatureState 更新渲染
+ * - 连线层保持 VectorLayer（WebGL 不支持 LineString）
  */
 export class ElectricPoleRenderer {
-  /** 数据管理器 */
-  public readonly dataManager: ElectricPoleDataManager;
+  /** 实体图层（WebGL） */
+  public readonly entityLayer: WebGLVectorLayer;
 
-  /** 实体图层 */
-  public readonly entityLayer: VectorLayer;
-
-  /** 连线图层 */
+  /** 连线图层（VectorLayer，WebGL 不支持 LineString） */
   public readonly connectionLayer: VectorLayer;
 
   /** 当前hover的连线feature */
   @observable accessor hoveredFeature: FeatureLike | null = null;
+
+  /** 实体数据源 */
+  private readonly entitySource: VectorSource;
+
+  /** 连线数据源 */
+  private readonly connectionSource: VectorSource;
+
+  /** Feature 映射：dataInstance.id -> Feature */
+  private featureMap: Map<number, Feature> = new Map();
+
+  /** 连线映射：`${fromId}-${targetId}` -> Feature */
+  private connectionMap: Map<string, Feature> = new Map();
+
+  constructor(config: ElectricPoleRendererConfig) {
+    logger.debug('[ElectricPoleRenderer] init', { config });
+    this.entitySource = new VectorSource();
+
+    // 生成 WebGL FlatStyle
+    const flatStyles = createElectricPoleWebGLStyle({
+      iconPath: config.iconPath,
+      enableShadow: config.enableShadow,
+    });
+
+    // 初始化 WebGL 实体图层
+    this.entityLayer = new WebGLVectorLayer({
+      source: this.entitySource,
+      style: flatStyles,
+      visible: config.initialVisible ?? true,
+      zIndex: 20,
+      disableHitDetection: false,
+    });
+    this.entityLayer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
+
+    // 初始化连线数据源和图层
+    this.connectionSource = new VectorSource();
+    this.connectionLayer = new VectorLayer({
+      source: this.connectionSource,
+      style: (feature) => {
+        const isHovered = this.hoveredFeature === feature;
+        return isHovered ? CONNECTION_STYLE_HOVER : CONNECTION_STYLE_NORMAL;
+      },
+      renderBuffer: config.renderBuffer ?? 100,
+      visible: config.initialVisible ?? true,
+      zIndex: 15,
+    });
+  }
+
+  // #region 公共 API —— 由 Controller 调用
 
   /**
    * 可见性 getter（实现 HitTestableLayer 接口）
@@ -76,206 +156,139 @@ export class ElectricPoleRenderer {
   /**
    * 图层 getter（实现 HitTestableLayer 接口）
    */
-  public get layer(): VectorLayer {
+  public get layer(): WebGLVectorLayer {
     return this.entityLayer;
   }
 
-  /** 实体数据源 */
-  private readonly entitySource: VectorSource;
-
-  /** 连线数据源 */
-  private readonly connectionSource: VectorSource;
-
-  /** Feature映射 */
-  private featureMappings: Map<number, FeatureMapping> = new Map();
-
-  /** 样式提供者 */
-  private styleProvider: ElectricPoleStyleProvider;
-
-  /** MobX disposers */
-  private disposers: IReactionDisposer[] = [];
-
-  constructor(config: ElectricPoleRendererConfig) {
-    this.dataManager = config.dataManager;
-    // 初始化样式提供者
-    this.styleProvider = new ElectricPoleStyleProvider({
-      iconSize: config.iconSize,
-      enableShadow: config.enableShadow,
-      entityImagePath: config.entityImagePath,
-    });
-
-    // 初始化数据源
-    this.entitySource = new VectorSource();
-    this.connectionSource = new VectorSource();
-
-    // 初始化图层
-    this.entityLayer = new VectorLayer({
-      source: this.entitySource,
-      style: this.styleProvider.createEntityStyle.bind(this.styleProvider),
-      renderBuffer: config.renderBuffer ?? 100,
-      updateWhileAnimating: false,
-      updateWhileInteracting: false,
-      visible: true,
-      zIndex: 6,
-      declutter: false,
-    });
-    this.entityLayer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
-
-    this.connectionLayer = new VectorLayer({
-      source: this.connectionSource,
-      style: (feature) => this.styleProvider.createConnectionStyle(feature, this.hoveredFeature),
-      renderBuffer: config.renderBuffer ?? 100,
-      visible: true,
-      zIndex: 4,
-    });
-
-    // 初始化features
-    this.initializeFeatures();
-
-    // 设置数据变化监听
-    this.setupDataManagerReaction();
-  }
-
   /**
-   * 初始化所有features
+   * 批量添加点 features
    */
-  private initializeFeatures(): void {
-    for (const instance of this.dataManager.instances) {
-      this.addFeatureForInstance(instance);
+  public addFeatures(items: ElectricPoleFeatureData[]): void {
+    for (const item of items) {
+      this.addSingleFeature(item);
     }
   }
 
   /**
-   * 为数据实例添加feature
+   * 批量移除点 features 及其关联连线
    */
-  private addFeatureForInstance(dataInstance: ElectricPoleDataInstance): void {
-    // 创建点feature
-    const pointFeature = new Feature();
-    const coordinates = dataInstance.coordinates;
-    pointFeature.setGeometry(new Point(coordinates));
-    pointFeature.set(FeatureTypeKey, FeatureType.ENTITY);
-    pointFeature.set(EntityInstanceKey, dataInstance);
+  public removeFeatures(ids: number[]): void {
+    for (const id of ids) {
+      const feature = this.featureMap.get(id);
+      if (feature) {
+        this.entitySource.removeFeature(feature);
+        this.featureMap.delete(id);
+      }
 
-    // 创建连线 features
-    const connectionFeatures = new Map<number, Feature>();
-    this.syncConnectionFeatures(dataInstance, connectionFeatures);
-
-    // 设置状态变化监听
-    const disposer = reaction(
-      () => ({
-        active: dataInstance.active,
-        visible: dataInstance.visible,
-        outgoingIds: dataInstance.outgoingConnections.map((p) => p.id),
-      }),
-      () => {
-        pointFeature.changed();
-        this.syncConnectionFeatures(dataInstance, connectionFeatures);
-      },
-      { fireImmediately: true }
-    );
-
-    this.featureMappings.set(dataInstance.id, {
-      pointFeature,
-      connectionFeatures,
-      dataInstance,
-      disposer,
-    });
-
-    this.entitySource.addFeature(pointFeature);
+      // 移除关联连线（fromId 或 targetId 匹配的）
+      this.removeConnectionsForInstance(id);
+    }
   }
 
   /**
-   * 同步单个实例的所有连线 features（只渲染“发出”的连线）
+   * 更新单个 feature 的状态
    */
-  private syncConnectionFeatures(dataInstance: ElectricPoleDataInstance, featureMap: Map<number, Feature>): void {
-    const fromCoords = dataInstance.coordinates;
-    const currentTargets = new Set<number>(
-      dataInstance.visible ? dataInstance.outgoingConnections.filter((p) => p.visible).map((p) => p.id) : []
-    );
+  public updateFeatureState(id: number, state: ElectricPoleFeatureStateUpdate): void {
+    const feature = this.featureMap.get(id);
+    if (!feature) return;
 
-    // remove missing
-    for (const [targetId, feature] of featureMap.entries()) {
-      if (!currentTargets.has(targetId)) {
+    if (state.visible !== undefined) {
+      feature.set('visible', state.visible ? 1 : 0, true);
+    }
+    if (state.active !== undefined) {
+      feature.set('active', state.active ? 1 : 0, true);
+    }
+
+    feature.changed();
+    this.entitySource.changed();
+  }
+
+  /**
+   * 批量更新所有 features 的状态
+   */
+  public updateAllFeaturesState(updater: (id: number, feature: Feature) => ElectricPoleFeatureStateUpdate): void {
+    for (const [id, feature] of this.featureMap) {
+      const state = updater(id, feature);
+
+      if (state.visible !== undefined) {
+        feature.set('visible', state.visible ? 1 : 0, true);
+      }
+      if (state.active !== undefined) {
+        feature.set('active', state.active ? 1 : 0, true);
+      }
+    }
+
+    this.entitySource.changed();
+    this.entityLayer.changed();
+  }
+
+  // #region 连线管理
+
+  /**
+   * 添加连线
+   */
+  public addConnection(data: ConnectionData): void {
+    // logger.debug('[ElectricPoleRenderer] addConnection', data);
+    const key = `${data.fromInstance.id}-${data.targetId}`;
+    if (this.connectionMap.has(key)) return;
+
+    const connectionFeature = new Feature();
+    connectionFeature.set(FeatureTypeKey, FeatureType.CONNECTION);
+    connectionFeature.set(EntityInstanceKey, data.fromInstance);
+    connectionFeature.set(ConnectionTargetIdKey, data.targetId);
+    connectionFeature.setGeometry(new LineString([data.fromCoordinates, data.targetCoordinates]));
+
+    this.connectionMap.set(key, connectionFeature);
+    this.connectionSource.addFeature(connectionFeature);
+  }
+
+  /**
+   * 移除连线
+   */
+  public removeConnection(fromId: number, targetId: number): void {
+    const key = `${fromId}-${targetId}`;
+    const feature = this.connectionMap.get(key);
+    if (feature) {
+      if (this.hoveredFeature === feature) {
+        this.hoveredFeature = null;
+      }
+      this.connectionSource.removeFeature(feature);
+      this.connectionMap.delete(key);
+    }
+  }
+
+  /**
+   * 移除指定实例的所有连线
+   */
+  public removeConnectionsForInstance(instanceId: number): void {
+    const keysToRemove: string[] = [];
+    for (const [key, feature] of this.connectionMap) {
+      const [fromId, targetId] = key.split('-').map(Number);
+      if (fromId === instanceId || targetId === instanceId) {
         if (this.hoveredFeature === feature) {
           this.hoveredFeature = null;
         }
         this.connectionSource.removeFeature(feature);
-        featureMap.delete(targetId);
+        keysToRemove.push(key);
       }
     }
-
-    // add/update current
-    for (const target of dataInstance.outgoingConnections) {
-      if (!dataInstance.visible || !target.visible) {
-        continue;
-      }
-      const targetId = target.id;
-      const toCoords = target.coordinates;
-
-      const existing = featureMap.get(targetId);
-      if (existing) {
-        existing.setGeometry(new LineString([fromCoords, toCoords]));
-        continue;
-      }
-
-      const connectionFeature = new Feature();
-      connectionFeature.set(FeatureTypeKey, FeatureType.CONNECTION);
-      connectionFeature.set(EntityInstanceKey, dataInstance);
-      connectionFeature.set(ConnectionTargetIdKey, targetId);
-      connectionFeature.setGeometry(new LineString([fromCoords, toCoords]));
-      featureMap.set(targetId, connectionFeature);
-      this.connectionSource.addFeature(connectionFeature);
+    for (const key of keysToRemove) {
+      this.connectionMap.delete(key);
     }
   }
 
   /**
-   * 移除数据实例的feature
+   * 更新连线坐标（当端点位置变化时）
    */
-  private removeFeatureForInstance(id: number): void {
-    const mapping = this.featureMappings.get(id);
-    if (mapping) {
-      mapping.disposer();
-      this.entitySource.removeFeature(mapping.pointFeature);
-      for (const feature of mapping.connectionFeatures.values()) {
-        if (this.hoveredFeature === feature) {
-          this.hoveredFeature = null;
-        }
-        this.connectionSource.removeFeature(feature);
-      }
-      this.featureMappings.delete(id);
+  public updateConnection(fromId: number, targetId: number, fromCoords: Coordinate, targetCoords: Coordinate): void {
+    const key = `${fromId}-${targetId}`;
+    const feature = this.connectionMap.get(key);
+    if (feature) {
+      feature.setGeometry(new LineString([fromCoords, targetCoords]));
     }
   }
 
-  /**
-   * 设置数据管理器变化监听
-   */
-  private setupDataManagerReaction(): void {
-    const disposer = reaction(
-      () => this.dataManager.instances.map((i) => i.id),
-      (newIds, oldIds) => {
-        const oldIdSet = new Set(oldIds);
-        const newIdSet = new Set(newIds);
-
-        // 移除已删除的
-        if (oldIds && oldIds.length > 0) {
-          for (const id of oldIds) {
-            if (!newIdSet.has(id)) {
-              this.removeFeatureForInstance(id);
-            }
-          }
-        }
-
-        // 添加新增的
-        for (const instance of this.dataManager.instances) {
-          if (!oldIdSet.has(instance.id)) {
-            this.addFeatureForInstance(instance);
-          }
-        }
-      },
-      { fireImmediately: true }
-    );
-    this.disposers.push(disposer);
-  }
+  // #endregion
 
   /**
    * 设置实体图层可见性
@@ -300,7 +313,6 @@ export class ElectricPoleRenderer {
 
   /**
    * 获取指定像素位置的连线 features
-   * @param pixel 像素坐标
    */
   public async getConnectionFeatures(pixel: [number, number]): Promise<FeatureLike[]> {
     return this.connectionLayer.getFeatures(pixel);
@@ -324,15 +336,11 @@ export class ElectricPoleRenderer {
 
   /**
    * 设置hover的连线feature
-   * @param feature hover的feature
    */
   @action
   public setHoveredFeature(feature: FeatureLike | null): void {
-    if (this.hoveredFeature === feature) {
-      return;
-    }
+    if (this.hoveredFeature === feature) return;
     this.hoveredFeature = feature;
-    // 触发图层重新渲染
     this.connectionLayer.changed();
   }
 
@@ -340,17 +348,33 @@ export class ElectricPoleRenderer {
    * 销毁渲染器
    */
   public dispose(): void {
-    for (const mapping of this.featureMappings.values()) {
-      mapping.disposer();
-    }
-    this.featureMappings.clear();
-
-    for (const disposer of this.disposers) {
-      disposer();
-    }
-    this.disposers = [];
-
+    this.featureMap.clear();
+    this.connectionMap.clear();
     this.entitySource.clear();
     this.connectionSource.clear();
+    this.entityLayer.dispose();
   }
+
+  // #endregion
+
+  // #region 私有方法
+
+  /**
+   * 添加单个 feature
+   */
+  private addSingleFeature(item: ElectricPoleFeatureData): void {
+    const feature = new Feature();
+    feature.setGeometry(new Point(item.coordinates));
+    feature.set(FeatureTypeKey, FeatureType.ENTITY);
+    feature.set(EntityInstanceKey, item.dataInstance);
+
+    // 设置属性供 WebGL 表达式读取
+    feature.set('visible', item.visible ? 1 : 0);
+    feature.set('active', item.active ? 1 : 0);
+
+    this.featureMap.set(item.id, feature);
+    this.entitySource.addFeature(feature);
+  }
+
+  // #endregion
 }

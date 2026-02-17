@@ -7,7 +7,7 @@ import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 
 export interface HoverConnectionControllerConfig {
-  getConnectionLayer: () => ElectricPoleRenderer | null;
+  getConnectionLayers: () => ElectricPoleRenderer[];
   disableHoverConnection?: boolean;
   emitter: EndfieldMapEmitter;
 }
@@ -28,14 +28,14 @@ export class HoverConnectionController {
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
   /** 获取连接图层的函数 */
-  private getConnectionLayer: () => ElectricPoleRenderer | null;
+  private getConnectionLayers: () => ElectricPoleRenderer[];
   /** 防抖后的hover处理函数 */
   private debouncedHandleHover: ReturnType<typeof debounce<[MapHoverEventDetail], Promise<void>>> | null = null;
   /** 事件发射器 */
   private emitter: EndfieldMapEmitter;
 
   constructor(config: HoverConnectionControllerConfig) {
-    this.getConnectionLayer = config.getConnectionLayer;
+    this.getConnectionLayers = config.getConnectionLayers;
     this.disabled = config.disableHoverConnection ?? false;
     this.emitter = config.emitter;
     this.updateDebouncedHoverHandler();
@@ -71,8 +71,9 @@ export class HoverConnectionController {
       return;
     }
 
-    const connectionRenderer = this.getConnectionLayer();
-    if (!connectionRenderer || !connectionRenderer.getConnectionVisible()) {
+    const renderers = this.getConnectionLayers();
+    const visibleRenderers = renderers.filter((r) => r.getConnectionVisible());
+    if (visibleRenderers.length === 0) {
       // 发出清除hover的事件
       this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
         feature: null,
@@ -82,24 +83,25 @@ export class HoverConnectionController {
       return;
     }
 
-    const clickedFeatures = await connectionRenderer.connectionLayer.getFeatures(event.pixel as [number, number]);
-    if (clickedFeatures.length === 0) {
-      // 发出清除hover的事件
-      this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
-        feature: null,
-        renderer: null,
-        event,
-      });
-      return;
+    // 遍历所有连线图层查找hover目标
+    for (const connectionRenderer of visibleRenderers) {
+      const clickedFeatures = await connectionRenderer.connectionLayer.getFeatures(event.pixel as [number, number]);
+      if (clickedFeatures.length > 0) {
+        const feature = clickedFeatures[0];
+        // 发出CONNECTION_HOVER事件，由UI层处理设置hover状态
+        this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
+          feature,
+          renderer: connectionRenderer,
+          event,
+        });
+        return;
+      }
     }
 
-    // 取第一个feature作为hover target
-    const feature = clickedFeatures[0];
-
-    // 发出CONNECTION_HOVER事件，由UI层处理设置hover状态
+    // 没有命中任何连线
     this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
-      feature,
-      renderer: connectionRenderer,
+      feature: null,
+      renderer: null,
       event,
     });
   }

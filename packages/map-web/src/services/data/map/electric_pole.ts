@@ -180,23 +180,43 @@ export class ElectricPoleDataService extends BasePresetDataService<
                 const newTargetId = change.value;
                 const targetInstance = manager.getById(newTargetId);
                 if (targetInstance) {
-                  instance.connectTo(targetInstance);
+                  // 使用 controller 方法来建立连接（同步数据和渲染）
+                  this.adapter.electricPoleController.connectElectricPoles(
+                    docData.mapId,
+                    docData.levelLogicId,
+                    newTargetId
+                  );
                 }
                 return;
               }
               if (change.type === 'REMOVE') {
                 const removedTargetId = change.oldValue;
-                instance.disconnectOutgoingTo(removedTargetId);
+                // 使用 controller 方法来断开连接（同步数据和渲染）
+                this.adapter.electricPoleController.disconnectElectricPoles(
+                  docData.mapId,
+                  docData.levelLogicId,
+                  removedTargetId
+                );
                 this.adapter.hoverConnectionController.clearHoverConnection();
                 return;
               }
               if (change.type === 'CHANGE') {
                 const newTargetId = change.value;
                 const oldTargetId = change.oldValue;
-                instance.disconnectOutgoingTo(oldTargetId);
+                // 先断开旧连接
+                this.adapter.electricPoleController.disconnectElectricPoles(
+                  docData.mapId,
+                  docData.levelLogicId,
+                  oldTargetId
+                );
+                // 再建立新连接
                 const targetInstance = manager.getById(newTargetId);
                 if (targetInstance) {
-                  instance.connectTo(targetInstance);
+                  this.adapter.electricPoleController.connectElectricPoles(
+                    docData.mapId,
+                    docData.levelLogicId,
+                    newTargetId
+                  );
                 }
               }
             });

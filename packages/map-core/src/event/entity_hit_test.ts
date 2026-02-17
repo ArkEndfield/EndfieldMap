@@ -1,11 +1,5 @@
-import {
-  EntityInstanceKey,
-  FeatureType,
-  FeatureTypeKey,
-  MarkedFeatureFilterMode,
-} from '@endfieldmap/map-core/const/map';
+import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
 import type { HitTestableLayer } from '@endfieldmap/map-core/types';
-import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { Map as OlMap } from 'ol';
 import type { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
@@ -42,39 +36,18 @@ type EntityLayer = HitTestableLayer;
 // ============================================================================
 
 /**
- * 检查特征是否通过可见性和过滤模式检查
- * 提取以减少代码重复并提高性能
+ * 检查特征是否为有效的 Entity 特征
+ * 可见性和 markedFilterMode 过滤已在渲染器层通过 feature.visible 属性和 geometryFunction 处理，
+ * hit test 命中的 feature 一定是可见的，无需再检查
  */
-function isFeatureVisible(feature: Feature<Point>, layer: EntityLayer): boolean {
+function isFeatureVisible(feature: Feature<Point>, _layer: EntityLayer): boolean {
   if (feature.get(FeatureTypeKey) !== FeatureType.ENTITY) {
     return false;
   }
 
-  const instance = feature.get(EntityInstanceKey) as DataInstance | undefined;
-
-  if (!instance?.visible) {
-    return false;
-  }
-
-  if (!instance?.markable) {
-    return true;
-  }
-
-  const marked = instance.marked ?? false;
-
-  if (!('markedFilterMode' in layer)) {
-    return true;
-  }
-
-  if (layer.markedFilterMode === MarkedFeatureFilterMode.Marked && !marked) {
-    return false;
-  }
-
-  if (layer.markedFilterMode === MarkedFeatureFilterMode.Unmarked && marked) {
-    return false;
-  }
-
-  return true;
+  // 检查是否有关联的数据实例
+  const instance = feature.get(EntityInstanceKey);
+  return !!instance;
 }
 
 /**

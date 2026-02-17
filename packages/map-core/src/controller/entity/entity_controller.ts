@@ -2,12 +2,20 @@ import { Disposer } from '@endfieldmap/map-core/commom/disposer';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { EntityMapDataManager } from '@endfieldmap/map-core/data/entity';
+import type { EntityDataInstance, EntityGroupManager } from '@endfieldmap/map-core/data/entity';
 import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
 import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import type { EndfieldMap } from '@endfieldmap/map-core/render/olmap';
-import { EntityRender } from '@endfieldmap/map-core/render/renderer/entity/entity';
-import type { EntityData, EntityInfoDataJson, EntityJsonDataList, MapData } from '@endfieldmap/map-core/types';
+import { EntityRender } from '@endfieldmap/map-core/render/renderer/entity/common/entity';
+import type { FeatureData } from '@endfieldmap/map-core/render/renderer/entity/common/entity_group_renderer';
+import type {
+  EntityData,
+  EntityInfoDataJson,
+  EntityInfoStats,
+  EntityJsonDataList,
+  MapData,
+} from '@endfieldmap/map-core/types';
 import { action, reaction } from 'mobx';
 
 export interface EntityControllerConfig {
@@ -19,36 +27,71 @@ export interface EntityControllerConfig {
 
 /**
  * Entity控制器
- * 负责协调EntityDataManager和EntityRenderer
+ * 负责协调 EntityDataManager 和 EntityRender
  * 提供给UI层访问数据的接口
+ *
+ * 设计原则：
+ * - 是数据变更和渲染更新的唯一入口
+ * - 外部不直接访问 dataManager，通过 controller 代理
+ * - 数据变更后显式调用 render 方法同步渲染
  */
 export class EntityController extends Disposer {
-  /** 数据管理器 */
+  /** 数据管理器（内部使用） */
   public readonly dataManager: EntityMapDataManager;
 
   /** 当前缩放级别 */
   private currentZoom: number = 3;
 
+  /** 渲染管理器 */
   public render: EntityRender;
 
   private mapDataManager: MapDataManager;
 
   private emitter: EndfieldMapEmitter;
 
+  private asset: EndfieldMapAsset;
+
   constructor(config: EntityControllerConfig) {
     super();
     this.mapDataManager = config.mapDataManager;
     this.emitter = config.emitter;
+    this.asset = config.asset;
     this.dataManager = new EntityMapDataManager(config.mapDataManager);
     this.render = new EntityRender({
-      dataManager: this.dataManager,
-      mapDataManager: config.mapDataManager,
       mapInstance: config.mapInstance,
       asset: config.asset,
+      mapIds: [], // 初始为空，loadData 后填充
     });
 
     this.registerEventHandlers();
   }
+
+  // #region 数据代理（供 map-web UI 使用）
+
+  /**
+   * 获取当前地图的统计信息
+   */
+  get currentStats(): EntityInfoStats[] {
+    return this.dataManager.currentStats;
+  }
+
+  /**
+   * 获取地图的组管理器列表
+   */
+  getMapGroupManagerList(mapId: MapData['id']): EntityGroupManager[] {
+    return this.dataManager.getMapGroupManagerList(mapId);
+  }
+
+  /**
+   * 通过ID获取数据实例
+   */
+  getInstanceById(mapId: MapData['id'], id: number): EntityDataInstance | undefined {
+    return this.dataManager.getInstanceById(mapId, id);
+  }
+
+  // #endregion
+
+  // #region 事件处理
 
   /**
    * 注册事件处理器
@@ -65,14 +108,13 @@ export class EntityController extends Disposer {
       reaction(
         () => this.mapDataManager.currentMapId,
         async () => {
-          // load data
           if (!this.dataManager.dataLoaded) {
-            // data not loaded, wait or ignore
             return;
           }
-          this.render.render();
+          // 切换当前地图的渲染
+          this.render.switchMap(this.mapDataManager.currentMapId);
 
-          // 应用marked过滤模式
+          // 应用 marked 过滤模式
           this.applyMarkedFilterMode();
 
           // 更新聚合距离
@@ -83,12 +125,76 @@ export class EntityController extends Disposer {
     );
   }
 
+  // #endregion
+
+  // #region 数据加载
+
+  /**
+   * 加载数据并初始化渲染器
+   */
   public loadData(jsonData: EntityJsonDataList, infoData: EntityInfoDataJson) {
     this.dataManager.loadData(jsonData, infoData);
-    this.render.render();
+
+    // 为每个地图的每个组创建渲染器并填充 features
+    this.initializeRenderers();
+
+    // 切换到当前地图
+    this.render.switchMap(this.mapDataManager.currentMapId);
     this.applyMarkedFilterMode();
     this.updateClusterDistance(true);
   }
+
+  /**
+   * 初始化所有渲染器
+   * 根据 dataManager 中的数据，为每个地图的每个组创建渲染器
+   */
+  private initializeRenderers(): void {
+    const imagePath = this.asset.entityImage;
+
+    // 获取所有地图ID
+    const mapIds = Array.from(this.dataManager.mapData.keys());
+
+    // 重建 render（包含所有 mapIds）
+    this.render = new EntityRender({
+      mapInstance: this.render['mapInstance'], // 复用 mapInstance
+      asset: this.asset,
+      mapIds,
+    });
+
+    for (const mapId of mapIds) {
+      const groupManagers = this.dataManager.getMapGroupManagerList(mapId);
+
+      for (const manager of groupManagers) {
+        // 创建渲染器
+        const renderer = this.render.createGroupRenderer(mapId, manager.entityDataIdKey, {
+          iconPath: `${imagePath}/${manager.iconName}.png`,
+          enableCluster: !this.dataManager.disableCluster,
+          clusterDistance: this.dataManager.clusterDistance,
+          initialVisible: manager.groupVisible,
+          enableShadow: false,
+        });
+
+        const filterMode = this.dataManager.markedFilterMode;
+
+        // 生成 FeatureData 并批量添加
+        const featureDataList: FeatureData[] = manager.instances.map((instance) => ({
+          id: instance.id,
+          coordinates: instance.coordinates,
+          dataInstance: instance,
+          visible: this.isFeatureVisibleByFilter(instance.marked, filterMode),
+          marked: instance.marked,
+          selected: instance.selected,
+          active: instance.active,
+        }));
+
+        renderer.addFeatures(featureDataList);
+      }
+    }
+  }
+
+  // #endregion
+
+  // #region 聚合控制
 
   /**
    * 是否应该启用聚合
@@ -106,7 +212,7 @@ export class EntityController extends Disposer {
 
     if (force || newDistance !== this.dataManager.lastClusterDistance) {
       this.dataManager.lastClusterDistance = newDistance;
-      this.render.setClusterDistance(newDistance);
+      this.render.setClusterDistance(this.mapDataManager.currentMapId, newDistance);
     }
   }
 
@@ -122,29 +228,74 @@ export class EntityController extends Disposer {
     this.updateClusterDistance();
   }
 
+  // #endregion
+
+  // #region 状态变更（数据 + 渲染同步）
+
   /**
-   * 应用marked过滤模式到渲染器
+   * 根据 markedFilterMode 判断 feature 是否可见
    */
-  private applyMarkedFilterMode(): void {
-    this.render.updateMarkedFilterMode(this.dataManager.markedFilterMode);
+  private isFeatureVisibleByFilter(marked: boolean, mode: MarkedFeatureFilterMode): boolean {
+    switch (mode) {
+      case MarkedFeatureFilterMode.Marked:
+        return marked;
+      case MarkedFeatureFilterMode.Unmarked:
+        return !marked;
+      case MarkedFeatureFilterMode.All:
+      default:
+        return true;
+    }
   }
 
   /**
-   * 设置Marked
+   * 应用 marked 过滤模式到当前地图的所有渲染器
+   * 通过设置每个 feature 的 visible 属性来控制显隐
+   */
+  private applyMarkedFilterMode(): void {
+    const currentMapId = this.mapDataManager.currentMapId;
+    const mode = this.dataManager.markedFilterMode;
+    const renderers = this.render.getRenderers(currentMapId);
+
+    for (const renderer of renderers) {
+      renderer.updateAllFeaturesState((_id, feature) => {
+        const marked = feature.get('marked') === 1;
+        return { visible: this.isFeatureVisibleByFilter(marked, mode) };
+      });
+    }
+  }
+
+  /**
+   * 设置 Marked 状态
+   * 同时更新数据和渲染（包括 visible，因为 markedFilterMode 可能影响可见性）
    */
   public setMarked(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], marked: boolean): void {
     this.dataManager.setMarked(mapId, levelLogicId, marked);
+
+    // 同步渲染
+    const instance = this.dataManager.getInstanceById(mapId, levelLogicId);
+    if (instance) {
+      const visible = this.isFeatureVisibleByFilter(instance.marked, this.dataManager.markedFilterMode);
+      this.render.updateFeatureState(mapId, instance.id, {
+        marked: instance.marked,
+        visible,
+      });
+    }
   }
 
   /**
    * 设置实体组可见性
+   * 同时更新数据和渲染
    */
   public setVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean): void {
     this.dataManager.setVisibility(mapId, entityKey, visible);
+
+    // 同步渲染
+    this.render.setGroupVisible(mapId, entityKey, visible);
   }
 
   /**
-   * 设置marked过滤模式
+   * 设置 marked 过滤模式
+   * 同时更新数据和渲染
    */
   @action
   public setMarkedFilterMode(mode: MarkedFeatureFilterMode): void {
@@ -152,12 +303,13 @@ export class EntityController extends Disposer {
       return;
     }
     this.dataManager.setMarkedFilterMode(mode);
-
-    // 应用到当前渲染器
     this.applyMarkedFilterMode();
   }
 
+  // #endregion
+
   // #region 数据导入导出
+
   /**
    * 导入可见性数据
    */
@@ -170,12 +322,15 @@ export class EntityController extends Disposer {
   ): Promise<number> {
     let count = 0;
     for (const item of data) {
-      this.dataManager.setVisibility(item.mapId, item.entityKey, item.visible);
+      this.setVisibility(item.mapId, item.entityKey, item.visible);
       count++;
     }
     return count;
   }
 
+  /**
+   * 导入 marked 数据
+   */
   public async importMarked(
     data: {
       entityId: EntityData['levelLogicId'];
@@ -185,12 +340,13 @@ export class EntityController extends Disposer {
   ): Promise<number> {
     let count = 0;
     for (const item of data) {
-      this.dataManager.setMarked(item.mapId, item.entityId, item.marked);
+      this.setMarked(item.mapId, item.entityId, item.marked);
       if (item.marked) {
         count++;
       }
     }
     return count;
   }
+
   // #endregion
 }

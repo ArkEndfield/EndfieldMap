@@ -37,7 +37,7 @@ const EntityPanel = observer(() => {
   }, []);
 
   // 获取实体控制器相关方法，如果 adapter 为 null 则提供空函数
-  const entities = adapter.entityController.dataManager.currentStats;
+  const entities = adapter.entityController.currentStats;
   const currentMap = adapter.mapController.dataManager.currentMapId;
 
   // 计算每个实体的 marked 数量并按分类分组

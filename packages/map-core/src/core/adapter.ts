@@ -139,17 +139,15 @@ export class EndfieldMapAdapter {
     });
     this.hoverFeatureController = new HoverFeatureController({
       getEntityLayers: () => this.entityController?.render.currentRenderer || [],
-      getElectricPoleLayers: () =>
-        this.electricPoleController?.currentRenderer ? [this.electricPoleController.currentRenderer] : [],
-      getCustomPointLayers: () =>
-        this.customPointController?.currentRenderer ? [this.customPointController.currentRenderer] : [],
+      getElectricPoleLayers: () => this.electricPoleController?.render.currentPoleRenderers || [],
+      getCustomPointLayers: () => this.customPointController?.currentRenderer || [],
       checkIsActive: (instance) => this.activeFeatureController.activeFeature === instance,
       disableHoverFeature: config.map?.disableHoverFeature,
       mapInstance,
       emitter: this.event,
     });
     this.hoverConnectionController = new HoverConnectionController({
-      getConnectionLayer: () => this.electricPoleController?.currentRenderer || null,
+      getConnectionLayers: () => this.electricPoleController?.render.currentPoleRenderers || [],
       disableHoverConnection: config.map?.disableHoverFeature,
       emitter: this.event,
     });
@@ -272,7 +270,7 @@ export class EndfieldMapAdapter {
 
     // 1. 搜索游戏内的标点
     for (const mapId of mapIds) {
-      const instance = this.entityController.dataManager.getInstanceById(mapId, id);
+      const instance = this.entityController.getInstanceById(mapId, id);
       if (instance) {
         targetInstance = instance;
         break;
