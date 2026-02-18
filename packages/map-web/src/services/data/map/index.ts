@@ -2,18 +2,11 @@ import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import type { JSONLoader } from '@endfieldmap/tools';
 
 import { LoadingStageId } from '@/const/loading';
-import { ChestRewardDataService } from '@/services/data/map/chest_reward';
 import { CustomPointDataService } from '@/services/data/map/custom_point';
-import { DungeonSeriesDataService } from '@/services/data/map/dungeon_series';
 import { ElectricPoleDataService } from '@/services/data/map/electric_pole';
 import { EntityDataService } from '@/services/data/map/entity';
 import { GridTiersDataService } from '@/services/data/map/grid_tiers';
-import { GuideDataService } from '@/services/data/map/guide';
-import { ItemDataService } from '@/services/data/map/item';
-import { LangHashDataService } from '@/services/data/map/lang_hash';
 import { MapStateDataService } from '@/services/data/map/map_state';
-import { NoteDataService } from '@/services/data/map/note';
-import { SwiperDataService } from '@/services/data/map/swiper';
 import { loadingManager } from '@/services/loading';
 
 /**
@@ -26,15 +19,8 @@ export class MapDataService {
   public entityDataService: EntityDataService;
   public electricPoleDataService: ElectricPoleDataService;
   public customPointDataService: CustomPointDataService;
-  public itemDataService: ItemDataService;
-  public dungeonSeriesDataService: DungeonSeriesDataService;
-  public chestRewardDataService: ChestRewardDataService;
-  public guideDataService: GuideDataService;
-  public langHashDataService: LangHashDataService;
   public mapStateDataService: MapStateDataService;
-  public swiperDataService: SwiperDataService;
   public gridTiersDataService: GridTiersDataService;
-  public noteDataService: NoteDataService;
 
   constructor(adapter: EndfieldMapAdapter, jsonLoader: JSONLoader) {
     this.jsonLoader = jsonLoader;
@@ -42,15 +28,8 @@ export class MapDataService {
     this.electricPoleDataService = new ElectricPoleDataService(adapter);
     this.customPointDataService = new CustomPointDataService(adapter);
 
-    this.itemDataService = new ItemDataService(this.jsonLoader);
-    this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.itemDataService);
-    this.dungeonSeriesDataService = new DungeonSeriesDataService(this.jsonLoader, this.chestRewardDataService);
-    this.guideDataService = new GuideDataService(this.jsonLoader);
-    this.langHashDataService = new LangHashDataService(this.jsonLoader);
     this.mapStateDataService = new MapStateDataService(adapter);
-    this.swiperDataService = new SwiperDataService();
     this.gridTiersDataService = new GridTiersDataService(this.jsonLoader, adapter);
-    this.noteDataService = new NoteDataService(this.jsonLoader);
   }
 
   public static async createInstance(adapter: EndfieldMapAdapter, jsonLoader: JSONLoader) {
@@ -69,20 +48,8 @@ export class MapDataService {
       () => this.electricPoleDataService.initFromStorage(),
       // 初始化自定义标点预设数据
       () => this.customPointDataService.initFromStorage(),
-      // 初始化 item 数据（游戏物品）
-      () => this.itemDataService.init(),
-      // 初始化宝箱奖励数据
-      () => this.chestRewardDataService.init(),
-      // 初始化副本奖励数据
-      () => this.dungeonSeriesDataService.init(),
-      // 初始化攻略数据
-      () => this.guideDataService.init(),
-      // 初始化语言哈希数据
-      () => this.langHashDataService.init(),
       // 初始化网格分级数据
       () => this.gridTiersDataService.init(),
-      // 初始化情报档案数据
-      () => this.noteDataService.init(),
     ];
 
     const totalTasks = initTasks.length;

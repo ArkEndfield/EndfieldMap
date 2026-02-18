@@ -11,6 +11,7 @@ import CustomPointList from '@/components/themes/endfield/ui/control_panel/contr
 import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
 import NoteEntityGroup from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/note';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 interface CategoryInfo {
   category: Category;
@@ -53,7 +54,7 @@ const EntityPanel = observer(() => {
       // 如果有搜索条件，进行过滤
       if (lowerSearchQuery) {
         const entityIdKey = entity.entityDataIdKey.toLowerCase();
-        const translatedEntityName = t(`lang:${mapDataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
+        const translatedEntityName = t(`lang:${service.langHashService.getHash(entity.entityDataIdKey)}`, {
           defaultValue: entity.entityInfo.point,
         }).toLowerCase();
         const category = entity.category.toLowerCase();
@@ -104,7 +105,7 @@ const EntityPanel = observer(() => {
     const hardCordOrder = ['other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative'];
     result.sort((a, b) => hardCordOrder.indexOf(a.category) - hardCordOrder.indexOf(b.category));
     return result;
-  }, [mapDataService.langHashDataService, entities, searchQuery, t]);
+  }, [entities, searchQuery, t]);
 
   // 切换分类显示/隐藏
   const handleCategoryClick = (category: Category, allDisplayed: boolean) => {

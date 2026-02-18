@@ -1,10 +1,16 @@
 import type { JSONLoader } from '@endfieldmap/tools';
 
 import type { ChestRewardSchemaType } from '@endfieldmap/map-service';
-import { service } from '@/services';
-import { ItemDataService } from '@/services/data/map/item';
+import type { DatabaseService } from '@endfieldmap/map-service/service/db';
+import type { AssetService } from '@endfieldmap/map-service/service/asset';
+import type { ItemDataService } from '@endfieldmap/map-service/service/data/game/item_data';
 
-const assetPath = service.assetService.url;
+export interface ChestRewardDataConfig<T, R> {
+  jsonLoader: JSONLoader;
+  databaseService: DatabaseService<T, R>;
+  assetService: AssetService;
+  itemDataService: ItemDataService<T, R>;
+}
 
 export interface DealedRewardItemWithCount {
   type: 'withCount';
@@ -23,30 +29,34 @@ export interface DealedRewardItemWithoutCount {
 
 export type DealedRewardItem = DealedRewardItemWithCount | DealedRewardItemWithoutCount;
 
-export class ChestRewardDataService {
+export class ChestRewardDataService<T, R> {
   private jsonLoader: JSONLoader;
-  private itemDataService: ItemDataService;
+  private databaseService: DatabaseService<T, R>;
+  private assetService: AssetService;
+  private itemDataService: ItemDataService<T, R>;
 
-  constructor(jsonLoader: JSONLoader, itemDataService: ItemDataService) {
-    this.jsonLoader = jsonLoader;
-    this.itemDataService = itemDataService;
+  constructor(config: ChestRewardDataConfig<T, R>) {
+    this.jsonLoader = config.jsonLoader;
+    this.databaseService = config.databaseService;
+    this.assetService = config.assetService;
+    this.itemDataService = config.itemDataService;
   }
 
   public async init() {
     const data = await this.jsonLoader.loadJSON<Record<string, Omit<ChestRewardSchemaType, 'id'>>>(
-      `${assetPath.entityData}/reward_table.json`
+      `${this.assetService.url.entityData}/reward_table.json`
     );
     const rewards = Object.entries(data || {}).map(([id, reward]) => ({
       id,
       ...reward,
     }));
     if (rewards.length > 0) {
-      await service.databaseService.gameDatabase.gameChestReward.bulkUpsert(rewards);
+      await this.databaseService.gameDatabase.gameChestReward.bulkUpsert(rewards);
     }
   }
 
   private async getRewardDataFromDB(id: string) {
-    return await service.databaseService.gameDatabase.gameChestReward
+    return await this.databaseService.gameDatabase.gameChestReward
       .findOne({
         selector: { id },
       })

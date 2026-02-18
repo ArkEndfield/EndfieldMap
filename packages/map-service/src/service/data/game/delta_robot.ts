@@ -11,10 +11,10 @@ import type {
   PieceShape,
   SolverPiece,
   PieceData,
-} from '../../@types/delta_robot';
-import type { DatabaseService } from '../db';
-import type { AssetService } from '../asset';
-import type { DeltaRobotParsedLevelSchemaType } from '../db/schema/game_data/delta_robot';
+} from '@endfieldmap/map-service/@types/delta_robot';
+import type { DatabaseService } from '@endfieldmap/map-service/service/db';
+import type { AssetService } from '@endfieldmap/map-service/service/asset';
+import type { DeltaRobotParsedLevelSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/delta_robot';
 
 export interface DeltaRobotConfig<T, R> {
   jsonLoader: JSONLoader;

@@ -1,3 +1,5 @@
-export * from './service/export';
-export * from './@types';
+export * from '@endfieldmap/map-service/service/export';
+export * from '@endfieldmap/map-service/@types';
+
+// 三方库
 export * from 'react-i18next';

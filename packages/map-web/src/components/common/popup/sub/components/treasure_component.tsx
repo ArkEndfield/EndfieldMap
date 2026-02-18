@@ -5,20 +5,19 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { SubPopupTitle } from '@/components/common/popup/components/title';
 import type { TreasureComponent } from '@/components/common/popup/sub/components/types';
 import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
-import { useAdapter } from '@/hooks/use_adapter';
 import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { isDealedRewardItemWithCount } from '@/utils/reward';
+import { service } from '@/services';
 
 const TreasureComponent: SubPopupComponentProps<TreasureComponent> = ({ prop }) => {
   const { reward_id } = prop;
   const [rewards, setRewards] = useState<DealedRewardItem[]>([]);
   const { t } = useTranslation(['popup', 'lang']);
-  const { mapDataService } = useAdapter();
 
   const getRewadData = useCallback(async () => {
-    const rewards = await mapDataService.chestRewardDataService.getRewards(reward_id);
+    const rewards = await service.dataService.chestRewardDataService.getRewards(reward_id);
     return rewards;
-  }, [mapDataService.chestRewardDataService, reward_id]);
+  }, [reward_id]);
 
   useEffect(() => {
     getRewadData().then((data) => {

@@ -2,11 +2,10 @@ import type { DataInstance, EntityInfoStats } from '@endfieldmap/map-core';
 import { CustomPointKey, ElectricPoleKey, NoteKey } from '@endfieldmap/map-core';
 import { useTranslation } from '@endfieldmap/map-service';
 
-import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 export const useEntityName = (entity?: EntityInfoStats) => {
   const { t } = useTranslation(['common', 'sidebar', 'lang']);
-  const { mapDataService } = useAdapter();
   const categoryName = entity?.category
     ? t(`sidebar:filter.category.${entity.category}`, {
         defaultValue: entity.category,
@@ -27,7 +26,7 @@ export const useEntityName = (entity?: EntityInfoStats) => {
         defaultValue: entity.entityDataIdKey,
       });
     } else {
-      name = t(`lang:${mapDataService.langHashDataService.getHash(entity.entityDataIdKey)}`, {
+      name = t(`lang:${service.langHashService.getHash(entity.entityDataIdKey)}`, {
         defaultValue: entity.entityDataIdKey,
       });
     }
@@ -40,7 +39,6 @@ export const useEntityName = (entity?: EntityInfoStats) => {
 
 export const useActiveFeatureName = (entity?: DataInstance | null) => {
   const { t } = useTranslation(['common', 'sidebar', 'lang']);
-  const { mapDataService } = useAdapter();
   let categoryName = 'unknown category';
   let name = 'unnamed';
   if (entity) {
@@ -53,7 +51,7 @@ export const useActiveFeatureName = (entity?: DataInstance | null) => {
     } else if (entityInfo.category === CustomPointKey) {
       name = entity.name;
     } else {
-      name = t(`lang:${mapDataService.langHashDataService.getHash(entityInfo?.entityInfo.point)}`, {
+      name = t(`lang:${service.langHashService.getHash(entityInfo?.entityInfo.point)}`, {
         defaultValue: entityInfo?.entityInfo.point || '',
       });
     }

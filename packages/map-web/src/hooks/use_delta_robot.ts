@@ -19,7 +19,7 @@ export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
       setSolutionGrid(null);
       setLevelData(null);
 
-      const parsed = await service.deltaRobotService.getLevelData(level);
+      const parsed = await service.dataService.deltaRobotService.getLevelData(level);
 
       if (!parsed) {
         setStatus(DeltaRobotStatus.LoadingError);
@@ -74,7 +74,7 @@ export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
 
         // 调用求解器
         const startTime = performance.now();
-        const result = service.deltaRobotService.solvePuzzle(
+        const result = service.dataService.deltaRobotService.solvePuzzle(
           sizeY,
           sizeX,
           rowConstraints,

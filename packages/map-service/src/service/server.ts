@@ -1,6 +1,12 @@
-import type { PullResponse, PushDocumentRow, PushResponse, SyncCheckpoint, SyncCollectionName } from '../@types/sync';
-import { ServerResponse } from '../@types/server';
-import type { I18nService } from './i18n';
+import type {
+  PullResponse,
+  PushDocumentRow,
+  PushResponse,
+  SyncCheckpoint,
+  SyncCollectionName,
+} from '@endfieldmap/map-service/@types/sync';
+import { ServerResponse } from '@endfieldmap/map-service/@types/server';
+import type { I18nService } from '@endfieldmap/map-service/service/i18n';
 
 export interface ServerServiceConfig {
   backendHost: string;

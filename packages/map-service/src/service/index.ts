@@ -1,17 +1,19 @@
 import type { LoggerReporter } from '@endfieldmap/tools';
 import { logger, JSONLoader } from '@endfieldmap/tools';
 
-import type { I18nServiceConfig } from './i18n';
-import { I18nService } from './i18n';
+import type { I18nServiceConfig } from '@endfieldmap/map-service/service/i18n';
+import { I18nService } from '@endfieldmap/map-service/service/i18n';
 
-import { ServerService } from './server';
+import { ServerService } from '@endfieldmap/map-service/service/server';
 
-import type { DatabaseServiceConfig } from './db';
-import { DatabaseService } from './db';
+import type { DatabaseServiceConfig } from '@endfieldmap/map-service/service/db';
+import { DatabaseService } from '@endfieldmap/map-service/service/db';
 
-import { DeltaRobotService } from './game/delta_robot';
+import { AssetService } from '@endfieldmap/map-service/service/asset';
 
-import { AssetService } from './asset';
+import { DataService } from '@endfieldmap/map-service/service/data';
+
+import { LangHashService } from '@endfieldmap/map-service/service/lang_hash';
 
 export interface MapServiceConfig<T, R> {
   databaseConfig: Omit<DatabaseServiceConfig<T, R>, 'isDev'>;
@@ -27,8 +29,10 @@ export class MapService<T, R> {
   public serverService: ServerService;
   public databaseService: DatabaseService<T, R>;
   public assetService: AssetService;
-  public deltaRobotService: DeltaRobotService<T, R>;
+  public langHashService: LangHashService;
   public jsonLoader = new JSONLoader();
+
+  public dataService: DataService<T, R>;
 
   constructor(config: MapServiceConfig<T, R>) {
     if (config.consolaReporter) {
@@ -47,10 +51,14 @@ export class MapService<T, R> {
       isDev: config.isDev,
       ...config.databaseConfig,
     });
-    this.deltaRobotService = new DeltaRobotService({
+    this.dataService = new DataService({
       assetService: this.assetService,
       jsonLoader: this.jsonLoader,
       databaseService: this.databaseService,
+    });
+    this.langHashService = new LangHashService({
+      jsonLoader: this.jsonLoader,
+      assetService: this.assetService,
     });
   }
 
@@ -59,6 +67,6 @@ export class MapService<T, R> {
   }
 
   public async init() {
-    await this.databaseService.init();
+    await Promise.all([this.databaseService.init(), this.dataService.init(), this.langHashService.init()]);
   }
 }

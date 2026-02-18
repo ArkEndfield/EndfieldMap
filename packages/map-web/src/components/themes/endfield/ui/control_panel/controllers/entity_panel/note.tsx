@@ -8,6 +8,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 
 import type { NoteItem } from '@/@types/note';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 /**
  * 情报档案组件
@@ -15,8 +16,8 @@ import { useAdapter } from '@/hooks/use_adapter';
  */
 const NoteEntityGroup: React.FC<{ searchQuery: string }> = observer(({ searchQuery }) => {
   const { t } = useTranslation(['sidebar', 'lang']);
-  const { mapDataService, adapter } = useAdapter();
-  const data = mapDataService.noteDataService.investigateData;
+  const { adapter } = useAdapter();
+  const data = service.dataService.noteDataService.investigateData;
 
   // 处理数据：建立 collectionId 到 name 的映射，并准备搜索结果
   const itemsResult = useMemo((): { itemsMap: Map<string, NoteItem>; itemsList: NoteItem[] } => {

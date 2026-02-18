@@ -1,4 +1,4 @@
-import type { GuideImageNode, GuideNodeType, GuideTextNode } from '@eftypes/guide';
+import type { GuideImageNode, GuideNodeType, GuideTextNode } from '@endfieldmap/map-service';
 
 const TextNode = ({ node }: { node: GuideTextNode }) => (
   <span

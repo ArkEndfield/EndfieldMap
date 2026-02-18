@@ -4,28 +4,45 @@ import type { RxDBCollectionConfig } from '@tanstack/rxdb-db-collection';
 import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
 import type { RxCollection, RxDatabase } from 'rxdb';
 
-import { chestRewardSchema, type ChestRewardSchemaType } from './schema/game_data/chest_reward';
-import { deltaRobotParsedLevelSchema, type DeltaRobotParsedLevelSchemaType } from './schema/game_data/delta_robot';
-import { dungeonSeriesSchema, type DungeonSeriesSchemaType } from './schema/game_data/dungeon_series';
-import { guideSchema, type GuideSchemaType } from './schema/game_data/guide';
-import { itemSchema, type ItemSchemaType } from './schema/game_data/item';
+import {
+  chestRewardSchema,
+  type ChestRewardSchemaType,
+} from '@endfieldmap/map-service/service/db/schema/game_data/chest_reward';
+import {
+  deltaRobotParsedLevelSchema,
+  type DeltaRobotParsedLevelSchemaType,
+} from '@endfieldmap/map-service/service/db/schema/game_data/delta_robot';
+import {
+  dungeonSeriesSchema,
+  type DungeonSeriesSchemaType,
+} from '@endfieldmap/map-service/service/db/schema/game_data/dungeon_series';
+import { guideSchema, type GuideSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/guide';
+import { itemSchema, type ItemSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/item';
 import {
   type CustomPointNodeCollection,
   customPointNodeSchema,
   type CustomPointNodeSchemaType,
-} from './schema/user_data/custom_point';
+} from '@endfieldmap/map-service/service/db/schema/user_data/custom_point';
 import {
   type ElectricPoleNodeCollection,
   electricPoleNodeSchema,
   type ElectricPoleNodeSchemaType,
-} from './schema/user_data/electric_pole';
-import { type MarkDataCollection, markDataSchema, type MarkDataSchemaType } from './schema/user_data/mark';
-import { type PresetCollection, presetSchema, type PresetSchemaType } from './schema/user_data/preset';
+} from '@endfieldmap/map-service/service/db/schema/user_data/electric_pole';
+import {
+  type MarkDataCollection,
+  markDataSchema,
+  type MarkDataSchemaType,
+} from '@endfieldmap/map-service/service/db/schema/user_data/mark';
+import {
+  type PresetCollection,
+  presetSchema,
+  type PresetSchemaType,
+} from '@endfieldmap/map-service/service/db/schema/user_data/preset';
 import {
   type VisibilityDataCollection,
   visibilityDataSchema,
   type VisibilityDataSchemaType,
-} from './schema/user_data/visibility';
+} from '@endfieldmap/map-service/service/db/schema/user_data/visibility';
 
 /**
  * 用户数据数据库 Collections 类型定义

@@ -14,7 +14,7 @@ import {
   UserCollections,
   userDataCollectionsSchema,
   type UserDataDBCollections,
-} from './collections';
+} from '@endfieldmap/map-service/service/db/collections';
 
 /**
  * 用户数据快照，用于迁移与云端同步（电线杆/自定义标点可见性均在 entityVisibility 中）

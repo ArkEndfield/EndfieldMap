@@ -1,33 +1,42 @@
 import type { JSONLoader } from '@endfieldmap/tools';
 
 import type { DungeonSeriesSchemaType } from '@endfieldmap/map-service';
-import { service } from '@/services';
-import type { DealedRewardItem } from '@/services/data/map/chest_reward';
-import { ChestRewardDataService } from '@/services/data/map/chest_reward';
+import type { DatabaseService } from '@endfieldmap/map-service/service/db';
+import type { AssetService } from '@endfieldmap/map-service/service/asset';
+import type { DealedRewardItem, ChestRewardDataService } from '@endfieldmap/map-service/service/data/game/chest_reward';
 
-const assetPath = service.assetService.url;
+export interface DungeonSeriesDataConfig<T, R> {
+  jsonLoader: JSONLoader;
+  databaseService: DatabaseService<T, R>;
+  assetService: AssetService;
+  chestRewardDataService: ChestRewardDataService<T, R>;
+}
 
-export class DungeonSeriesDataService {
+export class DungeonSeriesDataService<T, R> {
   private jsonLoader: JSONLoader;
-  private chestRewardDataService: ChestRewardDataService;
+  private databaseService: DatabaseService<T, R>;
+  private assetService: AssetService;
+  private chestRewardDataService: ChestRewardDataService<T, R>;
 
-  constructor(jsonLoader: JSONLoader, chestRewardDataService: ChestRewardDataService) {
-    this.jsonLoader = jsonLoader;
-    this.chestRewardDataService = chestRewardDataService;
+  constructor(config: DungeonSeriesDataConfig<T, R>) {
+    this.jsonLoader = config.jsonLoader;
+    this.databaseService = config.databaseService;
+    this.assetService = config.assetService;
+    this.chestRewardDataService = config.chestRewardDataService;
   }
 
   public async init() {
     const data = await this.jsonLoader.loadJSON<Record<string, Omit<DungeonSeriesSchemaType, 'id'>>>(
-      `${assetPath.entityData}/dungeon_series.json`
+      `${this.assetService.url.entityData}/dungeon_series.json`
     );
     const dungeonSeriesList = Object.values(data || {});
     if (dungeonSeriesList.length > 0) {
-      await service.databaseService.gameDatabase.gameDungeonSeries.bulkUpsert(dungeonSeriesList);
+      await this.databaseService.gameDatabase.gameDungeonSeries.bulkUpsert(dungeonSeriesList);
     }
   }
 
   private async getDungeonSeriesDataFromDB(id: string) {
-    return await service.databaseService.gameDatabase.gameDungeonSeries
+    return await this.databaseService.gameDatabase.gameDungeonSeries
       .findOne({
         selector: { id },
       })

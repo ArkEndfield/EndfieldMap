@@ -5,23 +5,19 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { SubPopupTitle } from '@/components/common/popup/components/title';
 import type { DungeonEntryComponent } from '@/components/common/popup/sub/components/types';
 import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
-import { useAdapter } from '@/hooks/use_adapter';
 import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { isDealedRewardItemWithCount } from '@/utils/reward';
+import { service } from '@/services';
 
 const DungeonEntryComponent: SubPopupComponentProps<DungeonEntryComponent> = ({ prop }) => {
   const { system_inst_key } = prop;
   const [rewards, setRewards] = useState<Record<string, DealedRewardItem[]>>({});
-  const { mapDataService } = useAdapter();
   const { t } = useTranslation('lang');
 
-  const getRewadData = useCallback(
-    async (id: string) => {
-      const rewards = await mapDataService.dungeonSeriesDataService.getDungeonRewards(id);
-      return rewards;
-    },
-    [mapDataService.dungeonSeriesDataService]
-  );
+  const getRewadData = useCallback(async (id: string) => {
+    const rewards = await service.dataService.dungeonSeriesDataService.getDungeonRewards(id);
+    return rewards;
+  }, []);
 
   useEffect(() => {
     getRewadData(system_inst_key).then((data) => {

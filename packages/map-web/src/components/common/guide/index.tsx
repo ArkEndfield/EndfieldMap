@@ -2,7 +2,7 @@ import 'yet-another-react-lightbox/styles.css';
 import '@/components/common/guide/captions.css';
 import '@/components/common/guide/thumbnails.css';
 
-import type { GuideInfoDetail, GuideNodeType } from '@eftypes/guide';
+import type { GuideInfoDetail, GuideNodeType } from '@endfieldmap/map-service';
 import type { EntityData, CustomPointData, ElectricPoleData } from '@endfieldmap/map-core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Lightbox, { type ControllerRef, type Slide } from 'yet-another-react-lightbox';
@@ -12,7 +12,7 @@ import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { GuideNode } from '@/components/common/guide/node';
-import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 const collectImages = (nodes: GuideNodeType[]) => {
   const slides: Slide[] = [];
@@ -47,12 +47,11 @@ export const Guide = ({ entity }: { entity: EntityData | CustomPointData | Elect
   const [showImage, setShowImage] = useState(false);
   const [index, setIndex] = useState(0);
   const imageRef = useRef<ControllerRef>(null);
-  const { mapDataService } = useAdapter();
 
   const getGuideData = useCallback(async () => {
-    const guides = await mapDataService.guideDataService.getGuide(entity.levelLogicId);
+    const guides = await service.dataService.guideDataService.getGuide(entity.levelLogicId);
     return guides;
-  }, [mapDataService.guideDataService, entity.levelLogicId]);
+  }, [entity.levelLogicId]);
 
   const { slides, imageIndexMap } = collectImages(guide?.nodes ?? []);
 

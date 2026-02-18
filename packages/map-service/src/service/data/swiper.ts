@@ -1,4 +1,4 @@
-import type { SwiperConfig } from '@eftypes/swiper';
+import type { SwiperConfig } from '@endfieldmap/map-service/@types/swiper';
 import { observable } from 'mobx';
 
 export class SwiperDataService {
