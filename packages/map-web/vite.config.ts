@@ -12,6 +12,7 @@ export default defineConfig(({ command, mode }) => {
   const alias = {
     '@endfieldmap/map-core': resolve(__dirname, '../map-core/src'),
     '@endfieldmap/tools': resolve(__dirname, '../tools/src'),
+    '@endfieldmap/map-service': resolve(__dirname, '../map-service/src'),
   };
   return {
     mode,

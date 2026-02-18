@@ -1,6 +1,6 @@
 import { DEFAULT_ZOOM } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { SettingItem } from '@/components/common/settings/components/setting_item';

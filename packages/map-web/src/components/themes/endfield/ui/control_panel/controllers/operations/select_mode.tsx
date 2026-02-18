@@ -1,7 +1,7 @@
 import Tooltip from '@themes/endfield/components/tooltip';
 import ToggleButton from '@themes/endfield/ui/control_panel/components/toggle_button';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { MultiOperationIcon } from '@/components/common/icons';

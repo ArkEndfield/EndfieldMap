@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
@@ -47,10 +47,7 @@ const PageButton: React.FC<PageButtonProps> = ({ page, currentPage, disabled, on
     <ZmdRoundIconButton
       disabled={disabled}
       onClick={() => onClick(page)}
-      className={cn(
-        'text-xs',
-        isActive && 'bg-[#fffa00] before:opacity-100'
-      )}
+      className={cn('text-xs', isActive && 'bg-[#fffa00] before:opacity-100')}
     >
       <span className="relative z-2">{page}</span>
     </ZmdRoundIconButton>
@@ -202,7 +199,9 @@ export function Pagination<T>({
         )}
         {isError && (
           <div className="absolute inset-0 bg-white/90 flex flex-col items-center justify-center z-10 gap-3">
-            <div className="text-red-500 text-sm">{errorMessage || t('common:load_error', { defaultValue: '加载失败' })}</div>
+            <div className="text-red-500 text-sm">
+              {errorMessage || t('common:load_error', { defaultValue: '加载失败' })}
+            </div>
             <ZmdRoundButton
               type="default"
               showIcon={false}

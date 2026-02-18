@@ -2,9 +2,9 @@ import { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import i18n from '@/i18n';
 import type { MapDataService } from '@/services/data/map';
 import { MapService } from '@/services/map';
+import { useTranslation } from '@endfieldmap/map-service';
 
 /**
  * 地图适配器 hook
@@ -16,6 +16,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   const [mapDataServiceReactive, setMapDataServiceReactive] = useState<MapDataService | null>(null);
   const [mapServiceReactive, setMapServiceReactive] = useState<MapService | null>(null);
   const isMobile = useIsMobile();
+  const { i18n } = useTranslation();
   /*
    * 初始化地图函数
    */

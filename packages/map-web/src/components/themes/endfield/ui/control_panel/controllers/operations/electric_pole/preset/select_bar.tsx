@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { Toggle } from '@/components/common/toggle';
 

@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { PresetStoreResponseItem } from '@/@types/preset_store';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';

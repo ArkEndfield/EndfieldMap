@@ -4,16 +4,15 @@ import {
   type SyncCollectionName,
   type SyncDocumentState,
   SyncStatus,
-} from '@eftypes/sync';
+} from '@endfieldmap/map-service';
 import { logger } from '@endfieldmap/tools';
 import { computed, makeObservable, observable, runInAction } from 'mobx';
 import type { RxCollection, WithDeleted } from 'rxdb';
 import { replicateRxCollection, type RxReplicationState } from 'rxdb/plugins/replication';
 
 import { alert } from '@/components/common/alert/alert_api';
-import i18n from '@/i18n';
 import { DataService } from '@/services/data';
-import { serverService } from '@/services/server';
+import { service } from '@/services';
 
 /** 同步文档类型，包含 _deleted 标记 */
 type SyncDocument = WithDeleted<Record<string, unknown>>;
@@ -245,7 +244,7 @@ export class SyncService {
       await this.stopSync(true); // 保持错误状态
       // TODO: i18n
       alert.info(
-        i18n.t('sync_failed_too_much', {
+        service.i18nService.translate('sync_failed_too_much', {
           ns: 'error',
           defaultValue:
             '同步失败次数过多，已自动停止同步。请检查网络连接后点击"立即同步"重试，如果仍然有问题，请加入社群反馈。',
@@ -288,7 +287,7 @@ export class SyncService {
           try {
             logger.debug(`[SyncService] Pulling ${backendCollectionName}...`, { checkpoint: checkpointOrNull });
 
-            const response = await serverService.syncPull(
+            const response = await service.serverService.syncPull(
               backendCollectionName,
               checkpointOrNull as SyncCheckpoint | null,
               batchSize
@@ -325,7 +324,7 @@ export class SyncService {
               new_fork_state: toBackendDoc(doc.newDocumentState as Record<string, unknown>),
             }));
 
-            const response = await serverService.syncPush(backendCollectionName, pushDocs);
+            const response = await service.serverService.syncPush(backendCollectionName, pushDocs);
 
             // 返回冲突的文档（转换回 RxDB 格式）
             const conflicts = response.conflicts.map(fromBackendDoc);

@@ -2,7 +2,7 @@ import { MarkedFeatureFilterMode } from '@endfieldmap/map-core';
 import Tooltip from '@themes/endfield/components/tooltip';
 import ToggleButton from '@themes/endfield/ui/control_panel/components/toggle_button';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { RefreshIcon } from '@/components/common/icons';

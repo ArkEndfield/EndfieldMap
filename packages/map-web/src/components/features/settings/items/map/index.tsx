@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { AdjustViewSetting } from '@/components/features/settings/items/map/adjust_view';

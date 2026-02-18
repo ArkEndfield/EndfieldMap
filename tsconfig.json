@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "./packages/map-core" }, { "path": "./packages/tools" }, { "path": "./packages/map-web" }]
+  "references": [{ "path": "./packages/map-core" }, { "path": "./packages/tools" }, { "path": "./packages/map-service" }, { "path": "./packages/map-web" }]
 }

@@ -5,7 +5,6 @@ import { MapController } from '@endfieldmap/map-core/controller/core/map';
 import { ZoomController } from '@endfieldmap/map-core/controller/core/zoom';
 import { DevToolsController } from '@endfieldmap/map-core/controller/dev_tools';
 import { CustomPointController } from '@endfieldmap/map-core/controller/entity/custom_point_controller';
-// import { DataController } from '@endfieldmap/map-core/controller/entity/data_controller';
 import { ElectricPoleController } from '@endfieldmap/map-core/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-core/controller/entity/entity_controller';
 import { ActiveFeatureController } from '@endfieldmap/map-core/controller/feature/active_feature';
@@ -23,7 +22,7 @@ import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity
 import { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import { EndfieldMapEvent } from '@endfieldmap/map-core/event/map';
 import type { MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core/types/map';
-import type { JSONLoader, LoggerReporter } from '@endfieldmap/tools';
+import type { LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 

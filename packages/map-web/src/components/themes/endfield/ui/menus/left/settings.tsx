@@ -1,5 +1,5 @@
 import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { CogIcon } from '@/components/common/icons';
 import uiManager from '@/services/ui_manager';

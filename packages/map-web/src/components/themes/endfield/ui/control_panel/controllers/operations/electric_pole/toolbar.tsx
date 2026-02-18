@@ -3,7 +3,7 @@ import { EndfieldSquareSwitch } from '@themes/endfield/components/switch';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { EditAddIcon, EditConnectIcon, EditDeleteIcon, EditDisconnectIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';

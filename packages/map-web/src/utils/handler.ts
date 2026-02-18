@@ -1,7 +1,7 @@
 import type { FieldErrors, FieldValues } from 'react-hook-form';
 
 import { alert } from '@/components/common/alert/alert_api';
-import i18n from '@/i18n';
+import { service } from '@/services';
 
 /**
  * 捕获函数执行过程中的错误，并显示错误提示
@@ -34,13 +34,13 @@ export const catchErrorWithTip = async <T>(
 
     if (error instanceof Error) {
       alert.info(
-        i18n.t(error.message, {
+        service.i18nService.translate(error.message, {
           defaultValue: error.message,
         })
       );
     } else {
       alert.info(
-        i18n.t('user.unknown_error', {
+        service.i18nService.translate('user.unknown_error', {
           defaultValue: '未知错误',
         })
       );
@@ -57,7 +57,7 @@ export const onFormInvalid = <T extends FieldValues = FieldValues>(errors: Field
   const firstError = Object.values(errors)[0];
   if (firstError?.message && typeof firstError.message === 'string') {
     alert.info(
-      i18n.t(`schema.${firstError.message}`, {
+      service.i18nService.translate(`schema.${firstError.message}`, {
         defaultValue: firstError.message,
         ns: 'error',
       }) as unknown as string

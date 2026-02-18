@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "erasableSyntaxOnly": false,
+    "paths": {
+      "@endfieldmap/map-service": ["./src/index.ts"],
+      "@endfieldmap/map-service/*": ["./src/*"],
+      "@endfieldmap/tools": ["../tools/src/index.ts"],
+      "@endfieldmap/tools/*": ["../tools/src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';

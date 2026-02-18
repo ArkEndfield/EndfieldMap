@@ -1,6 +1,6 @@
 import { Item } from '@themes/endfield/components/item';
 import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { SubPopupTitle } from '@/components/common/popup/components/title';
 import type { TreasureComponent } from '@/components/common/popup/sub/components/types';

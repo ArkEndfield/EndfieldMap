@@ -3,11 +3,10 @@ import { logger } from '@endfieldmap/tools';
 
 import type { BindType } from '@/@types/game_role';
 import { alert } from '@/components/common/alert/alert_api';
-import i18n from '@/i18n';
 import { DataService } from '@/services/data';
-import { serverService } from '@/services/server';
 import { UserAuthService } from '@/services/user/auth';
 import { UserDataService } from '@/services/user/data';
+import { service } from '@/services';
 
 export class UserService {
   public static instance: UserService;
@@ -17,20 +16,20 @@ export class UserService {
   constructor() {
     this.auth = new UserAuthService();
     this.data = new UserDataService();
-    serverService.setToken(this.auth.token.value);
+    service.serverService.setToken(this.auth.token.value);
     this.updateUidList(false);
     // Register handlers
-    serverService.setUnauthorizedHandler(() => {
+    service.serverService.setUnauthorizedHandler(() => {
       logger.warn('Unauthorized, logging out');
       alert.info(
-        i18n.t('login_expired', {
+        service.i18nService.translate('login_expired', {
           ns: 'error',
         })
       );
       this.logout();
     });
 
-    serverService.setOnTokenRefreshed((newToken) => {
+    service.serverService.setOnTokenRefreshed((newToken) => {
       logger.info('Token refreshed');
       this.auth.token.value = newToken;
     });
@@ -52,7 +51,7 @@ export class UserService {
   public async login(username: string, password: string): Promise<void> {
     logger.info('[UserService] Logging in user:', username);
     await this.auth.login(username, password);
-    serverService.setToken(this.auth.token.value);
+    service.serverService.setToken(this.auth.token.value);
     await this.updateUidList();
   }
 
@@ -64,7 +63,7 @@ export class UserService {
   public async register(username: string, password: string): Promise<void> {
     logger.info('[UserService] Registering user:', username);
     await this.auth.register(username, password);
-    serverService.setToken(this.auth.token.value);
+    service.serverService.setToken(this.auth.token.value);
     await this.updateUidList();
   }
 
@@ -75,7 +74,7 @@ export class UserService {
   public async thirdparty(token: string): Promise<void> {
     logger.info('[UserService] Adding user');
     this.auth.token.value = token;
-    serverService.setToken(this.auth.token.value);
+    service.serverService.setToken(this.auth.token.value);
     await this.updateUidList();
   }
 
@@ -114,7 +113,7 @@ export class UserService {
       return;
     }
     // 如果在，说明还是有效的，开始同步
-    serverService.setUid(currentUid);
+    service.serverService.setUid(currentUid);
     this.startSync();
   }
 
@@ -149,7 +148,7 @@ export class UserService {
       if (!uid) {
         // 如果没有 Uid，可能是在initUidList检测到当前uid没了，可能是解绑了，直接返回1让本地留存
         alert.info(
-          i18n.t('user.no_uid_select_and_keep_data', {
+          service.i18nService.translate('user.no_uid_select_and_keep_data', {
             ns: 'header',
           })
         );
@@ -157,17 +156,17 @@ export class UserService {
         return;
       }
       alert.confirm({
-        content: i18n.t('user.switch_confirm', {
+        content: service.i18nService.translate('user.switch_confirm', {
           ns: 'header',
-          uid: uid === '0' ? i18n.t('user.uid.default', { ns: 'header' }) : uid,
+          uid: uid === '0' ? service.i18nService.translate('user.uid.default', { ns: 'header' }) : uid,
         }),
         dismissible: false,
         onConfirm: async () => {
           alert.confirm({
             dismissible: false,
-            content: i18n.t('user.switch_confirm_keep', {
+            content: service.i18nService.translate('user.switch_confirm_keep', {
               ns: 'header',
-              uid: uid === '0' ? i18n.t('user.uid.default', { ns: 'header' }) : uid,
+              uid: uid === '0' ? service.i18nService.translate('user.uid.default', { ns: 'header' }) : uid,
             }),
             onConfirm: async () => {
               resolve(1);
@@ -196,7 +195,7 @@ export class UserService {
     if (result && result > 0) {
       const migrate = result === 1 ? true : false;
       this.auth.switchUid(uid);
-      serverService.setUid(uid);
+      service.serverService.setUid(uid);
       // 创建用户数据库并迁移本地数据
       await DataService.dbStorage.createUserDB(migrate);
       // 更新所有服务的数据库连接
@@ -260,7 +259,7 @@ export class UserService {
     // 调用 auth.logout
     await this.auth.logout();
 
-    serverService.setToken(null);
+    service.serverService.setToken(null);
 
     // 销毁用户数据库
     await DataService.dbStorage.createUserDB(migrateData);
@@ -274,7 +273,7 @@ export class UserService {
     }
 
     // 重置登出状态，允许下次登录后再次触发 logout
-    serverService.resetLogoutState();
+    service.serverService.resetLogoutState();
 
     logger.info('[UserService] User logged out');
   }

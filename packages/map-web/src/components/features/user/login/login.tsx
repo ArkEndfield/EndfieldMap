@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { TickCircleIcon } from '@/components/common/icons';
@@ -112,11 +112,7 @@ export const LoginForm = observer(({ onSwitchToRegister }: LoginFormProps) => {
         </ZmdSquareButton>
       </div>
 
-      <AgreementDialog
-        open={agreementDialogOpen}
-        onClose={() => setAgreementDialogOpen(false)}
-        type={agreementType}
-      />
+      <AgreementDialog open={agreementDialogOpen} onClose={() => setAgreementDialogOpen(false)} type={agreementType} />
     </>
   );
 });

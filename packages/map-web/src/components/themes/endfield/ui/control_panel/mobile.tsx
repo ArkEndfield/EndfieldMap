@@ -4,7 +4,7 @@ import { FilterAndEntityPanelMobile } from '@themes/endfield/ui/control_panel/co
 import { CustomPointManager } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point';
 import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { Logo } from '@/components/common/icons';

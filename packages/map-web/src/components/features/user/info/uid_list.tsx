@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { UidInfo } from '@/@types/user';
 import { BindIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';

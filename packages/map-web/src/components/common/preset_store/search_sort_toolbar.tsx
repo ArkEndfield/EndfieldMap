@@ -1,6 +1,6 @@
 import { debounce } from '@endfieldmap/tools';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { PresetStoreSearchOptions } from '@/@types/preset_store';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';

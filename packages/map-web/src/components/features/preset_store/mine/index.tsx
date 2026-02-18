@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { PresetStoreResponseItem } from '@/@types/preset_store';
 import { alert } from '@/components/common/alert/alert_api';

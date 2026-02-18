@@ -4,7 +4,7 @@ import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_pa
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { NoteItem } from '@/@types/note';
 import { useAdapter } from '@/hooks/use_adapter';

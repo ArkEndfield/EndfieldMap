@@ -1,5 +1,5 @@
 import Tooltip from '@themes/endfield/components/tooltip';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { CustomPointIcon } from '@/components/common/icons';

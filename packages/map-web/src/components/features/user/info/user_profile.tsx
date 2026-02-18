@@ -1,8 +1,8 @@
-import { SyncStatus } from '@eftypes/sync';
+import { SyncStatus } from '@endfieldmap/map-service';
 import type { UidInfo, UserInfo } from '@eftypes/user';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { CheckCircleIcon, SyncIcon } from '@/components/common/icons';

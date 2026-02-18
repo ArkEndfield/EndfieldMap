@@ -2,7 +2,7 @@ import type { DataInstance } from '@endfieldmap/map-core';
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';

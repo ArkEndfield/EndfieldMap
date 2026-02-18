@@ -8,7 +8,6 @@
     "build": "tsc -b tsconfig.build.json && vite build",
     "lint": "eslint .",
     "lint:fix": "prettier --write . && eslint . --fix",
-    "lng:type": "i18next-cli types",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -23,9 +22,7 @@
     "@tanstack/rxdb-db-collection": "^0.1.56",
     "clsx": "^2.1.1",
     "gsap": "^3.13.0",
-    "i18next": "^25.8.0",
     "i18next-browser-languagedetector": "^8.2.0",
-    "i18next-http-backend": "^3.0.2",
     "microdiff": "^1.5.0",
     "mobx": "^6.15.0",
     "mobx-react-lite": "^4.1.1",
@@ -34,7 +31,6 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.1",
-    "react-i18next": "^16.3.5",
     "rxdb": "^16.21.1",
     "rxjs": "^7.8.2",
     "swiper": "^12.0.3",
@@ -44,7 +40,6 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "i18next-cli": "^1.25.1",
     "prettier": "3.6.2",
     "rollup-plugin-visualizer": "^6.0.5",
     "sass-embedded": "^1.93.3",

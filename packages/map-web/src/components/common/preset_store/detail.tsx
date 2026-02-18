@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { CustomPointPreset } from '@/@types/custom_point';
 import type { ElectricPolePreset } from '@/@types/electric_pole';

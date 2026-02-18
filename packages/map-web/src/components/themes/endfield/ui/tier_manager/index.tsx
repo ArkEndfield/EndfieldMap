@@ -3,7 +3,7 @@ import { SubTitle } from '@themes/endfield/ui/tier_manager/subtitle';
 import { TierTitle } from '@themes/endfield/ui/tier_manager/tier_title';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
 import { useAdapter } from '@/hooks/use_adapter';

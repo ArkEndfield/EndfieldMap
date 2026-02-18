@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { Input } from '@/components/common/input';

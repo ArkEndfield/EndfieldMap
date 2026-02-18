@@ -1,11 +1,11 @@
 import { motion } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { serverService } from '@/services/server';
+import { service } from '@/services';
 import { cn } from '@/utils/style';
 
 /** 轮询间隔（毫秒） */
@@ -51,7 +51,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
 
     let result: ScanStatusResponse | null = null;
     try {
-      result = await serverService.apiGet<ScanStatusResponse>(
+      result = await service.serverService.apiGet<ScanStatusResponse>(
         `/user/game-roles/scan/status?scan_id=${encodeURIComponent(scanInfo.scan_id)}`
       );
     } catch (err) {
@@ -108,7 +108,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
     onLoadingChange?.(true);
 
     try {
-      const result = await serverService.apiPost<ScanInfo>('/user/game-roles/scan/generate');
+      const result = await service.serverService.apiPost<ScanInfo>('/user/game-roles/scan/generate');
 
       if (!isMountedRef.current) return;
 

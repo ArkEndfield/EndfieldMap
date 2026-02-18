@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { PieceUI } from '@/@types/delta_robot';
 import { cn } from '@/utils/style';

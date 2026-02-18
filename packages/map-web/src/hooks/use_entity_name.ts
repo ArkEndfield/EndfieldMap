@@ -1,6 +1,6 @@
 import type { DataInstance, EntityInfoStats } from '@endfieldmap/map-core';
 import { CustomPointKey, ElectricPoleKey, NoteKey } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { useAdapter } from '@/hooks/use_adapter';
 

@@ -1,5 +1,4 @@
 import '@/services/logger.ts';
-import '@/i18n';
 import '@/index.css';
 
 import { disablePageZoom } from '@endfieldmap/tools';

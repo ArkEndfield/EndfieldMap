@@ -1,13 +1,12 @@
 import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { BilibiliIcon, DiscordIcon, Logo, QQIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';
 import { LoginForm } from '@/components/features/user/login/login';
 import { RegisterForm } from '@/components/features/user/login/register';
 import { ThirdPartyButton } from '@/components/features/user/login/third_party';
-
 
 type AuthMode = 'login' | 'register';
 
@@ -72,18 +71,9 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
 
           {/* 第三方登录按钮 */}
           <div className="flex gap-3 justify-center">
-            <ThirdPartyButton
-              icon={<QQIcon className="text-[#12B7F5]" />}
-              label="QQ"
-            />
-            <ThirdPartyButton
-              icon={<BilibiliIcon className="text-[#FB7299]" />}
-              label="Bilibili"
-            />
-            <ThirdPartyButton
-              icon={<DiscordIcon className="text-[#5865F2]" />}
-              label="Discord"
-            />
+            <ThirdPartyButton icon={<QQIcon className="text-[#12B7F5]" />} label="QQ" />
+            <ThirdPartyButton icon={<BilibiliIcon className="text-[#FB7299]" />} label="Bilibili" />
+            <ThirdPartyButton icon={<DiscordIcon className="text-[#5865F2]" />} label="Discord" />
           </div>
         </div>
       </div>

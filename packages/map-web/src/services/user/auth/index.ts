@@ -4,8 +4,7 @@ import { action, computed, observable, runInAction } from 'mobx';
 
 import type { BindType } from '@/@types/game_role';
 import { UserLocalStorageKey } from '@/const/storage';
-import i18n from '@/i18n';
-import { serverService } from '@/services/server';
+import { service } from '@/services';
 
 export class UserAuthService {
   public token: LocalStorageValue<string | null> = new LocalStorageValue<string | null>({
@@ -43,7 +42,7 @@ export class UserAuthService {
    * @returns
    */
   public async login(username: string, password: string) {
-    const { token } = await serverService.apiPost<{ token: string; expire: string }>('/auth/login', {
+    const { token } = await service.serverService.apiPost<{ token: string; expire: string }>('/auth/login', {
       username,
       password,
     });
@@ -60,7 +59,7 @@ export class UserAuthService {
    * @returns
    */
   public async register(username: string, password: string) {
-    const { token } = await serverService.apiPost<{ token: string; expire: string }>('/auth/register', {
+    const { token } = await service.serverService.apiPost<{ token: string; expire: string }>('/auth/register', {
       username,
       password,
     });
@@ -75,7 +74,7 @@ export class UserAuthService {
    */
   public async logout() {
     try {
-      await serverService.apiPost('/auth/logout');
+      await service.serverService.apiPost('/auth/logout');
     } catch (error) {
       logger.error('logout error', error);
     } finally {
@@ -93,13 +92,13 @@ export class UserAuthService {
   public async deleteAccount() {
     if (!this.isLogin) {
       throw new Error(
-        i18n.t('not_login', {
+        service.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
       );
     }
-    await serverService.apiPost('/user/delete');
+    await service.serverService.apiPost('/user/delete');
   }
   // endregion
 
@@ -126,7 +125,7 @@ export class UserAuthService {
     const findUid = this.uidList.find((uidInfo) => uidInfo.uid === uid);
     if (!findUid) {
       throw new Error(
-        i18n.t('not_bind_uid', {
+        service.i18nService.translate('not_bind_uid', {
           ns: 'error',
           defaultValue: '未绑定 uid',
         })
@@ -141,13 +140,13 @@ export class UserAuthService {
   public async fetchUidList() {
     if (!this.isLogin) {
       throw new Error(
-        i18n.t('not_login', {
+        service.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
       );
     }
-    const { list } = await serverService.apiGet<{ list: UidInfo[] }>('/user/game-roles');
+    const { list } = await service.serverService.apiGet<{ list: UidInfo[] }>('/user/game-roles');
     runInAction(() => {
       this.uidList = list;
     });
@@ -161,13 +160,13 @@ export class UserAuthService {
   public async bindUid(uid: UidInfo['uid'], type: BindType) {
     if (!this.isLogin) {
       throw new Error(
-        i18n.t('not_login', {
+        service.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
       );
     }
-    await serverService.apiPost('/user/game-roles/bind', { role_id: uid, form: type });
+    await service.serverService.apiPost('/user/game-roles/bind', { role_id: uid, form: type });
   }
 
   /**
@@ -177,13 +176,13 @@ export class UserAuthService {
   public async unbindUid(uid: UidInfo['uid']) {
     if (!this.isLogin) {
       throw new Error(
-        i18n.t('not_login', {
+        service.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
       );
     }
-    await serverService.apiPost('/user/game-roles/unbind', { role_id: uid });
+    await service.serverService.apiPost('/user/game-roles/unbind', { role_id: uid });
   }
 
   // endregion
@@ -196,13 +195,13 @@ export class UserAuthService {
   public async fetchUserInfo() {
     if (!this.isLogin) {
       throw new Error(
-        i18n.t('not_login', {
+        service.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
       );
     }
-    const userInfo = (await serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
+    const userInfo = (await service.serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
     runInAction(() => {
       this.userInfo = userInfo;
     });
@@ -215,7 +214,7 @@ export class UserAuthService {
   public async changeNickname(nickname: string) {
     if (!this.isLogin) {
       throw new Error(
-        i18n.t('not_login', {
+        service.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
@@ -223,13 +222,13 @@ export class UserAuthService {
     }
     if (!this.userInfo) {
       throw new Error(
-        i18n.t('no_user_info', {
+        service.i18nService.translate('no_user_info', {
           ns: 'error',
           defaultValue: '用户信息不存在',
         })
       );
     }
-    await serverService.apiPost(`/user/change-nickname`, { nickname });
+    await service.serverService.apiPost(`/user/change-nickname`, { nickname });
   }
 
   /**
@@ -240,13 +239,13 @@ export class UserAuthService {
   public async changePassword(oldPassword: string, newPassword: string) {
     if (!this.isLogin) {
       throw new Error(
-        i18n.t('not_login', {
+        service.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
       );
     }
-    await serverService.apiPost('/user/change-password', {
+    await service.serverService.apiPost('/user/change-password', {
       old_password: oldPassword,
       new_password: newPassword,
     });

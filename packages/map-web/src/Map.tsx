@@ -17,7 +17,7 @@ import { isDev } from '@/services/env';
 import type { MapService } from '@/services/map';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { ChevronUp } from '@/components/common/icons';

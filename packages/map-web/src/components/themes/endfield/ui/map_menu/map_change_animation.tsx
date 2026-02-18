@@ -2,7 +2,7 @@ import { useWindow } from '@/context/window';
 import type { MapData } from '@endfieldmap/map-core';
 import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 interface MapChangeAnimationProps {
   showChangeAnimation: boolean;

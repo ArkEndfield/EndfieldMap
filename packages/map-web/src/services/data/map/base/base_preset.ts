@@ -3,11 +3,11 @@ import { downloadData, LocalStorageValue, logger } from '@endfieldmap/tools';
 import { observable, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
-import i18n from '@/i18n';
 import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
 import type { VisibilityDataSchemaType } from '@/services/data/db/schema/user_data/visibility';
 import { userService } from '@/services/user';
 import type { IPresetService, RequiredNodeFields } from '@/services/user/data/preset/_base';
+import { service } from '@/services';
 
 export type VisibilityData = VisibilityDataSchemaType;
 
@@ -419,7 +419,7 @@ export abstract class BasePresetDataService<
   // region: 分享处理
   public get canShare() {
     if (!userService.auth.isLogin) {
-      alert.info(i18n.t('not_login', { ns: 'error' }));
+      alert.info(service.i18nService.translate('not_login', { ns: 'error' }));
       return false;
     }
 

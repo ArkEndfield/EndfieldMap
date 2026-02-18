@@ -3,7 +3,7 @@ import { ELECTRIC_POLE_DEVICE_CONFIGS } from '@endfieldmap/map-core';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import {
   ElectricPoleIconPole,

@@ -5,9 +5,8 @@ import {
   type MapDataJson,
 } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
-
+import { service } from '@/services';
 import { LoadingStageId } from '@/const/loading';
-import i18n from '@/i18n';
 import { initCursorEventListeners } from '@/services/cursor';
 import { DataService } from '@/services/data';
 import { MapDataService } from '@/services/data/map';
@@ -22,7 +21,7 @@ import { getAssetUrls } from '@/utils/url';
 const assets = getAssetUrls();
 
 const translateAreaName = (name: string): string => {
-  return i18n.t(name, { ns: 'lang', defaultValue: name });
+  return service.i18nService.translate(name, { ns: 'lang', defaultValue: name });
 };
 
 export class MapService {

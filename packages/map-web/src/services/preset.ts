@@ -8,7 +8,7 @@ import type {
 } from '@/@types/preset_store';
 import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
 import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
-import { serverService } from '@/services/server';
+import { service } from '@/services';
 
 export class PresetService {
   public static instance: PresetService;
@@ -48,7 +48,7 @@ export class PresetService {
     if (searchOptions?.sortOrder) {
       params.set('sort_order', searchOptions.sortOrder);
     }
-    return serverService.apiGet<{
+    return service.serverService.apiGet<{
       list: PresetStoreResponseItem[];
       count: number;
     }>('/share/presets/electric-pole', params);
@@ -74,7 +74,7 @@ export class PresetService {
     if (searchOptions?.sortOrder) {
       params.set('sort_order', searchOptions.sortOrder);
     }
-    return serverService.apiGet<{
+    return service.serverService.apiGet<{
       list: PresetStoreResponseItem[];
       count: number;
     }>('/share/presets/custom-point', params);
@@ -86,7 +86,7 @@ export class PresetService {
    * @returns
    */
   public async getPresetDetail(id: number) {
-    const data = await serverService.apiGet<PresetStoreDetailResponseItem>(`/share/presets/${id}`);
+    const data = await service.serverService.apiGet<PresetStoreDetailResponseItem>(`/share/presets/${id}`);
     return {
       ...data,
       snapshot: JSON.parse(data.snapshot),
@@ -99,7 +99,7 @@ export class PresetService {
    * @returns
    */
   public async getPresetDetailByCode(code: string) {
-    const data = await serverService.apiGet<PresetStoreDetailResponseItem>(`/share/presets/code/${code}`);
+    const data = await service.serverService.apiGet<PresetStoreDetailResponseItem>(`/share/presets/code/${code}`);
     return {
       ...data,
       snapshot: JSON.parse(data.snapshot),
@@ -120,7 +120,7 @@ export class PresetService {
     type: ElectricPoleType,
     snapshot: ElectricPoleNodeSchemaType[]
   ) {
-    return serverService.apiPost('/share/presets', {
+    return service.serverService.apiPost('/share/presets', {
       preset_type: 'electric_pole',
       name,
       description,
@@ -138,7 +138,7 @@ export class PresetService {
    * @returns
    */
   public shareCustomPointPreset(name: string, description: string, snapshot: CustomPointNodeSchemaType[]) {
-    return serverService.apiPost('/share/presets', {
+    return service.serverService.apiPost('/share/presets', {
       preset_type: 'custom_point',
       sub_type: '',
       name,
@@ -162,7 +162,7 @@ export class PresetService {
       is_public?: boolean;
     }
   ) {
-    return serverService.apiPut<PresetStoreResponseItem>(`/share/presets/${id}`, updateData);
+    return service.serverService.apiPut<PresetStoreResponseItem>(`/share/presets/${id}`, updateData);
   }
 
   /**
@@ -171,7 +171,7 @@ export class PresetService {
    * @returns
    */
   public deleteSharePreset(id: number) {
-    return serverService.apiDelete<PresetStoreResponseItem>(`/share/presets/${id}`);
+    return service.serverService.apiDelete<PresetStoreResponseItem>(`/share/presets/${id}`);
   }
 
   /**
@@ -180,7 +180,7 @@ export class PresetService {
    * @returns
    */
   public async getPresetImportData<T extends PresetType = 'electric_pole'>(id: number) {
-    const data = await serverService.apiPost<PresetStoreDetailResponseItem>(`/share/presets/${id}/import`);
+    const data = await service.serverService.apiPost<PresetStoreDetailResponseItem>(`/share/presets/${id}/import`);
     return {
       ...data,
       snapshot: JSON.parse(data.snapshot),
@@ -193,7 +193,7 @@ export class PresetService {
    * @returns
    */
   public likePreset(id: number) {
-    return serverService.apiPost<PresetStoreResponseItem>(`/share/presets/${id}/like`);
+    return service.serverService.apiPost<PresetStoreResponseItem>(`/share/presets/${id}/like`);
   }
 
   /**
@@ -202,7 +202,7 @@ export class PresetService {
    * @returns
    */
   public unlikePreset(id: number) {
-    return serverService.apiDelete<PresetStoreResponseItem>(`/share/presets/${id}/like`);
+    return service.serverService.apiDelete<PresetStoreResponseItem>(`/share/presets/${id}/like`);
   }
 
   /**
@@ -216,7 +216,10 @@ export class PresetService {
     params.set('page', page.toString());
     params.set('limit', pageSize.toString());
     params.set('preset_type', type);
-    return serverService.apiGet<{ list: PresetStoreResponseItem[]; count: number }>('/share/presets/mine', params);
+    return service.serverService.apiGet<{ list: PresetStoreResponseItem[]; count: number }>(
+      '/share/presets/mine',
+      params
+    );
   }
 
   /**
@@ -230,7 +233,10 @@ export class PresetService {
     params.set('page', page.toString());
     params.set('limit', pageSize.toString());
     params.set('preset_type', type);
-    return serverService.apiGet<{ list: PresetStoreResponseItem[]; count: number }>('/share/presets/liked', params);
+    return service.serverService.apiGet<{ list: PresetStoreResponseItem[]; count: number }>(
+      '/share/presets/liked',
+      params
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { GameRole } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';

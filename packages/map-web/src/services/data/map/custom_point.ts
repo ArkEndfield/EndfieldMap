@@ -6,7 +6,6 @@ import { action, computed, observable, runInAction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DATA_STORAGE_KEY, EXPORT_TYPE_KEY } from '@/const/data';
-import i18n from '@/i18n';
 import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
 import {
   BasePresetDataService,
@@ -16,6 +15,7 @@ import {
 import { presetService } from '@/services/preset';
 import { userService } from '@/services/user';
 import { CustomPointPresetDataService } from '@/services/user/data/preset/custom_point';
+import { service } from '@/services';
 
 /**
  * 自定义标点数据管理器
@@ -153,14 +153,16 @@ export class CustomPointDataService extends BasePresetDataService<
       const adapter = this.adapter;
       // 通知用户数据可能已损坏
       alert.info({
-        content: i18n.t('error:custom_point.preset_corrupted', {
+        content: service.i18nService.translate('error:custom_point.preset_corrupted', {
           defaultValue: '自定义标点预设 "{{name}}" 数据已损坏，请检查并重新创建预设。',
           name: preset.name,
         }),
         onCancel: () => {
           adapter?.customPointController.loadCustomPointData([]);
         },
-        cancelText: i18n.t('error:custom_point.delete_corrupted_preset', { defaultValue: '删除损坏预设' }),
+        cancelText: service.i18nService.translate('error:custom_point.delete_corrupted_preset', {
+          defaultValue: '删除损坏预设',
+        }),
       });
     }
   }
@@ -280,7 +282,7 @@ export class CustomPointDataService extends BasePresetDataService<
     const currentPresetId = this.currentPresetId.value;
     if (!currentPresetId) {
       alert.info({
-        content: i18n.t('error:custom_point.no_preset_selected', {
+        content: service.i18nService.translate('error:custom_point.no_preset_selected', {
           defaultValue: '未选择自定义标点预设，无法创建标点，请先创建或选择预设。',
         }),
       });
@@ -298,7 +300,7 @@ export class CustomPointDataService extends BasePresetDataService<
     } catch (error) {
       logger.error('[CustomPointDataService|createCustomPoint] Failed to create custom point', error);
       alert.info({
-        content: i18n.t('error:custom_point.create_failed', {
+        content: service.i18nService.translate('error:custom_point.create_failed', {
           defaultValue: '创建失败：{{message}}',
           message: error instanceof Error ? error.message : String(error),
         }),
@@ -342,7 +344,7 @@ export class CustomPointDataService extends BasePresetDataService<
       } catch (error) {
         logger.error('[CustomPointDataService|initMapClickEvent] Failed to create custom point', error);
         alert.info({
-          content: i18n.t('error:custom_point.create_failed', {
+          content: service.i18nService.translate('error:custom_point.create_failed', {
             defaultValue: '创建失败：{{message}}',
             message: error instanceof Error ? error.message : String(error),
           }),
@@ -371,7 +373,7 @@ export class CustomPointDataService extends BasePresetDataService<
       } catch (error) {
         logger.error('[CustomPointDataService|initCustomPointClickEvent] Failed to delete custom point', error);
         alert.info({
-          content: i18n.t('error:custom_point.delete_failed', {
+          content: service.i18nService.translate('error:custom_point.delete_failed', {
             defaultValue: '删除失败：{{message}}',
             message: error instanceof Error ? error.message : String(error),
           }),

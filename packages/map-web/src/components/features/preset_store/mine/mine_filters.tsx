@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import type { MineTab, PresetType } from '@eftypes/preset_store';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';

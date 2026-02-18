@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from '@endfieldmap/map-service';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { BilibiliIcon, DiscordIcon, QQIcon } from '@/components/common/icons';

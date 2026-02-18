@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
 import { forwardRef, useImperativeHandle } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 import { z } from 'zod';
 
 import { alert } from '@/components/common/alert/alert_api';

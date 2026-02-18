@@ -1,6 +1,6 @@
 import { type ThemeNames, themeNames } from '@themes/index';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ThemeIcon } from '@/components/common/icons';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';

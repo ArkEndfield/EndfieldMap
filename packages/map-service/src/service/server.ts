@@ -1,12 +1,21 @@
-import type { ServerResponse } from '@eftypes/server';
-import type { PullResponse, PushDocumentRow, PushResponse, SyncCheckpoint, SyncCollectionName } from '@eftypes/sync';
+import type { PullResponse, PushDocumentRow, PushResponse, SyncCheckpoint, SyncCollectionName } from '../@types/sync';
+import { ServerResponse } from '../@types/server';
+import type { I18nService } from './i18n';
 
-import i18n from '@/i18n';
-import { backendHost } from '@/services/env';
-import { getLanguage } from '@/utils/language';
+export interface ServerServiceConfig {
+  backendHost: string;
+  i18nService: I18nService;
+}
 
-class ServerService {
-  constructor() {}
+export class ServerService {
+  private backendHost: string;
+  private i18nService: I18nService;
+
+  constructor(config: ServerServiceConfig) {
+    this.backendHost = config.backendHost;
+    this.i18nService = config.i18nService;
+  }
+
   private token: string | null = null;
   private uid: string | null = null;
   private onUnauthorized: (() => void) | null = null;
@@ -105,7 +114,7 @@ class ServerService {
       if (url.includes('/auth/login') || url.includes('/auth/register')) {
         throw new Error(
           backendMessage ||
-            i18n.t('unknown', {
+            this.i18nService.translate('unknown', {
               ns: 'error',
               defaultValue: '未知错误',
             })
@@ -113,7 +122,7 @@ class ServerService {
       }
       // 其他情况显示未登录
       throw new Error(
-        i18n.t('not_login', {
+        this.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
@@ -124,7 +133,7 @@ class ServerService {
     if (url.includes('/auth/refresh')) {
       this.triggerLogout();
       throw new Error(
-        i18n.t('unknown', {
+        this.i18nService.translate('unknown', {
           ns: 'error',
           defaultValue: '未知错误',
         })
@@ -163,7 +172,7 @@ class ServerService {
       if (refreshResponse.code !== 0) {
         throw new Error(
           refreshResponse.message ||
-            i18n.t('unknown', {
+            this.i18nService.translate('unknown', {
               ns: 'error',
               defaultValue: '未知错误',
             })
@@ -193,7 +202,7 @@ class ServerService {
 
       throw new Error(
         refreshResponse.message ||
-          i18n.t('unknown', {
+          this.i18nService.translate('unknown', {
             ns: 'error',
             defaultValue: '未知错误',
           })
@@ -211,7 +220,7 @@ class ServerService {
    * 不自动添加 Token 和 API 前缀
    */
   public async request<T>(url: string, options?: RequestInit): Promise<T> {
-    const fullURL = new URL(url, backendHost || window.location.origin);
+    const fullURL = new URL(url, this.backendHost || window.location.origin);
     const response = await fetch(fullURL, options);
 
     if (response.status === 401) {
@@ -232,7 +241,7 @@ class ServerService {
         const errorData = await response.json();
         throw new Error(
           errorData?.message ||
-            i18n.t('unknown', {
+            this.i18nService.translate('unknown', {
               ns: 'error',
               defaultValue: '未知错误',
             })
@@ -242,7 +251,7 @@ class ServerService {
           throw e;
         }
         throw new Error(
-          i18n.t('unknown', {
+          this.i18nService.translate('unknown', {
             ns: 'error',
             defaultValue: '未知错误',
           })
@@ -259,7 +268,7 @@ class ServerService {
    * 如果正在刷新 Token，会等待刷新完成后再发起请求
    */
   public async apiRequest<T>(url: string, _options?: RequestInit) {
-    const currentLocale = getLanguage(i18n.languages);
+    const currentLocale = this.i18nService.currentLocale;
     // 如果正在刷新 Token，等待刷新完成
     const waitPromise = this.waitForTokenRefresh();
     if (waitPromise) {
@@ -280,7 +289,7 @@ class ServerService {
       if (data.code !== 0) {
         throw new Error(
           data.message ||
-            i18n.t('unknown', {
+            this.i18nService.translate('unknown', {
               ns: 'error',
               defaultValue: '未知错误',
             })
@@ -308,7 +317,7 @@ class ServerService {
     if (data.code !== 0) {
       throw new Error(
         data.message ||
-          i18n.t('unknown', {
+          this.i18nService.translate('unknown', {
             ns: 'error',
             defaultValue: '未知错误',
           })
@@ -378,7 +387,7 @@ class ServerService {
   ): Promise<PullResponse> {
     if (!this.uid) {
       throw new Error(
-        i18n.t('not_login', {
+        this.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
@@ -410,7 +419,7 @@ class ServerService {
   public async syncPush(collection: SyncCollectionName, docs: PushDocumentRow[]): Promise<PushResponse> {
     if (!this.uid) {
       throw new Error(
-        i18n.t('not_login', {
+        this.i18nService.translate('not_login', {
           ns: 'error',
           defaultValue: '未登录',
         })
@@ -421,5 +430,3 @@ class ServerService {
     return this.apiPost<PushResponse>(`/sync/${collection}/push?${params.toString()}`, { docs });
   }
 }
-
-export const serverService = new ServerService();

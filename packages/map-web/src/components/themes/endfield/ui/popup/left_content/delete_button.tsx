@@ -1,7 +1,7 @@
 import { CustomPointKey, type DataInstance, ElectricPoleDataInstance, ElectricPoleKey } from '@endfieldmap/map-core';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { TrashIcon } from '@/components/common/icons';

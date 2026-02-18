@@ -3,10 +3,10 @@ import type { ElectricPolePreset } from '@eftypes/electric_pole';
 import { downloadData, logger, StorageManager } from '@endfieldmap/tools';
 
 import { alert } from '@/components/common/alert/alert_api';
-import i18n from '@/i18n';
 import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
 import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
 import { userService } from '@/services/user';
+import { service } from '@/services';
 
 enum StorageKey {
   /** 标记已获取的数据 */
@@ -104,10 +104,10 @@ export class Migration {
     }
 
     alert.confirm({
-      content: i18n.t('migrate_tip.content') as string,
+      content: service.i18nService.translate('migrate_tip.content') as string,
       dismissible: false,
       hideCancel: false,
-      cancelText: i18n.t('migrate_tip.backup') as string,
+      cancelText: service.i18nService.translate('migrate_tip.backup') as string,
       onCancel: async () => {
         await Migration.exportBackup(storage);
         return false;
@@ -127,13 +127,13 @@ export class Migration {
           localStorage.setItem(Migration.MIGRATION_KEY, 'true');
           logger.log('[Storage] Data migration completed successfully');
           alert.info({
-            content: i18n.t('migrate_tip.success') as string,
+            content: service.i18nService.translate('migrate_tip.success') as string,
           });
         } catch (error) {
           logger.error('[Storage] Data migration failed', error);
           alert.info({
             dismissible: false,
-            content: i18n.t('migrate_tip.fail') as string,
+            content: service.i18nService.translate('migrate_tip.fail') as string,
           });
         }
       },
@@ -159,12 +159,12 @@ export class Migration {
       await downloadData(exportData, `endfieldmap_backup_${Migration.formatDate(new Date())}.json`);
       logger.log(`[Storage] Backup completed: ${memoryItems.length} records`);
       alert.info({
-        content: i18n.t('migrate_tip.backup_success') as string,
+        content: service.i18nService.translate('migrate_tip.backup_success') as string,
       });
     } catch (err) {
       logger.error('[Storage] Backup failed', err);
       alert.info({
-        content: i18n.t('migrate_tip.backup_fail') as string,
+        content: service.i18nService.translate('migrate_tip.backup_fail') as string,
       });
     }
   }

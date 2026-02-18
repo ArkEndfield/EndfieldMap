@@ -4,7 +4,7 @@ import { MenuContainer } from '@themes/endfield/ui/menus/center/menu_container';
 import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
 import { menus } from '@themes/endfield/ui/menus/left/list';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import {
   CustomPointIcon,

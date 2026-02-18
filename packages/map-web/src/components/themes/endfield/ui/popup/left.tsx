@@ -7,7 +7,7 @@ import { MarkButton } from '@themes/endfield/ui/popup/left_content/mark_button';
 import { RenameButton } from '@themes/endfield/ui/popup/left_content/rename_button';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';

@@ -4,7 +4,7 @@ import { MapChangeAnimation } from '@themes/endfield/ui/map_menu/map_change_anim
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@endfieldmap/map-service';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ChangeMapIcon, Deco7Dots, SwitchIcon } from '@/components/common/icons';

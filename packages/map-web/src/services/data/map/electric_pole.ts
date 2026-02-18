@@ -18,7 +18,6 @@ import { action, computed, observable, reaction } from 'mobx';
 import { alert } from '@/components/common/alert/alert_api';
 import { DATA_STORAGE_KEY, EXPORT_TYPE_KEY } from '@/const/data';
 import { modes } from '@/const/electric_pole';
-import i18n from '@/i18n';
 import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
 import {
   BasePresetDataService,
@@ -28,13 +27,14 @@ import {
 import { presetService } from '@/services/preset';
 import { userService } from '@/services/user';
 import { ElectricPolePresetDataService } from '@/services/user/data/preset/electric_pole';
+import { service } from '@/services';
 
 /**
  * 获取电线杆错误的 i18n 消息
  */
 function getElectricPoleErrorMessage(error: unknown): string {
   if (error instanceof ElectricPoleError) {
-    return i18n.t(`error:electric_pole.${error.i18nKey}`, {
+    return service.i18nService.translate(`error:electric_pole.${error.i18nKey}`, {
       defaultValue: error.message,
     });
   }
@@ -297,7 +297,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
     const currentPresetId = this.currentPresetId.value;
     if (!currentPresetId) {
       alert.info({
-        content: i18n.t('error:electric_pole.no_preset_selected', {
+        content: service.i18nService.translate('error:electric_pole.no_preset_selected', {
           defaultValue: '未选择电线杆预设，无法创建电线杆，请先创建或选择预设。',
         }),
       });
@@ -313,7 +313,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
     } catch (error) {
       const errorMsg = getElectricPoleErrorMessage(error);
       alert.info({
-        content: i18n.t('error:electric_pole.create_failed', {
+        content: service.i18nService.translate('error:electric_pole.create_failed', {
           defaultValue: '创建失败：{{message}}',
           message: errorMsg,
         }),
@@ -510,11 +510,11 @@ export class ElectricPoleDataService extends BasePresetDataService<
       } catch (error) {
         const errorMsg = getElectricPoleErrorMessage(error);
         alert.show({
-          content: i18n.t('error:electric_pole.connect_failed_with_switch', {
+          content: service.i18nService.translate('error:electric_pole.connect_failed_with_switch', {
             defaultValue: `连接失败：${errorMsg}，点击切换将当前连接的电线杆切换为点击的电线杆`,
             message: errorMsg,
           }),
-          cancelText: i18n.t('error:electric_pole.switch', { defaultValue: '切换' }),
+          cancelText: service.i18nService.translate('error:electric_pole.switch', { defaultValue: '切换' }),
           onCancel: () => {
             this.setConnectingPole(pole);
           },
@@ -561,14 +561,16 @@ export class ElectricPoleDataService extends BasePresetDataService<
       const adapter = this.adapter;
       // 通知用户数据可能已损坏
       alert.info({
-        content: i18n.t('error:electric_pole.preset_corrupted', {
+        content: service.i18nService.translate('error:electric_pole.preset_corrupted', {
           defaultValue: '电线杆预设 "{{name}}" 数据已损坏，请检查并重新创建预设。',
           name: preset.name,
         }),
         onCancel: () => {
           adapter?.electricPoleController.loadElectricPoleData([]);
         },
-        cancelText: i18n.t('error:electric_pole.delete_corrupted_preset', { defaultValue: '删除损坏预设' }),
+        cancelText: service.i18nService.translate('error:electric_pole.delete_corrupted_preset', {
+          defaultValue: '删除损坏预设',
+        }),
       });
     }
   }
