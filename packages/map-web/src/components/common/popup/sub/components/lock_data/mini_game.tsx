@@ -1,6 +1,3 @@
-import type { MiniGameLockData } from '@/components/common/popup/sub/components/lock_data/types';
-import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
-import { SubPopupTitle } from '@/components/common/popup/components/title';
 import { useTranslation } from 'react-i18next';
 
 import { DeltaRobotPiece } from '@/components/common/delta_robot/piece';
@@ -8,6 +5,9 @@ import { DeltaRobotSolutionGrid } from '@/components/common/delta_robot/solution
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { TickCircleIcon } from '@/components/common/icons';
+import { SubPopupTitle } from '@/components/common/popup/components/title';
+import type { MiniGameLockData } from '@/components/common/popup/sub/components/lock_data/types';
+import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
 import { DeltaRobotStatus } from '@/const/delta_robot';
 import { useDeltaRobot } from '@/hooks/use_delta_robot';
 import { cn } from '@/utils/style';
@@ -16,7 +16,7 @@ export const MiniGameLockComponent: SubPopupComponentProps<MiniGameLockData> = (
   const { miniGameIds } = prop;
   const { t } = useTranslation(['popup', 'lang']);
 
-  const { levelList, selectedLevel, setSelectedLevel, levelData, solutionGrid, status, handleSolve, getGroupColor } =
+  const { levelList, selectedLevel, selectLevel, levelData, solutionGrid, status, handleSolve, getGroupColor } =
     useDeltaRobot({ levelList: miniGameIds });
 
   const solving = status === DeltaRobotStatus.Solving;
@@ -33,7 +33,7 @@ export const MiniGameLockComponent: SubPopupComponentProps<MiniGameLockData> = (
             value: id,
             label: t('popup:robot.level_item', { level: index + 1 }),
           }))}
-          onChange={(val) => setSelectedLevel(val)}
+          onChange={(val) => selectLevel(val)}
           className="w-full"
         />
         {/* 库存列表 */}

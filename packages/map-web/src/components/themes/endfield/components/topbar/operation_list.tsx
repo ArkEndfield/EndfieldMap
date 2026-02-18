@@ -2,6 +2,7 @@ import { AnimatePresence } from 'motion/react';
 import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
 
+import { useWindow } from '@/context/window';
 import { cn } from '@/utils/style';
 
 export const OperationList = ({
@@ -12,8 +13,10 @@ export const OperationList = ({
   children: React.ReactNode;
   open: boolean;
   className?: string;
-}) =>
-  createPortal(
+}) => {
+  const currentWindow = useWindow();
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -40,5 +43,6 @@ export const OperationList = ({
         </motion.div>
       )}
     </AnimatePresence>,
-    document.body
+    currentWindow.document.body
   );
+};

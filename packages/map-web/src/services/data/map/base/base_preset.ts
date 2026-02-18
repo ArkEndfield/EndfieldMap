@@ -3,11 +3,11 @@ import { downloadData, LocalStorageValue, logger } from '@endfieldmap/tools';
 import { observable, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
+import i18n from '@/i18n';
 import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
 import type { VisibilityDataSchemaType } from '@/services/data/db/schema/user_data/visibility';
-import type { IPresetService, RequiredNodeFields } from '@/services/user/data/preset/_base';
 import { userService } from '@/services/user';
-import i18n from '@/i18n';
+import type { IPresetService, RequiredNodeFields } from '@/services/user/data/preset/_base';
 
 export type VisibilityData = VisibilityDataSchemaType;
 
@@ -426,7 +426,7 @@ export abstract class BasePresetDataService<
     return true;
   }
 
-  public async sharePreset(id: string, name: string, type?: string): Promise<boolean> {
+  public async sharePreset(id: string, name: string, description: string, type?: string): Promise<boolean> {
     if (!name.trim()) {
       return false;
     }
@@ -434,10 +434,15 @@ export abstract class BasePresetDataService<
     if (!data) {
       return false;
     }
-    await this.sharePresetToServer(data.data, name, type);
+    await this.sharePresetToServer(data.data, name, description, type);
     return true;
   }
 
-  protected abstract sharePresetToServer(data: TNodeSchema[], name: string, type?: string): Promise<void>;
+  protected abstract sharePresetToServer(
+    data: TNodeSchema[],
+    name: string,
+    description: string,
+    type?: string
+  ): Promise<unknown>;
   // endregion
 }

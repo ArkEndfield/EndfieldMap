@@ -32,6 +32,9 @@
       "audio": {
         "title": "음향 효과",
         "description": "인터페이스 음향 효과 활성화 또는 비활성화"
+      },
+      "theme": {
+        "title": "테마"
       }
     }
   },
@@ -40,6 +43,8 @@
     "cluster": "마커 클러스터링",
     "move_center": "지도 중심으로 돌아가기",
     "toggle_layer": "지도 레이어 전환",
+    "enter_pip": "PIP 모드 시작",
+    "exit_pip": "PIP 모드 종료",
     "hover": {
       "title": "마우스 호버 감지 응답 시간",
       "description": "지도 마커에서 마우스 호버 감지 응답 시간, 시간이 짧을수록 높은 성능 필요",

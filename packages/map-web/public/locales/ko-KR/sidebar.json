@@ -1,6 +1,33 @@
 {
-  "preset_store": "프리셋 스토어",
-  "preset_store_mine": "나의 프리셋",
+  "preset_store": {
+    "title": "프리셋 스토어",
+    "mine": "나의 프리셋",
+    "mine_uploads": "내 업로드",
+    "mine_favorites": "내 즐겨찾기",
+    "description": "설명",
+    "type": "유형",
+    "preview": "미리보기",
+    "import": "가져오기",
+    "import_success": "가져오기 성공",
+    "views": "조회수",
+    "imports": "가져오기 횟수",
+    "delete": "삭제",
+    "edit": "편집",
+    "edit_form": {
+      "name": "이름",
+      "description": "설명",
+      "is_public": "공개"
+    },
+    "edit_success": "편집 성공",
+    "preset_type": {
+      "electric_pole": "전신주",
+      "custom_point": "사용자 지정 포인트"
+    },
+    "sub_type": {
+      "pole": "전신주",
+      "zipline": "짚라인"
+    }
+  },
   "fold": "접기",
   "unfold": "펼치기",
   "filter": {
@@ -31,6 +58,7 @@
     }
   },
   "operation": {
+    "refresh": "새로고침",
     "selected_feature": "{{val, number}} 개의 마커 선택됨",
     "multi_operation": "일괄 작업",
     "cancel_operation": "작업 취소",

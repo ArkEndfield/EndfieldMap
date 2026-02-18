@@ -1,4 +1,3 @@
-import { SETTINGS_KEYS } from '@/const/settings';
 import { type ThemeNames, themeNames } from '@themes/index';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeIcon } from '@/components/common/icons';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { ThemeItem } from '@/components/features/settings/items/display/theme/item';
+import { SETTINGS_KEYS } from '@/const/settings';
 import uiManager from '@/services/ui_manager';
 
 export const ThemeSetting = observer(() => {

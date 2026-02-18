@@ -1,11 +1,10 @@
-import { motion } from 'motion/react';
 import { observer } from 'mobx-react-lite';
-
-import { userService } from '@/services/user';
+import { motion } from 'motion/react';
 
 import { BaseInfo } from '@/components/features/user/info/settings/base_info';
 import { ChangePassword } from '@/components/features/user/info/settings/change_password';
 import { DeleteAccount } from '@/components/features/user/info/settings/delete_account';
+import { userService } from '@/services/user';
 
 /**
  * 用户设置面板组件

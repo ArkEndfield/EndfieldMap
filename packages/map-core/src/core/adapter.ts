@@ -1,4 +1,4 @@
-import { LayerType } from '@endfieldmap/map-core/const';
+import { EntityInstanceKey, LayerType } from '@endfieldmap/map-core/const';
 import { AreaNameController } from '@endfieldmap/map-core/controller/core/area_name';
 import { EndfieldMapLayerController } from '@endfieldmap/map-core/controller/core/layer';
 import { MapController } from '@endfieldmap/map-core/controller/core/map';
@@ -139,17 +139,15 @@ export class EndfieldMapAdapter {
     });
     this.hoverFeatureController = new HoverFeatureController({
       getEntityLayers: () => this.entityController?.render.currentRenderer || [],
-      getElectricPoleLayers: () =>
-        this.electricPoleController?.currentRenderer ? [this.electricPoleController.currentRenderer] : [],
-      getCustomPointLayers: () =>
-        this.customPointController?.currentRenderer ? [this.customPointController.currentRenderer] : [],
+      getElectricPoleLayers: () => this.electricPoleController?.render.currentPoleRenderers || [],
+      getCustomPointLayers: () => this.customPointController?.currentRenderer || [],
       checkIsActive: (instance) => this.activeFeatureController.activeFeature === instance,
       disableHoverFeature: config.map?.disableHoverFeature,
       mapInstance,
       emitter: this.event,
     });
     this.hoverConnectionController = new HoverConnectionController({
-      getConnectionLayer: () => this.electricPoleController?.currentRenderer || null,
+      getConnectionLayers: () => this.electricPoleController?.render.currentPoleRenderers || [],
       disableHoverConnection: config.map?.disableHoverFeature,
       emitter: this.event,
     });
@@ -182,6 +180,36 @@ export class EndfieldMapAdapter {
     if (config.isDev) {
       this.devToolsController = new DevToolsController({ mapInstance });
     }
+
+    // 设置 selection 的回调，通过 controller 批量更新 selected 状态
+    let updateTimer: ReturnType<typeof setTimeout> | null = null;
+    const pendingUpdates = new Map<string, { mapId: MapData['id']; levelLogicId: number; selected: boolean }>();
+
+    mapInstance.selection.setOnSelectionChange((feature, selected) => {
+      const dataInstance = feature.get(EntityInstanceKey) as EntityDataInstance | undefined;
+      if (!dataInstance) return;
+
+      // 状态没变化，跳过
+      if (dataInstance.selected === selected) return;
+
+      const mapId = this.mapController.dataManager.currentMapId;
+      const levelLogicId = dataInstance.id;
+      const key = `${mapId}-${levelLogicId}`;
+
+      // 收集待更新的项
+      pendingUpdates.set(key, { mapId, levelLogicId, selected });
+
+      // 使用 requestAnimationFrame 批量更新
+      if (!updateTimer) {
+        updateTimer = requestAnimationFrame(() => {
+          if (pendingUpdates.size > 0) {
+            this.entityController.batchSetSelected(Array.from(pendingUpdates.values()));
+            pendingUpdates.clear();
+          }
+          updateTimer = null;
+        }) as any;
+      }
+    });
   }
 
   /**
@@ -272,7 +300,7 @@ export class EndfieldMapAdapter {
 
     // 1. 搜索游戏内的标点
     for (const mapId of mapIds) {
-      const instance = this.entityController.dataManager.getInstanceById(mapId, id);
+      const instance = this.entityController.getInstanceById(mapId, id);
       if (instance) {
         targetInstance = instance;
         break;
@@ -346,7 +374,7 @@ export class EndfieldMapAdapter {
       } else {
         // Standard Entity
         const entityInstance = instance as EntityDataInstance;
-        this.entityController.setVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
+        this.entityController.setGroupVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
       }
     }
 

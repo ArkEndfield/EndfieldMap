@@ -10,7 +10,22 @@
   "batch_delete": "批次刪除",
   "yes": "是",
   "no": "否",
+  "back": "返回",
+  "loading": "載入中...",
+  "load_error": "載入失敗",
+  "retry": "重試",
+  "refresh": "重新整理",
+  "no_data": "暫無資料",
+  "prev_page": "上一頁",
+  "next_page": "下一頁",
+  "search_placeholder": "搜尋...",
   "back_after_time": "{{time}} 後自動返回",
+  "sort": {
+    "asc": "升序",
+    "desc": "降序",
+    "like_count": "人氣排序",
+    "created_at": "日期排序"
+  },
   "operate": {
     "mark": "標記",
     "marked": "已標記",

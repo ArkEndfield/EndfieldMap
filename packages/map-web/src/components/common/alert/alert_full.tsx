@@ -1,8 +1,9 @@
 import { type ZmdAlertFullProps } from '@themes/types/alert';
 import { observer } from 'mobx-react-lite';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { useWindow } from '@/context/window';
 import shortcutService from '@/services/shortcut';
 import uiManager from '@/services/ui_manager';
 
@@ -31,9 +32,10 @@ export const ZmdAlertFull = ({
   ...props
 }: ZmdAlertFullProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const currentWindow = useWindow();
 
   // Logic Handlers
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (isProcessing) return;
 
     const result = onClose();
@@ -52,9 +54,9 @@ export const ZmdAlertFull = ({
     } else if (result !== false) {
       props.onOpenChange?.(false);
     }
-  };
+  }, [isProcessing, onClose, props]);
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     if (!dismissible || isProcessing) return;
 
     const result = onDismiss();
@@ -73,9 +75,9 @@ export const ZmdAlertFull = ({
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [dismissible, isProcessing, onDismiss, handleClose]);
 
-  const handleKeyboardClose = () => {
+  const handleKeyboardClose = useCallback(() => {
     if (isProcessing) return;
 
     // If keyboardCloseable is explicitly set, use it. Otherwise, fall back to dismissible behavior
@@ -98,9 +100,9 @@ export const ZmdAlertFull = ({
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [isProcessing, keyboardCloseable, dismissible, onDismiss, handleClose]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     if (isProcessing) return;
 
     const result = onCancel();
@@ -119,9 +121,9 @@ export const ZmdAlertFull = ({
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [isProcessing, onCancel, handleClose]);
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     if (isProcessing) return;
 
     const result = onConfirm();
@@ -140,7 +142,7 @@ export const ZmdAlertFull = ({
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [isProcessing, onConfirm, handleClose]);
 
   useEffect(() => {
     // If keyboardCloseable is provided, use it. Otherwise, use dismissible.
@@ -153,7 +155,7 @@ export const ZmdAlertFull = ({
       return true;
     });
     return () => dispose();
-  }, [props.open, dismissible, keyboardCloseable, isProcessing]);
+  }, [props.open, dismissible, keyboardCloseable, isProcessing, handleKeyboardClose]);
 
   return createPortal(
     <AlertFullRenderer
@@ -165,7 +167,7 @@ export const ZmdAlertFull = ({
       onClose={handleClose}
       onConfirm={handleConfirm}
     />,
-    document.body
+    currentWindow.document.body
   );
 };
 

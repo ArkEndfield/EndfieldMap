@@ -32,6 +32,9 @@
       "audio": {
         "title": "音效",
         "description": "開啟或關閉介面互動音效"
+      },
+      "theme": {
+        "title": "主題"
       }
     }
   },
@@ -40,6 +43,8 @@
     "cluster": "標點聚合",
     "move_center": "回到地圖中心",
     "toggle_layer": "開啟/關閉分層",
+    "enter_pip": "開啟畫中畫",
+    "exit_pip": "退出畫中畫",
     "hover": {
       "title": "滑鼠懸停檢測響應時間",
       "description": "滑鼠在地圖標點上的懸停檢測響應時間，時間越短效能需求越高",

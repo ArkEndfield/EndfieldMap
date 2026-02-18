@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react';
-
 import { motion } from 'motion/react';
-
-import { cn } from '@/utils/style';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { GameRole } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { ArrowLeftIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
-import { useTranslation } from 'react-i18next';
+import { cn } from '@/utils/style';
 
 interface BindUidListProps {
   /** 可绑定的角色列表 */

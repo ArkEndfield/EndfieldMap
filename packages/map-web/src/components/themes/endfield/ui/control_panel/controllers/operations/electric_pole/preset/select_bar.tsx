@@ -1,5 +1,6 @@
-import { Toggle } from '@/components/common/toggle';
 import { useTranslation } from 'react-i18next';
+
+import { Toggle } from '@/components/common/toggle';
 
 interface PresetSelectBarProps {
   total: number;

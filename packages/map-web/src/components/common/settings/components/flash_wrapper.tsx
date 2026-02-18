@@ -1,7 +1,8 @@
-import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
+
+import uiManager from '@/services/ui_manager';
+import { cn } from '@/utils/style';
 
 export interface FlashWrapperProps {
   id: string;
@@ -21,7 +22,7 @@ export const FlashWrapper = observer(({ id, children, className }: FlashWrapperP
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [id, uiManager.targetSettingItem]);
+  }, [id]);
 
   return (
     <div

@@ -4,8 +4,8 @@ import {
   type EntityJsonDataList,
   type MapDataJson,
 } from '@endfieldmap/map-core';
-import type { CustomPointNodeData, ElectricPoleNodeData } from '@endfieldmap/map-core/types';
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
+import type { CustomPointNodeData, ElectricPoleNodeData } from '@endfieldmap/map-core/types';
 import { useEffect, useRef, useState } from 'react';
 
 import type { CustomPointPreset } from '@/@types/custom_point';
@@ -63,9 +63,9 @@ export function usePreviewAdapter(options: UsePreviewAdapterOptions) {
       efAdapter.entityController.loadData(entity.jsonData, entity.infoData);
       // 设置所有实体组可见
       for (const mapItem of entity.jsonData) {
-        const groupManagers = efAdapter.entityController.dataManager.getMapGroupManagerList(mapItem.map_id);
+        const groupManagers = efAdapter.entityController.getMapGroupManagerList(mapItem.map_id);
         for (const manager of groupManagers) {
-          manager.setGroupVisible(true);
+          efAdapter.entityController.setGroupVisibility(mapItem.map_id, manager.entityDataIdKey, true);
         }
       }
     }
@@ -139,7 +139,7 @@ export function usePreviewAdapter(options: UsePreviewAdapterOptions) {
       adapterRef.current = null;
       initedRef.current = false;
     };
-  }, []);
+  }, [containerRef, mapData, entity, customPointPreset, electricPolePreset, initialMapId]);
 
   return { adapter };
 }

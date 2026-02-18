@@ -3,10 +3,11 @@ import { domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
-import { Draws } from '@/components/features/dev_tools/draws';
 import { CloseIcon, EditIcon, TrashIcon, ViewAltIcon } from '@/components/common/icons';
+import { Draws } from '@/components/features/dev_tools/draws';
 import { useAdapter } from '@/hooks/use_adapter';
 import { cn } from '@/utils/style';
+import { useWindow } from '@/context/window';
 
 const shapeTypeLabel: Record<DevToolsShapeType, string> = {
   [DevToolsShapeType.POINT]: '点',
@@ -47,6 +48,7 @@ export const DevToolsDrawPanel = observer(() => {
   const { adapter, mapDataService } = useAdapter();
   const devToolsController = adapter.devToolsController;
   const devToolsState = mapDataService.mapStateDataService.devToolsState;
+  const currentWindow = useWindow();
 
   const [isDragging, setIsDragging] = useState(false);
   const dragStartOffset = useRef({ right: 0, top: 0 });
@@ -74,38 +76,38 @@ export const DevToolsDrawPanel = observer(() => {
       if (!ref.current) return;
       const width = ref.current.offsetWidth;
       const height = ref.current.offsetHeight;
-      const maxTop = window.innerHeight - height;
-      const maxRight = window.innerWidth - width;
+      const maxTop = currentWindow.innerHeight - height;
+      const maxRight = currentWindow.innerWidth - width;
       setPosition((prev) => ({
         right: Math.max(0, Math.min(prev.right, maxRight)),
         top: Math.max(0, Math.min(prev.top, maxTop)),
       }));
     };
-    const dispose = domEventListener(window, 'resize', handleResize);
+    const dispose = domEventListener(currentWindow, 'resize', handleResize);
     return () => dispose?.();
-  }, [open]);
+  }, [open, currentWindow]);
 
   useEffect(() => {
     if (!isDragging) return;
 
-    const d1 = domEventListener(window, 'mousemove', (e) => {
+    const d1 = domEventListener(currentWindow, 'mousemove', (e) => {
       if (!ref.current) return;
 
-      const mouseDistFromWindowRight = window.innerWidth - e.clientX;
+      const mouseDistFromWindowRight = currentWindow.innerWidth - e.clientX;
       let newRight = mouseDistFromWindowRight - dragStartOffset.current.right;
       let newTop = e.clientY - dragStartOffset.current.top;
 
       const width = ref.current.offsetWidth;
       const height = ref.current.offsetHeight;
-      const maxRight = window.innerWidth - width;
-      const maxTop = window.innerHeight - height;
+      const maxRight = currentWindow.innerWidth - width;
+      const maxTop = currentWindow.innerHeight - height;
 
       newRight = Math.max(0, Math.min(newRight, maxRight));
       newTop = Math.max(0, Math.min(newTop, maxTop));
 
       setPosition({ right: newRight, top: newTop });
     });
-    const d2 = domEventListener(window, 'mouseup', () => {
+    const d2 = domEventListener(currentWindow, 'mouseup', () => {
       setIsDragging(false);
       if (!devToolsState) return;
       const prev = devToolsState.value.drawPanelPosition ?? { right: 20, top: 80 };
@@ -121,14 +123,14 @@ export const DevToolsDrawPanel = observer(() => {
       d1?.();
       d2?.();
     };
-  }, [devToolsState, isDragging]);
+  }, [devToolsState, isDragging, currentWindow]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
-    const currentRightVal = window.innerWidth - rect.right;
-    const mouseDistFromWindowRight = window.innerWidth - e.clientX;
+    const currentRightVal = currentWindow.innerWidth - rect.right;
+    const mouseDistFromWindowRight = currentWindow.innerWidth - e.clientX;
     dragStartOffset.current = {
       right: mouseDistFromWindowRight - currentRightVal,
       top: e.clientY - rect.top,

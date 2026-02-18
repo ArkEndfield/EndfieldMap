@@ -3,11 +3,12 @@ import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ScrollArea } from '@/components/common/scroll_area';
+
 import { getRightComponents } from '@/components/common/popup/sub/items';
-import { cn } from '@/utils/style';
+import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
+import { cn } from '@/utils/style';
 
 const RightContent: React.FC<{
   isExpand: boolean;

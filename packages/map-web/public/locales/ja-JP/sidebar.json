@@ -1,6 +1,33 @@
 {
-  "preset_store": "プリセットストア",
-  "preset_store_mine": "マイプリセット",
+  "preset_store": {
+    "title": "プリセットストア",
+    "mine": "マイプリセット",
+    "mine_uploads": "アップロード",
+    "mine_favorites": "お気に入り",
+    "description": "説明",
+    "type": "タイプ",
+    "preview": "プレビュー",
+    "import": "インポート",
+    "import_success": "インポート成功",
+    "views": "閲覧数",
+    "imports": "インポート数",
+    "delete": "削除",
+    "edit": "編集",
+    "edit_form": {
+      "name": "名前",
+      "description": "説明",
+      "is_public": "公開"
+    },
+    "edit_success": "編集成功",
+    "preset_type": {
+      "electric_pole": "電柱",
+      "custom_point": "カスタムポイント"
+    },
+    "sub_type": {
+      "pole": "電柱",
+      "zipline": "ジップライン"
+    }
+  },
   "fold": "折りたたむ",
   "unfold": "展開",
   "filter": {
@@ -31,6 +58,7 @@
     }
   },
   "operation": {
+    "refresh": "更新",
     "selected_feature": "{{val, number}} 個のマーカーを選択中",
     "multi_operation": "一括操作",
     "cancel_operation": "操作をキャンセル",

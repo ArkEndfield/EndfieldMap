@@ -2,13 +2,13 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { BilibiliIcon, DiscordIcon, QQIcon } from '@/components/common/icons';
+import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { FlashWrapper } from '@/components/common/settings/components/flash_wrapper';
+import ShuffleText from '@/components/common/shuffle_text';
 import { CommunityCard } from '@/components/features/settings/items/about/community_card';
 import { ContributorCard } from '@/components/features/settings/items/about/contributor';
 import { Recruit } from '@/components/features/settings/items/about/recruit';
-import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { Version } from '@/components/features/settings/items/about/version';
-import ShuffleText from '@/components/common/shuffle_text';
 import { SoundType } from '@/const/audio_config';
 import { contributors } from '@/const/contributor';
 import { SETTINGS_KEYS } from '@/const/settings';

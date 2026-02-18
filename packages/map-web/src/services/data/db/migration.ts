@@ -1,9 +1,11 @@
+import type { CustomPointPreset } from '@eftypes/custom_point';
+import type { ElectricPolePreset } from '@eftypes/electric_pole';
 import { downloadData, logger, StorageManager } from '@endfieldmap/tools';
 
-import type { CustomPointPreset } from '@/@types/custom_point';
-import type { ElectricPolePreset } from '@/@types/electric_pole';
 import { alert } from '@/components/common/alert/alert_api';
 import i18n from '@/i18n';
+import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
+import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
 import { userService } from '@/services/user';
 
 enum StorageKey {
@@ -185,10 +187,15 @@ export class Migration {
     // 1. 迁移 Electric Pole 预设和节点
     if (data.electricPolePresetData?.presets) {
       for (const preset of data.electricPolePresetData.presets) {
-        const allNodes: any[] = [];
+        const allNodes: Omit<ElectricPoleNodeSchemaType, 'id' | 'createdAt' | 'updatedAt'>[] = [];
         // 处理旧数据结构: data 是 mapId -> nodes 的映射
         if (preset.data) {
-          for (const [mapId, nodes] of Object.entries(preset.data as unknown as Record<string, any[]>)) {
+          for (const [mapId, nodes] of Object.entries(
+            preset.data as unknown as Record<
+              string,
+              Omit<ElectricPoleNodeSchemaType, 'id' | 'createdAt' | 'updatedAt'>[]
+            >
+          )) {
             if (!Array.isArray(nodes)) continue;
             for (const node of nodes) {
               allNodes.push({
@@ -225,9 +232,14 @@ export class Migration {
     // 3. 迁移 Custom Point 预设和节点
     if (data.customPointPresetData?.presets) {
       for (const preset of data.customPointPresetData.presets) {
-        const allNodes: any[] = [];
+        const allNodes: Omit<CustomPointNodeSchemaType, 'id' | 'createdAt' | 'updatedAt'>[] = [];
         if (preset.data) {
-          for (const [mapId, nodes] of Object.entries(preset.data as unknown as Record<string, any[]>)) {
+          for (const [mapId, nodes] of Object.entries(
+            preset.data as unknown as Record<
+              string,
+              Omit<CustomPointNodeSchemaType, 'id' | 'createdAt' | 'updatedAt'>[]
+            >
+          )) {
             if (!Array.isArray(nodes)) continue;
             for (const node of nodes) {
               allNodes.push({

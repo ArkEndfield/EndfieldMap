@@ -1,14 +1,12 @@
-import shortcutService from '@/services/shortcut';
 import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { EndfieldCloseIcon } from '@/components/common/icons';
 import { type DialogProps } from '@/components/themes/types/dialog';
+import shortcutService from '@/services/shortcut';
 import { cn } from '@/utils/style';
-
-import { ScrollArea } from '@/components/common/scroll_area';
 
 const CloseButton: React.FC<{
   onClick?: () => void;
@@ -70,6 +68,7 @@ const DialogInner: React.FC<DialogProps> = ({
   width,
   height,
   children,
+  className,
   classNames,
   onClose,
   onDismiss,
@@ -98,6 +97,7 @@ const DialogInner: React.FC<DialogProps> = ({
       <motion.div
         className={cn(
           'flex flex-col max-w-full max-h-full w-3xl',
+          className,
           classNames?.header && typeof classNames.header === 'function' ? classNames.header(open) : classNames?.header
         )}
         style={{ width, height }}
@@ -161,20 +161,7 @@ const DialogInner: React.FC<DialogProps> = ({
               : classNames?.contentContainer
           )}
         >
-          <ScrollArea
-            className={cn(
-              classNames?.content && typeof classNames.content === 'function'
-                ? classNames.content(open)
-                : classNames?.content
-            )}
-            contentClassName={cn(
-              classNames?.scrollContent && typeof classNames.scrollContent === 'function'
-                ? classNames.scrollContent(open)
-                : classNames?.scrollContent
-            )}
-          >
-            {children}
-          </ScrollArea>
+          {children}
           <motion.div
             className="absolute bottom-0 right-[1.275rem] h-1 w-60 origin-right bg-[linear-gradient(90deg,#00ffa2,#00ffa2_42.5%,#ffff21_42.5%,#ffff21_79.2%,#ff00f0_79.2%)]"
             initial={{ scaleX: 0 }}
@@ -214,7 +201,7 @@ export const Dialog: React.FC<DialogProps> = (props) => {
   const { open, onOpenChange, dismissible = true, onDismiss = () => {}, onClose = () => {}, keyboardCloseable } = props;
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (isProcessing) return;
 
     const result = onClose();
@@ -233,9 +220,9 @@ export const Dialog: React.FC<DialogProps> = (props) => {
     } else if (result !== false) {
       onOpenChange?.(false);
     }
-  };
+  }, [isProcessing, onClose, onOpenChange]);
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     if (!dismissible || isProcessing) return;
 
     const result = onDismiss();
@@ -254,9 +241,9 @@ export const Dialog: React.FC<DialogProps> = (props) => {
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [dismissible, isProcessing, onDismiss, handleClose]);
 
-  const handleKeyboardClose = () => {
+  const handleKeyboardClose = useCallback(() => {
     if (isProcessing) return;
 
     // If keyboardCloseable is explicitly set, use it. Otherwise, fall back to dismissible behavior
@@ -279,7 +266,7 @@ export const Dialog: React.FC<DialogProps> = (props) => {
     } else if (result !== false) {
       handleClose();
     }
-  };
+  }, [isProcessing, keyboardCloseable, dismissible, onDismiss, handleClose]);
 
   useEffect(() => {
     const shouldListen = keyboardCloseable !== undefined ? keyboardCloseable : dismissible;
@@ -291,7 +278,7 @@ export const Dialog: React.FC<DialogProps> = (props) => {
       return true;
     });
     return () => dispose();
-  }, [dismissible, keyboardCloseable, isProcessing]);
+  }, [dismissible, keyboardCloseable, handleKeyboardClose]);
 
   return (
     <AnimatePresence>

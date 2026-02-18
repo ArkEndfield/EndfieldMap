@@ -1,6 +1,8 @@
 import type { EntityInfoDataJson, EntityJsonDataList, MapDataJson } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
+import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { CustomPointPreset } from '@/@types/custom_point';
 import type { ElectricPolePreset } from '@/@types/electric_pole';
@@ -30,6 +32,7 @@ export interface MapPreviewProps {
  */
 export const MapPreview: React.FC<MapPreviewProps> = observer(
   ({ mapData, entity, customPointPreset, electricPolePreset, initialMapId, className }) => {
+    const { t } = useTranslation(['lang']);
     const containerRef = useRef<HTMLDivElement>(null);
     const { adapter } = usePreviewAdapter({
       containerRef,
@@ -41,6 +44,7 @@ export const MapPreview: React.FC<MapPreviewProps> = observer(
     });
 
     const currentMapId = adapter?.mapController.dataManager.currentMapId;
+    const currentMap = mapData.data.find((m) => m.id === currentMapId);
 
     const [showSwitcher, setShowSwitcher] = useState(false);
 
@@ -58,28 +62,36 @@ export const MapPreview: React.FC<MapPreviewProps> = observer(
       <div className={`relative overflow-hidden ${className ?? ''}`} style={{ width: '100%', height: '100%' }}>
         <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
         {adapter && mapData.data.length > 1 && (
-          <div className="absolute top-2 right-2 z-10">
+          <div className="absolute top-2 right-2 z-10 flex flex-col items-end">
             <button
               className="rounded bg-[#303030e3] px-3 py-1.5 text-sm text-white hover:bg-[#444]"
               onClick={() => setShowSwitcher((v) => !v)}
             >
-              {mapData.data.find((m) => m.id === currentMapId)?.name ?? currentMapId}
+              {currentMap ? t(`lang:${currentMap.name}`, { defaultValue: currentMap.name }) : currentMapId}
             </button>
-            {showSwitcher && (
-              <div className="mt-1 flex flex-col gap-1 rounded bg-[#303030e3] p-1">
-                {mapData.data.map((map) => (
-                  <button
-                    key={map.id}
-                    className={`rounded px-3 py-1 text-sm ${
-                      map.id === currentMapId ? 'bg-[#fcfb58] text-[#444]' : 'text-white hover:bg-[#444]'
-                    }`}
-                    onClick={() => handleMapChange(map.id)}
-                  >
-                    {map.name}
-                  </button>
-                ))}
-              </div>
-            )}
+            <AnimatePresence>
+              {showSwitcher && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto' }}
+                  exit={{ opacity: 0, y: -8, height: 0 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="mt-1 flex flex-col gap-1 rounded bg-[#303030e3] p-1 overflow-hidden"
+                >
+                  {mapData.data.map((map) => (
+                    <button
+                      key={map.id}
+                      className={`rounded px-3 py-1 text-sm whitespace-nowrap ${
+                        map.id === currentMapId ? 'bg-[#fcfb58] text-[#444]' : 'text-white hover:bg-[#444]'
+                      }`}
+                      onClick={() => handleMapChange(map.id)}
+                    >
+                      {t(`lang:${map.name}`, { defaultValue: map.name })}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
       </div>

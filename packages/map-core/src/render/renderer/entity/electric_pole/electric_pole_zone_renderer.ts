@@ -1,12 +1,7 @@
-import { getElectricPoleDeviceConfig } from '@endfieldmap/map-core/const/electric_pole';
-import { EntityInstanceKey } from '@endfieldmap/map-core/const/map';
-import type {
-  ElectricPoleDataInstance,
-  ElectricPoleDataManager,
-} from '@endfieldmap/map-core/data/entity/electric_pole';
-import { type IReactionDisposer, reaction } from 'mobx';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
+import { logger } from '@endfieldmap/tools';
 import { Feature } from 'ol';
-import type { FeatureLike } from 'ol/Feature';
+import type { Coordinate } from 'ol/coordinate';
 import { Circle as CircleGeom } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -15,190 +10,119 @@ import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 
 /**
- * 电线杆覆盖区域渲染器配置
+ * 区域样式
  */
-export interface ElectricPoleZoneRendererConfig {
-  /** 数据管理器 */
-  dataManager: ElectricPoleDataManager;
-  /** 填充颜色 */
-  fillColor?: string;
-  /** 描边颜色 */
-  strokeColor?: string;
-}
+const ZONE_STYLE = new Style({
+  fill: new Fill({ color: 'rgba(0, 128, 255, 0.08)' }),
+  stroke: new Stroke({ color: 'rgba(0, 160, 255, 0.35)', width: 1.5 }),
+});
 
 /**
- * Zone Feature映射
+ * Zone 数据
  */
-interface ZoneFeatureMapping {
-  feature: Feature;
+export interface ZoneData {
+  /** 实例ID */
+  id: number;
+  /** 中心坐标 */
+  coordinates: Coordinate;
+  /** 半径 */
+  radius: number;
+  /** 关联的数据实例 */
   dataInstance: ElectricPoleDataInstance;
-  disposer: IReactionDisposer;
+  /** 是否可见 */
+  visible: boolean;
 }
 
 /**
- * 电线杆覆盖区域渲染器
- * 负责渲染电线杆的覆盖范围
+ * 电线杆区域渲染器（VectorLayer）
+ * 渲染电线杆的覆盖区域圆
+ *
+ * 设计原则：
+ * - 不持有 DataManager 引用
+ * - 不包含 MobX 监听
+ * - 通过 Controller 显式调用 addZone/removeZone/updateZone 更新渲染
+ * - 保持 VectorLayer（Circle 几何体不支持 WebGL）
  */
 export class ElectricPoleZoneRenderer {
-  /** 数据管理器 */
-  public readonly dataManager: ElectricPoleDataManager;
-
   /** 图层实例 */
   public readonly layer: VectorLayer;
 
   /** 数据源 */
   private readonly source: VectorSource;
 
-  /** Feature映射 */
-  private featureMappings: Map<number, ZoneFeatureMapping> = new Map();
+  /** Feature 映射：dataInstance.id -> Feature */
+  private featureMap: Map<number, Feature> = new Map();
 
-  /** MobX disposers */
-  private disposers: IReactionDisposer[] = [];
-
-  /** 样式缓存 */
-  private styleCache: Map<string, Style> = new Map();
-
-  constructor(config: ElectricPoleZoneRendererConfig) {
-    this.dataManager = config.dataManager;
-
-    // 初始化数据源
+  constructor(initialVisible: boolean = true) {
+    logger.debug('[ElectricPoleZoneRenderer] init', { initialVisible });
     this.source = new VectorSource();
-
-    // 初始化图层
     this.layer = new VectorLayer({
       source: this.source,
-      style: (feature) => this.getStyle(feature),
-      visible: true,
-      zIndex: 3,
+      style: ZONE_STYLE,
+      visible: initialVisible,
+      zIndex: 10,
     });
-
-    // 初始化features
-    this.initializeFeatures();
-
-    // 设置数据变化监听
-    this.setupDataManagerReaction();
   }
 
-  private getStyle(feature: FeatureLike): Style {
-    const dataInstance = feature.get(EntityInstanceKey) as ElectricPoleDataInstance | undefined;
-    if (!dataInstance) {
-      // should not happen
-      return new Style();
-    }
-
-    const config = getElectricPoleDeviceConfig(dataInstance.deviceKey);
-    const cacheKey = dataInstance.deviceKey;
-
-    let style = this.styleCache.get(cacheKey);
-    if (!style) {
-      style = new Style({
-        fill: new Fill({
-          color: config.fillColor || 'rgba(255, 215, 0, 0.15)',
-        }),
-        stroke: new Stroke({
-          color: config.strokeColor || 'rgba(255, 215, 0, 0.5)',
-          width: 1,
-        }),
-      });
-      this.styleCache.set(cacheKey, style);
-    }
-    return style;
-  }
+  // #region 公共 API —— 由 Controller 调用
 
   /**
-   * 初始化所有features
+   * 批量添加 zones
    */
-  private initializeFeatures(): void {
-    for (const instance of this.dataManager.instances) {
-      this.addFeatureForInstance(instance);
+  public addZones(items: ZoneData[]): void {
+    for (const item of items) {
+      this.addSingleZone(item);
     }
   }
 
   /**
-   * 为数据实例添加zone feature
+   * 移除指定的 zones
    */
-  private addFeatureForInstance(dataInstance: ElectricPoleDataInstance): void {
-    const feature = new Feature();
-    feature.set(EntityInstanceKey, dataInstance);
-    feature.setGeometry(
-      dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined
-    );
-
-    // 设置位置变化监听（如果位置可以改变的话）
-    const disposer = reaction(
-      () => ({
-        visible: dataInstance.visible,
-        coordinates: dataInstance.coordinates,
-        radius: dataInstance.zoneRadius,
-      }),
-      () => {
-        feature.setGeometry(
-          dataInstance.visible ? new CircleGeom(dataInstance.coordinates, dataInstance.zoneRadius) : undefined
-        );
-        feature.changed();
-      },
-      { fireImmediately: true }
-    );
-
-    this.featureMappings.set(dataInstance.id, {
-      feature,
-      dataInstance,
-      disposer,
-    });
-
-    this.source.addFeature(feature);
-  }
-
-  /**
-   * 移除数据实例的feature
-   */
-  private removeFeatureForInstance(id: number): void {
-    const mapping = this.featureMappings.get(id);
-    if (mapping) {
-      mapping.disposer();
-      this.source.removeFeature(mapping.feature);
-      this.featureMappings.delete(id);
+  public removeZones(ids: number[]): void {
+    for (const id of ids) {
+      const feature = this.featureMap.get(id);
+      if (feature) {
+        this.source.removeFeature(feature);
+        this.featureMap.delete(id);
+      }
     }
   }
 
   /**
-   * 设置数据管理器变化监听
+   * 更新 zone 的可见性（通过几何体控制）
    */
-  private setupDataManagerReaction(): void {
-    const disposer = reaction(
-      () => this.dataManager.instances.map((i) => i.id),
-      (newIds, oldIds) => {
-        const oldIdSet = new Set(oldIds);
-        const newIdSet = new Set(newIds);
+  public updateZoneVisibility(id: number, visible: boolean, coordinates?: Coordinate, radius?: number): void {
+    const feature = this.featureMap.get(id);
+    if (!feature) return;
 
-        if (oldIds && oldIds.length > 0) {
-          for (const id of oldIds) {
-            if (!newIdSet.has(id)) {
-              this.removeFeatureForInstance(id);
-            }
-          }
-        }
-
-        for (const instance of this.dataManager.instances) {
-          if (!oldIdSet.has(instance.id)) {
-            this.addFeatureForInstance(instance);
-          }
-        }
-      },
-      { fireImmediately: true }
-    );
-    this.disposers.push(disposer);
+    if (visible && coordinates && radius) {
+      feature.setGeometry(new CircleGeom(coordinates, radius));
+    } else if (!visible) {
+      feature.setGeometry(undefined);
+    }
+    feature.set('visible', visible);
   }
 
   /**
-   * 设置可见性
+   * 更新 zone 的几何体
+   */
+  public updateZoneGeometry(id: number, coordinates: Coordinate, radius: number): void {
+    const feature = this.featureMap.get(id);
+    if (feature) {
+      feature.setGeometry(new CircleGeom(coordinates, radius));
+    }
+  }
+
+  /**
+   * 设置图层可见性
    */
   public setVisible(visible: boolean): void {
+    logger.debug('[ElectricPoleZoneRenderer] setVisible', { visible });
     this.layer.setVisible(visible);
   }
 
   /**
-   * 获取可见性
+   * 获取图层可见性
    */
   public getVisible(): boolean {
     return this.layer.getVisible();
@@ -215,16 +139,31 @@ export class ElectricPoleZoneRenderer {
    * 销毁渲染器
    */
   public dispose(): void {
-    for (const mapping of this.featureMappings.values()) {
-      mapping.disposer();
-    }
-    this.featureMappings.clear();
-
-    for (const disposer of this.disposers) {
-      disposer();
-    }
-    this.disposers = [];
-
+    this.featureMap.clear();
     this.source.clear();
+    this.layer.dispose();
   }
+
+  // #endregion
+
+  // #region 私有方法
+
+  /**
+   * 添加单个 zone
+   */
+  private addSingleZone(item: ZoneData): void {
+    logger.debug('[ElectricPoleZoneRenderer] addSingleZone', { id: item.id, visible: item.visible });
+    const feature = new Feature();
+
+    if (item.visible) {
+      feature.setGeometry(new CircleGeom(item.coordinates, item.radius));
+    }
+    // Set properties for potential debugging or styling
+    feature.set('visible', item.visible);
+
+    this.featureMap.set(item.id, feature);
+    this.source.addFeature(feature);
+  }
+
+  // #endregion
 }

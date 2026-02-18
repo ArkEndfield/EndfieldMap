@@ -2,16 +2,25 @@ import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import { lazy, Suspense, useEffect, useRef } from 'react';
 
+import { createPortal } from 'react-dom';
+
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
 import { SettingsPage } from '@/components/features/settings';
+import { WindowProvider } from '@/context/window';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { useMapPiP } from '@/hooks/use_map_pip';
+import { usePiP } from '@/hooks/use_pip';
 import { MapDataService } from '@/services/data/map';
 import { isDev } from '@/services/env';
+import type { MapService } from '@/services/map';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
-import type { MapService } from '@/services/map';
+import { useTranslation } from 'react-i18next';
+
+import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { ChevronUp } from '@/components/common/icons';
 
 const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
 const ZmdSwiper = lazy(() => import('@/components/features/swiper'));
@@ -105,10 +114,29 @@ const Controllers = observer(({ adapter, mapDataService, mapService }: Controlle
 });
 
 function EndfieldMap() {
+  const { t } = useTranslation('common');
   const container = useRef<HTMLDivElement>(null);
   const { adapter, mapDataService, mapService } = useMapAdapter(container);
+  const { pipWindow, requestPiP, closePiP, isSupported } = usePiP({
+    onClose: () => uiManager.setPiPStatus(false),
+  });
 
-  return (
+  // 处理画中画窗口状态
+  useEffect(() => {
+    uiManager.setPiPSupported(isSupported);
+    uiManager.requestPiP = () => {
+      const width = Math.min(window.screen.availWidth, 1200);
+      const height = Math.min(window.screen.availHeight, 800);
+      requestPiP(width, height);
+    };
+    uiManager.exitPiP = closePiP;
+    uiManager.setPiPStatus(!!pipWindow);
+  }, [isSupported, requestPiP, closePiP, pipWindow]);
+
+  // 监听窗口变化，同步地图目标和尺寸
+  useMapPiP(adapter, container, pipWindow);
+
+  const content = (
     <div className="relative w-full h-full overflow-hidden">
       {/* 地图容器 */}
       <div
@@ -125,6 +153,31 @@ function EndfieldMap() {
       )}
     </div>
   );
+
+  if (pipWindow) {
+    return (
+      <>
+        <div
+          className={cn(
+            'w-full h-full flex flex-col items-center justify-center',
+            "dark:bg-[url('/images/bg/page-bg-dark.jpg')] bg-[url('/images/bg/page-bg-light.jpg')] bg-cover bg-center"
+          )}
+        >
+          <p className="text-xl text-[#4d4d4d] dark:text-[#979797] font-bold mb-8">{t('pip.playing')}</p>
+          <ZmdSquareButton
+            className="text-lg w-48 rounded-lg py-3"
+            onClick={() => closePiP()}
+            icon={<ChevronUp className="rotate-270" />}
+          >
+            {t('pip.back')}
+          </ZmdSquareButton>
+        </div>
+        <WindowProvider window={pipWindow}>{createPortal(content, pipWindow.document.body)}</WindowProvider>
+      </>
+    );
+  }
+
+  return content;
 }
 
 const EndfieldMapObserver = observer(EndfieldMap);

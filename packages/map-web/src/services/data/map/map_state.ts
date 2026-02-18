@@ -214,4 +214,8 @@ export class MapStateDataService {
       logger.error('[EndfieldMapAdapter | renderMap] error, ', e);
     }
   }
+
+  public setCurrentMap(mapId: MapData['id']) {
+    this.currentMap.value = mapId;
+  }
 }

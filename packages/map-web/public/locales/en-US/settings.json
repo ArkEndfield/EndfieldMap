@@ -32,6 +32,9 @@
       "audio": {
         "title": "Sound Effects",
         "description": "Enable or disable interface sound effects"
+      },
+      "theme": {
+        "title": "Theme"
       }
     }
   },
@@ -40,6 +43,8 @@
     "cluster": "Marker Clustering",
     "move_center": "Return to Map Center",
     "toggle_layer": "Toggle Map Layers",
+    "enter_pip": "Enter PiP",
+    "exit_pip": "Exit PiP",
     "hover": {
       "title": "Mouse Hover Detection Response Time",
       "description": "Mouse hover detection response time on map markers, shorter time requires higher performance",

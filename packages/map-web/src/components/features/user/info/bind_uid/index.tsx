@@ -1,16 +1,14 @@
-import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-
-import { userService } from '@/services/user';
-import { catchErrorWithTip } from '@/utils/handler';
-import { alert } from '@/components/common/alert/alert_api';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { BindType, GameRole } from '@/@types/game_role';
-
+import { alert } from '@/components/common/alert/alert_api';
 import { BindUidList } from '@/components/features/user/info/bind_uid/bind_uid_list';
 import { Login } from '@/components/features/user/info/bind_uid/login';
-import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
+import { userService } from '@/services/user';
+import { catchErrorWithTip } from '@/utils/handler';
 
 type View = 'login' | 'list';
 

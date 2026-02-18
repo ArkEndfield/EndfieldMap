@@ -1,6 +1,33 @@
 {
-  "preset_store": "Tienda de preajustes",
-  "preset_store_mine": "Mis preajustes",
+  "preset_store": {
+    "title": "Tienda de preajustes",
+    "mine": "Mis preajustes",
+    "mine_uploads": "Mis subidas",
+    "mine_favorites": "Mis favoritos",
+    "description": "Descripción",
+    "type": "Tipo",
+    "preview": "Vista previa",
+    "import": "Importar",
+    "import_success": "Importación exitosa",
+    "views": "Vistas",
+    "imports": "Importaciones",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "edit_form": {
+      "name": "Nombre",
+      "description": "Descripción",
+      "is_public": "Público"
+    },
+    "edit_success": "Edición exitosa",
+    "preset_type": {
+      "electric_pole": "Poste eléctrico",
+      "custom_point": "Punto personalizado"
+    },
+    "sub_type": {
+      "pole": "Poste",
+      "zipline": "Tirolina"
+    }
+  },
   "fold": "Plegar",
   "unfold": "Desplegar",
   "filter": {
@@ -31,6 +58,7 @@
     }
   },
   "operation": {
+    "refresh": "Actualizar",
     "selected_feature": "{{val, number}} marcador(es) seleccionado(s)",
     "multi_operation": "Operación en lote",
     "cancel_operation": "Cancelar operación",

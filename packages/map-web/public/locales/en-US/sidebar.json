@@ -1,6 +1,33 @@
 {
-  "preset_store": "Preset Store",
-  "preset_store_mine": "My Presets",
+  "preset_store": {
+    "title": "Preset Store",
+    "mine": "My Presets",
+    "mine_uploads": "My Uploads",
+    "mine_favorites": "My Favorites",
+    "description": "Description",
+    "type": "Type",
+    "preview": "Preview",
+    "import": "Import",
+    "import_success": "Import successful",
+    "views": "Views",
+    "imports": "Imports",
+    "delete": "Delete",
+    "edit": "Edit",
+    "edit_form": {
+      "name": "Name",
+      "description": "Description",
+      "is_public": "Public"
+    },
+    "edit_success": "Edit successful",
+    "preset_type": {
+      "electric_pole": "Electric Pole",
+      "custom_point": "Custom Point"
+    },
+    "sub_type": {
+      "pole": "Pole",
+      "zipline": "Zipline"
+    }
+  },
   "fold": "Fold",
   "unfold": "Unfold",
   "filter": {
@@ -31,6 +58,7 @@
     }
   },
   "operation": {
+    "refresh": "Refresh",
     "selected_feature": "{{val, number}} marker(s) selected",
     "multi_operation": "Batch Operation",
     "cancel_operation": "Cancel Operation",

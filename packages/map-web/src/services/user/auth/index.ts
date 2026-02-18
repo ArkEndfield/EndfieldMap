@@ -1,10 +1,11 @@
+import type { UidInfo, UserInfo } from '@eftypes/user';
 import { LocalStorageValue, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
-import i18n from '@/i18n';
-import { UserLocalStorageKey } from '@/const/storage';
-import type { UidInfo, UserInfo } from '@eftypes/user';
-import { serverService } from '@/services/server';
+
 import type { BindType } from '@/@types/game_role';
+import { UserLocalStorageKey } from '@/const/storage';
+import i18n from '@/i18n';
+import { serverService } from '@/services/server';
 
 export class UserAuthService {
   public token: LocalStorageValue<string | null> = new LocalStorageValue<string | null>({
@@ -41,13 +42,14 @@ export class UserAuthService {
    * @param password 密码
    * @returns
    */
-  @action
   public async login(username: string, password: string) {
     const { token } = await serverService.apiPost<{ token: string; expire: string }>('/auth/login', {
       username,
       password,
     });
-    this.token.value = token;
+    runInAction(() => {
+      this.token.value = token;
+    });
     return true;
   }
 
@@ -57,32 +59,35 @@ export class UserAuthService {
    * @param password 密码
    * @returns
    */
-  @action
   public async register(username: string, password: string) {
     const { token } = await serverService.apiPost<{ token: string; expire: string }>('/auth/register', {
       username,
       password,
     });
-    this.token.value = token;
+    runInAction(() => {
+      this.token.value = token;
+    });
     return true;
   }
 
   /**
    * 退出登录
    */
-  @action
   public async logout() {
     try {
       await serverService.apiPost('/auth/logout');
     } catch (error) {
       logger.error('logout error', error);
     } finally {
-      this.token.value = null;
-      this.currentUid.value = null;
-      this.uidList = [];
+      runInAction(() => {
+        this.token.value = null;
+        this.currentUid.value = null;
+        this.uidList = [];
+        this.userInfo = null;
+      });
       logger.info('logout');
-      return true;
     }
+    return true;
   }
 
   public async deleteAccount() {
@@ -133,7 +138,6 @@ export class UserAuthService {
   /**
    * 获取 uid 列表
    */
-  @action
   public async fetchUidList() {
     if (!this.isLogin) {
       throw new Error(
@@ -144,7 +148,9 @@ export class UserAuthService {
       );
     }
     const { list } = await serverService.apiGet<{ list: UidInfo[] }>('/user/game-roles');
-    this.uidList = list;
+    runInAction(() => {
+      this.uidList = list;
+    });
   }
 
   /**

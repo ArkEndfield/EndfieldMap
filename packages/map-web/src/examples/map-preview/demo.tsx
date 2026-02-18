@@ -1,10 +1,10 @@
 import type { EntityInfoDataJson, EntityJsonDataList } from '@endfieldmap/map-core';
+import { observer } from 'mobx-react-lite';
 
 import type { CustomPointPreset } from '@/@types/custom_point';
 import type { ElectricPolePreset } from '@/@types/electric_pole';
 import { MapPreview } from '@/components/common/map-preview';
 import { useAdapter } from '@/hooks/use_adapter';
-import { observer } from 'mobx-react-lite';
 
 /**
  * Mock 实体数据

@@ -1,10 +1,11 @@
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
 import { alert } from '@/components/common/alert/alert_api';
-import { EditIcon } from '@/components/common/icons';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { EditIcon } from '@/components/common/icons';
 import { userService } from '@/services/user';
 import { catchErrorWithTip } from '@/utils/handler';
-import { useTranslation } from 'react-i18next';
 
 /** 信息项组件 */
 const InfoItem = ({ label, value, onEdit }: { label: string; value: string; onEdit?: () => void }) => (

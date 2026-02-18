@@ -19,7 +19,7 @@ const PresetToolbar: React.FC<PresetToolbarProps> = ({ hasSelection, onExport, o
   return (
     <div className="flex gap-2 justify-between items-center">
       <ZmdSquareButton type="default" onClick={onOpenStore} icon={<StoreIcon />} className="flex-1">
-        {t('sidebar:preset_store')}
+        {t('sidebar:preset_store.title')}
       </ZmdSquareButton>
       <Tooltip tooltip={t('sidebar:operation.electric_pole.preset.export_select')} placement="top">
         <ZmdSquareIconButton onClick={onExport} disabled={!hasSelection} className="text-lg w-8 h-8">

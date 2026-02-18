@@ -2,16 +2,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
 import { forwardRef, useImperativeHandle } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { KeyIcon } from '@/components/common/icons';
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { KeyIcon } from '@/components/common/icons';
 import { Input } from '@/components/common/input';
-import { catchErrorWithTip, onFormInvalid } from '@/utils/handler';
-import { useTranslation } from 'react-i18next';
 import { changePasswordSchema } from '@/const/schema/auth';
 import { userService } from '@/services/user';
+import { catchErrorWithTip, onFormInvalid } from '@/utils/handler';
 
 type FormData = z.infer<typeof changePasswordSchema>;
 

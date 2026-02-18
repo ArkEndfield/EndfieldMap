@@ -1,6 +1,33 @@
 {
-  "preset_store": "預設商店",
-  "preset_store_mine": "我的",
+  "preset_store": {
+    "title": "預設商店",
+    "mine": "我的",
+    "mine_uploads": "我的上傳",
+    "mine_favorites": "我的收藏",
+    "description": "描述",
+    "type": "類型",
+    "preview": "預覽",
+    "import": "匯入",
+    "import_success": "匯入成功",
+    "views": "瀏覽",
+    "imports": "匯入次數",
+    "delete": "刪除",
+    "edit": "編輯",
+    "edit_form": {
+      "name": "名稱",
+      "description": "描述",
+      "is_public": "公開"
+    },
+    "edit_success": "編輯成功",
+    "preset_type": {
+      "electric_pole": "電線桿",
+      "custom_point": "自訂標點"
+    },
+    "sub_type": {
+      "pole": "電線桿",
+      "zipline": "滑索"
+    }
+  },
   "fold": "折疊",
   "unfold": "展開",
   "filter": {
@@ -25,10 +52,13 @@
       "system": "日常副本",
       "other": "其他",
       "#electric_pole": "電線桿",
-      "#custom_point": "自訂點位"
+      "#custom_point": "自訂點位",
+      "#note": "情報檔案",
+      "#egg": "???"
     }
   },
   "operation": {
+    "refresh": "重新整理",
     "selected_feature": "已選中 {{val, number}} 個標點",
     "multi_operation": "批次操作",
     "cancel_operation": "取消操作",

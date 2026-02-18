@@ -1,10 +1,10 @@
-import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
-import type { TreasureComponent } from '@/components/common/popup/sub/components/types';
 import { Item } from '@themes/endfield/components/item';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SubPopupTitle } from '@/components/common/popup/components/title';
+import type { TreasureComponent } from '@/components/common/popup/sub/components/types';
+import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
 import { useAdapter } from '@/hooks/use_adapter';
 import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { isDealedRewardItemWithCount } from '@/utils/reward';

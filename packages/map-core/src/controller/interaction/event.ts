@@ -38,12 +38,10 @@ export class EventController {
   private registerClickEventHandlers() {
     // 点击事件
     this.emitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
-      const electricPoleLayers = this.electricPoleController.currentRenderer?.visible
-        ? [this.electricPoleController.currentRenderer]
-        : [];
-      const customPointLayers = this.customPointController.currentRenderer?.visible
-        ? [this.customPointController.currentRenderer]
-        : [];
+      // 获取所有当前显示的电线杆渲染器（每种设备类型一个）
+      const electricPoleLayers = this.electricPoleController.render.currentPoleRenderers.filter((r) => r.visible);
+      // 获取所有当前显示的自定义标点渲染器（每种类型一个）
+      const customPointLayers = this.customPointController.currentRenderer.filter((r) => r.visible);
       const entityLayers = this.entityController.render.currentRenderer.filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = hitTestEntitiesAt(
@@ -58,22 +56,25 @@ export class EventController {
 
       // 如果没有命中实体，尝试命中电线连接
       if (allClickedFeatures.length === 0) {
-        const renderer = this.electricPoleController.currentRenderer;
-        if (!renderer || !renderer.getConnectionVisible()) return;
+        const renderers = electricPoleLayers;
+        for (const renderer of renderers) {
+          if (!renderer.getConnectionVisible()) continue;
 
-        const clickedFeatures = await renderer.getConnectionFeatures(event.pixel as [number, number]);
-        if (clickedFeatures.length === 0) return;
-        const feature = clickedFeatures[0];
-        const instance = feature.get(EntityInstanceKey) as ElectricPoleDataInstance;
-        const targetId = feature.get(ConnectionTargetIdKey);
-        if (typeof targetId !== 'number') return;
-        this.emitter.fire(MAP_EVENT.CONNECTION_CLICK, {
-          feature: feature,
-          instance,
-          targetId,
-          renderer,
-          event,
-        });
+          const clickedFeatures = await renderer.getConnectionFeatures(event.pixel as [number, number]);
+          if (clickedFeatures.length === 0) continue;
+          const feature = clickedFeatures[0];
+          const instance = feature.get(EntityInstanceKey) as ElectricPoleDataInstance;
+          const targetId = feature.get(ConnectionTargetIdKey);
+          if (typeof targetId !== 'number') continue;
+          this.emitter.fire(MAP_EVENT.CONNECTION_CLICK, {
+            feature: feature,
+            instance,
+            targetId,
+            renderer,
+            event,
+          });
+          return;
+        }
         return;
       }
 
@@ -112,12 +113,10 @@ export class EventController {
 
   private registerContextMenuEventHandlers() {
     this.emitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
-      const electricPoleLayers = this.electricPoleController.currentRenderer?.visible
-        ? [this.electricPoleController.currentRenderer]
-        : [];
-      const customPointLayers = this.customPointController.currentRenderer?.visible
-        ? [this.customPointController.currentRenderer]
-        : [];
+      // 获取所有当前显示的电线杆渲染器
+      const electricPoleLayers = this.electricPoleController.render.currentPoleRenderers.filter((r) => r.visible);
+      // 获取所有当前显示的自定义标点渲染器
+      const customPointLayers = this.customPointController.currentRenderer.filter((r) => r.visible);
       const entityLayers = this.entityController.render.currentRenderer.filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = hitTestEntitiesAt(
@@ -132,17 +131,20 @@ export class EventController {
 
       // 如果没有命中实体，尝试命中电线连接
       if (allClickedFeatures.length === 0) {
-        const renderer = this.electricPoleController.currentRenderer;
-        if (!renderer || !renderer.getConnectionVisible()) return;
+        const renderers = electricPoleLayers;
+        for (const renderer of renderers) {
+          if (!renderer.getConnectionVisible()) continue;
 
-        const clickedFeatures = await renderer.getConnectionFeatures(detail.pixel);
-        if (clickedFeatures.length === 0) return;
+          const clickedFeatures = await renderer.getConnectionFeatures(detail.pixel);
+          if (clickedFeatures.length === 0) continue;
 
-        this.emitter.fire(MAP_EVENT.CONNECTION_CONTEXT_MENU, {
-          feature: clickedFeatures[0],
-          renderer,
-          event: detail,
-        });
+          this.emitter.fire(MAP_EVENT.CONNECTION_CONTEXT_MENU, {
+            feature: clickedFeatures[0],
+            renderer,
+            event: detail,
+          });
+          return;
+        }
         return;
       }
 

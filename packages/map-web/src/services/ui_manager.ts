@@ -148,6 +148,32 @@ class UIManager {
   }
   // endregion
 
+  // region: 画中画
+  public requestPiP: (() => void) | null = null;
+  public exitPiP: (() => void) | null = null;
+
+  @observable accessor isPiP: boolean = false;
+  @observable accessor isPiPSupported: boolean = false;
+
+  @action
+  public setPiPStatus(isPiP: boolean) {
+    this.isPiP = isPiP;
+  }
+
+  @action
+  public setPiPSupported(supported: boolean) {
+    this.isPiPSupported = supported;
+  }
+
+  public togglePiP() {
+    if (this.isPiP) {
+      this.exitPiP?.();
+    } else {
+      this.requestPiP?.();
+    }
+  }
+  // endregion
+
   // region: 主题
   @computed
   get ThemedComponents() {

@@ -32,6 +32,9 @@
       "audio": {
         "title": "Efectos de sonido",
         "description": "Habilitar o deshabilitar los efectos de sonido de la interfaz"
+      },
+      "theme": {
+        "title": "Tema"
       }
     }
   },
@@ -40,6 +43,8 @@
     "cluster": "Agrupación de marcadores",
     "move_center": "Volver al centro del mapa",
     "toggle_layer": "Alternar capas del mapa",
+    "enter_pip": "Entrar en PiP",
+    "exit_pip": "Salir de PiP",
     "hover": {
       "title": "Tiempo de respuesta de detección de desplazamiento del mouse",
       "description": "Tiempo de respuesta de detección de desplazamiento del mouse sobre los marcadores del mapa, menor tiempo requiere mayor rendimiento",

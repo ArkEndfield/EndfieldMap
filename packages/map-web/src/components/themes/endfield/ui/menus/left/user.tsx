@@ -2,8 +2,8 @@ import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { UserCenter } from '@/components/features/user';
 import { UserIcon } from '@/components/common/icons';
+import { UserCenter } from '@/components/features/user';
 
 export const HeaderMenuUser = ({ className }: { className?: string }) => {
   const [open, setOpen] = useState(false);

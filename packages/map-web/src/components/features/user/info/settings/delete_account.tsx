@@ -1,9 +1,10 @@
-import { TrashIcon } from '@/components/common/icons';
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { useTranslation } from 'react-i18next';
+
 import { alert } from '@/components/common/alert/alert_api';
-import { catchErrorWithTip } from '@/utils/handler';
+import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { TrashIcon } from '@/components/common/icons';
 import { userService } from '@/services/user';
+import { catchErrorWithTip } from '@/utils/handler';
 
 export const DeleteAccount = () => {
   const { t } = useTranslation('header');

@@ -1,26 +1,41 @@
-import { useState } from 'react';
+import type { ElectricPoleType } from '@eftypes/preset_store';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { Input } from '@/components/common/input';
 
 interface SharePresetFormProps {
-  defaultName: string;
-  defaultType: 'electric_pole' | 'zipline';
-  onNameChange: (value: string) => void;
-  onTypeChange: (value: 'electric_pole' | 'zipline') => void;
+  defaultName?: string;
+  defaultType?: ElectricPoleType;
+  defaultDescription?: string;
+  onNameChange?: (value: string) => void;
+  onTypeChange?: (value: ElectricPoleType) => void;
+  onDescriptionChange?: (value: string) => void;
 }
 
-const typeOptions = [
-  { value: 'electric_pole' as const, label: '电线杆' },
-  { value: 'zipline' as const, label: '滑索' },
-];
-
-const SharePresetForm: React.FC<SharePresetFormProps> = ({ defaultName, defaultType, onNameChange, onTypeChange }) => {
+const SharePresetForm: React.FC<SharePresetFormProps> = ({
+  defaultName,
+  defaultType = 'pole',
+  defaultDescription,
+  onNameChange,
+  onTypeChange,
+  onDescriptionChange,
+}) => {
+  const { t } = useTranslation('sidebar');
   const [type, setType] = useState(defaultType);
+
+  const typeOptions = useMemo(
+    () => [
+      { value: 'pole' as const, label: t('preset_store.sub_type.pole') },
+      { value: 'zipline' as const, label: t('preset_store.sub_type.zipline') },
+    ],
+    [t]
+  );
 
   return (
     <div className="grid grid-cols-[auto_1fr] items-center gap-y-3">
-      <div className="text-xs text-[#a0a2a3] mr-2">电线杆类型</div>
+      <div className="text-xs text-[#a0a2a3] mr-2">{t('preset_store.type')}</div>
       <EndfieldSelect
         className="text-sm w-32"
         classNames={{
@@ -30,14 +45,13 @@ const SharePresetForm: React.FC<SharePresetFormProps> = ({ defaultName, defaultT
         value={type}
         onChange={(value) => {
           setType(value);
-          onTypeChange(value);
+          onTypeChange?.(value);
         }}
       />
-      <div className="text-xs text-[#a0a2a3] mr-2">分享名称</div>
-      <Input
-        defaultValue={defaultName}
-        onValueChange={onNameChange}
-      />
+      <div className="text-xs text-[#a0a2a3] mr-2">{t('preset_store.edit_form.name')}</div>
+      <Input defaultValue={defaultName} onValueChange={onNameChange} />
+      <div className="text-xs text-[#a0a2a3] mr-2">{t('preset_store.edit_form.description')}</div>
+      <Input defaultValue={defaultDescription} onValueChange={onDescriptionChange} inputType="textarea" rows={3} />
     </div>
   );
 };

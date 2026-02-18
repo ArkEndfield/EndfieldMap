@@ -1,5 +1,5 @@
 import { EndfieldMapAdapter } from '@endfieldmap/map-core';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import i18n from '@/i18n';
@@ -16,10 +16,10 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   const [mapDataServiceReactive, setMapDataServiceReactive] = useState<MapDataService | null>(null);
   const [mapServiceReactive, setMapServiceReactive] = useState<MapService | null>(null);
   const isMobile = useIsMobile();
-  /**
+  /*
    * 初始化地图函数
    */
-  const init = async () => {
+  const init = useCallback(async () => {
     if (adapter.current || !containerRef.current) return;
 
     const mapService = MapService.getInstance(containerRef.current!);
@@ -31,7 +31,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     setAdapterReactive(efAdapter);
     setMapDataServiceReactive(efDataService);
     setMapServiceReactive(mapService);
-  };
+  }, [containerRef]);
 
   useEffect(() => {
     if (containerRef.current) {

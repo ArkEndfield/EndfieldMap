@@ -1,4 +1,5 @@
 import type { ElectricMode, ElectricPolePreset, ElectricPolePresetExportBundle } from '@eftypes/electric_pole';
+import type { ElectricPoleType } from '@eftypes/preset_store';
 import type { ElectricPoleData, EndfieldMapAdapter } from '@endfieldmap/map-core';
 import {
   type Coordinate,
@@ -24,6 +25,7 @@ import {
   type IVisibilityService,
   type VisibilityData,
 } from '@/services/data/map/base/base_preset';
+import { presetService } from '@/services/preset';
 import { userService } from '@/services/user';
 import { ElectricPolePresetDataService } from '@/services/user/data/preset/electric_pole';
 
@@ -178,23 +180,43 @@ export class ElectricPoleDataService extends BasePresetDataService<
                 const newTargetId = change.value;
                 const targetInstance = manager.getById(newTargetId);
                 if (targetInstance) {
-                  instance.connectTo(targetInstance);
+                  // 使用 controller 方法来建立连接（同步数据和渲染）
+                  this.adapter.electricPoleController.connectElectricPoles(
+                    docData.mapId,
+                    docData.levelLogicId,
+                    newTargetId
+                  );
                 }
                 return;
               }
               if (change.type === 'REMOVE') {
                 const removedTargetId = change.oldValue;
-                instance.disconnectOutgoingTo(removedTargetId);
+                // 使用 controller 方法来断开连接（同步数据和渲染）
+                this.adapter.electricPoleController.disconnectElectricPoles(
+                  docData.mapId,
+                  docData.levelLogicId,
+                  removedTargetId
+                );
                 this.adapter.hoverConnectionController.clearHoverConnection();
                 return;
               }
               if (change.type === 'CHANGE') {
                 const newTargetId = change.value;
                 const oldTargetId = change.oldValue;
-                instance.disconnectOutgoingTo(oldTargetId);
+                // 先断开旧连接
+                this.adapter.electricPoleController.disconnectElectricPoles(
+                  docData.mapId,
+                  docData.levelLogicId,
+                  oldTargetId
+                );
+                // 再建立新连接
                 const targetInstance = manager.getById(newTargetId);
                 if (targetInstance) {
-                  instance.connectTo(targetInstance);
+                  this.adapter.electricPoleController.connectElectricPoles(
+                    docData.mapId,
+                    docData.levelLogicId,
+                    newTargetId
+                  );
                 }
               }
             });
@@ -506,15 +528,13 @@ export class ElectricPoleDataService extends BasePresetDataService<
   // endregion
 
   // region: 分享处理
-  public override async sharePresetToServer(data: ElectricPoleNodeSchemaType[], name: string, type?: string) {
-    // TODO: 实现分享逻辑
-    // 等待两秒
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 2000);
-    });
-    alert.info('分享成功' + JSON.stringify({ data, name, type }));
+  public override sharePresetToServer(
+    data: ElectricPoleNodeSchemaType[],
+    name: string,
+    description: string,
+    type: ElectricPoleType = 'pole'
+  ) {
+    return presetService.shareElectricPolePreset(name, description, type, data);
   }
   // endregion
 

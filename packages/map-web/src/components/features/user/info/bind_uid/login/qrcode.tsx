@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
-
-import { serverService } from '@/services/server';
-import { cn } from '@/utils/style';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { useTranslation } from 'react-i18next';
+import { serverService } from '@/services/server';
+import { cn } from '@/utils/style';
 
 /** 轮询间隔（毫秒） */
 const POLL_INTERVAL = 2000;
@@ -32,7 +31,9 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
   const { t } = useTranslation(['header', 'error']);
 
   const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentScanIdRef = useRef<string | null>(null);
   const isMountedRef = useRef(true);
+  const checkStatusRef = useRef<(() => Promise<void>) | null>(null);
 
   // 清理轮询定时器
   const clearPollTimer = useCallback(() => {
@@ -41,6 +42,63 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
       pollTimerRef.current = null;
     }
   }, []);
+
+  // 检查扫码状态
+  const checkStatus = useCallback(async () => {
+    if (!scanInfo || !isMountedRef.current) return;
+    // 防止旧的轮询继续执行
+    if (scanInfo.scan_id !== currentScanIdRef.current) return;
+
+    let result: ScanStatusResponse | null = null;
+    try {
+      result = await serverService.apiGet<ScanStatusResponse>(
+        `/user/game-roles/scan/status?scan_id=${encodeURIComponent(scanInfo.scan_id)}`
+      );
+    } catch (err) {
+      if (!isMountedRef.current) return;
+      if (scanInfo.scan_id !== currentScanIdRef.current) return;
+
+      // 请求失败，显示错误信息并停止轮询
+      setError(err instanceof Error ? err.message : t('error:qr_code.query_status'));
+      setStatus('expired');
+      return;
+    }
+
+    if (!isMountedRef.current) return;
+    if (scanInfo.scan_id !== currentScanIdRef.current) return;
+
+    if (!result) {
+      // 请求失败，显示错误信息
+      setError(t('error:qr_code.query_status'));
+      setStatus('expired');
+      return;
+    }
+
+    switch (result.status) {
+      case 'pending':
+        // status保持pending，触发下一次轮询
+        pollTimerRef.current = setTimeout(() => checkStatusRef.current?.(), POLL_INTERVAL);
+        break;
+
+      case 'confirmed':
+        // 扫码成功，回调 scan_code
+        if (result.scan_code) {
+          setStatus('confirmed');
+          onLogin(result.scan_code);
+        }
+        break;
+
+      case 'expired':
+        // 二维码过期
+        setStatus('expired');
+        break;
+    }
+  }, [scanInfo, onLogin, t]);
+
+  // 保持 checkStatusRef 始终指向最新的 checkStatus
+  useEffect(() => {
+    checkStatusRef.current = checkStatus;
+  }, [checkStatus]);
 
   // 生成二维码
   const generateQRCode = useCallback(async () => {
@@ -58,6 +116,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
 
       if (result) {
         setScanInfo(result);
+        currentScanIdRef.current = result.scan_id;
         setStatus('pending');
       } else {
         setError(t('error:qr_code.generate'));
@@ -70,55 +129,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
       setError(err instanceof Error ? err.message : t('error:qr_code.generate'));
       setStatus('expired');
     }
-  }, [clearPollTimer, onLoadingChange]);
-
-  // 检查扫码状态
-  const checkStatus = useCallback(async () => {
-    if (!scanInfo || !isMountedRef.current) return;
-
-    let result: ScanStatusResponse | null = null;
-    try {
-      result = await serverService.apiGet<ScanStatusResponse>(
-        `/user/game-roles/scan/status?scan_id=${encodeURIComponent(scanInfo.scan_id)}`
-      );
-    } catch (err) {
-      if (!isMountedRef.current) return;
-
-      // 请求失败，显示错误信息并停止轮询
-      setError(err instanceof Error ? err.message : t('error:qr_code.query_status'));
-      setStatus('expired');
-      return;
-    }
-
-    if (!isMountedRef.current) return;
-
-    if (!result) {
-      // 请求失败，显示错误信息
-      setError(t('error:qr_code.query_status'));
-      setStatus('expired');
-      return;
-    }
-
-    switch (result.status) {
-      case 'pending':
-        // 继续轮询
-        pollTimerRef.current = setTimeout(checkStatus, POLL_INTERVAL);
-        break;
-
-      case 'confirmed':
-        // 扫码成功，回调 scan_code
-        if (result.scan_code) {
-          setStatus('confirmed');
-          onLogin(result.scan_code);
-        }
-        break;
-
-      case 'expired':
-        // 二维码过期
-        setStatus('expired');
-        break;
-    }
-  }, [scanInfo, onLogin]);
+  }, [clearPollTimer, onLoadingChange, t]);
 
   // 监听外部错误信息，用于重置二维码状态
   useEffect(() => {
@@ -128,13 +139,22 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
     }
   }, [errorMessage]);
 
-  // 开始轮询
+  // 轮询逻辑 - 启动首次轮询
   useEffect(() => {
     if (status === 'pending' && scanInfo) {
+      // 清除之前的定时器（如果有）
+      if (pollTimerRef.current) clearTimeout(pollTimerRef.current);
+      // 启动轮询
       pollTimerRef.current = setTimeout(checkStatus, POLL_INTERVAL);
     }
-    return clearPollTimer;
-  }, [status, scanInfo, checkStatus, clearPollTimer]);
+
+    return () => {
+      if (pollTimerRef.current) {
+        clearTimeout(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+    };
+  }, [status, scanInfo, checkStatus]);
 
   // 初始化生成二维码
   useEffect(() => {
@@ -145,7 +165,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
       isMountedRef.current = false;
       clearPollTimer();
     };
-  }, []);
+  }, [generateQRCode, clearPollTimer]);
 
   return (
     <motion.div

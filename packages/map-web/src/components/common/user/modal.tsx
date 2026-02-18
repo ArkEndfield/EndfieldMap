@@ -1,12 +1,11 @@
-import shortcutService from '@/services/shortcut';
 import { AnimatePresence, motion } from 'motion/react';
-
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { cn } from '@/utils/style';
 import { CloseButton } from '@/components/common/close_button';
 import { PortalContext } from '@/components/common/portal_context';
+import shortcutService from '@/services/shortcut';
+import { cn } from '@/utils/style';
 
 export interface UserModalProps {
   /** 控制弹窗显示隐藏 */
@@ -96,7 +95,7 @@ const UserModalInner: React.FC<UserModalProps> = ({
     }
   }, [open, dialogElement]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (isProcessing) return;
 
     if (!onClose) {
@@ -120,7 +119,7 @@ const UserModalInner: React.FC<UserModalProps> = ({
     } else if (result !== false) {
       onOpenChange?.(false);
     }
-  };
+  }, [isProcessing, onClose, onOpenChange]);
 
   useEffect(() => {
     if (!open || !keyboardCloseable) return;

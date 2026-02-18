@@ -1,6 +1,6 @@
 import type { MapData } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
-import type { MangoQuerySelector, RxCollection } from 'rxdb';
+import type { MangoQuerySelector, RxCollection, RxDocument } from 'rxdb';
 import type { Subscription } from 'rxjs';
 
 import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
@@ -10,6 +10,12 @@ import type { PresetSchemaType } from '@/services/data/db/schema/user_data/prese
  * 用于解决 RxDB MangoQuerySelector 的复杂泛型约束
  */
 export type NodeSelector<T> = MangoQuerySelector<T>;
+
+type OptionalNodeFields<T> = Omit<T, 'id' | 'createdAt' | 'updatedAt'> & {
+  id?: string;
+  createdAt?: number;
+  updatedAt?: number;
+};
 
 /**
  * 节点必需字段接口
@@ -49,11 +55,7 @@ export interface IPresetService<
   // 节点操作
   renameNode(mapId: MapData['id'], presetId: string, levelLogicId: number, newName: string): Promise<void>;
   deleteNode(mapId: MapData['id'], presetId: string, levelLogicId: number): Promise<void>;
-  createNode(
-    mapId: MapData['id'],
-    presetId: string,
-    nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId' | 'createdAt' | 'updatedAt'>
-  ): Promise<TNodeSchema>;
+  createNode(mapId: MapData['id'], presetId: string, nodeData: OptionalNodeFields<TNodeSchema>): Promise<TNodeSchema>;
   addNodeSubscribe(
     callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void
   ): void;
@@ -242,7 +244,7 @@ export abstract class BasePresetService<
    */
   public async createPreset(
     name: string,
-    data: TNodeSchema[] = [],
+    data: OptionalNodeFields<TNodeSchema>[] = [],
     options?: { id?: string; createdAt?: number; updatedAt?: number }
   ): Promise<TPreset> {
     const now = Date.now();
@@ -259,12 +261,12 @@ export abstract class BasePresetService<
     });
 
     // 插入节点数据
-    await this.saveNodesData(presetId, data);
+    const insertedData = await this.saveNodesData(presetId, data);
 
     const presetData = presetDoc.toJSON() as PresetSchemaType;
     return {
       ...presetData,
-      data,
+      data: insertedData.map((node) => node.toJSON() as TNodeSchema),
     } as TPreset;
   }
 
@@ -288,11 +290,10 @@ export abstract class BasePresetService<
     // 获取更新后的完整数据
     const presetData = doc.toJSON() as PresetSchemaType;
     const nodes = await this.nodesDB.find({ selector: { presetId: id } as NodeSelector<TNodeSchema> }).exec();
-    const data = nodes.map((node) => node.toJSON() as TNodeSchema);
 
     return {
       ...presetData,
-      data,
+      data: nodes.map((node) => node.toJSON() as TNodeSchema),
     } as TPreset;
   }
 
@@ -310,8 +311,8 @@ export abstract class BasePresetService<
   /**
    * 保存节点数据到数据库
    */
-  protected async saveNodesData(presetId: string, data: TNodeSchema[]): Promise<void> {
-    const insertPromises: Promise<unknown>[] = [];
+  protected saveNodesData(presetId: string, data: OptionalNodeFields<TNodeSchema>[]) {
+    const insertPromises: Promise<RxDocument<TNodeSchema>>[] = [];
 
     for (const node of data) {
       const nodeId = BasePresetService.createId(node.mapId, presetId, node.levelLogicId ?? 0);
@@ -320,13 +321,13 @@ export abstract class BasePresetService<
           ...node,
           id: nodeId,
           presetId,
-          createdAt: node.createdAt ?? Date.now(),
+          createdAt: node?.createdAt ?? Date.now(),
           updatedAt: Date.now(),
         } as TNodeSchema)
       );
     }
 
-    await Promise.all(insertPromises);
+    return Promise.all(insertPromises);
   }
 
   protected generatePresetId(): string {
@@ -344,7 +345,7 @@ export abstract class BasePresetService<
   public async createNode(
     mapId: MapData['id'],
     presetId: string,
-    nodeData: Omit<TNodeSchema, 'id' | 'presetId' | 'mapId' | 'createdAt' | 'updatedAt'>
+    nodeData: Omit<OptionalNodeFields<TNodeSchema>, 'presetId' | 'mapId'>
   ): Promise<TNodeSchema> {
     const nodeId = BasePresetService.createId(mapId, presetId, nodeData.levelLogicId);
     const newNode = await this.nodesDB.insert({
