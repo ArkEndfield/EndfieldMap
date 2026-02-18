@@ -374,7 +374,7 @@ export class EndfieldMapAdapter {
       } else {
         // Standard Entity
         const entityInstance = instance as EntityDataInstance;
-        this.entityController.setVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
+        this.entityController.setGroupVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
       }
     }
 

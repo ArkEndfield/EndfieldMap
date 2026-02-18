@@ -225,7 +225,7 @@ export class EntityMapDataManager {
   }
 
   @action
-  public setVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean): void {
+  public setGroupVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean): void {
     const managers = this.mapData.get(mapId);
     if (!managers) {
       logger.warn(`[EntityMapDataManager] Map not found: mapId=${mapId}`);

@@ -9,7 +9,6 @@ import type { Layer } from 'ol/layer';
 
 export interface EntityRenderConfig {
   mapInstance: EndfieldMap;
-  asset: EndfieldMapAsset;
   mapIds: MapData['id'][];
 }
 
@@ -26,14 +25,12 @@ export class EntityRender {
   public renders: Map<MapData['id'], Map<string, EntityGroupRenderer>>;
 
   private mapInstance: EndfieldMap;
-  private asset: EndfieldMapAsset;
 
   /** 当前已添加到地图的图层（包括 WebGL 主图层和 Canvas badge 图层） */
   private currentLayers: Layer[] = [];
 
   constructor(config: EntityRenderConfig) {
     this.mapInstance = config.mapInstance;
-    this.asset = config.asset;
     this.renders = new Map();
     for (const mapId of config.mapIds) {
       this.renders.set(mapId, new Map());
@@ -155,10 +152,16 @@ export class EntityRender {
   }
 
   /**
-   * 获取资源路径
+   * 获取所有渲染器
    */
-  public get entityImagePath(): string {
-    return this.asset.entityImage;
+  public get allRenderers(): EntityGroupRenderer[] {
+    const renderers: EntityGroupRenderer[] = [];
+    for (const [, mapRenderers] of this.renders) {
+      for (const renderer of mapRenderers.values()) {
+        renderers.push(renderer);
+      }
+    }
+    return renderers;
   }
 
   /**

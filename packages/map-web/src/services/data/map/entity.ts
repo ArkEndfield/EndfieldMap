@@ -38,7 +38,7 @@ export class EntityDataService {
 
     // 订阅可见性数据变化
     userService.data.entityVisibilityService.addSubscribe((mapId, entityKey, visible) => {
-      this.adapter.entityController.setVisibility(mapId, entityKey, visible);
+      this.adapter.entityController.setGroupVisibility(mapId, entityKey, visible);
     });
   }
 
@@ -48,7 +48,7 @@ export class EntityDataService {
   }
 
   public setEntityGroupVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean) {
-    this.adapter.entityController.setVisibility(mapId, entityKey, visible);
+    this.adapter.entityController.setGroupVisibility(mapId, entityKey, visible);
     userService.data.entityVisibilityService.setVisibilityData(mapId, entityKey, visible);
   }
 

@@ -203,8 +203,9 @@ export class EntityGroupRenderer {
       if (state.active !== undefined) {
         feature.set('active', state.active ? 1 : 0, true);
       }
+
+      feature.changed();
     }
-    this.layer.changed();
   }
 
   /**

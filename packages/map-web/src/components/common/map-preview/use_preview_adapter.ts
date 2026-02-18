@@ -65,7 +65,7 @@ export function usePreviewAdapter(options: UsePreviewAdapterOptions) {
       for (const mapItem of entity.jsonData) {
         const groupManagers = efAdapter.entityController.getMapGroupManagerList(mapItem.map_id);
         for (const manager of groupManagers) {
-          efAdapter.entityController.setVisibility(mapItem.map_id, manager.entityDataIdKey, true);
+          efAdapter.entityController.setGroupVisibility(mapItem.map_id, manager.entityDataIdKey, true);
         }
       }
     }

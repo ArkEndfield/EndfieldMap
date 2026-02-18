@@ -1,6 +1,6 @@
 import { Disposer } from '@endfieldmap/map-core/commom/disposer';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
+import { EntityInstanceKey, MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import { EntityMapDataManager } from '@endfieldmap/map-core/data/entity';
 import type { EntityDataInstance, EntityGroupManager } from '@endfieldmap/map-core/data/entity';
 import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
@@ -59,7 +59,6 @@ export class EntityController extends Disposer {
     this.dataManager = new EntityMapDataManager(config.mapDataManager);
     this.render = new EntityRender({
       mapInstance: config.mapInstance,
-      asset: config.asset,
       mapIds: [], // 初始为空，loadData 后填充
     });
 
@@ -78,7 +77,7 @@ export class EntityController extends Disposer {
   /**
    * 获取地图的组管理器列表
    */
-  getMapGroupManagerList(mapId: MapData['id']): EntityGroupManager[] {
+  public getMapGroupManagerList(mapId: MapData['id']): EntityGroupManager[] {
     return this.dataManager.getMapGroupManagerList(mapId);
   }
 
@@ -157,7 +156,6 @@ export class EntityController extends Disposer {
     // 重建 render（包含所有 mapIds）
     this.render = new EntityRender({
       mapInstance: this.render['mapInstance'], // 复用 mapInstance
-      asset: this.asset,
       mapIds,
     });
 
@@ -283,11 +281,41 @@ export class EntityController extends Disposer {
   }
 
   /**
+   * 设置实体可见性
+   * 同时更新数据和渲染
+   */
+  public setEntityVisibility(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], visible: boolean): void {
+    const instance = this.dataManager.getInstanceById(mapId, levelLogicId);
+    if (!instance) return;
+    instance.setVisible(visible);
+    this.render.updateFeatureState(mapId, instance.id, {
+      visible,
+    });
+  }
+
+  /**
+   * 设置所有实体可见性
+   * 同时更新数据和渲染
+   */
+  public setAllEntityVisible(visible: boolean): void {
+    const allRenderers = this.render.allRenderers;
+    // 设置 data 和 renderer 的 visible
+    for (const renderer of allRenderers) {
+      renderer.updateAllFeaturesState((_id, feature) => {
+        const instance = feature.get(EntityInstanceKey);
+        if (!instance) return { visible };
+        instance.setVisible(visible);
+        return { visible };
+      });
+    }
+  }
+
+  /**
    * 设置实体组可见性
    * 同时更新数据和渲染
    */
-  public setVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean): void {
-    this.dataManager.setVisibility(mapId, entityKey, visible);
+  public setGroupVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean): void {
+    this.dataManager.setGroupVisibility(mapId, entityKey, visible);
 
     // 同步渲染
     this.render.setGroupVisible(mapId, entityKey, visible);
@@ -394,7 +422,7 @@ export class EntityController extends Disposer {
   ): Promise<number> {
     let count = 0;
     for (const item of data) {
-      this.setVisibility(item.mapId, item.entityKey, item.visible);
+      this.setGroupVisibility(item.mapId, item.entityKey, item.visible);
       count++;
     }
     return count;
