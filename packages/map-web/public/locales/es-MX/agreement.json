@@ -1,0 +1,245 @@
+{
+  "user_agreement": {
+    "title": "Acuerdo de Usuario",
+    "chapter_1": {
+      "title": "I. Disposiciones Generales",
+      "section_1": {
+        "title": "1.1 Aceptación del Acuerdo",
+        "content": "Bienvenido a este producto (en adelante, «el Producto» o «Nosotros»). Al registrarse, iniciar sesión o usar este producto, se considera que ha leído, entendido y aceptado completamente el contenido de este «Acuerdo de Usuario» (en adelante, «este Acuerdo»)."
+      },
+      "section_2": {
+        "title": "1.2 Efecto y Modificación del Acuerdo",
+        "content": "Este Acuerdo entra en vigor desde la fecha en que hace clic en aceptar o usa realmente este producto. Nos reservamos el derecho de modificar este Acuerdo de acuerdo con cambios en las leyes y regulaciones o necesidades operativas del producto. El acuerdo modificado se anunciará dentro del producto. Si continúa usando este producto, se considera que acepta el acuerdo modificado."
+      }
+    },
+    "chapter_2": {
+      "title": "II. Normas de Uso de Cuenta",
+      "section_1": {
+        "title": "2.1 Registro de Cuenta",
+        "content_1": "Debe proporcionar información personal veraz, precisa y completa de acuerdo con las indicaciones de la página de registro, y es responsable de la seguridad de su información de registro y datos.",
+        "content_2": "Una vez completado el registro de la cuenta, usted asume la responsabilidad legal por todas las acciones, incluyendo la contraseña de inicio de sesión de la cuenta y el comportamiento operativo.",
+        "content_3": "Nos reservamos el derecho de revisar la información de registro presentada por los usuarios. Si se descubre que la información es falsa, ilegal o viola este Acuerdo, nos reservamos el derecho de rechazar el registro o suspender el uso."
+      },
+      "section_2": {
+        "title": "2.2 Uso de Cuenta",
+        "content_1": "No puede transferir, vender, alquilar o compartir su cuenta con terceros de ninguna forma.",
+        "content_2": "Es responsable de administrar adecuadamente su cuenta y contraseña. Cualquier pérdida resultante de una gestión deficiente de la contraseña es su responsabilidad.",
+        "content_3": "Si descubre que su cuenta ha sido robada o tiene vulnerabilidades de seguridad, notifíquenos inmediatamente. Tomaremos las medidas necesarias."
+      },
+      "section_3": {
+        "title": "2.3 Eliminación de Cuenta",
+        "content": "Tiene derecho a solicitar la eliminación de su cuenta. Después de la eliminación, su información personal será eliminada o anonimizada y no se puede recuperar."
+      }
+    },
+    "chapter_3": {
+      "title": "III. Derechos y Obligaciones del Usuario",
+      "section_1": {
+        "title": "3.1 Derechos del Usuario",
+        "content_1": "Derecho a usar las diversas funciones y servicios proporcionados por este producto.",
+        "content_2": "Derecho a presentar sugerencias, comentarios o quejas sobre este producto.",
+        "content_3": "Derecho a consultar, corregir, complementar, eliminar su información personal o retirar el consentimiento de autorización.",
+        "content_4": "Derecho a eliminar su cuenta y terminar el uso de este producto."
+      },
+      "section_2": {
+        "title": "3.2 Obligaciones del Usuario",
+        "content_1": "Cumplir con este Acuerdo y las leyes y regulaciones pertinentes, y no usar este producto para actividades ilegales.",
+        "content_2": "No atacar, interferir o destruir maliciosamente la operación normal del sistema de este producto.",
+        "content_3": "No usar este producto para violar los derechos e intereses legítimos de terceros, incluyendo, pero no limitado a, derechos de propiedad intelectual, derechos de reputación, derechos de privacidad, etc.",
+        "content_4": "No publicar o difundir información ilegal o prohibida, incluyendo, pero no limitado a, contenido que involucre violencia, pornografía, fraude, apuestas, etc."
+      }
+    },
+    "chapter_4": {
+      "title": "IV. Disposiciones de Responsabilidad",
+      "section_1": {
+        "title": "4.1 Responsabilidad del Usuario",
+        "content_1": "Si causa pérdidas a cualquier tercero o a nosotros debido a la violación de este Acuerdo, debe asumir la responsabilidad de indemnización correspondiente.",
+        "content_2": "Usted asume la responsabilidad total por el contenido que publique mientras usa este producto.",
+        "content_3": "Si su cuenta es utilizada ilegalmente por otros, usted asume la responsabilidad total resultante."
+      },
+      "section_2": {
+        "title": "4.2 Responsabilidad de la Plataforma",
+        "content_1": "Prometemos garantizar el funcionamiento estable de los servicios del producto, pero no garantizamos que el servicio no se interrumpa o que no ocurran errores.",
+        "content_2": "No nos hacemos responsables por la interrupción del servicio o pérdida de datos causada por fuerza mayor, fallas de red, virus informáticos, ataques de hackers u otras causas.",
+        "content_3": "Nos reservamos el derecho de ajustar, actualizar o suspender parcialmente funciones y servicios de acuerdo con las necesidades operativas."
+      }
+    },
+    "chapter_5": {
+      "title": "V. Exención de Responsabilidad",
+      "section_1": {
+        "title": "5.1 Naturaleza del Servicio",
+        "content": "Los servicios proporcionados por este producto se proporcionan «tal cual», sin ninguna garantía expresa o implícita, incluyendo, pero no limitado a, garantías de comerciabilidad, idoneidad para un propósito particular, no infracción, etc."
+      },
+      "section_2": {
+        "title": "5.2 Enlaces de Terceros",
+        "content": "Este producto puede contener enlaces a sitios web o recursos de terceros. Estos sitios web o recursos de terceros no están bajo nuestro control, y no asumimos responsabilidad por el contenido o disponibilidad de estos sitios web o recursos de terceros."
+      },
+      "section_3": {
+        "title": "5.3 Responsabilidad por Pérdidas",
+        "content": "En ningún caso seremos responsables por cualquier daño directo, indirecto, incidental, especial o consecuente (incluyendo, pero no limitado a, pérdida de beneficios, pérdida de datos, interrupción del negocio), independientemente de la forma de responsabilidad, ya sea responsabilidad contractual, responsabilidad por acto ilícito u otra."
+      }
+    },
+    "chapter_6": {
+      "title": "VI. Resolución de Controversias",
+      "section_1": {
+        "title": "6.1 Ley Aplicable",
+        "content": "La celebración, ejecución, interpretación y resolución de controversias de este Acuerdo se rigen por las leyes y regulaciones de la República Popular China."
+      },
+      "section_2": {
+        "title": "6.2 Métodos de Resolución de Controversias",
+        "content_1": "Cualquier controversia que surja de o esté relacionada con este Acuerdo debe ser resuelta a través de consultas amistosas entre ambas partes.",
+        "content_2": "Si las consultas no tienen éxito, cualquiera de las partes tiene el derecho de presentar la controversia al tribunal popular con jurisdicción en la ubicación de este producto para litigio."
+      },
+      "section_3": {
+        "title": "6.3 Divisibilidad de Disposiciones",
+        "content": "Si cualquier disposición de este Acuerdo se considera inválida o inaplicable, no afecta la validez de otras disposiciones, y las disposiciones restantes siguen siendo válidas y tienen fuerza legal vinculante."
+      }
+    },
+    "chapter_7": {
+      "title": "VII. Disposiciones Finales",
+      "content_1": "Los títulos de este Acuerdo se establecen solo por conveniencia de lectura y no afectan el significado o interpretación de cualquier disposición de este Acuerdo.",
+      "content_2": "Que no ejercamos o retrasemos el ejercicio de cualquier derecho o disposición bajo este Acuerdo no debe considerarse como una renuncia a tal derecho o disposición.",
+      "content_3": "Si tiene alguna pregunta sobre este Acuerdo, contáctenos a través de la información de contacto proporcionada por este producto."
+    }
+  },
+  "privacy_policy": {
+    "title": "Política de Privacidad",
+    "chapter_1": {
+      "title": "I. Introducción",
+      "content_1": "Bienvenido a este producto. Entendemos completamente la importancia de la información personal y haremos todo lo posible para proteger su información personal de manera segura y confiable. Esta «Política de Privacidad» explica cómo recopilamos, usamos, almacenamos y protegemos su información personal, así como los derechos relacionados que disfruta.",
+      "content_2": "Al usar este producto, se considera que acepta el contenido descrito en esta Política de Privacidad. Si no acepta ningún contenido de esta Política de Privacidad, deje de usar este producto."
+    },
+    "chapter_2": {
+      "title": "II. Alcance de Recopilación de Datos",
+      "section_1": {
+        "title": "2.1 Información Recopilada Activamente",
+        "subtitle_1": "Información de Cuenta：",
+        "content_1_1": "Nombre de usuario, contraseña y otra información de cuenta proporcionada al registrarse.",
+        "content_1_2": "Información personal que usted proporciona voluntariamente, como apodo, avatar, etc.",
+        "subtitle_2": "Información de Uso：",
+        "content_2_1": "Registros de uso del producto, incluyendo tiempo de inicio de sesión, comportamiento operativo, etc.",
+        "content_2_2": "Situación de uso de funciones, como frecuencia de uso, configuraciones, etc."
+      },
+      "section_2": {
+        "title": "2.2 Información Recopilada Automáticamente",
+        "subtitle_1": "Información del Dispositivo：",
+        "content_1_1": "Modelo del dispositivo, versión del sistema operativo, tipo de navegador, etc.",
+        "content_1_2": "Identificadores del dispositivo (como IMEI, dirección MAC, etc.).",
+        "subtitle_2": "Información de Red：",
+        "content_2_1": "Dirección IP, información del proveedor de servicios de Internet.",
+        "content_2_2": "Fecha y hora de acceso, fuente de acceso y otra información de registro."
+      },
+      "section_3": {
+        "title": "2.3 Información Proporcionada por Terceros",
+        "content": "Con su autorización, podemos obtener información relevante suya de socios de terceros, como información de cuenta de plataforma social, etc."
+      }
+    },
+    "chapter_3": {
+      "title": "III. Propósito del Uso de Datos",
+      "section_1": {
+        "title": "3.1 Prestación de Servicios",
+        "content_1": "Proporcionar, mantener y mejorar las diversas funciones y servicios de este producto para usted.",
+        "content_2": "Procesar sus solicitudes de registro, inicio de sesión, verificación de identidad, etc.",
+        "content_3": "Guardar sus configuraciones personalizadas y preferencias."
+      },
+      "section_2": {
+        "title": "3.2 Garantía de Seguridad",
+        "content_1": "Verificar su identidad para prevenir riesgos de seguridad como robo de cuenta y fraude.",
+        "content_2": "Detectar, prevenir e investigar comportamiento fraudulento, vulnerabilidades de seguridad y actividades ilegales.",
+        "content_3": "Garantizar el funcionamiento seguro y estable de este producto y los servicios relacionados."
+      },
+      "section_3": {
+        "title": "3.3 Optimización del Producto",
+        "content_1": "Analizar el uso del producto para optimizar las funciones del producto y la experiencia del usuario.",
+        "content_2": "Realizar análisis estadísticos de datos para comprender las necesidades y hábitos de uso del usuario.",
+        "content_3": "Desarrollar nuevos productos, nuevas funciones o mejorar los productos y servicios existentes."
+      },
+      "section_4": {
+        "title": "3.4 Comunicación",
+        "content_1": "Enviarle notificaciones de servicio, actualizaciones de producto, actividades promocionales y otra información.",
+        "content_2": "Procesar sus consultas, quejas, sugerencias y otros comentarios."
+      }
+    },
+    "chapter_4": {
+      "title": "IV. Medidas de Protección de Datos",
+      "section_1": {
+        "title": "4.1 Almacenamiento de Datos",
+        "content_1": "Almacenamos su información personal dentro de China.",
+        "content_2": "El período de almacenamiento de datos se limita al período más corto necesario para lograr los propósitos descritos en esta Política.",
+        "content_3": "Cuando expire el período de almacenamiento, su información personal será eliminada o anonimizada."
+      },
+      "section_2": {
+        "title": "4.2 Protección Técnica",
+        "content_1": "Usar tecnología de cifrado para proteger su información personal y prevenir fugas o alteraciones de información.",
+        "content_2": "Usar tecnología de control de acceso para limitar los derechos de acceso a la información personal.",
+        "content_3": "Realizar evaluaciones de seguridad y escaneos de vulnerabilidades regularmente, y corregir problemas de seguridad a tiempo.",
+        "content_4": "Establecer mecanismos de copia de seguridad y recuperación de desastres para garantizar la seguridad de los datos."
+      },
+      "section_3": {
+        "title": "4.3 Protección Administrativa",
+        "content_1": "Formular y implementar estrictos sistemas de gestión de seguridad de la información y procedimientos operativos.",
+        "content_2": "Proporcionar capacitación de seguridad y gestión de autorizaciones para los empleados que tienen acceso a la información personal.",
+        "content_3": "Establecer mecanismos de respuesta de emergencia para fugas de información personal."
+      },
+      "section_4": {
+        "title": "4.4 Compartir Información",
+        "subtitle": "No compartiremos su información personal con terceros, a menos que：",
+        "content_1": "Hemos obtenido su consentimiento explícito.",
+        "content_2": "Según leyes y regulaciones o requisitos de agencias gubernamentales.",
+        "content_3": "Necesario para cumplir con el contrato, como encargar a terceros proporcionar servicios específicos.",
+        "content_4": "Para proteger nuestros derechos e intereses legítimos, como prevenir fraude y actividades ilegales."
+      }
+    },
+    "chapter_5": {
+      "title": "V. Derechos del Usuario",
+      "section_1": {
+        "title": "5.1 Derecho de Acceso",
+        "content": "Tiene derecho a consultar la información personal que recopilamos y almacenamos sobre usted."
+      },
+      "section_2": {
+        "title": "5.2 Derecho de Corrección",
+        "content": "Tiene derecho a solicitar la corrección de contenido inexacto o incompleto en su información personal."
+      },
+      "section_3": {
+        "title": "5.3 Derecho de Eliminación",
+        "content_1": "En circunstancias específicas, tiene derecho a solicitar la eliminación de su información personal.",
+        "content_2": "Después de eliminar la cuenta, su información personal será eliminada o anonimizada."
+      },
+      "section_4": {
+        "title": "5.4 Retirada del Consentimiento",
+        "content": "Tiene derecho a retirar su consentimiento para el procesamiento de su información personal, pero la retirada no afecta el procesamiento legal realizado antes de la retirada."
+      },
+      "section_5": {
+        "title": "5.5 Cómo Ejercer los Derechos",
+        "content": "Puede ejercer los derechos anteriores a través de las funciones proporcionadas por este producto o contactándonos (como servicio al cliente por correo electrónico, servicio al cliente por teléfono, etc.). Procesaremos y responderemos dentro de los 15 días hábiles."
+      }
+    },
+    "chapter_6": {
+      "title": "VI. Cookies y Tecnologías Relacionadas",
+      "section_1": {
+        "title": "6.1 Uso de Cookies",
+        "content": "Usamos cookies y tecnologías similares para mejorar la experiencia del usuario, como guardar el estado de inicio de sesión, recordar sus configuraciones, etc. Puede administrar o eliminar cookies a través de la configuración del navegador."
+      },
+      "section_2": {
+        "title": "6.2 Gestión de Cookies",
+        "content": "Puede deshabilitar cookies a través de la configuración del navegador, pero esto puede afectar el uso normal de algunas funciones de este producto."
+      }
+    },
+    "chapter_7": {
+      "title": "VII. Protección de Menores",
+      "content": "Este producto está principalmente dirigido a usuarios adultos. Si es menor de edad, use este producto bajo la guía de su tutor. Fortaleceremos la protección de la información personal de menores de acuerdo con la «Ley de Protección de Menores de la República Popular China» y otras leyes y regulaciones."
+    },
+    "chapter_8": {
+      "title": "VIII. Actualización de la Política",
+      "content": "Podemos revisar esta Política de Privacidad de vez en cuando. La política revisada se anunciará dentro de este producto. Si continúa usando este producto, se considera que acepta la política revisada."
+    },
+    "chapter_9": {
+      "title": "IX. Contáctenos",
+      "content": "Si tiene alguna pregunta, opinión o sugerencia sobre esta Política de Privacidad, o necesita ejercer derechos relacionados, contáctenos a través de los canales de servicio al cliente proporcionados por este producto."
+    }
+  },
+  "common": {
+    "read_and_agree": "He leído y acepto",
+    "and": "y",
+    "last_updated": "Última actualización: 18 de febrero de 2026"
+  }
+}

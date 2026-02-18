@@ -1,0 +1,245 @@
+{
+  "user_agreement": {
+    "title": "User Agreement",
+    "chapter_1": {
+      "title": "I. General Provisions",
+      "section_1": {
+        "title": "1.1 Acceptance of Agreement",
+        "content": "Welcome to this product (hereinafter referred to as \"the Product\" or \"we\"). When you register, log in, or use this product, you acknowledge that you have fully read, understood, and accepted the entire content of this \"User Agreement\" (hereinafter referred to as \"this Agreement\")."
+      },
+      "section_2": {
+        "title": "1.2 Effect and Modification of Agreement",
+        "content": "This Agreement becomes effective from the date you click agree or actually use this product. We reserve the right to modify this Agreement according to changes in laws and regulations or product operation needs. The modified agreement will be announced within the product. If you continue to use this product, it will be deemed that you agree to the modified agreement."
+      }
+    },
+    "chapter_2": {
+      "title": "II. Account Usage Guidelines",
+      "section_1": {
+        "title": "2.1 Account Registration",
+        "content_1": "You shall provide true, accurate, and complete personal information as prompted on the registration page, and take responsibility for the security of your registration information and data.",
+        "content_2": "After completing account registration, you bear legal responsibility for all actions related to your account's login password and operational behavior.",
+        "content_3": "We reserve the right to review the registration information submitted by users. If we find that the information is false, illegal, or violates this Agreement, we have the right to refuse registration or suspend use."
+      },
+      "section_2": {
+        "title": "2.2 Account Usage",
+        "content_1": "You may not transfer, sell, lend, or share your account with others in any form.",
+        "content_2": "You are responsible for keeping your account and password secure. Any losses resulting from poor password management are your responsibility.",
+        "content_3": "If you discover that your account has been stolen or has security vulnerabilities, please notify us immediately, and we will take necessary measures."
+      },
+      "section_3": {
+        "title": "2.3 Account Deletion",
+        "content": "You have the right to apply for account deletion. After deletion, your personal information will be deleted or anonymized and cannot be recovered."
+      }
+    },
+    "chapter_3": {
+      "title": "III. User Rights and Obligations",
+      "section_1": {
+        "title": "3.1 User Rights",
+        "content_1": "The right to use various functions and services provided by this product.",
+        "content_2": "The right to make suggestions, comments, or complaints about this product.",
+        "content_3": "The right to access, correct, supplement, delete personal information, or withdraw authorization consent.",
+        "content_4": "The right to delete your account and terminate use of this product."
+      },
+      "section_2": {
+        "title": "3.2 User Obligations",
+        "content_1": "Comply with this Agreement and relevant laws and regulations; do not use this product for illegal activities.",
+        "content_2": "Do not maliciously attack, interfere with, or disrupt the normal operation of this product's system.",
+        "content_3": "Do not use this product to infringe upon the legitimate rights and interests of others, including but not limited to intellectual property rights, reputation rights, privacy rights, etc.",
+        "content_4": "Do not publish or disseminate illegal or prohibited information, including but not limited to content involving violence, pornography, fraud, gambling, etc."
+      }
+    },
+    "chapter_4": {
+      "title": "IV. Liability Terms",
+      "section_1": {
+        "title": "4.1 User Liability",
+        "content_1": "If you cause losses to any third party or us due to violation of this Agreement, you shall bear corresponding compensation liability.",
+        "content_2": "You assume full responsibility for the content you publish while using this product.",
+        "content_3": "If your account is used illegally by others, you shall bear full responsibility arising therefrom."
+      },
+      "section_2": {
+        "title": "4.2 Platform Liability",
+        "content_1": "We are committed to ensuring stable operation of product services but do not guarantee that services will not be interrupted or free of any errors.",
+        "content_2": "We are not liable for service interruption or data loss caused by force majeure, network failures, computer viruses, hacker attacks, etc.",
+        "content_3": "We reserve the right to adjust, upgrade, or suspend some functions and services according to operational needs."
+      }
+    },
+    "chapter_5": {
+      "title": "V. Disclaimer",
+      "section_1": {
+        "title": "5.1 Nature of Service",
+        "content": "The services provided by this product are provided \"as is\" without any express or implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement."
+      },
+      "section_2": {
+        "title": "5.2 Third-party Links",
+        "content": "This product may contain links to third-party websites or resources. These third-party websites or resources are not under our control, and we are not responsible for the content or availability of these third-party websites or resources."
+      },
+      "section_3": {
+        "title": "5.3 Liability for Losses",
+        "content": "In no event shall we be liable for any direct, indirect, incidental, special, or consequential damages (including but not limited to loss of profits, data loss, business interruption), regardless of the form of liability, whether contract, tort, or otherwise."
+      }
+    },
+    "chapter_6": {
+      "title": "VI. Dispute Resolution",
+      "section_1": {
+        "title": "6.1 Applicable Law",
+        "content": "The conclusion, execution, interpretation, and dispute resolution of this Agreement shall be governed by the laws and regulations of the People's Republic of China."
+      },
+      "section_2": {
+        "title": "6.2 Dispute Resolution Methods",
+        "content_1": "Any dispute arising from or relating to this Agreement shall be settled through friendly consultation between both parties.",
+        "content_2": "If consultation fails, either party has the right to submit the dispute to the competent people's court at the location of this product for litigation."
+      },
+      "section_3": {
+        "title": "6.3 Severability",
+        "content": "If any provision of this Agreement is deemed invalid or unenforceable, it shall not affect the validity of other provisions, and the remaining provisions shall remain valid and legally binding."
+      }
+    },
+    "chapter_7": {
+      "title": "VII. Supplementary Provisions",
+      "content_1": "The titles in this Agreement are for convenience of reading only and do not affect the meaning or interpretation of any provision of this Agreement.",
+      "content_2": "Our failure or delay in exercising any right or provision under this Agreement shall not be deemed a waiver of such right or provision.",
+      "content_3": "If you have any questions about this Agreement, please contact us through the contact information provided by this product."
+    }
+  },
+  "privacy_policy": {
+    "title": "Privacy Policy",
+    "chapter_1": {
+      "title": "I. Introduction",
+      "content_1": "Welcome to this product. We understand the importance of personal information to you and will do our best to protect your personal information securely and reliably. This \"Privacy Policy\" explains how we collect, use, store, and protect your personal information, as well as the relevant rights you enjoy.",
+      "content_2": "By using this product, you agree to the contents described in this Privacy Policy. If you do not agree to any content of this Privacy Policy, please stop using this product."
+    },
+    "chapter_2": {
+      "title": "II. Scope of Data Collection",
+      "section_1": {
+        "title": "2.1 Actively Collected Information",
+        "subtitle_1": "Account Information:",
+        "content_1_1": "Username, password, and other account information provided during registration.",
+        "content_1_2": "Personal information you voluntarily provide, such as nickname, avatar, etc.",
+        "subtitle_2": "Usage Information:",
+        "content_2_1": "Product usage records, including login time, operational behavior, etc.",
+        "content_2_2": "Feature usage, such as usage frequency, preference settings, etc."
+      },
+      "section_2": {
+        "title": "2.2 Automatically Collected Information",
+        "subtitle_1": "Device Information:",
+        "content_1_1": "Device model, operating system version, browser type, etc.",
+        "content_1_2": "Device identifiers (such as IMEI, MAC address, etc.).",
+        "subtitle_2": "Network Information:",
+        "content_2_1": "IP address, network service provider information.",
+        "content_2_2": "Access date and time, access source, and other log information."
+      },
+      "section_3": {
+        "title": "2.3 Third-party Provided Information",
+        "content": "With your authorization, we may obtain your relevant information from third-party partners, such as social platform account information, etc."
+      }
+    },
+    "chapter_3": {
+      "title": "III. Purpose of Data Use",
+      "section_1": {
+        "title": "3.1 Service Provision",
+        "content_1": "Provide, maintain, and improve various functions and services of this product for you.",
+        "content_2": "Process your registration, login, identity verification, and other requests.",
+        "content_3": "Save your personalized settings and preferences."
+      },
+      "section_2": {
+        "title": "3.2 Security Assurance",
+        "content_1": "Verify your identity to prevent security risks such as account theft and fraud.",
+        "content_2": "Detect, prevent, and investigate fraudulent behavior, security vulnerabilities, and illegal activities.",
+        "content_3": "Ensure the safe and stable operation of this product and related services."
+      },
+      "section_3": {
+        "title": "3.3 Product Optimization",
+        "content_1": "Analyze product usage to optimize product features and user experience.",
+        "content_2": "Conduct data statistical analysis to understand user needs and usage habits.",
+        "content_3": "Develop new products, new features, or improve existing products and services."
+      },
+      "section_4": {
+        "title": "3.4 Communication",
+        "content_1": "Send you service notifications, product updates, promotional activities, and other information.",
+        "content_2": "Process your inquiries, complaints, suggestions, and other feedback."
+      }
+    },
+    "chapter_4": {
+      "title": "IV. Data Protection Measures",
+      "section_1": {
+        "title": "4.1 Data Storage",
+        "content_1": "We store your personal information within China.",
+        "content_2": "The data storage period is limited to the minimum period necessary to achieve the purposes stated in this Policy.",
+        "content_3": "When the storage period expires, your personal information will be deleted or anonymized."
+      },
+      "section_2": {
+        "title": "4.2 Technical Protection",
+        "content_1": "Use encryption technology to protect your personal information and prevent information leakage or tampering.",
+        "content_2": "Use access control technology to restrict access to personal information.",
+        "content_3": "Regularly conduct security assessments and vulnerability scans, and fix security issues in a timely manner.",
+        "content_4": "Establish data backup and disaster recovery mechanisms to ensure data security."
+      },
+      "section_3": {
+        "title": "4.3 Management Protection",
+        "content_1": "Formulate and implement strict information security management systems and operating procedures.",
+        "content_2": "Provide security training and authorization management for employees who access personal information.",
+        "content_3": "Establish an emergency response mechanism for personal information leakage."
+      },
+      "section_4": {
+        "title": "4.4 Information Sharing",
+        "subtitle": "We will not share your personal information with third parties unless:",
+        "content_1": "We obtain your explicit consent.",
+        "content_2": "Required by laws and regulations or government authorities.",
+        "content_3": "Necessary for performing the contract, such as entrusting third parties to provide specific services.",
+        "content_4": "To safeguard our legitimate rights and interests, such as preventing fraud and illegal activities."
+      }
+    },
+    "chapter_5": {
+      "title": "V. User Rights",
+      "section_1": {
+        "title": "5.1 Right to Access",
+        "content": "You have the right to query the personal information we have collected and stored about you."
+      },
+      "section_2": {
+        "title": "5.2 Right to Correction",
+        "content": "You have the right to request correction of inaccurate or incomplete content in your personal information."
+      },
+      "section_3": {
+        "title": "5.3 Right to Deletion",
+        "content_1": "In specific circumstances, you have the right to request deletion of your personal information.",
+        "content_2": "After account deletion, your personal information will be deleted or anonymized."
+      },
+      "section_4": {
+        "title": "5.4 Right to Withdraw Consent",
+        "content": "You have the right to withdraw consent to the processing of your personal information, but withdrawal does not affect lawful processing carried out before withdrawal."
+      },
+      "section_5": {
+        "title": "5.5 How to Exercise Rights",
+        "content": "You can exercise the above rights through the functions provided by this product or by contacting us (such as customer service email, customer service phone, etc.). We will process and respond within 15 working days."
+      }
+    },
+    "chapter_6": {
+      "title": "VI. Cookies and Related Technologies",
+      "section_1": {
+        "title": "6.1 Use of Cookies",
+        "content": "We use cookies and similar technologies to improve user experience, such as saving login status and remembering your preference settings. You can manage or delete cookies through browser settings."
+      },
+      "section_2": {
+        "title": "6.2 Cookie Management",
+        "content": "You can disable cookies through browser settings, but this may affect the normal use of some features of this product."
+      }
+    },
+    "chapter_7": {
+      "title": "VII. Protection of Minors",
+      "content": "This product is primarily intended for adult users. If you are a minor, please use this product under the guidance of a guardian. We will strengthen the protection of minors' personal information in accordance with the \"Minor Protection Law of the People's Republic of China\" and other laws and regulations."
+    },
+    "chapter_8": {
+      "title": "VIII. Policy Updates",
+      "content": "We may revise this Privacy Policy from time to time. The revised policy will be announced within this product. If you continue to use this product, it will be deemed that you agree to accept the revised policy."
+    },
+    "chapter_9": {
+      "title": "IX. Contact Us",
+      "content": "If you have any questions, comments, or suggestions about this Privacy Policy, or need to exercise relevant rights, please contact us through the customer service channels provided by this product."
+    }
+  },
+  "common": {
+    "read_and_agree": "I have read and agree to the",
+    "and": "and",
+    "last_updated": "Last updated: February 18, 2026"
+  }
+}

@@ -12,7 +12,7 @@ import { type LoginFormData, loginSchema } from '@/const/schema/auth';
 import { userService } from '@/services/user';
 import { catchErrorWithTip, onFormInvalid } from '@/utils/handler';
 
-import { AgreementDialog } from './agreement';
+import { AgreementDialog, AgreementLink } from './agreement';
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -88,28 +88,7 @@ export const LoginForm = observer(({ onSwitchToRegister }: LoginFormProps) => {
             onToggle={() => field.onChange(!field.value)}
             label={
               <div className="flex flex-wrap items-center gap-1 justify-center">
-                <span>我已阅读并同意</span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleOpenAgreement('agreement');
-                  }}
-                  className="text-[#ffff21] hover:text-[#ffd700] underline underline-offset-2"
-                >
-                  《用户使用协议》
-                </button>
-                <span>和</span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleOpenAgreement('privacy');
-                  }}
-                  className="text-[#ffff21] hover:text-[#ffd700] underline underline-offset-2"
-                >
-                  《隐私政策》
-                </button>
+                <AgreementLink onClick={handleOpenAgreement} />
               </div>
             }
             hideBorder
