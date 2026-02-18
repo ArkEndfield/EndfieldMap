@@ -1,12 +1,19 @@
 import type { CustomPointPreset, CustomPointPresetExportBundle } from '@eftypes/custom_point';
-import type { Coordinate, CustomPointTypeId, EndfieldMapAdapter, EntityData, MapData } from '@endfieldmap/map-core';
-import { type CustomPointData, CustomPointKey, getDefaultCustomPointType, MAP_EVENT } from '@endfieldmap/map-core';
+import type {
+  Coordinate,
+  CustomPointTypeId,
+  EndfieldMapAdapter,
+  EntityData,
+  MapData,
+  CustomPointData,
+} from '@endfieldmap/map-core';
+import { CustomPointKey, getDefaultCustomPointType, MAP_EVENT } from '@endfieldmap/map-core';
 import { LocalStorageDB, LocalStorageKey, logger } from '@endfieldmap/tools';
 import { action, computed, observable, runInAction } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { DATA_STORAGE_KEY, EXPORT_TYPE_KEY } from '@/const/data';
-import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
+import type { CustomPointNodeSchemaType } from '@endfieldmap/map-service';
 import {
   BasePresetDataService,
   type IVisibilityService,

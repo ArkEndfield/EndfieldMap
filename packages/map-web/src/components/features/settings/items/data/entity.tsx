@@ -6,7 +6,7 @@ import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
 import { usePromiseState } from '@/hooks/use_promise_state';
-import { DataService } from '@/services/data';
+import { service } from '@/services';
 
 export const EntitySetting = () => {
   const { t } = useTranslation('settings');
@@ -14,8 +14,8 @@ export const EntitySetting = () => {
   const { loading, execute } = usePromiseState({
     fun: () =>
       Promise.all([
-        DataService.dbStorage.database.entityMark.find().remove(),
-        DataService.dbStorage.database.entityVisibility.find().remove(),
+        service.databaseService.database.entityMark.find().remove(),
+        service.databaseService.database.entityVisibility.find().remove(),
       ]),
     onSuccess() {
       alert.info({

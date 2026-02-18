@@ -1,7 +1,7 @@
 import { logger } from '@endfieldmap/tools';
 import type { Subscription } from 'rxjs';
 
-import { DataService } from '@/services/data';
+import { service } from '@/services';
 
 type BaseCallback<T> = T extends (...args: infer P) => void ? (...args: P) => void : never;
 /**
@@ -71,6 +71,6 @@ export abstract class BaseUserDataService<T> {
    * 子类可以重写此方法以获取特定的数据库引用
    */
   protected get currentDatabase() {
-    return DataService.dbStorage.database;
+    return service.databaseService.database;
   }
 }

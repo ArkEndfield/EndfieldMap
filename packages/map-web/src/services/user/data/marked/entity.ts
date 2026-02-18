@@ -1,14 +1,14 @@
 import type { EntityData, MapData } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 
-import { DataService } from '@/services/data';
 import { BaseUserDataService } from '@/services/user/data/_base';
+import { service } from '@/services';
 
 export type EntityMarkCallback = (mapId: MapData['id'], id: EntityData['levelLogicId'], marked: boolean) => void;
 
 export class EntityMarkService extends BaseUserDataService<EntityMarkCallback> {
   private get db() {
-    return DataService.dbStorage.database.entityMark;
+    return service.databaseService.database.entityMark;
   }
 
   public static createId(mapId: MapData['id'], id: EntityData['levelLogicId']) {

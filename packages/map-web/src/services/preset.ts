@@ -6,8 +6,7 @@ import type {
   PresetStoreSearchOptions,
   PresetType,
 } from '@/@types/preset_store';
-import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
-import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
+import type { CustomPointNodeSchemaType, ElectricPoleNodeSchemaType } from '@endfieldmap/map-service';
 import { service } from '@/services';
 
 export class PresetService {

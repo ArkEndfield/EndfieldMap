@@ -1,7 +1,7 @@
 import { type JSONLoader } from '@endfieldmap/tools';
 
-import type { ItemSchemaType } from '@/services/data/db/schema/game_data/item';
-import { DataService } from '@/services/data/index';
+import type { ItemSchemaType } from '@endfieldmap/map-service';
+import { service } from '@/services';
 import { getAssetUrls } from '@/utils/url';
 
 const assetPath = getAssetUrls();
@@ -19,12 +19,12 @@ export class ItemDataService {
     );
     const items = Object.values(data || {});
     if (items.length > 0) {
-      await DataService.dbStorage.gameDatabase.gameItem.bulkUpsert(items);
+      await service.databaseService.gameDatabase.gameItem.bulkUpsert(items);
     }
   }
 
   private async getItemDataFromDB(id: string) {
-    return await DataService.dbStorage.gameDatabase.gameItem
+    return await service.databaseService.gameDatabase.gameItem
       .findOne({
         selector: { id },
       })

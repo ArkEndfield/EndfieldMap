@@ -8,7 +8,7 @@ import { logger } from '@endfieldmap/tools';
 import { service } from '@/services';
 import { LoadingStageId } from '@/const/loading';
 import { initCursorEventListeners } from '@/services/cursor';
-import { DataService } from '@/services/data';
+import { StorageService } from '@/services/data/storage';
 import { MapDataService } from '@/services/data/map';
 import { isDev } from '@/services/env';
 import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
@@ -53,7 +53,7 @@ export class MapService {
 
   private async loadMapData(retry_times: number = 0): Promise<MapDataJson> {
     try {
-      const jsonLoader = DataService.jsonLoader;
+      const jsonLoader = StorageService.jsonLoader;
       const mapData = await jsonLoader.loadJSON<MapDataJson>(`${assets.mapData}/map_data.json`);
       if (mapData) return mapData;
       throw new Error('加载地图数据失败');
@@ -69,7 +69,7 @@ export class MapService {
 
   private async loadEntityData(retry_times: number = 0): Promise<[EntityJsonDataList, EntityInfoDataJson]> {
     try {
-      const jsonLoader = DataService.jsonLoader;
+      const jsonLoader = StorageService.jsonLoader;
       const [jsonData, infoData] = await Promise.all([
         jsonLoader.loadJSON<EntityJsonDataList>(`${assets.entityData}/level_entities_categorized.json`),
         jsonLoader.loadJSON<EntityInfoDataJson>(`${assets.entityData}/entity_info.json`),
@@ -88,7 +88,8 @@ export class MapService {
 
   private async _init() {
     try {
-      await DataService.initStorage();
+      await service.init();
+      await StorageService.initStorage();
 
       const [mapData, [entityJsonData, entityInfoData]] = await Promise.all([
         this.loadMapData(),
@@ -123,7 +124,7 @@ export class MapService {
       loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
 
       loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 10);
-      this.mapDataService = await MapDataService.createInstance(this.adapter!, DataService.jsonLoader);
+      this.mapDataService = await MapDataService.createInstance(this.adapter!, StorageService.jsonLoader);
       loadingManager.completeStage(LoadingStageId.MAP_RENDER);
       loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);
       // 初始化激活feature事件监听器，用于设置和清除激活的feature

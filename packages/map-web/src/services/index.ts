@@ -5,14 +5,15 @@ import { isDev, backendHost } from '@/services/env';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { loadingManager } from '@/services/loading';
 import { LoadingStageId } from '@/const/loading';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 let initialLoadComplete = false;
 
 export const service = new MapService({
   consolaReporter: sentryReporter,
+  isDev: isDev,
   i18nConfig: {
     hooks: [LanguageDetector],
-    isDev: isDev,
     afterLoad: () => {
       loadingManager.completeStage(LoadingStageId.I18N);
       initialLoadComplete = true;
@@ -26,6 +27,9 @@ export const service = new MapService({
       // LOADING
       loadingManager.updateStageProgress(LoadingStageId.I18N, progress);
     },
+  },
+  databaseConfig: {
+    storage: getRxStorageDexie(),
   },
   backendHost: backendHost,
 });

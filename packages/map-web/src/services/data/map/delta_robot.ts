@@ -1,8 +1,8 @@
 import type { JSONLoader } from '@endfieldmap/tools';
 
 import type { LevelData, ParsedLevel, PieceData } from '@/@types/delta_robot';
-import type { DeltaRobotParsedLevelSchemaType } from '@/services/data/db/schema/game_data/delta_robot';
-import { DataService } from '@/services/data/index';
+import type { DeltaRobotParsedLevelSchemaType } from '@endfieldmap/map-service';
+import { service } from '@/services';
 import { parseLevelData } from '@/services/delta_robot/loader';
 import { getAssetUrls } from '@/utils/url';
 
@@ -16,7 +16,7 @@ export class DeltaRobotDataService {
   }
 
   private async getParsedLevelFromDB(levelId: string) {
-    return await DataService.dbStorage.gameDatabase.gameDeltaRobotParsedLevel
+    return await service.databaseService.gameDatabase.gameDeltaRobotParsedLevel
       .findOne({
         selector: { levelId },
       })
@@ -58,7 +58,7 @@ export class DeltaRobotDataService {
       const parsed = await parseLevelData(levelData, pieceLoader);
 
       // 保存到数据库
-      await DataService.dbStorage.gameDatabase.gameDeltaRobotParsedLevel.upsert({
+      await service.databaseService.gameDatabase.gameDeltaRobotParsedLevel.upsert({
         levelId,
         ...parsed,
       } as DeltaRobotParsedLevelSchemaType);

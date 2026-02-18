@@ -3,7 +3,6 @@ import { logger } from '@endfieldmap/tools';
 
 import type { BindType } from '@/@types/game_role';
 import { alert } from '@/components/common/alert/alert_api';
-import { DataService } from '@/services/data';
 import { UserAuthService } from '@/services/user/auth';
 import { UserDataService } from '@/services/user/data';
 import { service } from '@/services';
@@ -197,11 +196,11 @@ export class UserService {
       this.auth.switchUid(uid);
       service.serverService.setUid(uid);
       // 创建用户数据库并迁移本地数据
-      await DataService.dbStorage.createUserDB(migrate);
+      await service.databaseService.createUserDB(migrate);
       // 更新所有服务的数据库连接
       await this.data.updateDB();
       // 执行数据迁移到用户数据库
-      await DataService.dbStorage.migrateUserData();
+      await service.databaseService.migrateUserData();
       // 如果有uid，开启同步
       if (uid) {
         await this.startSync();
@@ -262,14 +261,14 @@ export class UserService {
     service.serverService.setToken(null);
 
     // 销毁用户数据库
-    await DataService.dbStorage.createUserDB(migrateData);
+    await service.databaseService.createUserDB(migrateData);
 
     // 更新所有服务的数据库连接
     await this.data.updateDB();
 
     // 如果需要迁移，执行数据迁移到本地数据库
     if (migrateData) {
-      await DataService.dbStorage.migrateUserData();
+      await service.databaseService.migrateUserData();
     }
 
     // 重置登出状态，允许下次登录后再次触发 logout

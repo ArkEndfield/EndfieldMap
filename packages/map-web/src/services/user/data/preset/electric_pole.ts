@@ -3,18 +3,18 @@ import { logger } from '@endfieldmap/tools';
 import type { RxCollection } from 'rxdb';
 
 import type { ElectricPolePreset } from '@/@types/electric_pole';
-import { DataService } from '@/services/data';
-import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
+import type { ElectricPoleNodeSchemaType } from '@endfieldmap/map-service';
 import type { NodeSelector } from '@/services/user/data/preset/_base';
 import { BasePresetService } from '@/services/user/data/preset/_base';
+import { service } from '@/services';
 
 export class ElectricPolePresetDataService extends BasePresetService<ElectricPolePreset, ElectricPoleNodeSchemaType> {
   protected get presetDB() {
-    return DataService.dbStorage.database.electricPolePreset;
+    return service.databaseService.database.electricPolePreset;
   }
 
   protected get nodesDB(): RxCollection<ElectricPoleNodeSchemaType> {
-    return DataService.dbStorage.database.electricPoleNode as RxCollection<ElectricPoleNodeSchemaType>;
+    return service.databaseService.database.electricPoleNode as RxCollection<ElectricPoleNodeSchemaType>;
   }
 
   /**

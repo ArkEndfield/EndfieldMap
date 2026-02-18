@@ -3,7 +3,7 @@ import { logger } from '@endfieldmap/tools';
 import type { MangoQuerySelector, RxCollection, RxDocument } from 'rxdb';
 import type { Subscription } from 'rxjs';
 
-import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
+import type { PresetSchemaType } from '@endfieldmap/map-service';
 
 /**
  * 节点查询选择器类型

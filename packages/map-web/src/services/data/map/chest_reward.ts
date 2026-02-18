@@ -1,7 +1,7 @@
 import type { JSONLoader } from '@endfieldmap/tools';
 
-import type { ChestRewardSchemaType } from '@/services/data/db/schema/game_data/chest_reward';
-import { DataService } from '@/services/data/index';
+import type { ChestRewardSchemaType } from '@endfieldmap/map-service';
+import { service } from '@/services';
 import { ItemDataService } from '@/services/data/map/item';
 import { getAssetUrls } from '@/utils/url';
 
@@ -42,12 +42,12 @@ export class ChestRewardDataService {
       ...reward,
     }));
     if (rewards.length > 0) {
-      await DataService.dbStorage.gameDatabase.gameChestReward.bulkUpsert(rewards);
+      await service.databaseService.gameDatabase.gameChestReward.bulkUpsert(rewards);
     }
   }
 
   private async getRewardDataFromDB(id: string) {
-    return await DataService.dbStorage.gameDatabase.gameChestReward
+    return await service.databaseService.gameDatabase.gameChestReward
       .findOne({
         selector: { id },
       })

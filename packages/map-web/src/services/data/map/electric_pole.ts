@@ -1,11 +1,9 @@
 import type { ElectricMode, ElectricPolePreset, ElectricPolePresetExportBundle } from '@eftypes/electric_pole';
 import type { ElectricPoleType } from '@eftypes/preset_store';
-import type { ElectricPoleData, EndfieldMapAdapter } from '@endfieldmap/map-core';
+import type { ElectricPoleData, EndfieldMapAdapter, Coordinate, ElectricPoleDeviceKey } from '@endfieldmap/map-core';
 import {
-  type Coordinate,
   DEFAULT_ELECTRIC_POLE_DEVICE_KEY,
   ElectricPoleDataInstance,
-  type ElectricPoleDeviceKey,
   ElectricPoleKey,
   getElectricPoleDeviceConfig,
   isSameElectricPoleConnectionType,
@@ -18,7 +16,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import { alert } from '@/components/common/alert/alert_api';
 import { DATA_STORAGE_KEY, EXPORT_TYPE_KEY } from '@/const/data';
 import { modes } from '@/const/electric_pole';
-import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
+import type { ElectricPoleNodeSchemaType } from '@endfieldmap/map-service';
 import {
   BasePresetDataService,
   type IVisibilityService,

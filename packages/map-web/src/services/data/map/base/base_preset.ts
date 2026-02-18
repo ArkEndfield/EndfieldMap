@@ -3,8 +3,7 @@ import { downloadData, LocalStorageValue, logger } from '@endfieldmap/tools';
 import { observable, runInAction, toJS } from 'mobx';
 
 import { alert } from '@/components/common/alert/alert_api';
-import type { PresetSchemaType } from '@/services/data/db/schema/user_data/preset';
-import type { VisibilityDataSchemaType } from '@/services/data/db/schema/user_data/visibility';
+import type { PresetSchemaType, VisibilityDataSchemaType } from '@endfieldmap/map-service';
 import { userService } from '@/services/user';
 import type { IPresetService, RequiredNodeFields } from '@/services/user/data/preset/_base';
 import { service } from '@/services';

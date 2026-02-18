@@ -1,5 +1,4 @@
-import type { CustomPointNodeSchemaType } from '@/services/data/db/schema/user_data/custom_point';
-import type { ElectricPoleNodeSchemaType } from '@/services/data/db/schema/user_data/electric_pole';
+import type { CustomPointNodeSchemaType, ElectricPoleNodeSchemaType } from '@endfieldmap/map-service';
 
 export type PresetStoreTab = 'custom_point' | 'electric_pole' | 'mine';
 

@@ -11,7 +11,6 @@ import type { RxCollection, WithDeleted } from 'rxdb';
 import { replicateRxCollection, type RxReplicationState } from 'rxdb/plugins/replication';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { DataService } from '@/services/data';
 import { service } from '@/services';
 
 /** 同步文档类型，包含 _deleted 标记 */
@@ -116,7 +115,7 @@ export class SyncService {
     }
 
     // 检查数据库是否已初始化
-    if (!DataService.dbStorage.user_db) {
+    if (!service.databaseService.user_db) {
       logger.warn('[SyncService] User database not initialized yet, skipping sync start');
       return;
     }
@@ -130,7 +129,7 @@ export class SyncService {
     });
 
     try {
-      const db = DataService.dbStorage.database;
+      const db = service.databaseService.database;
 
       // 为每个 collection 创建 replication
       for (const collectionName of SYNC_COLLECTION_NAMES) {

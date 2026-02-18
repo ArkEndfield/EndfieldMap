@@ -1,7 +1,7 @@
 import type { EntityData, MapData } from '@endfieldmap/map-core';
 
-import { DataService } from '@/services/data';
-import type { VisibilityDataSchemaType } from '@/services/data/db/schema/user_data/visibility';
+import { service } from '@/services';
+import type { VisibilityDataSchemaType } from '@endfieldmap/map-service';
 import { BaseUserDataService } from '@/services/user/data/_base';
 
 export type EntityVisibilityCallback = (
@@ -12,7 +12,7 @@ export type EntityVisibilityCallback = (
 
 export class EntityVisibilityService extends BaseUserDataService<EntityVisibilityCallback> {
   private get db() {
-    return DataService.dbStorage.database.entityVisibility;
+    return service.databaseService.database.entityVisibility;
   }
 
   public static createId(mapId: MapData['id'], entityKey: string) {
@@ -87,7 +87,7 @@ export class ScopedEntityVisibilityService extends BaseUserDataService<ScopedVis
   }
 
   private get db() {
-    return DataService.dbStorage.database.entityVisibility;
+    return service.databaseService.database.entityVisibility;
   }
 
   private scopedKey(entityKey: string): string {

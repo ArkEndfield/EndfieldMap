@@ -1,7 +1,7 @@
 import type { JSONLoader } from '@endfieldmap/tools';
 
-import type { DungeonSeriesSchemaType } from '@/services/data/db/schema/game_data/dungeon_series';
-import { DataService } from '@/services/data/index';
+import type { DungeonSeriesSchemaType } from '@endfieldmap/map-service';
+import { service } from '@/services';
 import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { ChestRewardDataService } from '@/services/data/map/chest_reward';
 import { getAssetUrls } from '@/utils/url';
@@ -23,12 +23,12 @@ export class DungeonSeriesDataService {
     );
     const dungeonSeriesList = Object.values(data || {});
     if (dungeonSeriesList.length > 0) {
-      await DataService.dbStorage.gameDatabase.gameDungeonSeries.bulkUpsert(dungeonSeriesList);
+      await service.databaseService.gameDatabase.gameDungeonSeries.bulkUpsert(dungeonSeriesList);
     }
   }
 
   private async getDungeonSeriesDataFromDB(id: string) {
-    return await DataService.dbStorage.gameDatabase.gameDungeonSeries
+    return await service.databaseService.gameDatabase.gameDungeonSeries
       .findOne({
         selector: { id },
       })

@@ -1,8 +1,8 @@
 import type { JSONLoader } from '@endfieldmap/tools';
 
 import type { GuideInfoDetail } from '@/@types/guide';
-import type { GuideSchemaType } from '@/services/data/db/schema/game_data/guide';
-import { DataService } from '@/services/data/index';
+import type { GuideSchemaType } from '@endfieldmap/map-service';
+import { service } from '@/services';
 import { getAssetUrls } from '@/utils/url';
 
 const assetPath = getAssetUrls();
@@ -23,12 +23,12 @@ export class GuideDataService {
       ...guide,
     }));
     if (guides.length > 0) {
-      await DataService.dbStorage.gameDatabase.gameGuide.bulkUpsert(guides);
+      await service.databaseService.gameDatabase.gameGuide.bulkUpsert(guides);
     }
   }
 
   private async getGuideDataFromDB(id: string) {
-    return await DataService.dbStorage.gameDatabase.gameGuide
+    return await service.databaseService.gameDatabase.gameGuide
       .findOne({
         selector: { id },
       })

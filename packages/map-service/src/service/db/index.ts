@@ -1,10 +1,9 @@
 import { logger } from '@endfieldmap/tools';
 import { computed, makeObservable, observable, runInAction } from 'mobx';
 import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
-import { addRxPlugin, createRxDatabase, type RxDatabase } from 'rxdb/plugins/core';
+import { addRxPlugin, createRxDatabase, RxStorage, type RxDatabase } from 'rxdb/plugins/core';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
-import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
@@ -15,8 +14,7 @@ import {
   UserCollections,
   userDataCollectionsSchema,
   type UserDataDBCollections,
-} from '@/services/data/db/collections';
-import { isDev } from '@/services/env';
+} from './collections';
 
 /**
  * 用户数据快照，用于迁移与云端同步（电线杆/自定义标点可见性均在 entityVisibility 中）
@@ -30,9 +28,14 @@ interface UserDataSnapshot {
   entityVisibility: unknown[];
 }
 
-export class Storage {
+export interface DatabaseServiceConfig<Internals, InstanceCreationOptions> {
+  isDev?: boolean;
+  storage: RxStorage<Internals, InstanceCreationOptions>;
+}
+
+export class DatabaseService<Internals, InstanceCreationOptions> {
   // 仅在开发环境使用 AJV 验证，生产环境直接使用 Dexie 存储以提高性能
-  public storage = isDev ? wrappedValidateAjvStorage({ storage: getRxStorageDexie() }) : getRxStorageDexie();
+  public storage: RxStorage<Internals, InstanceCreationOptions>;
 
   // 游戏静态数据数据库
   private game_db: RxDatabase<GameDataDBCollections> | null = null;
@@ -55,12 +58,15 @@ export class Storage {
   public static readonly GAME_DB_NAME = 'endfieldmap_game_data';
   public static readonly USER_DB_NAME = 'endfieldmap_user_data';
 
-  constructor() {
+  constructor(options: DatabaseServiceConfig<Internals, InstanceCreationOptions>) {
     makeObservable(this);
 
-    if (isDev) {
+    if (options.isDev) {
       addRxPlugin(RxDBDevModePlugin);
     }
+
+    this.storage = options.isDev ? wrappedValidateAjvStorage({ storage: options.storage }) : options.storage;
+
     addRxPlugin(RxDBUpdatePlugin);
     addRxPlugin(RxDBCleanupPlugin);
     addRxPlugin(RxDBLeaderElectionPlugin);
@@ -77,7 +83,7 @@ export class Storage {
 
     // 初始化游戏数据数据库
     this.game_db = await createRxDatabase<GameDataDBCollections>({
-      name: Storage.GAME_DB_NAME,
+      name: DatabaseService.GAME_DB_NAME,
       storage: this.storage,
     });
     await this.game_db.addCollections(gameDataCollectionsSchema);
@@ -85,14 +91,13 @@ export class Storage {
 
     // 初始化本地用户数据库
     this.user_db = await createRxDatabase<UserDataDBCollections>({
-      name: Storage.USER_DB_NAME,
+      name: DatabaseService.USER_DB_NAME,
       storage: this.storage,
     });
     await this.user_db.addCollections(userDataCollectionsSchema);
     this.user_collections = new UserCollections(this.user_db);
 
     this.isInitialized = true;
-    await this.migrate();
   }
 
   /**
@@ -156,7 +161,7 @@ export class Storage {
    * @param migrate 是否迁移本地数据，默认 false
    */
   public async createUserDB(migrate: boolean = false): Promise<void> {
-    const dbName = Storage.USER_DB_NAME;
+    const dbName = DatabaseService.USER_DB_NAME;
 
     const prevUserDB = this.user_db;
 
@@ -276,18 +281,5 @@ export class Storage {
       db.entityMark.find().remove(),
       db.entityVisibility.find().remove(),
     ]);
-  }
-
-  /**
-   * 数据迁移（从旧版本）
-   */
-  private async migrate() {
-    if (!this.game_db) {
-      throw new Error('Game database not initialized');
-    }
-
-    // 动态导入迁移模块，避免影响主要功能加载
-    const { Migration } = await import('@/services/data/db/migration');
-    await Migration.migrate();
   }
 }

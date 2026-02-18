@@ -7,7 +7,7 @@ import { alert } from '@/components/common/alert/alert_api';
 import { EXPORT_TYPE_KEY } from '@/const/data';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useMobxSource } from '@/hooks/use_mobx_source';
-import { DataService } from '@/services/data';
+import { service } from '@/services';
 
 export interface PresetItem {
   id: string;
@@ -18,10 +18,10 @@ export const useCustomPointPresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
   const { mapDataService } = useAdapter();
 
-  const service = mapDataService.customPointDataService;
-  const currentPresetId = service.currentPresetId.value ?? '';
+  const customPointDataService = mapDataService.customPointDataService;
+  const currentPresetId = customPointDataService.currentPresetId.value ?? '';
 
-  const collections = useMobxSource(() => DataService.dbStorage.collections);
+  const collections = useMobxSource(() => service.databaseService.collections);
 
   const { data: presets } = useLiveQuery(
     (q) =>
@@ -43,12 +43,12 @@ export const useCustomPointPresetPanel = () => {
       defaultValue: t('sidebar:operation.custom_point.preset.create_default_name'),
     });
     if (!name) return;
-    await service.createPreset(name);
+    await customPointDataService.createPreset(name);
   };
 
   const handleSwitchPreset = async (id: string) => {
     if (!id) return;
-    await service.switchPreset(id);
+    await customPointDataService.switchPreset(id);
   };
 
   const handleToggleSelect = (id: string) => {
@@ -72,7 +72,7 @@ export const useCustomPointPresetPanel = () => {
   const handleExportSelected = () => {
     if (!selectedIds.length) return;
     try {
-      service.exportPresets(selectedIds);
+      customPointDataService.exportPresets(selectedIds);
     } catch (error) {
       logger.error('导出自定义标点预设失败:', selectedIds, error);
     }
@@ -86,7 +86,7 @@ export const useCustomPointPresetPanel = () => {
         const tasks = selectedIds.map(
           (id): Promise<{ success: boolean; id: string }> =>
             new Promise((resolve) => {
-              service
+              customPointDataService
                 .deletePreset(id)
                 .then(() => resolve({ success: true, id }))
                 .catch((error) => {
@@ -119,7 +119,7 @@ export const useCustomPointPresetPanel = () => {
       content: t('sidebar:operation.custom_point.preset.delete.confirm', { name }),
       onConfirm: async () => {
         try {
-          await service.deletePreset(id);
+          await customPointDataService.deletePreset(id);
           setSelectedIds((prev) => prev.filter((x) => x !== id));
         } catch (error) {
           logger.error('自定义标点删除失败', id, error);
@@ -137,7 +137,7 @@ export const useCustomPointPresetPanel = () => {
       defaultValue: currentName || t('sidebar:operation.custom_point.preset.create_default_name'),
     });
     if (!name) return;
-    await service.renamePreset(id, name);
+    await customPointDataService.renamePreset(id, name);
   };
 
   const handleClickImport = () => {
@@ -153,7 +153,7 @@ export const useCustomPointPresetPanel = () => {
       const parsed = JSON.parse(text);
 
       if (parsed && parsed.type === EXPORT_TYPE_KEY.CUSTOM_POINT_PRESET && Array.isArray(parsed.presets)) {
-        await service.importPresetBundle(parsed);
+        await customPointDataService.importPresetBundle(parsed);
         alert.info(t('sidebar:operation.custom_point.preset.import.success'));
       } else {
         alert.info(

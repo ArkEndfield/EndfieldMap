@@ -7,7 +7,7 @@ import { alert } from '@/components/common/alert/alert_api';
 import { EXPORT_TYPE_KEY } from '@/const/data';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useMobxSource } from '@/hooks/use_mobx_source';
-import { DataService } from '@/services/data';
+import { service } from '@/services';
 
 export interface PresetItem {
   id: string;
@@ -17,10 +17,10 @@ export interface PresetItem {
 export const useElectricPolePresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
   const { mapDataService } = useAdapter();
-  const service = mapDataService.electricPoleDataService;
-  const currentPresetId = service.currentPresetId.value ?? '';
+  const electricPoleDataService = mapDataService.electricPoleDataService;
+  const currentPresetId = electricPoleDataService.currentPresetId.value ?? '';
 
-  const collections = useMobxSource(() => DataService.dbStorage.collections);
+  const collections = useMobxSource(() => service.databaseService.collections);
 
   const { data: presets } = useLiveQuery(
     (q) =>
@@ -41,12 +41,12 @@ export const useElectricPolePresetPanel = () => {
       defaultValue: t('sidebar:operation.electric_pole.preset.create_default_name'),
     });
     if (!name) return;
-    await service.createPreset(name);
+    await electricPoleDataService.createPreset(name);
   };
 
   const handleSwitchPreset = async (id: string) => {
     if (!id) return;
-    await service.switchPreset(id);
+    await electricPoleDataService.switchPreset(id);
   };
 
   const handleToggleSelect = (id: string) => {
@@ -70,7 +70,7 @@ export const useElectricPolePresetPanel = () => {
   const handleExportSelected = () => {
     if (!selectedIds.length) return;
     try {
-      service.exportPresets(selectedIds);
+      electricPoleDataService.exportPresets(selectedIds);
     } catch (error) {
       logger.error('导出电线杆预设失败:', selectedIds, error);
     }
@@ -84,7 +84,7 @@ export const useElectricPolePresetPanel = () => {
         const tasks = selectedIds.map(
           (id): Promise<{ success: boolean; id: string }> =>
             new Promise((resolve) => {
-              service
+              electricPoleDataService
                 .deletePreset(id)
                 .then(() => resolve({ success: true, id }))
                 .catch((error) => {
@@ -117,7 +117,7 @@ export const useElectricPolePresetPanel = () => {
       content: t('sidebar:operation.electric_pole.preset.delete.confirm', { name }),
       onConfirm: async () => {
         try {
-          await service.deletePreset(id);
+          await electricPoleDataService.deletePreset(id);
           setSelectedIds((prev) => prev.filter((x) => x !== id));
         } catch (error) {
           logger.error('电线杆删除失败', id, error);
@@ -135,7 +135,7 @@ export const useElectricPolePresetPanel = () => {
       defaultValue: currentName || t('sidebar:operation.electric_pole.preset.create_default_name'),
     });
     if (!name) return;
-    await service.renamePreset(id, name);
+    await electricPoleDataService.renamePreset(id, name);
   };
 
   const handleClickImport = () => {
@@ -151,7 +151,7 @@ export const useElectricPolePresetPanel = () => {
       const parsed = JSON.parse(text);
 
       if (parsed && parsed.type === EXPORT_TYPE_KEY.ELECTRIC_POLE_PRESET && Array.isArray(parsed.presets)) {
-        await service.importPresetBundle(parsed);
+        await electricPoleDataService.importPresetBundle(parsed);
         alert.info(t('sidebar:operation.electric_pole.preset.import.success'));
       } else {
         alert.info(

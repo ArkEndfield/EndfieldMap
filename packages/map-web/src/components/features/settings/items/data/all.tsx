@@ -7,7 +7,7 @@ import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
 import { usePromiseState } from '@/hooks/use_promise_state';
-import { DataService } from '@/services/data';
+import { service } from '@/services';
 
 const clearAll = (confirmText: string): Promise<boolean> => {
   return new Promise((resolve) => {
@@ -15,7 +15,7 @@ const clearAll = (confirmText: string): Promise<boolean> => {
       content: confirmText,
       async onConfirm() {
         // 清空用户数据库中的所有数据（触发删除事件）
-        await Promise.all([LocalStorageDB.clear(), DataService.dbStorage.clearUserDataWithEvents()]);
+        await Promise.all([LocalStorageDB.clear(), service.databaseService.clearUserDataWithEvents()]);
         resolve(true);
       },
       onCancel() {
