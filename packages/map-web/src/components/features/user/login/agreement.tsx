@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Dialog } from '@/components/common/dialog';
-import { type LinkButtonProps } from '@/const/schema/auth';
 
 export interface AgreementDialogProps {
   open: boolean;
@@ -37,9 +36,25 @@ const AgreementContent = observer(({ type }: { type: 'agreement' | 'privacy' }) 
   }, []);
 
   if (type === 'agreement') {
-    return <UserAgreementContent t={t} />;
+    return (
+      <UserAgreementContent
+        t={(key: string) =>
+          t(key, {
+            defaultValue: key,
+          })
+        }
+      />
+    );
   }
-  return <PrivacyPolicyContent t={t} />;
+  return (
+    <PrivacyPolicyContent
+      t={(key: string) =>
+        t(key, {
+          defaultValue: key,
+        })
+      }
+    />
+  );
 });
 
 const UserAgreementContent = ({ t }: { t: (key: string) => string }) => (
@@ -310,7 +325,7 @@ export const AgreementLink = ({ onClick }: AgreementLinkProps) => {
 export const AgreementDialog = observer(({ open, onClose, type }: AgreementDialogProps) => {
   const { t } = useTranslation('agreement');
   const title = type === 'agreement' ? t('user_agreement.title') : t('privacy_policy.title');
-  
+
   return (
     <Dialog
       open={open}

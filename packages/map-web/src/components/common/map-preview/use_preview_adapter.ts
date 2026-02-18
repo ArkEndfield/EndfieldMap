@@ -3,9 +3,10 @@ import {
   type EntityInfoDataJson,
   type EntityJsonDataList,
   type MapDataJson,
+  type CustomPointNodeData,
+  type ElectricPoleNodeData,
+  type ElectricPoleDeviceKey,
 } from '@endfieldmap/map-core';
-import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
-import type { CustomPointNodeData, ElectricPoleNodeData } from '@endfieldmap/map-core/types';
 import { useEffect, useRef, useState } from 'react';
 
 import type { CustomPointPreset } from '@/@types/custom_point';
