@@ -3,9 +3,8 @@ import type { JSONLoader } from '@endfieldmap/tools';
 import type { ChestRewardSchemaType } from '@endfieldmap/map-service';
 import { service } from '@/services';
 import { ItemDataService } from '@/services/data/map/item';
-import { getAssetUrls } from '@/utils/url';
 
-const assetPath = getAssetUrls();
+const assetPath = service.assetService.url;
 
 export interface DealedRewardItemWithCount {
   type: 'withCount';

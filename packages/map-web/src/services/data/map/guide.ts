@@ -3,9 +3,8 @@ import type { JSONLoader } from '@endfieldmap/tools';
 import type { GuideInfoDetail } from '@/@types/guide';
 import type { GuideSchemaType } from '@endfieldmap/map-service';
 import { service } from '@/services';
-import { getAssetUrls } from '@/utils/url';
 
-const assetPath = getAssetUrls();
+const assetPath = service.assetService.url;
 
 export class GuideDataService {
   private jsonLoader: JSONLoader;

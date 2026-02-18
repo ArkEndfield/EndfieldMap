@@ -1,13 +1,11 @@
+import { service } from '@/services';
 import { logger } from '@endfieldmap/tools';
 import { useCallback, useEffect, useState } from 'react';
 
-import type { Grid, ParsedLevel } from '@/@types/delta_robot';
+import type { Grid, ParsedLevel } from '@endfieldmap/map-service';
 import { DeltaRobotStatus } from '@/const/delta_robot';
-import { useAdapter } from '@/hooks/use_adapter';
-import { solvePuzzle } from '@/services/delta_robot/solver';
 
 export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
-  const { mapDataService } = useAdapter();
   const [selectedLevel, _setSelectedLevel] = useState<string>('');
   const [levelData, setLevelData] = useState<ParsedLevel | null>(null);
   const [solutionGrid, setSolutionGrid] = useState<Grid | null>(null);
@@ -15,30 +13,27 @@ export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
   const [solvingTime, setSolvingTime] = useState<number>(-1);
 
   // 加载关卡数据
-  const loadLevel = useCallback(
-    async (level: string) => {
-      try {
-        setStatus(DeltaRobotStatus.Loading);
-        setSolutionGrid(null);
-        setLevelData(null);
+  const loadLevel = useCallback(async (level: string) => {
+    try {
+      setStatus(DeltaRobotStatus.Loading);
+      setSolutionGrid(null);
+      setLevelData(null);
 
-        const parsed = await mapDataService.deltaRobotDataService.getLevelData(level);
+      const parsed = await service.deltaRobotService.getLevelData(level);
 
-        if (!parsed) {
-          setStatus(DeltaRobotStatus.LoadingError);
-          return;
-        }
-
-        // 更新状态
-        setLevelData(parsed);
-        setStatus(DeltaRobotStatus.LoadingSuccess);
-      } catch (error) {
-        logger.error('加载关卡失败:', error);
+      if (!parsed) {
         setStatus(DeltaRobotStatus.LoadingError);
+        return;
       }
-    },
-    [mapDataService.deltaRobotDataService]
-  );
+
+      // 更新状态
+      setLevelData(parsed);
+      setStatus(DeltaRobotStatus.LoadingSuccess);
+    } catch (error) {
+      logger.error('加载关卡失败:', error);
+      setStatus(DeltaRobotStatus.LoadingError);
+    }
+  }, []);
 
   const selectLevel = useCallback(
     (level: string) => {
@@ -79,7 +74,7 @@ export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
 
         // 调用求解器
         const startTime = performance.now();
-        const result = solvePuzzle(
+        const result = service.deltaRobotService.solvePuzzle(
           sizeY,
           sizeX,
           rowConstraints,

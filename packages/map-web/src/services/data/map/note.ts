@@ -2,9 +2,9 @@ import { type JSONLoader } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 
 import type { InvestigateData } from '@/@types/note';
-import { getAssetUrls } from '@/utils/url';
+import { service } from '@/services';
 
-const assetURL = getAssetUrls();
+const assetURL = service.assetService.url;
 
 export class NoteDataService {
   private jsonLoader: JSONLoader;

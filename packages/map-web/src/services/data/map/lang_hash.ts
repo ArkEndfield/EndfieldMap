@@ -1,6 +1,8 @@
 import { type JSONLoader } from '@endfieldmap/tools';
 
-import { getAssetUrls } from '@/utils/url';
+import { service } from '@/services';
+
+const assetPath = service.assetService.url;
 
 export class LangHashDataService {
   private jsonLoader: JSONLoader;
@@ -11,7 +13,6 @@ export class LangHashDataService {
   }
 
   public async init() {
-    const assetPath = getAssetUrls();
     const langHashData = await this.jsonLoader.loadJSON<Record<string, string>>(`${assetPath.langHash}/lang_hash.json`);
     this.langHashData = langHashData;
     return langHashData;

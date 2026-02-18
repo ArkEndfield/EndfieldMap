@@ -4,9 +4,8 @@ import type { DungeonSeriesSchemaType } from '@endfieldmap/map-service';
 import { service } from '@/services';
 import type { DealedRewardItem } from '@/services/data/map/chest_reward';
 import { ChestRewardDataService } from '@/services/data/map/chest_reward';
-import { getAssetUrls } from '@/utils/url';
 
-const assetPath = getAssetUrls();
+const assetPath = service.assetService.url;
 
 export class DungeonSeriesDataService {
   private jsonLoader: JSONLoader;

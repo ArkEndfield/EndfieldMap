@@ -1,6 +1,6 @@
 import { MapService } from '@endfieldmap/map-service';
 import { sentryReporter } from '@/services/logger';
-import { isDev, backendHost } from '@/services/env';
+import { isDev, backendHost, assetsHost } from '@/services/env';
 
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { loadingManager } from '@/services/loading';
@@ -31,5 +31,6 @@ export const service = new MapService({
   databaseConfig: {
     storage: getRxStorageDexie(),
   },
-  backendHost: backendHost,
+  backendHost,
+  assetsHost,
 });

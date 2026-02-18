@@ -1,8 +1,4 @@
-import { JSONLoader } from '@endfieldmap/tools';
-
 export class StorageService {
-  public static jsonLoader = new JSONLoader();
-
   public static async initStorage() {
     await this.migrate();
   }

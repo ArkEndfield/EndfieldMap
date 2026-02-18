@@ -3,9 +3,9 @@
  * 定义所有可用的音效及其文件路径
  */
 
-import { getAssetUrls } from '@/utils/url';
+import { service } from '@/services';
 
-const { audio: audioUrl } = getAssetUrls();
+const { audio: audioUrl } = service.assetService.url;
 
 export enum SoundType {
   CLICK = 'click',

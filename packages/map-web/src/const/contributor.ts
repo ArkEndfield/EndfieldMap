@@ -1,7 +1,7 @@
 import type { ContributorInfo } from '@/components/features/settings/items/about/contributor';
-import { getAssetUrls } from '@/utils/url';
+import { service } from '@/services';
 
-const avatarURL = getAssetUrls().avatar;
+const avatarURL = service.assetService.url.avatar;
 
 export const contributors: ContributorInfo[] = [
   {

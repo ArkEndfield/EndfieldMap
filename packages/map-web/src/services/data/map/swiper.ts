@@ -1,7 +1,5 @@
-// import { logger } from '@endfieldmap/tools';
 import type { SwiperConfig } from '@eftypes/swiper';
 import { observable } from 'mobx';
-// import { getBackendUrl } from '@/utils/url';
 
 export class SwiperDataService {
   @observable accessor swiperConfig: SwiperConfig = {
@@ -14,7 +12,6 @@ export class SwiperDataService {
   }
 
   private async loadSwiperConfig() {
-    // const url = getBackendUrl('/api/scroll');
     // try {
     //   const data = await fetch(url).then((res) => res.json());
     //   this.swiperConfig = data;

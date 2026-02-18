@@ -59,3 +59,10 @@ export interface ParsedLevel {
 }
 
 export type PieceLoader = (blockId: string) => Promise<PieceData>;
+
+export interface SolverPiece {
+  originalIndex: number;
+  groupId: number;
+  area: number;
+  variants: PieceShape[];
+}

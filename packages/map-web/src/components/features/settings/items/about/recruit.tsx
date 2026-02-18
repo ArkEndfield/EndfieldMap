@@ -4,11 +4,9 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { UserIcon } from '@/components/common/icons';
 import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { cn } from '@/utils/style';
-import { getAssetUrls } from '@/utils/url';
+import { service } from '@/services';
 
-const assetURLs = getAssetUrls();
-
-const qrCode = `${assetURLs.misc}/qrcode_1765130086921.jpg`;
+const qrCode = `${service.assetService.url.misc}/qrcode_1765130086921.jpg`;
 
 export const Recruit = observer(() => {
   const { t } = useTranslation('settings');

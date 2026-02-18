@@ -2,9 +2,8 @@ import { type JSONLoader } from '@endfieldmap/tools';
 
 import type { ItemSchemaType } from '@endfieldmap/map-service';
 import { service } from '@/services';
-import { getAssetUrls } from '@/utils/url';
 
-const assetPath = getAssetUrls();
+const assetPath = service.assetService.url;
 
 export class ItemDataService {
   private jsonLoader: JSONLoader;

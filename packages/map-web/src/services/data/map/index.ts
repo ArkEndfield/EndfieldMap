@@ -4,7 +4,6 @@ import type { JSONLoader } from '@endfieldmap/tools';
 import { LoadingStageId } from '@/const/loading';
 import { ChestRewardDataService } from '@/services/data/map/chest_reward';
 import { CustomPointDataService } from '@/services/data/map/custom_point';
-import { DeltaRobotDataService } from '@/services/data/map/delta_robot';
 import { DungeonSeriesDataService } from '@/services/data/map/dungeon_series';
 import { ElectricPoleDataService } from '@/services/data/map/electric_pole';
 import { EntityDataService } from '@/services/data/map/entity';
@@ -29,7 +28,6 @@ export class MapDataService {
   public customPointDataService: CustomPointDataService;
   public itemDataService: ItemDataService;
   public dungeonSeriesDataService: DungeonSeriesDataService;
-  public deltaRobotDataService: DeltaRobotDataService;
   public chestRewardDataService: ChestRewardDataService;
   public guideDataService: GuideDataService;
   public langHashDataService: LangHashDataService;
@@ -47,7 +45,6 @@ export class MapDataService {
     this.itemDataService = new ItemDataService(this.jsonLoader);
     this.chestRewardDataService = new ChestRewardDataService(this.jsonLoader, this.itemDataService);
     this.dungeonSeriesDataService = new DungeonSeriesDataService(this.jsonLoader, this.chestRewardDataService);
-    this.deltaRobotDataService = new DeltaRobotDataService(this.jsonLoader);
     this.guideDataService = new GuideDataService(this.jsonLoader);
     this.langHashDataService = new LangHashDataService(this.jsonLoader);
     this.mapStateDataService = new MapStateDataService(adapter);

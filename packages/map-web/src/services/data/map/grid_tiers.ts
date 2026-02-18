@@ -9,9 +9,9 @@ import { type JSONLoader } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 
 import type { GridTiersData } from '@/@types/grid_tiers';
-import { getAssetUrls } from '@/utils/url';
+import { service } from '@/services';
 
-const assetPath = getAssetUrls();
+const assetPath = service.assetService.url;
 
 export class GridTiersDataService {
   private jsonLoader: JSONLoader;

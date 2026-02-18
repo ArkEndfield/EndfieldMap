@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { CustomPointPreset } from '@/@types/custom_point';
 import type { ElectricPolePreset } from '@/@types/electric_pole';
-import { getAssetUrls } from '@/utils/url';
+import { service } from '@/services';
 
 export interface UsePreviewAdapterOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -41,7 +41,7 @@ export function usePreviewAdapter(options: UsePreviewAdapterOptions) {
     initedRef.current = true;
 
     const container = containerRef.current;
-    const assets = getAssetUrls();
+    const assets = service.assetService.url;
 
     const efAdapter = new EndfieldMapAdapter({
       container,
