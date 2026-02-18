@@ -22,8 +22,7 @@ export const ThirdPartyButton = ({
   };
 
   const handleClick = () => {
-    const state = btoa(Date.now().toString(36) + Math.random().toString(36).slice(2));
-    const url = getLoginUrl(label.toLowerCase()) + `&state=${state}`;
+    const url = getLoginUrl(label.toLowerCase());
     const width = 500;
     const height = 600;
     const left = (window.screen.width - width) / 2;
