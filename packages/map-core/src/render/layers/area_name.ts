@@ -62,7 +62,7 @@ export class AreaNameLayer extends SingleLayerBase {
       renderBuffer: this.config.renderBuffer ?? 100,
       updateWhileAnimating: this.config.updateWhileAnimating ?? false,
       updateWhileInteracting: this.config.updateWhileInteracting ?? false,
-      declutter: true,
+      declutter: false,
     });
     this.layer.set(LayerTypeKey, LayerType.AREA_NAME);
   }
