@@ -8,7 +8,7 @@ export class StorageService {
    */
   public static async migrate() {
     // 动态导入迁移模块，避免影响主要功能加载
-    const { Migration } = await import('@/services/data/db/migration');
+    const { Migration } = await import('@/services/data/migration');
     await Migration.migrate();
   }
 }
