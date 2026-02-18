@@ -14,15 +14,16 @@ export const ThirdPartyButton = ({
   // 根据label获取登录URL
   const getLoginUrl = (provider: string) => {
     const urls = {
-      qq: '/',
-      bilibili: '/',
-      discord: 'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&redirect_uri=https%3A%2F%2Fzmdmap.com%2Fdiscord.html&scope=identify',
+      qq: 'https://graph.qq.com/oauth2.0/authorize?client_id=102849620&response_type=token&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fqq%2Fcallback',
+      bilibili: 'https://account.bilibili.com/pc/account-pc/auth/oauth?client_id=aadbd763480d47cb&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
+      discord: 'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&scope=identify&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fdiscord%2Fcallback',
     };
     return urls[provider as keyof typeof urls];
   };
 
   const handleClick = () => {
-    const url = getLoginUrl(label.toLowerCase());
+    const state = btoa(Date.now().toString(36) + Math.random().toString(36).slice(2));
+    const url = getLoginUrl(label.toLowerCase()) + `&state=${state}`;
     const width = 500;
     const height = 600;
     const left = (window.screen.width - width) / 2;

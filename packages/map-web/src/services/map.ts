@@ -14,6 +14,7 @@ import { MapDataService } from '@/services/data/map';
 import { isDev } from '@/services/env';
 import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initHoverFeatureEventListeners } from '@/services/features/hover_feature';
+import { initContextMenuEventListeners } from '@/services/context_menu';
 import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 import { getAssetUrls } from '@/utils/url';
@@ -128,6 +129,9 @@ export class MapService {
       loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);
       // 初始化激活feature事件监听器，用于设置和清除激活的feature
       initActiveFeatureEventListeners(this.adapter!, this.mapDataService);
+
+      // 初始化激活feature事件监听器，用于设置和清除激活的feature
+      initContextMenuEventListeners(this.adapter!, this.mapDataService);
 
       // 初始化hover事件监听器，用于设置和清除hover的feature
       initHoverFeatureEventListeners(this.adapter!, this.mapDataService);
