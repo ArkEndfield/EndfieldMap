@@ -22,21 +22,21 @@ export default defineConfig(({ mode }) => {
       },
       rolldownOptions: {
         external: (id) => {
-          // 将 ol 和所有子模块、@endfieldmap/tools 及其子模块标记为外部依赖
-          return (
-            id === 'ol' ||
-            id.startsWith('ol/') ||
-            id === '@endfieldmap/tools' ||
-            id.startsWith('@endfieldmap/tools/') ||
-            id.startsWith('rbush') ||
-            id.startsWith('quickselect')
-          );
+          // 排除所有 node_modules 中的依赖（包括 ol, mobx 等）
+          // 但保留相对路径导入的本地模块
+          if (id.startsWith('\0')) return false; // Rollup 虚拟模块
+          if (path.isAbsolute(id)) return false; // 绝对路径是本地文件
+          if (id.startsWith('.')) return false; // 相对路径是本地文件
+          if (id.startsWith('@endfieldmap/map-core')) return false; // 当前包的内部导入
+          if (id.startsWith('@endfieldmap/tools')) return true; // workspace 依赖
+          if (id.startsWith('rbush') || id.startsWith('quickselect')) return true; // ol 的可选依赖
+          // 其他 node_modules 依赖都视为 external
+          return true;
         },
         output: {
           preserveModules: true,
           preserveModulesRoot: 'src',
           entryFileNames: '[name].js',
-          // 保留所有导出
           exports: 'named',
         },
       },

@@ -9,7 +9,7 @@ import { LoadingStageId } from '@/const/loading';
 import { isDev } from '@/services/env';
 import { loadingManager } from '@/services/loading';
 
-const ns = ['common', 'error', 'header', 'lang', 'popup', 'sidebar', 'settings'];
+const ns = ['common', 'error', 'header', 'lang', 'popup', 'sidebar', 'settings', 'agreement'];
 const supportedLngs = languageConfig.map((lang) => lang.code);
 // 标志位：防止语言切换等情况导致进度回退
 let initialLoadComplete = false;

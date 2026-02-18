@@ -1,4 +1,4 @@
-import type { EntityData } from '@endfieldmap/map-core';
+import type { EntityData, CustomPointData, ElectricPoleData } from '@endfieldmap/map-core';
 import { type ElementType,lazy } from 'react';
 
 export const rightContentMap = {
@@ -7,8 +7,11 @@ export const rightContentMap = {
   TreasureComponent: lazy(() => import('@/components/common/popup/sub/components/treasure_component')),
 } as const;
 
-export const getRightComponents = (entity?: EntityData) => {
-  if (!entity || !entity.componentProperties) return [];
+export const getRightComponents = (entity?: EntityData | CustomPointData | ElectricPoleData) => {
+  if (!entity) return [];
+
+  // 类型守卫：检查 entity 是否有 componentProperties 字段（即是 EntityData）
+  if (!('componentProperties' in entity) || !entity.componentProperties) return [];
 
   return Object.entries(entity.componentProperties)
     .map(([_key, prop]) => {

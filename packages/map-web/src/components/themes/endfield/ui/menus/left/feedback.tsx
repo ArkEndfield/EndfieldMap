@@ -24,9 +24,7 @@ export const HeaderMenuFeedback = ({ className }: { className?: string }) => {
         height="85vh"
         keyboardCloseable={true}
         classNames={{
-          contentContainer: 'h-full flex flex-col',
-          content: 'flex-1',
-          scrollContent: 'h-full flex flex-col',
+          contentContainer: 'h-full flex flex-col flex-1',
         }}
       >
         <iframe

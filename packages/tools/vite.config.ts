@@ -14,7 +14,17 @@ export default defineConfig({
       fileName: 'index',
     },
     rolldownOptions: {
-      external: ['consola', 'ol'],
+      // 排除所有 dependencies 和 peerDependencies
+      external: (id, importer, isResolved) => {
+        // Rollup 虚拟模块不排除
+        if (id.startsWith('\0')) return false;
+        // 本地相对路径不排除
+        if (id.startsWith('.') || id.startsWith('/')) return false;
+        // 包内别名不排除
+        if (id.startsWith('@endfieldmap/tools/')) return false;
+        // node_modules 中的所有包都排除
+        return /^[^./]/.test(id);
+      },
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

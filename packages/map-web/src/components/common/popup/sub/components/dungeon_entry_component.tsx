@@ -1,5 +1,5 @@
 import { Item } from '@themes/endfield/components/item';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SubPopupTitle } from '@/components/common/popup/components/title';

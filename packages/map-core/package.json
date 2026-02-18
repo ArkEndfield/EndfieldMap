@@ -24,7 +24,13 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@endfieldmap/tools": "workspace:*",
+    "@endfieldmap/tools": "workspace:*"
+  },
+  "peerDependencies": {
+    "mobx": "^6.15.0",
+    "ol": "^10.7.0"
+  },
+  "devDependencies": {
     "mobx": "^6.15.0",
     "ol": "^10.7.0"
   }

@@ -9,20 +9,6 @@ import { RegisterForm } from '@/components/features/user/login/register';
 import { ThirdPartyButton } from '@/components/features/user/login/third_party';
 
 
-const LinkButton = ({ children, href }: { children?: React.ReactNode; href: string }) => {
-  return (
-    <a
-      href={href}
-      className="border-b border-transparent hover:border-[#FDFB73] text-[#FDFB73] hover:text-[#FDFB73] transition-colors"
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {children}
-    </a>
-  );
-};
-
 type AuthMode = 'login' | 'register';
 
 // 动画配置
@@ -64,11 +50,11 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
           <motion.div className="flex w-[200%]" animate={{ x: slideX }} transition={slideTransition}>
             {/* 登录表单 */}
             <div className="w-1/2 space-y-4 px-0.5">
-              <LoginForm onSwitchToRegister={() => switchMode('register')} LinkButton={LinkButton} />
+              <LoginForm onSwitchToRegister={() => switchMode('register')} />
             </div>
             {/* 注册表单 */}
             <div className="w-1/2 space-y-4 px-0.5">
-              <RegisterForm onSwitchToLogin={() => switchMode('login')} LinkButton={LinkButton} />
+              <RegisterForm onSwitchToLogin={() => switchMode('login')} />
             </div>
           </motion.div>
 

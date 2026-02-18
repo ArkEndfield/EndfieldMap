@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { TickCircleIcon } from '@/components/common/icons';
@@ -12,14 +12,17 @@ import { type LoginFormData, loginSchema } from '@/const/schema/auth';
 import { userService } from '@/services/user';
 import { catchErrorWithTip, onFormInvalid } from '@/utils/handler';
 
+import { AgreementDialog, AgreementLink } from './agreement';
+
 interface LoginFormProps {
   onSwitchToRegister: () => void;
-  LinkButton: React.ComponentType<{ children?: React.ReactNode; href: string }>;
 }
 
-export const LoginForm = observer(({ onSwitchToRegister, LinkButton }: LoginFormProps) => {
+export const LoginForm = observer(({ onSwitchToRegister }: LoginFormProps) => {
   const { t } = useTranslation('header');
   const [loading, setLoading] = useState(false);
+  const [agreementDialogOpen, setAgreementDialogOpen] = useState(false);
+  const [agreementType, setAgreementType] = useState<'agreement' | 'privacy'>('agreement');
 
   const {
     control,
@@ -39,6 +42,11 @@ export const LoginForm = observer(({ onSwitchToRegister, LinkButton }: LoginForm
     await catchErrorWithTip(() => userService.login(data.username, data.password));
     setLoading(false);
   }, onFormInvalid);
+
+  const handleOpenAgreement = (type: 'agreement' | 'privacy') => {
+    setAgreementType(type);
+    setAgreementDialogOpen(true);
+  };
 
   return (
     <>
@@ -79,13 +87,9 @@ export const LoginForm = observer(({ onSwitchToRegister, LinkButton }: LoginForm
             checked={field.value}
             onToggle={() => field.onChange(!field.value)}
             label={
-              <Trans
-                t={t}
-                i18nKey="user.agreement"
-                components={{
-                  agreement: <LinkButton href="" />,
-                }}
-              />
+              <div className="flex flex-wrap items-center gap-1 justify-center">
+                <AgreementLink onClick={handleOpenAgreement} />
+              </div>
             }
             hideBorder
             size="sm"
@@ -107,6 +111,12 @@ export const LoginForm = observer(({ onSwitchToRegister, LinkButton }: LoginForm
           {t('user.login')}
         </ZmdSquareButton>
       </div>
+
+      <AgreementDialog
+        open={agreementDialogOpen}
+        onClose={() => setAgreementDialogOpen(false)}
+        type={agreementType}
+      />
     </>
   );
 });
