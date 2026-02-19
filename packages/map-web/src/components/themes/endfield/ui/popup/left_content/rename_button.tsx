@@ -1,13 +1,13 @@
 import type { DataInstance } from '@endfieldmap/map-core';
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { EditIcon } from '@/components/common/icons';
-import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 export interface RenameButtonProps {
   entity: DataInstance;
@@ -15,7 +15,6 @@ export interface RenameButtonProps {
 
 export const RenameButton: React.FC<RenameButtonProps> = observer(({ entity }) => {
   const { t } = useTranslation(['popup', 'common']);
-  const { mapDataService } = useAdapter();
   const hasRename = entity?.renameable;
   if (!hasRename) return null;
   const entityInfo = entity.entityInfo;
@@ -34,11 +33,11 @@ export const RenameButton: React.FC<RenameButtonProps> = observer(({ entity }) =
 
     if (newName && newName !== currentName) {
       if (isElectricPole) {
-        await mapDataService.electricPoleDataService.renameNode(entity.mapId, entity.id, newName);
+        await service.dataService.mapDataService.electricPoleDataService.renameNode(entity.mapId, entity.id, newName);
         return;
       }
       if (isCustomPoint) {
-        await mapDataService.customPointDataService.renameNode(entity.mapId, entity.id, newName);
+        await service.dataService.mapDataService.customPointDataService.renameNode(entity.mapId, entity.id, newName);
         return;
       }
     }

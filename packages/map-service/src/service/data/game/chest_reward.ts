@@ -1,9 +1,8 @@
-import type { JSONLoader } from '@endfieldmap/tools';
-
 import type { ChestRewardSchemaType } from '@endfieldmap/map-service';
-import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
 import type { ItemDataService } from '@endfieldmap/map-service/service/data/game/item_data';
+import type { DatabaseService } from '@endfieldmap/map-service/service/db';
+import type { JSONLoader } from '@endfieldmap/tools';
 
 export interface ChestRewardDataConfig<T, R> {
   jsonLoader: JSONLoader;

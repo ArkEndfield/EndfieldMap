@@ -1,7 +1,7 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { motion } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';

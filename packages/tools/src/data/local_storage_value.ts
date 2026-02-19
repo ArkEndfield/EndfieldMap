@@ -24,6 +24,11 @@ export class LocalStorageValue<T> {
     this.restoreDataFromStorage(config.initialValue);
   }
 
+  public registerOnValueChange(callback: (newValue: T, oldValue?: T) => void) {
+    this.onValueChange = callback;
+    callback(this._value, this.oldValue);
+  }
+
   private restoreDataFromStorage(initialValue: T) {
     const data = LocalStorageDB.getItem<T>(this.storageKey);
     if (data) {

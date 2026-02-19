@@ -1,0 +1,38 @@
+{
+  "name": "@endfieldmap/map-adapter-ol",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@endfieldmap/map-core": "workspace:*",
+    "@endfieldmap/tools": "workspace:*"
+  },
+  "peerDependencies": {
+    "mobx": "^6.15.0",
+    "ol": "^10.7.0"
+  },
+  "devDependencies": {
+    "mobx": "^6.15.0",
+    "ol": "^10.7.0"
+  }
+}

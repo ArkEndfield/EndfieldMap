@@ -4,11 +4,12 @@ import { useState } from 'react';
 import { ColorPicker } from '@/components/features/dev_tools/draws/components/color_picker';
 import { DevToolsCoordType, useCoordType } from '@/components/features/dev_tools/draws/hooks/use_coord_type';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 export const PointDraw = observer(() => {
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const devToolsController = adapter.devToolsController;
-  const currentMap = mapDataService.mapStateDataService.currentMap.value;
+  const currentMap = service.dataService.mapDataService.mapStateDataService.currentMap.value;
 
   const { coordType, CoordTypeSelector } = useCoordType();
   const [coords, setCoords] = useState({ x: 0, y: 0, z: 0 });

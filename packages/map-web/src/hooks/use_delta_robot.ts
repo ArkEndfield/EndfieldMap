@@ -1,9 +1,9 @@
-import { service } from '@/services';
+import type { Grid, ParsedLevel } from '@endfieldmap/map-service';
 import { logger } from '@endfieldmap/tools';
 import { useCallback, useEffect, useState } from 'react';
 
-import type { Grid, ParsedLevel } from '@endfieldmap/map-service';
 import { DeltaRobotStatus } from '@/const/delta_robot';
+import { service } from '@/services';
 
 export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
   const [selectedLevel, _setSelectedLevel] = useState<string>('');

@@ -24,7 +24,7 @@ export class TierDataManager {
     const regionKey = data.id;
     const items = data.items;
     const instances = new Map<string, TierDataInstance>();
-    const position = [data.lb[0], data.lb[1]];
+    const position: [number, number] = [data.lb[0], data.lb[1]];
 
     for (const item of items) {
       const instance = new TierDataInstance(mapId, item, position, this.mapDataManager);

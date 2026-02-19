@@ -1,20 +1,19 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { FilterAndEntityPanelMobile } from '@themes/endfield/ui/control_panel/controllers/filter_and_entity_panel.mobile';
 import { CustomPointManager } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point';
 import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { Logo } from '@/components/common/icons';
 import { BottomSheet } from '@/components/themes/endfield/components/bottom_sheet';
-import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 const MobileControlPanel = observer(() => {
   const { t } = useTranslation('sidebar');
   const uiManager = useEndfieldUIManager();
-  const { mapDataService } = useAdapter();
   const currentPanel = uiManager.currentOperatePanel.value;
   const isOpen = uiManager.isSidePanelOpen; // Controls collapsed state
   const isNoneCurrentPanel = currentPanel === CurrentOperatePanel.NONE;
@@ -25,7 +24,7 @@ const MobileControlPanel = observer(() => {
   };
 
   const handleToggleElectricPole = () => {
-    if (mapDataService.electricPoleDataService.isInElectricOperateMode) {
+    if (service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode) {
       alert.info(t('operation.electric_pole_operating_tip'));
       return;
     }
@@ -33,7 +32,7 @@ const MobileControlPanel = observer(() => {
   };
 
   const handleToggleCustomPoint = () => {
-    if (mapDataService.customPointDataService.isInCustomPointOperateMode) {
+    if (service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode) {
       alert.info(t('operation.custom_point_operating_tip'));
       return;
     }
@@ -58,7 +57,7 @@ const MobileControlPanel = observer(() => {
         open={currentPanel === CurrentOperatePanel.ELECTRIC_POLE}
         collapsed={!isOpen}
         onToggleCollapse={handleToggleElectricPole}
-        dismissible={!mapDataService.electricPoleDataService.isInElectricOperateMode}
+        dismissible={!service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode}
       >
         <ElectricPoleManager />
       </BottomSheet>
@@ -67,7 +66,7 @@ const MobileControlPanel = observer(() => {
         open={currentPanel === CurrentOperatePanel.CUSTOM_POINT}
         collapsed={!isOpen}
         onToggleCollapse={handleToggleCustomPoint}
-        dismissible={!mapDataService.customPointDataService.isInCustomPointOperateMode}
+        dismissible={!service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode}
       >
         <CustomPointManager />
       </BottomSheet>

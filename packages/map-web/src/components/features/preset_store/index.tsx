@@ -1,9 +1,9 @@
+import type { PresetStoreTab } from '@endfieldmap/map-service';
+import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
-import type { PresetStoreTab } from '@/@types/preset_store';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { Dialog } from '@/components/common/dialog';
 import { CustomPointIcon, ElectricPoleIconPole, LocationClusterIcon, StoreIcon } from '@/components/common/icons';

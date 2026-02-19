@@ -1,5 +1,5 @@
-import { LocalStorageDB } from '@endfieldmap/tools';
 import { useTranslation } from '@endfieldmap/map-service';
+import { LocalStorageDB } from '@endfieldmap/tools';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';

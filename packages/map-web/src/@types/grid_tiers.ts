@@ -1,9 +1,9 @@
-import type { Coordinate } from '@endfieldmap/map-core';
+import type { MapCoordinate } from '@endfieldmap/map-core';
 
 export interface GridTierData {
-  lb: Coordinate;
-  rt: Coordinate;
-  center: Coordinate;
+  lb: MapCoordinate;
+  rt: MapCoordinate;
+  center: MapCoordinate;
   items: Record<string, string>;
 }
 

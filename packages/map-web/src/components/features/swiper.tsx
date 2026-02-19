@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react-lite';
 
 import { Swiper } from '@/components/common/swiper';
-import uiManager from '@/services/ui_manager';
 import { service } from '@/services';
+import uiManager from '@/services/ui_manager';
 
 const ZmdSwiper = observer(() => {
   const expanded = uiManager.swiperOpen.value;

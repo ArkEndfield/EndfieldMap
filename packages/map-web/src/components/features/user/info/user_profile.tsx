@@ -1,12 +1,12 @@
+import type { UidInfo, UserInfo } from '@endfieldmap/map-service';
 import { SyncStatus } from '@endfieldmap/map-service';
-import type { UidInfo, UserInfo } from '@eftypes/user';
+import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { CheckCircleIcon, SyncIcon } from '@/components/common/icons';
-import { userService } from '@/services/user';
+import { service } from '@/services';
 import { cn } from '@/utils/style';
 
 // ==================== 用户头像组件 ====================
@@ -77,7 +77,7 @@ const SyncingDots = () => (
 );
 
 const SyncBadge = observer(({ className }: { className?: string }) => {
-  const syncService = userService.data.syncService;
+  const syncService = service.userService.data.syncService;
   const status = syncService.status;
   const { t } = useTranslation('header');
 
@@ -100,12 +100,12 @@ const SyncBadge = observer(({ className }: { className?: string }) => {
 
 // ==================== 用户资料组件 ====================
 export const UserProfile = observer(({ uidInfo, userInfo }: { uidInfo?: UidInfo; userInfo: UserInfo }) => {
-  const syncService = userService.data.syncService;
+  const syncService = service.userService.data.syncService;
   const isSyncing = syncService.status === SyncStatus.Syncing;
   const { t } = useTranslation('header');
 
   const handleSync = async () => {
-    await userService.triggerSync();
+    await service.userService.triggerSync();
   };
 
   return (

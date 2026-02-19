@@ -1,8 +1,8 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { numberPadString } from '@endfieldmap/tools';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { AnimatePresence, motion } from 'motion/react';
 import type { MouseEvent } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';

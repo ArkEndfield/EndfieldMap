@@ -1,6 +1,5 @@
-import { userService } from '@/services/user';
+import { service } from '@/services';
 import { cn } from '@/utils/style';
-
 
 export const ThirdPartyButton = ({
   icon,
@@ -15,8 +14,10 @@ export const ThirdPartyButton = ({
   const getLoginUrl = (provider: string) => {
     const urls = {
       qq: 'https://graph.qq.com/oauth2.0/authorize?client_id=102849620&response_type=token&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fqq%2Fcallback',
-      bilibili: 'https://account.bilibili.com/pc/account-pc/auth/oauth?client_id=aadbd763480d47cb&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
-      discord: 'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&scope=identify&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fdiscord%2Fcallback',
+      bilibili:
+        'https://account.bilibili.com/pc/account-pc/auth/oauth?client_id=aadbd763480d47cb&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
+      discord:
+        'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&scope=identify&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fdiscord%2Fcallback',
     };
     return urls[provider as keyof typeof urls];
   };
@@ -27,19 +28,15 @@ export const ThirdPartyButton = ({
     const height = 600;
     const left = (window.screen.width - width) / 2;
     const top = (window.screen.height - height) / 2;
-    
+
     // 打开登录窗口
-    const loginWindow = window.open(
-      url,
-      label + ' Login',
-      `width=${width},height=${height},left=${left},top=${top}`
-    );
+    const loginWindow = window.open(url, label + ' Login', `width=${width},height=${height},left=${left},top=${top}`);
 
     // 监听登录结果
     const messageHandler = (event: MessageEvent) => {
       if (event.data.type === 'LOGIN_SUCCESS') {
         console.log('Login success');
-        userService.thirdparty(event.data.userInfo.token);
+        service.userService.thirdparty(event.data.userInfo.token);
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
       } else if (event.data.type === 'LOGIN_FAILED') {

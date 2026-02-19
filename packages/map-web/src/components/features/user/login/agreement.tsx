@@ -1,6 +1,6 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { Dialog } from '@/components/common/dialog';
 

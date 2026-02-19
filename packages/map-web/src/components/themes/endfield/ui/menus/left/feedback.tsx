@@ -1,6 +1,6 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 import { useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { Dialog } from '@/components/common/dialog';
 import { FeedbackIcon } from '@/components/common/icons';

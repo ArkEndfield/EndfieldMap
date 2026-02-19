@@ -1,5 +1,5 @@
-import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 import { useTranslation } from '@endfieldmap/map-service';
+import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 
 import { CogIcon } from '@/components/common/icons';
 import uiManager from '@/services/ui_manager';

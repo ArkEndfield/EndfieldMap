@@ -1,13 +1,14 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { SubTitle } from '@themes/endfield/ui/tier_manager/subtitle';
 import { TierTitle } from '@themes/endfield/ui/tier_manager/tier_title';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
 
@@ -16,16 +17,16 @@ interface TierManagerProps {
 }
 
 const TierManager = observer(({ className }: TierManagerProps) => {
-  const { mapDataService, adapter } = useAdapter();
+  const { adapter } = useAdapter();
   const { t } = useTranslation('lang');
   const efUIManager = useEndfieldUIManager();
   const isMobile = useIsMobile();
   const isSidePanelOpen = efUIManager.isSidePanelOpen;
   const isNonEmptyPanel = efUIManager.isNonEmptyPanel;
-  const availableTierData = mapDataService.gridTiersDataService.availableTierData;
-  const activeTierData = mapDataService.gridTiersDataService.activeTierData;
-  const activeSubTierData = mapDataService.gridTiersDataService.activeSubTierData;
-  const allTierData = mapDataService.gridTiersDataService.currentTierData;
+  const availableTierData = service.dataService.mapDataService.gridTiersDataService.availableTierData;
+  const activeTierData = service.dataService.mapDataService.gridTiersDataService.activeTierData;
+  const activeSubTierData = service.dataService.mapDataService.gridTiersDataService.activeSubTierData;
+  const allTierData = service.dataService.mapDataService.gridTiersDataService.currentTierData;
 
   const enableTier = uiManager.enableTier.value;
 

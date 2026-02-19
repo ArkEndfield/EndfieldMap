@@ -1,16 +1,15 @@
-import {
-  EndfieldMapAdapter,
-  type EntityInfoDataJson,
-  type EntityJsonDataList,
-  type MapDataJson,
-  type CustomPointNodeData,
-  type ElectricPoleNodeData,
-  type ElectricPoleDeviceKey,
+import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
+import type {
+  CustomPointNodeData,
+  ElectricPoleDeviceKey,
+  ElectricPoleNodeData,
+  EntityInfoDataJson,
+  EntityJsonDataList,
+  MapDataJson,
 } from '@endfieldmap/map-core';
+import type { CustomPointPreset, ElectricPolePreset } from '@endfieldmap/map-service';
 import { useEffect, useRef, useState } from 'react';
 
-import type { CustomPointPreset } from '@/@types/custom_point';
-import type { ElectricPolePreset } from '@/@types/electric_pole';
 import { service } from '@/services';
 
 export interface UsePreviewAdapterOptions {

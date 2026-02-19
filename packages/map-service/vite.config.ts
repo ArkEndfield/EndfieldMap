@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
   } as Record<string, string>;
 
   if (isDev) {
+    alias['@endfieldmap/map-core'] = path.resolve(__dirname, '../map-core/src');
     alias['@endfieldmap/tools'] = path.resolve(__dirname, '../tools/src');
   }
 
@@ -25,6 +26,7 @@ export default defineConfig(({ mode }) => {
           if (path.isAbsolute(id)) return false;
           if (id.startsWith('.')) return false;
           if (id.startsWith('@endfieldmap/map-service')) return false;
+          if (id.startsWith('@endfieldmap/map-core')) return true;
           if (id.startsWith('@endfieldmap/tools')) return true;
           return true;
         },
@@ -47,8 +49,8 @@ export default defineConfig(({ mode }) => {
         insertTypesEntry: true,
         cleanVueFileName: true,
         copyDtsFiles: false,
-        aliasesExclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
-        exclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
+        aliasesExclude: ['@endfieldmap/map-core', '@endfieldmap/map-core/*', '@endfieldmap/tools', '@endfieldmap/tools/*'],
+        exclude: ['@endfieldmap/map-core', '@endfieldmap/map-core/*', '@endfieldmap/tools', '@endfieldmap/tools/*'],
       }),
     ],
     resolve: {

@@ -1,4 +1,4 @@
-import type { ElectricPoleType } from '@eftypes/preset_store';
+import type { ElectricPoleType } from '@endfieldmap/map-service';
 import PresetList from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/list';
 import PresetToolbar from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/toolbar';
 import PresetHeader from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/header';
@@ -8,8 +8,8 @@ import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { ScrollArea } from '@/components/common/scroll_area';
-import { useAdapter } from '@/hooks/use_adapter';
 import { useElectricPolePresetPanel } from '@/hooks/use_electric_pole_preset_panel';
+import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
 import { catchErrorWithTip } from '@/utils/handler';
 
@@ -35,14 +35,13 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
     handleClickImport,
     handleImportFileChange,
   } = useElectricPolePresetPanel();
-  const { mapDataService } = useAdapter();
 
   const handleOpenStore = () => {
     uiManager.openPresetStore('electric_pole');
   };
 
   const handleShare = (id: string, name: string) => {
-    if (!mapDataService.electricPoleDataService.canShare) {
+    if (!service.dataService.mapDataService.electricPoleDataService.canShare) {
       return;
     }
     let shareName = name;
@@ -69,7 +68,7 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
       ),
       onConfirm: () =>
         catchErrorWithTip(async () => {
-          await mapDataService.electricPoleDataService.sharePreset(id, shareName, shareDescription, shareType);
+          await service.dataService.mapDataService.electricPoleDataService.sharePreset(id, shareName, shareDescription, shareType);
           alert.info('分享成功');
         }),
     });

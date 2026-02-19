@@ -1,14 +1,15 @@
 import { type DataInstance, EntityInstanceKey } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 const SelectOperator = observer(() => {
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
 
   const selectedFeatures = adapter.mapController.selection.selectedFeatures;
   const { t } = useTranslation(['sidebar', 'common']);
@@ -17,7 +18,7 @@ const SelectOperator = observer(() => {
     selectedFeatures.forEach((feature) => {
       const instance = feature.get(EntityInstanceKey) as DataInstance | undefined;
       if (instance) {
-        mapDataService.entityDataService.markEntity(instance.mapId, instance.id, marked);
+        service.dataService.mapDataService.entityDataService.markEntity(instance.mapId, instance.id, marked);
       }
     });
   };

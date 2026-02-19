@@ -1,13 +1,13 @@
 import { MarkedFeatureFilterMode } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import Tooltip from '@themes/endfield/components/tooltip';
 import ToggleButton from '@themes/endfield/ui/control_panel/components/toggle_button';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { RefreshIcon } from '@/components/common/icons';
 import { FilterMarked, FilterUnMarked } from '@/components/common/icons';
-import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 import { cn } from '@/utils/style';
 
 const filterModes = [
@@ -16,14 +16,13 @@ const filterModes = [
 ] as const;
 
 export const Filters = observer(({ className, extra }: { className?: string; extra?: React.ReactNode }) => {
-  const { mapDataService } = useAdapter();
   const { t } = useTranslation('sidebar');
 
-  const filterMode = mapDataService.mapStateDataService.filterMarked.value;
+  const filterMode = service.dataService.mapDataService.mapStateDataService.filterMarked.value;
 
   const clearFilterSelect = () => {
-    mapDataService.entityDataService.resetAllVisibility();
-    mapDataService.mapStateDataService.filterMarked.value = MarkedFeatureFilterMode.All;
+    service.dataService.mapDataService.entityDataService.resetAllVisibility();
+    service.dataService.mapDataService.mapStateDataService.filterMarked.value = MarkedFeatureFilterMode.All;
   };
 
   return (
@@ -38,9 +37,9 @@ export const Filters = observer(({ className, extra }: { className?: string; ext
             className="text-lg w-8 h-8"
             onChange={(v) => {
               if (v) {
-                mapDataService.mapStateDataService.filterMarked.value = mode.value;
+                service.dataService.mapDataService.mapStateDataService.filterMarked.value = mode.value;
               } else {
-                mapDataService.mapStateDataService.filterMarked.value = MarkedFeatureFilterMode.All;
+                service.dataService.mapDataService.mapStateDataService.filterMarked.value = MarkedFeatureFilterMode.All;
               }
             }}
           >

@@ -1,11 +1,11 @@
 import { MapService } from '@endfieldmap/map-service';
-import { sentryReporter } from '@/services/logger';
-import { isDev, backendHost, assetsHost } from '@/services/env';
-
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { loadingManager } from '@/services/loading';
-import { LoadingStageId } from '@/const/loading';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+
+import { LoadingStageId } from '@/const/loading';
+import { assetsHost, backendHost, isDev } from '@/services/env';
+import { loadingManager } from '@/services/loading';
+import { sentryReporter } from '@/services/logger';
 
 let initialLoadComplete = false;
 

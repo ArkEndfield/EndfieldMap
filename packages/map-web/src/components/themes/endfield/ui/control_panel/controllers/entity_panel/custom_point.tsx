@@ -5,12 +5,13 @@ import {
   getCustomPointEntityInfo,
   isValidCustomPointType,
 } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 interface CustomPointTypeGroup {
   entityDataIdKey: string;
@@ -26,7 +27,7 @@ interface CustomPointTypeGroup {
  */
 const CustomPointList: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
 
   // 从 DataManager 获取当前地图的所有自定义标点实例
   const dataManager = adapter.customPointController.dataManager;
@@ -85,7 +86,7 @@ const CustomPointList: React.FC = observer(() => {
   const handleToggleTypeVisible = (group: CustomPointTypeGroup) => {
     const newVisible = !group.allVisible;
     // 保存可见性状态 (RxDB 订阅会自动更新实例)
-    mapDataService.customPointDataService.updateItemVisibility(
+    service.dataService.mapDataService.customPointDataService.updateItemVisibility(
       adapter.mapController.dataManager.currentMapId,
       group.entityDataIdKey,
       newVisible
@@ -95,7 +96,7 @@ const CustomPointList: React.FC = observer(() => {
   const handleToggleAll = () => {
     const newVisible = !allDisplayed;
     customPointGroups.forEach((group) => {
-      mapDataService.customPointDataService.updateItemVisibility(
+      service.dataService.mapDataService.customPointDataService.updateItemVisibility(
         adapter.mapController.dataManager.currentMapId,
         group.entityDataIdKey,
         newVisible

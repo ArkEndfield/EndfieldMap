@@ -1,5 +1,5 @@
-import type { EntityData, CustomPointData, ElectricPoleData } from '@endfieldmap/map-core';
-import { type ElementType,lazy } from 'react';
+import type { CustomPointData, ElectricPoleData, EntityData } from '@endfieldmap/map-core';
+import { type ElementType, lazy } from 'react';
 
 export const rightContentMap = {
   InteractiveLockComponent: lazy(() => import('@/components/common/popup/sub/components/interactive_lock_component')),

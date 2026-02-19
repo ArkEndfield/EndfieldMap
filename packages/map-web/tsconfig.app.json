@@ -14,6 +14,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
+      "@endfieldmap/map-adapter-ol": ["../map-adapter-ol/src/index.ts"],
+      "@endfieldmap/map-adapter-ol/*": ["../map-adapter-ol/src/*"],
       "@endfieldmap/map-core": ["../map-core/src/index.ts"],
       "@endfieldmap/map-core/*": ["../map-core/src/*"],
       "@endfieldmap/tools": ["../tools/src/index.ts"],

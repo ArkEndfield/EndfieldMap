@@ -1,13 +1,13 @@
+import type { DealedRewardItem } from '@endfieldmap/map-service';
+import { useTranslation } from '@endfieldmap/map-service';
 import { Item } from '@themes/endfield/components/item';
 import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { SubPopupTitle } from '@/components/common/popup/components/title';
 import type { TreasureComponent } from '@/components/common/popup/sub/components/types';
 import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
-import type { DealedRewardItem } from '@/services/data/map/chest_reward';
-import { isDealedRewardItemWithCount } from '@/utils/reward';
 import { service } from '@/services';
+import { isDealedRewardItemWithCount } from '@/utils/reward';
 
 const TreasureComponent: SubPopupComponentProps<TreasureComponent> = ({ prop }) => {
   const { reward_id } = prop;

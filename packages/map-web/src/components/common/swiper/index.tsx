@@ -1,10 +1,10 @@
 import '@/components/common/swiper/index.css';
 
+import type { SwiperConfig } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { SwiperConfig } from '@endfieldmap/map-service';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { ChevronUp, ChevronUpTriangle } from '@/components/common/icons';
 import { useIsMobile } from '@/hooks/use_is_mobile';

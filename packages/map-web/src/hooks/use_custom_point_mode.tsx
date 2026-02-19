@@ -1,10 +1,10 @@
-import { differenceArray } from '@endfieldmap/tools';
 import type { Resources } from '@endfieldmap/map-service';
-
 import { useTranslation } from '@endfieldmap/map-service';
+import { differenceArray } from '@endfieldmap/tools';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 const modes = ['isCreating', 'isDeleting'] as const;
 
@@ -30,16 +30,16 @@ const modeTipText: Record<CustomPointMode, ModeTipTextKeys> = {
 };
 
 export const useCustomPointMode = () => {
-  const { adapter, mapDataService } = useAdapter();
-  const service = mapDataService.customPointDataService;
+  const { adapter } = useAdapter();
+  const customPointDataService = service.dataService.mapDataService.customPointDataService;
   const { t } = useTranslation('sidebar');
 
   const getModeValue = (mode: CustomPointMode): boolean => {
     switch (mode) {
       case 'isCreating':
-        return service.isCreating;
+        return customPointDataService.isCreating;
       case 'isDeleting':
-        return service.isDeleting;
+        return customPointDataService.isDeleting;
       default:
         return false;
     }
@@ -55,7 +55,7 @@ export const useCustomPointMode = () => {
     }
 
     // 检查是否在电线杆操作模式
-    if (mapDataService.electricPoleDataService.isInElectricOperateMode) {
+    if (service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode) {
       alert.info({
         content: <div className="text-center">{t('operation.electric_pole_operating_tip')}</div>,
       });
@@ -71,8 +71,8 @@ export const useCustomPointMode = () => {
   };
 
   const getCurrentMode = (): CustomPointMode | null => {
-    if (service.isCreating) return 'isCreating';
-    if (service.isDeleting) return 'isDeleting';
+    if (customPointDataService.isCreating) return 'isCreating';
+    if (customPointDataService.isDeleting) return 'isDeleting';
     return null;
   };
 
@@ -88,8 +88,8 @@ export const useCustomPointMode = () => {
   };
 
   const stopAllModes = () => {
-    service.setCreating(false);
-    service.setDeleting(false);
+    customPointDataService.setCreating(false);
+    customPointDataService.setDeleting(false);
   };
 
   const toggleMode = (mode: CustomPointMode) => {
@@ -105,32 +105,32 @@ export const useCustomPointMode = () => {
 
     switch (mode) {
       case 'isCreating':
-        service.setCreating(!service.isCreating);
+        customPointDataService.setCreating(!customPointDataService.isCreating);
         break;
       case 'isDeleting':
-        service.setDeleting(!service.isDeleting);
+        customPointDataService.setDeleting(!customPointDataService.isDeleting);
         break;
     }
   };
 
   const changeMode = (mode: CustomPointMode) => {
     if (!checkCanOperate()) return;
-    service.setCreating(false);
-    service.setDeleting(false);
+    customPointDataService.setCreating(false);
+    customPointDataService.setDeleting(false);
     switch (mode) {
       case 'isCreating':
-        service.setCreating(true);
+        customPointDataService.setCreating(true);
         break;
       case 'isDeleting':
-        service.setDeleting(true);
+        customPointDataService.setDeleting(true);
         break;
     }
   };
 
   return {
     states: {
-      isCreating: service.isCreating,
-      isDeleting: service.isDeleting,
+      isCreating: customPointDataService.isCreating,
+      isDeleting: customPointDataService.isDeleting,
     },
     getCurrentMode,
     isInOtherMode: adapter.mapController.selection.isSelecting,

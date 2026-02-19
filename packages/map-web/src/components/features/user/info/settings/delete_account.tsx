@@ -3,7 +3,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { alert } from '@/components/common/alert/alert_api';
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { TrashIcon } from '@/components/common/icons';
-import { userService } from '@/services/user';
+import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 
 export const DeleteAccount = () => {
@@ -14,7 +14,7 @@ export const DeleteAccount = () => {
       content: t('user.remove_account.confirm'),
       onConfirm: () =>
         catchErrorWithTip(async () => {
-          await userService.deleteAccount();
+          await service.userService.deleteAccount();
           alert.info(t('user.remove_account.success'));
           return true;
         }),

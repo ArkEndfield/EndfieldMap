@@ -1,20 +1,16 @@
-import { EndfieldMapAdapter } from '@endfieldmap/map-core';
+import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
+import { useTranslation } from '@endfieldmap/map-service';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useIsMobile } from '@/hooks/use_is_mobile';
-import type { MapDataService } from '@/services/data/map';
 import { MapService } from '@/services/map';
-import { useTranslation } from '@endfieldmap/map-service';
 
 /**
  * 地图适配器 hook
  */
 export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | null>) {
   const adapter = useRef<EndfieldMapAdapter | null>(null);
-  const mapDataService = useRef<MapDataService | null>(null);
   const [adapterReactive, setAdapterReactive] = useState<EndfieldMapAdapter | null>(null);
-  const [mapDataServiceReactive, setMapDataServiceReactive] = useState<MapDataService | null>(null);
-  const [mapServiceReactive, setMapServiceReactive] = useState<MapService | null>(null);
   const isMobile = useIsMobile();
   const { i18n } = useTranslation();
   /*
@@ -23,15 +19,12 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
   const init = useCallback(async () => {
     if (adapter.current || !containerRef.current) return;
 
-    const mapService = MapService.getInstance(containerRef.current!);
+    const mapService = new MapService(containerRef.current!);
     const data = await mapService.init();
     if (!data) return;
-    const { adapter: efAdapter, mapDataService: efDataService } = data;
+    const { adapter: efAdapter } = data;
     adapter.current = efAdapter;
-    mapDataService.current = efDataService;
     setAdapterReactive(efAdapter);
-    setMapDataServiceReactive(efDataService);
-    setMapServiceReactive(mapService);
   }, [containerRef]);
 
   useEffect(() => {
@@ -51,7 +44,7 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
     return () => {
       i18n.off('languageChanged');
     };
-  }, []);
+  }, [i18n]);
 
   useEffect(() => {
     if (adapterReactive && isMobile) {
@@ -61,7 +54,5 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
   return {
     adapter: adapterReactive,
-    mapDataService: mapDataServiceReactive,
-    mapService: mapServiceReactive,
   };
 }

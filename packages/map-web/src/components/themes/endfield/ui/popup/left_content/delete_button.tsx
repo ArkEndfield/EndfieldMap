@@ -1,11 +1,12 @@
 import { CustomPointKey, type DataInstance, ElectricPoleDataInstance, ElectricPoleKey } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { TrashIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 export interface DeleteButtonProps {
   entity: DataInstance;
@@ -13,19 +14,19 @@ export interface DeleteButtonProps {
 
 export const DeleteButton: React.FC<DeleteButtonProps> = observer(({ entity }) => {
   const { t } = useTranslation();
-  const { mapDataService, adapter } = useAdapter();
+  const { adapter } = useAdapter();
 
   const isCustomPoint = entity.entityInfo?.category === CustomPointKey;
   const isElectricPole = entity.entityInfo?.category === ElectricPoleKey;
 
   const handleDelete = () => {
     if (isCustomPoint) {
-      mapDataService.customPointDataService.deleteCustomPoint(
+      service.dataService.mapDataService.customPointDataService.deleteCustomPoint(
         adapter.mapController.dataManager.currentMapId,
         entity.id
       );
     } else if (isElectricPole) {
-      mapDataService.electricPoleDataService.deleteElectricPole(entity as ElectricPoleDataInstance, true);
+      service.dataService.mapDataService.electricPoleDataService.deleteElectricPole(entity as ElectricPoleDataInstance, true);
     }
     // 关闭弹窗
     adapter.activeFeatureController.clearActiveFeature?.();

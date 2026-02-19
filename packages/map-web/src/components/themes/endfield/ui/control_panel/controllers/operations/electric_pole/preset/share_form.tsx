@@ -1,6 +1,6 @@
-import type { ElectricPoleType } from '@eftypes/preset_store';
-import { useMemo, useState } from 'react';
+import type { ElectricPoleType } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
+import { useMemo, useState } from 'react';
 
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { Input } from '@/components/common/input';

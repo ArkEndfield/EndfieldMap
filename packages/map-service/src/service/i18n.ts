@@ -1,7 +1,7 @@
 import { Language } from '@endfieldmap/tools';
+import type { FallbackLng } from 'i18next';
 import i18n from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
-import type { FallbackLng } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 const ns = ['common', 'error', 'header', 'lang', 'popup', 'sidebar', 'settings', 'agreement'] as const;
@@ -86,6 +86,7 @@ export class I18nService {
   /**
    * 翻译
    */
+  public translate(key: string | string[], options?: Record<string, unknown>): string;
   public translate(...args: Parameters<typeof this.i18n.t>): string {
     return this.i18n.t(...args);
   }

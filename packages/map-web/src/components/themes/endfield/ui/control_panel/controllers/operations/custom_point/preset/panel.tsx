@@ -7,8 +7,8 @@ import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { ScrollArea } from '@/components/common/scroll_area';
-import { useAdapter } from '@/hooks/use_adapter';
 import { useCustomPointPresetPanel } from '@/hooks/use_custom_point_preset_panel';
+import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
 import { catchErrorWithTip } from '@/utils/handler';
 
@@ -34,14 +34,13 @@ const CustomPointPresetPanel: React.FC = observer(() => {
     handleClickImport,
     handleImportFileChange,
   } = useCustomPointPresetPanel();
-  const { mapDataService } = useAdapter();
 
   const handleOpenStore = () => {
     uiManager.openPresetStore('custom_point');
   };
 
   const handleShare = (id: string, name: string) => {
-    if (!mapDataService.customPointDataService.canShare) {
+    if (!service.dataService.mapDataService.customPointDataService.canShare) {
       return;
     }
     let shareName = name;
@@ -63,7 +62,7 @@ const CustomPointPresetPanel: React.FC = observer(() => {
       ),
       onConfirm: () =>
         catchErrorWithTip(async () => {
-          await mapDataService.customPointDataService.sharePreset(id, shareName, shareDescription);
+          await service.dataService.mapDataService.customPointDataService.sharePreset(id, shareName, shareDescription);
           alert.info('分享成功');
         }),
     });

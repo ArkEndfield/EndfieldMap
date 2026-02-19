@@ -4,13 +4,13 @@ import { motion } from 'motion/react';
 import { BaseInfo } from '@/components/features/user/info/settings/base_info';
 import { ChangePassword } from '@/components/features/user/info/settings/change_password';
 import { DeleteAccount } from '@/components/features/user/info/settings/delete_account';
-import { userService } from '@/services/user';
+import { service } from '@/services';
 
 /**
  * 用户设置面板组件
  */
 export const Settings = observer(() => {
-  const userInfo = userService.auth.userInfo;
+  const userInfo = service.userService.auth.userInfo;
 
   if (!userInfo) {
     return null;

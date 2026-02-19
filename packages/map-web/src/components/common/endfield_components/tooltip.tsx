@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useIsMobile } from '@/hooks/use_is_mobile';
 import { useWindow } from '@/context/window';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 import { cn } from '@/utils/style';
 
 const TOOLTIP_OFFSET = 8;

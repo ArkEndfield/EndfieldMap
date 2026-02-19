@@ -1,17 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { CustomPointPreset, ElectricPolePreset,PresetStoreDetailData, PresetType } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { CustomPointPreset } from '@/@types/custom_point';
-import type { ElectricPolePreset } from '@/@types/electric_pole';
-import type { PresetStoreDetailData, PresetType } from '@/@types/preset_store';
 import { alert } from '@/components/common/alert/alert_api';
 import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { ArrowLeftIcon, ImportIcon, UserIcon, ViewAltIcon } from '@/components/common/icons';
 import { MapPreview } from '@/components/common/map-preview';
 import { ScrollArea } from '@/components/common/scroll_area';
-import { useAdapter } from '@/hooks/use_adapter';
-import { presetService } from '@/services/preset';
+import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 import { cn } from '@/utils/style';
 
@@ -39,7 +36,6 @@ const formatDate = (timestamp: number): string => {
 
 export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
   const { t } = useTranslation(['sidebar', 'common']);
-  const { mapService, mapDataService } = useAdapter();
   const [detail, setDetail] = useState<PresetStoreDetailData<PresetType> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +48,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
       setLoading(true);
       setError(null);
       try {
-        const data = await presetService.getPresetDetail(id);
+        const data = await service.presetService.getPresetDetail(id);
         if (!cancelled) {
           setDetail(data);
         }
@@ -94,10 +90,10 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
 
   // 构建预览用的地图数据
   const previewMapData = useMemo(() => {
-    if (!mapService?.mapData) return null;
+    if (!service.dataService.mapDataService.mapData) return null;
     return {
-      ...mapService.mapData,
-      data: mapService.mapData.data.map((map) => ({
+      ...service.dataService.mapDataService.mapData,
+      data: service.dataService.mapDataService.mapData.data.map((map) => ({
         ...map,
         zoom: {
           ...map.zoom,
@@ -105,7 +101,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
         },
       })),
     };
-  }, [mapService?.mapData]);
+  }, []);
 
   // 导入预设
   const handleImport = useCallback(async () => {
@@ -114,12 +110,12 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
     setImporting(true);
     const result = await catchErrorWithTip(async () => {
       // 使用 getPresetImportData 获取数据（会增加导入计数）
-      const importData = await presetService.getPresetImportData(id);
+      const importData = await service.presetService.getPresetImportData(id);
 
       if (detail.preset_type === 'electric_pole') {
-        await mapDataService?.electricPoleDataService.importPreset(importData.name, importData.snapshot);
+        await service.dataService.mapDataService.electricPoleDataService.importPreset(importData.name, importData.snapshot);
       } else {
-        await mapDataService?.customPointDataService.importPreset(importData.name, importData.snapshot);
+        await service.dataService.mapDataService.customPointDataService.importPreset(importData.name, importData.snapshot);
       }
 
       return true;
@@ -130,7 +126,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
     if (result) {
       alert.info(t('sidebar:preset_store.import_success', { defaultValue: '导入成功' }));
     }
-  }, [detail, importing, id, mapDataService, t]);
+  }, [detail, importing, id, t]);
 
   // 加载中
   if (loading) {

@@ -7,13 +7,14 @@ import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 export const ElectricPoleOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const isElecricPoleVisible = adapter.electricPoleController.dataManager.visible;
   const isOpen = uiManager.currentOperatePanel.value === CurrentOperatePanel.ELECTRIC_POLE && isElecricPoleVisible;
-  const isInCreateMode = mapDataService.electricPoleDataService.isCreating;
+  const isInCreateMode = service.dataService.mapDataService.electricPoleDataService.isCreating;
 
   return (
     <OperationList open={isOpen} className="flex gap-2">

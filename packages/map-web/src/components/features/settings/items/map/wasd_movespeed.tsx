@@ -1,11 +1,11 @@
-import { observer } from 'mobx-react-lite';
 import { useTranslation } from '@endfieldmap/map-service';
+import { observer } from 'mobx-react-lite';
 
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
-import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { service } from '@/services';
 
 const options = [
   {
@@ -32,9 +32,8 @@ const options = [
 
 export const WasdSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { mapDataService } = useAdapter();
+  const wasdMoveSpeed = service.dataService.mapDataService.mapStateDataService.wasdMoveSpeed.value;
   const isMobile = useIsMobile();
-  const wasdMoveSpeed = mapDataService.mapStateDataService.wasdMoveSpeed.value;
 
   if (isMobile) {
     return null;
@@ -54,7 +53,7 @@ export const WasdSetting = observer(() => {
           label: t(`map.wasd_move_speed.value.${option.label}`),
         }))}
         activeKey={wasdMoveSpeed}
-        onChange={(v) => (mapDataService.mapStateDataService.wasdMoveSpeed.value = v)}
+        onChange={(v) => (service.dataService.mapDataService.mapStateDataService.wasdMoveSpeed.value = v)}
       />
     </SettingItem>
   );

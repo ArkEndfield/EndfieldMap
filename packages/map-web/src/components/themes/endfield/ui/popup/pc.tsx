@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom';
 import { getRightComponents } from '@/components/common/popup/sub/items';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
 
@@ -36,7 +37,7 @@ const RightContent: React.FC<{
 });
 
 const PCPopup: React.FC = observer(() => {
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const activeFeature = adapter?.activeFeatureController.activeFeature;
   const entity = activeFeature?.data;
   const subPopupItems = getRightComponents(entity);
@@ -89,8 +90,8 @@ const PCPopup: React.FC = observer(() => {
   return createPortal(
     <AnimatePresence>
       {activeFeature &&
-        !mapDataService.electricPoleDataService.isInElectricOperateMode &&
-        !mapDataService.customPointDataService.isInCustomPointOperateMode && (
+        !service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode &&
+        !service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode && (
           <motion.div
             key="desktop-popup"
             initial={{ opacity: 0, y: 18, scale: 0.9 }}
