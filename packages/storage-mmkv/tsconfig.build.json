@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@endfieldmap/storage-mmkv": ["./src/index.ts"],
+      "@endfieldmap/storage-mmkv/*": ["./src/*"]
+    }
+  }
+}

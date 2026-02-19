@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@endfieldmap/storage-web": ["./src/index.ts"],
+      "@endfieldmap/storage-web/*": ["./src/*"]
+    }
+  }
+}

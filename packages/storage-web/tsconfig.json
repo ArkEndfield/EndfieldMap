@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@endfieldmap/storage-web": ["./src/index.ts"],
+      "@endfieldmap/storage-web/*": ["./src/*"],
+      "@endfieldmap/tools": ["../tools/src/index.ts"],
+      "@endfieldmap/tools/*": ["../tools/src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
