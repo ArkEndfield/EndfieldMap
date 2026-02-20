@@ -10,9 +10,7 @@
     "erasableSyntaxOnly": false,
     "paths": {
       "@endfieldmap/map-core": ["./src/index.ts"],
-      "@endfieldmap/map-core/*": ["./src/*"],
-      "@endfieldmap/tools": ["../tools/src/index.ts"],
-      "@endfieldmap/tools/*": ["../tools/src/*"]
+      "@endfieldmap/map-core/*": ["./src/*"]
     }
   },
   "references": [{ "path": "../tools" }],

@@ -1,5 +1,5 @@
 import { Language } from '@endfieldmap/tools';
-import type { FallbackLng, TOptions } from 'i18next';
+import type { FallbackLng } from 'i18next';
 import i18n from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { initReactI18next } from 'react-i18next';
@@ -87,8 +87,7 @@ export class I18nService {
   /**
    * 翻译
    */
-  public translate(key: string | string[] | TemplateStringsArray, options?: TOptions): string {
-    type SimpleTFn = (key: string | string[], options?: TOptions) => string;
-    return (this.i18n.t as SimpleTFn)(key as string, options);
+  public translate(...args: Parameters<typeof this.i18n.t>): ReturnType<typeof this.i18n.t> {
+    return this.i18n.t(...args);
   }
 }

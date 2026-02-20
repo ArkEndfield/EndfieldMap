@@ -9,9 +9,7 @@
     "baseUrl": ".",
     "paths": {
       "@endfieldmap/storage-web": ["./src/index.ts"],
-      "@endfieldmap/storage-web/*": ["./src/*"],
-      "@endfieldmap/tools": ["../tools/src/index.ts"],
-      "@endfieldmap/tools/*": ["../tools/src/*"]
+      "@endfieldmap/storage-web/*": ["./src/*"]
     }
   },
   "references": [{ "path": "../tools" }],

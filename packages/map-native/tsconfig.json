@@ -5,17 +5,16 @@
     "paths": {
       "@/*": ["./*"],
       "@endfieldmap/map-adapter-maplibre": ["../map-adapter-maplibre/src/index.ts"],
-      "@endfieldmap/map-adapter-maplibre/*": ["../map-adapter-maplibre/src/*"],
-      "@endfieldmap/map-core": ["../map-core/src/index.ts"],
-      "@endfieldmap/map-core/*": ["../map-core/src/*"],
-      "@endfieldmap/map-service": ["../map-service/src/index.ts"],
-      "@endfieldmap/map-service/*": ["../map-service/src/*"],
-      "@endfieldmap/storage-mmkv": ["../storage-mmkv/src/index.ts"],
-      "@endfieldmap/storage-mmkv/*": ["../storage-mmkv/src/*"],
-      "@endfieldmap/tools": ["../tools/src/index.ts"],
-      "@endfieldmap/tools/*": ["../tools/src/*"]
+      "@endfieldmap/map-adapter-maplibre/*": ["../map-adapter-maplibre/src/*"]
     }
   },
+  "references": [
+    { "path": "../map-service" },
+    { "path": "../map-core" },
+    { "path": "../map-adapter-maplibre" },
+    { "path": "../storage-mmkv" },
+    { "path": "../tools" }
+  ],
   "include": [
     "**/*.ts",
     "**/*.tsx",

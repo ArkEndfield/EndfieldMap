@@ -129,7 +129,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
     this.isConnecting = false;
   }
 
-  private translate(key: string, options?: Record<string, unknown>): string {
+  private translate(...args: Parameters<typeof this.deps.i18nService.translate>): string {
     return this.deps.i18nService.translate(key, options);
   }
 
