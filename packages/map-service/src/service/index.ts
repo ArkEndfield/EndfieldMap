@@ -75,8 +75,8 @@ export class MapService<T, R> {
     });
   }
 
-  public translate(...args: Parameters<typeof this.i18nService.translate>): string {
-    return this.i18nService.translate(...args);
+  public get translate() {
+    return this.i18nService.translate;
   }
 
   public async init() {

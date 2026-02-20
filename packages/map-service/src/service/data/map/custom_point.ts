@@ -101,8 +101,8 @@ export class CustomPointDataService extends BasePresetDataService<
     this.initDataListeners();
   }
 
-  private translate(...args: Parameters<typeof this.deps.i18nService.translate>): string {
-    return this.deps.i18nService.translate(key, options);
+  private get translate() {
+    return this.deps.i18nService.translate;
   }
 
   private initDataListeners() {

@@ -1,6 +1,7 @@
 import type {
   CustomPointData,
   CustomPointDataInstance,
+  CustomPointKey,
   CustomPointNodeData,
   CustomPointTypeId,
   ICustomPointController,
@@ -44,7 +45,7 @@ export class CustomPointController implements ICustomPointController {
       mapData[mapId].push({
         levelLogicId: node.levelLogicId,
         entityDataIdKey: node.entityDataIdKey as CustomPointTypeId,
-        templateId: node.templateId as typeof import('@endfieldmap/map-core').CustomPointKey,
+        templateId: node.templateId as typeof CustomPointKey,
         entityType: node.entityType as '#CustomPoint',
         position: node.position,
         properties: node.properties,

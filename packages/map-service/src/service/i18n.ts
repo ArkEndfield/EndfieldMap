@@ -87,7 +87,7 @@ export class I18nService {
   /**
    * 翻译
    */
-  public translate(...args: Parameters<typeof this.i18n.t>): ReturnType<typeof this.i18n.t> {
-    return this.i18n.t(...args);
+  public get translate() {
+    return this.i18n.t;
   }
 }

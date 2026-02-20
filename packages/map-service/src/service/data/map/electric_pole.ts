@@ -129,8 +129,8 @@ export class ElectricPoleDataService extends BasePresetDataService<
     this.isConnecting = false;
   }
 
-  private translate(...args: Parameters<typeof this.deps.i18nService.translate>): string {
-    return this.deps.i18nService.translate(key, options);
+  private get translate() {
+    return this.deps.i18nService.translate;
   }
 
   private initDataListeners() {
@@ -445,7 +445,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
         this.setConnectingPole(pole);
       } catch (error) {
-        const errorMsg = getElectricPoleErrorMessage(error, this.translate.bind(this));
+        const errorMsg = getElectricPoleErrorMessage(error, this.translate);
         serviceEmitter.fire(SERVICE_EVENT.ALERT_SHOW, {
           content: this.translate('error:electric_pole.connect_failed_with_switch', {
             defaultValue: `连接失败：${errorMsg}，点击切换将当前连接的电线杆切换为点击的电线杆`,

@@ -2,6 +2,8 @@ import type {
   ElectricPoleData,
   ElectricPoleDataInstance,
   ElectricPoleDeviceKey,
+  ElectricPoleIdKey,
+  ElectricPoleKey,
   ElectricPoleNodeData,
   IElectricPoleController,
   MapCoordinate,
@@ -44,8 +46,8 @@ export class ElectricPoleController implements IElectricPoleController {
       }
       mapData[mapId].push({
         levelLogicId: node.levelLogicId,
-        entityDataIdKey: node.entityDataIdKey as typeof import('@endfieldmap/map-core').ElectricPoleIdKey,
-        templateId: node.templateId as typeof import('@endfieldmap/map-core').ElectricPoleKey,
+        entityDataIdKey: node.entityDataIdKey as typeof ElectricPoleIdKey,
+        templateId: node.templateId as typeof ElectricPoleKey,
         entityType: node.entityType as '#ElectricPole',
         position: node.position,
         properties: node.properties,

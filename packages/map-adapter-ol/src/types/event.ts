@@ -1,6 +1,6 @@
 import type { ElectricPoleRenderer } from '@endfieldmap/map-adapter-ol/render/renderer';
 import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
+import type { DataInstance, ElectricPoleDataInstance, EntityDataInstance } from '@endfieldmap/map-core';
 import type { Feature, Map as OlMap, MapBrowserEvent, MapEvent } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
@@ -28,7 +28,7 @@ export type OLMapHoverEventDetail = {
  * OL-specific: ENTITY_CLICK 事件的 detail 类型（含完整 OL Feature）
  */
 export type OLEntityEventDetail = {
-  instance: import('@endfieldmap/map-core').DataInstance;
+  instance: DataInstance;
   feature: FeatureLike;
   event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
 };
@@ -65,23 +65,23 @@ export type OLMapEventPayloads = {
   'map:move_end': MapEvent;
   'cluster:click': {
     features: Feature<Point>[];
-    instances: import('@endfieldmap/map-core').EntityDataInstance[];
+    instances: EntityDataInstance[];
     coordinates: Coordinate[];
     extent: Extent;
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
   };
   'entity:click': {
-    instance: import('@endfieldmap/map-core').DataInstance;
+    instance: DataInstance;
     feature: FeatureLike;
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
   };
   'entity:hover': {
-    instance: import('@endfieldmap/map-core').DataInstance | null;
+    instance: DataInstance | null;
     coordinate: Coordinate | null;
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
   };
   'entity:context_menu': {
-    instance: import('@endfieldmap/map-core').DataInstance;
+    instance: DataInstance;
     feature: FeatureLike;
     layer: HitTestableLayer;
     event: OLMapContextMenuEventDetail;
@@ -104,13 +104,13 @@ export type OLMapEventPayloads = {
     event: OLMapContextMenuEventDetail;
   };
   'active:feature:change': {
-    oldFeature: import('@endfieldmap/map-core').DataInstance | null;
-    newFeature: import('@endfieldmap/map-core').DataInstance | null;
+    oldFeature: DataInstance | null;
+    newFeature: DataInstance | null;
     coordinate: Coordinate | null;
   };
   'hover:feature:change': {
-    oldFeature: import('@endfieldmap/map-core').DataInstance | null;
-    newFeature: import('@endfieldmap/map-core').DataInstance | null;
+    oldFeature: DataInstance | null;
+    newFeature: DataInstance | null;
     coordinate: Coordinate | null;
   };
   'hover:connection:change': {

@@ -69,7 +69,7 @@ export default defineConfig(({ command, mode }) => {
     ],
     resolve: {
       alias: {
-        ...alias,
+        ...(mode === 'development' ? alias : {}),
         '@': resolve(__dirname, './src'),
         '@eftypes': resolve(__dirname, './src/@types'),
         '@themes': resolve(__dirname, './src/components/themes'),
