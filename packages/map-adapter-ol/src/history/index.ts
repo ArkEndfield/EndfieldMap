@@ -1,7 +1,3 @@
-// Re-export from map-core
-export { type Command, CommandType } from '@endfieldmap/map-core';
-export { HistoryManager, historyManager } from '@endfieldmap/map-core';
-
 // OL-specific commands
 export {
   BatchCreateCustomPointsCommand,

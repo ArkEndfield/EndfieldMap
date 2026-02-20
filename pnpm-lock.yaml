@@ -87,27 +87,25 @@ importers:
         version: 4.0.18(@types/node@25.2.3)(esbuild@0.27.3)(jiti@2.6.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/map-adapter-maplibre:
-    dependencies:
-      '@endfieldmap/tools':
-        specifier: workspace:*
-        version: link:../tools
     devDependencies:
       '@endfieldmap/map-core':
         specifier: workspace:*
         version: link:../map-core
+      '@endfieldmap/tools':
+        specifier: workspace:*
+        version: link:../tools
       mobx:
         specifier: ^6.15.0
         version: 6.15.0
 
   packages/map-adapter-ol:
-    dependencies:
-      '@endfieldmap/tools':
-        specifier: workspace:*
-        version: link:../tools
     devDependencies:
       '@endfieldmap/map-core':
         specifier: workspace:*
         version: link:../map-core
+      '@endfieldmap/tools':
+        specifier: workspace:*
+        version: link:../tools
       mobx:
         specifier: ^6.15.0
         version: 6.15.0
