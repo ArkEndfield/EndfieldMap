@@ -32,6 +32,9 @@ dist-ssr
 /packages/map-web/public/images/item
 /packages/map-web/public/images/guides
 
+# TypeScript build info
+*.tsbuildinfo
+
 # pnpm store
 .pnpm-store
 # Sentry Config File
