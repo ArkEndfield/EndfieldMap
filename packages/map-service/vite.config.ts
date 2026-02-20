@@ -48,7 +48,7 @@ export default defineConfig(({ mode }) => {
         entryRoot: 'src',
         insertTypesEntry: true,
         cleanVueFileName: true,
-        copyDtsFiles: false,
+        copyDtsFiles: true,
         aliasesExclude: ['@endfieldmap/map-core', '@endfieldmap/map-core/*', '@endfieldmap/tools', '@endfieldmap/tools/*'],
         exclude: ['@endfieldmap/map-core', '@endfieldmap/map-core/*', '@endfieldmap/tools', '@endfieldmap/tools/*'],
       }),

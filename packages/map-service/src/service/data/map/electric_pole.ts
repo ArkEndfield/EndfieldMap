@@ -22,6 +22,7 @@ import {
   type VisibilityData,
 } from '@endfieldmap/map-service/service/data/map/base/base_preset';
 import type { ElectricPoleNodeSchemaType } from '@endfieldmap/map-service/service/db/export';
+import type { I18nService } from '@endfieldmap/map-service/service/i18n';
 import { PresetService } from '@endfieldmap/map-service/service/preset_service';
 import { serviceEmitter } from '@endfieldmap/map-service/service/service_emitter';
 import { SERVICE_EVENT } from '@endfieldmap/map-service/service/service_emitter';
@@ -34,12 +35,12 @@ import { action, computed, observable, reaction } from 'mobx';
  */
 function getElectricPoleErrorMessage(
   error: unknown,
-  translate: (key: string, options?: Record<string, unknown>) => string
+  translate: I18nService['translate']
 ): string {
   if (error instanceof ElectricPoleError) {
     return translate(`error:electric_pole.${error.i18nKey}`, {
       defaultValue: error.message,
-    });
+    }) as string;
   }
   return error instanceof Error ? error.message : String(error);
 }

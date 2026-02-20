@@ -33,7 +33,7 @@ export default defineConfig({
       entryRoot: 'src',
       insertTypesEntry: true,
       cleanVueFileName: true,
-      copyDtsFiles: false,
+      copyDtsFiles: true,
       aliasesExclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
       exclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
     }),

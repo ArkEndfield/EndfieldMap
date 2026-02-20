@@ -3,7 +3,7 @@ import type { CustomPointPreset, ElectricPolePreset } from '@endfieldmap/map-ser
 import { observer } from 'mobx-react-lite';
 
 import { MapPreview } from '@/components/common/map-preview';
-import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 /**
  * Mock 实体数据
@@ -337,9 +337,7 @@ const mockCustomPointPreset: CustomPointPreset = {
  * MapPreview Demo 页面
  */
 export const MapPreviewDemo: React.FC = observer(() => {
-  const { mapService } = useAdapter();
-
-  const oriMapData = mapService?.mapData;
+  const oriMapData = service.dataService.mapDataService?.mapData;
 
   if (!oriMapData) return null;
 
