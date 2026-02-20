@@ -23,6 +23,6 @@
     "puzzle_piece_count": "利用可能なパズルピース（{{pieces}} 個）",
     "no_puzzle_piece": "パズルピースがありません",
     "solving": "解決中...",
-    "start_slove": "解決を開始"
+    "start_solve": "解決を開始"
   }
 }

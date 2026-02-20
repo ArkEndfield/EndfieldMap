@@ -23,6 +23,6 @@
     "puzzle_piece_count": "사용 가능한 퍼즐 조각 ({{pieces}} 개)",
     "no_puzzle_piece": "퍼즐 조각이 없습니다",
     "solving": "해결 중...",
-    "start_slove": "해결 시작"
+    "start_solve": "해결 시작"
   }
 }

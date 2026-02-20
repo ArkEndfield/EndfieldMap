@@ -22,6 +22,6 @@
     "puzzle_piece_count": "可用拼圖 ({{pieces}} 個)",
     "no_puzzle_piece": "暫無拼圖塊",
     "solving": "求解中...",
-    "start_slove": "開始求解"
+    "start_solve": "開始求解"
   }
 }

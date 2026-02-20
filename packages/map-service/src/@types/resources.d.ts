@@ -5897,7 +5897,7 @@ interface Resources {
       "result": "结果",
       "solution": "解决方案",
       "solving": "求解中...",
-      "start_slove": "开始求解"
+      "start_solve": "开始求解"
     }
   },
   "settings": {

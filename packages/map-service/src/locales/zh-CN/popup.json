@@ -23,6 +23,6 @@
     "puzzle_piece_count": "可用拼图 ({{pieces}} 个)",
     "no_puzzle_piece": "暂无拼图块",
     "solving": "求解中...",
-    "start_slove": "开始求解"
+    "start_solve": "开始求解"
   }
 }

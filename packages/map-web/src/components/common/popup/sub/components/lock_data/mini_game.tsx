@@ -57,7 +57,7 @@ export const MiniGameLockComponent: SubPopupComponentProps<MiniGameLockData> = (
           loading={solving}
           icon={<TickCircleIcon />}
         >
-          {solving ? t('popup:robot.solving') : t('popup:robot.start_slove')}
+          {solving ? t('popup:robot.solving') : t('popup:robot.start_solve')}
         </ZmdSquareButton>
 
         {/* 求解结果网格 */}
