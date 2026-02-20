@@ -1,6 +1,3 @@
-// Re-export everything from map-core for backward compatibility
-export * from '@endfieldmap/map-core';
-
 // OL-specific exports
 export * from '@endfieldmap/map-adapter-ol/controller';
 export * from '@endfieldmap/map-adapter-ol/core/adapter';
