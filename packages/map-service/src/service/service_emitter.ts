@@ -1,4 +1,4 @@
-import { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
+import { EndfieldMapEmitter } from '@endfieldmap/map-core';
 
 export const SERVICE_EVENT = {
   ALERT_INFO: 'service:alert:info',

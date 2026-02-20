@@ -1,14 +1,14 @@
-import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
-import { ElectricPoleMapDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_map_data_manager';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { IElectricPoleController } from '@endfieldmap/map-core/interfaces/controllers';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
 import type {
   ElectricPoleData,
+  ElectricPoleDataInstance,
+  ElectricPoleDeviceKey,
   ElectricPoleNodeData,
-} from '@endfieldmap/map-core/types/entity';
-import type { MapData } from '@endfieldmap/map-core/types/map';
+  IElectricPoleController,
+  MapCoordinate,
+  MapData,
+  MapDataManager,
+} from '@endfieldmap/map-core';
+import { ElectricPoleMapDataManager } from '@endfieldmap/map-core';
 import { action, observable } from 'mobx';
 
 export interface ElectricPoleControllerConfig {
@@ -44,8 +44,8 @@ export class ElectricPoleController implements IElectricPoleController {
       }
       mapData[mapId].push({
         levelLogicId: node.levelLogicId,
-        entityDataIdKey: node.entityDataIdKey as typeof import('@endfieldmap/map-core/const/map').ElectricPoleIdKey,
-        templateId: node.templateId as typeof import('@endfieldmap/map-core/const/map').ElectricPoleKey,
+        entityDataIdKey: node.entityDataIdKey as typeof import('@endfieldmap/map-core').ElectricPoleIdKey,
+        templateId: node.templateId as typeof import('@endfieldmap/map-core').ElectricPoleKey,
         entityType: node.entityType as '#ElectricPole',
         position: node.position,
         properties: node.properties,

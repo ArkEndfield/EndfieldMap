@@ -1,10 +1,8 @@
 import { ActiveLayer } from '@endfieldmap/map-adapter-ol/render/layers/active';
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH } from '@endfieldmap/map-core/const';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import type { DataInstance, DisposeListener } from '@endfieldmap/map-core/types/event';
+import type { DataInstance, DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH, MAP_EVENT } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 

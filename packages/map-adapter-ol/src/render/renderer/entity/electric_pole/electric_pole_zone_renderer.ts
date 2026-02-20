@@ -1,4 +1,4 @@
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';

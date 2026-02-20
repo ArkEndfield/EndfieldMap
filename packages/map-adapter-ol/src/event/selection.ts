@@ -1,10 +1,8 @@
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
 import type { OLEntityEventDetail } from '@endfieldmap/map-adapter-ol/types/event';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import type { DataInstance, DisposeListener } from '@endfieldmap/map-core/types/event';
+import type { DataInstance, DisposeListener, EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { EntityInstanceKey, FeatureType, FeatureTypeKey,MAP_EVENT } from '@endfieldmap/map-core';
 import { action, observable } from 'mobx';
 import type { Feature } from 'ol';
 import { platformModifierKeyOnly } from 'ol/events/condition';

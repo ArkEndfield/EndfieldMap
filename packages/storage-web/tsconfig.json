@@ -1,8 +1,11 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
+    "declarationMap": true,
     "outDir": "./dist",
+    "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
       "@endfieldmap/storage-web": ["./src/index.ts"],
@@ -11,6 +14,7 @@
       "@endfieldmap/tools/*": ["../tools/src/*"]
     }
   },
+  "references": [{ "path": "../tools" }],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,15 +1,8 @@
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import { CustomPointRender } from '@endfieldmap/map-adapter-ol/render/renderer/entity/custom_point/';
 import type { CustomPointFeatureData } from '@endfieldmap/map-adapter-ol/render/renderer/entity/custom_point/custom_point_renderer';
-import { Disposer } from '@endfieldmap/map-core/commom/disposer';
-import { CustomPointKey } from '@endfieldmap/map-core/const/map';
-import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_instance';
-import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { CustomPointMapData, CustomPointNodeData, MapData } from '@endfieldmap/map-core/types';
-import type { CustomPointData, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
-import { IdGenerator } from '@endfieldmap/map-core/utils/id_generator';
+import type { CustomPointData, CustomPointDataInstance, CustomPointMapData, CustomPointNodeData, CustomPointTypeId,EndfieldMapAsset, MapData, MapDataManager } from '@endfieldmap/map-core';
+import { CustomPointKey, CustomPointMapDataManager, Disposer, IdGenerator } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import { action, reaction } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';

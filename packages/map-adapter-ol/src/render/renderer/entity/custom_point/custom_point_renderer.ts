@@ -1,11 +1,11 @@
+import type { CustomPointDataInstance } from '@endfieldmap/map-core';
 import {
   EntityInstanceKey,
   FeatureType,
   FeatureTypeKey,
   LayerType,
   LayerTypeKey,
-} from '@endfieldmap/map-core/const/map';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
+} from '@endfieldmap/map-core';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import { Point } from 'ol/geom';

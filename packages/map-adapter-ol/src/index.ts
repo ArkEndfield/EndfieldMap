@@ -9,4 +9,3 @@ export * from '@endfieldmap/map-adapter-ol/history';
 export * from '@endfieldmap/map-adapter-ol/ol';
 export * from '@endfieldmap/map-adapter-ol/render/renderer';
 export * from '@endfieldmap/map-adapter-ol/types';
-export * from '@endfieldmap/map-core/event/emitter';

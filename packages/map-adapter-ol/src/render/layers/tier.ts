@@ -1,9 +1,8 @@
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
 import { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import { emptyImage, emptyImageBase64String } from '@endfieldmap/map-adapter-ol/utils/image';
-import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import { TierDataInstance, TierDataManager } from '@endfieldmap/map-core/data/tier';
+import type { MapDataManager } from '@endfieldmap/map-core';
+import { LayerType, LayerTypeKey, TierDataInstance, TierDataManager } from '@endfieldmap/map-core';
 import { ImagePool, logger } from '@endfieldmap/tools';
 import ImageLayer from 'ol/layer/Image';
 import { ImageStatic } from 'ol/source';

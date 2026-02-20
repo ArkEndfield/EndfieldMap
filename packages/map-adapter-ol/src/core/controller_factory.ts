@@ -20,13 +20,8 @@ import {
   DeleteCustomPointCommand,
   DeleteElectricPoleCommand,
 } from '@endfieldmap/map-adapter-ol/history';
-import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
-import { historyManager } from '@endfieldmap/map-core/history';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
-import type { CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
-import type { MapData } from '@endfieldmap/map-core/types/map';
+import type { CustomPointDataInstance, CustomPointTypeId, ElectricPoleDataInstance, ElectricPoleDeviceKey, MapCoordinate, MapData } from '@endfieldmap/map-core';
+import { historyManager } from '@endfieldmap/map-core';
 
 /**
  * 控制器工厂接口

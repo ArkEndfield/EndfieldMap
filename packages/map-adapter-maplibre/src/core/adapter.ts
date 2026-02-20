@@ -1,13 +1,3 @@
-import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
-import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
-import { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import type { MapData } from '@endfieldmap/map-core/types/map';
-import type { DataInstance, MapEventEmitter } from '@endfieldmap/map-core/types/event';
-import { logger } from '@endfieldmap/tools';
-import { action, observable } from 'mobx';
-
 import { ActiveFeatureController } from '@endfieldmap/map-adapter-maplibre/controller/active_feature_controller';
 import { CustomPointController } from '@endfieldmap/map-adapter-maplibre/controller/custom_point_controller';
 import { ElectricPoleController } from '@endfieldmap/map-adapter-maplibre/controller/electric_pole_controller';
@@ -17,6 +7,10 @@ import { HoverFeatureController } from '@endfieldmap/map-adapter-maplibre/contro
 import { MapController } from '@endfieldmap/map-adapter-maplibre/controller/map_controller';
 import { TierController } from '@endfieldmap/map-adapter-maplibre/controller/tier_controller';
 import type { MapLibreAdapterConfig } from '@endfieldmap/map-adapter-maplibre/types';
+import type { CustomPointDataInstance, DataInstance, ElectricPoleDataInstance, EntityDataInstance, MapData, MapEventEmitter } from '@endfieldmap/map-core';
+import { EndfieldMapAsset, EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { logger } from '@endfieldmap/tools';
+import { action, observable } from 'mobx';
 
 /**
  * MapLibre Native 地图适配器

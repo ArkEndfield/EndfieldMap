@@ -1,5 +1,4 @@
-import type { EndfieldMapAssetConfig } from '@endfieldmap/map-core/data/asset';
-import type { MapDataJson } from '@endfieldmap/map-core/types/map';
+import type { EndfieldMapAssetConfig, MapDataJson } from '@endfieldmap/map-core';
 import type { LoggerReporter } from '@endfieldmap/tools';
 
 /**

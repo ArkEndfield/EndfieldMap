@@ -1,7 +1,7 @@
 import type { UnionLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
 import { isMultiLayer } from '@endfieldmap/map-adapter-ol/render/layers/_base';
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
-import { type LayerType } from '@endfieldmap/map-core/const/map';
+import { type LayerType } from '@endfieldmap/map-core';
 
 /** 地图图层管理器 */
 export class EndfieldMapLayerController {

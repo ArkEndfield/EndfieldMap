@@ -1,7 +1,6 @@
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
-import { FeatureType, FeatureTypeKey, LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { MapBaseRegionData, MapData, OverrideRegionData } from '@endfieldmap/map-core/types';
+import type { MapBaseRegionData, MapData, MapDataManager, OverrideRegionData } from '@endfieldmap/map-core';
+import { FeatureType, FeatureTypeKey, LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';

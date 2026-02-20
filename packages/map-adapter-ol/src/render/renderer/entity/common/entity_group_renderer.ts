@@ -2,6 +2,7 @@ import {
   createClusterBadgeCanvasStyle,
   createEntityGroupWebGLStyle,
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/entity_group_style';
+import type { EntityDataInstance } from '@endfieldmap/map-core';
 import {
   DEFAULT_CLUSTER_DISTANCE,
   EntityInstanceKey,
@@ -9,8 +10,7 @@ import {
   FeatureTypeKey,
   LayerType,
   LayerTypeKey,
-} from '@endfieldmap/map-core/const/map';
-import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
+} from '@endfieldmap/map-core';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import { Point } from 'ol/geom';

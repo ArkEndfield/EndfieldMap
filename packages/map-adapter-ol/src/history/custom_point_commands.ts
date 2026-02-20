@@ -1,9 +1,5 @@
 import type { CustomPointController } from '@endfieldmap/map-adapter-ol/controller/entity/custom_point_controller';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
-import type { Command } from '@endfieldmap/map-core/history/command';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
-import type { CustomPointData, CustomPointTypeId } from '@endfieldmap/map-core/types/entity';
-import type { MapData } from '@endfieldmap/map-core/types/map';
+import type { Command, CustomPointData, CustomPointDataInstance, CustomPointTypeId, MapCoordinate, MapData } from '@endfieldmap/map-core';
 
 /**
  * 创建自定义标点命令

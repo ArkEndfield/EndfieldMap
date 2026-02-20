@@ -1,15 +1,8 @@
-import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
-import type { EntityDataInstance, EntityGroupManager } from '@endfieldmap/map-core/data/entity';
-import { EntityMapDataManager } from '@endfieldmap/map-core/data/entity';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { IEntityController } from '@endfieldmap/map-core/interfaces/controllers';
-import type {
-  EntityData,
-  EntityInfoDataJson,
+import type { EntityData,
+EntityDataInstance, EntityGroupManager,   EntityInfoDataJson,
   EntityInfoStats,
-  EntityJsonDataList,
-} from '@endfieldmap/map-core/types/entity';
-import type { MapData } from '@endfieldmap/map-core/types/map';
+  EntityJsonDataList,IEntityController, MapData,MapDataManager } from '@endfieldmap/map-core';
+import { EntityMapDataManager,MarkedFeatureFilterMode } from '@endfieldmap/map-core';
 import { action, computed, observable, reaction } from 'mobx';
 
 export interface EntityControllerConfig {

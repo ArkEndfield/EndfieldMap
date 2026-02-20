@@ -1,4 +1,4 @@
-import type { IHoverConnectionController } from '@endfieldmap/map-core/interfaces/controllers';
+import type { IHoverConnectionController } from '@endfieldmap/map-core';
 
 /**
  * MapLibre Hover 连接控制器

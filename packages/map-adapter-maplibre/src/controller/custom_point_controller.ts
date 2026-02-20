@@ -1,14 +1,14 @@
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
-import { CustomPointMapDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_map_data_manager';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { ICustomPointController } from '@endfieldmap/map-core/interfaces/controllers';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
 import type {
   CustomPointData,
+  CustomPointDataInstance,
   CustomPointNodeData,
   CustomPointTypeId,
-} from '@endfieldmap/map-core/types/entity';
-import type { MapData } from '@endfieldmap/map-core/types/map';
+  ICustomPointController,
+  MapCoordinate,
+  MapData,
+  MapDataManager,
+} from '@endfieldmap/map-core';
+import { CustomPointMapDataManager } from '@endfieldmap/map-core';
 import { action, observable } from 'mobx';
 
 export interface CustomPointControllerConfig {
@@ -44,7 +44,7 @@ export class CustomPointController implements ICustomPointController {
       mapData[mapId].push({
         levelLogicId: node.levelLogicId,
         entityDataIdKey: node.entityDataIdKey as CustomPointTypeId,
-        templateId: node.templateId as typeof import('@endfieldmap/map-core/const/map').CustomPointKey,
+        templateId: node.templateId as typeof import('@endfieldmap/map-core').CustomPointKey,
         entityType: node.entityType as '#CustomPoint',
         position: node.position,
         properties: node.properties,

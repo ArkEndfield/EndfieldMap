@@ -1,8 +1,11 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
+    "declarationMap": true,
     "outDir": "./dist",
+    "rootDir": "./src",
     "baseUrl": ".",
     "erasableSyntaxOnly": false,
     "paths": {
@@ -12,6 +15,7 @@
       "@endfieldmap/tools/*": ["../tools/src/*"]
     }
   },
+  "references": [{ "path": "../tools" }],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

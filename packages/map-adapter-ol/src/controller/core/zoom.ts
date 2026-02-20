@@ -1,6 +1,6 @@
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, MAP_EVENT } from '@endfieldmap/map-core/const';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, MAP_EVENT } from '@endfieldmap/map-core';
 import Control from 'ol/control/Control';
 import type Map from 'ol/Map';
 import type View from 'ol/View';

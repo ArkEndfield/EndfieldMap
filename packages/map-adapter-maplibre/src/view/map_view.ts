@@ -1,9 +1,7 @@
-import type { IMapView } from '@endfieldmap/map-core/interfaces/map_view';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
-import { action, observable } from 'mobx';
-
-import { lngLatToPixel, pixelToLngLat } from '@endfieldmap/map-adapter-maplibre/utils/coordinate';
 import type { PendingViewAnimation } from '@endfieldmap/map-adapter-maplibre/types';
+import { lngLatToPixel, pixelToLngLat } from '@endfieldmap/map-adapter-maplibre/utils/coordinate';
+import type { IMapView, MapCoordinate } from '@endfieldmap/map-core';
+import { action, observable } from 'mobx';
 
 /**
  * MapLibre 地图视图状态

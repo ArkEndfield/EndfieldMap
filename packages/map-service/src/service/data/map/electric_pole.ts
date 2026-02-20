@@ -13,7 +13,7 @@ import type {
   IVisibilityService,
   PresetSubscribeCallback,
 } from '@endfieldmap/map-service/@types/preset_base';
-import { ElectricPoleType } from '@endfieldmap/map-service/@types/preset_store';
+import type { ElectricPoleType } from '@endfieldmap/map-service/@types/preset_store';
 import { DATA_STORAGE_KEY, EXPORT_TYPE_KEY } from '@endfieldmap/map-service/const/data';
 import { modes } from '@endfieldmap/map-service/const/electric_pole';
 import {

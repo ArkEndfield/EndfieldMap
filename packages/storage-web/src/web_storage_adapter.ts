@@ -1,4 +1,4 @@
-import type { IStorageAdapter } from '@endfieldmap/tools/storage/storage_adapter';
+import type { IStorageAdapter } from '@endfieldmap/tools';
 
 const NAMESPACE = 'endfieldmap';
 

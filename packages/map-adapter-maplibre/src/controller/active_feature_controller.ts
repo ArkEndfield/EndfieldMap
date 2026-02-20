@@ -1,5 +1,4 @@
-import type { IActiveFeatureController } from '@endfieldmap/map-core/interfaces/controllers';
-import type { DataInstance } from '@endfieldmap/map-core/types/event';
+import type { DataInstance,IActiveFeatureController } from '@endfieldmap/map-core';
 import { action, observable } from 'mobx';
 
 /**

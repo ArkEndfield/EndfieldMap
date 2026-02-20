@@ -3,7 +3,7 @@ import {
   DEFAULT_ICON_SIZE,
   DEFAULT_STROKE_COLOR,
   DEFAULT_STROKE_WIDTH,
-} from '@endfieldmap/map-core/const/map';
+} from '@endfieldmap/map-core';
 import type { ColorExpression, FlatStyle, NumberExpression } from 'ol/style/flat';
 
 const ENTITY_SIZE = DEFAULT_ICON_SIZE;

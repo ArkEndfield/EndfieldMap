@@ -4,7 +4,7 @@ import {
   DEFAULT_SELECTED_COLOR,
   DEFAULT_STROKE_COLOR,
   DEFAULT_STROKE_WIDTH,
-} from '@endfieldmap/map-core/const/map';
+} from '@endfieldmap/map-core';
 import type { FeatureLike } from 'ol/Feature';
 import CircleStyle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';

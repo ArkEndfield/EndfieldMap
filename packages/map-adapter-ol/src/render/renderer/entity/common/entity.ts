@@ -3,7 +3,7 @@ import {
   EntityGroupRenderer,
   type EntityGroupRendererConfig,
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/entity_group_renderer';
-import type { MapData } from '@endfieldmap/map-core/types';
+import type { MapData } from '@endfieldmap/map-core';
 import type { Layer } from 'ol/layer';
 
 export interface EntityRenderConfig {

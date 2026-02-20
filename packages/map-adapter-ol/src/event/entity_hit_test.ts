@@ -1,5 +1,5 @@
 import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
-import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core/const/map';
+import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core';
 import type { Map as OlMap } from 'ol';
 import type { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';

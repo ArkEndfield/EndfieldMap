@@ -1,16 +1,14 @@
 import { EndfieldSelectionInteraction } from '@endfieldmap/map-adapter-ol/event/selection';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
+import type { DisposeListener, EndfieldMapEmitter, MapConfig } from '@endfieldmap/map-core';
 import {
   DEFAULT_CENTER,
   DEFAULT_MAX_ZOOM,
   DEFAULT_MIN_ZOOM,
   DEFAULT_ROTATION,
   DEFAULT_ZOOM,
-} from '@endfieldmap/map-core/const/map';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import type { DisposeListener } from '@endfieldmap/map-core/types/event';
-import type { MapConfig } from '@endfieldmap/map-core/types/map';
+  MAP_EVENT,
+} from '@endfieldmap/map-core';
 import { observable } from 'mobx';
 import { Overlay, View } from 'ol';
 import Control from 'ol/control/Control';

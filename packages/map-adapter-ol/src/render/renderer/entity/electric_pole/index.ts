@@ -1,7 +1,7 @@
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import { ElectricPoleRenderer } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_renderer';
 import { ElectricPoleZoneRenderer } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_zone_renderer';
-import type { MapData } from '@endfieldmap/map-core/types';
+import type { MapData } from '@endfieldmap/map-core';
 import type VectorLayer from 'ol/layer/Vector';
 import type WebGLVectorLayer from 'ol/layer/WebGLVector';
 

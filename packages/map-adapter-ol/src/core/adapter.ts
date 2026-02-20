@@ -15,14 +15,8 @@ import { PopupController } from '@endfieldmap/map-adapter-ol/controller/interact
 import { TierController } from '@endfieldmap/map-adapter-ol/controller/tier';
 import { EndfieldMapEvent } from '@endfieldmap/map-adapter-ol/event/map';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { EntityInstanceKey, LayerType } from '@endfieldmap/map-core/const';
-import type { EndfieldMapAssetConfig } from '@endfieldmap/map-core/data/asset';
-import { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
-import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
-import type { CustomPointDataInstance } from '@endfieldmap/map-core/data/entity/custom_point';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
-import { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import type { MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core/types/map';
+import type { CustomPointDataInstance, ElectricPoleDataInstance, EndfieldMapAssetConfig, EntityDataInstance, MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core';
+import { EndfieldMapAsset, EndfieldMapEmitter, EntityInstanceKey, LayerType  } from '@endfieldmap/map-core';
 import type { LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';

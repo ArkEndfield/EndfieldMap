@@ -1,5 +1,5 @@
 // Re-export all types from map-core
-export * from '@endfieldmap/map-core/types';
+export * from '@endfieldmap/map-core';
 
 // OL-specific types
 export * from '@endfieldmap/map-adapter-ol/types/dev_tools';

@@ -2,6 +2,7 @@ import {
   CONNECTION_STYLE_HOVER,
   CONNECTION_STYLE_NORMAL,
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_style';
+import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
 import {
   ConnectionTargetIdKey,
   EntityInstanceKey,
@@ -9,8 +10,7 @@ import {
   FeatureTypeKey,
   LayerType,
   LayerTypeKey,
-} from '@endfieldmap/map-core/const/map';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
+} from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import { Feature } from 'ol';

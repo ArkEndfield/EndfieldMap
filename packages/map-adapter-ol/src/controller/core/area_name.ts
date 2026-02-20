@@ -1,11 +1,8 @@
 import type { AreaNameFeatureStyle, AreaNameLayerConfig } from '@endfieldmap/map-adapter-ol/render/layers/area_name';
 import { AreaNameLayer } from '@endfieldmap/map-adapter-ol/render/layers/area_name';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { Disposer } from '@endfieldmap/map-core/commom/disposer';
-import { DEFAULT_ZOOM } from '@endfieldmap/map-core/const';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter,MapDataManager } from '@endfieldmap/map-core';
+import { DEFAULT_ZOOM, Disposer, MAP_EVENT } from '@endfieldmap/map-core';
 import { reaction } from 'mobx';
 
 export interface AreaNameControllerConfig extends AreaNameLayerConfig {

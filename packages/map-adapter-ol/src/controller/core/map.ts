@@ -1,12 +1,8 @@
 import { MapRender } from '@endfieldmap/map-adapter-ol/render/map';
 import { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
-import type { MapConfig, MapDataJson } from '@endfieldmap/map-core/types/map';
+import type { EndfieldMapAsset, EndfieldMapEmitter, MapConfig, MapCoordinate, MapDataJson } from '@endfieldmap/map-core';
+import { MAP_EVENT, MapDataManager } from '@endfieldmap/map-core';
 
 export interface MapControllerConfig {
   mapConfig: Omit<MapConfig, 'mapImageUrl'>;

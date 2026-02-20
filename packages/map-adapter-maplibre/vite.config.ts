@@ -7,10 +7,10 @@ export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
   const alias = {
     '@endfieldmap/map-adapter-maplibre': path.resolve(__dirname, './src'),
-    '@endfieldmap/map-core': path.resolve(__dirname, '../map-core/src'),
   } as Record<string, string>;
 
   if (isDev) {
+    alias['@endfieldmap/map-core'] = path.resolve(__dirname, '../map-core/src');
     alias['@endfieldmap/tools'] = path.resolve(__dirname, '../tools/src');
   }
 
@@ -53,7 +53,7 @@ export default defineConfig(({ mode }) => {
       }),
       dts({
         include: ['src/**/*'],
-        tsconfigPath: 'tsconfig.build.json',
+        tsconfigPath: 'tsconfig.json',
         outDirs: 'dist',
         entryRoot: 'src',
         insertTypesEntry: true,

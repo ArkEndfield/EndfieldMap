@@ -1,6 +1,6 @@
 import { createHoverCornerStyle } from '@endfieldmap/map-adapter-ol/render/factory';
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
-import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const';
+import { LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import type { FeatureLike } from 'ol/Feature';

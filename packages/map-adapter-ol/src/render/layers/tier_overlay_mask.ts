@@ -1,5 +1,5 @@
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
-import { DEFAULT_OPACITY, LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
+import { DEFAULT_OPACITY, LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import { observable } from 'mobx';
 import ImageLayer from 'ol/layer/Image';
 import { ImageStatic } from 'ol/source';

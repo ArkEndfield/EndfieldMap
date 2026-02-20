@@ -2,21 +2,18 @@ import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import { EntityRender } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/entity';
 import type { FeatureData } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/entity_group_renderer';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { Disposer } from '@endfieldmap/map-core/commom/disposer';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { EntityInstanceKey, MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
-import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
-import type { EntityDataInstance, EntityGroupManager } from '@endfieldmap/map-core/data/entity';
-import { EntityMapDataManager } from '@endfieldmap/map-core/data/entity';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import type {
+  EndfieldMapAsset,
+  EndfieldMapEmitter,
   EntityData,
+  EntityDataInstance,
+  EntityGroupManager,
   EntityInfoDataJson,
   EntityInfoStats,
   EntityJsonDataList,
-  MapData,
-} from '@endfieldmap/map-core/types';
+  MapData,MapDataManager
+} from '@endfieldmap/map-core';
+import { Disposer, EntityInstanceKey, EntityMapDataManager,MAP_EVENT, MarkedFeatureFilterMode } from '@endfieldmap/map-core';
 import { action, reaction } from 'mobx';
 
 export interface EntityControllerConfig {

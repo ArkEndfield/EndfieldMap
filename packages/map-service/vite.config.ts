@@ -16,10 +16,7 @@ export default defineConfig(({ mode }) => {
   return {
     build: {
       lib: {
-        entry: [
-          path.resolve(__dirname, 'src/index.ts'),
-          path.resolve(__dirname, 'src/locales/bundled.ts'),
-        ],
+        entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
         fileName: 'index',
       },
@@ -46,7 +43,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       dts({
         include: ['src/**/*'],
-        tsconfigPath: 'tsconfig.build.json',
+        tsconfigPath: 'tsconfig.json',
         outDirs: 'dist',
         entryRoot: 'src',
         insertTypesEntry: true,

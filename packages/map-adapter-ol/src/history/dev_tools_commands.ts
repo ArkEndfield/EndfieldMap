@@ -1,5 +1,5 @@
 import type { DevToolsFeatureData } from '@endfieldmap/map-adapter-ol/types/dev_tools';
-import type { Command } from '@endfieldmap/map-core/history/command';
+import type { Command } from '@endfieldmap/map-core';
 
 /**
  * DevTools Controller 接口（用于命令引用）

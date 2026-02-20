@@ -1,6 +1,6 @@
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import { CustomPointRenderer } from '@endfieldmap/map-adapter-ol/render/renderer/entity/custom_point/custom_point_renderer';
-import type { MapData } from '@endfieldmap/map-core/types';
+import type { MapData } from '@endfieldmap/map-core';
 import type WebGLVectorLayer from 'ol/layer/WebGLVector';
 
 export interface CustomPointRenderConfig {

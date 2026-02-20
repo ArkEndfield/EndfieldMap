@@ -1,8 +1,7 @@
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import type { OLMapContextMenuEventDetail, OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { DEFAULT_ZOOM } from '@endfieldmap/map-core/const/map';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { DEFAULT_ZOOM,MAP_EVENT } from '@endfieldmap/map-core';
 import type { Map as OlMap, MapBrowserEvent, View } from 'ol';
 
 /**

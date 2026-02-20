@@ -1,5 +1,6 @@
 import { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import { tileLoadFunction } from '@endfieldmap/map-adapter-ol/utils/image';
+import type { EndfieldMapAsset, MapData, MapDataManager } from '@endfieldmap/map-core';
 import {
   DEFAULT_MAX_ZOOM,
   DEFAULT_MIN_ZOOM,
@@ -8,10 +9,7 @@ import {
   LayerTypeKey,
   MapType,
   MapTypeKey,
-} from '@endfieldmap/map-core/const/map';
-import type { EndfieldMapAsset } from '@endfieldmap/map-core/data/asset';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { MapData } from '@endfieldmap/map-core/types/map';
+} from '@endfieldmap/map-core';
 import TileLayer from 'ol/layer/Tile';
 import { XYZ } from 'ol/source';
 

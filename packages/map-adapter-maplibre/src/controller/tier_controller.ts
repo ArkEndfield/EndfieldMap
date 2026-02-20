@@ -1,9 +1,5 @@
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import { TierDataManager } from '@endfieldmap/map-core/data/tier';
-import type { ITierController } from '@endfieldmap/map-core/interfaces/controllers';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
-import type { MapData } from '@endfieldmap/map-core/types/map';
-import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
+import type { GridTierItem,ITierController, MapCoordinate, MapData, MapDataManager } from '@endfieldmap/map-core';
+import { TierDataManager } from '@endfieldmap/map-core';
 import { action, observable } from 'mobx';
 
 export interface TierControllerConfig {

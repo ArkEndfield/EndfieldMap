@@ -1,4 +1,4 @@
-import { AdapterRegistry, RegisterableAdapter } from '@endfieldmap/map-service/service/adapter_registry';
+import { AdapterRegistry, type RegisterableAdapter } from '@endfieldmap/map-service/service/adapter_registry';
 import { AssetService } from '@endfieldmap/map-service/service/asset';
 import { DataService } from '@endfieldmap/map-service/service/data';
 import type { DatabaseServiceConfig } from '@endfieldmap/map-service/service/db';

@@ -7,11 +7,8 @@ import {
   selectTopmostHitResult,
 } from '@endfieldmap/map-adapter-ol/event/entity_hit_test';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import { ConnectionTargetIdKey, EntityInstanceKey } from '@endfieldmap/map-core/const/map';
-import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
+import type { ElectricPoleDataInstance, EndfieldMapEmitter,EntityDataInstance } from '@endfieldmap/map-core';
+import { ConnectionTargetIdKey, EntityInstanceKey,MAP_EVENT } from '@endfieldmap/map-core';
 import { boundingExtent } from 'ol/extent';
 
 export interface EventControllerConfig {

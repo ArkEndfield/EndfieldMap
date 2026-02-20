@@ -1,4 +1,4 @@
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
+import type { MapCoordinate } from '@endfieldmap/map-core';
 
 /**
  * 瓦片投影范围（像素空间）

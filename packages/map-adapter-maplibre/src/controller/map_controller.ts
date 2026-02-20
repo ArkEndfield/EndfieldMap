@@ -1,10 +1,7 @@
 import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre/utils/coordinate';
 import { MapLibreMapView } from '@endfieldmap/map-adapter-maplibre/view/map_view';
-import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, DEFAULT_ZOOM } from '@endfieldmap/map-core/const/map';
-import { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import type { IMapController } from '@endfieldmap/map-core/interfaces/controllers';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
-import type { MapDataJson } from '@endfieldmap/map-core/types/map';
+import type { IMapController, MapCoordinate, MapDataJson } from '@endfieldmap/map-core';
+import { DEFAULT_MAX_ZOOM, DEFAULT_MIN_ZOOM, DEFAULT_ZOOM, MapDataManager } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 

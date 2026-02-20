@@ -1,9 +1,8 @@
 import { ElectricPoleRenderer } from '@endfieldmap/map-adapter-ol/render/renderer';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
 import type { OLMapHoverEventDetail } from '@endfieldmap/map-adapter-ol/types/event';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import type { DisposeListener } from '@endfieldmap/map-core/types/event';
+import type { DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { MAP_EVENT } from '@endfieldmap/map-core';
 import { debounce, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';

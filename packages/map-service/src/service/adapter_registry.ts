@@ -1,5 +1,5 @@
-import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
-import type { IMapAdapter } from '@endfieldmap/map-core/interfaces/adapter';
+import type { EndfieldMapEmitter } from '@endfieldmap/map-core';
+import type { IMapAdapter } from '@endfieldmap/map-core';
 
 /**
  * 适配器注册时接受的类型

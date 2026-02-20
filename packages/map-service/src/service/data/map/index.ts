@@ -1,4 +1,4 @@
-import { EntityInfoDataJson, EntityJsonDataList, MapDataJson } from '@endfieldmap/map-core';
+import type { EntityInfoDataJson, EntityJsonDataList, MapDataJson } from '@endfieldmap/map-core';
 import { AdapterRegistry } from '@endfieldmap/map-service/service/adapter_registry';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
 import { CustomPointDataService } from '@endfieldmap/map-service/service/data/map/custom_point';

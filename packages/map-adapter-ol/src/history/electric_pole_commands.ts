@@ -1,9 +1,5 @@
 import type { ElectricPoleController } from '@endfieldmap/map-adapter-ol/controller/entity/electric_pole_controller';
-import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole';
-import type { Command } from '@endfieldmap/map-core/history/command';
-import type { ElectricPoleData, MapData } from '@endfieldmap/map-core/types';
-import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
+import type { Command, ElectricPoleData, ElectricPoleDataInstance, ElectricPoleDeviceKey, MapCoordinate,MapData} from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 
 /**

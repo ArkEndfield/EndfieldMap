@@ -1,10 +1,8 @@
 import { TierLayer } from '@endfieldmap/map-adapter-ol/render/layers/tier';
 import { TierOverlayMaskLayer } from '@endfieldmap/map-adapter-ol/render/layers/tier_overlay_mask';
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
-import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
-import { TierDataManager } from '@endfieldmap/map-core/data/tier';
-import type { MapData } from '@endfieldmap/map-core/types';
-import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
+import type { GridTierItem,MapData, MapDataManager } from '@endfieldmap/map-core';
+import { TierDataManager } from '@endfieldmap/map-core';
 import type { Coordinate } from 'ol/coordinate';
 
 export interface TierControllerConfig {

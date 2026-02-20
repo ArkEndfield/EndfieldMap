@@ -19,7 +19,7 @@ import {
   DevToolsShapeType,
   type DevToolsStyleConfig,
 } from '@endfieldmap/map-adapter-ol/types/dev_tools';
-import { HistoryManager } from '@endfieldmap/map-core/history/history_manager';
+import { HistoryManager } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 import type { Feature } from 'ol';

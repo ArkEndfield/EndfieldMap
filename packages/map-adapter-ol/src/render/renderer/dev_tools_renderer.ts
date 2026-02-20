@@ -8,7 +8,7 @@ import {
   type DevToolsLayerItem,
   type DevToolsShapeType,
 } from '@endfieldmap/map-adapter-ol/types/dev_tools';
-import { LayerType, LayerTypeKey } from '@endfieldmap/map-core/const/map';
+import { LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import { Feature } from 'ol';
 import type { Geometry } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';

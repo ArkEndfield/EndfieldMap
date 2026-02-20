@@ -51,7 +51,7 @@ export default defineConfig(({ mode }) => {
       }),
       dts({
         include: ['src/**/*'],
-        tsconfigPath: 'tsconfig.build.json',
+        tsconfigPath: 'tsconfig.json',
         outDirs: 'dist',
         entryRoot: 'src',
         insertTypesEntry: true,

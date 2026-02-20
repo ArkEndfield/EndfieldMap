@@ -1,5 +1,4 @@
-import type { IHoverFeatureController } from '@endfieldmap/map-core/interfaces/controllers';
-import type { DataInstance } from '@endfieldmap/map-core/types/event';
+import type { DataInstance, IHoverFeatureController } from '@endfieldmap/map-core';
 import { observable } from 'mobx';
 
 /**
