@@ -16,7 +16,10 @@ export default defineConfig(({ mode }) => {
   return {
     build: {
       lib: {
-        entry: path.resolve(__dirname, 'src/index.ts'),
+        entry: [
+          path.resolve(__dirname, 'src/index.ts'),
+          path.resolve(__dirname, 'src/locales/bundled.ts'),
+        ],
         formats: ['es'],
         fileName: 'index',
       },
