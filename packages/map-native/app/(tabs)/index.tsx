@@ -1,98 +1,118 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
+import React, { useCallback, useRef, useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { GameMapView } from '@/components/map/game-map-view';
+import { EntityFilterSheet, type EntityFilterSheetRef } from '@/components/ui/entity-filter-sheet';
+import { EntityInfoSheet } from '@/components/ui/entity-info-sheet';
+import { MapSwitcher } from '@/components/ui/map-switcher';
+import { AdapterProvider } from '@/context/adapter';
+import { useMapInit } from '@/hooks/use-map-init';
 
-export default function HomeScreen() {
+export default function MapScreen() {
+  const { adapter, loading, error } = useMapInit();
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>加载地图数据...</Text>
+      </View>
+    );
+  }
+
+  if (error || !adapter) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.errorText}>加载失败</Text>
+        <Text style={styles.errorDetail}>{error?.message ?? 'Unknown error'}</Text>
+      </View>
+    );
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <AdapterProvider adapter={adapter}>
+      <MapContent />
+    </AdapterProvider>
+  );
+}
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+function MapContent() {
+  const [activeEntity, setActiveEntity] = useState<EntityDataInstance | null>(null);
+  const filterSheetRef = useRef<EntityFilterSheetRef>(null);
+
+  const handleEntityPress = useCallback((instance: EntityDataInstance) => {
+    setActiveEntity(instance);
+  }, []);
+
+  const handleDismissInfo = useCallback(() => {
+    setActiveEntity(null);
+  }, []);
+
+  const handleOpenFilter = useCallback(() => {
+    filterSheetRef.current?.present();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <GameMapView onEntityPress={handleEntityPress} />
+
+      <MapSwitcher />
+
+      <Pressable style={styles.filterFab} onPress={handleOpenFilter}>
+        <Text style={styles.filterFabText}>筛选</Text>
+      </Pressable>
+
+      <EntityInfoSheet instance={activeEntity} onDismiss={handleDismissInfo} />
+      <EntityFilterSheet ref={filterSheetRef} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
   },
-  stepContainer: {
-    gap: 8,
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 15,
+    color: '#666',
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#e74c3c',
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  errorDetail: {
+    fontSize: 13,
+    color: '#999',
+    textAlign: 'center',
+    paddingHorizontal: 40,
+  },
+  filterFab: {
     position: 'absolute',
+    bottom: 40,
+    right: 16,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  filterFabText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#007AFF',
   },
 });

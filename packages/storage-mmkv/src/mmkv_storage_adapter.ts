@@ -7,7 +7,7 @@ import type { IStorageAdapter } from '@endfieldmap/tools';
 export interface MmkvInstance {
   getString(key: string): string | undefined;
   set(key: string, value: string): void;
-  delete(key: string): void;
+  remove(key: string): boolean;
   clearAll(): void;
 }
 
@@ -33,7 +33,7 @@ export class MmkvStorageAdapter implements IStorageAdapter {
   }
 
   removeItem(key: string): void {
-    this.storage.delete(key);
+    this.storage.remove(key);
   }
 
   clear(): void {

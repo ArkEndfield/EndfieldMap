@@ -16,7 +16,7 @@ export interface MapServiceConfig<T, R> {
   databaseConfig: Omit<DatabaseServiceConfig<T, R>, 'isDev'>;
   consolaReporter?: LoggerReporter;
   isDev?: boolean;
-  i18nConfig?: Omit<I18nServiceConfig, 'isDev'>;
+  i18nConfig: Omit<I18nServiceConfig, 'isDev'>;
   backendHost?: string;
   assetsHost?: string;
 }
@@ -75,8 +75,8 @@ export class MapService<T, R> {
     });
   }
 
-  public translate(key: string | string[], options?: Record<string, unknown>): string {
-    return this.i18nService.translate(key, options);
+  public translate(...args: Parameters<typeof this.i18nService.translate>): string {
+    return this.i18nService.translate(...args);
   }
 
   public async init() {

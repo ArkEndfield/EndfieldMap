@@ -17,6 +17,7 @@
     "lng:type": "pnpm -C packages/map-service lng:type",
     "build:core": "pnpm -C packages/map-core build",
     "build:adapter:ol": "pnpm -C packages/map-adapter-ol build",
+    "build:adapter:maplibre": "pnpm -C packages/map-adapter-maplibre build",
     "build:tools": "pnpm -C packages/tools build",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint:fix"

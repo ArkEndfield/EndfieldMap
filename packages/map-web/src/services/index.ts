@@ -13,6 +13,7 @@ export const service = new MapService({
   consolaReporter: sentryReporter,
   isDev: isDev,
   i18nConfig: {
+    resourceLoader: (language: string, namespace: string) => import(`@endfieldmap/map-service/locales/${language}/${namespace}.json`),
     hooks: [LanguageDetector],
     afterLoad: () => {
       loadingManager.completeStage(LoadingStageId.I18N);
