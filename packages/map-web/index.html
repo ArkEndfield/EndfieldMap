@@ -561,6 +561,11 @@
       // 初始阶段
       window.__LOADING_PROGRESS__.update('INIT', 100);
     </script>
+    <script>
+      const isNotBaidu = !navigator.userAgent.toLowerCase().includes('baiduspider');
+      const isNotZh = !navigator.language.startsWith('zh');
+      isNotBaidu && isNotZh && (document.title = 'Endfiled Interactive Map - ZMDMAP');
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
