@@ -71,6 +71,8 @@ export class MapService {
       this.adapter.entityController.loadData(entityData[0], entityData[1]);
 
       this.adapter.areaNameController.registerNameFunction(translateAreaName);
+      // 按当前视图缩放同步一次区域名（避免初始缩放较小时仍显示详细名）
+      this.adapter.renderAreaName();
 
       // 初始化鼠标指针样式监听器
       initCursorEventListeners(this.adapter);

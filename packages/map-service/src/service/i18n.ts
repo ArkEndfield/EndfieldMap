@@ -81,7 +81,7 @@ export class I18nService {
    * 获取当前语言
    */
   public get currentLocale() {
-    return this.getLanguage(this.i18n.languages);
+    return this.getLanguage(this.i18n.languages || []);
   }
 
   /**
