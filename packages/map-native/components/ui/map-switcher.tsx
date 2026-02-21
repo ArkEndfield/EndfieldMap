@@ -1,14 +1,21 @@
+import type { MapData } from '@endfieldmap/map-core/types/map';
 import { observer } from 'mobx-react-lite';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/context/adapter';
+import { service } from '@/services/map-service';
 
-/**
- * 地图切换器
- * 悬浮在地图上方，点击展开地图列表
- */
+function translateMapName(
+  map: MapData,
+  t: (key: string, opts?: { defaultValue?: string }) => string
+): string {
+  return t(`lang:${map.name}`, { defaultValue: map.id });
+}
+
 export const MapSwitcher = observer(function MapSwitcher() {
+  const { t } = useTranslation('lang');
   const adapter = useAdapter();
   const [expanded, setExpanded] = useState(false);
 
@@ -16,43 +23,52 @@ export const MapSwitcher = observer(function MapSwitcher() {
   const currentMapId = mapDataManager.currentMapId;
   const mapList = mapDataManager.data;
 
+  const currentMapName = useMemo(() => {
+    const map = mapDataManager.currentMap;
+    return map ? translateMapName(map, t) : currentMapId;
+  }, [mapDataManager.currentMap, currentMapId, t]);
+
   const handleSwitch = useCallback(
     (mapId: string) => {
       if (mapId === currentMapId) {
         setExpanded(false);
         return;
       }
-      adapter.renderMap(mapId);
+      service.dataService.mapDataService.mapStateDataService.setCurrentMap(mapId);
       setExpanded(false);
     },
-    [adapter, currentMapId]
+    [currentMapId]
   );
 
   return (
     <View style={styles.container}>
       <Pressable style={styles.currentButton} onPress={() => setExpanded(!expanded)}>
         <Text style={styles.currentText} numberOfLines={1}>
-          {currentMapId}
+          {currentMapName}
         </Text>
         <Text style={styles.arrow}>{expanded ? '▲' : '▼'}</Text>
       </Pressable>
 
       {expanded && (
         <View style={styles.dropdown}>
-          {mapList.map((map) => (
-            <Pressable
-              key={map.id}
-              style={[styles.mapItem, map.id === currentMapId && styles.mapItemActive]}
-              onPress={() => handleSwitch(map.id)}
-            >
-              <Text
-                style={[styles.mapItemText, map.id === currentMapId && styles.mapItemTextActive]}
-                numberOfLines={1}
+          {mapList.map((map) => {
+            const name = translateMapName(map, t);
+            const isActive = map.id === currentMapId;
+            return (
+              <Pressable
+                key={map.id}
+                style={[styles.mapItem, isActive && styles.mapItemActive]}
+                onPress={() => handleSwitch(map.id)}
               >
-                {map.id}
-              </Text>
-            </Pressable>
-          ))}
+                <Text
+                  style={[styles.mapItemText, isActive && styles.mapItemTextActive]}
+                  numberOfLines={1}
+                >
+                  {name}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
       )}
     </View>
@@ -84,7 +100,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#333',
-    maxWidth: 100,
+    maxWidth: 120,
   },
   arrow: {
     fontSize: 10,

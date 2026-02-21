@@ -1,22 +1,26 @@
+import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import React, { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { GameMapView } from '@/components/map/game-map-view';
 import { EntityFilterSheet, type EntityFilterSheetRef } from '@/components/ui/entity-filter-sheet';
 import { EntityInfoSheet } from '@/components/ui/entity-info-sheet';
 import { MapSwitcher } from '@/components/ui/map-switcher';
+import { ZoomControls } from '@/components/ui/zoom-controls';
 import { AdapterProvider } from '@/context/adapter';
 import { useMapInit } from '@/hooks/use-map-init';
 
 export default function MapScreen() {
+  const { t } = useTranslation('common');
   const { adapter, loading, error } = useMapInit();
 
   if (loading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>加载地图数据...</Text>
+        <Text style={styles.loadingText}>{t('common:loading', { defaultValue: '加载中...' })}</Text>
       </View>
     );
   }
@@ -24,7 +28,7 @@ export default function MapScreen() {
   if (error || !adapter) {
     return (
       <View style={styles.center}>
-        <Text style={styles.errorText}>加载失败</Text>
+        <Text style={styles.errorText}>{t('common:load_error', { defaultValue: '加载失败' })}</Text>
         <Text style={styles.errorDetail}>{error?.message ?? 'Unknown error'}</Text>
       </View>
     );
@@ -38,11 +42,12 @@ export default function MapScreen() {
 }
 
 function MapContent() {
-  const [activeEntity, setActiveEntity] = useState<EntityDataInstance | null>(null);
+  const { t } = useTranslation(['common', 'header']);
+  const [activeEntity, setActiveEntity] = useState<DataInstance | null>(null);
   const filterSheetRef = useRef<EntityFilterSheetRef>(null);
 
   const handleEntityPress = useCallback((instance: EntityDataInstance) => {
-    setActiveEntity(instance);
+    setActiveEntity(instance as DataInstance);
   }, []);
 
   const handleDismissInfo = useCallback(() => {
@@ -58,9 +63,10 @@ function MapContent() {
       <GameMapView onEntityPress={handleEntityPress} />
 
       <MapSwitcher />
+      <ZoomControls />
 
       <Pressable style={styles.filterFab} onPress={handleOpenFilter}>
-        <Text style={styles.filterFabText}>筛选</Text>
+        <Text style={styles.filterFabText}>{t('header:head_menu.filter', { defaultValue: '筛选' })}</Text>
       </Pressable>
 
       <EntityInfoSheet instance={activeEntity} onDismiss={handleDismissInfo} />

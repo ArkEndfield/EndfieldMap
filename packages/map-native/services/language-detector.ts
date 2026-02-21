@@ -3,10 +3,6 @@ import type { LanguageDetectorModule } from 'i18next';
 
 const SUPPORTED_LANGUAGES = ['zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR', 'ru-RU', 'es-MX'];
 
-/**
- * i18next language detector for React Native.
- * Reads the device locale via expo-localization and maps it to a supported language tag.
- */
 export const NativeLanguageDetector: LanguageDetectorModule = {
   type: 'languageDetector',
 

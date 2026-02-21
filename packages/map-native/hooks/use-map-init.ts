@@ -10,10 +10,6 @@ interface MapInitState {
   error: Error | null;
 }
 
-/**
- * 初始化地图适配器
- * 加载 map-service 数据并创建 MapLibreAdapter
- */
 export function useMapInit(): MapInitState {
   const [state, setState] = useState<MapInitState>({
     adapter: null,
@@ -45,7 +41,18 @@ export function useMapInit(): MapInitState {
       await service.registerAdapter(adapter);
       adapter.entityController.loadData(entityData[0], entityData[1]);
 
-      logger.info('[useMapInit] Tile URL:', adapter.mapController.tileUrlTemplate);
+      const mapState = service.dataService.mapDataService.mapStateDataService;
+      const initialMapId =
+        mapState.currentMap.value === 'unselected' ? mapData.data[0]?.id : mapState.currentMap.value;
+      if (initialMapId) {
+        mapState.renderMap(initialMapId);
+      }
+
+      logger.info('[useMapInit] Initialized successfully', {
+        tileUrl: adapter.mapController.tileUrlTemplate,
+        mapId: adapter.mapController.dataManager.currentMapId,
+        entityCount: adapter.entityController.currentVisibleInstances.length,
+      });
 
       setState({ adapter, loading: false, error: null });
     } catch (e) {

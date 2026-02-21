@@ -1,52 +1,29 @@
-import type { EntityData,
-EntityDataInstance, EntityGroupManager,   EntityInfoDataJson,
+import type {
+  EntityData,
+  EntityDataInstance,
+  EntityGroupManager,
+  EntityInfoDataJson,
   EntityInfoStats,
-  EntityJsonDataList,IEntityController, MapData,MapDataManager } from '@endfieldmap/map-core';
-import { EntityMapDataManager,MarkedFeatureFilterMode } from '@endfieldmap/map-core';
-import { action, computed, observable, reaction } from 'mobx';
+  EntityJsonDataList,
+  IEntityController,
+  MapData,
+  MapDataManager,
+} from '@endfieldmap/map-core';
+import { EntityMapDataManager, MarkedFeatureFilterMode } from '@endfieldmap/map-core';
+import { action, computed } from 'mobx';
 
 export interface EntityControllerConfig {
   mapDataManager: MapDataManager;
 }
 
-/**
- * MapLibre 实体控制器
- *
- * 不直接控制渲染（MapLibre 渲染由 React 组件驱动），
- * 而是管理数据状态并提供计算属性供 React 组件观察
- */
 export class EntityController implements IEntityController {
   public readonly dataManager: EntityMapDataManager;
 
   private readonly mapDataManager: MapDataManager;
 
-  /** 数据版本号，每次状态变更递增，用于触发 React 组件重新计算 GeoJSON */
-  @observable accessor dataVersion = 0;
-
-  private disposers: Array<() => void> = [];
-
   constructor(config: EntityControllerConfig) {
     this.mapDataManager = config.mapDataManager;
     this.dataManager = new EntityMapDataManager(config.mapDataManager);
-    this.registerReactions();
-  }
-
-  private registerReactions(): void {
-    this.disposers.push(
-      reaction(
-        () => this.mapDataManager.currentMapId,
-        () => {
-          if (this.dataManager.dataLoaded) {
-            this.bumpVersion();
-          }
-        }
-      )
-    );
-  }
-
-  @action
-  private bumpVersion(): void {
-    this.dataVersion++;
   }
 
   get currentStats(): EntityInfoStats[] {
@@ -63,19 +40,16 @@ export class EntityController implements IEntityController {
 
   loadData(jsonData: EntityJsonDataList, infoData: EntityInfoDataJson): void {
     this.dataManager.loadData(jsonData, infoData);
-    this.bumpVersion();
   }
 
   @action
   setClusterEnable(enable: boolean): void {
     this.dataManager.setDisableCluster(!enable);
-    this.bumpVersion();
   }
 
   @action
   setMarked(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], marked: boolean): void {
     this.dataManager.setMarked(mapId, levelLogicId, marked);
-    this.bumpVersion();
   }
 
   @action
@@ -83,7 +57,6 @@ export class EntityController implements IEntityController {
     const instance = this.dataManager.getInstanceById(mapId, levelLogicId);
     if (instance) {
       instance.setVisible(visible);
-      this.bumpVersion();
     }
   }
 
@@ -98,20 +71,17 @@ export class EntityController implements IEntityController {
         }
       }
     }
-    this.bumpVersion();
   }
 
   @action
   setGroupVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean): void {
     this.dataManager.setGroupVisibility(mapId, entityKey, visible);
-    this.bumpVersion();
   }
 
   @action
   setMarkedFilterMode(mode: MarkedFeatureFilterMode): void {
     if (this.dataManager.markedFilterMode === mode) return;
     this.dataManager.setMarkedFilterMode(mode);
-    this.bumpVersion();
   }
 
   @action
@@ -119,7 +89,6 @@ export class EntityController implements IEntityController {
     const instance = this.dataManager.getInstanceById(mapId, levelLogicId);
     if (instance) {
       instance.setSelected(selected);
-      this.bumpVersion();
     }
   }
 
@@ -127,16 +96,11 @@ export class EntityController implements IEntityController {
   batchSetSelected(
     items: Array<{ mapId: MapData['id']; levelLogicId: EntityData['levelLogicId']; selected: boolean }>
   ): void {
-    let changed = false;
     for (const item of items) {
       const instance = this.dataManager.getInstanceById(item.mapId, item.levelLogicId);
       if (instance && instance.selected !== item.selected) {
         instance.setSelected(item.selected);
-        changed = true;
       }
-    }
-    if (changed) {
-      this.bumpVersion();
     }
   }
 
@@ -145,7 +109,6 @@ export class EntityController implements IEntityController {
     const instance = this.dataManager.getInstanceById(mapId, levelLogicId);
     if (instance) {
       instance.setActive(active);
-      this.bumpVersion();
     }
   }
 
@@ -171,9 +134,6 @@ export class EntityController implements IEntityController {
     return count;
   }
 
-  /**
-   * 判断实体在当前 markedFilterMode 下是否应可见
-   */
   isFeatureVisibleByFilter(marked: boolean): boolean {
     switch (this.dataManager.markedFilterMode) {
       case MarkedFeatureFilterMode.Marked:
@@ -186,9 +146,6 @@ export class EntityController implements IEntityController {
     }
   }
 
-  /**
-   * 获取当前地图中可见实体的快照（供 React 组件构建 GeoJSON）
-   */
   @computed
   get currentVisibleInstances(): EntityDataInstance[] {
     if (!this.dataManager.dataLoaded) return [];
@@ -207,9 +164,6 @@ export class EntityController implements IEntityController {
   }
 
   dispose(): void {
-    for (const disposer of this.disposers) {
-      disposer();
-    }
-    this.disposers = [];
+    // no-op
   }
 }

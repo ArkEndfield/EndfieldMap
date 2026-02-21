@@ -58,7 +58,7 @@ export class MapController implements IMapController {
 
   /**
    * 切换并渲染指定地图
-   * 更新数据管理器的当前地图、视图中心和 zoom 配置
+   * 更新数据管理器的当前地图和 zoom 配置；视图位置由调用方恢复（如 RN 端按地图缓存 center/zoom）
    */
   @action
   renderMap(id: string): void {
@@ -72,13 +72,7 @@ export class MapController implements IMapController {
       min: mapData.zoom?.min ?? DEFAULT_MIN_ZOOM,
       max: mapData.zoom?.max ?? DEFAULT_MAX_ZOOM,
     };
-
-    const center = this.dataManager.getMapCenter(id);
-    this.view.animate({
-      center,
-      zoom: this._currentZoomConfig.default,
-      duration: 0,
-    });
+    // 不在此处重置 view：Web 由 MapStateDataService 按 mapId 恢复；RN 由 GameMapView 按 savedViewStateByMapId 恢复
   }
 
   @action

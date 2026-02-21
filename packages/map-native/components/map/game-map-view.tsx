@@ -1,8 +1,8 @@
-import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
+import { lngLatToPixel, pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
 import type { MapLibreAdapter } from '@endfieldmap/map-adapter-maplibre';
 import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
-import MapLibreGL, { Camera, MapView } from '@maplibre/maplibre-react-native';
+import { Camera, Logger, MapView, setAccessToken, type CameraRef } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { StyleSheet } from 'react-native';
@@ -10,41 +10,53 @@ import { StyleSheet } from 'react-native';
 import { useAdapter } from '@/context/adapter';
 
 import { AreaNameLayer } from './area-name-layer';
-import { EntityMarkerLayer } from './entity-marker-layer';
+import { EntityMarkerLayer, type CameraPositionRef } from './entity-marker-layer';
 
-MapLibreGL.setAccessToken(null);
+setAccessToken(null);
+Logger.setLogLevel('warning');
+Logger.setLogCallback((log) => {
+  const msg = log.message;
+  if (
+    msg.includes('bitmap decoding') ||
+    msg.includes('Failed to load tile') ||
+    msg.includes('Failed to load glyph') ||
+    (msg.includes('Request failed due to a permanent error') && msg.includes('Canceled'))
+  ) {
+    return true;
+  }
+  return false;
+});
 
-/**
- * 生成一个空白瓦片样式（无基础地图），
- * 用于加载自定义游戏地图瓦片
- */
+function deriveGlyphsUrl(mapImageUrl: string): string {
+  const base = mapImageUrl.replace(/\/images\/map\/?$/, '');
+  return `${base}/fonts/webgis/{fontstack}/{range}.pbf`;
+}
+
 function buildMapStyle(
   tileUrl: string,
+  glyphsUrl: string,
   minZoom: number,
   maxZoom: number
-) {
+): Record<string, unknown> {
   return {
-    version: 8,
+    version: 8 as const,
     name: 'GameMap',
-    // 提供 glyphs 才能渲染文本（区域名称等）
-    // 使用 MapLibre 默认字体服务
+    glyphs: glyphsUrl,
     sources: {
       gameMapTiles: {
-        type: 'raster',
+        type: 'raster' as const,
         tiles: [tileUrl],
         tileSize: 256,
-        minzoom: minZoom,
-        maxzoom: maxZoom,
+        minzoom: Math.floor(minZoom),
+        maxzoom: Math.ceil(maxZoom),
       },
     },
     layers: [
       {
         id: 'gameMapLayer',
-        type: 'raster',
+        type: 'raster' as const,
         source: 'gameMapTiles',
-        paint: {
-          'raster-opacity': 1,
-        },
+        paint: { 'raster-opacity': 1 },
       },
     ],
   };
@@ -54,49 +66,103 @@ interface GameMapViewProps {
   onEntityPress?: (instance: EntityDataInstance) => void;
 }
 
-export const GameMapView = observer(function GameMapView({ onEntityPress }: GameMapViewProps) {
-  const adapter = useAdapter();
-  const cameraRef = useRef<MapLibreGL.CameraRef>(null);
-  const mapViewRef = useRef<MapLibreGL.MapViewRef>(null);
+function GameMapViewInner({
+  adapter,
+  currentMapId,
+  onEntityPress,
+}: {
+  adapter: MapLibreAdapter;
+  currentMapId: string;
+  onEntityPress?: (instance: EntityDataInstance) => void;
+}) {
+  const cameraRef = useRef<CameraRef>(null);
+  const mapReady = useRef(false);
+  const cameraPositionRef = useRef<CameraPositionRef>({
+    center: undefined,
+    zoom: undefined,
+  });
 
   const mapController = adapter.mapController;
   const view = mapController.view;
-  const currentMapId = mapController.dataManager.currentMapId;
   const zoomConfig = mapController.zoomConfig;
+  const tileUrl = mapController.tileUrlTemplate;
+  const glyphsUrl = useMemo(() => deriveGlyphsUrl(adapter.asset.mapImage), [adapter.asset.mapImage]);
 
   const mapStyle = useMemo(() => {
-    const tileUrl = mapController.tileUrlTemplate;
     if (!tileUrl) {
-      // 如果 tileUrl 为空，返回一个空样式避免错误
-      return {
-        version: 8,
-        name: 'EmptyMap',
-        sources: {},
-        layers: [],
-      };
+      return { version: 8 as const, name: 'Empty', glyphs: glyphsUrl, sources: {}, layers: [] };
     }
-    return buildMapStyle(tileUrl, zoomConfig.min, zoomConfig.max);
-  }, [mapController.tileUrlTemplate, zoomConfig.min, zoomConfig.max]);
+    return buildMapStyle(tileUrl, glyphsUrl, zoomConfig.min, zoomConfig.max);
+  }, [tileUrl, glyphsUrl, zoomConfig.min, zoomConfig.max]);
+
+  const defaultCenter = useMemo(() => {
+    const mapData = mapController.dataManager.getMapData(currentMapId);
+    if (!mapData) return [0, 0] as [number, number];
+    return pixelToLngLat(mapController.dataManager.getMapCenter(currentMapId));
+  }, [mapController, currentMapId]);
 
   const initialCenter = useMemo(() => {
-    const center = view.currentCenterLngLat;
-    if (center) return center;
-    const mapData = mapController.dataManager.currentMap;
-    if (!mapData) return [0, 0] as [number, number];
-    return pixelToLngLat(mapController.dataManager.getMapCenter(mapData.id));
-  }, [view, mapController.dataManager]);
+    return view.currentCenterLngLat ?? defaultCenter;
+  }, [defaultCenter, view.currentCenterLngLat]);
 
-  const initialZoom = zoomConfig.default;
+  const initialZoom = useMemo(() => {
+    return view.currentZoom ?? zoomConfig.default;
+  }, [zoomConfig.default, view.currentZoom]);
 
   useEffect(() => {
-    return handlePendingAnimations(adapter, cameraRef);
-  }, [adapter]);
+    view.syncFromMap(initialCenter, initialZoom);
+    cameraPositionRef.current = { center: initialCenter, zoom: initialZoom };
+  }, [view, initialCenter, initialZoom]);
+
+  useEffect(() => {
+    if (!cameraRef.current) return;
+    const center = view.currentCenterLngLat ?? defaultCenter;
+    const zoom = view.currentZoom ?? zoomConfig.default;
+    cameraRef.current.setCamera({
+      centerCoordinate: center,
+      zoomLevel: zoom,
+      animationDuration: 0,
+    });
+    cameraPositionRef.current = { center, zoom };
+    // 仅在地图切换时应用相机位置，不随 pan/zoom 重复执行
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentMapId]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const animation = view.consumeAnimation();
+      if (!animation || !cameraRef.current) return;
+
+      const cam = cameraRef.current;
+      const duration = animation.duration ?? 500;
+
+      if (animation.center && animation.zoom !== undefined) {
+        cam.setCamera({
+          centerCoordinate: animation.center,
+          zoomLevel: animation.zoom,
+          animationDuration: duration,
+        });
+        cameraPositionRef.current.center = animation.center;
+        cameraPositionRef.current.zoom = animation.zoom;
+      } else if (animation.zoom !== undefined) {
+        cam.zoomTo(animation.zoom, duration);
+        cameraPositionRef.current.zoom = animation.zoom;
+      } else if (animation.center) {
+        cam.moveTo(animation.center, duration);
+        cameraPositionRef.current.center = animation.center;
+      }
+    }, 100);
+    return () => clearInterval(timer);
+  }, [view]);
 
   const handleRegionDidChange = useCallback(
     (feature: GeoJSON.Feature<GeoJSON.Point>) => {
-      const coords = feature.geometry.coordinates;
-      const zoom = feature.properties?.zoomLevel ?? view.getZoom() ?? initialZoom;
-      view.syncFromMap([coords[0], coords[1]], zoom);
+      const coords = feature.geometry.coordinates as [number, number];
+      const zoom = (feature.properties?.zoomLevel as number) ?? initialZoom;
+      cameraPositionRef.current = { center: coords, zoom };
+      view.syncFromMap(coords, zoom);
+      adapter.event.fire(MAP_EVENT.ZOOM_CHANGE, zoom);
+      adapter.event.fire(MAP_EVENT.MAP_CENTER_CHANGE, lngLatToPixel(coords[0], coords[1]));
       adapter.event.fire(MAP_EVENT.MAP_MOVE_END, undefined);
     },
     [adapter, view, initialZoom]
@@ -107,19 +173,27 @@ export const GameMapView = observer(function GameMapView({ onEntityPress }: Game
       const geom = feature.geometry;
       if (geom.type !== 'Point') return;
       const coords = geom.coordinates;
-      const pixel: [number, number] = [coords[0], coords[1]];
       adapter.event.fire(MAP_EVENT.MAP_CLICK, {
-        coordinate: pixel,
+        coordinate: [coords[0], coords[1]] as [number, number],
         pixel: [0, 0],
       });
     },
     [adapter]
   );
 
+  const handleMapLoaded = useCallback(() => {
+    if (mapReady.current) return;
+    mapReady.current = true;
+    cameraRef.current?.setCamera({
+      centerCoordinate: initialCenter,
+      zoomLevel: initialZoom,
+      animationDuration: 0,
+    });
+    cameraPositionRef.current = { center: initialCenter, zoom: initialZoom };
+  }, [initialCenter, initialZoom]);
+
   return (
     <MapView
-      key={mapController.tileUrlTemplate}
-      ref={mapViewRef}
       style={styles.map}
       mapStyle={mapStyle}
       logoEnabled={false}
@@ -127,53 +201,35 @@ export const GameMapView = observer(function GameMapView({ onEntityPress }: Game
       compassEnabled={false}
       onRegionDidChange={handleRegionDidChange}
       onPress={handlePress}
+      onDidFinishLoadingMap={handleMapLoaded}
     >
       <Camera
         ref={cameraRef}
-        key={`${currentMapId}-${initialZoom}`}
-        defaultSettings={{
-          centerCoordinate: initialCenter,
-          zoomLevel: initialZoom,
-        }}
         minZoomLevel={zoomConfig.min}
         maxZoomLevel={zoomConfig.max}
       />
-      <EntityMarkerLayer onEntityPress={onEntityPress} />
       <AreaNameLayer />
+      <EntityMarkerLayer
+        onEntityPress={onEntityPress}
+        mapCameraRef={cameraRef}
+        cameraPositionRef={cameraPositionRef}
+      />
     </MapView>
   );
-});
-
-function handlePendingAnimations(
-  adapter: MapLibreAdapter,
-  cameraRef: React.RefObject<MapLibreGL.CameraRef | null>
-) {
-  let animationTimer: ReturnType<typeof setInterval> | null = null;
-
-  const check = () => {
-    const animation = adapter.mapController.view.consumeAnimation();
-    if (!animation || !cameraRef.current) return;
-
-    const config: { centerCoordinate?: [number, number]; zoomLevel?: number; animationDuration?: number } = {};
-    if (animation.center) config.centerCoordinate = animation.center;
-    if (animation.zoom !== undefined) config.zoomLevel = animation.zoom;
-    config.animationDuration = animation.duration ?? 500;
-
-    if (config.animationDuration > 0) {
-      cameraRef.current.setCamera({
-        ...config,
-        animationMode: 'flyTo',
-      });
-    } else {
-      cameraRef.current.setCamera(config);
-    }
-  };
-
-  animationTimer = setInterval(check, 100);
-  return () => {
-    if (animationTimer) clearInterval(animationTimer);
-  };
 }
+
+export const GameMapView = observer(function GameMapView({ onEntityPress }: GameMapViewProps) {
+  const adapter = useAdapter();
+  const currentMapId = adapter.mapController.dataManager.currentMapId;
+
+  return (
+    <GameMapViewInner
+      adapter={adapter}
+      currentMapId={currentMapId}
+      onEntityPress={onEntityPress}
+    />
+  );
+});
 
 const styles = StyleSheet.create({
   map: {
