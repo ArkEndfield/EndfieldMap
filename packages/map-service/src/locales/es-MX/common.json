@@ -28,6 +28,7 @@
   },
   "operate": {
     "mark": "Marcar",
+    "mark_tip": "(Clic derecho para marcar)",
     "marked": "Marcado",
     "unmark": "Desmarcar",
     "clear_selection": "Limpiar selección",

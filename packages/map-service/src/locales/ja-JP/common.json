@@ -27,7 +27,8 @@
     "created_at": "日付順"
   },
   "operate": {
-    "mark": "マーク(右クリックで一括マーク)",
+    "mark": "マーク",
+    "mark_tip": "(右クリックで一括マーク)",
     "marked": "マーク済み",
     "unmark": "マーク解除",
     "clear_selection": "選択解除",

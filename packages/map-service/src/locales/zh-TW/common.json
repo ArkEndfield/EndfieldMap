@@ -27,7 +27,8 @@
     "created_at": "日期排序"
   },
   "operate": {
-    "mark": "標記（右鍵一鍵標記）",
+    "mark": "標記",
+    "mark_tip": "(右鍵一鍵標記)",
     "marked": "已標記",
     "unmark": "取消標記",
     "clear_selection": "清空選擇",

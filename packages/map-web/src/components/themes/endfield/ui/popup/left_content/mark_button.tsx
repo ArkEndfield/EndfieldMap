@@ -17,7 +17,7 @@ export const MarkButton: React.FC<MarkButtonProps> = observer(({ entity }) => {
   if (!entity?.markable) return null;
   return (
     <Tooltip
-      tooltip={entity.marked ? t('operate.unmark') : t('operate.mark')}
+      tooltip={entity.marked ? (t('operate.unmark') + t('operate.mark_tip')) : (t('operate.mark') + t('operate.mark_tip'))}
       as={ButtonWithAudio}
       placement="bottom"
       asProps={{

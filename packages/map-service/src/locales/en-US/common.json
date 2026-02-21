@@ -27,7 +27,8 @@
     "created_at": "Date"
   },
   "operate": {
-    "mark": "Mark(Right Click)",
+    "mark": "Mark",
+    "mark_tip": "(Right-click to mark)",
     "marked": "Marked",
     "unmark": "Unmark",
     "clear_selection": "Clear Selection",
