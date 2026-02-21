@@ -1,9 +1,3 @@
-import type { Collection as TSCollection } from '@tanstack/react-db';
-import { createCollection } from '@tanstack/react-db';
-import type { RxDBCollectionConfig } from '@tanstack/rxdb-db-collection';
-import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
-import type { RxCollection, RxDatabase } from 'rxdb';
-
 import {
   chestRewardSchema,
   type ChestRewardSchemaType,
@@ -43,6 +37,11 @@ import {
   visibilityDataSchema,
   type VisibilityDataSchemaType,
 } from '@endfieldmap/map-service/service/db/schema/user_data/visibility';
+import type { Collection as TSCollection } from '@tanstack/react-db';
+import { createCollection } from '@tanstack/react-db';
+import type { RxDBCollectionConfig } from '@tanstack/rxdb-db-collection';
+import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
+import type { RxCollection, RxDatabase } from 'rxdb';
 
 /**
  * 用户数据数据库 Collections 类型定义

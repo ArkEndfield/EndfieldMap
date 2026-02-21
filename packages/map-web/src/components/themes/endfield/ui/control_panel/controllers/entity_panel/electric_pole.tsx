@@ -5,12 +5,13 @@ import {
   ElectricPoleKey,
   getElectricPoleDeviceConfig,
 } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 interface ElectricPoleTypeGroup {
   deviceKey: ElectricPoleDeviceKey;
@@ -22,7 +23,7 @@ interface ElectricPoleTypeGroup {
 
 const ElectricPoleList: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
 
   const instances = adapter.electricPoleController.dataManager.currentInstances;
 
@@ -74,7 +75,7 @@ const ElectricPoleList: React.FC = observer(() => {
 
   const handleToggleTypeVisible = (group: ElectricPoleTypeGroup) => {
     const newVisible = !group.allVisible;
-    mapDataService.electricPoleDataService.updateItemVisibility(
+    service.dataService.mapDataService.electricPoleDataService.updateItemVisibility(
       adapter.mapController.dataManager.currentMapId,
       group.deviceKey,
       newVisible
@@ -84,7 +85,7 @@ const ElectricPoleList: React.FC = observer(() => {
   const handleToggleAll = () => {
     const newVisible = !allDisplayed;
     groups.forEach((group) => {
-      mapDataService.electricPoleDataService.updateItemVisibility(
+      service.dataService.mapDataService.electricPoleDataService.updateItemVisibility(
         adapter.mapController.dataManager.currentMapId,
         group.deviceKey,
         newVisible

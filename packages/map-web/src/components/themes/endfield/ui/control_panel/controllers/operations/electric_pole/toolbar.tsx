@@ -1,22 +1,23 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { EndfieldSquareSwitch } from '@themes/endfield/components/switch';
 // import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { EditAddIcon, EditConnectIcon, EditDeleteIcon, EditDisconnectIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useElectricMode } from '@/hooks/use_electric_mode';
+import { service } from '@/services';
 
 export const PoleManagerToolbar = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { mapDataService, adapter } = useAdapter();
+  const { adapter } = useAdapter();
   const { getCurrentMode, toggleMode } = useElectricMode();
   const currentMode = getCurrentMode();
-  const isAutoConnect = mapDataService.electricPoleDataService.autoConnect;
+  const isAutoConnect = service.dataService.mapDataService.electricPoleDataService.autoConnect;
   const isZoneVisible = adapter.electricPoleController.dataManager.zoneVisible;
-  const isInCreateMode = mapDataService.electricPoleDataService.isCreating;
+  const isInCreateMode = service.dataService.mapDataService.electricPoleDataService.isCreating;
   // 配置按钮数据
   const tools = [
     {
@@ -55,14 +56,14 @@ export const PoleManagerToolbar = observer(() => {
         {isInCreateMode && (
           <EndfieldSquareSwitch
             value={isAutoConnect}
-            onValueChange={() => mapDataService.electricPoleDataService.toggleAutoConnect()}
+            onValueChange={() => service.dataService.mapDataService.electricPoleDataService.toggleAutoConnect()}
             label={t('operation.electric_pole.create.auto_connect')}
             className="mr-4"
           />
         )}
         <EndfieldSquareSwitch
           value={isZoneVisible}
-          onValueChange={() => mapDataService.electricPoleDataService.toggleZoneVisibility()}
+          onValueChange={() => service.dataService.mapDataService.electricPoleDataService.toggleZoneVisibility()}
           label={t('operation.electric_pole.zone.display')}
           className="mr-4"
         />

@@ -1,8 +1,7 @@
-import { type JSONLoader } from '@endfieldmap/tools';
-
-import type { ItemSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/item';
-import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
+import type { DatabaseService } from '@endfieldmap/map-service/service/db';
+import type { ItemSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/item';
+import { type JSONLoader } from '@endfieldmap/tools';
 
 export interface ItemDataConfig<T, R> {
   jsonLoader: JSONLoader;

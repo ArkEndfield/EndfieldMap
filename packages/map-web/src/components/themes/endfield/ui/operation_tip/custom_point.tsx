@@ -7,13 +7,14 @@ import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 export const CustomPointOperationTip = observer(() => {
   const uiManager = useEndfieldUIManager();
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const isCustomPointVisible = adapter.customPointController.dataManager.visible;
   const isOpen = uiManager.currentOperatePanel.value === CurrentOperatePanel.CUSTOM_POINT && isCustomPointVisible;
-  const isInCreateMode = mapDataService.customPointDataService.isCreating;
+  const isInCreateMode = service.dataService.mapDataService.customPointDataService.isCreating;
 
   return (
     <OperationList open={isOpen} className="flex gap-2">

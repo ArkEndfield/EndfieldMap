@@ -1,5 +1,6 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointDataInstance, CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import { DeleteButton } from '@themes/endfield/ui/popup/left_content/delete_button';
 import { Footer } from '@themes/endfield/ui/popup/left_content/footer';
 import { PopupHeader } from '@themes/endfield/ui/popup/left_content/header';
@@ -7,7 +8,6 @@ import { MarkButton } from '@themes/endfield/ui/popup/left_content/mark_button';
 import { RenameButton } from '@themes/endfield/ui/popup/left_content/rename_button';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
@@ -16,11 +16,12 @@ import { ChevronUpTriangle } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useActiveFeatureName } from '@/hooks/use_entity_name';
+import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
 
 export const LeftContent = observer(({ className }: { className?: string }) => {
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const { t } = useTranslation(['popup', 'common']);
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityInfo = activeFeature?.entityInfo;
@@ -32,7 +33,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
     if (!activeFeature || !isCustomPoint) return;
 
     try {
-      await mapDataService.customPointDataService.changePointType(activeFeature.mapId, activeFeature.id, newType);
+      await service.dataService.mapDataService.customPointDataService.changePointType(activeFeature.mapId, activeFeature.id, newType);
     } catch (error) {
       console.error('Failed to change point type:', error);
     }

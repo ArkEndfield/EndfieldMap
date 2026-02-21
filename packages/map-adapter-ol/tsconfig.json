@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "erasableSyntaxOnly": false,
+    "paths": {
+      "@endfieldmap/map-adapter-ol": ["./src/index.ts"],
+      "@endfieldmap/map-adapter-ol/*": ["./src/*"]
+    }
+  },
+  "references": [{ "path": "../tools" }, { "path": "../map-core" }],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

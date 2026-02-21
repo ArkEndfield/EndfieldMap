@@ -1,8 +1,8 @@
 import type { Grid, ParsedLevel } from '@endfieldmap/map-service';
 import { useEffect, useRef } from 'react';
 
-import { CELL_SIZE } from '@/const/delta_robot';
 import { renderGroup, renderObstacle } from '@/components/common/delta_robot/render';
+import { CELL_SIZE } from '@/const/delta_robot';
 import { cn } from '@/utils/style';
 
 interface DeltaRobotSolutionGridProps {

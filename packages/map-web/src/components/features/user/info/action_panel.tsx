@@ -1,5 +1,5 @@
-import { motion } from 'motion/react';
 import { useTranslation } from '@endfieldmap/map-service';
+import { motion } from 'motion/react';
 
 import { EditIcon, LogoutIcon, PlusIcon } from '@/components/common/icons';
 import { ActionButton } from '@/components/features/user/info/action_button';

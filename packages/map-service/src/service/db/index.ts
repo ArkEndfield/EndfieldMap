@@ -1,12 +1,3 @@
-import { logger } from '@endfieldmap/tools';
-import { computed, makeObservable, observable, runInAction } from 'mobx';
-import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
-import { addRxPlugin, createRxDatabase, RxStorage, type RxDatabase } from 'rxdb/plugins/core';
-import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
-import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
-import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
-import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
-
 import {
   GameDataCollections,
   gameDataCollectionsSchema,
@@ -15,6 +6,14 @@ import {
   userDataCollectionsSchema,
   type UserDataDBCollections,
 } from '@endfieldmap/map-service/service/db/collections';
+import { logger } from '@endfieldmap/tools';
+import { computed, makeObservable, observable, runInAction } from 'mobx';
+import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
+import { addRxPlugin, createRxDatabase, type RxDatabase,type RxStorage } from 'rxdb/plugins/core';
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
+import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
+import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
 /**
  * 用户数据快照，用于迁移与云端同步（电线杆/自定义标点可见性均在 entityVisibility 中）

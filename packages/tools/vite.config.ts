@@ -41,7 +41,7 @@ export default defineConfig({
       entryRoot: 'src',
       insertTypesEntry: true,
       cleanVueFileName: true,
-      copyDtsFiles: false,
+      copyDtsFiles: true,
     }),
   ],
   resolve: {

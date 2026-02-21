@@ -1,6 +1,6 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { BilibiliIcon, DiscordIcon, Logo, QQIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';

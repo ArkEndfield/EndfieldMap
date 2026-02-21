@@ -22,15 +22,11 @@ export default defineConfig(({ mode }) => {
       },
       rolldownOptions: {
         external: (id) => {
-          // 排除所有 node_modules 中的依赖（包括 ol, mobx 等）
-          // 但保留相对路径导入的本地模块
-          if (id.startsWith('\0')) return false; // Rollup 虚拟模块
-          if (path.isAbsolute(id)) return false; // 绝对路径是本地文件
-          if (id.startsWith('.')) return false; // 相对路径是本地文件
-          if (id.startsWith('@endfieldmap/map-core')) return false; // 当前包的内部导入
-          if (id.startsWith('@endfieldmap/tools')) return true; // workspace 依赖
-          if (id.startsWith('rbush') || id.startsWith('quickselect')) return true; // ol 的可选依赖
-          // 其他 node_modules 依赖都视为 external
+          if (id.startsWith('\0')) return false;
+          if (path.isAbsolute(id)) return false;
+          if (id.startsWith('.')) return false;
+          if (id.startsWith('@endfieldmap/map-core')) return false;
+          if (id.startsWith('@endfieldmap/tools')) return true;
           return true;
         },
         output: {
@@ -55,12 +51,12 @@ export default defineConfig(({ mode }) => {
       }),
       dts({
         include: ['src/**/*'],
-        tsconfigPath: 'tsconfig.build.json',
+        tsconfigPath: 'tsconfig.json',
         outDirs: 'dist',
         entryRoot: 'src',
         insertTypesEntry: true,
         cleanVueFileName: true,
-        copyDtsFiles: false,
+        copyDtsFiles: true,
         aliasesExclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
         exclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
       }),

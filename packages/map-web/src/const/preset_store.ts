@@ -1,4 +1,4 @@
-import type { MineTab, PresetType } from '@eftypes/preset_store';
+import type { MineTab, PresetType } from '@endfieldmap/map-service';
 
 export const TAB_OPTIONS: { key: MineTab; labelKey: string }[] = [
   { key: 'uploads', labelKey: 'sidebar:preset_store.mine_uploads' },

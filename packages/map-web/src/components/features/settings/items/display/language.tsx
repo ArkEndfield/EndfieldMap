@@ -1,5 +1,5 @@
-import type { Language } from '@endfieldmap/tools';
 import { useTranslation } from '@endfieldmap/map-service';
+import type { Language } from '@endfieldmap/tools';
 
 import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { TranslateIcon } from '@/components/common/icons';

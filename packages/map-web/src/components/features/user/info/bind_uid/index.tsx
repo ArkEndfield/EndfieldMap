@@ -1,13 +1,14 @@
+import type { BindType } from '@endfieldmap/map-service';
+import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
-import type { BindType, GameRole } from '@/@types/game_role';
+import type { GameRole } from '@/@types/game_role';
 import { alert } from '@/components/common/alert/alert_api';
 import { BindUidList } from '@/components/features/user/info/bind_uid/bind_uid_list';
 import { Login } from '@/components/features/user/info/bind_uid/login';
-import { userService } from '@/services/user';
+import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 
 type View = 'login' | 'list';
@@ -24,7 +25,7 @@ export const BindUid = observer(() => {
   const { t } = useTranslation('header');
 
   // 获取已绑定的 UID 列表
-  const boundUids = userService.auth.uidList.map((item) => item.uid);
+  const boundUids = service.userService.auth.uidList.map((item) => item.uid);
 
   // 登录成功处理
   const handleLogin = (roleList: GameRole[], method: BindType, _code?: string) => {
@@ -47,7 +48,7 @@ export const BindUid = observer(() => {
 
     await catchErrorWithTip(async () => {
       // 根据登录方式选择不同的绑定接口
-      await userService.bindUid(roleId, loginMethod);
+      await service.userService.bindUid(roleId, loginMethod);
       alert.info(t('user.uid.bind_success'));
     });
 

@@ -5,6 +5,7 @@ import {
   LEGACY_ELECTRIC_POLE_DEVICE_KEY,
 } from '@endfieldmap/map-core/const/electric_pole';
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
+import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
 import type {
   ElectricPoleData,
   ElectricPoleDataInstanceConfig,
@@ -12,7 +13,6 @@ import type {
 } from '@endfieldmap/map-core/types/entity';
 import { calculateDistance, ElectricPoleError } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
-import type { Coordinate } from 'ol/coordinate';
 
 /**
  * 电线杆数据实例
@@ -61,7 +61,7 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
    * 获取坐标
    */
   @computed
-  get coordinates(): Coordinate {
+  get coordinates(): MapCoordinate {
     return this.mapDataManager.xyz2crd(this._data.position, this.mapId);
   }
 

@@ -1,25 +1,22 @@
-import type { LoggerReporter } from '@endfieldmap/tools';
-import { logger, JSONLoader } from '@endfieldmap/tools';
-
-import type { I18nServiceConfig } from '@endfieldmap/map-service/service/i18n';
-import { I18nService } from '@endfieldmap/map-service/service/i18n';
-
-import { ServerService } from '@endfieldmap/map-service/service/server';
-
+import { AdapterRegistry, type RegisterableAdapter } from '@endfieldmap/map-service/service/adapter_registry';
+import { AssetService } from '@endfieldmap/map-service/service/asset';
+import { DataService } from '@endfieldmap/map-service/service/data';
 import type { DatabaseServiceConfig } from '@endfieldmap/map-service/service/db';
 import { DatabaseService } from '@endfieldmap/map-service/service/db';
-
-import { AssetService } from '@endfieldmap/map-service/service/asset';
-
-import { DataService } from '@endfieldmap/map-service/service/data';
-
+import type { I18nServiceConfig } from '@endfieldmap/map-service/service/i18n';
+import { I18nService } from '@endfieldmap/map-service/service/i18n';
 import { LangHashService } from '@endfieldmap/map-service/service/lang_hash';
+import { PresetService } from '@endfieldmap/map-service/service/preset_service';
+import { ServerService } from '@endfieldmap/map-service/service/server';
+import { UserService } from '@endfieldmap/map-service/service/user';
+import type { LoggerReporter } from '@endfieldmap/tools';
+import { JSONLoader,logger } from '@endfieldmap/tools';
 
 export interface MapServiceConfig<T, R> {
   databaseConfig: Omit<DatabaseServiceConfig<T, R>, 'isDev'>;
   consolaReporter?: LoggerReporter;
   isDev?: boolean;
-  i18nConfig?: Omit<I18nServiceConfig, 'isDev'>;
+  i18nConfig: Omit<I18nServiceConfig, 'isDev'>;
   backendHost?: string;
   assetsHost?: string;
 }
@@ -33,6 +30,9 @@ export class MapService<T, R> {
   public jsonLoader = new JSONLoader();
 
   public dataService: DataService<T, R>;
+  public userService: UserService<T, R>;
+  public presetService: PresetService;
+  public adapterRegistry: AdapterRegistry;
 
   constructor(config: MapServiceConfig<T, R>) {
     if (config.consolaReporter) {
@@ -51,10 +51,23 @@ export class MapService<T, R> {
       isDev: config.isDev,
       ...config.databaseConfig,
     });
+    this.presetService = new PresetService({
+      serverService: this.serverService,
+    });
+    this.adapterRegistry = new AdapterRegistry();
+    this.userService = new UserService({
+      serverService: this.serverService,
+      i18nService: this.i18nService,
+      databaseService: this.databaseService,
+    });
     this.dataService = new DataService({
       assetService: this.assetService,
+      i18nService: this.i18nService,
       jsonLoader: this.jsonLoader,
       databaseService: this.databaseService,
+      userService: this.userService,
+      presetService: this.presetService,
+      adapterRegistry: this.adapterRegistry,
     });
     this.langHashService = new LangHashService({
       jsonLoader: this.jsonLoader,
@@ -62,11 +75,16 @@ export class MapService<T, R> {
     });
   }
 
-  public translate(...args: Parameters<typeof this.i18nService.translate>) {
-    return this.i18nService.translate(...args);
+  public get translate() {
+    return this.i18nService.translate;
   }
 
   public async init() {
     await Promise.all([this.databaseService.init(), this.dataService.init(), this.langHashService.init()]);
+  }
+
+  public async registerAdapter(adapter: RegisterableAdapter) {
+    this.adapterRegistry.register(adapter);
+    await this.dataService.mapDataService.init();
   }
 }

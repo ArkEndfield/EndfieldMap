@@ -1,7 +1,7 @@
+import type { InvestigateData } from '@endfieldmap/map-service/@types/note';
+import { AssetService } from '@endfieldmap/map-service/service/asset';
 import { type JSONLoader } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
-import { AssetService } from '@endfieldmap/map-service/service/asset';
-import type { InvestigateData } from '@endfieldmap/map-service/@types/note';
 
 export interface NoteDataConfig {
   jsonLoader: JSONLoader;

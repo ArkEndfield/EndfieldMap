@@ -1,8 +1,4 @@
-import {
-  DEFAULT_ELECTRIC_POLE_DEVICE_KEY,
-  type ElectricPoleDeviceKey,
-  LEGACY_ELECTRIC_POLE_DEVICE_KEY,
-} from '@endfieldmap/map-core/const/electric_pole';
+import { type ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import { ElectricPoleIdKey, ElectricPoleKey } from '@endfieldmap/map-core/const/map';
 import { BaseDataManager } from '@endfieldmap/map-core/data/base';
 import { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_instance';

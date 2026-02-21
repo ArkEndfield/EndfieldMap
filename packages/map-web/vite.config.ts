@@ -8,8 +8,8 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
-  const isDev = mode === 'development';
   const alias = {
+    '@endfieldmap/map-adapter-ol': resolve(__dirname, '../map-adapter-ol/src'),
     '@endfieldmap/map-core': resolve(__dirname, '../map-core/src'),
     '@endfieldmap/tools': resolve(__dirname, '../tools/src'),
     '@endfieldmap/map-service': resolve(__dirname, '../map-service/src'),
@@ -69,7 +69,7 @@ export default defineConfig(({ command, mode }) => {
     ],
     resolve: {
       alias: {
-        ...(isDev ? alias : {}),
+        ...(mode === 'development' ? alias : {}),
         '@': resolve(__dirname, './src'),
         '@eftypes': resolve(__dirname, './src/@types'),
         '@themes': resolve(__dirname, './src/components/themes'),

@@ -2,8 +2,8 @@ import 'yet-another-react-lightbox/styles.css';
 import '@/components/common/guide/captions.css';
 import '@/components/common/guide/thumbnails.css';
 
+import type { CustomPointData, ElectricPoleData, EntityData } from '@endfieldmap/map-core';
 import type { GuideInfoDetail, GuideNodeType } from '@endfieldmap/map-service';
-import type { EntityData, CustomPointData, ElectricPoleData } from '@endfieldmap/map-core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Lightbox, { type ControllerRef, type Slide } from 'yet-another-react-lightbox';
 import Captions from 'yet-another-react-lightbox/plugins/captions';

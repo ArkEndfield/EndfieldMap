@@ -1,10 +1,7 @@
-import type { CustomPointPreset } from '@eftypes/custom_point';
-import type { ElectricPolePreset } from '@eftypes/electric_pole';
+import type { CustomPointNodeSchemaType, CustomPointPreset, ElectricPoleNodeSchemaType, ElectricPolePreset } from '@endfieldmap/map-service';
 import { downloadData, logger, StorageManager } from '@endfieldmap/tools';
 
 import { alert } from '@/components/common/alert/alert_api';
-import type { CustomPointNodeSchemaType, ElectricPoleNodeSchemaType } from '@endfieldmap/map-service';
-import { userService } from '@/services/user';
 import { service } from '@/services';
 
 enum StorageKey {
@@ -181,7 +178,7 @@ export class Migration {
       customPointVisibilityService,
       entityVisibilityService,
       entityMarkService,
-    } = userService.data;
+    } = service.userService.data;
 
     // 1. 迁移 Electric Pole 预设和节点
     if (data.electricPolePresetData?.presets) {

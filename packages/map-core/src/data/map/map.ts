@@ -1,7 +1,7 @@
 import { type ElectricPoleDeviceKey, getElectricPoleDeviceConfig } from '@endfieldmap/map-core/const';
 import type { MapData, MapDataJson, Position } from '@endfieldmap/map-core/types';
+import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
 import { action, computed, observable } from 'mobx';
-import type { Coordinate } from 'ol/coordinate';
 
 export class MapDataManager {
   @observable accessor data: MapData[];
@@ -64,7 +64,7 @@ export class MapDataManager {
    * @param pos xyz 坐标
    * @returns crd 坐标
    */
-  public xyz2crd(pos: Position, mapId: MapData['id']): Coordinate {
+  public xyz2crd(pos: Position, mapId: MapData['id']): MapCoordinate {
     const mapData = this.getMapData(mapId);
     if (!mapData) {
       throw new Error('Invalid map id');
@@ -79,7 +79,7 @@ export class MapDataManager {
    * @param pos crd 坐标
    * @returns xyz 坐标
    */
-  public crd2xyz(coordinate: Coordinate, mapId: MapData['id']): Position {
+  public crd2xyz(coordinate: MapCoordinate, mapId: MapData['id']): Position {
     const mapData = this.getMapData(mapId);
     if (!mapData) {
       throw new Error('Invalid map id');

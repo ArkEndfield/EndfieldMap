@@ -1,7 +1,7 @@
-import { motion } from 'motion/react';
+import type { UidInfo } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
+import { motion } from 'motion/react';
 
-import type { UidInfo } from '@/@types/user';
 import { BindIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { cn } from '@/utils/style';

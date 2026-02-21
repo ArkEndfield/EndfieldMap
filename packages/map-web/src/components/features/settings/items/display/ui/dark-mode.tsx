@@ -1,5 +1,5 @@
-import { observer } from 'mobx-react-lite';
 import { useTranslation } from '@endfieldmap/map-service';
+import { observer } from 'mobx-react-lite';
 
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
 import { SettingItem } from '@/components/common/settings/components/setting_item';

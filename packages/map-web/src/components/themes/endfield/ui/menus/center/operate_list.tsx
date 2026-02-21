@@ -1,10 +1,10 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { MenuContainer } from '@themes/endfield/ui/menus/center/menu_container';
 import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
 import { menus } from '@themes/endfield/ui/menus/left/list';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import {
   CustomPointIcon,
@@ -17,11 +17,12 @@ import { SoundType } from '@/const/audio_config';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useAudio } from '@/hooks/use_audio';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { service } from '@/services';
 
 const Menu = menus[0];
 
 const ElectricPoleViewIcon = observer(() => {
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const { play } = useAudio();
   const isElecricPoleVisible = adapter.electricPoleController.dataManager.visible;
 
@@ -30,7 +31,7 @@ const ElectricPoleViewIcon = observer(() => {
       onClick={(e) => {
         e.stopPropagation();
         play(SoundType.CLICK);
-        mapDataService.electricPoleDataService.toggleVisibility();
+        service.dataService.mapDataService.electricPoleDataService.toggleVisibility();
       }}
     >
       {isElecricPoleVisible ? <VisibleIcon /> : <InVisibleIcon />}
@@ -39,14 +40,14 @@ const ElectricPoleViewIcon = observer(() => {
 });
 
 const CustomPointViewIcon = observer(() => {
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const isCustomPointVisible = adapter.customPointController.dataManager.visible;
 
   return (
     <div
       onClick={(e) => {
         e.stopPropagation();
-        mapDataService.customPointDataService.toggleVisibility();
+        service.dataService.mapDataService.customPointDataService.toggleVisibility();
       }}
     >
       {isCustomPointVisible ? <VisibleIcon /> : <InVisibleIcon />}

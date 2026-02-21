@@ -1,8 +1,8 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
 import { forwardRef, useImperativeHandle } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from '@endfieldmap/map-service';
 import { z } from 'zod';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -10,7 +10,7 @@ import { ZmdSquareButton } from '@/components/common/endfield_components/button/
 import { KeyIcon } from '@/components/common/icons';
 import { Input } from '@/components/common/input';
 import { changePasswordSchema } from '@/const/schema/auth';
-import { userService } from '@/services/user';
+import { service } from '@/services';
 import { catchErrorWithTip, onFormInvalid } from '@/utils/handler';
 
 type FormData = z.infer<typeof changePasswordSchema>;
@@ -31,7 +31,7 @@ const ChangePasswordForm = forwardRef<ChangePasswordFormRef>((_, ref) => {
   });
 
   const onSubmit = async (data: FormData) => {
-    return !!(await catchErrorWithTip(() => userService.changePassword(data.oldPassword, data.newPassword)));
+    return !!(await catchErrorWithTip(() => service.userService.changePassword(data.oldPassword, data.newPassword)));
   };
 
   useImperativeHandle(ref, () => ({

@@ -2,11 +2,11 @@
  * 预设商店相关 Hooks
  */
 
+import type { MineTab, PresetStoreResponseItem, PresetStoreSearchOptions, PresetType } from '@endfieldmap/map-service';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import type { MineTab, PresetStoreResponseItem, PresetStoreSearchOptions, PresetType } from '@eftypes/preset_store';
 import type { PaginationLoadStatus } from '@/components/common/pagination';
-import { presetService } from '@/services/preset';
+import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 
 // ============================================================================
@@ -260,7 +260,7 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
 
   const fetchUploadsData = useCallback(
     async (page: number, pageSize: number): Promise<{ data: PresetStoreResponseItem[]; totalPages: number }> => {
-      const result = await presetService.getMineSharePresets(page, pageSize, presetType);
+      const result = await service.presetService.getMineSharePresets(page, pageSize, presetType);
       return {
         data: result.list,
         totalPages: Math.ceil(result.count / pageSize) || 1,
@@ -271,7 +271,7 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
 
   const fetchFavoritesData = useCallback(
     async (page: number, pageSize: number): Promise<{ data: PresetStoreResponseItem[]; totalPages: number }> => {
-      const result = await presetService.getMineLikedPresets(page, pageSize, presetType);
+      const result = await service.presetService.getMineLikedPresets(page, pageSize, presetType);
       return {
         data: result.list,
         totalPages: Math.ceil(result.count / pageSize) || 1,
@@ -332,7 +332,7 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
 
   const handleDelete = useCallback(
     async (id: number) => {
-      const result = await catchErrorWithTip(() => presetService.deleteSharePreset(id));
+      const result = await catchErrorWithTip(() => service.presetService.deleteSharePreset(id));
 
       if (result !== false) {
         // 成功后重新加载，处理页数边界情况
@@ -362,14 +362,14 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
 
         // 调用 API，失败时回滚
         await catchErrorWithTip(
-          () => (newIsLiked ? presetService.likePreset(id) : presetService.unlikePreset(id)),
+          () => (newIsLiked ? service.presetService.likePreset(id) : service.presetService.unlikePreset(id)),
           () => {
             uploadsPagination.optimistic.revert(id);
           }
         );
       } else {
         // 在收藏页面取消点赞 = 移除收藏，不需要乐观更新
-        const result = await catchErrorWithTip(() => presetService.unlikePreset(id));
+        const result = await catchErrorWithTip(() => service.presetService.unlikePreset(id));
 
         if (result !== false) {
           // 成功后重新加载，处理页数边界情况
@@ -393,7 +393,7 @@ export function useMineStore({ show, onOpen }: UseMineStoreOptions) {
   const handleEdit = useCallback(
     async (id: number, data: { name: string; description: string; is_public: boolean }) => {
       const result = await catchErrorWithTip(async () => {
-        await presetService.updateSharePreset(id, data);
+        await service.presetService.updateSharePreset(id, data);
       });
 
       if (result !== false) {

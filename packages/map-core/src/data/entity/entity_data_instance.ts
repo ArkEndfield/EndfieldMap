@@ -1,7 +1,7 @@
 import { BaseDataInstance } from '@endfieldmap/map-core/data/base';
+import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
 import type { EntityData, EntityDataInstanceConfig, EntityInfoData } from '@endfieldmap/map-core/types/entity';
 import { computed } from 'mobx';
-import type { Coordinate } from 'ol/coordinate';
 
 /**
  * Entity数据实例
@@ -26,7 +26,7 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
    * 获取坐标
    */
   @computed
-  get coordinates(): Coordinate {
+  get coordinates(): MapCoordinate {
     return this.mapDataManager.xyz2crd(this._data.position, this.mapId);
   }
 

@@ -1,0 +1,24 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@endfieldmap/map-adapter-maplibre": ["../map-adapter-maplibre/src/index.ts"],
+      "@endfieldmap/map-adapter-maplibre/*": ["../map-adapter-maplibre/src/*"]
+    }
+  },
+  "references": [
+    { "path": "../map-service" },
+    { "path": "../map-core" },
+    { "path": "../map-adapter-maplibre" },
+    { "path": "../storage-mmkv" },
+    { "path": "../tools" }
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
+}

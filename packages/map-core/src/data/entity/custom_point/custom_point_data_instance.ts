@@ -4,9 +4,9 @@ import {
   getCustomPointEntityInfo,
   isValidCustomPointType,
 } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_config';
+import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
 import type { CustomPointData, CustomPointTypeId, EntityInfoData } from '@endfieldmap/map-core/types/entity';
 import { action, computed } from 'mobx';
-import type { Coordinate } from 'ol/coordinate';
 
 /**
  * 自定义标点数据实例
@@ -32,7 +32,7 @@ export class CustomPointDataInstance extends BaseDataInstance<CustomPointData> {
    * 获取坐标
    */
   @computed
-  get coordinates(): Coordinate {
+  get coordinates(): MapCoordinate {
     return this.mapDataManager.xyz2crd(this._data.position, this.mapId);
   }
 

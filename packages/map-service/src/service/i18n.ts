@@ -1,7 +1,7 @@
 import { Language } from '@endfieldmap/tools';
+import type { FallbackLng } from 'i18next';
 import i18n from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
-import type { FallbackLng } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 const ns = ['common', 'error', 'header', 'lang', 'popup', 'sidebar', 'settings', 'agreement'] as const;
@@ -11,6 +11,7 @@ export interface I18nServiceConfig {
   hooks?: Parameters<typeof i18n.use>[0][];
   isDev?: boolean;
   afterLoad?: () => void;
+  resourceLoader: (language: string, namespace: string) => Promise<{ default: Record<string, unknown> } | Record<string, unknown>>;
   onLoaded?: (
     ns: readonly NSType[],
     loaded: {
@@ -36,10 +37,10 @@ export class I18nService {
   ];
   public supportedLngs = this.languageList.map((lang) => lang.code);
 
-  constructor(config?: I18nServiceConfig) {
-    const hooks = config?.hooks || [];
+  constructor(config: I18nServiceConfig) {
+    const hooks = config.hooks || [];
     this.i18n.use(
-      resourcesToBackend((language: Language, namespace: NSType) => import(`../locales/${language}/${namespace}.json`))
+      resourcesToBackend(config.resourceLoader)
     );
     this.i18n.use(initReactI18next);
     for (const hook of hooks) {
@@ -52,17 +53,17 @@ export class I18nService {
         fallbackLng: this.fallbackLng,
         ns: this.ns,
         defaultNS: 'common',
-        debug: config?.isDev,
+        debug: config.isDev,
         returnEmptyString: false,
       },
       () => {
         this.i18n.loadNamespaces(this.ns).then(() => {
-          config?.afterLoad?.();
+          config.afterLoad?.();
         });
       }
     );
     this.i18n.on('loaded', (loaded) => {
-      config?.onLoaded?.(this.ns, loaded);
+      config.onLoaded?.(this.ns, loaded);
     });
   }
 
@@ -86,7 +87,7 @@ export class I18nService {
   /**
    * 翻译
    */
-  public translate(...args: Parameters<typeof this.i18n.t>): string {
-    return this.i18n.t(...args);
+  public get translate() {
+    return this.i18n.t;
   }
 }

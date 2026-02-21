@@ -1,15 +1,15 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { TickCircleIcon } from '@/components/common/icons';
 import { Toggle } from '@/components/common/toggle';
 import { UserInput } from '@/components/common/user/input';
 import { type RegisterFormData, registerSchema } from '@/const/schema/auth';
-import { userService } from '@/services/user';
+import { service } from '@/services';
 import { catchErrorWithTip, onFormInvalid } from '@/utils/handler';
 
 import { AgreementDialog, AgreementLink } from './agreement';
@@ -39,7 +39,7 @@ export const RegisterForm = observer(({ onSwitchToLogin }: RegisterFormProps) =>
 
   const onRegister = handleSubmit(async (data) => {
     setLoading(true);
-    await catchErrorWithTip(() => userService.register(data.username, data.password));
+    await catchErrorWithTip(() => service.userService.register(data.username, data.password));
     setLoading(false);
   }, onFormInvalid);
 

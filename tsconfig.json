@@ -1,4 +1,13 @@
 {
   "files": [],
-  "references": [{ "path": "./packages/map-core" }, { "path": "./packages/tools" }, { "path": "./packages/map-service" }, { "path": "./packages/map-web" }]
+  "references": [
+    { "path": "./packages/tools" },
+    { "path": "./packages/map-core" },
+    { "path": "./packages/map-service" },
+    { "path": "./packages/map-adapter-ol" },
+    { "path": "./packages/map-adapter-maplibre" },
+    { "path": "./packages/storage-web" },
+    { "path": "./packages/storage-mmkv" },
+    { "path": "./packages/map-web" }
+  ]
 }

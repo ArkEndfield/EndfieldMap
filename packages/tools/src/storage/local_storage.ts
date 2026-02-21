@@ -1,8 +1,8 @@
-const LOCAL_STORAGE_KEY = 'endfieldmap';
+import { getStorageAdapter } from '@endfieldmap/tools/storage/storage_provider';
+
 export class LocalStorageDB {
   public static getItem<T>(key: string): T | null {
-    const item = localStorage.getItem(`${LOCAL_STORAGE_KEY}.${key}`);
-    return item ? JSON.parse(item) : null;
+    return getStorageAdapter().getItem<T>(key);
   }
 
   public static get<T>(key: string): T | null {
@@ -10,7 +10,7 @@ export class LocalStorageDB {
   }
 
   public static setItem<T>(key: string, value: T): void {
-    localStorage.setItem(`${LOCAL_STORAGE_KEY}.${key}`, JSON.stringify(value));
+    getStorageAdapter().setItem<T>(key, value);
   }
 
   public static set<T>(key: string, value: T): void {
@@ -18,14 +18,10 @@ export class LocalStorageDB {
   }
 
   public static removeItem(key: string): void {
-    localStorage.removeItem(`${LOCAL_STORAGE_KEY}.${key}`);
+    getStorageAdapter().removeItem(key);
   }
 
   public static clear(): void {
-    localStorage.clear();
-  }
-
-  public static key(index: number): string | null {
-    return localStorage.key(index);
+    getStorageAdapter().clear();
   }
 }

@@ -1,9 +1,8 @@
-import type { JSONLoader } from '@endfieldmap/tools';
-
 import type { DungeonSeriesSchemaType } from '@endfieldmap/map-service';
-import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
-import type { DealedRewardItem, ChestRewardDataService } from '@endfieldmap/map-service/service/data/game/chest_reward';
+import type { ChestRewardDataService,DealedRewardItem } from '@endfieldmap/map-service/service/data/game/chest_reward';
+import type { DatabaseService } from '@endfieldmap/map-service/service/db';
+import type { JSONLoader } from '@endfieldmap/tools';
 
 export interface DungeonSeriesDataConfig<T, R> {
   jsonLoader: JSONLoader;

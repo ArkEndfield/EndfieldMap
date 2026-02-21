@@ -1,26 +1,23 @@
-import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
+import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
+import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { lazy, Suspense, useEffect, useRef } from 'react';
-
 import { createPortal } from 'react-dom';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
+import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { ChevronUp } from '@/components/common/icons';
 import { SettingsPage } from '@/components/features/settings';
 import { WindowProvider } from '@/context/window';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 import { useMapPiP } from '@/hooks/use_map_pip';
 import { usePiP } from '@/hooks/use_pip';
-import { MapDataService } from '@/services/data/map';
+import { service } from '@/services';
 import { isDev } from '@/services/env';
-import type { MapService } from '@/services/map';
 import uiManager from '@/services/ui_manager';
 import { cn } from '@/utils/style';
-import { useTranslation } from '@endfieldmap/map-service';
-
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
-import { ChevronUp } from '@/components/common/icons';
 
 const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
 const ZmdSwiper = lazy(() => import('@/components/features/swiper'));
@@ -28,14 +25,12 @@ const PresetStore = lazy(() => import('@/components/features/preset_store'));
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
-  mapDataService: MapDataService;
-  mapService: MapService;
 }
 
-const Controllers = observer(({ adapter, mapDataService, mapService }: ControllersProps) => {
+const Controllers = observer(({ adapter }: ControllersProps) => {
   const isMobile = useIsMobile();
   const enableHover = adapter.enableHover;
-  const hoverHitTestTime = mapDataService.mapStateDataService.hoverTime.value;
+  const hoverHitTestTime = service.dataService.mapDataService.mapStateDataService.hoverTime.value;
   const ThemedComponents = uiManager.ThemedComponents;
 
   useEffect(() => {
@@ -47,9 +42,9 @@ const Controllers = observer(({ adapter, mapDataService, mapService }: Controlle
   }, [adapter, enableHover, hoverHitTestTime, isMobile]);
 
   return (
-    <AdapterProvider adapter={adapter} mapDataService={mapDataService} mapService={mapService}>
+    <AdapterProvider adapter={adapter}>
       <Suspense>
-        <ThemedComponents.RootProvider mapDataService={mapDataService}>
+        <ThemedComponents.RootProvider>
           {/* 弹窗组件 */}
           <Suspense>
             <ThemedComponents.map.Popup />
@@ -116,7 +111,7 @@ const Controllers = observer(({ adapter, mapDataService, mapService }: Controlle
 function EndfieldMap() {
   const { t } = useTranslation('common');
   const container = useRef<HTMLDivElement>(null);
-  const { adapter, mapDataService, mapService } = useMapAdapter(container);
+  const { adapter } = useMapAdapter(container);
   const { pipWindow, requestPiP, closePiP, isSupported } = usePiP({
     onClose: () => uiManager.setPiPStatus(false),
   });
@@ -148,8 +143,8 @@ function EndfieldMap() {
       ></div>
 
       {/* 控制组件 */}
-      {adapter && mapDataService && mapService && (
-        <Controllers adapter={adapter} mapDataService={mapDataService} mapService={mapService} />
+      {adapter && service.dataService.mapDataService && (
+        <Controllers adapter={adapter} />
       )}
     </div>
   );

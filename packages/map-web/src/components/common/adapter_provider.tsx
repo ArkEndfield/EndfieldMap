@@ -6,6 +6,6 @@ export interface AdapterProviderProps extends AdapterContextProps {
   children: ReactNode;
 }
 
-export function AdapterProvider({ adapter, mapDataService, mapService, children }: AdapterProviderProps) {
-  return <AdapterContext.Provider value={{ adapter, mapDataService, mapService }}>{children}</AdapterContext.Provider>;
+export function AdapterProvider({ adapter, children }: AdapterProviderProps) {
+  return <AdapterContext.Provider value={{ adapter }}>{children}</AdapterContext.Provider>;
 }

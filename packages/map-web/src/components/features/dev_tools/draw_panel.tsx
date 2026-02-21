@@ -1,13 +1,14 @@
-import { DevToolsShapeType } from '@endfieldmap/map-core';
+import { DevToolsShapeType } from '@endfieldmap/map-adapter-ol';
 import { domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
 import { CloseIcon, EditIcon, TrashIcon, ViewAltIcon } from '@/components/common/icons';
 import { Draws } from '@/components/features/dev_tools/draws';
-import { useAdapter } from '@/hooks/use_adapter';
-import { cn } from '@/utils/style';
 import { useWindow } from '@/context/window';
+import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
+import { cn } from '@/utils/style';
 
 const shapeTypeLabel: Record<DevToolsShapeType, string> = {
   [DevToolsShapeType.POINT]: '点',
@@ -18,8 +19,7 @@ const shapeTypeLabel: Record<DevToolsShapeType, string> = {
 };
 
 export const DevToolsDrawPanelToggle = observer(() => {
-  const { mapDataService } = useAdapter();
-  const devToolsState = mapDataService.mapStateDataService.devToolsState;
+  const devToolsState = service.dataService.mapDataService.mapStateDataService.devToolsState;
 
   if (!devToolsState) {
     return null;
@@ -45,9 +45,9 @@ export const DevToolsDrawPanelToggle = observer(() => {
 });
 
 export const DevToolsDrawPanel = observer(() => {
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const devToolsController = adapter.devToolsController;
-  const devToolsState = mapDataService.mapStateDataService.devToolsState;
+  const devToolsState = service.dataService.mapDataService.mapStateDataService.devToolsState;
   const currentWindow = useWindow();
 
   const [isDragging, setIsDragging] = useState(false);

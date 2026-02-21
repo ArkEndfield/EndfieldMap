@@ -3,24 +3,22 @@ import { EndfieldThemeLocalStorageKey } from '@themes/endfield/const/storage_key
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { computed } from 'mobx';
 
-import type { MapDataService } from '@/services/data/map';
+import { service } from '@/services';
 
 export class EndfieldUIManager {
   private static instance: EndfieldUIManager;
-  private mapDataService: MapDataService;
 
   /** 当前操作面板 */
   public currentOperatePanel: LocalStorageValue<CurrentOperatePanel>;
   /** 侧边面板是否打开 */
   public operatePanelOpen: LocalStorageValue<boolean>;
 
-  private constructor(mapDataService: MapDataService) {
-    this.mapDataService = mapDataService;
+  private constructor() {
     this.currentOperatePanel = new LocalStorageValue<CurrentOperatePanel>({
       initialValue: CurrentOperatePanel.FILTER,
       storageKey: EndfieldThemeLocalStorageKey.CURRENT_OPERATE_PANEL,
       onValueChange: () => {
-        this.mapDataService.stopAllOperation();
+        service.dataService.mapDataService.stopAllOperation();
       },
     });
 
@@ -51,21 +49,12 @@ export class EndfieldUIManager {
    * @param mapDataService 数据服务
    * @returns
    */
-  public static getInstance(mapDataService: MapDataService): EndfieldUIManager {
+  public static getInstance(): EndfieldUIManager {
     if (!EndfieldUIManager.instance) {
-      EndfieldUIManager.instance = new EndfieldUIManager(mapDataService);
+      EndfieldUIManager.instance = new EndfieldUIManager();
     }
     const instance = EndfieldUIManager.instance;
-    instance.setMapDataService(mapDataService);
     return instance;
-  }
-
-  /**
-   * 设置数据服务
-   * @param mapDataService 数据服务
-   */
-  public setMapDataService(mapDataService: MapDataService) {
-    this.mapDataService = mapDataService;
   }
 
   /**

@@ -1,4 +1,4 @@
-import type { EndfieldMapAdapter } from '@endfieldmap/map-core';
+import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { useLayoutEffect } from 'react';
 
 /**

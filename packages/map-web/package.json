@@ -5,13 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b tsconfig.build.json && vite build",
+    "build": "tsc -p tsconfig.app.json --noEmit && vite build",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "prettier --write . && eslint . --fix",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@endfieldmap/map-adapter-ol": "workspace:*",
     "@endfieldmap/map-core": "workspace:*",
+    "@endfieldmap/map-service": "workspace:*",
+    "@endfieldmap/storage-web": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.2.2",

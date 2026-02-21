@@ -1,8 +1,9 @@
-import { useWindow } from '@/context/window';
 import type { MapData } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
-import { useTranslation } from '@endfieldmap/map-service';
+
+import { useWindow } from '@/context/window';
 
 interface MapChangeAnimationProps {
   showChangeAnimation: boolean;

@@ -1,11 +1,12 @@
 import type { ElectricMode } from '@eftypes/electric_pole';
-import { differenceArray } from '@endfieldmap/tools';
 import type { Resources } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
+import { differenceArray } from '@endfieldmap/tools';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { modes } from '@/const/electric_pole';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 type ElectricPoleTranslation = Resources['sidebar']['operation']['electric_pole'];
 
@@ -32,20 +33,20 @@ const modeTipText: Record<ElectricMode, ModeTipTextKeys> = {
 };
 
 export const useElectricMode = () => {
-  const { adapter, mapDataService } = useAdapter();
-  const service = mapDataService.electricPoleDataService;
+  const { adapter } = useAdapter();
+  const electricPoleDataService = service.dataService.mapDataService.electricPoleDataService;
   const { t } = useTranslation('sidebar');
 
   const getModeValue = (mode: ElectricMode): boolean => {
     switch (mode) {
       case 'isCreating':
-        return service.isCreating;
+        return electricPoleDataService.isCreating;
       case 'isConnecting':
-        return service.isConnecting;
+        return electricPoleDataService.isConnecting;
       case 'isDeleting':
-        return service.isDeleting;
+        return electricPoleDataService.isDeleting;
       case 'isDeletingConnection':
-        return service.isDeletingConnection;
+        return electricPoleDataService.isDeletingConnection;
       default:
         return false;
     }
@@ -61,7 +62,7 @@ export const useElectricMode = () => {
     }
 
     // 检查是否在自定义标点操作模式
-    if (mapDataService.customPointDataService.isInCustomPointOperateMode) {
+    if (service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode) {
       alert.info({
         content: <div className="text-center">{t('operation.custom_point_operating_tip')}</div>,
       });
@@ -77,10 +78,10 @@ export const useElectricMode = () => {
   };
 
   const getCurrentMode = (): ElectricMode | null => {
-    if (service.isCreating) return 'isCreating';
-    if (service.isConnecting) return 'isConnecting';
-    if (service.isDeleting) return 'isDeleting';
-    if (service.isDeletingConnection) return 'isDeletingConnection';
+    if (electricPoleDataService.isCreating) return 'isCreating';
+    if (electricPoleDataService.isConnecting) return 'isConnecting';
+    if (electricPoleDataService.isDeleting) return 'isDeleting';
+    if (electricPoleDataService.isDeletingConnection) return 'isDeletingConnection';
     return null;
   };
 
@@ -99,30 +100,30 @@ export const useElectricMode = () => {
     if (!checkCanOperate()) return;
 
     if (isInOtherElectricPoleMode(mode)) {
-      service.stopAllOperation();
+      electricPoleDataService.stopAllOperation();
     }
 
     adapter.activeFeatureController.clearActiveFeature();
 
-    service.setModeState(mode, !getModeValue(mode));
+    electricPoleDataService.setModeState(mode, !getModeValue(mode));
   };
 
   const changeMode = (mode: ElectricMode) => {
     if (!checkCanOperate()) return;
-    service.stopAllOperation();
-    service.setModeState(mode, true);
+    electricPoleDataService.stopAllOperation();
+    electricPoleDataService.setModeState(mode, true);
   };
 
   const stopAllModes = () => {
-    service.stopAllOperation();
+    electricPoleDataService.stopAllOperation();
   };
 
   return {
     states: {
-      isCreating: service.isCreating,
-      isConnecting: service.isConnecting,
-      isDeleting: service.isDeleting,
-      isDeletingConnection: service.isDeletingConnection,
+      isCreating: electricPoleDataService.isCreating,
+      isConnecting: electricPoleDataService.isConnecting,
+      isDeleting: electricPoleDataService.isDeleting,
+      isDeletingConnection: electricPoleDataService.isDeletingConnection,
     },
     getCurrentMode,
     isInOtherMode: adapter.mapController.selection.isSelecting,

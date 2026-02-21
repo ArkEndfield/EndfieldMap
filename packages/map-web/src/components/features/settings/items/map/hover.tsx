@@ -1,11 +1,11 @@
-import { observer } from 'mobx-react-lite';
 import { useTranslation } from '@endfieldmap/map-service';
+import { observer } from 'mobx-react-lite';
 
 import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
-import { useAdapter } from '@/hooks/use_adapter';
 import { useIsMobile } from '@/hooks/use_is_mobile';
+import { service } from '@/services';
 
 const options = [
   {
@@ -32,9 +32,8 @@ const options = [
 
 export const HoverSetting = observer(() => {
   const { t } = useTranslation('settings');
-  const { mapDataService } = useAdapter();
   const isMobile = useIsMobile();
-  const hoverDebounceTime = mapDataService.mapStateDataService.hoverTime.value;
+  const hoverDebounceTime = service.dataService.mapDataService.mapStateDataService.hoverTime.value;
 
   if (isMobile) {
     return null;
@@ -54,7 +53,7 @@ export const HoverSetting = observer(() => {
           label: t(`map.hover.value.${option.label}`),
         }))}
         activeKey={hoverDebounceTime}
-        onChange={(v) => (mapDataService.mapStateDataService.hoverTime.value = v)}
+        onChange={(v) => (service.dataService.mapDataService.mapStateDataService.hoverTime.value = v)}
       />
     </SettingItem>
   );

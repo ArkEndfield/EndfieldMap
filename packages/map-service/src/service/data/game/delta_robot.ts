@@ -1,20 +1,20 @@
-import { JSONLoader } from '@endfieldmap/tools';
 import type {
+  Coord,
+  Grid,
   Group,
   LevelData,
   ObstacleData,
   ParsedLevel,
-  PieceLoader,
-  PieceUI,
-  Coord,
-  Grid,
-  PieceShape,
-  SolverPiece,
   PieceData,
+  PieceLoader,
+  PieceShape,
+  PieceUI,
+  SolverPiece,
 } from '@endfieldmap/map-service/@types/delta_robot';
-import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
+import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { DeltaRobotParsedLevelSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/delta_robot';
+import { JSONLoader } from '@endfieldmap/tools';
 
 export interface DeltaRobotConfig<T, R> {
   jsonLoader: JSONLoader;

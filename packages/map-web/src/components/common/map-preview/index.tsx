@@ -1,11 +1,10 @@
 import type { EntityInfoDataJson, EntityJsonDataList, MapDataJson } from '@endfieldmap/map-core';
+import type { CustomPointPreset, ElectricPolePreset } from '@endfieldmap/map-service';
+import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useRef, useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
-import type { CustomPointPreset } from '@/@types/custom_point';
-import type { ElectricPolePreset } from '@/@types/electric_pole';
 import { usePreviewAdapter } from '@/components/common/map-preview/use_preview_adapter';
 
 export interface MapPreviewProps {

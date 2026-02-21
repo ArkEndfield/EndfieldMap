@@ -1,9 +1,8 @@
-import type { JSONLoader } from '@endfieldmap/tools';
-
 import type { GuideInfoDetail } from '@endfieldmap/map-service/@types/guide';
-import type { GuideSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/guide';
-import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
+import type { DatabaseService } from '@endfieldmap/map-service/service/db';
+import type { GuideSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/guide';
+import type { JSONLoader } from '@endfieldmap/tools';
 
 export interface GuideDataServiceConfig<T, R> {
   jsonLoader: JSONLoader;

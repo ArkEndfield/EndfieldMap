@@ -1,11 +1,11 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
-import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';
 import { cn } from '@/utils/style';
 
@@ -15,11 +15,10 @@ import { cn } from '@/utils/style';
  */
 const CustomPointTypeSelector: React.FC = observer(() => {
   const { t } = useTranslation(['common', 'sidebar']);
-  const { mapDataService } = useAdapter();
-  const selectedType = mapDataService.customPointDataService.selectedPointType;
+  const selectedType = service.dataService.mapDataService.customPointDataService.selectedPointType;
 
   const handleSelectType = (pointType: CustomPointTypeId) => {
-    mapDataService.customPointDataService.setSelectedPointType(pointType);
+    service.dataService.mapDataService.customPointDataService.setSelectedPointType(pointType);
   };
 
   return (

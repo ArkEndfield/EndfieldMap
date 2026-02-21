@@ -1,4 +1,5 @@
-import { EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
+import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
+import { MAP_EVENT } from '@endfieldmap/map-core';
 
 /**
  * 初始化鼠标指针样式监听器

@@ -1,6 +1,5 @@
-import { type JSONLoader } from '@endfieldmap/tools';
-
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
+import { type JSONLoader } from '@endfieldmap/tools';
 
 export interface LangHashServiceConfig {
   jsonLoader: JSONLoader;

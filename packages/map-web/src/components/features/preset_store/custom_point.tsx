@@ -1,14 +1,14 @@
+import type { PresetStoreResponseItem } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef } from 'react';
 
-import type { PresetStoreResponseItem } from '@/@types/preset_store';
 import { Pagination } from '@/components/common/pagination';
 import { PresetStoreItem } from '@/components/common/preset_store/item';
 import { SearchSortToolbar } from '@/components/common/preset_store/search_sort_toolbar';
 import { ScrollArea } from '@/components/common/scroll_area';
 import { usePagination, useSearchSort } from '@/hooks/use_preset_store';
-import { presetService } from '@/services/preset';
+import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 
 interface CustomPointStoreProps {
@@ -23,7 +23,7 @@ export const CustomPointStore = observer(({ show, onOpen }: CustomPointStoreProp
 
   const fetchData = useCallback(
     async (page: number, pageSize: number): Promise<{ data: PresetStoreResponseItem[]; totalPages: number }> => {
-      const result = await presetService.getCustomPointPresets(page, pageSize, {
+      const result = await service.presetService.getCustomPointPresets(page, pageSize, {
         keyword: searchKeyword,
         sortBy,
         sortOrder,
@@ -87,7 +87,7 @@ export const CustomPointStore = observer(({ show, onOpen }: CustomPointStoreProp
 
       // 调用 API，失败时回滚
       await catchErrorWithTip(
-        () => (newIsLiked ? presetService.likePreset(id) : presetService.unlikePreset(id)),
+        () => (newIsLiked ? service.presetService.likePreset(id) : service.presetService.unlikePreset(id)),
         () => {
           optimistic.revert(id);
         }

@@ -1,8 +1,9 @@
+import type { BindType } from '@endfieldmap/map-service';
+import { useTranslation } from '@endfieldmap/map-service';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
-import type { BindType, GameRole } from '@/@types/game_role';
+import type { GameRole } from '@/@types/game_role';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { KeyIcon, ScanIcon } from '@/components/common/icons';
 import { QRCodeLogin } from '@/components/features/user/info/bind_uid/login/qrcode';

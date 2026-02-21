@@ -9,15 +9,18 @@ export default defineConfig(({ mode }) => {
   } as Record<string, string>;
 
   if (isDev) {
+    alias['@endfieldmap/map-core'] = path.resolve(__dirname, '../map-core/src');
     alias['@endfieldmap/tools'] = path.resolve(__dirname, '../tools/src');
   }
 
   return {
     build: {
       lib: {
-        entry: path.resolve(__dirname, 'src/index.ts'),
+        entry: {
+          index: path.resolve(__dirname, 'src/index.ts'),
+          'locales/bundled': path.resolve(__dirname, 'src/locales/bundled.ts'),
+        },
         formats: ['es'],
-        fileName: 'index',
       },
       rolldownOptions: {
         external: (id) => {
@@ -25,6 +28,7 @@ export default defineConfig(({ mode }) => {
           if (path.isAbsolute(id)) return false;
           if (id.startsWith('.')) return false;
           if (id.startsWith('@endfieldmap/map-service')) return false;
+          if (id.startsWith('@endfieldmap/map-core')) return true;
           if (id.startsWith('@endfieldmap/tools')) return true;
           return true;
         },
@@ -41,14 +45,14 @@ export default defineConfig(({ mode }) => {
     plugins: [
       dts({
         include: ['src/**/*'],
-        tsconfigPath: 'tsconfig.build.json',
+        tsconfigPath: 'tsconfig.json',
         outDirs: 'dist',
         entryRoot: 'src',
         insertTypesEntry: true,
         cleanVueFileName: true,
-        copyDtsFiles: false,
-        aliasesExclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
-        exclude: ['@endfieldmap/tools', '@endfieldmap/tools/*'],
+        copyDtsFiles: true,
+        aliasesExclude: ['@endfieldmap/map-core', '@endfieldmap/map-core/*', '@endfieldmap/tools', '@endfieldmap/tools/*'],
+        exclude: ['@endfieldmap/map-core', '@endfieldmap/map-core/*', '@endfieldmap/tools', '@endfieldmap/tools/*'],
       }),
     ],
     resolve: {

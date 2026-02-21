@@ -1,10 +1,10 @@
-import { observer } from 'mobx-react-lite';
 import { useTranslation } from '@endfieldmap/map-service';
+import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { EditIcon } from '@/components/common/icons';
-import { userService } from '@/services/user';
+import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 
 /** 信息项组件 */
@@ -26,7 +26,7 @@ const InfoItem = ({ label, value, onEdit }: { label: string; value: string; onEd
  * 用户基础信息设置组件
  */
 export const BaseInfo = observer(() => {
-  const userInfo = userService.auth.userInfo;
+  const userInfo = service.userService.auth.userInfo;
   const { t } = useTranslation('header');
 
   if (!userInfo) {
@@ -41,7 +41,7 @@ export const BaseInfo = observer(() => {
       onConfirm: async (value) => {
         if (!value) return false;
         return await catchErrorWithTip(async () => {
-          await userService.changeNickname(value);
+          await service.userService.changeNickname(value);
           alert.info(t('user.info.nickname.edit_success'));
           return true;
         });

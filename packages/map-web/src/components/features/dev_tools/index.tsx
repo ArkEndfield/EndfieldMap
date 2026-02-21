@@ -1,4 +1,4 @@
-import type { Coordinate } from '@endfieldmap/map-core';
+import type { MapCoordinate } from '@endfieldmap/map-core';
 import { domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
@@ -8,12 +8,12 @@ import { DevToolsDrawPanel } from '@/components/features/dev_tools/draw_panel';
 import { TierControls } from '@/components/features/dev_tools/views/tier_controller';
 import { useWindow } from '@/context/window';
 import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 import { cn } from '@/utils/style';
 
 // 开发工具面板
 const DevToolsPanel = observer(() => {
-  const { mapDataService } = useAdapter();
-  const devToolsState = mapDataService.mapStateDataService.devToolsState;
+  const devToolsState = service.dataService.mapDataService.mapStateDataService.devToolsState;
   const currentWindow = useWindow();
 
   const [position, setPosition] = useState(devToolsState?.value?.position || { right: 20, top: 20 });
@@ -158,7 +158,7 @@ const DevToolsPanel = observer(() => {
         d5?.();
       };
     }
-  }, [isDragging, position, devToolsState]);
+  }, [isDragging, position, devToolsState, currentWindow]);
 
   const toggleCollapse = () => {
     if (!devToolsState) return;
@@ -321,8 +321,8 @@ const CursorPositionDisplay = observer(() => {
 
   useEffect(() => {
     const map = adapter.mapController.olMapRenderer.map;
-    const listener = (e: { coordinate: Coordinate }) => {
-      const [x, y] = e.coordinate;
+    const listener = (e: { coordinate: number[] }) => {
+      const [x, y] = e.coordinate as MapCoordinate;
       setCoords(`${x.toFixed(2)}, ${y.toFixed(2)}`);
     };
     map.on('pointermove', listener);

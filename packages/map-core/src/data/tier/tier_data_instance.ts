@@ -1,18 +1,18 @@
 import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
+import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
 import type { MapData } from '@endfieldmap/map-core/types/map';
 import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
 import { observable } from 'mobx';
-import type { Coordinate } from 'ol/coordinate';
 
 export class TierDataInstance {
   public mapId: MapData['id'];
   public data: GridTierItem['items'][number];
-  public position: Coordinate;
-  public extentExtra: Coordinate = [0, 0];
+  public position: MapCoordinate;
+  public extentExtra: MapCoordinate = [0, 0];
   @observable accessor visible: boolean = true;
   public readonly mapDataManager: MapDataManager;
 
-  constructor(mapId: MapData['id'], data: GridTierItem['items'][number], position: Coordinate, mapDataManager: MapDataManager) {
+  constructor(mapId: MapData['id'], data: GridTierItem['items'][number], position: MapCoordinate, mapDataManager: MapDataManager) {
     this.mapId = mapId;
     this.data = data;
     this.position = position;
@@ -50,7 +50,7 @@ export class TierDataInstance {
     return extent;
   }
 
-  public setExtentExtra(position: Coordinate) {
+  public setExtentExtra(position: MapCoordinate) {
     this.extentExtra = position;
   }
 }

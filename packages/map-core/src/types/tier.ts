@@ -1,12 +1,12 @@
-import { type Coordinate } from 'ol/coordinate';
+import type { MapCoordinate } from '@endfieldmap/map-core/types/coordinate';
 
 export interface GridTierItem {
   id: string;
   name: string;
   level: number;
-  lb: Coordinate;
-  rt: Coordinate;
-  center: Coordinate;
+  lb: MapCoordinate;
+  rt: MapCoordinate;
+  center: MapCoordinate;
   items: {
     id: string;
     name: string;

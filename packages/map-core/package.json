@@ -16,10 +16,10 @@
     }
   },
   "scripts": {
-    "build": "vite build",
+    "build": "tsc --noEmit && vite build",
     "test": "vitest",
     "test:run": "vitest run",
-    "typecheck": "tsc --noEmit -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -27,11 +27,9 @@
     "@endfieldmap/tools": "workspace:*"
   },
   "peerDependencies": {
-    "mobx": "^6.15.0",
-    "ol": "^10.7.0"
+    "mobx": "^6.15.0"
   },
   "devDependencies": {
-    "mobx": "^6.15.0",
-    "ol": "^10.7.0"
+    "mobx": "^6.15.0"
   }
 }

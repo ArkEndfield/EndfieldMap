@@ -1,6 +1,6 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { Dialog } from '@/components/common/dialog';
@@ -11,7 +11,7 @@ import { BindUid } from '@/components/features/user/info/bind_uid';
 import { Settings } from '@/components/features/user/info/settings';
 import { UidList } from '@/components/features/user/info/uid_list';
 import { UserProfile } from '@/components/features/user/info/user_profile';
-import { userService } from '@/services/user';
+import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 
 // ==================== 主组件 ====================
@@ -20,16 +20,16 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { t } = useTranslation('header');
 
-  const uidList = userService.auth.uidList;
-  const uidInfo = userService.auth.currentUidInfo;
-  const userInfo = userService.auth.userInfo;
+  const uidList = service.userService.auth.uidList;
+  const uidInfo = service.userService.auth.currentUidInfo;
+  const userInfo = service.userService.auth.userInfo;
 
   const handleDeleteUid = (uid: string) => {
     alert.confirm({
       content: t('user.uid.unbind_confirm'),
       onConfirm: async () => {
         catchErrorWithTip(async () => {
-          await userService.unbindUid(uid);
+          await service.userService.unbindUid(uid);
         });
         return true;
       },
@@ -37,7 +37,7 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
   };
 
   const handleSwitchToUid = (uid: string) => {
-    userService.switchUid(uid);
+    service.userService.switchUid(uid);
   };
 
   const handleLogout = async () => {
@@ -48,11 +48,11 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
           content: t('user.logout_confirm_clear_data'),
           dismissible: false,
           onConfirm: async () => {
-            await userService.logout(false);
+            await service.userService.logout(false);
             return true;
           },
           onCancel: async () => {
-            await userService.logout(true);
+            await service.userService.logout(true);
             return true;
           },
         });

@@ -1,11 +1,10 @@
+import { useTranslation } from '@endfieldmap/map-service';
 import { logger } from '@endfieldmap/tools';
 import { useLiveQuery } from '@tanstack/react-db';
 import { useRef, useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { EXPORT_TYPE_KEY } from '@/const/data';
-import { useAdapter } from '@/hooks/use_adapter';
 import { useMobxSource } from '@/hooks/use_mobx_source';
 import { service } from '@/services';
 
@@ -16,8 +15,7 @@ export interface PresetItem {
 
 export const useElectricPolePresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
-  const { mapDataService } = useAdapter();
-  const electricPoleDataService = mapDataService.electricPoleDataService;
+  const electricPoleDataService = service.dataService.mapDataService.electricPoleDataService;
   const currentPresetId = electricPoleDataService.currentPresetId.value ?? '';
 
   const collections = useMobxSource(() => service.databaseService.collections);

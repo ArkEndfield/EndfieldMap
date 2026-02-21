@@ -1,31 +1,31 @@
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
-import { ElectricPoleKey, type EndfieldMapAdapter, MAP_EVENT } from '@endfieldmap/map-core';
+import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
+import { ElectricPoleDataInstance, MAP_EVENT } from '@endfieldmap/map-core';
 
 import { SoundType } from '@/const/audio_config';
+import { service } from '@/services';
 import audioService from '@/services/audio_service';
-import type { MapDataService } from '@/services/data/map';
 
 /**
  * 初始化激活feature事件监听器
  * @param adapter 地图适配器
  */
-export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter, mapDataService: MapDataService) {
+export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter) {
   // 监听entity_click事件，设置active_feature
   adapter.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
     if (adapter.mapController.selection.isSelecting) return;
     const { instance } = event;
 
     // 电线杆特殊处理：在操作模式下进行连接操作
-    if (mapDataService.electricPoleDataService.isInElectricOperateMode) {
-      if (mapDataService.electricPoleDataService.isConnecting || mapDataService.electricPoleDataService.isCreating) {
-        if (instance.entityInfo?.category === ElectricPoleKey)
-          mapDataService.electricPoleDataService.connectElectricPole(instance as unknown as ElectricPoleDataInstance);
+    if (service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode) {
+      if (service.dataService.mapDataService.electricPoleDataService.isConnecting || service.dataService.mapDataService.electricPoleDataService.isCreating) {
+        if (instance instanceof ElectricPoleDataInstance)
+          service.dataService.mapDataService.electricPoleDataService.connectElectricPole(instance);
       }
       return;
     }
 
     // 自定义标点特殊处理
-    if (mapDataService.customPointDataService.isInCustomPointOperateMode) {
+    if (service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode) {
       return;
     }
 
@@ -40,10 +40,10 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter, map
       return;
     }
 
-    if (mapDataService.electricPoleDataService.isInElectricOperateMode) {
+    if (service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode) {
       return;
     }
-    if (mapDataService.customPointDataService.isInCustomPointOperateMode) {
+    if (service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode) {
       return;
     }
     adapter.activeFeatureController.clearActiveFeature();

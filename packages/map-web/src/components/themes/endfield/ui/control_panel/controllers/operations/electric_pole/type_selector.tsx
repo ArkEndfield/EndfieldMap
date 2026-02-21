@@ -1,9 +1,9 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core';
 import { ELECTRIC_POLE_DEVICE_CONFIGS } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import {
   ElectricPoleIconPole,
@@ -11,15 +11,14 @@ import {
   ElectricPoleIconZipline80,
   ElectricPoleIconZipline110,
 } from '@/components/common/icons';
-import { useAdapter } from '@/hooks/use_adapter';
+import { service } from '@/services';
 
 const ElectricPoleTypeSelector: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
-  const { mapDataService } = useAdapter();
-  const selectedType = mapDataService.electricPoleDataService.creatingDeviceKey;
+  const selectedType = service.dataService.mapDataService.electricPoleDataService.creatingDeviceKey;
 
   const handleSelectType = (deviceKey: ElectricPoleDeviceKey) => {
-    mapDataService.electricPoleDataService.setCreatingDeviceKey(deviceKey);
+    service.dataService.mapDataService.electricPoleDataService.setCreatingDeviceKey(deviceKey);
   };
 
   return (

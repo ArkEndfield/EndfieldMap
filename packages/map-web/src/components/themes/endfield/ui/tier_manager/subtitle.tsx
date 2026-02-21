@@ -1,5 +1,5 @@
-import type { ButtonHTMLAttributes } from 'react';
 import { useTranslation } from '@endfieldmap/map-service';
+import type { ButtonHTMLAttributes } from 'react';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { LayerIcon } from '@/components/common/icons';

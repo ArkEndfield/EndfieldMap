@@ -1,5 +1,5 @@
-import Tooltip from '@themes/endfield/components/tooltip';
 import { useTranslation } from '@endfieldmap/map-service';
+import Tooltip from '@themes/endfield/components/tooltip';
 
 import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { ElectricPoleIconPole } from '@/components/common/icons';

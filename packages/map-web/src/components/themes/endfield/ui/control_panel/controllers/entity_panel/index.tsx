@@ -1,11 +1,11 @@
 import type { Category, EntityInfoStats } from '@endfieldmap/map-core';
+import { useTranslation } from '@endfieldmap/map-service';
 import { debounce } from '@endfieldmap/tools';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { Search } from '@themes/endfield/ui/control_panel/controllers/entity_panel/search';
 import { observer } from 'mobx-react-lite';
 import { useMemo, useState } from 'react';
-import { useTranslation } from '@endfieldmap/map-service';
 
 import CustomPointList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/custom_point';
 import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
@@ -27,7 +27,7 @@ interface CategoryInfo {
  */
 const EntityPanel = observer(() => {
   const { t } = useTranslation(['sidebar', 'lang']);
-  const { adapter, mapDataService } = useAdapter();
+  const { adapter } = useAdapter();
   const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -115,7 +115,7 @@ const EntityPanel = observer(() => {
       ?.entities.map((e) => e.entityDataIdKey);
     if (!allEntityDataIds) return;
     allEntityDataIds.forEach((entityDataId) => {
-      mapDataService.entityDataService.setEntityGroupVisibility(currentMap, entityDataId, isShow);
+      service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(currentMap, entityDataId, isShow);
     });
   };
 
@@ -161,7 +161,7 @@ const EntityPanel = observer(() => {
                   category={categoryInfo.category}
                   active={entity.visible}
                   onClick={() =>
-                    mapDataService.entityDataService.setEntityGroupVisibility(
+                    service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(
                       currentMap,
                       entity.entityDataIdKey,
                       !entity.visible

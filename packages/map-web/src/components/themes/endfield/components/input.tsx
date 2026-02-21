@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { InVisibleIcon, VisibleIcon } from '@/components/common/icons';
 import { SoundType } from '@/const/audio_config';
+import { useWindow } from '@/context/window';
 import { useAudio } from '@/hooks/use_audio';
 import { cn } from '@/utils/style';
-import { useWindow } from '@/context/window';
 
 export const EndfieldInput = ({
   placeholder,
