@@ -1,22 +1,28 @@
 import { MmkvStorageAdapter } from '@endfieldmap/storage-mmkv';
+import { getRxStorageExpoSQLite } from '@endfieldmap/storage-expo-sqlite';
 import { MapService } from '@endfieldmap/map-service';
 import { registerStorageAdapter } from '@endfieldmap/tools';
+import * as SQLite from 'expo-sqlite';
 import { createMMKV } from 'react-native-mmkv';
-import { getRxStorageMemory } from 'rxdb/plugins/storage-memory';
 
 import { NativeLanguageDetector } from './language-detector';
 import { nativeResourceLoader } from './locale-resources';
 
+// MMKV 用于 LocalStorageValue 等键值存储
 const mmkv = createMMKV({ id: 'endfieldmap' });
 registerStorageAdapter(new MmkvStorageAdapter(mmkv));
 
+// SQLite 用于 RxDB 持久化存储
+const db = SQLite.openDatabaseSync('endfieldmap_rxdb');
+db.execSync('PRAGMA journal_mode=WAL');
+db.execSync('PRAGMA synchronous=NORMAL');
 
 const assetsHost = 'https://assets.zmdmap.com';
 const backendHost = 'http://103.217.194.42:10086';
 
 export const service = new MapService({
   databaseConfig: {
-    storage: getRxStorageMemory(),
+    storage: getRxStorageExpoSQLite({ database: db }),
   },
   i18nConfig: {
     resourceLoader: nativeResourceLoader,

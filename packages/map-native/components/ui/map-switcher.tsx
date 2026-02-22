@@ -1,4 +1,4 @@
-import type { MapData } from '@endfieldmap/map-core/types/map';
+import type { MapData } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
@@ -61,7 +61,7 @@ export const MapSwitcher = observer(function MapSwitcher() {
             return (
               <Pressable
                 key={map.id}
-                className={cn('border-b border-b-border-light px-3.5 py-3', isActive && 'bg-primary/[0.06]')}
+                className={cn('border-b border-b-border-light px-3.5 py-3', isActive && 'bg-primary/6')}
                 onPress={() => handleSwitch(map.id)}
               >
                 <Text

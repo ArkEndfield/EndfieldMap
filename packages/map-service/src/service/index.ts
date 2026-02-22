@@ -80,7 +80,8 @@ export class MapService<T, R> {
   }
 
   public async init() {
-    await Promise.all([this.databaseService.init(), this.dataService.init(), this.langHashService.init()]);
+    await this.databaseService.init();
+    await Promise.all([this.dataService.init(), this.langHashService.init()]);
   }
 
   public async registerAdapter(adapter: RegisterableAdapter) {

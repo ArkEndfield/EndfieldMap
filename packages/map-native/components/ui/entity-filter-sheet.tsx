@@ -4,6 +4,7 @@ import {
   customPointTypes,
   getCustomPointEntityInfo,
   getElectricPoleDeviceConfig,
+  EntityInfoStats,
 } from '@endfieldmap/map-core';
 import {
   CustomPointKey,
@@ -11,8 +12,7 @@ import {
   ElectricPoleKey,
   MarkedFeatureFilterMode,
   NoteKey,
-} from '@endfieldmap/map-core/const/map';
-import type { EntityInfoStats } from '@endfieldmap/map-core/types/entity';
+} from '@endfieldmap/map-core';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { observer } from 'mobx-react-lite';
 import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';

@@ -165,6 +165,25 @@ export class SyncService<T, R> {
     logger.info('[SyncService] Sync stopped');
   }
 
+  /**
+   * Wait for all replication states to complete their initial pull.
+   * Useful for in-memory storage where data is lost on restart.
+   */
+  public async awaitInitialReplication(): Promise<void> {
+    if (this.replicationStates.size === 0) return;
+
+    const promises: Promise<void>[] = [];
+    for (const [name, state] of this.replicationStates) {
+      promises.push(
+        state.awaitInitialReplication().catch((err) => {
+          logger.warn(`[SyncService] Initial replication failed for ${name}:`, err);
+        }),
+      );
+    }
+    await Promise.all(promises);
+    logger.info('[SyncService] All initial replications completed');
+  }
+
   public async triggerSync(): Promise<void> {
     this.consecutiveErrorCount = 0;
 

@@ -9,8 +9,17 @@ export interface NativeAlertConfig {
   onConfirm?: () => boolean | void | Promise<boolean | void>;
 }
 
+export interface NativePromptConfig extends Omit<NativeAlertConfig, 'onConfirm'> {
+  defaultValue?: string;
+  placeholder?: string;
+  onConfirm?: (value: string) => boolean | void | Promise<boolean | void>;
+}
+
 export interface AlertInstance {
   id: string;
   config: NativeAlertConfig;
   visible: boolean;
+  isPrompt?: boolean;
+  promptDefaultValue?: string;
+  promptPlaceholder?: string;
 }

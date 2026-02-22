@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from 'mobx';
 
-import type { AlertInstance, NativeAlertConfig } from './types';
+import type { AlertInstance, NativeAlertConfig, NativePromptConfig } from './types';
 
 interface AlertHandle {
   destroy: () => void;
@@ -68,6 +68,59 @@ class AlertStore {
     const resolved: NativeAlertConfig =
       typeof config === 'string' ? { content: config } : config;
     return this.show({ ...resolved, hideCancel: true });
+  }
+
+  prompt(config: NativePromptConfig | string): Promise<string | null> {
+    return new Promise((resolve) => {
+      const promptConfig: NativePromptConfig =
+        typeof config === 'string' ? { content: config } : config;
+
+      const id = `alert-${Date.now()}-${Math.random()}`;
+      const instance: AlertInstance = {
+        id,
+        config: {
+          ...promptConfig,
+          onConfirm: async () => {
+            // The actual input value will be injected by the alert component
+            // via updatePromptValue before calling onConfirm
+            const inputValue = this.promptValues.get(id) ?? promptConfig.defaultValue ?? '';
+            const result = await promptConfig.onConfirm?.(inputValue);
+            if (result !== false) {
+              resolve(inputValue);
+              this.promptValues.delete(id);
+            }
+            return result;
+          },
+          onCancel: async () => {
+            const result = await promptConfig.onCancel?.();
+            if (result !== false) {
+              resolve(null);
+              this.promptValues.delete(id);
+            }
+            return result;
+          },
+          onDismiss: async () => {
+            const result = await promptConfig.onDismiss?.();
+            if (result !== false) {
+              resolve(null);
+              this.promptValues.delete(id);
+            }
+            return result;
+          },
+        },
+        visible: true,
+        isPrompt: true,
+        promptDefaultValue: promptConfig.defaultValue,
+        promptPlaceholder: promptConfig.placeholder,
+      };
+      this.alerts.push(instance);
+    });
+  }
+
+  promptValues: Map<string, string> = new Map();
+
+  updatePromptValue(id: string, value: string) {
+    this.promptValues.set(id, value);
   }
 
   remove(id: string) {

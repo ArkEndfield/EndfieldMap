@@ -6,10 +6,11 @@ import {
   userDataCollectionsSchema,
   type UserDataDBCollections,
 } from '@endfieldmap/map-service/service/db/collections';
+import { createAuditLogPlugin } from '@endfieldmap/map-service/service/db/plugins/audit-log';
 import { logger } from '@endfieldmap/tools';
 import { computed, makeObservable, observable, runInAction } from 'mobx';
 import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
-import { addRxPlugin, createRxDatabase, type RxDatabase,type RxStorage } from 'rxdb/plugins/core';
+import { addRxPlugin, createRxDatabase, type RxDatabase, type RxStorage } from 'rxdb/plugins/core';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
@@ -69,6 +70,7 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
     addRxPlugin(RxDBUpdatePlugin);
     addRxPlugin(RxDBCleanupPlugin);
     addRxPlugin(RxDBLeaderElectionPlugin);
+    addRxPlugin(createAuditLogPlugin({ logger }));
   }
 
   /**

@@ -1,10 +1,11 @@
-import type { DataInstance } from '@endfieldmap/map-core/types/event';
-import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
+import type { DataInstance, CustomPointDataInstance, ElectricPoleDataInstance, EntityDataInstance } from '@endfieldmap/map-core';
 import React, { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { GameMapView } from '@/components/map/game-map-view';
+import { CustomPointSheet, type CustomPointSheetRef } from '@/components/operations/custom-point/custom-point-sheet';
+import { ElectricPoleSheet, type ElectricPoleSheetRef } from '@/components/operations/electric-pole/electric-pole-sheet';
 import { EntityFilterSheet, type EntityFilterSheetRef } from '@/components/ui/entity-filter-sheet';
 import { EntityInfoSheet } from '@/components/ui/entity-info-sheet';
 import { MapSwitcher } from '@/components/ui/map-switcher';
@@ -45,8 +46,18 @@ function MapContent() {
   const { t } = useTranslation(['common', 'header']);
   const [activeEntity, setActiveEntity] = useState<DataInstance | null>(null);
   const filterSheetRef = useRef<EntityFilterSheetRef>(null);
+  const customPointSheetRef = useRef<CustomPointSheetRef>(null);
+  const electricPoleSheetRef = useRef<ElectricPoleSheetRef>(null);
 
   const handleEntityPress = useCallback((instance: EntityDataInstance) => {
+    setActiveEntity(instance as DataInstance);
+  }, []);
+
+  const handleElectricPolePress = useCallback((instance: ElectricPoleDataInstance) => {
+    setActiveEntity(instance as DataInstance);
+  }, []);
+
+  const handleCustomPointPress = useCallback((instance: CustomPointDataInstance) => {
     setActiveEntity(instance as DataInstance);
   }, []);
 
@@ -58,22 +69,51 @@ function MapContent() {
     filterSheetRef.current?.present();
   }, []);
 
+  const handleOpenCustomPoint = useCallback(() => {
+    customPointSheetRef.current?.present();
+  }, []);
+
+  const handleOpenElectricPole = useCallback(() => {
+    electricPoleSheetRef.current?.present();
+  }, []);
+
   return (
     <View className="flex-1">
-      <GameMapView onEntityPress={handleEntityPress} />
+      <GameMapView
+        onEntityPress={handleEntityPress}
+        onElectricPolePress={handleElectricPolePress}
+        onCustomPointPress={handleCustomPointPress}
+      />
 
       <MapSwitcher />
       <ZoomControls />
 
-      <Pressable
-        className="absolute bottom-10 right-4 rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
-        onPress={handleOpenFilter}
-      >
-        <Text className="text-[15px] font-semibold text-primary">{t('header:head_menu.filter', { defaultValue: '筛选' })}</Text>
-      </Pressable>
+      {/* Operation buttons stacked vertically */}
+      <View className="absolute bottom-10 right-4 gap-2">
+        <Pressable
+          className="rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
+          onPress={handleOpenCustomPoint}
+        >
+          <Text className="text-[15px] font-semibold text-primary">{t('header:head_menu.custom', { defaultValue: '自定义标点' })}</Text>
+        </Pressable>
+        <Pressable
+          className="rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
+          onPress={handleOpenElectricPole}
+        >
+          <Text className="text-[15px] font-semibold text-primary">{t('header:head_menu.poles', { defaultValue: '电线杆管理' })}</Text>
+        </Pressable>
+        <Pressable
+          className="rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
+          onPress={handleOpenFilter}
+        >
+          <Text className="text-[15px] font-semibold text-primary">{t('header:head_menu.filter', { defaultValue: '资源标点筛选' })}</Text>
+        </Pressable>
+      </View>
 
       <EntityInfoSheet instance={activeEntity} onDismiss={handleDismissInfo} />
       <EntityFilterSheet ref={filterSheetRef} />
+      <CustomPointSheet ref={customPointSheetRef} />
+      <ElectricPoleSheet ref={electricPoleSheetRef} />
     </View>
   );
 }

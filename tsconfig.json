@@ -8,6 +8,7 @@
     { "path": "./packages/map-adapter-maplibre" },
     { "path": "./packages/storage-web" },
     { "path": "./packages/storage-mmkv" },
+    { "path": "./packages/storage-expo-sqlite" },
     { "path": "./packages/map-web" }
   ]
 }

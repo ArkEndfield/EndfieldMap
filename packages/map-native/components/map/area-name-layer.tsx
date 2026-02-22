@@ -1,5 +1,5 @@
 import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
-import type { MapBaseRegionData, OverrideRegionData } from '@endfieldmap/map-core/types';
+import type { MapBaseRegionData, OverrideRegionData } from '@endfieldmap/map-core';
 import { ShapeSource, SymbolLayer, SymbolLayerStyle } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useMemo } from 'react';

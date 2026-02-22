@@ -1,5 +1,5 @@
-import type { DataInstance } from '@endfieldmap/map-core/types/event';
-import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core/const/map';
+import type { DataInstance } from '@endfieldmap/map-core';
+import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -140,7 +140,7 @@ export const EntityInfoSheet = observer(function EntityInfoSheet({
 
             {isMarkable && (
               <Pressable
-                className={cn('flex-[2] items-center rounded-xl py-3.5', instance.marked ? 'bg-bg-tertiary' : 'bg-primary')}
+                className={cn('flex-2 items-center rounded-xl py-3.5', instance.marked ? 'bg-bg-tertiary' : 'bg-primary')}
                 onPress={handleToggleMark}
               >
                 <Text className={cn('text-base font-semibold', instance.marked ? 'text-text-tertiary' : 'text-white')}>

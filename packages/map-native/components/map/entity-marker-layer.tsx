@@ -1,5 +1,5 @@
 import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
-import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
+import type { EntityDataInstance } from '@endfieldmap/map-core';
 import {
   CircleLayer,
   Images,

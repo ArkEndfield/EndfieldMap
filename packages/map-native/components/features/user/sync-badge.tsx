@@ -1,4 +1,4 @@
-import { SyncStatus } from '@endfieldmap/map-service/@types';
+import { SyncStatus } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Text, View } from 'react-native';

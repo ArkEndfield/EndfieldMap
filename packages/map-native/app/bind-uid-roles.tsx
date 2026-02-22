@@ -1,4 +1,4 @@
-import type { BindType } from '@endfieldmap/map-service/@types/game_role';
+import type { BindType } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';

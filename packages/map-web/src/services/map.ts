@@ -19,6 +19,18 @@ const translateAreaName = (name: string): string => {
   return service.i18nService.translate(name, { ns: 'lang', defaultValue: name });
 };
 
+const SYNC_TIMEOUT_MS = 10_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | undefined> {
+  let timer: ReturnType<typeof setTimeout>;
+  return Promise.race([
+    promise,
+    new Promise<undefined>((resolve) => {
+      timer = setTimeout(() => resolve(undefined), ms);
+    }),
+  ]).finally(() => clearTimeout(timer));
+}
+
 export class MapService {
   public adapter: EndfieldMapAdapter | null = null;
   public initPromise: Promise<{ adapter: EndfieldMapAdapter } | undefined> | null =
@@ -40,6 +52,21 @@ export class MapService {
       initServiceEventBridge();
       await service.init();
       await StorageService.initStorage();
+
+      // Ensure sync is running after database is initialized.
+      // updateUidList was called in UserService constructor but likely failed
+      // because the database wasn't ready yet. Re-call it now.
+      if (service.userService.auth.isLogin) {
+        try {
+          await withTimeout(service.userService.updateUidList(false), SYNC_TIMEOUT_MS);
+          await withTimeout(
+            service.userService.data.syncService.awaitInitialReplication(),
+            SYNC_TIMEOUT_MS,
+          );
+        } catch (syncError) {
+          logger.warn('[MapService] Sync init failed, continuing with cached data', syncError);
+        }
+      }
 
       await service.dataService.mapDataService.initData();
       

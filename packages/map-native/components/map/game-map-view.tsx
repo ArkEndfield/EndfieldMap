@@ -1,7 +1,7 @@
 import { lngLatToPixel, pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
 import type { MapLibreAdapter } from '@endfieldmap/map-adapter-maplibre';
-import { MAP_EVENT } from '@endfieldmap/map-core/const/event';
-import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
+import { MAP_EVENT } from '@endfieldmap/map-core';
+import type { EntityDataInstance, ElectricPoleDataInstance, CustomPointDataInstance } from '@endfieldmap/map-core';
 import { Camera, Logger, MapView, setAccessToken, type CameraRef } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -9,6 +9,8 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useAdapter } from '@/context/adapter';
 
 import { AreaNameLayer } from './area-name-layer';
+import { CustomPointMarkerLayer } from './custom-point-layer';
+import { ElectricPoleMarkerLayer } from './electric-pole-layer';
 import { EntityMarkerLayer, type CameraPositionRef } from './entity-marker-layer';
 
 setAccessToken(null);
@@ -63,16 +65,22 @@ function buildMapStyle(
 
 interface GameMapViewProps {
   onEntityPress?: (instance: EntityDataInstance) => void;
+  onElectricPolePress?: (instance: ElectricPoleDataInstance) => void;
+  onCustomPointPress?: (instance: CustomPointDataInstance) => void;
 }
 
 function GameMapViewInner({
   adapter,
   currentMapId,
   onEntityPress,
+  onElectricPolePress,
+  onCustomPointPress,
 }: {
   adapter: MapLibreAdapter;
   currentMapId: string;
   onEntityPress?: (instance: EntityDataInstance) => void;
+  onElectricPolePress?: (instance: ElectricPoleDataInstance) => void;
+  onCustomPointPress?: (instance: CustomPointDataInstance) => void;
 }) {
   const cameraRef = useRef<CameraRef>(null);
   const mapReady = useRef(false);
@@ -213,11 +221,25 @@ function GameMapViewInner({
         mapCameraRef={cameraRef}
         cameraPositionRef={cameraPositionRef}
       />
+      <ElectricPoleMarkerLayer
+        onElectricPolePress={onElectricPolePress}
+        mapCameraRef={cameraRef}
+        cameraPositionRef={cameraPositionRef}
+      />
+      <CustomPointMarkerLayer
+        onCustomPointPress={onCustomPointPress}
+        mapCameraRef={cameraRef}
+        cameraPositionRef={cameraPositionRef}
+      />
     </MapView>
   );
 }
 
-export const GameMapView = observer(function GameMapView({ onEntityPress }: GameMapViewProps) {
+export const GameMapView = observer(function GameMapView({
+  onEntityPress,
+  onElectricPolePress,
+  onCustomPointPress,
+}: GameMapViewProps) {
   const adapter = useAdapter();
   const currentMapId = adapter.mapController.dataManager.currentMapId;
 
@@ -226,6 +248,8 @@ export const GameMapView = observer(function GameMapView({ onEntityPress }: Game
       adapter={adapter}
       currentMapId={currentMapId}
       onEntityPress={onEntityPress}
+      onElectricPolePress={onElectricPolePress}
+      onCustomPointPress={onCustomPointPress}
     />
   );
 });

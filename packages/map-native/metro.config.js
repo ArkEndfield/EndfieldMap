@@ -28,6 +28,7 @@ if (process.env.NODE_ENV !== 'production' && !process.env.EAS_BUILD) {
     '@endfieldmap/map-service': path.resolve(monorepoRoot, 'packages/map-service/src'),
     '@endfieldmap/tools': path.resolve(monorepoRoot, 'packages/tools/src'),
     '@endfieldmap/storage-mmkv': path.resolve(monorepoRoot, 'packages/storage-mmkv/src'),
+    '@endfieldmap/storage-expo-sqlite': path.resolve(monorepoRoot, 'packages/storage-expo-sqlite/src'),
   };
 
   const originalResolveRequest = config.resolver.resolveRequest;

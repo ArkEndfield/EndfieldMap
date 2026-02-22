@@ -1,4 +1,4 @@
-import type { UidInfo } from '@endfieldmap/map-service/@types/user';
+import type { UidInfo } from '@endfieldmap/map-service';
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';

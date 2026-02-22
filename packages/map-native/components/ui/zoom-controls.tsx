@@ -38,7 +38,7 @@ export const ZoomControls = observer(function ZoomControls() {
   }, [view, zoomConfig, scheduleReset]);
 
   return (
-    <View className="absolute right-4 bottom-[110px] overflow-hidden rounded-[10px] bg-bg-glass shadow-md shadow-black/15 elevation-4">
+    <View className="absolute right-4 bottom-[230px] overflow-hidden rounded-[10px] bg-bg-glass shadow-md shadow-black/15 elevation-4">
       <Pressable className="h-11 w-11 items-center justify-center" onPress={handleZoomIn}>
         <Text className="text-[22px] font-normal leading-6 text-text-secondary">+</Text>
       </Pressable>

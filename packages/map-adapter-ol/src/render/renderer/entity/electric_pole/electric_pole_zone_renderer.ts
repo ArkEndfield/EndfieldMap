@@ -1,4 +1,5 @@
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
+import { ELECTRIC_POLE_DEVICE_CONFIGS } from '@endfieldmap/map-core/const/electric_pole';
 import { logger } from '@endfieldmap/tools';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
@@ -10,12 +11,24 @@ import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 
 /**
- * 区域样式
+ * 按设备类型缓存区域样式，避免每次渲染都重新创建
  */
-const ZONE_STYLE = new Style({
-  fill: new Fill({ color: 'rgba(0, 128, 255, 0.08)' }),
-  stroke: new Stroke({ color: 'rgba(0, 160, 255, 0.35)', width: 1.5 }),
-});
+const zoneStyleCache = new Map<string, Style>();
+
+function getZoneStyle(deviceKey: string): Style {
+  let style = zoneStyleCache.get(deviceKey);
+  if (!style) {
+    const config = ELECTRIC_POLE_DEVICE_CONFIGS[deviceKey as keyof typeof ELECTRIC_POLE_DEVICE_CONFIGS];
+    const fillColor = config?.fillColor ?? 'rgba(228, 169, 21, 0.15)';
+    const strokeColor = config?.strokeColor ?? '#E4A915';
+    style = new Style({
+      fill: new Fill({ color: fillColor }),
+      stroke: new Stroke({ color: strokeColor, width: 1.5 }),
+    });
+    zoneStyleCache.set(deviceKey, style);
+  }
+  return style;
+}
 
 /**
  * Zone 数据
@@ -58,7 +71,7 @@ export class ElectricPoleZoneRenderer {
     this.source = new VectorSource();
     this.layer = new VectorLayer({
       source: this.source,
-      style: ZONE_STYLE,
+      style: (feature) => getZoneStyle(feature.get('deviceKey') as string),
       visible: initialVisible,
       zIndex: 10,
     });
@@ -158,8 +171,8 @@ export class ElectricPoleZoneRenderer {
     if (item.visible) {
       feature.setGeometry(new CircleGeom(item.coordinates, item.radius));
     }
-    // Set properties for potential debugging or styling
     feature.set('visible', item.visible);
+    feature.set('deviceKey', item.dataInstance.deviceKey);
 
     this.featureMap.set(item.id, feature);
     this.source.addFeature(feature);

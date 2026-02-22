@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { BackHandler, Image, Modal, Pressable, Text, useWindowDimensions, View } from 'react-native';
+import { BackHandler, Image, Modal, Pressable, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -32,9 +32,27 @@ interface EndfieldAlertProps {
 }
 
 export const EndfieldAlert: React.FC<EndfieldAlertProps> = observer(({ instance }) => {
-  const { config, visible, id } = instance;
+  const { config, visible, id, isPrompt, promptDefaultValue, promptPlaceholder } = instance;
   const { t } = useTranslation();
   const { width: screenWidth } = useWindowDimensions();
+
+  // Prompt input value
+  const [promptValue, setPromptValue] = useState(promptDefaultValue ?? '');
+
+  const handlePromptChange = useCallback(
+    (text: string) => {
+      setPromptValue(text);
+      alertStore.updatePromptValue(id, text);
+    },
+    [id],
+  );
+
+  // Initialize prompt value in store
+  useEffect(() => {
+    if (isPrompt && promptDefaultValue) {
+      alertStore.updatePromptValue(id, promptDefaultValue);
+    }
+  }, [isPrompt, promptDefaultValue, id]);
 
   // Keep the RN Modal mounted while exit animation plays
   const [modalVisible, setModalVisible] = useState(true);
@@ -241,6 +259,17 @@ export const EndfieldAlert: React.FC<EndfieldAlertProps> = observer(({ instance 
             <Text className="text-center text-[15px] leading-[22px] text-[#2a2728]">
               {config.content}
             </Text>
+            {isPrompt && (
+              <TextInput
+                className="mt-3 rounded-md border border-[#d9d9d9] bg-white px-3 py-2 text-[15px] text-[#2a2728]"
+                value={promptValue}
+                onChangeText={handlePromptChange}
+                placeholder={promptPlaceholder}
+                placeholderTextColor="#999"
+                autoFocus
+                selectTextOnFocus
+              />
+            )}
           </Animated.View>
 
           {/* Actions */}
