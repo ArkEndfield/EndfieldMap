@@ -16,7 +16,7 @@ export const useElectricPolePresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
 
   const electricPoleDataService = service.dataService.mapDataService.electricPoleDataService;
-  const currentPresetId = electricPoleDataService.currentPresetId.value ?? '';
+  const currentPresetId = useMobxSource(() => electricPoleDataService.currentPresetId.value ?? '');
 
   const collections = useMobxSource(() => service.databaseService.collections);
 

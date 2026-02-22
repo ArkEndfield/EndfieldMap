@@ -16,7 +16,7 @@ export const useCustomPointPresetPanel = () => {
   const { t } = useTranslation(['common', 'sidebar']);
 
   const customPointDataService = service.dataService.mapDataService.customPointDataService;
-  const currentPresetId = customPointDataService.currentPresetId.value ?? '';
+  const currentPresetId = useMobxSource(() => customPointDataService.currentPresetId.value ?? '');
 
   const collections = useMobxSource(() => service.databaseService.collections);
 
