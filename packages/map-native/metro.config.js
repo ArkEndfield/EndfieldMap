@@ -1,4 +1,5 @@
 const { getDefaultConfig } = require('expo/metro-config');
+const { withNativewind } = require('nativewind/metro');
 const path = require('path');
 
 const projectRoot = __dirname;
@@ -48,4 +49,4 @@ if (process.env.NODE_ENV !== 'production' && !process.env.EAS_BUILD) {
   };
 }
 
-module.exports = config;
+module.exports = withNativewind(config);

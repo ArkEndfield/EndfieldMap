@@ -1,11 +1,12 @@
 import type { MapData } from '@endfieldmap/map-core/types/map';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/context/adapter';
 import { service } from '@/services/map-service';
+import { cn } from '@/utils/style';
 
 function translateMapName(
   map: MapData,
@@ -41,27 +42,30 @@ export const MapSwitcher = observer(function MapSwitcher() {
   );
 
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.currentButton} onPress={() => setExpanded(!expanded)}>
-        <Text style={styles.currentText} numberOfLines={1}>
+    <View className="absolute top-[60px] right-4 z-10">
+      <Pressable
+        className="flex-row items-center gap-1.5 rounded-[10px] bg-bg-glass px-3.5 py-2.5 shadow-md shadow-black/15 elevation-4"
+        onPress={() => setExpanded(!expanded)}
+      >
+        <Text className="max-w-[120px] text-sm font-semibold text-text-secondary" numberOfLines={1}>
           {currentMapName}
         </Text>
-        <Text style={styles.arrow}>{expanded ? '▲' : '▼'}</Text>
+        <Text className="text-[10px] text-text-tertiary">{expanded ? '▲' : '▼'}</Text>
       </Pressable>
 
       {expanded && (
-        <View style={styles.dropdown}>
+        <View className="mt-1.5 overflow-hidden rounded-[10px] bg-bg-glass shadow-md shadow-black/15 elevation-4">
           {mapList.map((map) => {
             const name = translateMapName(map, t);
             const isActive = map.id === currentMapId;
             return (
               <Pressable
                 key={map.id}
-                style={[styles.mapItem, isActive && styles.mapItemActive]}
+                className={cn('border-b border-b-border-light px-3.5 py-3', isActive && 'bg-primary/[0.06]')}
                 onPress={() => handleSwitch(map.id)}
               >
                 <Text
-                  style={[styles.mapItemText, isActive && styles.mapItemTextActive]}
+                  className={cn('text-sm', isActive ? 'font-semibold text-primary' : 'text-text-secondary')}
                   numberOfLines={1}
                 >
                   {name}
@@ -73,65 +77,4 @@ export const MapSwitcher = observer(function MapSwitcher() {
       )}
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 60,
-    right: 16,
-    zIndex: 10,
-  },
-  currentButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 10,
-    gap: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  currentText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    maxWidth: 120,
-  },
-  arrow: {
-    fontSize: 10,
-    color: '#666',
-  },
-  dropdown: {
-    marginTop: 6,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    borderRadius: 10,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  mapItem: {
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#eee',
-  },
-  mapItemActive: {
-    backgroundColor: '#007AFF10',
-  },
-  mapItemText: {
-    fontSize: 14,
-    color: '#333',
-  },
-  mapItemTextActive: {
-    color: '#007AFF',
-    fontWeight: '600',
-  },
 });

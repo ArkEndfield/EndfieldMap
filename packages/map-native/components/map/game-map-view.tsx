@@ -5,7 +5,6 @@ import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import { Camera, Logger, MapView, setAccessToken, type CameraRef } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { StyleSheet } from 'react-native';
 
 import { useAdapter } from '@/context/adapter';
 
@@ -194,7 +193,7 @@ function GameMapViewInner({
 
   return (
     <MapView
-      style={styles.map}
+      style={{ flex: 1 }}
       mapStyle={mapStyle}
       logoEnabled={false}
       attributionEnabled={false}
@@ -229,10 +228,4 @@ export const GameMapView = observer(function GameMapView({ onEntityPress }: Game
       onEntityPress={onEntityPress}
     />
   );
-});
-
-const styles = StyleSheet.create({
-  map: {
-    flex: 1,
-  },
 });

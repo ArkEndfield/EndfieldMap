@@ -1,17 +1,36 @@
-import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
-import { CustomPointKey, ElectricPoleKey, NoteKey } from '@endfieldmap/map-core/const/map';
+import {
+  type ElectricPoleDeviceKey,
+  ELECTRIC_POLE_DEVICE_CONFIGS,
+  customPointTypes,
+  getCustomPointEntityInfo,
+  getElectricPoleDeviceConfig,
+} from '@endfieldmap/map-core';
+import {
+  CustomPointKey,
+  ElectricPoleIdKey,
+  ElectricPoleKey,
+  MarkedFeatureFilterMode,
+  NoteKey,
+} from '@endfieldmap/map-core/const/map';
 import type { EntityInfoStats } from '@endfieldmap/map-core/types/entity';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { observer } from 'mobx-react-lite';
-import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
-import { Dimensions, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAdapter } from '@/context/adapter';
 import { service } from '@/services/map-service';
+import { cn } from '@/utils/style';
 
 export interface EntityFilterSheetRef {
   present: () => void;
   dismiss: () => void;
+}
+
+type FilterSource = 'entity' | 'custom_point' | 'electric_pole';
+
+interface FilterStat extends EntityInfoStats {
+  source: FilterSource;
 }
 
 function getEntityDisplayName(
@@ -46,6 +65,7 @@ function getCategoryName(
 }
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+const ELECTRIC_POLE_DEVICE_KEYS = Object.keys(ELECTRIC_POLE_DEVICE_CONFIGS) as ElectricPoleDeviceKey[];
 
 export const EntityFilterSheet = observer(
   forwardRef<EntityFilterSheetRef>(function EntityFilterSheet(_props, ref) {
@@ -53,8 +73,63 @@ export const EntityFilterSheet = observer(
     const adapter = useAdapter();
     const sheetRef = useRef<TrueSheet>(null);
     const entityController = adapter.entityController;
-    const stats = entityController.currentStats;
+    const mapId = adapter.mapController.dataManager.currentMapId;
+    const entityStats = entityController.currentStats;
+    const customPointInstances = adapter.customPointController.dataManager.currentManager.instances;
+    const electricPoleInstances = adapter.electricPoleController.dataManager.currentInstances;
     const currentFilterMode = entityController.dataManager.markedFilterMode;
+
+    const customPointStats: FilterStat[] = (() => {
+      const countByType = new Map<string, number>();
+      for (const instance of customPointInstances) {
+        const typeId = instance.typeId;
+        countByType.set(typeId, (countByType.get(typeId) ?? 0) + 1);
+      }
+
+      return customPointTypes.map((typeConfig): FilterStat => ({
+        source: 'custom_point',
+        uniqueKey: `${CustomPointKey}:${typeConfig.id}`,
+        category: CustomPointKey,
+        entityDataIdKey: typeConfig.id,
+        entityInfo: getCustomPointEntityInfo(typeConfig.id).entityInfo,
+        visible: adapter.customPointController.getTypeVisible(typeConfig.id),
+        count: countByType.get(typeConfig.id) ?? 0,
+        markedCount: 0,
+        mapId,
+      }));
+    })();
+
+    const electricPoleStats: FilterStat[] = (() => {
+      const countByDevice = new Map<ElectricPoleDeviceKey, number>();
+      for (const instance of electricPoleInstances) {
+        const deviceKey = instance.deviceKey;
+        countByDevice.set(deviceKey, (countByDevice.get(deviceKey) ?? 0) + 1);
+      }
+
+      return ELECTRIC_POLE_DEVICE_KEYS.map((deviceKey): FilterStat => {
+        const config = getElectricPoleDeviceConfig(deviceKey);
+        return {
+          source: 'electric_pole',
+          uniqueKey: `${ElectricPoleKey}:${deviceKey}`,
+          category: ElectricPoleKey,
+          entityDataIdKey: deviceKey,
+          entityInfo: {
+            point: ElectricPoleIdKey,
+            pic: config.iconPic,
+          },
+          visible: adapter.electricPoleController.getDeviceVisible(deviceKey),
+          count: countByDevice.get(deviceKey) ?? 0,
+          markedCount: 0,
+          mapId,
+        };
+      });
+    })();
+
+    const mergedStats: FilterStat[] = [
+      ...customPointStats,
+      ...electricPoleStats,
+      ...entityStats.map((stat) => ({ ...stat, source: 'entity' as const })),
+    ];
 
     useImperativeHandle(ref, () => ({
       present: () => { sheetRef.current?.present().catch(() => {}); },
@@ -62,9 +137,29 @@ export const EntityFilterSheet = observer(
     }));
 
     const handleToggleVisibility = useCallback(
-      (stat: EntityInfoStats) => {
+      (stat: FilterStat) => {
         if (!stat.mapId) return;
-        entityController.setGroupVisibility(stat.mapId, stat.entityDataIdKey, !stat.visible);
+        const visible = !stat.visible;
+
+        if (stat.source === 'custom_point') {
+          void service.dataService.mapDataService.customPointDataService.updateItemVisibility(
+            stat.mapId,
+            stat.entityDataIdKey,
+            visible
+          ).catch(() => {});
+          return;
+        }
+
+        if (stat.source === 'electric_pole') {
+          void service.dataService.mapDataService.electricPoleDataService.updateItemVisibility(
+            stat.mapId,
+            stat.entityDataIdKey,
+            visible
+          ).catch(() => {});
+          return;
+        }
+
+        entityController.setGroupVisibility(stat.mapId, stat.entityDataIdKey, visible);
       },
       [entityController]
     );
@@ -78,50 +173,66 @@ export const EntityFilterSheet = observer(
 
     const handleShowAll = useCallback(() => {
       entityController.setAllEntityVisible(true);
-    }, [entityController]);
+      customPointTypes.forEach((typeConfig) => {
+        void service.dataService.mapDataService.customPointDataService
+          .updateItemVisibility(mapId, typeConfig.id, true)
+          .catch(() => {});
+      });
+      ELECTRIC_POLE_DEVICE_KEYS.forEach((deviceKey) => {
+        void service.dataService.mapDataService.electricPoleDataService
+          .updateItemVisibility(mapId, deviceKey, true)
+          .catch(() => {});
+      });
+    }, [entityController, mapId]);
 
     const handleHideAll = useCallback(() => {
       entityController.setAllEntityVisible(false);
-    }, [entityController]);
+      customPointTypes.forEach((typeConfig) => {
+        void service.dataService.mapDataService.customPointDataService
+          .updateItemVisibility(mapId, typeConfig.id, false)
+          .catch(() => {});
+      });
+      ELECTRIC_POLE_DEVICE_KEYS.forEach((deviceKey) => {
+        void service.dataService.mapDataService.electricPoleDataService
+          .updateItemVisibility(mapId, deviceKey, false)
+          .catch(() => {});
+      });
+    }, [entityController, mapId]);
 
-    const groupedStats = useMemo(() => {
-      const groups: Array<{ category: string; stats: EntityInfoStats[] }> = [];
-      const map = new Map<string, EntityInfoStats[]>();
-      for (const stat of stats) {
-        const key = stat.category;
-        const existing = map.get(key);
-        if (existing) {
-          existing.push(stat);
-        } else {
-          const arr = [stat];
-          map.set(key, arr);
-          groups.push({ category: key, stats: arr });
-        }
+    const groupedStats: { category: string; stats: FilterStat[] }[] = [];
+    const groupedMap = new Map<string, FilterStat[]>();
+    for (const stat of mergedStats) {
+      const key = stat.category;
+      const existing = groupedMap.get(key);
+      if (existing) {
+        existing.push(stat);
+      } else {
+        const arr = [stat];
+        groupedMap.set(key, arr);
+        groupedStats.push({ category: key, stats: arr });
       }
-      return groups;
-    }, [stats]);
+    }
 
     return (
       <TrueSheet
         ref={sheetRef}
-        sizes={['90%']}
         cornerRadius={16}
         grabber
       >
-        <View style={styles.container}>
-          <View style={styles.headerRow}>
-            <Text style={styles.title}>{t('sidebar:filter.title', { defaultValue: '标点筛选' })}</Text>
-            <View style={styles.headerActions}>
-              <Pressable style={styles.headerButton} onPress={handleShowAll}>
-                <Text style={styles.headerButtonText}>{t('common:select_all', { defaultValue: '全选' })}</Text>
+        <View className="px-5 pt-5 pb-10" style={{ height: SCREEN_HEIGHT * 0.85 }}>
+          <View className="mb-4 flex-row items-center justify-between">
+            <Text className="text-xl font-bold text-text-primary">{t('sidebar:filter.title', { defaultValue: '标点筛选' })}</Text>
+            <View className="flex-row gap-2">
+              <Pressable className="rounded-lg bg-bg-tertiary px-3 py-1.5" onPress={handleShowAll}>
+                <Text className="text-[13px] font-medium text-text-tertiary">{t('common:select_all', { defaultValue: '全选' })}</Text>
               </Pressable>
-              <Pressable style={styles.headerButton} onPress={handleHideAll}>
-                <Text style={styles.headerButtonText}>{t('sidebar:filter.reset', { defaultValue: '重置' })}</Text>
+              <Pressable className="rounded-lg bg-bg-tertiary px-3 py-1.5" onPress={handleHideAll}>
+                <Text className="text-[13px] font-medium text-text-tertiary">{t('sidebar:filter.reset', { defaultValue: '重置' })}</Text>
               </Pressable>
             </View>
           </View>
 
-          <View style={styles.filterModeBar}>
+          <View className="mb-4 flex-row gap-2">
             {([
               [MarkedFeatureFilterMode.All, t('sidebar:filter.all', { defaultValue: '全部' })],
               [MarkedFeatureFilterMode.Unmarked, t('sidebar:filter.unmarked', { defaultValue: '未标记' })],
@@ -129,10 +240,10 @@ export const EntityFilterSheet = observer(
             ] as const).map(([mode, label]) => (
               <Pressable
                 key={mode}
-                style={[styles.filterButton, currentFilterMode === mode && styles.filterButtonActive]}
+                className={cn('rounded-[20px] px-4 py-2', currentFilterMode === mode ? 'bg-primary' : 'bg-bg-tertiary')}
                 onPress={() => handleFilterModeChange(mode as MarkedFeatureFilterMode)}
               >
-                <Text style={[styles.filterButtonText, currentFilterMode === mode && styles.filterButtonTextActive]}>
+                <Text className={cn('text-sm font-medium', currentFilterMode === mode ? 'text-white' : 'text-text-tertiary')}>
                   {label}
                 </Text>
               </Pressable>
@@ -140,13 +251,13 @@ export const EntityFilterSheet = observer(
           </View>
 
           <ScrollView
-            style={styles.list}
-            contentContainerStyle={styles.listContent}
+            className="flex-1"
+            contentContainerClassName="pb-5"
             showsVerticalScrollIndicator={false}
           >
             {groupedStats.map(({ category, stats: categoryStats }) => (
-              <View key={category} style={styles.categorySection}>
-                <Text style={styles.categoryTitle}>{getCategoryName(category, t)}</Text>
+              <View key={category} className="mb-4">
+                <Text className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-text-placeholder">{getCategoryName(category, t)}</Text>
                 {categoryStats.map((stat) => (
                   <EntityGroupRowInner
                     key={stat.uniqueKey}
@@ -158,8 +269,8 @@ export const EntityFilterSheet = observer(
                 ))}
               </View>
             ))}
-            {stats.length === 0 && (
-              <Text style={styles.emptyText}>{t('sidebar:filter.empty', { defaultValue: '当前地图无标点数据' })}</Text>
+            {groupedStats.length === 0 && (
+              <Text className="mt-10 text-center text-[15px] text-text-disabled">{t('sidebar:filter.empty', { defaultValue: '当前地图无标点数据' })}</Text>
             )}
           </ScrollView>
         </View>
@@ -188,92 +299,26 @@ const EntityGroupRowInner = observer(function EntityGroupRowInner({
   const progressPercent = total > 0 ? (markedCount / total) * 100 : 0;
 
   return (
-    <Pressable style={styles.groupRow} onPress={onToggle}>
-      <View style={styles.groupLeft}>
-        <View style={[styles.visibilityDot, !stat.visible && styles.visibilityDotHidden]} />
+    <Pressable className="flex-row items-center justify-between border-b border-b-border-light px-1 py-2.5" onPress={onToggle}>
+      <View className="flex-1 flex-row items-center gap-2">
+        <View className={cn('h-2.5 w-2.5 rounded-full', stat.visible ? 'bg-dot-active' : 'bg-dot-inactive')} />
         {iconUrl ? (
-          <Image source={{ uri: iconUrl }} style={styles.groupIcon} resizeMode="contain" />
+          <Image source={{ uri: iconUrl }} className="h-6 w-6 rounded" resizeMode="contain" />
         ) : (
-          <View style={styles.groupIconPlaceholder} />
+          <View className="h-6 w-6 rounded bg-progress-bg" />
         )}
-        <Text style={[styles.groupName, !stat.visible && styles.groupNameHidden]} numberOfLines={1}>
+        <Text className={cn('flex-1 text-sm', stat.visible ? 'text-text-secondary' : 'text-text-disabled')} numberOfLines={1}>
           {name}
         </Text>
       </View>
-      <View style={styles.groupRight}>
-        <View style={styles.progressBarBg}>
-          <View style={[styles.progressBarFill, { width: `${Math.min(progressPercent, 100)}%` }]} />
+      <View className="ml-2 flex-row items-center gap-2">
+        <View className="h-1 w-10 overflow-hidden rounded-sm bg-progress-bg">
+          <View className="h-full rounded-sm bg-progress-fill" style={{ width: `${Math.min(progressPercent, 100)}%` }} />
         </View>
-        <Text style={styles.groupCount}>
+        <Text className="min-w-[40px] text-right text-xs text-text-muted" style={{ fontVariant: ['tabular-nums'] }}>
           {markedCount}/{total}
         </Text>
       </View>
     </Pressable>
   );
-});
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 40,
-    height: SCREEN_HEIGHT * 0.85,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  title: { fontSize: 20, fontWeight: '700', color: '#1a1a1a' },
-  headerActions: { flexDirection: 'row', gap: 8 },
-  headerButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
-  },
-  headerButtonText: { fontSize: 13, color: '#666', fontWeight: '500' },
-  filterModeBar: { flexDirection: 'row', gap: 8, marginBottom: 16 },
-  filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-  },
-  filterButtonActive: { backgroundColor: '#007AFF' },
-  filterButtonText: { fontSize: 14, color: '#666', fontWeight: '500' },
-  filterButtonTextActive: { color: '#fff' },
-  list: { flex: 1 },
-  listContent: { paddingBottom: 20 },
-  categorySection: { marginBottom: 16 },
-  categoryTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#999',
-    textTransform: 'uppercase',
-    marginBottom: 8,
-    letterSpacing: 0.5,
-  },
-  groupRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 4,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#eee',
-  },
-  groupLeft: { flexDirection: 'row', alignItems: 'center', flex: 1, gap: 8 },
-  visibilityDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#4CAF50' },
-  visibilityDotHidden: { backgroundColor: '#ccc' },
-  groupIcon: { width: 24, height: 24, borderRadius: 4 },
-  groupIconPlaceholder: { width: 24, height: 24, borderRadius: 4, backgroundColor: '#e0e0e0' },
-  groupName: { fontSize: 14, color: '#333', flex: 1 },
-  groupNameHidden: { color: '#aaa' },
-  groupRight: { flexDirection: 'row', alignItems: 'center', gap: 8, marginLeft: 8 },
-  progressBarBg: { width: 40, height: 4, borderRadius: 2, backgroundColor: '#e0e0e0', overflow: 'hidden' },
-  progressBarFill: { height: '100%', borderRadius: 2, backgroundColor: '#4CAF50' },
-  groupCount: { fontSize: 12, color: '#888', minWidth: 40, textAlign: 'right', fontVariant: ['tabular-nums'] },
-  emptyText: { textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 },
 });

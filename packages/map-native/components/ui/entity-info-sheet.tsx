@@ -3,11 +3,12 @@ import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core/const/map
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/context/adapter';
 import { service } from '@/services/map-service';
+import { cn } from '@/utils/style';
 
 interface EntityInfoSheetProps {
   instance: DataInstance | null;
@@ -99,24 +100,24 @@ export const EntityInfoSheet = observer(function EntityInfoSheet({
       onDidDismiss={handleDismiss}
     >
       {instance ? (
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
+        <View className="p-5 pb-10">
+          <View className="mb-4 flex-row items-start justify-between">
+            <View className="flex-1 flex-row items-center gap-3">
               {iconUrl && (
-                <Image source={{ uri: iconUrl }} style={styles.icon} resizeMode="contain" />
+                <Image source={{ uri: iconUrl }} className="h-11 w-11 rounded-[10px] bg-bg-tertiary" resizeMode="contain" />
               )}
-              <View style={styles.headerText}>
-                <Text style={styles.title} numberOfLines={2}>
+              <View className="flex-1">
+                <Text className="mb-1 text-xl font-bold text-text-primary" numberOfLines={2}>
                   {name}
                 </Text>
-                <Text style={styles.subtitle}>
+                <Text className="text-[13px] text-text-muted">
                   {categoryName} · ID: {instance.id}
                 </Text>
               </View>
             </View>
           </View>
 
-          <View style={styles.infoSection}>
+          <View className="mb-5 rounded-xl bg-bg-secondary p-3">
             <InfoRow label={t('popup:category', { defaultValue: '分类' })} value={categoryName} />
             <InfoRow label={t('popup:map', { defaultValue: '地图' })} value={instance.mapId} />
             <InfoRow
@@ -132,17 +133,17 @@ export const EntityInfoSheet = observer(function EntityInfoSheet({
             )}
           </View>
 
-          <View style={styles.actions}>
-            <Pressable style={styles.navButton} onPress={handleNavigate}>
-              <Text style={styles.navButtonText}>{t('popup:locate', { defaultValue: '定位' })}</Text>
+          <View className="flex-row gap-3">
+            <Pressable className="flex-1 items-center rounded-xl bg-bg-tertiary py-3.5" onPress={handleNavigate}>
+              <Text className="text-base font-semibold text-text-secondary">{t('popup:locate', { defaultValue: '定位' })}</Text>
             </Pressable>
 
             {isMarkable && (
               <Pressable
-                style={[styles.markButton, instance.marked && styles.markButtonActive]}
+                className={cn('flex-[2] items-center rounded-xl py-3.5', instance.marked ? 'bg-bg-tertiary' : 'bg-primary')}
                 onPress={handleToggleMark}
               >
-                <Text style={[styles.markButtonText, instance.marked && styles.markButtonTextActive]}>
+                <Text className={cn('text-base font-semibold', instance.marked ? 'text-text-tertiary' : 'text-white')}>
                   {instance.marked ? t('common:operate.unmark', { defaultValue: '取消标记' }) : t('common:operate.mark', { defaultValue: '标记完成' })}
                 </Text>
               </Pressable>
@@ -150,7 +151,7 @@ export const EntityInfoSheet = observer(function EntityInfoSheet({
           </View>
         </View>
       ) : (
-        <View style={styles.empty} />
+        <View className="h-px" />
       )}
     </TrueSheet>
   );
@@ -166,104 +167,9 @@ function InfoRow({
   valueColor?: string;
 }) {
   return (
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={[styles.infoValue, valueColor ? { color: valueColor } : undefined]}>{value}</Text>
+    <View className="flex-row justify-between py-2">
+      <Text className="text-sm text-text-tertiary">{label}</Text>
+      <Text className="text-sm font-medium text-text-secondary" style={valueColor ? { color: valueColor } : undefined}>{value}</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    gap: 12,
-  },
-  icon: {
-    width: 44,
-    height: 44,
-    borderRadius: 10,
-    backgroundColor: '#f0f0f0',
-  },
-  headerText: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: '#888',
-  },
-  infoSection: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 20,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  infoValue: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  navButton: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  navButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-  },
-  markButton: {
-    flex: 2,
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  markButtonActive: {
-    backgroundColor: '#f0f0f0',
-  },
-  markButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  markButtonTextActive: {
-    color: '#666',
-  },
-  empty: {
-    height: 1,
-  },
-});

@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useRef } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import { useAdapter } from '@/context/adapter';
 
@@ -38,47 +38,14 @@ export const ZoomControls = observer(function ZoomControls() {
   }, [view, zoomConfig, scheduleReset]);
 
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.button} onPress={handleZoomIn}>
-        <Text style={styles.buttonText}>+</Text>
+    <View className="absolute right-4 bottom-[110px] overflow-hidden rounded-[10px] bg-bg-glass shadow-md shadow-black/15 elevation-4">
+      <Pressable className="h-11 w-11 items-center justify-center" onPress={handleZoomIn}>
+        <Text className="text-[22px] font-normal leading-6 text-text-secondary">+</Text>
       </Pressable>
-      <View style={styles.divider} />
-      <Pressable style={styles.button} onPress={handleZoomOut}>
-        <Text style={styles.buttonText}>−</Text>
+      <View className="mx-2 h-px bg-border-default" />
+      <Pressable className="h-11 w-11 items-center justify-center" onPress={handleZoomOut}>
+        <Text className="text-[22px] font-normal leading-6 text-text-secondary">−</Text>
       </Pressable>
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    bottom: 110,
-    right: 16,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
-    overflow: 'hidden',
-  },
-  button: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 22,
-    fontWeight: '400',
-    color: '#333',
-    lineHeight: 24,
-  },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#ddd',
-    marginHorizontal: 8,
-  },
 });

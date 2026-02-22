@@ -3,6 +3,7 @@ import { logger } from '@endfieldmap/tools';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { service } from '@/services/map-service';
+import { initServiceEventBridge } from '@/services/service-event-bridge';
 
 interface MapInitState {
   adapter: MapLibreAdapter | null;
@@ -24,6 +25,7 @@ export function useMapInit(): MapInitState {
 
     try {
       await service.init();
+      initServiceEventBridge();
       await service.dataService.mapDataService.initData();
 
       const { mapData, entityData } = service.dataService.mapDataService;

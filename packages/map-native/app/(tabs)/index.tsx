@@ -1,7 +1,7 @@
 import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { EntityDataInstance } from '@endfieldmap/map-core/data/entity';
 import React, { useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { GameMapView } from '@/components/map/game-map-view';
@@ -18,18 +18,18 @@ export default function MapScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
+      <View className="flex-1 items-center justify-center bg-bg-secondary">
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>{t('common:loading', { defaultValue: '加载中...' })}</Text>
+        <Text className="mt-3 text-[15px] text-text-tertiary">{t('common:loading', { defaultValue: '加载中...' })}</Text>
       </View>
     );
   }
 
   if (error || !adapter) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>{t('common:load_error', { defaultValue: '加载失败' })}</Text>
-        <Text style={styles.errorDetail}>{error?.message ?? 'Unknown error'}</Text>
+      <View className="flex-1 items-center justify-center bg-bg-secondary">
+        <Text className="mb-2 text-lg font-semibold text-error">{t('common:load_error', { defaultValue: '加载失败' })}</Text>
+        <Text className="px-10 text-center text-[13px] text-text-placeholder">{error?.message ?? 'Unknown error'}</Text>
       </View>
     );
   }
@@ -59,14 +59,17 @@ function MapContent() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1">
       <GameMapView onEntityPress={handleEntityPress} />
 
       <MapSwitcher />
       <ZoomControls />
 
-      <Pressable style={styles.filterFab} onPress={handleOpenFilter}>
-        <Text style={styles.filterFabText}>{t('header:head_menu.filter', { defaultValue: '筛选' })}</Text>
+      <Pressable
+        className="absolute bottom-10 right-4 rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
+        onPress={handleOpenFilter}
+      >
+        <Text className="text-[15px] font-semibold text-primary">{t('header:head_menu.filter', { defaultValue: '筛选' })}</Text>
       </Pressable>
 
       <EntityInfoSheet instance={activeEntity} onDismiss={handleDismissInfo} />
@@ -74,51 +77,3 @@ function MapContent() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 15,
-    color: '#666',
-  },
-  errorText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#e74c3c',
-    marginBottom: 8,
-  },
-  errorDetail: {
-    fontSize: 13,
-    color: '#999',
-    textAlign: 'center',
-    paddingHorizontal: 40,
-  },
-  filterFab: {
-    position: 'absolute',
-    bottom: 40,
-    right: 16,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  filterFabText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#007AFF',
-  },
-});

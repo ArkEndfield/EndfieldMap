@@ -1,6 +1,6 @@
 import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
 import type { MapBaseRegionData, OverrideRegionData } from '@endfieldmap/map-core/types';
-import { ShapeSource, SymbolLayer } from '@maplibre/maplibre-react-native';
+import { ShapeSource, SymbolLayer, SymbolLayerStyle } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,9 +38,9 @@ const EMPTY_FC: GeoJSON.FeatureCollection = { type: 'FeatureCollection', feature
  */
 export const MAP_SYMBOL_FONT_STACK = ['HarmonyOS_Sans_SC_Regular'] as const;
 
-const AREA_TEXT_STYLE = {
-  textField: ['get', 'name'] as unknown,
-  textFont: ['literal', [...MAP_SYMBOL_FONT_STACK]] as unknown,
+const AREA_TEXT_STYLE: SymbolLayerStyle = {
+  textField: ['get', 'name'],
+  textFont: ['literal', [...MAP_SYMBOL_FONT_STACK]],
   textSize: 16,
   textColor: '#ffffff',
   textHaloColor: '#000000',
