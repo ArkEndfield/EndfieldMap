@@ -2,6 +2,7 @@ import type { DataInstance } from '@endfieldmap/map-core';
 import { useTranslation } from '@endfieldmap/map-service';
 import Tooltip from '@themes/endfield/components/tooltip';
 import { observer } from 'mobx-react-lite';
+import { useIsMobile } from '@/hooks/use_is_mobile';
 
 import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { FilterMarked, FilterUnMarked } from '@/components/common/icons';
@@ -15,9 +16,10 @@ export interface MarkButtonProps {
 export const MarkButton: React.FC<MarkButtonProps> = observer(({ entity }) => {
   const { t } = useTranslation();
   if (!entity?.markable) return null;
+  const isMobile = useIsMobile();
   return (
     <Tooltip
-      tooltip={entity.marked ? (t('operate.unmark') + t('operate.mark_tip')) : (t('operate.mark') + t('operate.mark_tip'))}
+      tooltip={ entity.marked ? (t('operate.unmark') + (!isMobile && t('operate.mark_tip'))) : (t('operate.mark') + (!isMobile && t('operate.mark_tip'))) }
       as={ButtonWithAudio}
       placement="bottom"
       asProps={{
