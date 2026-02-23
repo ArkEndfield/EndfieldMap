@@ -1,5 +1,5 @@
+import type { ThemeRootContextProps } from '@endfieldmap/map-web-theme-types/context';
 import { EndfieldThemeUIManagerContext } from '@themes/endfield/context/ui_manager';
-import type { ThemeRootContextProps } from '@themes/types/context';
 
 import { EndfieldUIManager } from '@/components/themes/endfield/ui/ui_manager';
 

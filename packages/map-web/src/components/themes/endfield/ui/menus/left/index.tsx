@@ -1,6 +1,6 @@
 import { menus } from '@themes/endfield/ui/menus/left/list';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const MenuContainer = ({ children, rightBorder }: { children: React.ReactNode; rightBorder?: boolean }) => (
   <div

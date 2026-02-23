@@ -3,8 +3,8 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { motion } from 'motion/react';
 
 import { BindIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
-import { ScrollArea } from '@/components/common/scroll_area';
-import { cn } from '@/utils/style';
+import { ScrollArea } from '@endfieldmap/web-components';
+import { cn } from '@endfieldmap/tools';
 
 // ==================== UID 列表项组件 ====================
 const UidListItem = ({

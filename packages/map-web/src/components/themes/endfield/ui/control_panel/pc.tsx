@@ -7,7 +7,7 @@ import { CustomPointManager } from '@themes/endfield/ui/control_panel/controller
 import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
 import { observer } from 'mobx-react-lite';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const PCControlPanel = observer(() => {
   const uiManager = useEndfieldUIManager();

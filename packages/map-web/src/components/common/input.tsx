@@ -1,4 +1,4 @@
-import { type InputProps } from '@themes/types/input';
+import type { InputProps } from '@endfieldmap/map-web-theme-types/input';
 import { observer } from 'mobx-react-lite';
 import { Suspense } from 'react';
 

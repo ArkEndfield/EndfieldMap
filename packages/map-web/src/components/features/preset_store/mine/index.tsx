@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 import { alert } from '@/components/common/alert/alert_api';
 import { Pagination } from '@/components/common/pagination';
 import { PresetStoreItem } from '@/components/common/preset_store/item';
-import { ScrollArea } from '@/components/common/scroll_area';
+import { ScrollArea } from '@endfieldmap/web-components';
 import { EditPresetForm } from '@/components/features/preset_store/mine/edit_form';
 import { MineFilters } from '@/components/features/preset_store/mine/mine_filters';
 import { useMineStore } from '@/hooks/use_preset_store';

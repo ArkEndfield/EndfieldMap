@@ -1,11 +1,11 @@
 import type { DataInstance } from '@endfieldmap/map-core';
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
 import { useTranslation } from '@endfieldmap/map-service';
-import Tooltip from '@themes/endfield/components/tooltip';
+import { Tooltip } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { EditIcon } from '@/components/common/icons';
 import { service } from '@/services';
 

@@ -5,8 +5,8 @@
 
 import { observer } from 'mobx-react-lite';
 
-import { SoundType } from '@/const/audio_config';
-import { useAudio, useButtonSound } from '@/hooks/use_audio';
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { useAudio, useButtonSound } from '@endfieldmap/web-components';
 
 /**
  * 示例 1: 带点击音效的按钮

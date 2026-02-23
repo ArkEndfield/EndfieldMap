@@ -1,5 +1,5 @@
 import { useTranslation } from '@endfieldmap/map-service';
-import { EndfieldSquareSwitch } from '@themes/endfield/components/switch';
+import { EndfieldSquareSwitch } from '@endfieldmap/web-components';
 // import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';

@@ -4,10 +4,10 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { ZmdSquareButton } from '@endfieldmap/web-components';
 import { CheckCircleIcon, SyncIcon } from '@/components/common/icons';
 import { service } from '@/services';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 // ==================== 用户头像组件 ====================
 const UserAvatar = ({

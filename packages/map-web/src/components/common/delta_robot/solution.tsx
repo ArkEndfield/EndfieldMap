@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 
 import { renderGroup, renderObstacle } from '@/components/common/delta_robot/render';
 import { CELL_SIZE } from '@/const/delta_robot';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface DeltaRobotSolutionGridProps {
   solutionGrid: Grid | null;

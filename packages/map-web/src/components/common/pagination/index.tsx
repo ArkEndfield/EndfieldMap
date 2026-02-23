@@ -1,10 +1,10 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { useCallback, useMemo } from 'react';
 
-import { ZmdRoundButton } from '@/components/common/endfield_components/button/round_button';
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { ZmdRoundButton } from '@endfieldmap/web-components';
+import { ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { ChevronUp } from '@/components/common/icons';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export type PaginationLoadStatus = 'idle' | 'loading' | 'success' | 'error';
 

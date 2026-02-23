@@ -7,10 +7,10 @@ import { AnimatePresence, motion } from 'motion/react';
 
 import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
 import { useAdapter } from '@/hooks/use_adapter';
-import { useIsMobile } from '@/hooks/use_is_mobile';
+import { useIsMobile } from '@endfieldmap/web-components';
 import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface TierManagerProps {
   className?: string;

@@ -4,9 +4,9 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { service } from '@/services';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 /** 轮询间隔（毫秒） */
 const POLL_INTERVAL = 2000;

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, MotionValue, useSpring, useTransform } from 'motion/react';
 import { useEffect } from 'react';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface NumberProps {
   mv: MotionValue<number>;

@@ -2,7 +2,7 @@ import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { useTranslation } from '@endfieldmap/map-service';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useIsMobile } from '@/hooks/use_is_mobile';
+import { useIsMobile } from '@endfieldmap/web-components';
 import { MapService } from '@/services/map';
 
 /**

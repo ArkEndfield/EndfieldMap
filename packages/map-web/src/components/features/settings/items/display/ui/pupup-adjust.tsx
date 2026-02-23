@@ -1,7 +1,7 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 
-import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
+import { EndfieldSwitch } from '@endfieldmap/web-components';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
 import uiManager from '@/services/ui_manager';

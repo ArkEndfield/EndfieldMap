@@ -5,11 +5,11 @@ import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { ChevronUp, ChevronUpTriangle } from '@/components/common/icons';
-import { useIsMobile } from '@/hooks/use_is_mobile';
+import { useIsMobile } from '@endfieldmap/web-components';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export interface SwiperProps {
   expanded?: boolean;

@@ -1,7 +1,7 @@
 import { motion, useAnimation } from 'motion/react';
 import { useEffect } from 'react';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export interface PanelProps {
   open: boolean;

@@ -6,18 +6,17 @@ import { createPortal } from 'react-dom';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { ZmdSquareButton } from '@endfieldmap/web-components';
 import { ChevronUp } from '@/components/common/icons';
 import { SettingsPage } from '@/components/features/settings';
-import { WindowProvider } from '@/context/window';
+import { useIsMobile, WindowProvider } from '@endfieldmap/web-components';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
-import { useIsMobile } from '@/hooks/use_is_mobile';
 import { useMapPiP } from '@/hooks/use_map_pip';
 import { usePiP } from '@/hooks/use_pip';
 import { service } from '@/services';
 import { isDev } from '@/services/env';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
 const ZmdSwiper = lazy(() => import('@/components/features/swiper'));

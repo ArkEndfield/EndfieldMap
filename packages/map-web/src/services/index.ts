@@ -1,4 +1,5 @@
 import { MapService } from '@endfieldmap/map-service';
+import { setAudioBaseUrl } from '@endfieldmap/web-components';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
@@ -35,3 +36,5 @@ export const service = new MapService({
   backendHost,
   assetsHost,
 });
+
+setAudioBaseUrl(service.assetService.url.audio);

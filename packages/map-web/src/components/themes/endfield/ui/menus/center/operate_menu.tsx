@@ -1,6 +1,6 @@
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
+import { useIsMobile } from '@endfieldmap/web-components';
+import { cn } from '@endfieldmap/tools';
 
 export interface OperateMenuProps {
   startIcon?: React.ReactNode;

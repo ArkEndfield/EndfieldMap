@@ -2,7 +2,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 
-import { Dialog } from '@/components/common/dialog';
+import { Dialog } from '@endfieldmap/web-components';
 
 export interface AgreementDialogProps {
   open: boolean;

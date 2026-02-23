@@ -4,7 +4,7 @@ import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
-import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
+import { EndfieldFormButton } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 

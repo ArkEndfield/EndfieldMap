@@ -1,8 +1,8 @@
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { QuestionIcon } from '@/components/common/icons';
 import { Tooltip } from '@/components/common/tooltip';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
+import { useIsMobile } from '@endfieldmap/web-components';
+import { cn } from '@endfieldmap/tools';
 
 export interface SettingItemProps {
   id?: string;

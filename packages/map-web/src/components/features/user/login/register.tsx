@@ -4,9 +4,8 @@ import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { CheckboxToggle, ZmdSquareButton } from '@endfieldmap/web-components';
 import { TickCircleIcon } from '@/components/common/icons';
-import { Toggle } from '@/components/common/toggle';
 import { UserInput } from '@/components/common/user/input';
 import { type RegisterFormData, registerSchema } from '@/const/schema/auth';
 import { service } from '@/services';
@@ -84,7 +83,7 @@ export const RegisterForm = observer(({ onSwitchToLogin }: RegisterFormProps) =>
         name="agree"
         control={control}
         render={({ field }) => (
-          <Toggle
+          <CheckboxToggle
             checked={field.value}
             onToggle={() => field.onChange(!field.value)}
             label={

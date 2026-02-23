@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { UserIcon } from '@/components/common/icons';
 import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { service } from '@/services';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const qrCode = `${service.assetService.url.misc}/qrcode_1765130086921.jpg`;
 

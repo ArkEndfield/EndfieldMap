@@ -1,8 +1,8 @@
 import type { ThemeNames } from '@themes/index';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { SoundType } from '@/const/audio_config';
-import { cn } from '@/utils/style';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { cn } from '@endfieldmap/tools';
 
 export interface ThemeItemProps {
   name: ThemeNames;

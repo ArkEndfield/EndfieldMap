@@ -1,13 +1,13 @@
 import type { DataInstance } from '@endfieldmap/map-core';
 import { useTranslation } from '@endfieldmap/map-service';
-import Tooltip from '@themes/endfield/components/tooltip';
+import { Tooltip } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useIsMobile } from '@/hooks/use_is_mobile';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { FilterMarked, FilterUnMarked } from '@/components/common/icons';
 import { service } from '@/services';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export interface MarkButtonProps {
   entity: DataInstance;

@@ -4,15 +4,14 @@ import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { Dialog } from '@/components/common/dialog';
+import { ButtonWithAudio, Dialog } from '@endfieldmap/web-components';
 import { CustomPointIcon, ElectricPoleIconPole, LocationClusterIcon, StoreIcon } from '@/components/common/icons';
 import { PresetStoreDetail } from '@/components/common/preset_store/detail';
 import { CustomPointStore } from '@/components/features/preset_store/custom_point';
 import { ElectricPoleStore } from '@/components/features/preset_store/electric_pole';
 import { MineStore } from '@/components/features/preset_store/mine';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const TAB_CONFIG: { key: PresetStoreTab; labelKey: string; icon: React.ReactNode }[] = [
   { key: 'electric_pole', labelKey: 'sidebar:operation.electric_pole.preset.title', icon: <ElectricPoleIconPole /> },

@@ -3,8 +3,8 @@ import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { cn } from '@/utils/style';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
+import { cn } from '@endfieldmap/tools';
 
 interface TokenLoginProps {
   /** 登录成功回调，返回 token */

@@ -1,8 +1,8 @@
 import type { MineTab, PresetType } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
 
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
-import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
+import { ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { EndfieldToggle } from '@endfieldmap/web-components';
 import { RefreshIcon } from '@/components/common/icons';
 import { PRESET_TYPE_OPTIONS, TAB_OPTIONS } from '@/const/preset_store';
 

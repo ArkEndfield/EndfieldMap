@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 
 import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export interface SettingsZoneProps {
   id?: string;

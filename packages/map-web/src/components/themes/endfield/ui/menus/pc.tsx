@@ -2,7 +2,7 @@ import { OperateList } from '@themes/endfield/ui/menus/center/operate_list';
 import { MenuListForPC } from '@themes/endfield/ui/menus/left';
 import { IconVersion } from '@themes/endfield/ui/menus/right/icon_version';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const Deco = ({ className, reverse }: { className?: string; reverse?: boolean }) => (
   <div

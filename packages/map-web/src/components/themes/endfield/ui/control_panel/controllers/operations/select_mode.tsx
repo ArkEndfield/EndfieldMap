@@ -1,5 +1,5 @@
 import { useTranslation } from '@endfieldmap/map-service';
-import Tooltip from '@themes/endfield/components/tooltip';
+import { Tooltip } from '@endfieldmap/web-components';
 import ToggleButton from '@themes/endfield/ui/control_panel/components/toggle_button';
 import { observer } from 'mobx-react-lite';
 

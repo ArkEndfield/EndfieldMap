@@ -5,11 +5,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { getRightComponents } from '@/components/common/popup/sub/items';
-import { ScrollArea } from '@/components/common/scroll_area';
+import { ScrollArea } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const RightContent: React.FC<{
   isExpand: boolean;

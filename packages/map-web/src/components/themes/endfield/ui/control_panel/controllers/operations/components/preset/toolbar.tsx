@@ -1,8 +1,5 @@
 import { useTranslation } from '@endfieldmap/map-service';
-import Tooltip from '@themes/endfield/components/tooltip';
-
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
-import { ZmdSquareIconButton } from '@/components/common/endfield_components/button/square_icon_button';
+import { Tooltip, ZmdSquareButton, ZmdSquareIconButton } from '@endfieldmap/web-components';
 import { BatchDeleteIcon, ExportIcon, ImportIcon, StoreIcon } from '@/components/common/icons';
 
 interface PresetToolbarProps {

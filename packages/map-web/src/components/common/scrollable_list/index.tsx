@@ -2,7 +2,7 @@ import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import { ScrollableListContext } from '@/components/common/scrollable_list/context';
 import { useScrollableListItem } from '@/components/common/scrollable_list/hooks';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export interface ScrollableListProps {
   className?: string;

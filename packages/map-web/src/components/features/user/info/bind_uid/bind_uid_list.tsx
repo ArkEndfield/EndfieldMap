@@ -3,11 +3,11 @@ import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import type { GameRole } from '@/@types/game_role';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
+import { ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { ArrowLeftIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
-import { ScrollArea } from '@/components/common/scroll_area';
-import { cn } from '@/utils/style';
+import { ScrollArea } from '@endfieldmap/web-components';
+import { cn } from '@endfieldmap/tools';
 
 interface BindUidListProps {
   /** 可绑定的角色列表 */

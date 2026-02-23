@@ -9,16 +9,14 @@ import { RenameButton } from '@themes/endfield/ui/popup/left_content/rename_butt
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
-import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
+import { EndfieldSelect, ScrollArea, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { Guide } from '@/components/common/guide';
 import { ChevronUpTriangle } from '@/components/common/icons';
-import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useActiveFeatureName } from '@/hooks/use_entity_name';
 import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export const LeftContent = observer(({ className }: { className?: string }) => {
   const { adapter } = useAdapter();

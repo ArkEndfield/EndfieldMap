@@ -2,7 +2,7 @@ import type { ElectricPoleType } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
 import { useMemo, useState } from 'react';
 
-import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
+import { EndfieldSelect } from '@endfieldmap/web-components';
 import { Input } from '@/components/common/input';
 
 interface SharePresetFormProps {

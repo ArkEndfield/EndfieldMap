@@ -6,14 +6,15 @@ import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { ChangeMapIcon, Deco7Dots, SwitchIcon } from '@/components/common/icons';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
+import { ChangeMapIcon, SwitchIcon } from '@/components/common/icons';
+import { Deco7Dots } from '@endfieldmap/web-components';
 import { MapButton } from '@/components/themes/endfield/ui/map_menu/button';
-import { SoundType } from '@/const/audio_config';
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useClickOutside } from '@/hooks/use_click_outside';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
+import { useIsMobile } from '@endfieldmap/web-components';
+import { cn } from '@endfieldmap/tools';
 
 const ChangeMap: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'lang']);

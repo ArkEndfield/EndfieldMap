@@ -6,7 +6,7 @@ import { RuleShapesDraw } from '@/components/features/dev_tools/draws/rule_shape
 import { ShapeDraw } from '@/components/features/dev_tools/draws/shape';
 import { ZoneDraw } from '@/components/features/dev_tools/draws/zone';
 import { useAdapter } from '@/hooks/use_adapter';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const DrawToolbar = observer(() => {
   const { adapter } = useAdapter();

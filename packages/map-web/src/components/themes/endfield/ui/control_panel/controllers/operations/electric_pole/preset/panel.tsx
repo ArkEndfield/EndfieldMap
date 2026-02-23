@@ -7,7 +7,7 @@ import SharePresetForm from '@themes/endfield/ui/control_panel/controllers/opera
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ScrollArea } from '@/components/common/scroll_area';
+import { ScrollArea } from '@endfieldmap/web-components';
 import { useElectricPolePresetPanel } from '@/hooks/use_electric_pole_preset_panel';
 import { service } from '@/services';
 import uiManager from '@/services/ui_manager';

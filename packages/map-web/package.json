@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@endfieldmap/map-adapter-ol": "workspace:*",
+    "@endfieldmap/map-web-theme-types": "workspace:*",
+    "@endfieldmap/web-components": "workspace:*",
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/map-service": "workspace:*",
     "@endfieldmap/storage-web": "workspace:*",
@@ -45,7 +47,7 @@
   },
   "devDependencies": {
     "prettier": "3.6.2",
-    "rollup-plugin-visualizer": "^6.0.5",
+    "rollup-plugin-visualizer": "^7.0.0",
     "sass-embedded": "^1.93.3",
     "vite-plugin-pwa": "^1.2.0"
   }

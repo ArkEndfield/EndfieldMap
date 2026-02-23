@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { ZmdSquareIconButton } from '@/components/common/endfield_components/button/square_icon_button';
-import { cn } from '@/utils/style';
+import { ZmdSquareIconButton } from '@endfieldmap/web-components';
+import { cn } from '@endfieldmap/tools';
 
 export interface ToggleButtonProps {
   checked?: boolean;

@@ -1,10 +1,9 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 
-import { EndfieldToggle } from '@/components/common/endfield_components/form/toggle';
+import { EndfieldToggle, useIsMobile } from '@endfieldmap/web-components';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
-import { useIsMobile } from '@/hooks/use_is_mobile';
 import { service } from '@/services';
 
 const options = [

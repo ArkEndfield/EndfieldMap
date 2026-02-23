@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 
 import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 /**
  * 自定义标点类型选择器

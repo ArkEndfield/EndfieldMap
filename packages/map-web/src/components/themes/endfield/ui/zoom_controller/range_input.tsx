@@ -1,9 +1,9 @@
 import { domEventListener } from '@endfieldmap/tools';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
+import { ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { MinusIcon, PlusIcon } from '@/components/common/icons';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export interface RangeBarProps {
   value?: number;

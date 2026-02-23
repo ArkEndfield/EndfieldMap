@@ -1,4 +1,4 @@
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export const MenuContainer = ({
   children,

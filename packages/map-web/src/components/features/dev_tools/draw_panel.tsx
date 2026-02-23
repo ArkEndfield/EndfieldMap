@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from 'react';
 
 import { CloseIcon, EditIcon, TrashIcon, ViewAltIcon } from '@/components/common/icons';
 import { Draws } from '@/components/features/dev_tools/draws';
-import { useWindow } from '@/context/window';
+import { useWindow } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const shapeTypeLabel: Record<DevToolsShapeType, string> = {
   [DevToolsShapeType.POINT]: '点',

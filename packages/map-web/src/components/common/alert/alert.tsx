@@ -1,10 +1,9 @@
-import { type ZmdAlertProps } from '@themes/types/alert';
+import type { ZmdAlertProps } from '@endfieldmap/map-web-theme-types/alert';
 import { observer } from 'mobx-react-lite';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useWindow } from '@/context/window';
-import shortcutService from '@/services/shortcut';
+import { shortcutService, useWindow } from '@endfieldmap/web-components';
 import uiManager from '@/services/ui_manager';
 
 const AlertRenderer = observer((props: ZmdAlertProps) => {

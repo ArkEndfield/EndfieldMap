@@ -2,10 +2,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { CloseButton } from '@/components/common/close_button';
-import { PortalContext } from '@/components/common/portal_context';
-import shortcutService from '@/services/shortcut';
-import { cn } from '@/utils/style';
+import { CloseButton, PortalContext, shortcutService } from '@endfieldmap/web-components';
+import { cn } from '@endfieldmap/tools';
 
 export interface UserModalProps {
   /** 控制弹窗显示隐藏 */

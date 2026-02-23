@@ -1,14 +1,14 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import type { Language } from '@endfieldmap/tools';
 
-import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
+import { EndfieldSelect } from '@endfieldmap/web-components';
 import { TranslateIcon } from '@/components/common/icons';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { languageConfig } from '@/const/language';
 import { SETTINGS_KEYS } from '@/const/settings';
 import { useCurrentLanguage } from '@/hooks/use_current_language';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export const LanguageSetting = () => {
   const { t, i18n } = useTranslation('settings');

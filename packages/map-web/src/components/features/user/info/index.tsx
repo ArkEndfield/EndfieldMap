@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { Dialog } from '@/components/common/dialog';
+import { Dialog } from '@endfieldmap/web-components';
 import { BindIcon, EditIcon } from '@/components/common/icons';
 import { UserModal } from '@/components/common/user/modal';
 import { ActionPanel } from '@/components/features/user/info/action_panel';

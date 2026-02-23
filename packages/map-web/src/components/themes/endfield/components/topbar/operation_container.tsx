@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export const OperationContainer = observer(
   ({ children, className }: { children: React.ReactNode; className?: string }) => {

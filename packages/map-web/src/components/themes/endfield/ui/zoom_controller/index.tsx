@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
 import { useAdapter } from '@/hooks/use_adapter';
-import { useIsMobile } from '@/hooks/use_is_mobile';
+import { useIsMobile } from '@endfieldmap/web-components';
 
 const ZoomController: React.FC = observer(() => {
   const isMobile = useIsMobile();

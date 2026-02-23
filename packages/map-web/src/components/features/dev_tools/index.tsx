@@ -7,10 +7,10 @@ import { alert } from '@/components/common/alert/alert_api';
 import { CogIcon, EditIcon, MinusIcon } from '@/components/common/icons';
 import { DevToolsDrawPanel } from '@/components/features/dev_tools/draw_panel';
 import { TierControls } from '@/components/features/dev_tools/views/tier_controller';
-import { useWindow } from '@/context/window';
+import { useWindow } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 // 开发工具面板
 const DevToolsPanel = observer(() => {

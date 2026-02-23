@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
+import { ZmdSquareButton } from '@endfieldmap/web-components';
 import { KeyIcon } from '@/components/common/icons';
 import { Input } from '@/components/common/input';
 import { changePasswordSchema } from '@/const/schema/auth';
