@@ -9,7 +9,7 @@ import Svg, { Path } from 'react-native-svg';
 import { alertApi } from '@/components/ui/alert';
 import { service } from '@/services/map-service';
 import { catchErrorWithTip } from '@/utils/error-handler';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface GameRole {
   uid: string;

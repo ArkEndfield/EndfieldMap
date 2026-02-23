@@ -3,7 +3,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const LANGUAGES = [
   { code: 'zh-CN', label: '简体中文' },

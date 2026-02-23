@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 import type { AlertInstance } from './types';
 import { alertStore } from './alert-store';

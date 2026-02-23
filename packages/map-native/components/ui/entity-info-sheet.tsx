@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/context/adapter';
 import { service } from '@/services/map-service';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface EntityInfoSheetProps {
   instance: DataInstance | null;

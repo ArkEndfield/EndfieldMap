@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface PresetSelectBarProps {
   selectedCount: number;

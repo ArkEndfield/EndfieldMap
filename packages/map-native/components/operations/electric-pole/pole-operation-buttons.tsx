@@ -5,7 +5,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useElectricPoleMode } from '@/hooks/use-electric-pole-mode';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface ToolButtonConfig {
   key: string;

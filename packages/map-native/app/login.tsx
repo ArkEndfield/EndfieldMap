@@ -18,7 +18,7 @@ import { StyledTextInput } from '@/components/ui/text-input';
 import { alertApi } from '@/components/ui/alert';
 import { service } from '@/services/map-service';
 import { catchErrorWithTip, onFormInvalid } from '@/utils/error-handler';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 import { loginSchema, registerSchema, type LoginFormData, type RegisterFormData } from '@/const/schema/auth';
 
 type AuthTab = 'login' | 'register';

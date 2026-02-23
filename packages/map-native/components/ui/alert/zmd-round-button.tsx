@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import Svg, { G, Path } from 'react-native-svg';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface ZmdRoundButtonProps {
   type?: 'primary' | 'default';

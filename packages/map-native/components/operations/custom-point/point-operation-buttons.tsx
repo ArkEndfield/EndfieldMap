@@ -5,7 +5,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useCustomPointMode } from '@/hooks/use-custom-point-mode';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface ToolButtonConfig {
   key: string;
