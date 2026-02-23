@@ -13,6 +13,7 @@ export default defineConfig(({ command, mode }) => {
     '@endfieldmap/map-core': resolve(__dirname, '../map-core/src'),
     '@endfieldmap/tools': resolve(__dirname, '../tools/src'),
     '@endfieldmap/map-service': resolve(__dirname, '../map-service/src'),
+    '@endfieldmap/storage-web': resolve(__dirname, '../storage-web/src'),
   };
   return {
     mode,
