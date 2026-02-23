@@ -280,11 +280,11 @@ export class EndfieldMapAdapter {
     autoSetActive: boolean = false,
     animationTime: number = 1000,
     zoom?: number
-  ) {
+  ): Promise<boolean> {
     const id = typeof entityId === 'string' ? parseInt(entityId, 10) : entityId;
     if (isNaN(id)) {
       logger.warn('[EndfieldMapAdapter] Invalid entity ID:', entityId);
-      return;
+      return false;
     }
 
     let targetInstance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance | undefined;
@@ -329,10 +329,11 @@ export class EndfieldMapAdapter {
 
     if (!targetInstance) {
       logger.warn(`[moveToEntity] Entity ${id} not found.`);
-      return;
+      return false;
     }
 
     await this.moveToEntityInstance(targetInstance, autoToggleVisible, autoSetActive, animationTime, zoom);
+    return true;
   }
 
   /**

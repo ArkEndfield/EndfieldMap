@@ -47,7 +47,7 @@ export interface IMapAdapter {
     autoSetActive?: boolean,
     animationTime?: number,
     zoom?: number
-  ): Promise<void>;
+  ): Promise<boolean>;
   moveToEntityInstance(
     instance: DataInstance,
     autoToggleVisible?: boolean,

@@ -328,40 +328,10 @@ const EntityLocate = observer(() => {
       return;
     }
 
-    const mapIds = adapter.mapController.dataManager.mapIds;
-    let found = false;
-
-    for (const mapId of mapIds) {
-      if (adapter.entityController.getInstanceById(mapId, id)) {
-        found = true;
-        break;
-      }
-    }
-
-    if (!found) {
-      for (const mapId of mapIds) {
-        if (adapter.electricPoleController.dataManager.getMapManager(mapId).getById(id)) {
-          found = true;
-          break;
-        }
-      }
-    }
-
-    if (!found) {
-      for (const mapId of mapIds) {
-        if (adapter.customPointController.dataManager.getMapManager(mapId).getById(id)) {
-          found = true;
-          break;
-        }
-      }
-    }
-
+    const found = await adapter.moveToEntity(id, true, true);
     if (!found) {
       alert.info(`未找到 levelLogicId 为 ${id} 的标点`);
-      return;
     }
-
-    await adapter.moveToEntity(id, true, true);
   };
 
   return (

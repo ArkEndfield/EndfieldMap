@@ -96,11 +96,11 @@ export class MapLibreAdapter {
     autoSetActive = false,
     animationTime = 1000,
     zoom?: number
-  ): Promise<void> {
+  ): Promise<boolean> {
     const id = typeof entityId === 'string' ? parseInt(entityId, 10) : entityId;
     if (isNaN(id)) {
       logger.warn('[MapLibreAdapter] Invalid entity ID:', entityId);
-      return;
+      return false;
     }
 
     let targetInstance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance | undefined;
@@ -138,10 +138,11 @@ export class MapLibreAdapter {
 
     if (!targetInstance) {
       logger.warn(`[MapLibreAdapter] Entity ${id} not found.`);
-      return;
+      return false;
     }
 
     await this.moveToEntityInstance(targetInstance, autoToggleVisible, autoSetActive, animationTime, zoom);
+    return true;
   }
 
   async moveToEntityInstance(

@@ -55,14 +55,14 @@ export abstract class BaseDataManager<T extends BaseEntityDataWithInfo, I extend
    * 根据ID获取实例
    */
   public getById(id: number): I | undefined {
-    return this.instanceMap.get(id);
+    return this.instanceMap.get(Number(id));
   }
 
   /**
    * 检查是否存在指定ID的实例
    */
   public has(id: number): boolean {
-    return this.instanceMap.has(id);
+    return this.instanceMap.has(Number(id));
   }
 
   /**
@@ -70,14 +70,15 @@ export abstract class BaseDataManager<T extends BaseEntityDataWithInfo, I extend
    */
   @action
   public add(data: T): I {
+    const numId = Number(data.levelLogicId);
     // 检查是否已存在
-    if (this.instanceMap.has(data.levelLogicId)) {
+    if (this.instanceMap.has(numId)) {
       throw new Error(`Instance with id ${data.levelLogicId} already exists`);
     }
 
     const instance = this.createInstance(data);
     this.instances.push(instance);
-    this.instanceMap.set(data.levelLogicId, instance);
+    this.instanceMap.set(numId, instance);
     return instance;
   }
 
@@ -88,10 +89,11 @@ export abstract class BaseDataManager<T extends BaseEntityDataWithInfo, I extend
   public addBatch(dataList: T[]): I[] {
     const newInstances: I[] = [];
     for (const data of dataList) {
-      if (!this.instanceMap.has(data.levelLogicId)) {
+      const numId = Number(data.levelLogicId);
+      if (!this.instanceMap.has(numId)) {
         const instance = this.createInstance(data);
         newInstances.push(instance);
-        this.instanceMap.set(data.levelLogicId, instance);
+        this.instanceMap.set(numId, instance);
       }
     }
     this.instances.push(...newInstances);
@@ -103,7 +105,8 @@ export abstract class BaseDataManager<T extends BaseEntityDataWithInfo, I extend
    */
   @action
   public remove(id: number): boolean {
-    const instance = this.instanceMap.get(id);
+    const numId = Number(id);
+    const instance = this.instanceMap.get(numId);
     if (!instance) {
       return false;
     }
@@ -112,7 +115,7 @@ export abstract class BaseDataManager<T extends BaseEntityDataWithInfo, I extend
     if (index > -1) {
       this.instances.splice(index, 1);
     }
-    this.instanceMap.delete(id);
+    this.instanceMap.delete(numId);
     return true;
   }
 
