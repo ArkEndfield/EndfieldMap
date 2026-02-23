@@ -19,15 +19,16 @@
     "build:storage:mmkv": "pnpm -C packages/storage-mmkv build",
     "build:base": "pnpm -C packages/tools build && pnpm -C packages/map-core build && pnpm -C packages/map-service build",
   
-    "build:base:components": "pnpm -C packages/tools build && pnpm -C packages/map-service build && pnpm -C packages/map-web-theme-types build",
-    "build:components": "pnpm run build:base:components && pnpm -C packages/web-components build",
-    "build:components:docs": "pnpm run build:base:components && pnpm -C packages/web-components build-storybook",
+    "build:components:pure": "pnpm -C packages/map-web-theme-types build && pnpm -C packages/web-components build",
+    "build:components": "pnpm run build:base && pnpm run build:components:pure",
+    "build:components:docs": "pnpm run build:base && pnpm -C packages/map-web-theme-types build && pnpm -C packages/web-components build-storybook",
 
     "build:adapter:ol": "pnpm run build:base && pnpm -C packages/map-adapter-ol build",
     "build:adapter:maplibre": "pnpm run build:base && pnpm -C packages/map-adapter-maplibre build",
+
     "build:base:mobile": "pnpm run build:adapter:maplibre && pnpm run build:storage:mmkv",
 
-    "build:web": "pnpm run build:adapter:ol && pnpm run build:storage:web && pnpm run build:components && pnpm run build:web:pure",
+    "build:web": "pnpm run build:adapter:ol && pnpm run build:storage:web && pnpm run build:components:pure && pnpm run build:web:pure",
     "build:android": "pnpm run build:base:mobile && pnpm -C packages/map-native build:android",
     "build:ios": "pnpm run build:base:mobile && pnpm -C packages/map-native build:ios",
     "build:mobile": "pnpm run build:base:mobile && pnpm -C packages/map-native build:android && pnpm -C packages/map-native build:ios",
