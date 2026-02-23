@@ -159,9 +159,13 @@ export const EntityFilterSheet = observer(
           return;
         }
 
-        entityController.setGroupVisibility(stat.mapId, stat.entityDataIdKey, visible);
+        service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(
+          stat.mapId,
+          stat.entityDataIdKey,
+          visible
+        );
       },
-      [entityController]
+      []
     );
 
     const handleFilterModeChange = useCallback(
@@ -172,7 +176,11 @@ export const EntityFilterSheet = observer(
     );
 
     const handleShowAll = useCallback(() => {
-      entityController.setAllEntityVisible(true);
+      for (const stat of entityStats) {
+        if (stat.mapId) {
+          service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(stat.mapId, stat.entityDataIdKey, true);
+        }
+      }
       customPointTypes.forEach((typeConfig) => {
         void service.dataService.mapDataService.customPointDataService
           .updateItemVisibility(mapId, typeConfig.id, true)
@@ -183,10 +191,14 @@ export const EntityFilterSheet = observer(
           .updateItemVisibility(mapId, deviceKey, true)
           .catch(() => {});
       });
-    }, [entityController, mapId]);
+    }, [entityStats, mapId]);
 
     const handleHideAll = useCallback(() => {
-      entityController.setAllEntityVisible(false);
+      for (const stat of entityStats) {
+        if (stat.mapId) {
+          service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(stat.mapId, stat.entityDataIdKey, false);
+        }
+      }
       customPointTypes.forEach((typeConfig) => {
         void service.dataService.mapDataService.customPointDataService
           .updateItemVisibility(mapId, typeConfig.id, false)
@@ -197,7 +209,7 @@ export const EntityFilterSheet = observer(
           .updateItemVisibility(mapId, deviceKey, false)
           .catch(() => {});
       });
-    }, [entityController, mapId]);
+    }, [entityStats, mapId]);
 
     const groupedStats: { category: string; stats: FilterStat[] }[] = [];
     const groupedMap = new Map<string, FilterStat[]>();

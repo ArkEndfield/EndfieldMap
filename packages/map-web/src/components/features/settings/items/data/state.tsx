@@ -1,5 +1,4 @@
 import { useTranslation } from '@endfieldmap/map-service';
-import { LocalStorageDB } from '@endfieldmap/tools';
 import { EndfieldFormButton } from '@endfieldmap/web-components';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -7,18 +6,15 @@ import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
 import { usePromiseState } from '@/hooks/use_promise_state';
+import { service } from '@/services';
 
 export const StateSetting = () => {
   const { t } = useTranslation('settings');
   const { loading, execute } = usePromiseState({
-    fun: () => LocalStorageDB.clear(),
+    fun: () => service.dataService.mapDataService.mapStateDataService.clearState(),
     onSuccess() {
       alert.info({
         content: t('data.state_data.success'),
-        dismissible: false,
-        onConfirm() {
-          window.location.reload();
-        },
       });
     },
     onFailed(e) {

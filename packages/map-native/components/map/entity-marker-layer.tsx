@@ -105,6 +105,7 @@ export const EntityMarkerLayer = observer(function EntityMarkerLayer({
   const entityImageBase = adapter.asset.entityImage;
   const activeFeature = adapter.activeFeatureController.activeFeature;
 
+  const clusterEnabled = !entityController.dataManager.disableCluster;
   const visibleInstances = entityController.currentVisibleInstances;
 
   const iconKeySet = new Set<string>();
@@ -184,9 +185,10 @@ export const EntityMarkerLayer = observer(function EntityMarkerLayer({
     <>
       <Images images={iconImages} />
       <ShapeSource
+        key={`entitySource-${clusterEnabled}`}
         id="entitySource"
         shape={geoJSON}
-        cluster
+        cluster={clusterEnabled}
         clusterRadius={30}
         clusterMaxZoomLevel={6}
         clusterProperties={{

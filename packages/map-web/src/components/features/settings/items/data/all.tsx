@@ -14,8 +14,8 @@ const clearAll = (confirmText: string): Promise<boolean> => {
     alert.confirm({
       content: confirmText,
       async onConfirm() {
-        // 清空用户数据库中的所有数据（触发删除事件）
-        await Promise.all([LocalStorageDB.clear(), service.databaseService.clearUserDataWithEvents()]);
+        await service.databaseService.clearUserDataWithEvents();
+        LocalStorageDB.clear();
         resolve(true);
       },
       onCancel() {

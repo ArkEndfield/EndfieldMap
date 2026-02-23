@@ -1,61 +1,145 @@
-import React from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
-import { Stack } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-
 import { cn } from '@endfieldmap/tools';
+import { Stack, useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Animated, Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
-const LANGUAGES = [
-  { code: 'zh-CN', label: '简体中文' },
-  { code: 'zh-TW', label: '繁體中文' },
-  { code: 'en-US', label: 'English' },
-  { code: 'ja-JP', label: '日本語' },
-  { code: 'ko-KR', label: '한국어' },
-  { code: 'ru-RU', label: 'Русский' },
-  { code: 'es-MX', label: 'Español (México)' },
-];
+import { AboutPage } from '@/components/features/settings/items/about';
+import { DataSettings } from '@/components/features/settings/items/data';
+import { DisplaySettings } from '@/components/features/settings/items/display';
+import { MapSettings } from '@/components/features/settings/items/map';
+import { SETTINGS_PAGE } from '@/const/settings';
+
+const settingList = [
+  { key: SETTINGS_PAGE.GENERAL, Component: MapSettings },
+  { key: SETTINGS_PAGE.DISPLAY, Component: DisplaySettings },
+  { key: SETTINGS_PAGE.DATA, Component: DataSettings },
+  { key: SETTINGS_PAGE.ABOUT, Component: AboutPage },
+] as const;
+
+function useTabLabels() {
+  const { t } = useTranslation('settings');
+  return {
+    [SETTINGS_PAGE.GENERAL]: t('map.title'),
+    [SETTINGS_PAGE.DISPLAY]: t('display.language.title'),
+    [SETTINGS_PAGE.DATA]: t('data.title'),
+    [SETTINGS_PAGE.ABOUT]: t('about.title'),
+  };
+}
 
 export default function SettingsScreen() {
-  const { t, i18n } = useTranslation(['header', 'settings']);
-  const [current, setCurrent] = React.useState(i18n.language);
+  const { t } = useTranslation(['header', 'settings']);
+  const { width } = useWindowDimensions();
+  const params = useLocalSearchParams<{ tab?: string; item?: string }>();
+  const scrollRef = useRef<ScrollView>(null);
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const tabLabels = useTabLabels();
 
-  const handleChange = (code: string) => {
-    i18n.changeLanguage(code).then(() => setCurrent(code));
-  };
+  const initialIdx = params.tab
+    ? Math.max(settingList.findIndex((s) => s.key === params.tab), 0)
+    : 0;
+  const [activeIdx, setActiveIdx] = useState(initialIdx);
+
+  useEffect(() => {
+    if (initialIdx > 0) {
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({ x: initialIdx * width, animated: false });
+      }, 50);
+    }
+  }, [initialIdx, width]);
+
+  const handleTabPress = useCallback(
+    (idx: number) => {
+      scrollRef.current?.scrollTo({ x: idx * width, animated: true });
+      setActiveIdx(idx);
+    },
+    [width],
+  );
+
+  const handleMomentumEnd = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: number } } }) => {
+      const idx = Math.round(e.nativeEvent.contentOffset.x / width);
+      setActiveIdx(idx);
+    },
+    [width],
+  );
 
   return (
     <>
       <Stack.Screen options={{ title: t('header:settings.title') }} />
-      <ScrollView className="flex-1 bg-bg-secondary" contentContainerClassName="px-4 pb-10 pt-4">
-        <Text className="mb-3 text-base font-semibold text-text-primary">
-          {t('settings:display.language.title')}
-        </Text>
+      <View className="flex-1 bg-bg-secondary">
+        <TabBar
+          activeIdx={activeIdx}
+          labels={tabLabels}
+          scrollX={scrollX}
+          pageWidth={width}
+          onPress={handleTabPress}
+        />
+        <Animated.ScrollView
+          ref={scrollRef as React.RefObject<ScrollView>}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+            useNativeDriver: false,
+          })}
+          scrollEventThrottle={16}
+          onMomentumScrollEnd={handleMomentumEnd}
+        >
+          {settingList.map(({ key, Component }) => (
+            <View key={key} style={{ width }}>
+              <Component />
+            </View>
+          ))}
+        </Animated.ScrollView>
+      </View>
+    </>
+  );
+}
 
-        {LANGUAGES.map((lang) => (
-          <Pressable
-            key={lang.code}
-            className={cn(
-              'mb-2 flex-row items-center justify-between rounded-xl px-4 py-3.5',
-              lang.code === current ? 'bg-primary' : 'bg-bg-primary',
-            )}
-            onPress={() => handleChange(lang.code)}
-          >
+function TabBar({
+  activeIdx,
+  labels,
+  scrollX,
+  pageWidth,
+  onPress,
+}: {
+  activeIdx: number;
+  labels: Record<string, string>;
+  scrollX: Animated.Value;
+  pageWidth: number;
+  onPress: (idx: number) => void;
+}) {
+  const tabWidth = pageWidth / settingList.length;
+
+  const indicatorX = scrollX.interpolate({
+    inputRange: settingList.map((_, i) => i * pageWidth),
+    outputRange: settingList.map((_, i) => i * tabWidth),
+    extrapolate: 'clamp',
+  });
+
+  return (
+    <View className="bg-bg-secondary">
+      <View className="flex-row">
+        {settingList.map(({ key }, i) => (
+          <Pressable key={key} className="flex-1 items-center py-3" onPress={() => onPress(i)}>
             <Text
               className={cn(
-                'text-base',
-                lang.code === current ? 'font-semibold text-white' : 'text-text-secondary',
+                'text-sm font-medium',
+                i === activeIdx ? 'font-semibold text-primary' : 'text-text-muted',
               )}
             >
-              {lang.label}
+              {labels[key]}
             </Text>
-            <Text className="text-[13px] text-text-disabled">{lang.code}</Text>
           </Pressable>
         ))}
-
-        <View className="mt-6 items-center">
-          <Text className="text-xs text-text-disabled">Endfield Map v1.0.0</Text>
-        </View>
-      </ScrollView>
-    </>
+      </View>
+      <View className="h-0.5 bg-border">
+        <Animated.View
+          className="h-full rounded-full bg-primary"
+          style={{ width: tabWidth, transform: [{ translateX: indicatorX }] }}
+        />
+      </View>
+    </View>
   );
 }

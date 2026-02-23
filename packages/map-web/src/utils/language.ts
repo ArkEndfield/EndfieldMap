@@ -1,7 +1,3 @@
-import { Language } from '@endfieldmap/tools';
+import { service } from '@/services';
 
-import { languageConfig } from '@/const/language';
-
-export const getLanguage = (locale: readonly string[]): Language => {
-  return (locale.find((locale) => languageConfig.some((item) => item.code === locale)) || Language.ZH_CN) as Language;
-};
+export const getLanguage = service.i18nService.getLanguage.bind(service.i18nService);
