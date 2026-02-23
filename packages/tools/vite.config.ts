@@ -15,7 +15,7 @@ export default defineConfig({
     },
     rolldownOptions: {
       // 排除所有 dependencies 和 peerDependencies
-      external: (id, importer, isResolved) => {
+      external: (id) => {
         // Rollup 虚拟模块不排除
         if (id.startsWith('\0')) return false;
         // 本地相对路径不排除

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useWindow } from '../contexts/window';
+import { useWindow } from '@endfieldmap/web-components/contexts/window';
 
 export const useIsMobile = () => {
   const currentWindow = useWindow();
@@ -14,6 +14,7 @@ export const useIsMobile = () => {
       setIsMobile(e.matches);
     };
 
+    // eslint-disable-next-line
     setIsMobile(mediaQuery.matches);
 
     mediaQuery.addEventListener('change', handleChange);

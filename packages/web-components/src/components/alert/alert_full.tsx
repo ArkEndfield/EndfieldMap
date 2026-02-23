@@ -9,7 +9,7 @@ import ALERT_BANNER_BG_RIGHT from '@endfieldmap/web-components/assets/alert/aler
 import DECO_COMMON_LOGO_BG from '@endfieldmap/web-components/assets/deco_common_logo_bg.png';
 import { ZmdRoundButton } from '@endfieldmap/web-components/components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@endfieldmap/web-components/components/icons/alert';
-import { ScrollArea } from '@endfieldmap/web-components/components/scroll_area';
+import { ScrollArea } from '../scroll_area';
 
 export const ZmdAlertFull = ({
   open,
@@ -137,5 +137,3 @@ export const ZmdAlertFull = ({
     </AnimatePresence>
   );
 };
-
-export default ZmdAlertFull;

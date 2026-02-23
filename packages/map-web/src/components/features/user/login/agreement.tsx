@@ -1,8 +1,7 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { Dialog } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
-
-import { Dialog } from '@endfieldmap/web-components';
 
 export interface AgreementDialogProps {
   open: boolean;

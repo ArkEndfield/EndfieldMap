@@ -1,12 +1,13 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '../icons/alert';
 
-import { EndfieldFormButton } from './form_button';
-import { ZmdRoundButton } from './round_button';
-import { ZmdRoundIconButton } from './round_icon_button';
-import { ZmdSquareButton } from './square_button';
-import { ZmdSquareIconButton } from './square_icon_button';
+import { EndfieldFormButton } from '@endfieldmap/web-components/components/button/form_button';
+import { ZmdRoundButton } from '@endfieldmap/web-components/components/button/round_button';
+import { ZmdRoundIconButton } from '@endfieldmap/web-components/components/button/round_icon_button';
+import { ZmdSquareButton } from '@endfieldmap/web-components/components/button/square_button';
+import { ZmdSquareIconButton } from '@endfieldmap/web-components/components/button/square_icon_button';
 
 const meta: Meta = {
   title: 'Components/Button',

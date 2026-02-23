@@ -1,5 +1,5 @@
-import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 
 export const CommunityCard = ({
   title,

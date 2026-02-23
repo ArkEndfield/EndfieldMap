@@ -1,8 +1,7 @@
+import { cn } from '@endfieldmap/tools';
+import { useIsMobile } from '@endfieldmap/web-components';
 import CustomPointPresetPanel from '@themes/endfield/ui/control_panel/controllers/operations/custom_point/preset/panel';
 import { observer } from 'mobx-react-lite';
-
-import { useIsMobile } from '@endfieldmap/web-components';
-import { cn } from '@endfieldmap/tools';
 
 export const CustomPointManager: React.FC = observer(() => {
   const isMobile = useIsMobile();

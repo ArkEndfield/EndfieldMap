@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-import { ZmdAlert } from './alert';
-import { ZmdAlertFull } from './alert_full';
+import { ZmdAlert } from '@endfieldmap/web-components/components/alert/alert';
+import { ZmdAlertFull } from '@endfieldmap/web-components/components/alert/alert_full';
 
 const meta: Meta<typeof ZmdAlert> = {
   title: 'Components/Alert',

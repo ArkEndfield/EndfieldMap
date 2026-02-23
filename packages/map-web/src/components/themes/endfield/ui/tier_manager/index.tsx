@@ -1,4 +1,6 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { cn } from '@endfieldmap/tools';
+import { useIsMobile } from '@endfieldmap/web-components';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { SubTitle } from '@themes/endfield/ui/tier_manager/subtitle';
 import { TierTitle } from '@themes/endfield/ui/tier_manager/tier_title';
@@ -7,10 +9,8 @@ import { AnimatePresence, motion } from 'motion/react';
 
 import { ScrollableList, ScrollableListItem } from '@/components/common/scrollable_list';
 import { useAdapter } from '@/hooks/use_adapter';
-import { useIsMobile } from '@endfieldmap/web-components';
 import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@endfieldmap/tools';
 
 interface TierManagerProps {
   className?: string;

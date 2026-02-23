@@ -142,5 +142,4 @@ class ShortcutService {
   };
 }
 
-const shortcutService = new ShortcutService();
-export default shortcutService;
+export const shortcutService = new ShortcutService();

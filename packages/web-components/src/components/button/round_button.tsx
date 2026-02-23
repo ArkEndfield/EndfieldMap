@@ -3,7 +3,7 @@ import { motion, useAnimate } from 'motion/react';
 
 import type { ZmdButtonProps } from '@endfieldmap/web-components/types/button';
 
-import { ButtonWithAudio } from '../button_with_audio';
+import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 
 export const ZmdRoundButton = ({
   type = 'primary',

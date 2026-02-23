@@ -1,5 +1,5 @@
 import { cn } from '@endfieldmap/tools';
-import { ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { useWindow, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { motion, useAnimation } from 'motion/react';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -50,7 +50,6 @@ const getClassName = (
   return className;
 };
 
-import { useWindow } from '@endfieldmap/web-components';
 
 export const BottomSheet = ({
   title,

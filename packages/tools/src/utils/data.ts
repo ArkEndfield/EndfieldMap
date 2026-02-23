@@ -13,6 +13,7 @@ export const downloadData = async (data: unknown, filename: string, type: string
   // 尝试使用 File System Access API
   if ('showSaveFilePicker' in window) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handle = await (window as any).showSaveFilePicker({
         suggestedName: filename,
         types: [

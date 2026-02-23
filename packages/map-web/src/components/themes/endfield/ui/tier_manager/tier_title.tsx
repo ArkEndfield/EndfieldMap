@@ -1,8 +1,8 @@
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import type { ButtonHTMLAttributes } from 'react';
 
-import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { LayersIcon } from '@/components/common/icons';
-import { cn } from '@endfieldmap/tools';
 
 export type TierTitleProps = ButtonHTMLAttributes<HTMLButtonElement>;
 

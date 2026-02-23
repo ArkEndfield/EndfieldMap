@@ -1,6 +1,5 @@
-import React from 'react';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components';
+import React from 'react';
 
 interface ButtonProps {
   active?: boolean;

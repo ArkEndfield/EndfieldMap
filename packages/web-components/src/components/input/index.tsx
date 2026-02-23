@@ -95,5 +95,3 @@ export const EndfieldInput = ({
     </div>
   );
 };
-
-export default EndfieldInput;

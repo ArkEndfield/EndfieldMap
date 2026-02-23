@@ -256,6 +256,7 @@ export class ServerService {
         if (e instanceof Error) {
           throw e;
         }
+        // eslint-disable-next-line
         throw new Error(
           this.i18nService.translate('unknown', {
             ns: 'error',

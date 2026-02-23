@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
-import audioService from '../services/audio_service';
+import { audioService } from '@endfieldmap/web-components/services/audio_service';
 
 interface UseAudioOptions {
   autoInitialize?: boolean;

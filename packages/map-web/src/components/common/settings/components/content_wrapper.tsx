@@ -1,6 +1,5 @@
-import { motion } from 'motion/react';
-
 import { ScrollArea } from '@endfieldmap/web-components';
+import { motion } from 'motion/react';
 
 export const ContentWrapper = ({ children, active }: { children: React.ReactNode; active?: boolean }) =>
   active ? (

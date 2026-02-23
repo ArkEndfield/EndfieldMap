@@ -3,10 +3,9 @@
  * 展示如何在组件中使用音效的基本方法
  */
 
-import { observer } from 'mobx-react-lite';
-
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { useAudio } from '@endfieldmap/web-components';
+import { observer } from 'mobx-react-lite';
 
 /**
  * 示例 1: 最简单的按钮点击音效

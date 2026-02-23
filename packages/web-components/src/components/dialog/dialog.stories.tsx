@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-import { Dialog } from './index';
+import { Dialog } from '@endfieldmap/web-components/components/dialog/index';
 
 const meta: Meta<typeof Dialog> = {
   title: 'Components/Dialog',

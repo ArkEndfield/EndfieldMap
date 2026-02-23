@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-import { EndfieldSquareSwitch } from './index';
-import { EndfieldSwitch } from './text_switch';
+import { EndfieldSquareSwitch } from '@endfieldmap/web-components/components/switch/index';
+import { EndfieldSwitch } from '@endfieldmap/web-components/components/switch/text_switch';
 
 const meta: Meta = {
   title: 'Components/Switch',

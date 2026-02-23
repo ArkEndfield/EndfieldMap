@@ -1,10 +1,10 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { CheckboxToggle, ZmdSquareButton } from '@endfieldmap/web-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { CheckboxToggle, ZmdSquareButton } from '@endfieldmap/web-components';
 import { TickCircleIcon } from '@/components/common/icons';
 import { UserInput } from '@/components/common/user/input';
 import { type RegisterFormData, registerSchema } from '@/const/schema/auth';

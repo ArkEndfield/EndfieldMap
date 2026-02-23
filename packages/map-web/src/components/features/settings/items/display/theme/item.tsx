@@ -1,8 +1,7 @@
-import type { ThemeNames } from '@themes/index';
-
-import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
+import type { ThemeNames } from '@themes/index';
 
 export interface ThemeItemProps {
   name: ThemeNames;

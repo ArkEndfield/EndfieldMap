@@ -1,7 +1,7 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { EndfieldToggle, useIsMobile } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
-import { EndfieldToggle, useIsMobile } from '@endfieldmap/web-components';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
 import { service } from '@/services';

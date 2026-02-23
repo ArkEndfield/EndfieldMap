@@ -1,8 +1,8 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { LocalStorageDB } from '@endfieldmap/tools';
+import { EndfieldFormButton } from '@endfieldmap/web-components';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { EndfieldFormButton } from '@endfieldmap/web-components';
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';

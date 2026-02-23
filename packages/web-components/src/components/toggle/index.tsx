@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 
 import type { EndfieldToggleProps } from '@endfieldmap/web-components/types/form';
 
-import { ButtonWithAudio } from '../button_with_audio';
+import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 
 export const EndfieldToggle = <T extends React.Key>({
   options,

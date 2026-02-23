@@ -1,5 +1,6 @@
-import { service } from '@/services';
 import { cn } from '@endfieldmap/tools';
+
+import { service } from '@/services';
 
 export const ThirdPartyButton = ({
   icon,

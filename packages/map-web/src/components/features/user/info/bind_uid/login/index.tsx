@@ -1,16 +1,16 @@
 import type { BindType } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import type { GameRole } from '@/@types/game_role';
-import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { KeyIcon, ScanIcon } from '@/components/common/icons';
 import { QRCodeLogin } from '@/components/features/user/info/bind_uid/login/qrcode';
 import { TokenLogin } from '@/components/features/user/info/bind_uid/login/token';
-import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { service } from '@/services';
-import { cn } from '@endfieldmap/tools';
 
 /**
  * 登录入口组件

@@ -1,7 +1,6 @@
-import { motion } from 'motion/react';
-
-import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
+import { motion } from 'motion/react';
 
 const ActiveDeco = () => (
   <motion.div

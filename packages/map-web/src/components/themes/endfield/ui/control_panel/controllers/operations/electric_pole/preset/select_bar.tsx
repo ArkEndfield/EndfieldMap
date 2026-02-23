@@ -1,5 +1,4 @@
 import { useTranslation } from '@endfieldmap/map-service';
-
 import { CheckboxToggle } from '@endfieldmap/web-components';
 
 interface PresetSelectBarProps {

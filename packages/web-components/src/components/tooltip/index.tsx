@@ -5,13 +5,13 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { usePortalContainer } from '../../contexts/portal';
-import { useWindow } from '../../contexts/window';
-import { useIsMobile } from '../../hooks/use_is_mobile';
+import { usePortalContainer } from '@endfieldmap/web-components/contexts/portal';
+import { useWindow } from '@endfieldmap/web-components/contexts/window';
+import { useIsMobile } from '@endfieldmap/web-components/hooks/use_is_mobile';
 
 const TOOLTIP_OFFSET = 8;
 
-const Tooltip = <T extends React.ElementType = 'div'>({
+export const Tooltip = <T extends React.ElementType = 'div'>({
   disabled: _disabled = false,
   tooltip,
   children,
@@ -251,5 +251,3 @@ const Tooltip = <T extends React.ElementType = 'div'>({
     </>
   );
 };
-
-export default Tooltip;

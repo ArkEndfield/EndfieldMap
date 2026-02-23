@@ -1,5 +1,4 @@
 import { useTranslation } from '@endfieldmap/map-service';
-
 import { cn } from '@endfieldmap/tools';
 
 interface ArrowProps {

@@ -1,9 +1,10 @@
+import { cn } from '@endfieldmap/tools';
+import { CloseButton, shortcutService, useIsMobile, useWindow } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { CloseButton, shortcutService, useIsMobile } from '@endfieldmap/web-components';
 import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@/components/common/icons';
 import { ContentWrapper } from '@/components/common/settings/components/content_wrapper';
 import { BgDeco } from '@/components/common/settings/components/deco';
@@ -14,7 +15,6 @@ import { DisplaySettings } from '@/components/features/settings/items/display';
 import { MapSettings } from '@/components/features/settings/items/map';
 import { SETTINGS_PAGE } from '@/const/settings';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@endfieldmap/tools';
 
 export interface SettingsPageProps {
   open: boolean;
@@ -125,7 +125,6 @@ const Settings: React.FC<SettingsPageProps> = observer(({ open, onClose }) => {
   );
 });
 
-import { useWindow } from '@endfieldmap/web-components';
 
 export const SettingsPage: React.FC = observer(() => {
   const open = uiManager.settingsShown;

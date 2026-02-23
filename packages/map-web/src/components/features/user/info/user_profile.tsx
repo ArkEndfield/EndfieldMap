@@ -1,13 +1,13 @@
 import type { UidInfo, UserInfo } from '@endfieldmap/map-service';
 import { SyncStatus } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
+import { cn } from '@endfieldmap/tools';
+import { ZmdSquareButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 
-import { ZmdSquareButton } from '@endfieldmap/web-components';
 import { CheckCircleIcon, SyncIcon } from '@/components/common/icons';
 import { service } from '@/services';
-import { cn } from '@endfieldmap/tools';
 
 // ==================== 用户头像组件 ====================
 const UserAvatar = ({

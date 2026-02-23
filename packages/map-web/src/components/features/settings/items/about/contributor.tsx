@@ -1,6 +1,6 @@
-import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 
 export interface ContributorInfo {
   name: string;

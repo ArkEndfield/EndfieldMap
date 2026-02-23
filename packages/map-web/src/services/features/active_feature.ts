@@ -1,9 +1,9 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { ElectricPoleDataInstance, MAP_EVENT } from '@endfieldmap/map-core';
-
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
-import { service } from '@/services';
 import { audioService } from '@endfieldmap/web-components';
+
+import { service } from '@/services';
 
 /**
  * 初始化激活feature事件监听器

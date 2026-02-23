@@ -3,11 +3,9 @@
  * 展示如何创建音效设置面板，包括音量控制、静音开关等
  */
 
-import { observer } from 'mobx-react-lite';
-
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
-import { useAudio } from '@endfieldmap/web-components';
-import { audioService } from '@endfieldmap/web-components';
+import { audioService, useAudio } from '@endfieldmap/web-components';
+import { observer } from 'mobx-react-lite';
 
 /**
  * 示例 1: 简单的音效开关

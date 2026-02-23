@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 
 import type { EndfieldSwitchProps } from '@endfieldmap/web-components/types/form';
 
-import { ButtonWithAudio } from '../button_with_audio';
+import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 
 export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText, offText }: EndfieldSwitchProps) => {
   const { t } = useTranslation('common');

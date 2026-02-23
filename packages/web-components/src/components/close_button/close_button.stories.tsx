@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { CloseButton } from './close_button';
+import { CloseButton } from '@endfieldmap/web-components/components/close_button';
 
 const meta: Meta<typeof CloseButton> = {
   title: 'Components/CloseButton',

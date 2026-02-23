@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 import { EndfieldCloseIcon } from '@endfieldmap/web-components/components/icons/endfield';
-import shortcutService from '@endfieldmap/web-components/services/shortcut';
+import { shortcutService } from '@endfieldmap/web-components/services/shortcut';
 
 const CloseButton: React.FC<{
   onClick?: () => void;
