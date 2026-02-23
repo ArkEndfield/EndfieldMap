@@ -4,7 +4,9 @@ import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { GameMapView } from '@/components/map/game-map-view';
+import { PointOperationTip } from '@/components/operations/custom-point/point-operation-tip';
 import { CustomPointSheet, type CustomPointSheetRef } from '@/components/operations/custom-point/custom-point-sheet';
+import { PoleOperationTip } from '@/components/operations/electric-pole/pole-operation-tip';
 import { ElectricPoleSheet, type ElectricPoleSheetRef } from '@/components/operations/electric-pole/electric-pole-sheet';
 import { EntityFilterSheet, type EntityFilterSheetRef } from '@/components/ui/entity-filter-sheet';
 import { EntityInfoSheet } from '@/components/ui/entity-info-sheet';
@@ -12,6 +14,7 @@ import { MapSwitcher } from '@/components/ui/map-switcher';
 import { ZoomControls } from '@/components/ui/zoom-controls';
 import { AdapterProvider } from '@/context/adapter';
 import { useMapInit } from '@/hooks/use-map-init';
+import { service } from '@/services/map-service';
 
 export default function MapScreen() {
   const { t } = useTranslation('common');
@@ -49,17 +52,25 @@ function MapContent() {
   const customPointSheetRef = useRef<CustomPointSheetRef>(null);
   const electricPoleSheetRef = useRef<ElectricPoleSheetRef>(null);
 
-  const handleEntityPress = useCallback((instance: EntityDataInstance) => {
-    setActiveEntity(instance as DataInstance);
+  const isInOperateMode = useCallback(() => {
+    const { electricPoleDataService, customPointDataService } = service.dataService.mapDataService;
+    return electricPoleDataService.isInElectricOperateMode || customPointDataService.isInCustomPointOperateMode;
   }, []);
+
+  const handleEntityPress = useCallback((instance: EntityDataInstance) => {
+    if (isInOperateMode()) return;
+    setActiveEntity(instance as DataInstance);
+  }, [isInOperateMode]);
 
   const handleElectricPolePress = useCallback((instance: ElectricPoleDataInstance) => {
+    if (isInOperateMode()) return;
     setActiveEntity(instance as DataInstance);
-  }, []);
+  }, [isInOperateMode]);
 
   const handleCustomPointPress = useCallback((instance: CustomPointDataInstance) => {
+    if (isInOperateMode()) return;
     setActiveEntity(instance as DataInstance);
-  }, []);
+  }, [isInOperateMode]);
 
   const handleDismissInfo = useCallback(() => {
     setActiveEntity(null);
@@ -84,6 +95,9 @@ function MapContent() {
         onElectricPolePress={handleElectricPolePress}
         onCustomPointPress={handleCustomPointPress}
       />
+
+      <PoleOperationTip />
+      <PointOperationTip />
 
       <MapSwitcher />
       <ZoomControls />

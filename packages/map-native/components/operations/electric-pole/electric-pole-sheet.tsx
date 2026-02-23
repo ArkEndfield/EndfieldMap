@@ -4,6 +4,7 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Dimensions, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { PoleOperationButtons } from '@/components/operations/electric-pole/pole-operation-buttons';
 import { PresetList } from '@/components/operations/preset/preset-list';
 import { PresetSelectBar } from '@/components/operations/preset/preset-select-bar';
 import { PresetToolbar } from '@/components/operations/preset/preset-toolbar';
@@ -63,6 +64,9 @@ export const ElectricPoleSheet = observer(
               </Text>
             </Pressable>
           </View>
+
+          {/* Operation buttons */}
+          <PoleOperationButtons />
 
           {/* Zone visibility toggle */}
           <View className="mb-3 flex-row items-center justify-between rounded-lg bg-bg-secondary px-3 py-2">

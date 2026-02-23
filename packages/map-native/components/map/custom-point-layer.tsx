@@ -1,4 +1,5 @@
 import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
+import { MAP_EVENT } from '@endfieldmap/map-core';
 import type { CustomPointDataInstance } from '@endfieldmap/map-core';
 import {
   CircleLayer,
@@ -168,7 +169,7 @@ export const CustomPointMarkerLayer = observer(function CustomPointMarkerLayer({
 
   const handlePress = useCallback(
     (event: { features?: GeoJSON.Feature[] }) => {
-      if (!event.features?.length || !onCustomPointPress) return;
+      if (!event.features?.length) return;
       const feature = event.features[0];
       const pointId = feature.properties?.pointId;
       if (typeof pointId !== 'number') return;
@@ -176,10 +177,15 @@ export const CustomPointMarkerLayer = observer(function CustomPointMarkerLayer({
       const mapId = adapter.mapController.dataManager.currentMapId;
       const manager = dataManager.getMapManager(mapId);
       const instance = manager.getById(pointId);
-      if (instance) {
-        adapter.activeFeatureController.setActiveFeature(instance);
-        onCustomPointPress(instance);
-      }
+      if (!instance) return;
+
+      adapter.event.fire(MAP_EVENT.ENTITY_CLICK, {
+        instance,
+        coordinate: instance.coordinates,
+      });
+
+      adapter.activeFeatureController.setActiveFeature(instance);
+      onCustomPointPress?.(instance);
     },
     [adapter, dataManager, onCustomPointPress]
   );

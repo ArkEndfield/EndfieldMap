@@ -2,6 +2,7 @@ import type { MapData } from '@endfieldmap/map-core';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/context/adapter';
@@ -18,6 +19,7 @@ function translateMapName(
 export const MapSwitcher = observer(function MapSwitcher() {
   const { t } = useTranslation('lang');
   const adapter = useAdapter();
+  const insets = useSafeAreaInsets();
   const [expanded, setExpanded] = useState(false);
 
   const mapDataManager = adapter.mapController.dataManager;
@@ -42,7 +44,7 @@ export const MapSwitcher = observer(function MapSwitcher() {
   );
 
   return (
-    <View className="absolute top-[60px] right-4 z-10">
+    <View className="absolute right-4 z-10" style={{ top: insets.top + 56 }}>
       <Pressable
         className="flex-row items-center gap-1.5 rounded-[10px] bg-bg-glass px-3.5 py-2.5 shadow-md shadow-black/15 elevation-4"
         onPress={() => setExpanded(!expanded)}

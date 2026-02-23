@@ -1,6 +1,7 @@
 import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
 import {
   ELECTRIC_POLE_DEVICE_CONFIGS,
+  MAP_EVENT,
 } from '@endfieldmap/map-core';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
 import {
@@ -288,7 +289,7 @@ export const ElectricPoleMarkerLayer = observer(function ElectricPoleMarkerLayer
 
   const handlePress = useCallback(
     (event: { features?: GeoJSON.Feature[] }) => {
-      if (!event.features?.length || !onElectricPolePress) return;
+      if (!event.features?.length) return;
       const feature = event.features[0];
       const poleId = feature.properties?.poleId;
       if (typeof poleId !== 'number') return;
@@ -296,10 +297,15 @@ export const ElectricPoleMarkerLayer = observer(function ElectricPoleMarkerLayer
       const mapId = adapter.mapController.dataManager.currentMapId;
       const manager = dataManager.getMapManager(mapId);
       const instance = manager.getById(poleId);
-      if (instance) {
-        adapter.activeFeatureController.setActiveFeature(instance);
-        onElectricPolePress(instance);
-      }
+      if (!instance) return;
+
+      adapter.event.fire(MAP_EVENT.ENTITY_CLICK, {
+        instance,
+        coordinate: instance.coordinates,
+      });
+
+      adapter.activeFeatureController.setActiveFeature(instance);
+      onElectricPolePress?.(instance);
     },
     [adapter, dataManager, onElectricPolePress]
   );

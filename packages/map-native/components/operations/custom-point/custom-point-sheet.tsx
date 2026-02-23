@@ -4,6 +4,7 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { PointOperationButtons } from '@/components/operations/custom-point/point-operation-buttons';
 import { PresetList } from '@/components/operations/preset/preset-list';
 import { PresetSelectBar } from '@/components/operations/preset/preset-select-bar';
 import { PresetToolbar } from '@/components/operations/preset/preset-toolbar';
@@ -59,6 +60,9 @@ export const CustomPointSheet = observer(
               </Text>
             </Pressable>
           </View>
+
+          {/* Operation buttons */}
+          <PointOperationButtons />
 
           {/* Select bar */}
           <PresetSelectBar

@@ -179,9 +179,11 @@ function GameMapViewInner({
     (feature: GeoJSON.Feature) => {
       const geom = feature.geometry;
       if (geom.type !== 'Point') return;
-      const coords = geom.coordinates;
+      const coords = geom.coordinates as [number, number];
+      const pixelCoord = lngLatToPixel(coords[0], coords[1]);
+
       adapter.event.fire(MAP_EVENT.MAP_CLICK, {
-        coordinate: [coords[0], coords[1]] as [number, number],
+        coordinate: pixelCoord,
         pixel: [0, 0],
       });
     },

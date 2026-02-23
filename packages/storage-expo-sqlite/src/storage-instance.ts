@@ -169,13 +169,13 @@ export class ExpoSQLiteStorageInstance<RxDocType>
     // 5. Emit change events
     const eventBulk = categorized.eventBulk;
     if (eventBulk.events.length > 0) {
-      const lastDoc =
-        eventBulk.events[eventBulk.events.length - 1]!.documentData;
+      const lastEvent =
+        eventBulk.events[eventBulk.events.length - 1]!;
       eventBulk.checkpoint = {
         id: String(
-          (lastDoc as Record<string, unknown>)[primaryPath],
+          (lastEvent.documentData as Record<string, unknown>)[primaryPath],
         ),
-        lwt: lastDoc._meta.lwt,
+        lwt: lastEvent.documentData._meta.lwt,
       };
       this.changes$.next(
         eventBulk as EventBulk<

@@ -28,23 +28,24 @@ const SYNC_COLLECTION_NAMES = [
 type SyncCollectionKey = (typeof SYNC_COLLECTION_NAMES)[number];
 
 function toBackendDoc(doc: Record<string, unknown>): SyncDocumentState {
-  const { id, updatedAt, ...rest } = doc;
-  const deleted = (doc as { _deleted?: boolean })._deleted === true;
+  const { id, updatedAt, _deleted, _meta, _rev, _attachments, ...fields } = doc;
+  const deleted = _deleted === true;
 
   return {
     id: id as string,
     updated_at: (updatedAt as number) || Date.now(),
     deleted,
-    fields: rest as Record<string, unknown>,
+    fields: fields as Record<string, unknown>,
   };
 }
 
 function fromBackendDoc(backendDoc: SyncDocumentState): SyncDocument {
+  const { _deleted, _meta, _rev, _attachments, ...cleanFields } = backendDoc.fields as Record<string, unknown>;
   return {
     id: backendDoc.id,
     updatedAt: backendDoc.updated_at,
     _deleted: backendDoc.deleted,
-    ...backendDoc.fields,
+    ...cleanFields,
   };
 }
 
@@ -96,7 +97,7 @@ export class SyncService<T, R> {
     }
 
     if (!this.databaseService.user_db) {
-      logger.warn('[SyncService] User database not initialized yet, skipping sync start');
+      logger.debug('[SyncService] User database not initialized yet, skipping sync start');
       return;
     }
 
@@ -301,12 +302,17 @@ export class SyncService<T, R> {
             const conflicts = response.conflicts.map(fromBackendDoc);
 
             if (conflicts.length > 0) {
-              logger.warn(`[SyncService] ${conflicts.length} conflicts detected for ${backendCollectionName}`);
+              logger.warn(
+                `[SyncService] ${conflicts.length} conflicts for ${backendCollectionName}`,
+                conflicts.map((c) => ({ id: c.id, _deleted: c._deleted }))
+              );
             }
+
+            const accepted = response.accepted?.map(fromBackendDoc) ?? [];
 
             logger.debug(`[SyncService] Push completed for ${backendCollectionName}`);
 
-            return conflicts;
+            return [...conflicts, ...accepted];
           } catch (error) {
             logger.error(`[SyncService] Push failed for ${backendCollectionName}:`, error);
             throw error;

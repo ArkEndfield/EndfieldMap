@@ -53,6 +53,8 @@ export interface PushDocumentRow {
  */
 export interface PushResponse {
   conflicts: SyncDocumentState[];
+  /** 服务端实际存储的文档状态（updated_at 等字段可能与客户端不同） */
+  accepted?: SyncDocumentState[];
 }
 
 /**

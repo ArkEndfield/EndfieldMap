@@ -58,11 +58,11 @@ export class ElectricPoleController implements IElectricPoleController {
   }
 
   createElectricPoleData(
-    _mapId: MapData['id'],
+    mapId: MapData['id'],
     position: MapCoordinate,
     deviceKey?: ElectricPoleDeviceKey
   ): ElectricPoleData {
-    const polePosition = { x: position[0], y: 0, z: position[1] };
+    const polePosition = this.mapDataManager.crd2xyz(position, mapId);
     return {
       levelLogicId: Date.now(),
       entityDataIdKey: '#electric_pole',

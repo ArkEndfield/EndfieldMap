@@ -105,7 +105,7 @@ const DialogInner: React.FC<DialogProps> = ({
         animate={{ opacity: 1, scale: 1, transition: { duration: 0.15 } }}
         exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.1, delay: 0.2 } }}
       >
-        <header className="select-none shrink-0 relative">
+        <header className="shrink-0 relative">
           <motion.div
             className="w-87 h-3.75 flex items-stretch origin-left"
             initial={{ scaleX: 0 }}

@@ -3,6 +3,7 @@ import { domEventListener } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
+import { alert } from '@/components/common/alert/alert_api';
 import { CogIcon, EditIcon, MinusIcon } from '@/components/common/icons';
 import { DevToolsDrawPanel } from '@/components/features/dev_tools/draw_panel';
 import { TierControls } from '@/components/features/dev_tools/views/tier_controller';
@@ -226,6 +227,7 @@ const DevToolsPanel = observer(() => {
             {devToolsState.value.showCursorPosition && <CursorPositionDisplay />}
             <TierControls />
             <CoordinateJump />
+            <EntityLocate />
             <button
               className={cn(
                 'w-full flex items-center justify-center gap-2 px-2 py-1.5 rounded text-xs border border-white/10 transition-colors',
@@ -310,6 +312,74 @@ const CoordinateJump = observer(() => {
       </div>
       <button className="w-full bg-white/10 hover:bg-white/20 rounded px-2 py-1 text-[10px]" onClick={handleJump}>
         跳转
+      </button>
+    </div>
+  );
+});
+
+const EntityLocate = observer(() => {
+  const { adapter } = useAdapter();
+  const [entityId, setEntityId] = useState('');
+
+  const handleLocate = async () => {
+    const id = parseInt(entityId, 10);
+    if (isNaN(id)) {
+      alert.info('请输入有效的 levelLogicId');
+      return;
+    }
+
+    const mapIds = adapter.mapController.dataManager.mapIds;
+    let found = false;
+
+    for (const mapId of mapIds) {
+      if (adapter.entityController.getInstanceById(mapId, id)) {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      for (const mapId of mapIds) {
+        if (adapter.electricPoleController.dataManager.getMapManager(mapId).getById(id)) {
+          found = true;
+          break;
+        }
+      }
+    }
+
+    if (!found) {
+      for (const mapId of mapIds) {
+        if (adapter.customPointController.dataManager.getMapManager(mapId).getById(id)) {
+          found = true;
+          break;
+        }
+      }
+    }
+
+    if (!found) {
+      alert.info(`未找到 levelLogicId 为 ${id} 的标点`);
+      return;
+    }
+
+    await adapter.moveToEntity(id, true, true);
+  };
+
+  return (
+    <div className="border border-white/10 rounded p-2 space-y-2">
+      <span className="text-[10px] text-gray-400">定位标点 (levelLogicId)</span>
+      <div className="flex gap-1">
+        <input
+          className="w-full bg-white/5 border border-white/10 rounded px-1 py-0.5 text-[10px]"
+          placeholder="levelLogicId"
+          value={entityId}
+          onChange={(e) => setEntityId(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleLocate();
+          }}
+        />
+      </div>
+      <button className="w-full bg-white/10 hover:bg-white/20 rounded px-2 py-1 text-[10px]" onClick={handleLocate}>
+        定位
       </button>
     </div>
   );

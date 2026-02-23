@@ -168,14 +168,13 @@ export const EntityMarkerLayer = observer(function EntityMarkerLayer({
         return;
       }
 
-      if (!onEntityPress) return;
       const entityId = feature.properties?.entityId;
       if (typeof entityId !== 'number') return;
       const mapId = adapter.mapController.dataManager.currentMapId;
       const instance = entityController.getInstanceById(mapId, entityId);
       if (instance) {
         adapter.activeFeatureController.setActiveFeature(instance);
-        onEntityPress(instance);
+        onEntityPress?.(instance);
       }
     },
     [adapter, entityController, onEntityPress, mapCameraRef]

@@ -10,7 +10,7 @@ body {
 }
 
 #root {
-  @apply w-full h-full overflow-hidden select-none;
+  @apply w-full h-full overflow-hidden;
 }
 
 .font-serif {

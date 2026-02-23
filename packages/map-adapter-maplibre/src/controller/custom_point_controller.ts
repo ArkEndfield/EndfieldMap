@@ -56,11 +56,11 @@ export class CustomPointController implements ICustomPointController {
   }
 
   createCustomPointData(
-    _mapId: MapData['id'],
+    mapId: MapData['id'],
     position: MapCoordinate,
     type: CustomPointTypeId
   ): CustomPointData {
-    const pointPosition = { x: position[0], y: 0, z: position[1] };
+    const pointPosition = this.mapDataManager.crd2xyz(position, mapId);
     return {
       levelLogicId: Date.now(),
       entityDataIdKey: type,

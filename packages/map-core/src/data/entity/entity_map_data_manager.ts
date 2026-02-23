@@ -235,7 +235,8 @@ export class EntityMapDataManager {
     if (manager) {
       manager.setGroupVisible(visible);
     } else {
-      logger.warn(`[EntityMapDataManager] Entity group not found: mapId=${mapId}, entityKey=${entityKey}`);
+      // 可能是尚未加载的实体或已被删除的实体对应的可见性数据，静默跳过
+      logger.debug(`[EntityMapDataManager] Entity group not found: mapId=${mapId}, entityKey=${entityKey}`);
     }
   }
 }
