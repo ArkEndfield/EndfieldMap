@@ -25,14 +25,14 @@
     "lng:type": "i18next-cli types"
   },
   "dependencies": {
-    "@endfieldmap/map-core": "workspace:*",
-    "@endfieldmap/tools": "workspace:*",
     "microdiff": "^1.5.0"
   },
   "devDependencies": {
     "i18next-cli": "^1.25.1"
   },
   "peerDependencies": {
+    "@endfieldmap/map-core": "workspace:*",
+    "@endfieldmap/tools": "workspace:*",
     "@tanstack/react-db": "^0.1.68",
     "@tanstack/rxdb-db-collection": "^0.1.56",
     "i18next": "^25.8.0",
