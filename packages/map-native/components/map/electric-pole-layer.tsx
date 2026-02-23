@@ -1,9 +1,9 @@
-import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
+import { lngLatToPixel, pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
 import {
   ELECTRIC_POLE_DEVICE_CONFIGS,
+  ElectricPoleDataInstance,
   MAP_EVENT,
 } from '@endfieldmap/map-core';
-import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
 import {
   CircleLayer,
   Images,
@@ -17,6 +17,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image } from 'react-native';
 
 import { useAdapter } from '@/context/adapter';
+import { service } from '@/services/map-service';
 
 import { MAP_SYMBOL_FONT_STACK } from './area-name-layer';
 import type { CameraPositionRef } from './entity-marker-layer';
@@ -299,15 +300,61 @@ export const ElectricPoleMarkerLayer = observer(function ElectricPoleMarkerLayer
       const instance = manager.getById(poleId);
       if (!instance) return;
 
+      const electricPoleDataService = service.dataService.mapDataService.electricPoleDataService;
+
       adapter.event.fire(MAP_EVENT.ENTITY_CLICK, {
         instance,
         coordinate: instance.coordinates,
       });
 
+      if (electricPoleDataService.isInElectricOperateMode) {
+        if (electricPoleDataService.isConnecting || electricPoleDataService.isCreating) {
+          if (instance instanceof ElectricPoleDataInstance) {
+            electricPoleDataService.connectElectricPole(instance);
+          }
+        }
+        if (electricPoleDataService.isCreating) {
+          const geom = feature.geometry;
+          if (geom.type === 'Point') {
+            const coords = geom.coordinates as [number, number];
+            adapter.event.fire(MAP_EVENT.MAP_CLICK, {
+              coordinate: lngLatToPixel(coords[0], coords[1]),
+              pixel: [0, 0],
+            });
+          }
+        }
+        return;
+      }
+
+      if (service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode) {
+        return;
+      }
+
       adapter.activeFeatureController.setActiveFeature(instance);
       onElectricPolePress?.(instance);
     },
     [adapter, dataManager, onElectricPolePress]
+  );
+
+  const handleConnectionPress = useCallback(
+    (event: { features?: GeoJSON.Feature[] }) => {
+      const electricPoleDataService = service.dataService.mapDataService.electricPoleDataService;
+      if (!electricPoleDataService.isDeletingConnection) return;
+      if (!event.features?.length) return;
+
+      const feature = event.features[0];
+      const fromId = feature.properties?.fromId;
+      const toId = feature.properties?.toId;
+      if (typeof fromId !== 'number' || typeof toId !== 'number') return;
+
+      const mapId = adapter.mapController.dataManager.currentMapId;
+      const manager = dataManager.getMapManager(mapId);
+      const instance = manager.getById(fromId);
+      if (!instance) return;
+
+      adapter.event.fire(MAP_EVENT.CONNECTION_CLICK, { instance, targetId: toId });
+    },
+    [adapter, dataManager]
   );
 
   return (
@@ -331,7 +378,12 @@ export const ElectricPoleMarkerLayer = observer(function ElectricPoleMarkerLayer
       </ShapeSource>
 
       {/* Connection lines */}
-      <ShapeSource id="electricPoleConnectionSource" shape={connectionGeoJSON}>
+      <ShapeSource
+        id="electricPoleConnectionSource"
+        shape={connectionGeoJSON}
+        hitbox={{ width: 20, height: 20 }}
+        onPress={handleConnectionPress}
+      >
         <LineLayer
           id="electricPoleConnectionLine"
           style={{

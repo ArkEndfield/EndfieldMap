@@ -75,6 +75,7 @@ export const useElectricPoleMode = () => {
 
   const stopAllModes = () => {
     electricPoleDataService.stopAllOperation();
+    adapter.activeFeatureController.clearActiveFeature();
   };
 
   return {
