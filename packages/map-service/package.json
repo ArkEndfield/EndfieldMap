@@ -28,7 +28,7 @@
     "microdiff": "^1.5.0"
   },
   "devDependencies": {
-    "i18next-cli": "^1.25.1"
+    "i18next-cli": "^1.43.0"
   },
   "peerDependencies": {
     "@endfieldmap/map-core": "workspace:*",

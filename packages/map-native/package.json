@@ -21,6 +21,7 @@
     "@endfieldmap/storage-expo-sqlite": "workspace:*",
     "@endfieldmap/storage-mmkv": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
+    "@expo/metro-runtime": "~55.0.6",
     "@expo/vector-icons": "^15.1.1",
     "@gorhom/bottom-sheet": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
@@ -33,9 +34,8 @@
     "@tanstack/rxdb-db-collection": "^0.1.60",
     "clsx": "^2.1.1",
     "event-target-polyfill": "^0.0.4",
-    "expo": "~55.0.0-preview.12",
-    "@expo/metro-runtime": "~55.0.6",
-    "expo-blur": "^15.0.8",
+    "expo": "55.0.0-preview.12",
+    "expo-blur": "^55.0.7",
     "expo-constants": "~55.0.6",
     "expo-crypto": "~55.0.7",
     "expo-dev-client": "~55.0.7",
@@ -52,10 +52,10 @@
     "expo-symbols": "~55.0.4",
     "expo-system-ui": "~55.0.8",
     "expo-web-browser": "~55.0.8",
-    "i18next": "^25.8.0",
+    "i18next": "^25.8.13",
     "i18next-resources-to-backend": "^1.2.1",
     "mobx": "^6.15.0",
-    "mobx-react-lite": "^4.1.0",
+    "mobx-react-lite": "^4.1.1",
     "nativewind": "5.0.0-preview.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -79,14 +79,14 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-decorators": "^7.28.0",
-    "@babel/plugin-transform-class-properties": "^7.27.1",
-    "@tailwindcss/postcss": "^4.2.0",
+    "@babel/plugin-proposal-decorators": "^7.29.0",
+    "@babel/plugin-transform-class-properties": "^7.28.6",
+    "@tailwindcss/postcss": "^4.2.1",
     "@types/react": "~19.2.14",
     "eslint": "^10.0.2",
     "eslint-config-expo": "~55.0.0",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.2.0"
+    "tailwindcss": "^4.2.1"
   },
   "private": true
 }
