@@ -33,12 +33,12 @@
   "peerDependencies": {
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
-    "@tanstack/react-db": "^0.1.68",
-    "@tanstack/rxdb-db-collection": "^0.1.56",
-    "i18next": "^25.8.0",
+    "@tanstack/react-db": "^0.1.72",
+    "@tanstack/rxdb-db-collection": "^0.1.60",
+    "i18next": "^25.8.13",
     "i18next-resources-to-backend": "^1.2.1",
     "mobx": "^6.15.0",
-    "react-i18next": "^16.3.5",
+    "react-i18next": "^16.5.4",
     "rxdb": "^16.21.1",
     "rxjs": "^7.8.2"
   }

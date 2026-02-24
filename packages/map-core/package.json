@@ -26,8 +26,5 @@
   "peerDependencies": {
     "@endfieldmap/tools": "workspace:*",
     "mobx": "^6.15.0"
-  },
-  "devDependencies": {
-    "mobx": "^6.15.0"
   }
 }

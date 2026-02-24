@@ -27,12 +27,6 @@
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
     "mobx": "^6.15.0",
-    "ol": "^10.7.0"
-  },
-  "devDependencies": {
-    "@endfieldmap/map-core": "workspace:*",
-    "@endfieldmap/tools": "workspace:*",
-    "mobx": "^6.15.0",
-    "ol": "^10.7.0"
+    "ol": "^10.8.0"
   }
 }

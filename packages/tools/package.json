@@ -30,10 +30,6 @@
   },
   "peerDependencies": {
     "mobx": "^6.15.0",
-    "ol": "^10.6.1"
-  },
-  "devDependencies": {
-    "mobx": "^6.15.0",
-    "ol": "^10.6.1"
+    "ol": "^10.8.0"
   }
 }
