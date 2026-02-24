@@ -27,6 +27,9 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="settings" options={{ presentation: 'card' }} />
+            <Stack.Screen name="preset-store-detail" options={{ presentation: 'card' }} />
+            <Stack.Screen name="preset-store-edit" options={{ presentation: 'card' }} />
+            <Stack.Screen name="preset-share" options={{ presentation: 'card' }} />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>

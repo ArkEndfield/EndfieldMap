@@ -1,6 +1,7 @@
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
+import { useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { Dimensions, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -26,6 +27,7 @@ export const ElectricPoleSheet = observer(
     const adapter = useAdapter();
     const isZoneVisible = adapter.electricPoleController.dataManager.zoneVisible;
 
+    const router = useRouter();
     const {
       presets,
       currentPresetId,
@@ -39,7 +41,20 @@ export const ElectricPoleSheet = observer(
       handleDeleteSelected,
       handleDeletePreset,
       handleRenamePreset,
+      canShare,
     } = useElectricPolePresetPanel();
+
+    const handleSharePreset = useCallback(
+      (id: string, name: string) => {
+        if (!canShare()) return;
+        sheetRef.current?.dismiss().catch(() => {});
+        router.push({
+          pathname: '/preset-share',
+          params: { presetId: id, presetType: 'electric_pole', defaultName: name },
+        });
+      },
+      [canShare, router],
+    );
 
     useImperativeHandle(ref, () => ({
       present: () => {
@@ -106,6 +121,7 @@ export const ElectricPoleSheet = observer(
                 onToggleSelect={handleToggleSelect}
                 onRename={handleRenamePreset}
                 onDelete={handleDeletePreset}
+                onShare={handleSharePreset}
                 renameText={t('common:rename', { defaultValue: '重命名' })}
                 deleteText={t('common:delete', { defaultValue: '删除' })}
               />

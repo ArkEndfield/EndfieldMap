@@ -127,6 +127,10 @@ export const useElectricPolePresetPanel = () => {
     await electricPoleDataService.renamePreset(id, name);
   };
 
+  const canShare = () => {
+    return electricPoleDataService.canShare;
+  };
+
   return {
     presets,
     currentPresetId,
@@ -140,5 +144,6 @@ export const useElectricPolePresetPanel = () => {
     handleDeleteSelected,
     handleDeletePreset,
     handleRenamePreset,
+    canShare,
   };
 };

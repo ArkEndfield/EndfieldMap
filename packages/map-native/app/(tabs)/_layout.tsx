@@ -25,6 +25,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="preset-store"
+        options={{
+          title: '预设商店',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="storefront.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: '我的',

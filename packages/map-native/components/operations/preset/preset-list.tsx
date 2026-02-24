@@ -16,8 +16,10 @@ interface PresetListProps {
   onToggleSelect: (id: string) => void;
   onRename: (id: string) => void;
   onDelete: (id: string) => void;
+  onShare?: (id: string, name: string) => void;
   renameText: string;
   deleteText: string;
+  shareText?: string;
 }
 
 export const PresetList: React.FC<PresetListProps> = ({
@@ -28,8 +30,10 @@ export const PresetList: React.FC<PresetListProps> = ({
   onToggleSelect,
   onRename,
   onDelete,
+  onShare,
   renameText,
   deleteText,
+  shareText,
 }) => {
   return (
     <View className="gap-2">
@@ -44,8 +48,10 @@ export const PresetList: React.FC<PresetListProps> = ({
           onToggleSelect={() => onToggleSelect(preset.id)}
           onRename={() => onRename(preset.id)}
           onDelete={() => onDelete(preset.id)}
+          onShare={onShare ? () => onShare(preset.id, preset.name) : undefined}
           renameText={renameText}
           deleteText={deleteText}
+          shareText={shareText}
         />
       ))}
     </View>

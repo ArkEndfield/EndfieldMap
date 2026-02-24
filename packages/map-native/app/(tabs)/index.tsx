@@ -1,20 +1,19 @@
-import type { DataInstance, CustomPointDataInstance, ElectricPoleDataInstance, EntityDataInstance } from '@endfieldmap/map-core';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { EntityInfoSheet } from '@/components/features/entity-info';
 import { GameMapView } from '@/components/map/game-map-view';
 import { PointOperationTip } from '@/components/operations/custom-point/point-operation-tip';
 import { CustomPointSheet, type CustomPointSheetRef } from '@/components/operations/custom-point/custom-point-sheet';
 import { PoleOperationTip } from '@/components/operations/electric-pole/pole-operation-tip';
 import { ElectricPoleSheet, type ElectricPoleSheetRef } from '@/components/operations/electric-pole/electric-pole-sheet';
 import { EntityFilterSheet, type EntityFilterSheetRef } from '@/components/ui/entity-filter-sheet';
-import { EntityInfoSheet } from '@/components/ui/entity-info-sheet';
 import { MapSwitcher } from '@/components/ui/map-switcher';
 import { ZoomControls } from '@/components/ui/zoom-controls';
-import { AdapterProvider } from '@/context/adapter';
+import { AdapterProvider, useAdapter } from '@/context/adapter';
 import { useMapInit } from '@/hooks/use-map-init';
-import { service } from '@/services/map-service';
+import { useMobxSource } from '@/hooks/use-mobx-source';
 
 export default function MapScreen() {
   const { t } = useTranslation('common');
@@ -47,34 +46,15 @@ export default function MapScreen() {
 
 function MapContent() {
   const { t } = useTranslation(['common', 'header']);
-  const [activeEntity, setActiveEntity] = useState<DataInstance | null>(null);
+  const adapter = useAdapter();
+  const activeEntity = useMobxSource(() => adapter.activeFeatureController.activeFeature ?? null);
   const filterSheetRef = useRef<EntityFilterSheetRef>(null);
   const customPointSheetRef = useRef<CustomPointSheetRef>(null);
   const electricPoleSheetRef = useRef<ElectricPoleSheetRef>(null);
 
-  const isInOperateMode = useCallback(() => {
-    const { electricPoleDataService, customPointDataService } = service.dataService.mapDataService;
-    return electricPoleDataService.isInElectricOperateMode || customPointDataService.isInCustomPointOperateMode;
-  }, []);
-
-  const handleEntityPress = useCallback((instance: EntityDataInstance) => {
-    if (isInOperateMode()) return;
-    setActiveEntity(instance as DataInstance);
-  }, [isInOperateMode]);
-
-  const handleElectricPolePress = useCallback((instance: ElectricPoleDataInstance) => {
-    if (isInOperateMode()) return;
-    setActiveEntity(instance as DataInstance);
-  }, [isInOperateMode]);
-
-  const handleCustomPointPress = useCallback((instance: CustomPointDataInstance) => {
-    if (isInOperateMode()) return;
-    setActiveEntity(instance as DataInstance);
-  }, [isInOperateMode]);
-
   const handleDismissInfo = useCallback(() => {
-    setActiveEntity(null);
-  }, []);
+    adapter.activeFeatureController.clearActiveFeature();
+  }, [adapter]);
 
   const handleOpenFilter = useCallback(() => {
     filterSheetRef.current?.present();
@@ -90,11 +70,7 @@ function MapContent() {
 
   return (
     <View className="flex-1">
-      <GameMapView
-        onEntityPress={handleEntityPress}
-        onElectricPolePress={handleElectricPolePress}
-        onCustomPointPress={handleCustomPointPress}
-      />
+      <GameMapView />
 
       <PoleOperationTip />
       <PointOperationTip />
@@ -102,7 +78,6 @@ function MapContent() {
       <MapSwitcher />
       <ZoomControls />
 
-      {/* Operation buttons stacked vertically */}
       <View className="absolute bottom-10 right-4 gap-2">
         <Pressable
           className="rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"

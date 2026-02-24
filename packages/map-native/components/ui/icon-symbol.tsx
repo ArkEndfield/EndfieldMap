@@ -21,6 +21,7 @@ const MAPPING = {
   'person.fill': 'person',
   'map.fill': 'map',
   'ellipsis.circle.fill': 'more-horiz',
+  'storefront.fill': 'storefront',
 } as IconMapping;
 
 /**
