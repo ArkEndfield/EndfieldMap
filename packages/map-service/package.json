@@ -1,6 +1,6 @@
 {
   "name": "@endfieldmap/map-service",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Data services and business logic for EndfieldMap",
   "license": "MIT",
   "repository": {

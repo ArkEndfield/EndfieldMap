@@ -1,6 +1,6 @@
 {
   "name": "@endfieldmap/map-web-theme-types",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Theme type definitions for EndfieldMap web components",
   "license": "MIT",
   "repository": {

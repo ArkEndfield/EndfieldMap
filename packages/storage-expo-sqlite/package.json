@@ -1,6 +1,6 @@
 {
   "name": "@endfieldmap/storage-expo-sqlite",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Expo SQLite storage adapter for EndfieldMap",
   "license": "MIT",
   "repository": {
