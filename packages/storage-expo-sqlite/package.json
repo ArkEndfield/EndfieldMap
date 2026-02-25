@@ -1,6 +1,13 @@
 {
   "name": "@endfieldmap/storage-expo-sqlite",
   "version": "0.0.1",
+  "description": "Expo SQLite storage adapter for EndfieldMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/storage-expo-sqlite"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -25,5 +32,11 @@
     "expo-sqlite": "~55.0.8",
     "rxdb": "^16.21.1",
     "rxjs": "^7.8.2"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

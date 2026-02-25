@@ -1,6 +1,13 @@
 {
   "name": "@endfieldmap/map-core",
   "version": "0.0.1",
+  "description": "Core mapping data structures and logic for EndfieldMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/map-core"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -26,5 +33,11 @@
   "peerDependencies": {
     "@endfieldmap/tools": "workspace:*",
     "mobx": "^6.15.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

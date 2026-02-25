@@ -7,6 +7,13 @@ branch:
           roles:
             - owner
             - master
+      - name: 发布 npm 包
+        description: 手动触发发布 @endfieldmap 所有包到 npm
+        event: web_trigger_publish_packages
+        permissions:
+          roles:
+            - owner
+            - master
       - name: 部署组件文档
         description: 手动触发组件文档部署流程
         event: web_trigger_deploy_components_docs

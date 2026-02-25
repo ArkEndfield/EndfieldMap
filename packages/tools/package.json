@@ -1,6 +1,13 @@
 {
   "name": "@endfieldmap/tools",
   "version": "0.0.1",
+  "description": "Shared utility functions for EndfieldMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/tools"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -31,5 +38,11 @@
   "peerDependencies": {
     "mobx": "^6.15.0",
     "ol": "^10.8.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }
