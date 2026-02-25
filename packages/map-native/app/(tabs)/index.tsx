@@ -78,7 +78,7 @@ function MapContent() {
       <MapSwitcher />
       <ZoomControls />
 
-      <View className="absolute bottom-10 right-4 gap-2">
+      <View className="absolute bottom-28 right-4 gap-2">
         <Pressable
           className="rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
           onPress={handleOpenCustomPoint}
