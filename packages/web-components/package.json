@@ -32,13 +32,13 @@
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepack": "cp ../../LICENSE . 2>/dev/null || true"
   },
   "peerDependencies": {
     "mobx": "^6.15.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "@endfieldmap/map-service": "workspace:*",
     "@endfieldmap/map-web-theme-types": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
     "motion": "^12.34.3"
@@ -50,7 +50,9 @@
     "tailwindcss": "^4.2.1"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public"

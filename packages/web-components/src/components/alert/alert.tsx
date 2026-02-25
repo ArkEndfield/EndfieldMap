@@ -1,4 +1,3 @@
-import { useTranslation } from '@endfieldmap/map-service';
 import type { ZmdAlertProps } from '@endfieldmap/map-web-theme-types';
 import { cn } from '@endfieldmap/tools';
 import { AnimatePresence, motion } from 'motion/react';
@@ -17,8 +16,8 @@ const GLITCH_DURATION = 0.205;
 const AlertInner: React.FC<ZmdAlertProps> = ({
   open,
   hideCancel,
-  cancelText,
-  confirmText,
+  cancelText = 'Cancel',
+  confirmText = 'Confirm',
   loading,
   showIcon,
   width = '30em',
@@ -30,7 +29,6 @@ const AlertInner: React.FC<ZmdAlertProps> = ({
   onConfirm,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const { t } = useTranslation();
 
   useEffect(() => {
     dialogRef.current?.showModal();
@@ -112,7 +110,7 @@ const AlertInner: React.FC<ZmdAlertProps> = ({
           {!hideCancel && (
             <ZmdRoundButton
               type="default"
-              text={cancelText ?? t('cancel')}
+              text={cancelText}
               showIcon={showIcon}
               disabled={loading}
               onClick={() => onCancel?.()}
@@ -124,7 +122,7 @@ const AlertInner: React.FC<ZmdAlertProps> = ({
           )}
           <ZmdRoundButton
             type="primary"
-            text={confirmText ?? t('confirm')}
+            text={confirmText}
             showIcon={showIcon}
             loading={loading}
             disabled={loading}
@@ -143,5 +141,3 @@ const AlertInner: React.FC<ZmdAlertProps> = ({
 export const ZmdAlert: React.FC<ZmdAlertProps> = (props) => {
   return <AnimatePresence>{props.open && <AlertInner {...props} />}</AnimatePresence>;
 };
-
-export default ZmdAlert;

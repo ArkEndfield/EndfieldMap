@@ -7,7 +7,6 @@ import { defineConfig } from 'vite';
 
 // 开发环境下指向其他子包源码，方便联调
 const devAlias = {
-  '@endfieldmap/map-service': path.resolve(__dirname, '../map-service/src'),
   '@endfieldmap/map-web-theme-types': path.resolve(__dirname, '../map-web-theme-types/src'),
   '@endfieldmap/tools': path.resolve(__dirname, '../tools/src'),
 };

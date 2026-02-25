@@ -1,0 +1,1 @@
+# EndfieldMap RxDB Expo Sqlite Plugin

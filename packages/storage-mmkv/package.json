@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
+    "prepack": "cp ../../LICENSE . 2>/dev/null || true",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -38,7 +39,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public"

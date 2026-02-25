@@ -1,4 +1,3 @@
-import { useTranslation } from '@endfieldmap/map-service';
 import type { ZmdAlertFullProps } from '@endfieldmap/map-web-theme-types/alert';
 import { cn } from '@endfieldmap/tools';
 import { AnimatePresence, motion } from 'motion/react';
@@ -9,13 +8,13 @@ import ALERT_BANNER_BG_RIGHT from '@endfieldmap/web-components/assets/alert/aler
 import DECO_COMMON_LOGO_BG from '@endfieldmap/web-components/assets/deco_common_logo_bg.png';
 import { ZmdRoundButton } from '@endfieldmap/web-components/components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@endfieldmap/web-components/components/icons/alert';
-import { ScrollArea } from '../scroll_area';
+import { ScrollArea } from '@endfieldmap/web-components/components/scroll_area';
 
 export const ZmdAlertFull = ({
   open,
   hideCancel = false,
-  cancelText,
-  confirmText,
+  cancelText = 'Cancel',
+  confirmText = 'Confirm',
   loading = false,
   showIcon = true,
   height = 'auto',
@@ -24,7 +23,6 @@ export const ZmdAlertFull = ({
   onCancel,
   onConfirm,
 }: ZmdAlertFullProps) => {
-  const { t } = useTranslation();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -106,7 +104,7 @@ export const ZmdAlertFull = ({
                         <ZmdRoundButton
                           className="flex-1"
                           type="default"
-                          text={cancelText ?? t('cancel')}
+                          text={cancelText}
                           showIcon={showIcon}
                           disabled={loading}
                           onClick={() => onCancel?.()}
@@ -119,7 +117,7 @@ export const ZmdAlertFull = ({
                       <ZmdRoundButton
                         className="flex-1"
                         type="primary"
-                        text={confirmText ?? t('confirm')}
+                        text={confirmText}
                         showIcon={showIcon}
                         loading={loading}
                         disabled={loading}

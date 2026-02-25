@@ -1,4 +1,3 @@
-import { useTranslation } from '@endfieldmap/map-service';
 import { cn } from '@endfieldmap/tools';
 import { motion } from 'motion/react';
 
@@ -6,9 +5,7 @@ import type { EndfieldSwitchProps } from '@endfieldmap/web-components/types/form
 
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 
-export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText, offText }: EndfieldSwitchProps) => {
-  const { t } = useTranslation('common');
-
+export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText = 'ON', offText='OFF' }: EndfieldSwitchProps) => {
   const changeValue = (value: boolean) => {
     if (disabled) return;
     if (value === checked) return;
@@ -37,7 +34,7 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText,
           checked ? 'text-[#373537]' : 'text-[#B3B1B4]'
         )}
       >
-        {onText ?? t('on')}
+        {onText}
       </ButtonWithAudio>
       <ButtonWithAudio
         onClick={() => changeValue(false)}
@@ -47,7 +44,7 @@ export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText,
           checked ? 'text-[#B3B1B4]' : 'text-[#373537]'
         )}
       >
-        {offText ?? t('off')}
+        {offText}
       </ButtonWithAudio>
     </div>
   );

@@ -9,6 +9,5 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @endfieldmap/map-service@0.1.0
   - @endfieldmap/map-web-theme-types@0.1.0
   - @endfieldmap/tools@0.1.0

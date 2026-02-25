@@ -1,0 +1,1 @@
+# EndfieldMap web LocalStorage

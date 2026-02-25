@@ -40,6 +40,5 @@
   "references": [
     { "path": "../tools" },
     { "path": "../map-web-theme-types" },
-    { "path": "../map-service" }
   ]
 }
