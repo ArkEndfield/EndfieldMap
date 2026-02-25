@@ -18,7 +18,7 @@ db.execSync('PRAGMA journal_mode=WAL');
 db.execSync('PRAGMA synchronous=NORMAL');
 
 const assetsHost = 'https://assets.zmdmap.com';
-const backendHost = 'http://103.217.194.42:10086';
+const backendHost = 'https://api.zmdmap.com';
 
 export const service = new MapService({
   databaseConfig: {

@@ -308,11 +308,9 @@ export class SyncService<T, R> {
               );
             }
 
-            const accepted = response.accepted?.map(fromBackendDoc) ?? [];
-
             logger.debug(`[SyncService] Push completed for ${backendCollectionName}`);
 
-            return [...conflicts, ...accepted];
+            return conflicts;
           } catch (error) {
             logger.error(`[SyncService] Push failed for ${backendCollectionName}:`, error);
             throw error;

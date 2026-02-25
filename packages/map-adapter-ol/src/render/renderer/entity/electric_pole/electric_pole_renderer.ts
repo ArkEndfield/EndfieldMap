@@ -348,7 +348,11 @@ export class ElectricPoleRenderer {
     this.connectionMap.clear();
     this.entitySource.clear();
     this.connectionSource.clear();
-    this.entityLayer.dispose();
+    try {
+      this.entityLayer.dispose();
+    } catch {
+      // WebGL context may already be lost or layer never rendered
+    }
   }
 
   // #endregion

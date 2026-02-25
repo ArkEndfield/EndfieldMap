@@ -1,7 +1,6 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import * as Haptics from 'expo-haptics';
 import React, { useEffect, useRef } from 'react';
-import { Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedProps,
@@ -13,6 +12,7 @@ import Animated, {
 import Svg, { Path } from 'react-native-svg';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { TabBarGlass } from './tab-bar-glass';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -31,11 +31,6 @@ const TIMING_CONFIG = {
   easing: Easing.bezier(0.25, 0.1, 0.25, 1),
 };
 
-/**
- * Builds a closed path covering ONLY the bump protrusion area above the pill body.
- * The baseline is at y = BUMP_HEIGHT; bumps curve upward toward y = 0.
- * Where there is no bump the path traces along the baseline, enclosing zero area.
- */
 function buildBumpFill(
   numTabs: number,
   tabWidth: number,
@@ -106,31 +101,13 @@ function TabItem({ label, renderIcon, isFocused, activeColor, inactiveColor, onP
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
       onLongPress={onLongPress}
-      onPressIn={() => {
-        if (process.env.EXPO_OS === 'ios') {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }
-      }}
-      style={itemStyles.pressable}
+      style={styles.pressable}
     >
       <Animated.View style={iconAnimatedStyle}>{renderIcon?.({ focused: isFocused, color, size: 28 })}</Animated.View>
-      <Text style={[itemStyles.label, { color }]}>{label}</Text>
+      <Text style={[styles.label, { color }]}>{label}</Text>
     </Pressable>
   );
 }
-
-const itemStyles = StyleSheet.create({
-  pressable: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: TAB_BAR_HEIGHT,
-  },
-  label: {
-    fontSize: 10,
-    marginTop: 2,
-  },
-});
 
 export function CurvedTabBar({ state, descriptors, navigation, insets }: BottomTabBarProps) {
   const colorScheme = useColorScheme();
@@ -171,17 +148,12 @@ export function CurvedTabBar({ state, descriptors, navigation, insets }: BottomT
   return (
     <View style={[styles.wrapper, { paddingBottom: bottomPad }]}>
       <View style={styles.barOuter}>
-        {/* Bump fill — only the protrusion above the pill body */}
         <Svg width={barWidth} height={BUMP_HEIGHT} style={styles.bumpSvg}>
           <AnimatedPath animatedProps={bumpFillProps} fill={bumpColor} />
         </Svg>
 
-        {/* Pill body — frosted glass */}
-        <View
-          style={[styles.pillClip, { backgroundColor: isDark ? 'rgba(30,30,30,0.88)' : 'rgba(255,255,255,0.88)' }]}
-        />
+        <TabBarGlass className="overflow-hidden" style={{ borderRadius: BAR_RADIUS }} />
 
-        {/* Tab items */}
         <View style={styles.tabRow}>
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
@@ -232,30 +204,24 @@ const styles = StyleSheet.create({
     height: TAB_BAR_HEIGHT,
     overflow: 'visible',
     borderRadius: BAR_RADIUS,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 8,
-      },
-    }),
   },
   bumpSvg: {
     position: 'absolute',
     top: -BUMP_HEIGHT,
     left: 0,
   },
-  pillClip: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: BAR_RADIUS,
-    overflow: 'hidden',
-  },
   tabRow: {
     flexDirection: 'row',
     height: TAB_BAR_HEIGHT,
+  },
+  pressable: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: TAB_BAR_HEIGHT,
+  },
+  label: {
+    fontSize: 10,
+    marginTop: 2,
   },
 });

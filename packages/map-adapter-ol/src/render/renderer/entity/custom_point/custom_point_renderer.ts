@@ -192,7 +192,11 @@ export class CustomPointRenderer {
   public dispose(): void {
     this.featureMap.clear();
     this.source.clear();
-    this.layer.dispose();
+    try {
+      this.layer.dispose();
+    } catch {
+      // WebGL context may already be lost or layer never rendered
+    }
   }
 
   // #endregion
