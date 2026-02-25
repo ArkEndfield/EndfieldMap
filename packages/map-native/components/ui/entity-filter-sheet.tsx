@@ -211,6 +211,11 @@ export const EntityFilterSheet = observer(
       });
     }, [entityStats, mapId]);
 
+    const CATEGORY_ORDER = [
+      CustomPointKey, ElectricPoleKey, NoteKey,
+      'other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative',
+    ];
+
     const groupedStats: { category: string; stats: FilterStat[] }[] = [];
     const groupedMap = new Map<string, FilterStat[]>();
     for (const stat of mergedStats) {
@@ -224,6 +229,12 @@ export const EntityFilterSheet = observer(
         groupedStats.push({ category: key, stats: arr });
       }
     }
+
+    groupedStats.sort((a, b) => {
+      const aIdx = CATEGORY_ORDER.indexOf(a.category);
+      const bIdx = CATEGORY_ORDER.indexOf(b.category);
+      return (aIdx === -1 ? CATEGORY_ORDER.length : aIdx) - (bIdx === -1 ? CATEGORY_ORDER.length : bIdx);
+    });
 
     return (
       <TrueSheet
