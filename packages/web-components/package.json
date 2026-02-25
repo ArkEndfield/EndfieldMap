@@ -1,6 +1,6 @@
 {
   "name": "@endfieldmap/web-components",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Reusable React UI components for EndfieldMap",
   "license": "MIT",
   "repository": {

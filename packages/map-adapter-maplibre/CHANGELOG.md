@@ -1,6 +1,6 @@
 # @endfieldmap/map-adapter-maplibre
 
-## 1.0.0
+## 0.1.0
 
 ### Minor Changes
 
@@ -9,5 +9,5 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @endfieldmap/map-core@1.0.0
+  - @endfieldmap/map-core@0.1.0
   - @endfieldmap/tools@0.1.0

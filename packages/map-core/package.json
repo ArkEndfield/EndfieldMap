@@ -1,6 +1,6 @@
 {
   "name": "@endfieldmap/map-core",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Core mapping data structures and logic for EndfieldMap",
   "license": "MIT",
   "repository": {
