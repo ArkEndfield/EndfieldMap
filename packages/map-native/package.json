@@ -35,7 +35,6 @@
     "clsx": "^2.1.1",
     "event-target-polyfill": "^0.0.4",
     "expo": "56.0.0-canary-20260212-4f61309",
-    "expo-blur": "^55.0.7",
     "expo-constants": "~55.0.6",
     "expo-crypto": "~55.0.7",
     "expo-dev-client": "~55.0.7",

@@ -185,9 +185,6 @@ importers:
       expo:
         specifier: 56.0.0-canary-20260212-4f61309
         version: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.0-preview.9)(react-dom@19.2.3(react@19.2.3))(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
-      expo-blur:
-        specifier: ^55.0.7
-        version: 55.0.7(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)
       expo-constants:
         specifier: ~55.0.6
         version: 55.0.6(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(typescript@5.9.3)
@@ -5025,13 +5022,6 @@ packages:
     resolution: {integrity: sha512-PJ1Z9sYivyIOju2mu2n61S5SZQLEkTzHWXgzpYXPp1UTNtlLYLI0EZOiii6fyGU/AIFBnypEbbpLPHZ0+60naQ==}
     peerDependencies:
       expo: 56.0.0-canary-20260212-4f61309
-      react: '*'
-      react-native: '*'
-
-  expo-blur@55.0.7:
-    resolution: {integrity: sha512-pFC9gXcAf7HraSfN9+0lhtZ9p2051iMctRS6ViAIJ2kqYOT5cpBEG+Nslnm8zs1k49IyVrNKh5u8obapcZlwHg==}
-    peerDependencies:
-      expo: '*'
       react: '*'
       react-native: '*'
 
@@ -13818,12 +13808,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
-
-  expo-blur@55.0.7(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(react@19.2.3):
-    dependencies:
-      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.0-preview.9)(react-dom@19.2.3(react@19.2.3))(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
-      react: 19.2.3
-      react-native: 0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3)
 
   expo-constants@55.0.6(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(typescript@5.9.3):
     dependencies:

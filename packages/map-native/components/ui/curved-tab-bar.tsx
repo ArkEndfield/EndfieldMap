@@ -1,5 +1,4 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import React, { useEffect, useRef } from 'react';
 import { Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
@@ -178,14 +177,9 @@ export function CurvedTabBar({ state, descriptors, navigation, insets }: BottomT
         </Svg>
 
         {/* Pill body — frosted glass */}
-        <View style={styles.pillClip}>
-          <BlurView
-            intensity={Platform.OS === 'ios' ? 64 : 100}
-            tint={isDark ? 'dark' : 'light'}
-            experimentalBlurMethod="dimezisBlurView"
-            style={StyleSheet.absoluteFill}
-          />
-        </View>
+        <View
+          style={[styles.pillClip, { backgroundColor: isDark ? 'rgba(30,30,30,0.88)' : 'rgba(255,255,255,0.88)' }]}
+        />
 
         {/* Tab items */}
         <View style={styles.tabRow}>
