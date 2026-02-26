@@ -14,6 +14,7 @@ import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 /**
  * Active图层
  * 用于显示active状态的四角标点
+ * 支持从一个实体切换到另一个时的平滑位移动画，以及淡出消失动画
  */
 export class ActiveLayer extends SingleLayerBase {
   /** 图层实例 */
@@ -33,10 +34,25 @@ export class ActiveLayer extends SingleLayerBase {
 
   private readonly activeColor: string = 'rgba(245, 222, 25, 0.95)';
 
+  /** 动画帧ID（位移和淡出共用） */
+  private animFrameId: number | null = null;
+
+  /** 位移动画状态 */
+  private moveStartCoord: Coordinate | null = null;
+  private moveEndCoord: Coordinate | null = null;
+  private moveStartTime: number = 0;
+  private readonly moveDuration: number = 300;
+
+  /** 淡出动画状态 */
+  private isFadingOut: boolean = false;
+  private fadeStartTime: number = 0;
+  private fadeOpacity: number = 1;
+  private fadeRadiusExpand: number = 0;
+  private readonly fadeDuration: number = 100;
+
   constructor() {
     super();
 
-    // 创建source和layer
     this.source = new VectorSource();
     this.layer = new VectorLayer({
       source: this.source,
@@ -46,59 +62,180 @@ export class ActiveLayer extends SingleLayerBase {
       zIndex: Z_INDEX.ACTIVE,
     });
 
-    // 设置图层类型标识
     this.layer.set(LayerTypeKey, LayerType.ACTIVE_FEATURE);
   }
 
   /**
    * 显示active效果
+   * 如果当前已有 active feature（包括正在淡出的），会以动画过渡到新位置
    * @param coordinate 坐标位置
    * @param circleRadius 底部圆的实际半径（包含描边）
    */
   public showActive(coordinate: Coordinate, circleRadius: number): void {
-    // 如果已有active feature，先清除
-    if (this.activeFeature) {
-      this.source.clear();
-      this.activeFeature = null;
-    }
-
-    // 保存半径信息
     this.circleRadius = circleRadius;
-    // 底部圆的基础半径 = 实际半径 - 描边宽度（3）
     this.baseRadius = circleRadius - 3;
 
-    // 创建新的feature
+    if (this.activeFeature) {
+      if (this.isFadingOut) {
+        this.isFadingOut = false;
+        this.fadeOpacity = 1;
+        this.fadeRadiusExpand = 0;
+      }
+
+      const currentCoord = this.isMoving()
+        ? this.getInterpolatedCoord()
+        : this.activeFeature.getGeometry()!.getCoordinates();
+
+      this.moveStartCoord = currentCoord;
+      this.moveEndCoord = coordinate;
+      this.moveStartTime = performance.now();
+
+      this.ensureAnimationLoop();
+      return;
+    }
+
     this.activeFeature = new Feature({
       geometry: new Point(coordinate),
     });
     this.source.addFeature(this.activeFeature);
-
     this.layer.changed();
   }
 
   /**
-   * 隐藏active效果
+   * 隐藏active效果（带淡出动画）
    */
   public hideActive(): void {
-    if (this.activeFeature) {
-      this.source.clear();
-      this.activeFeature = null;
+    if (!this.activeFeature) return;
+
+    if (this.isMoving() && this.moveEndCoord) {
+      this.activeFeature.getGeometry()!.setCoordinates(this.moveEndCoord);
+    }
+    this.clearMoveState();
+
+    this.isFadingOut = true;
+    this.fadeStartTime = performance.now();
+    this.fadeOpacity = 1;
+    this.fadeRadiusExpand = 0;
+
+    this.ensureAnimationLoop();
+  }
+
+  // #region 动画
+
+  private animationLoop(): void {
+    if (!this.activeFeature) {
+      this.animFrameId = null;
+      return;
+    }
+
+    const now = performance.now();
+    let active = false;
+
+    if (this.moveStartCoord && this.moveEndCoord) {
+      const progress = Math.min((now - this.moveStartTime) / this.moveDuration, 1);
+      const eased = this.easeOutCubic(progress);
+
+      const x = this.moveStartCoord[0] + (this.moveEndCoord[0] - this.moveStartCoord[0]) * eased;
+      const y = this.moveStartCoord[1] + (this.moveEndCoord[1] - this.moveStartCoord[1]) * eased;
+
+      this.activeFeature.getGeometry()!.setCoordinates([x, y]);
+
+      if (progress < 1) {
+        active = true;
+      } else {
+        this.clearMoveState();
+      }
+    }
+
+    if (this.isFadingOut) {
+      const progress = Math.min((now - this.fadeStartTime) / this.fadeDuration, 1);
+      const eased = this.easeOutCubic(progress);
+
+      this.fadeOpacity = 1 - progress;
+      this.fadeRadiusExpand = eased * 6;
+
+      if (progress < 1) {
+        active = true;
+      } else {
+        this.isFadingOut = false;
+        this.fadeOpacity = 1;
+        this.fadeRadiusExpand = 0;
+        this.source.clear();
+        this.activeFeature = null;
+        this.animFrameId = null;
+        return;
+      }
+    }
+
+    this.activeFeature?.changed();
+
+    if (active) {
+      this.animFrameId = requestAnimationFrame(() => this.animationLoop());
+    } else {
+      this.animFrameId = null;
     }
   }
+
+  private ensureAnimationLoop(): void {
+    if (this.animFrameId === null) {
+      this.animFrameId = requestAnimationFrame(() => this.animationLoop());
+    }
+  }
+
+  private isMoving(): boolean {
+    return this.moveStartCoord !== null && this.moveEndCoord !== null;
+  }
+
+  private getInterpolatedCoord(): Coordinate {
+    if (!this.moveStartCoord || !this.moveEndCoord) {
+      return this.activeFeature!.getGeometry()!.getCoordinates();
+    }
+    const progress = Math.min((performance.now() - this.moveStartTime) / this.moveDuration, 1);
+    const eased = this.easeOutCubic(progress);
+    return [
+      this.moveStartCoord[0] + (this.moveEndCoord[0] - this.moveStartCoord[0]) * eased,
+      this.moveStartCoord[1] + (this.moveEndCoord[1] - this.moveStartCoord[1]) * eased,
+    ];
+  }
+
+  private clearMoveState(): void {
+    this.moveStartCoord = null;
+    this.moveEndCoord = null;
+  }
+
+  private cancelAllAnimations(): void {
+    if (this.animFrameId !== null) {
+      cancelAnimationFrame(this.animFrameId);
+      this.animFrameId = null;
+    }
+    this.clearMoveState();
+    this.isFadingOut = false;
+    this.fadeOpacity = 1;
+    this.fadeRadiusExpand = 0;
+  }
+
+  private easeOutCubic(t: number): number {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  // #endregion
 
   private createStyle(_feature: FeatureLike): Style[] {
     if (!this.activeFeature) {
       return [];
     }
 
-    const radius = this.circleRadius + 4; // 稍微比底部圆大一点
+    const opacity = this.fadeOpacity;
+    const radius = this.circleRadius + 8 + this.fadeRadiusExpand;
 
     return [
       createHoverCornerStyle(
         radius,
         this.baseRadius,
-        3, // 描边稍宽一点
-        this.activeColor
+        3,
+        `rgba(245, 222, 25, ${0.95 * opacity})`,
+        10,
+        { blur: 12 * opacity, color: `rgba(245, 222, 25, ${0.6 * opacity})` },
       ),
     ];
   }

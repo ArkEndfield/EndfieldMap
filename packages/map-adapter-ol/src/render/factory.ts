@@ -1,5 +1,10 @@
 import Style from 'ol/style/Style';
 
+export interface CornerGlowOptions {
+  blur: number;
+  color: string;
+}
+
 /**
  * 创建hover四个角的样式（替代原来的圆环）
  * 使用 custom renderer 直接在 canvas 上绘制，避免 SVG Data URL 每帧重新加载导致的闪烁
@@ -7,23 +12,25 @@ import Style from 'ol/style/Style';
  * @param baseRadius 底部圆的基础半径（不含描边）
  * @param strokeWidth 描边宽度
  * @param strokeColor 描边颜色
+ * @param cornerLength 角线长度
+ * @param glow 发光效果选项
  * @returns 样式
  */
 export function createHoverCornerStyle(
   radius: number,
   baseRadius: number,
   strokeWidth: number = 2,
-  strokeColor: string = 'rgba(255, 255, 255, 0.9)'
+  strokeColor: string = 'rgba(255, 255, 255, 0.9)',
+  cornerLength: number = 8,
+  glow?: CornerGlowOptions,
 ): Style {
   const displacement = baseRadius + 3 * 2;
-  const cornerLength = 6; // 固定角长度
 
   return new Style({
     renderer: (pixelCoordinates, state) => {
       const { context, pixelRatio } = state;
       const [x, y] = pixelCoordinates as number[];
 
-      // 应用像素比，确保在 Retina 屏等高分屏上尺寸正确
       const r = radius * pixelRatio;
       const cl = cornerLength * pixelRatio;
       const sw = strokeWidth * pixelRatio;
@@ -32,6 +39,12 @@ export function createHoverCornerStyle(
       const centerY = y - disp;
 
       context.save();
+
+      if (glow) {
+        context.shadowBlur = glow.blur * pixelRatio;
+        context.shadowColor = glow.color;
+      }
+
       context.beginPath();
       context.strokeStyle = strokeColor;
       context.lineWidth = sw;
