@@ -9,6 +9,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type Style from 'ol/style/Style';
 
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
 /**
  * Active图层
  * 用于显示active状态的四角标点
@@ -41,7 +43,7 @@ export class ActiveLayer extends SingleLayerBase {
       style: this.createStyle.bind(this),
       updateWhileAnimating: true,
       updateWhileInteracting: true,
-      zIndex: 7, // 在hover层(8)之下，在entity层之上
+      zIndex: Z_INDEX.ACTIVE,
     });
 
     // 设置图层类型标识

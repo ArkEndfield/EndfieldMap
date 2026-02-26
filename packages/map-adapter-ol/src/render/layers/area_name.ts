@@ -10,6 +10,8 @@ import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 import Text from 'ol/style/Text';
 
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
 const FEATURE_NAME_KEY = 'areaName';
 
 /** 区域名称样式 */
@@ -57,7 +59,7 @@ export class AreaNameLayer extends SingleLayerBase {
     this.config = config ?? {};
     this.layer = new VectorLayer({
       source: this.vectorSource,
-      zIndex: -1,
+      zIndex: Z_INDEX.AREA_NAME,
       renderBuffer: this.config.renderBuffer ?? 100,
       updateWhileAnimating: this.config.updateWhileAnimating ?? false,
       updateWhileInteracting: this.config.updateWhileInteracting ?? false,

@@ -5,6 +5,8 @@ import ImageLayer from 'ol/layer/Image';
 import { ImageStatic } from 'ol/source';
 import type ImageSource from 'ol/source/Image';
 
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
 export interface TierOverlayMaskConfig {
   opacity?: number;
   fillColor?: string;
@@ -30,7 +32,7 @@ export class TierOverlayMaskLayer extends SingleLayerBase {
 
     this.layer = new ImageLayer({
       opacity: config.opacity ?? DEFAULT_OPACITY,
-      zIndex: -1.5,
+      zIndex: Z_INDEX.BACKDROP,
     });
 
     this.layer.set(LayerTypeKey, LayerType.TIER_OVERLAY_MASK);

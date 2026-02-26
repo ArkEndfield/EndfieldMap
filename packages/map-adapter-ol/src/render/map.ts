@@ -13,6 +13,8 @@ import {
 import TileLayer from 'ol/layer/Tile';
 import { XYZ } from 'ol/source';
 
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
 export interface MapRenderConfig {
   mapDataManager: MapDataManager;
   mapInstance: EndfieldMap;
@@ -36,7 +38,7 @@ export class MapRender {
     this.layer = new TileLayer({
       preload: 2, // 预加载2个层级的瓦片，减少缩放时的闪烁
       useInterimTilesOnError: true, // 加载出错时使用临时瓦片
-      zIndex: -2,
+      zIndex: Z_INDEX.MAP,
     });
 
     this.layer.set(LayerTypeKey, LayerType.MAP);

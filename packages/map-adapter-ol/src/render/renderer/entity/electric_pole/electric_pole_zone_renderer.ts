@@ -10,6 +10,8 @@ import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
 /**
  * 按设备类型缓存区域样式，避免每次渲染都重新创建
  */
@@ -73,7 +75,7 @@ export class ElectricPoleZoneRenderer {
       source: this.source,
       style: (feature) => getZoneStyle(feature.get('deviceKey') as string),
       visible: initialVisible,
-      zIndex: 10,
+      zIndex: Z_INDEX.ZONE,
     });
   }
 

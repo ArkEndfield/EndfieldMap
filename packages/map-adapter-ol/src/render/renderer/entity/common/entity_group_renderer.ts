@@ -19,6 +19,8 @@ import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import { Cluster } from 'ol/source';
 import VectorSource from 'ol/source/Vector';
 
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
 /**
  * Entity组渲染器配置
  */
@@ -117,7 +119,7 @@ export class EntityGroupRenderer {
       source: this.clusterSource,
       style: flatStyles,
       visible: config.initialVisible ?? true,
-      zIndex: 5,
+      zIndex: Z_INDEX.ENTITY,
       disableHitDetection: false,
     });
     this.layer.set(LayerTypeKey, LayerType.ENTITY);
@@ -127,7 +129,7 @@ export class EntityGroupRenderer {
       source: this.clusterSource,
       style: createClusterBadgeCanvasStyle(),
       visible: config.initialVisible ?? true,
-      zIndex: 6, // 确保在 WebGL 层之上
+      zIndex: Z_INDEX.ENTITY_BADGE, // 确保在 WebGL 层之上
     });
     this.badgeLayer.set(LayerTypeKey, LayerType.ENTITY);
   }

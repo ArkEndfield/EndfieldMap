@@ -8,6 +8,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type Style from 'ol/style/Style';
 
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
 /**
  * Hover图层
  * 用于显示hover效果的半透明圆环动画
@@ -41,7 +43,7 @@ export class HoverLayer extends SingleLayerBase {
       style: this.createStyle.bind(this),
       updateWhileAnimating: true,
       updateWhileInteracting: true,
-      zIndex: 8, // 最高层级，确保hover效果在所有图层之上
+      zIndex: Z_INDEX.HOVER,
     });
 
     // 设置图层类型标识，用于在hit test中排除此图层
