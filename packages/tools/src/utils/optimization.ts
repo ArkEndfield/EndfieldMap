@@ -118,16 +118,17 @@ export function throttle<TArgs extends unknown[], TReturn>(
     const now = Date.now();
     const timeSinceLastCall = now - lastCallTime;
 
-    if (timeSinceLastCall >= interval) {
-      // 超过间隔时间，可以执行
+    if (timeSinceLastCall >= interval || (leading && lastCallTime === 0)) {
+      // 超过间隔时间或首次调用（leading 模式），可以执行
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
       return execute(args);
     } else if (!timeoutId && trailing) {
-      // 设置延迟执行
+      // 间隔内，设置延迟执行
       lastArgs = args;
       timeoutId = setTimeout(delayedExecute, interval - timeSinceLastCall);
-    } else if (leading && timeSinceLastCall < interval) {
-      // 立即执行
-      return execute(args);
     }
 
     return lastPromise || lastResult;

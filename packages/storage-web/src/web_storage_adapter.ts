@@ -17,6 +17,16 @@ export class WebStorageAdapter implements IStorageAdapter {
   }
 
   clear(): void {
-    localStorage.clear();
+    const prefix = `${NAMESPACE}.`;
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith(prefix)) {
+        keysToRemove.push(key);
+      }
+    }
+    for (const key of keysToRemove) {
+      localStorage.removeItem(key);
+    }
   }
 }

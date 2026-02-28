@@ -189,7 +189,11 @@ export class MapLibreAdapter {
     this.activeFeatureController.dispose();
     this.hoverFeatureController.dispose();
     this.hoverConnectionController.dispose();
+    this.electricPoleController.dataManager.dispose();
+    this.customPointController.dataManager.dispose();
+    this.entityController.dispose();
     this.tierController.dispose();
     this.mapController.dispose();
+    this.event.removeAllListeners();
   }
 }

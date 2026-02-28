@@ -1,6 +1,4 @@
-import type { Coordinate } from 'ol/coordinate';
-
-export const calculateDistance = (coordinate1: Coordinate, coordinate2: Coordinate) => {
+export const calculateDistance = (coordinate1: number[], coordinate2: number[]) => {
   const x1 = coordinate1[0];
   const y1 = coordinate1[1];
   const x2 = coordinate2[0];

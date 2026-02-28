@@ -1,5 +1,8 @@
 export const isDev =
-  process.env.NODE_ENV === 'development' || new URLSearchParams(window.location.search).get('__DEV__') === 'true';
+  process.env.NODE_ENV === 'development' ||
+  (typeof window !== 'undefined' &&
+    typeof window.location !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('__DEV__') === 'true');
 
 const timestamp = new Date().getTime().toString();
 

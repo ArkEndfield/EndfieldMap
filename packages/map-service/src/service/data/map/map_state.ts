@@ -25,6 +25,7 @@ interface DataState<T> {
 
 export class MapStateDataService {
   private adapterRegistry: AdapterRegistry;
+  private eventDisposers: Array<() => void> = [];
 
   public currentMap!: LocalStorageValue<MapData['id']>;
   public mapZoom!: LocalStorageValue<DataState<number>>;
@@ -33,8 +34,8 @@ export class MapStateDataService {
   public enableCluster!: LocalStorageValue<boolean>;
   public hoverTime!: LocalStorageValue<number>;
   public filterMarked!: LocalStorageValue<MarkedFeatureFilterMode>;
-  public displayEletricPoleRange!: LocalStorageValue<boolean>;
-  public displayEletricPole!: LocalStorageValue<boolean>;
+  public displayElectricPoleRange!: LocalStorageValue<boolean>;
+  public displayElectricPole!: LocalStorageValue<boolean>;
   public displayCustomPoint!: LocalStorageValue<boolean>;
   public wasdMoveSpeed!: LocalStorageValue<number>;
   public devToolsState!: LocalStorageValue<DevToolsState>;
@@ -88,12 +89,12 @@ export class MapStateDataService {
       storageKey: LocalStorageKey.FILTER_MARKED,
     });
 
-    this.displayEletricPoleRange = new LocalStorageValue<boolean>({
+    this.displayElectricPoleRange = new LocalStorageValue<boolean>({
       initialValue: true,
       storageKey: LocalStorageKey.ELECTRIC_POLE_RANGE_DISPLAY,
     });
 
-    this.displayEletricPole = new LocalStorageValue<boolean>({
+    this.displayElectricPole = new LocalStorageValue<boolean>({
       initialValue: true,
       storageKey: LocalStorageKey.ELECTRIC_POLE_DISPLAY,
     });
@@ -139,11 +140,11 @@ export class MapStateDataService {
       this.adapterRegistry.adapter.entityController.setMarkedFilterMode(mode);
     });
 
-    this.displayEletricPoleRange.registerOnValueChange((visible) => {
+    this.displayElectricPoleRange.registerOnValueChange((visible) => {
       this.adapterRegistry.adapter.electricPoleController.setZoneVisible(visible);
     });
 
-    this.displayEletricPole.registerOnValueChange((visible) => {
+    this.displayElectricPole.registerOnValueChange((visible) => {
       this.adapterRegistry.adapter.electricPoleController.setVisible(visible);
     });
     
@@ -163,14 +164,16 @@ export class MapStateDataService {
   }
 
   public initStateDataEventListener() {
-    this.adapterRegistry.adapter.event.on(
+    const disposeZoom = this.adapterRegistry.adapter.event.on(
       MAP_EVENT.ZOOM_CHANGE,
       debounce((zoom) => {
         const currentMap = this.adapterRegistry.adapter.mapController.dataManager.currentMapId;
         this.setMapZoom(currentMap, zoom);
       }, DEBOUNCE_INTERVAL)
     );
-    this.adapterRegistry.adapter.event.on(
+    this.eventDisposers.push(disposeZoom);
+
+    const disposeCenter = this.adapterRegistry.adapter.event.on(
       MAP_EVENT.MAP_CENTER_CHANGE,
       debounce((center) => {
         if (!center) return;
@@ -178,6 +181,7 @@ export class MapStateDataService {
         this.setMapCenter(currentMap, center);
       }, DEBOUNCE_INTERVAL)
     );
+    this.eventDisposers.push(disposeCenter);
   }
 
   public setMapZoom(mapId: MapData['id'], zoom: number) {
@@ -229,8 +233,8 @@ export class MapStateDataService {
     this.mapZoom.reset();
     this.mapCenter.reset();
     this.filterMarked.reset();
-    this.displayEletricPoleRange.reset();
-    this.displayEletricPole.reset();
+    this.displayElectricPoleRange.reset();
+    this.displayElectricPole.reset();
     this.displayCustomPoint.reset();
 
     const firstMapId = this.adapterRegistry.hasAdapter
@@ -242,5 +246,10 @@ export class MapStateDataService {
     } else {
       this.currentMap.reset();
     }
+  }
+
+  public dispose() {
+    this.eventDisposers.forEach((dispose) => dispose());
+    this.eventDisposers = [];
   }
 }

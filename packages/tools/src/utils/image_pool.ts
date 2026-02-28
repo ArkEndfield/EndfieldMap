@@ -33,7 +33,8 @@ export class ImagePool {
   }
 
   public static removeImage(src: string): void {
-    this.imagePool.delete(src);
-    this.currentPoolSize--;
+    if (this.imagePool.delete(src)) {
+      this.currentPoolSize--;
+    }
   }
 }

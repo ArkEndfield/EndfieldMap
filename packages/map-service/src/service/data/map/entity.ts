@@ -66,5 +66,7 @@ export class EntityDataService {
     this.deps.entityVisibilityService.clearAllData();
   }
 
-  public dispose() {}
+  public dispose() {
+    // subscriptions are managed by the mark/visibility services' lifecycle
+  }
 }
