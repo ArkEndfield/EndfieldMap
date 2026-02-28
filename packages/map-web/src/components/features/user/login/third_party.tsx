@@ -16,9 +16,11 @@ export const ThirdPartyButton = ({
     const urls = {
       qq: 'https://graph.qq.com/oauth2.0/authorize?client_id=102849620&response_type=token&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fqq%2Fcallback',
       bilibili:
-        'https://account.bilibili.com/pc/account-pc/auth/oauth?client_id=aadbd763480d47cb&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
+        'https://account.bilibili.com/h5/account-h5/auth/oauth?client_id=aadbd763480d47cb&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
       discord:
         'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&scope=identify&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fdiscord%2Fcallback',
+      github:
+        'https://github.com/login/oauth/authorize?client_id=Ov23li62rQCYlLUffuSz',
     };
     return urls[provider as keyof typeof urls];
   };
