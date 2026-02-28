@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "types": ["vite/client", "node"],
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
@@ -22,15 +21,5 @@
       "@themes/*": ["./src/components/themes/*"]
     }
   },
-  "references": [
-    { "path": "../tools" },
-    { "path": "../map-core" },
-    { "path": "../map-service" },
-    { "path": "../map-adapter-ol" },
-    { "path": "../map-adapter-maplibre" },
-    { "path": "../storage-web" },
-    { "path": "../map-web-theme-types" },
-    { "path": "../web-components" }
-  ],
   "include": ["src", "./env.d.ts"]
 }
