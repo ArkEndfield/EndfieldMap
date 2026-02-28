@@ -1,7 +1,7 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { EndfieldSwitch } from '@endfieldmap/web-components';
 import { useState } from 'react';
 
-import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { Input } from '@/components/common/input';
 
 interface EditPresetFormProps {

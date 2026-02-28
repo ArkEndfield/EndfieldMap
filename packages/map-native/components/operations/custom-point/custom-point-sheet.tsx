@@ -1,6 +1,7 @@
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
+import { useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -22,6 +23,7 @@ export const CustomPointSheet = observer(
     const { t } = useTranslation(['common', 'sidebar', 'header']);
     const sheetRef = useRef<TrueSheet>(null);
 
+    const router = useRouter();
     const {
       presets,
       currentPresetId,
@@ -35,7 +37,20 @@ export const CustomPointSheet = observer(
       handleDeleteSelected,
       handleDeletePreset,
       handleRenamePreset,
+      canShare,
     } = useCustomPointPresetPanel();
+
+    const handleSharePreset = useCallback(
+      (id: string, name: string) => {
+        if (!canShare()) return;
+        sheetRef.current?.dismiss().catch(() => {});
+        router.push({
+          pathname: '/preset-share',
+          params: { presetId: id, presetType: 'custom_point', defaultName: name },
+        });
+      },
+      [canShare, router],
+    );
 
     useImperativeHandle(ref, () => ({
       present: () => {
@@ -86,6 +101,7 @@ export const CustomPointSheet = observer(
                 onToggleSelect={handleToggleSelect}
                 onRename={handleRenamePreset}
                 onDelete={handleDeletePreset}
+                onShare={handleSharePreset}
                 renameText={t('common:rename', { defaultValue: '重命名' })}
                 deleteText={t('common:delete', { defaultValue: '删除' })}
               />

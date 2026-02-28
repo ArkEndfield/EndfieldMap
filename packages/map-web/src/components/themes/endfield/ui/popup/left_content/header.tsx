@@ -1,6 +1,7 @@
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { Deco7Dots, PowerIcon } from '@/components/common/icons';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio, Deco7Dots } from '@endfieldmap/web-components';
+
+import { PowerIcon } from '@/components/common/icons';
 
 export interface PopupHeaderProps {
   onClose: () => void;

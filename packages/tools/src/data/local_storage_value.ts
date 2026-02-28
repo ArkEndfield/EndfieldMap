@@ -13,10 +13,12 @@ export class LocalStorageValue<T> {
   private storageKey: string;
   private onValueChange?: (newValue: T, oldValue?: T) => void;
   private onInitFromLocalStorage?: (data: T) => void;
+  public initialValue: T;
   private oldValue?: T;
 
   constructor(config: LocalStorageValueConfig<T>) {
     this.storageKey = config.storageKey;
+    this.initialValue = config.initialValue;
     this.oldValue = config.initialValue;
     this.onValueChange = config.onValueChange;
     this.onInitFromLocalStorage = config.onInitFromLocalStorage;
@@ -53,5 +55,10 @@ export class LocalStorageValue<T> {
   @action
   set value(data: T) {
     this._value = data;
+  }
+
+  @action
+  public reset() {
+    this._value = this.initialValue;
   }
 }

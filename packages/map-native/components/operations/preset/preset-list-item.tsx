@@ -1,7 +1,8 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface PresetListItemProps {
   index: number;
@@ -12,8 +13,10 @@ interface PresetListItemProps {
   onToggleSelect: () => void;
   onRename: () => void;
   onDelete: () => void;
+  onShare?: () => void;
   renameText: string;
   deleteText: string;
+  shareText?: string;
 }
 
 export const PresetListItem: React.FC<PresetListItemProps> = ({
@@ -25,8 +28,10 @@ export const PresetListItem: React.FC<PresetListItemProps> = ({
   onToggleSelect,
   onRename,
   onDelete,
+  onShare,
   renameText,
   deleteText,
+  shareText,
 }) => {
   return (
     <View
@@ -49,23 +54,27 @@ export const PresetListItem: React.FC<PresetListItemProps> = ({
 
       {/* Main area — tap to switch preset */}
       <Pressable className="flex-1 flex-row items-center" onPress={onPress}>
-        {/* Index number */}
         <Text className="mr-2 w-5 text-center text-xs text-text-muted">{index}</Text>
-
-        {/* Active indicator bar */}
         {isActive && <View className="mr-2 h-4 w-1 rounded-sm bg-primary" />}
-
-        {/* Name */}
         <Text className={cn('flex-1 text-sm', isActive ? 'font-semibold text-primary' : 'text-text-secondary')} numberOfLines={1}>
           {name}
         </Text>
       </Pressable>
 
       {/* Action buttons */}
+      {onShare && (
+        <Pressable className="rounded px-2 py-1" onPress={onShare} hitSlop={4}>
+          {shareText ? (
+            <Text className="text-xs text-primary">{shareText}</Text>
+          ) : (
+            <MaterialIcons name="share" size={16} color="#007AFF" />
+          )}
+        </Pressable>
+      )}
       <Pressable className="rounded px-2 py-1" onPress={onRename} hitSlop={4}>
         <Text className="text-xs text-text-tertiary">{renameText}</Text>
       </Pressable>
-      <Pressable className="ml-2 rounded px-2 py-1" onPress={onDelete} hitSlop={4}>
+      <Pressable className="ml-1 rounded px-2 py-1" onPress={onDelete} hitSlop={4}>
         <Text className="text-xs text-error">{deleteText}</Text>
       </Pressable>
     </View>

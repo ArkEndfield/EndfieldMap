@@ -1,5 +1,5 @@
+import type { ComponentType, ThemedComponent, ThemedComponentMap } from '@endfieldmap/map-web-theme-types';
 import endfieldTheme from '@themes/endfield';
-import type { ComponentType, ThemedComponent, ThemedComponentMap } from '@themes/types';
 
 import { EmptyComponent } from '@/components/common/empty_component';
 

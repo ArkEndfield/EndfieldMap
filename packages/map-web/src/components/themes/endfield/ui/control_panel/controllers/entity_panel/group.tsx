@@ -1,10 +1,10 @@
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { DecoTriTriangle, VisibleWithDeco } from '@/components/common/icons';
-import { cn } from '@/utils/style';
 
 interface EntityGroupProps {
   iconColor?: string;

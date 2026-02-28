@@ -1,4 +1,4 @@
-import { type TooltipProps } from '@themes/types/tooltip';
+import type { TooltipProps } from '@endfieldmap/map-web-theme-types/tooltip';
 import { observer } from 'mobx-react-lite';
 import { Suspense } from 'react';
 

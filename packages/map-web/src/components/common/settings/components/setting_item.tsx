@@ -1,9 +1,11 @@
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio, useIsMobile } from '@endfieldmap/web-components';
+import { observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
+
 import { QuestionIcon } from '@/components/common/icons';
 import { Tooltip } from '@/components/common/tooltip';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
-
+import uiManager from '@/services/ui_manager';
 export interface SettingItemProps {
   id?: string;
   title: React.ReactNode;
@@ -56,11 +58,6 @@ const Deco = ({ withTail }: { withTail?: boolean }) => (
     )}
   </div>
 );
-
-import { observer } from 'mobx-react-lite';
-import { useEffect, useState } from 'react';
-
-import uiManager from '@/services/ui_manager';
 
 export const SettingItem = observer(
   ({ title, description, question, children, className, classNames, tailDeco, id }: SettingItemProps) => {

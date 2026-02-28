@@ -14,6 +14,8 @@ export default defineConfig(({ command, mode }) => {
     '@endfieldmap/tools': resolve(__dirname, '../tools/src'),
     '@endfieldmap/map-service': resolve(__dirname, '../map-service/src'),
     '@endfieldmap/storage-web': resolve(__dirname, '../storage-web/src'),
+    '@endfieldmap/map-web-theme-types': resolve(__dirname, '../map-web-theme-types/src'),
+    '@endfieldmap/web-components': resolve(__dirname, '../web-components/src'),
   };
   return {
     mode,

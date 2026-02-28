@@ -1,8 +1,8 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { ChevronUpTriangle } from '@/components/common/icons';
-import { cn } from '@/utils/style';
 
 export const FoldButton = ({
   open,

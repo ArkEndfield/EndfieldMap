@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TextInput as RNTextInput, View, type TextInputProps } from 'react-native';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface StyledTextInputProps extends TextInputProps {
   label?: string;

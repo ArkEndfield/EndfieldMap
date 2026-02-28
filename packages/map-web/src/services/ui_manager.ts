@@ -1,12 +1,12 @@
 import type { PresetStoreTab } from '@endfieldmap/map-service';
+import { ComponentType } from '@endfieldmap/map-web-theme-types';
 import { LocalStorageValue } from '@endfieldmap/tools';
+import { audioService } from '@endfieldmap/web-components';
 import { getThemedComponents, type ThemeNames, themeNames } from '@themes/index';
-import { ComponentType } from '@themes/types';
 import { action, computed, observable } from 'mobx';
 
 import { UILocalStorageKey } from '@/const/storage';
 import { DARK_MODE } from '@/const/ui';
-import audioService from '@/services/audio_service';
 
 class UIManager {
   private mediaQueryList: MediaQueryList | null = null;

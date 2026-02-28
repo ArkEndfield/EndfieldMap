@@ -21,7 +21,9 @@ import VectorLayer from 'ol/layer/Vector';
 import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import VectorSource from 'ol/source/Vector';
 
-import { createElectricPoleWebGLStyle } from './electric_pole_webgl_style';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
+import { createElectricPoleWebGLStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_webgl_style';
 
 /**
  * 电线杆渲染器配置
@@ -121,7 +123,7 @@ export class ElectricPoleRenderer {
       source: this.entitySource,
       style: flatStyles,
       visible: config.initialVisible ?? true,
-      zIndex: 20,
+      zIndex: Z_INDEX.CREATE_POINT,
       disableHitDetection: false,
     });
     this.entityLayer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
@@ -136,7 +138,7 @@ export class ElectricPoleRenderer {
       },
       renderBuffer: config.renderBuffer ?? 100,
       visible: config.initialVisible ?? true,
-      zIndex: 15,
+      zIndex: Z_INDEX.CONNECTION,
     });
   }
 
@@ -348,7 +350,11 @@ export class ElectricPoleRenderer {
     this.connectionMap.clear();
     this.entitySource.clear();
     this.connectionSource.clear();
-    this.entityLayer.dispose();
+    try {
+      this.entityLayer.dispose();
+    } catch {
+      // WebGL context may already be lost or layer never rendered
+    }
   }
 
   // #endregion

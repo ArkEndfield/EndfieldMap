@@ -12,7 +12,9 @@ import { Point } from 'ol/geom';
 import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import VectorSource from 'ol/source/Vector';
 
-import { createCustomPointWebGLStyle } from './custom_point_style';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
+import { createCustomPointWebGLStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/custom_point/custom_point_style';
 
 /**
  * 自定义标点渲染器配置
@@ -83,7 +85,7 @@ export class CustomPointRenderer {
       source: this.source,
       style: flatStyles,
       visible: config.initialVisible ?? true,
-      zIndex: 6,
+      zIndex: Z_INDEX.CREATE_POINT,
       disableHitDetection: false,
     });
     this.layer.set(LayerTypeKey, LayerType.CUSTOM_POINT);
@@ -192,7 +194,11 @@ export class CustomPointRenderer {
   public dispose(): void {
     this.featureMap.clear();
     this.source.clear();
-    this.layer.dispose();
+    try {
+      this.layer.dispose();
+    } catch {
+      // WebGL context may already be lost or layer never rendered
+    }
   }
 
   // #endregion

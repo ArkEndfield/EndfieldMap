@@ -1,12 +1,12 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { service } from '@/services';
-import { cn } from '@/utils/style';
 
 /** 轮询间隔（毫秒） */
 const POLL_INTERVAL = 2000;

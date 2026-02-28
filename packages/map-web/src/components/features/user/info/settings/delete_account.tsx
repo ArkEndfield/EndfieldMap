@@ -1,7 +1,7 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { ZmdSquareButton } from '@endfieldmap/web-components';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
 import { TrashIcon } from '@/components/common/icons';
 import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';

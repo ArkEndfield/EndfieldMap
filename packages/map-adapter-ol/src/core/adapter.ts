@@ -130,6 +130,18 @@ export class EndfieldMapAdapter {
       disableActiveFeature: config.map?.disableActiveFeature,
       mapInstance,
       emitter: this.event,
+      isGroupVisible: (instance) => {
+        const entityType = instance.entityType;
+        if (entityType === '#ElectricPole') {
+          return this.electricPoleController.dataManager.visible;
+        }
+        if (entityType === '#CustomPoint') {
+          return this.customPointController.getTypeVisible(instance.entityDataIdKey);
+        }
+        const managers = this.entityController.dataManager.mapData.get(instance.mapId);
+        const groupManager = managers?.get(instance.entityDataIdKey);
+        return groupManager?.groupVisible ?? true;
+      },
     });
     this.hoverFeatureController = new HoverFeatureController({
       getEntityLayers: () => this.entityController?.render.currentRenderer || [],

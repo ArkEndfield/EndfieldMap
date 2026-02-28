@@ -1,0 +1,60 @@
+{
+  "name": "@endfieldmap/web-components",
+  "version": "0.1.0",
+  "description": "Reusable React UI components for EndfieldMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/web-components"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./assets/*": "./dist/assets/*"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "prepack": "cp ../../LICENSE . 2>/dev/null || true"
+  },
+  "peerDependencies": {
+    "mobx": "^6.15.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "@endfieldmap/map-web-theme-types": "workspace:*",
+    "@endfieldmap/tools": "workspace:*",
+    "motion": "^12.34.3"
+  },
+  "devDependencies": {
+    "@storybook/react-vite": "^10.2.12",
+    "@tailwindcss/vite": "^4.2.1",
+    "storybook": "^10.2.12",
+    "tailwindcss": "^4.2.1"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

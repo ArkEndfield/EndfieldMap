@@ -1,3 +1,5 @@
+import { cn } from '@endfieldmap/tools';
+import { ScrollArea } from '@endfieldmap/web-components';
 import { LeftContentContainer } from '@themes/endfield/ui/popup/left';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
@@ -5,11 +7,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { getRightComponents } from '@/components/common/popup/sub/items';
-import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
 
 const RightContent: React.FC<{
   isExpand: boolean;

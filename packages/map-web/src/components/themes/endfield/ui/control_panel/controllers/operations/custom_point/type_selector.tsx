@@ -1,13 +1,13 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
 import { useTranslation } from '@endfieldmap/map-service';
+import { cn } from '@endfieldmap/tools';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
 
 import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';
-import { cn } from '@/utils/style';
 
 /**
  * 自定义标点类型选择器

@@ -1,7 +1,6 @@
 import type { PieceUI } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
-
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export const DeltaRobotPiece = ({
   data,

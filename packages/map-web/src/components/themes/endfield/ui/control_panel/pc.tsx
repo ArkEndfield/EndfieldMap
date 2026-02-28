@@ -1,3 +1,4 @@
+import { cn } from '@endfieldmap/tools';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { FoldButton } from '@themes/endfield/ui/control_panel/components/fold_button';
@@ -6,8 +7,6 @@ import { FilterAndEntityPanelPC } from '@themes/endfield/ui/control_panel/contro
 import { CustomPointManager } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point';
 import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
 import { observer } from 'mobx-react-lite';
-
-import { cn } from '@/utils/style';
 
 const PCControlPanel = observer(() => {
   const uiManager = useEndfieldUIManager();

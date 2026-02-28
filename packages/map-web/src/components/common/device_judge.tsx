@@ -1,6 +1,5 @@
+import { useIsMobile } from '@endfieldmap/web-components';
 import React from 'react';
-
-import { useIsMobile } from '@/hooks/use_is_mobile';
 
 export default function deviceJudge<T extends object>(
   PCComponent: React.FC<T>,

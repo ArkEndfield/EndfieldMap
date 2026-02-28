@@ -3,6 +3,7 @@ import '../global.css';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Platform } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
@@ -10,6 +11,16 @@ import 'react-native-reanimated';
 import { AlertProvider } from '@/components/ui/alert';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { service } from '@/services/map-service';
+
+const IS_IOS_26 = Platform.OS === 'ios' && Number(Platform.Version) >= 26;
+
+const cardScreenOptions = {
+  presentation: 'card' as const,
+  ...(IS_IOS_26 && {
+    headerTransparent: true,
+    headerBlurEffect: 'systemChromeMaterial' as const,
+  }),
+};
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -23,15 +34,15 @@ export default function RootLayout() {
     <GestureHandlerRootView className="flex-1">
       <I18nextProvider i18n={i18n}>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
+          <Stack
+            screenOptions={IS_IOS_26 ? { headerTransparent: true } : undefined}
+          >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-            <Stack.Screen name="login" options={{ presentation: 'card' }} />
-            <Stack.Screen name="bind-uid" options={{ presentation: 'card' }} />
-            <Stack.Screen name="bind-uid-roles" options={{ presentation: 'card' }} />
-            <Stack.Screen name="settings" options={{ presentation: 'card' }} />
-            <Stack.Screen name="edit-profile" options={{ presentation: 'card' }} />
-            <Stack.Screen name="change-password" options={{ presentation: 'card' }} />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="settings" options={cardScreenOptions} />
+            <Stack.Screen name="preset-store-detail" options={cardScreenOptions} />
+            <Stack.Screen name="preset-store-edit" options={cardScreenOptions} />
+            <Stack.Screen name="preset-share" options={cardScreenOptions} />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>

@@ -1,4 +1,4 @@
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const TextDeco = ({ className }: { className?: string }) => (
   <div className={cn('w-32 h-2 relative', className)}>

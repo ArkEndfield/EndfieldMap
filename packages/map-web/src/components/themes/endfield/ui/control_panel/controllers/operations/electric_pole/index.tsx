@@ -1,7 +1,6 @@
+import { cn } from '@endfieldmap/tools';
+import { useIsMobile } from '@endfieldmap/web-components';
 import ElectricPolePresetPanel from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole/preset/panel';
-
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
 
 export const ElectricPoleManager: React.FC = () => {
   const isMobile = useIsMobile();

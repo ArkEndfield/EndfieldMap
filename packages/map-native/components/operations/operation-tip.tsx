@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import Svg, { G, Path } from 'react-native-svg';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 const CloseIcon = ({ color = '#fff' }: { color?: string }) => (
   <Svg viewBox="0 0 1024 1024" width={12} height={12}>

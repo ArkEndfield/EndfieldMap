@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { BackHandler, Image, Modal, Pressable, Text, TextInput, useWindowDimensions, View } from 'react-native';
+import { BackHandler, Image, Modal, Platform, Pressable, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 import type { AlertInstance } from './types';
 import { alertStore } from './alert-store';
@@ -148,29 +148,44 @@ export const EndfieldAlert: React.FC<EndfieldAlertProps> = observer(({ instance 
     return () => subscription.remove();
   }, [visible, handleDismiss]);
 
+  const dismissAndWait = useCallback((): Promise<void> => {
+    alertStore.remove(id);
+    return new Promise((r) => setTimeout(r, EXIT_ANIM_DURATION + 150));
+  }, [id]);
+
   const handleCancel = useCallback(async () => {
     setCancelLoading(true);
     try {
-      const result = await config.onCancel?.();
-      if (result !== false) {
-        alertStore.remove(id);
+      if (Platform.OS === 'ios') {
+        await dismissAndWait();
+        await config.onCancel?.();
+      } else {
+        const result = await config.onCancel?.();
+        if (result !== false) {
+          alertStore.remove(id);
+        }
       }
     } finally {
       setCancelLoading(false);
     }
-  }, [config, id]);
+  }, [config, id, dismissAndWait]);
 
   const handleConfirm = useCallback(async () => {
     setConfirmLoading(true);
     try {
-      const result = await config.onConfirm?.();
-      if (result !== false) {
-        alertStore.remove(id);
+      if (Platform.OS === 'ios') {
+        await dismissAndWait();
+        await config.onConfirm?.();
+      } else {
+        const result = await config.onConfirm?.();
+        if (result !== false) {
+          alertStore.remove(id);
+        }
       }
     } finally {
       setConfirmLoading(false);
     }
-  }, [config, id]);
+  }, [config, id, dismissAndWait]);
 
   const backdropAnimStyle = useAnimatedStyle(() => ({
     opacity: backdropOpacity.value,

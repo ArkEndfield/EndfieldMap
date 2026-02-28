@@ -1,13 +1,11 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio, ScrollArea,ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import type { GameRole } from '@/@types/game_role';
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { ArrowLeftIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
-import { ScrollArea } from '@/components/common/scroll_area';
-import { cn } from '@/utils/style';
 
 interface BindUidListProps {
   /** 可绑定的角色列表 */

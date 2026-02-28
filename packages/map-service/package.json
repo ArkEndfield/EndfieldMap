@@ -1,6 +1,13 @@
 {
   "name": "@endfieldmap/map-service",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Data services and business logic for EndfieldMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/map-service"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -17,6 +24,7 @@
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
+    "prepack": "cp ../../LICENSE . 2>/dev/null || true",
     "test": "vitest",
     "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
@@ -25,21 +33,29 @@
     "lng:type": "i18next-cli types"
   },
   "dependencies": {
-    "@endfieldmap/map-core": "workspace:*",
-    "@endfieldmap/tools": "workspace:*",
     "microdiff": "^1.5.0"
   },
   "devDependencies": {
-    "i18next-cli": "^1.25.1"
+    "i18next-cli": "^1.43.0"
   },
   "peerDependencies": {
-    "@tanstack/react-db": "^0.1.68",
-    "@tanstack/rxdb-db-collection": "^0.1.56",
-    "i18next": "^25.8.0",
+    "@endfieldmap/map-core": "workspace:*",
+    "@endfieldmap/tools": "workspace:*",
+    "@tanstack/react-db": "^0.1.72",
+    "@tanstack/rxdb-db-collection": "^0.1.60",
+    "i18next": "^25.8.13",
     "i18next-resources-to-backend": "^1.2.1",
     "mobx": "^6.15.0",
-    "react-i18next": "^16.3.5",
+    "react-i18next": "^16.5.4",
     "rxdb": "^16.21.1",
     "rxjs": "^7.8.2"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

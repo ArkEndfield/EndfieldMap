@@ -3,10 +3,9 @@
  * 展示如何为按钮添加点击和悬停音效
  */
 
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { useAudio, useButtonSound } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
-
-import { SoundType } from '@/const/audio_config';
-import { useAudio, useButtonSound } from '@/hooks/use_audio';
 
 /**
  * 示例 1: 带点击音效的按钮

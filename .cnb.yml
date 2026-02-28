@@ -25,7 +25,7 @@ main:
             username: ${GIT_USERNAME}
             password: ${GIT_ACCESS_TOKEN}
             sync_mode: rebase
-  web_trigger_release:
+  web_trigger_deploy_map_web:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22
@@ -41,40 +41,7 @@ main:
         - name: 安装依赖
           script: pnpm install
         - name: 构建包
-          script: pnpm build
-        - name: 压缩包
-          script: |
-            apt-get update && apt-get install -y zip
-            cd packages/map-web && zip -r ../../map-web.zip dist
-        - name: 发布
-          type: git:release
-          options:
-            title: Release ${VERSION}
-            description: Automated release for version ${VERSION}
-            tag: ${VERSION}
-        - name: 上传附件
-          image: cnbcool/attachments:latest
-          settings:
-            tag: ${VERSION}
-            attachments:
-              - map-web.zip
-  web_trigger_deploy:
-    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
-      docker:
-        image: node:22
-      stages:
-        - name: 读取版本号
-          type: cnb:read-file
-          options:
-            filePath: package.json
-          exports:
-            version: VERSION
-        - name: 安装 pnpm
-          script: npm install -g pnpm
-        - name: 安装依赖
-          script: pnpm install
-        - name: 构建包
-          script: pnpm build
+          script: pnpm build:web
         - name: 部署到服务器
           script: |
             apt-get update && apt-get install -y rsync
@@ -84,7 +51,22 @@ main:
             chmod 600 ~/.ssh/id_rsa
             # 使用 rsync 清空并同步文件到服务器
             rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" packages/map-web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
-  web_trigger_production:
+  web_trigger_publish_packages:
+    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
+      docker:
+        image: node:22
+      stages:
+        - name: 安装 pnpm
+          script: npm install -g pnpm
+        - name: 安装依赖
+          script: pnpm install
+        - name: 构建所有包
+          script: pnpm run build:base && pnpm -C packages/map-adapter-ol build && pnpm -C packages/map-adapter-maplibre build && pnpm -C packages/storage-web build && pnpm -C packages/storage-mmkv build && pnpm -C packages/storage-expo-sqlite build && pnpm -C packages/map-web-theme-types build && pnpm -C packages/web-components build
+        - name: 配置 GitHub Packages 认证
+          script: echo "//npm.pkg.github.com/:_authToken=${GH_PKG_TOKEN}" >> .npmrc
+        - name: 发布包
+          script: pnpm changeset publish
+  web_trigger_deploy_components_docs:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22
@@ -99,30 +81,12 @@ main:
           script: npm install -g pnpm
         - name: 安装依赖
           script: pnpm install
-        - name: 构建包
-          script: pnpm build
-        - name: 压缩包
-          script: |
-            apt-get update && apt-get install -y zip
-            cd packages/map-web && zip -r ../../map-web.zip dist
-        - name: 发布
-          type: git:release
-          options:
-            title: Release ${VERSION}
-            description: Automated release for version ${VERSION}
-            tag: ${VERSION}
-        - name: 上传附件
-          image: cnbcool/attachments:latest
-          settings:
-            tag: ${VERSION}
-            attachments:
-              - map-web.zip
+        - name: 构建组件文档
+          script: pnpm build:components:docs
         - name: 部署到服务器
           script: |
             apt-get update && apt-get install -y rsync
-            # 设置 SSH 密钥
             mkdir -p ~/.ssh
             echo "${SSH_KEY}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
-            # 使用 rsync 清空并同步文件到服务器
-            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" packages/map-web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
+            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" packages/web-components/storybook-static/ ${SERVER_USER}@${SERVER_HOST}:${COMPONENT_DEPLOY_PATH}

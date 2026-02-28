@@ -1,9 +1,9 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 import type { ButtonHTMLAttributes } from 'react';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { LayerIcon } from '@/components/common/icons';
-import { cn } from '@/utils/style';
 
 export interface SubTitleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;

@@ -1,10 +1,7 @@
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio, InVisibleIcon, useAudio,VisibleIcon } from '@endfieldmap/web-components';
 import { useRef, useState } from 'react';
-
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { InVisibleIcon, VisibleIcon } from '@/components/common/icons';
-import { SoundType } from '@/const/audio_config';
-import { useAudio } from '@/hooks/use_audio';
-import { cn } from '@/utils/style';
 
 export interface UserInputProps {
   icon?: React.ReactNode;

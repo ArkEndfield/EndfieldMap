@@ -1,6 +1,7 @@
 import { Trans, useTranslation } from '@endfieldmap/map-service';
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { ButtonWithAudio } from '@endfieldmap/web-components';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
 import { BilibiliIcon, DiscordIcon, QQIcon } from '@/components/common/icons';
 import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { FlashWrapper } from '@/components/common/settings/components/flash_wrapper';
@@ -9,7 +10,6 @@ import { CommunityCard } from '@/components/features/settings/items/about/commun
 import { ContributorCard } from '@/components/features/settings/items/about/contributor';
 import { Recruit } from '@/components/features/settings/items/about/recruit';
 import { Version } from '@/components/features/settings/items/about/version';
-import { SoundType } from '@/const/audio_config';
 import { contributors } from '@/const/contributor';
 import { SETTINGS_KEYS } from '@/const/settings';
 

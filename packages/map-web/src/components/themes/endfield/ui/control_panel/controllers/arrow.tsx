@@ -1,6 +1,5 @@
 import { useTranslation } from '@endfieldmap/map-service';
-
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 interface ArrowProps {
   open: boolean;

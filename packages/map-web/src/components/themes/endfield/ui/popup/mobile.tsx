@@ -1,13 +1,12 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { EndfieldSwitch, ScrollArea } from '@endfieldmap/web-components';
 import { BottomSheet } from '@themes/endfield/components/bottom_sheet';
 import { LeftContent } from '@themes/endfield/ui/popup/left';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { EndfieldSwitch } from '@/components/common/endfield_components/form/switch';
 import { getRightComponents } from '@/components/common/popup/sub/items';
-import { ScrollArea } from '@/components/common/scroll_area';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 

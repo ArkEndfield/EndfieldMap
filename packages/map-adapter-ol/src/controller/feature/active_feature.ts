@@ -4,12 +4,14 @@ import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event
 import type { DataInstance, DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
 import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH, MAP_EVENT } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
-import { action, observable } from 'mobx';
+import { action, observable, reaction, type IReactionDisposer } from 'mobx';
 
 export interface ActiveFeatureControllerConfig {
   disableActiveFeature?: boolean;
   mapInstance: EndfieldMap;
   emitter: EndfieldMapEmitter<OLMapEventPayloads>;
+  /** 检查实例所属组是否可见（读取 MobX observable，由 reaction 自动追踪） */
+  isGroupVisible?: (instance: DataInstance) => boolean;
 }
 
 /**
@@ -29,11 +31,16 @@ export class ActiveFeatureController {
   private mapInstance: EndfieldMap;
   /** 事件发射器 */
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
+  /** 检查实例所属组是否可见 */
+  private isGroupVisible?: (instance: DataInstance) => boolean;
+  /** 监听active feature可见性变化的reaction */
+  private disposeVisibilityReaction: IReactionDisposer | null = null;
 
   constructor(config: ActiveFeatureControllerConfig) {
     this.disabled = config.disableActiveFeature ?? false;
     this.mapInstance = config.mapInstance;
     this.emitter = config.emitter;
+    this.isGroupVisible = config.isGroupVisible;
 
     // 创建ActiveLayer实例
     this.activeLayer = new ActiveLayer();
@@ -89,6 +96,19 @@ export class ActiveFeatureController {
 
     this.activeFeature = feature;
 
+    this.disposeVisibilityReaction?.();
+    this.disposeVisibilityReaction = null;
+    if (feature) {
+      this.disposeVisibilityReaction = reaction(
+        () => feature.visible && (this.isGroupVisible?.(feature) ?? true),
+        (visible) => {
+          if (!visible) {
+            this.clearActiveFeature();
+          }
+        },
+      );
+    }
+
     const coordinate = feature ? feature.coordinates : null;
 
     // 更新active图层效果
@@ -120,6 +140,8 @@ export class ActiveFeatureController {
    */
   public dispose() {
     this.unregisterEventHandlers();
+    this.disposeVisibilityReaction?.();
+    this.disposeVisibilityReaction = null;
     this.clearActiveFeature();
     // 隐藏active效果
     this.activeLayer.hideActive();

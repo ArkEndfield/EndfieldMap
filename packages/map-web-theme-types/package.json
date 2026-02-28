@@ -1,0 +1,40 @@
+{
+  "name": "@endfieldmap/map-web-theme-types",
+  "version": "0.1.0",
+  "description": "Theme type definitions for EndfieldMap web components",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/map-web-theme-types"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "prepack": "cp ../../LICENSE . 2>/dev/null || true",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,6 +1,13 @@
 {
   "name": "@endfieldmap/map-adapter-ol",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "OpenLayers map adapter for EndfieldMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/map-adapter-ol"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -17,6 +24,7 @@
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
+    "prepack": "cp ../../LICENSE . 2>/dev/null || true",
     "test": "vitest",
     "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
@@ -27,12 +35,14 @@
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
     "mobx": "^6.15.0",
-    "ol": "^10.7.0"
+    "ol": "^10.8.0"
   },
-  "devDependencies": {
-    "@endfieldmap/map-core": "workspace:*",
-    "@endfieldmap/tools": "workspace:*",
-    "mobx": "^6.15.0",
-    "ol": "^10.7.0"
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

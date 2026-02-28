@@ -1,6 +1,13 @@
 {
   "name": "@endfieldmap/storage-web",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Web storage adapter for EndfieldMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/storage-web"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -17,11 +24,20 @@
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
+    "prepack": "cp ../../LICENSE . 2>/dev/null || true",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@endfieldmap/tools": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

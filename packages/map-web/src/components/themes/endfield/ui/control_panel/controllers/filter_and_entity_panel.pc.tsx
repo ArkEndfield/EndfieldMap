@@ -1,8 +1,7 @@
+import { ScrollArea } from '@endfieldmap/web-components';
 import EntityPanel from '@themes/endfield/ui/control_panel/controllers/entity_panel';
 import { Filters } from '@themes/endfield/ui/control_panel/controllers/filters';
 import { SelectModeOperation } from '@themes/endfield/ui/control_panel/controllers/operations/select_mode';
-
-import { ScrollArea } from '@/components/common/scroll_area';
 
 export const FilterAndEntityPanelPC = () => {
   return (

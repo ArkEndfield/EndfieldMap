@@ -127,6 +127,10 @@ export const useCustomPointPresetPanel = () => {
     await customPointDataService.renamePreset(id, name);
   };
 
+  const canShare = () => {
+    return customPointDataService.canShare;
+  };
+
   return {
     presets,
     currentPresetId,
@@ -140,5 +144,6 @@ export const useCustomPointPresetPanel = () => {
     handleDeleteSelected,
     handleDeletePreset,
     handleRenamePreset,
+    canShare,
   };
 };

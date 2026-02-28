@@ -1,4 +1,6 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { InVisibleIcon, useAudio, useIsMobile,VisibleIcon } from '@endfieldmap/web-components';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { MenuContainer } from '@themes/endfield/ui/menus/center/menu_container';
@@ -6,17 +8,8 @@ import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
 import { menus } from '@themes/endfield/ui/menus/left/list';
 import { observer } from 'mobx-react-lite';
 
-import {
-  CustomPointIcon,
-  ElectricPoleIconPole,
-  FilterIcon,
-  InVisibleIcon,
-  VisibleIcon,
-} from '@/components/common/icons';
-import { SoundType } from '@/const/audio_config';
+import { CustomPointIcon, ElectricPoleIconPole, FilterIcon } from '@/components/common/icons';
 import { useAdapter } from '@/hooks/use_adapter';
-import { useAudio } from '@/hooks/use_audio';
-import { useIsMobile } from '@/hooks/use_is_mobile';
 import { service } from '@/services';
 
 const Menu = menus[0];

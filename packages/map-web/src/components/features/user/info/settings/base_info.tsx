@@ -1,8 +1,8 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { EditIcon } from '@/components/common/icons';
 import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';

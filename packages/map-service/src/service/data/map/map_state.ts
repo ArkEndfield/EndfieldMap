@@ -220,4 +220,27 @@ export class MapStateDataService {
   public setCurrentMap(mapId: MapData['id']) {
     this.currentMap.value = mapId;
   }
+
+  /**
+   * 清除地图状态数据（不影响登录/UID 等用户数据）
+   * 重置后自动切换到第一张地图
+   */
+  public clearState() {
+    this.mapZoom.reset();
+    this.mapCenter.reset();
+    this.filterMarked.reset();
+    this.displayEletricPoleRange.reset();
+    this.displayEletricPole.reset();
+    this.displayCustomPoint.reset();
+
+    const firstMapId = this.adapterRegistry.hasAdapter
+      ? this.adapterRegistry.adapter.mapController.dataManager.mapIds[0]
+      : undefined;
+
+    if (firstMapId) {
+      this.setCurrentMap(firstMapId);
+    } else {
+      this.currentMap.reset();
+    }
+  }
 }

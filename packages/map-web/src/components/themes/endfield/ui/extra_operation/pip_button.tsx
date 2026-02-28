@@ -1,11 +1,10 @@
 import { useTranslation } from '@endfieldmap/map-service';
-import Tooltip from '@themes/endfield/components/tooltip';
+import { cn } from '@endfieldmap/tools';
+import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { PiPIcon } from '@/components/common/icons';
 import uiManager from '@/services/ui_manager';
-import { cn } from '@/utils/style';
 
 export const PiPButton = observer(() => {
   const { t } = useTranslation('settings');

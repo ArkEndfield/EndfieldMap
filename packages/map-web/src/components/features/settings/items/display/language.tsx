@@ -1,14 +1,14 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import type { Language } from '@endfieldmap/tools';
+import { cn } from '@endfieldmap/tools';
+import { EndfieldSelect } from '@endfieldmap/web-components';
 
-import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { TranslateIcon } from '@/components/common/icons';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
-import { languageConfig } from '@/const/language';
 import { SETTINGS_KEYS } from '@/const/settings';
 import { useCurrentLanguage } from '@/hooks/use_current_language';
-import { cn } from '@/utils/style';
+import { service } from '@/services';
 
 export const LanguageSetting = () => {
   const { t, i18n } = useTranslation('settings');
@@ -18,7 +18,9 @@ export const LanguageSetting = () => {
     i18n.changeLanguage(locale);
   };
 
-  const selectOptions = languageConfig.map((locale) => ({
+  const languageList = service.i18nService.languageList;
+
+  const selectOptions = languageList.map((locale) => ({
     value: locale.code,
     label: locale.displayName,
     right: (active: boolean) => (

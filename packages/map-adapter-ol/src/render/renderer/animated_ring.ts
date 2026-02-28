@@ -54,10 +54,9 @@ export class AnimatedRingFeature {
   private fadeOutStartOpacity: number = 1;
 
   constructor(coordinate: Coordinate, iconRadius: number) {
-    // 计算目标半径和起始半径
-    this.targetRadius = iconRadius + 4;
-    this.startRadius = this.targetRadius * 1.3; // 稍微收紧收缩范围
-    this.endRadius = this.targetRadius * 1.3; // 稍微收紧发散范围
+    this.targetRadius = iconRadius + 6;
+    this.startRadius = this.targetRadius * 1.3;
+    this.endRadius = this.targetRadius * 1.3;
     this.currentRadius = this.startRadius;
 
     // 初始透明度为0，用于淡入效果

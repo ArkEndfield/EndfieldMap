@@ -1,6 +1,13 @@
 {
   "name": "@endfieldmap/tools",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Shared utility functions for EndfieldMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArkEndfield/EndfieldMap.git",
+    "directory": "packages/tools"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -17,6 +24,7 @@
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
+    "prepack": "cp ../../LICENSE . 2>/dev/null || true",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
@@ -24,14 +32,20 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "consola": "^3.4.2"
+    "clsx": "^2.1.1",
+    "consola": "^3.4.2",
+    "tailwind-merge": "^3.5.0"
   },
   "peerDependencies": {
     "mobx": "^6.15.0",
-    "ol": "^10.6.1"
+    "ol": "^10.8.0"
   },
-  "devDependencies": {
-    "mobx": "^6.15.0",
-    "ol": "^10.6.1"
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

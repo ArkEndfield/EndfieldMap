@@ -20,7 +20,7 @@ import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-nati
 import { useTranslation } from 'react-i18next';
 import { useAdapter } from '@/context/adapter';
 import { service } from '@/services/map-service';
-import { cn } from '@/utils/style';
+import { cn } from '@endfieldmap/tools';
 
 export interface EntityFilterSheetRef {
   present: () => void;
@@ -159,9 +159,13 @@ export const EntityFilterSheet = observer(
           return;
         }
 
-        entityController.setGroupVisibility(stat.mapId, stat.entityDataIdKey, visible);
+        service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(
+          stat.mapId,
+          stat.entityDataIdKey,
+          visible
+        );
       },
-      [entityController]
+      []
     );
 
     const handleFilterModeChange = useCallback(
@@ -172,7 +176,11 @@ export const EntityFilterSheet = observer(
     );
 
     const handleShowAll = useCallback(() => {
-      entityController.setAllEntityVisible(true);
+      for (const stat of entityStats) {
+        if (stat.mapId) {
+          service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(stat.mapId, stat.entityDataIdKey, true);
+        }
+      }
       customPointTypes.forEach((typeConfig) => {
         void service.dataService.mapDataService.customPointDataService
           .updateItemVisibility(mapId, typeConfig.id, true)
@@ -183,10 +191,14 @@ export const EntityFilterSheet = observer(
           .updateItemVisibility(mapId, deviceKey, true)
           .catch(() => {});
       });
-    }, [entityController, mapId]);
+    }, [entityStats, mapId]);
 
     const handleHideAll = useCallback(() => {
-      entityController.setAllEntityVisible(false);
+      for (const stat of entityStats) {
+        if (stat.mapId) {
+          service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(stat.mapId, stat.entityDataIdKey, false);
+        }
+      }
       customPointTypes.forEach((typeConfig) => {
         void service.dataService.mapDataService.customPointDataService
           .updateItemVisibility(mapId, typeConfig.id, false)
@@ -197,7 +209,12 @@ export const EntityFilterSheet = observer(
           .updateItemVisibility(mapId, deviceKey, false)
           .catch(() => {});
       });
-    }, [entityController, mapId]);
+    }, [entityStats, mapId]);
+
+    const CATEGORY_ORDER = [
+      CustomPointKey, ElectricPoleKey, NoteKey,
+      'other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative',
+    ];
 
     const groupedStats: { category: string; stats: FilterStat[] }[] = [];
     const groupedMap = new Map<string, FilterStat[]>();
@@ -212,6 +229,12 @@ export const EntityFilterSheet = observer(
         groupedStats.push({ category: key, stats: arr });
       }
     }
+
+    groupedStats.sort((a, b) => {
+      const aIdx = CATEGORY_ORDER.indexOf(a.category);
+      const bIdx = CATEGORY_ORDER.indexOf(b.category);
+      return (aIdx === -1 ? CATEGORY_ORDER.length : aIdx) - (bIdx === -1 ? CATEGORY_ORDER.length : bIdx);
+    });
 
     return (
       <TrueSheet

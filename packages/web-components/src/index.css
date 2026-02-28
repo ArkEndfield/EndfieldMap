@@ -1,0 +1,12 @@
+@layer ef-components {
+  @import 'tailwindcss';
+
+  .scrollbar-hide::-webkit-scrollbar {
+    @apply hidden;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

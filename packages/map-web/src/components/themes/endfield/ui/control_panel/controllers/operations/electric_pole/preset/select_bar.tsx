@@ -1,6 +1,5 @@
 import { useTranslation } from '@endfieldmap/map-service';
-
-import { Toggle } from '@/components/common/toggle';
+import { CheckboxToggle } from '@endfieldmap/web-components';
 
 interface PresetSelectBarProps {
   total: number;
@@ -21,7 +20,7 @@ const PresetSelectBar: React.FC<PresetSelectBarProps> = ({
 
   return (
     <div className="flex items-center justify-between text-xs shrink-0">
-      <Toggle
+      <CheckboxToggle
         checked={isSelectedAll}
         isIndeterminate={isIndeterminate}
         onToggle={onToggleSelectAll}

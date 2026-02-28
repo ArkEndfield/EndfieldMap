@@ -1,7 +1,6 @@
 import { useTranslation } from '@endfieldmap/map-service';
-import Tooltip from '@themes/endfield/components/tooltip';
+import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
 
-import { ZmdRoundIconButton } from '@/components/common/endfield_components/button/round_icon_button';
 import { ElectricPoleIconPole } from '@/components/common/icons';
 import { PlusIcon } from '@/components/common/icons';
 

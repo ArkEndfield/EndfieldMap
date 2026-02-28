@@ -1,19 +1,18 @@
 import type { MapData } from '@endfieldmap/map-core';
 import { useTranslation } from '@endfieldmap/map-service';
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio, Deco7Dots, useIsMobile } from '@endfieldmap/web-components';
 import { useMapChange } from '@themes/endfield/hooks/map_change';
 import { MapChangeAnimation } from '@themes/endfield/ui/map_menu/map_change_animation';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
 
-import { ButtonWithAudio } from '@/components/common/button_with_audio';
-import { ChangeMapIcon, Deco7Dots, SwitchIcon } from '@/components/common/icons';
+import { ChangeMapIcon, SwitchIcon } from '@/components/common/icons';
 import { MapButton } from '@/components/themes/endfield/ui/map_menu/button';
-import { SoundType } from '@/const/audio_config';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useClickOutside } from '@/hooks/use_click_outside';
-import { useIsMobile } from '@/hooks/use_is_mobile';
-import { cn } from '@/utils/style';
 
 const ChangeMap: React.FC = observer(() => {
   const { t } = useTranslation(['header', 'lang']);

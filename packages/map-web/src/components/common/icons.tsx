@@ -130,12 +130,6 @@ export const EndfieldCloseSquareIcon = (props: IconProps) => (
   </svg>
 );
 
-export const EndfieldCloseIcon = (props: IconProps) => (
-  <svg width="1em" height="1em" viewBox="0 0 205 205" fill="currentColor" fillRule="evenodd" {...props}>
-    <path d="M0 25L25 0L205 180L180 205ZM25 205L0 180L180 0L205 25Z" />
-  </svg>
-);
-
 export const CloseSquareIcon = (props: IconProps) => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
     <g>
@@ -665,34 +659,6 @@ export const MultiOperationIcon = (props: IconProps) => (
   </svg>
 );
 
-export const VisibleIcon = (props: IconProps) => (
-  <svg
-    fill="currentColor"
-    width="1em"
-    height="1em"
-    xmlns="http://www.w3.org/2000/svg"
-    version="1.1"
-    viewBox="1.9 3.15 7.5 5"
-    {...props}
-  >
-    <path d="M5.64,3.17c-1.63,0-3.2,1.03-3.73,2.48.53,1.45,2.1,2.48,3.73,2.48s3.21-1.03,3.74-2.48c-.54-1.45-2.11-2.48-3.74-2.48ZM5.64,7.2c-.85,0-1.55-.7-1.55-1.55s.7-1.55,1.55-1.55,1.55.7,1.55,1.55-.7,1.55-1.55,1.55ZM6.58,5.65c0,.51-.42.93-.93.93s-.93-.42-.93-.93.42-.93.93-.93.93.42.93.93Z" />
-  </svg>
-);
-
-export const InVisibleIcon = (props: IconProps) => (
-  <svg
-    fill="currentColor"
-    width="1em"
-    height="1em"
-    xmlns="http://www.w3.org/2000/svg"
-    version="1.1"
-    viewBox="1.9 2.4 7.5 6.9"
-    {...props}
-  >
-    <path d="M3.13,7.27l1.07-1.06c-.07-.17-.11-.36-.11-.56,0-.85.7-1.55,1.56-1.55.2,0,.39.04.56.11l.8-.8c-.44-.16-.89-.24-1.36-.24-1.63,0-3.2,1.03-3.73,2.49.23.64.67,1.2,1.22,1.62ZM8.15,4.02l1.11-1.1-.44-.44-6.37,6.36.44.44,1.39-1.39c.43.16.89.25,1.35.25,1.63,0,3.21-1.03,3.74-2.49-.23-.64-.68-1.2-1.23-1.62ZM5.64,7.2c-.19,0-.39-.04-.56-.11l.52-.52h.05c.51,0,.93-.42.93-.93v-.05l.52-.52c.05.19.09.38.09.57,0,.85-.7,1.55-1.56,1.55ZM4.71,5.65v.05l.98-.98h-.05c-.51,0-.93.42-.93.93Z" />
-  </svg>
-);
-
 export const VisibleWithDeco = (props: IconProps) => (
   <svg
     fill="currentColor"
@@ -904,20 +870,6 @@ export const FilterUnMarked = (props: IconProps) => (
     {...props}
   >
     <path d="M8.09,3.18h-.85c.25.31.4.69.4,1.12,0,1-.82,1.81-1.82,1.81-.57,0-1.08-.27-1.41-.68v.96c.31.21.67.35,1.06.4v.99h.41v1.17h-.41s.71.71.71.71v-2.88c1.23-.17,2.18-1.21,2.18-2.48,0-.4-.1-.78-.27-1.12ZM5.83,2.49c.47,0,.88.18,1.2.47h0s.01.01.01.01c.05.04.1.08.14.12v-.12h.57v-.72h-.57v-.08c-.39-.24-.85-.39-1.35-.39-1.4,0-2.53,1.13-2.53,2.51,0,.39.09.75.25,1.08h.83c-.23-.3-.37-.68-.37-1.08,0-1,.82-1.81,1.82-1.81ZM5.21,4.42c.06.29.31.5.62.5.35,0,.63-.28.63-.63s-.28-.63-.63-.63c-.01,0-.03,0-.04,0h0s-.68.01-.68.01v.72h.68s-.58.01-.58.01ZM5.59,8.01h-.48v.72h.48v-.72ZM3.43,6.09h.72v-.48h-.72v.48Z" />
-  </svg>
-);
-
-export const Deco7Dots = (props: IconProps) => (
-  <svg
-    fill="currentColor"
-    width="1em"
-    height="1em"
-    xmlns="http://www.w3.org/2000/svg"
-    version="1.1"
-    viewBox="3.6 0.8 4.1 9.7"
-    {...props}
-  >
-    <path d="M3.61,2.65v1l.86.5.86-.5v-1l-.86-.5-.86.5ZM3.61,5.24v1l.86.5.86-.5v-1l-.86-.5-.86.5ZM3.61,7.84v1l.86.5.86-.5v-1l-.86-.5-.86.5ZM6.83.85l-.86.5v1l.86.5.86-.5v-1l-.86-.5ZM5.98,3.88v1l.86.5.86-.5v-1l-.86-.5-.86.5ZM5.98,6.42v1l.86.5.86-.5v-1l-.86-.5-.86.5ZM5.98,8.95v1l.86.5.86-.5v-1l-.86-.5-.86.5Z" />
   </svg>
 );
 

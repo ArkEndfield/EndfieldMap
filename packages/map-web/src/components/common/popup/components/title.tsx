@@ -1,5 +1,6 @@
+import { cn } from '@endfieldmap/tools';
+
 import { DecoTriTriangle } from '@/components/common/icons';
-import { cn } from '@/utils/style';
 
 export interface SubPopupTitleProps {
   children?: React.ReactNode;

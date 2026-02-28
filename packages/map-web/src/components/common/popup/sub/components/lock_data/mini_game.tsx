@@ -1,16 +1,15 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { cn } from '@endfieldmap/tools';
+import { EndfieldSelect,ZmdSquareButton } from '@endfieldmap/web-components';
 
 import { DeltaRobotPiece } from '@/components/common/delta_robot/piece';
 import { DeltaRobotSolutionGrid } from '@/components/common/delta_robot/solution';
-import { ZmdSquareButton } from '@/components/common/endfield_components/button/square_button';
-import { EndfieldSelect } from '@/components/common/endfield_components/form/select';
 import { TickCircleIcon } from '@/components/common/icons';
 import { SubPopupTitle } from '@/components/common/popup/components/title';
 import type { MiniGameLockData } from '@/components/common/popup/sub/components/lock_data/types';
 import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';
 import { DeltaRobotStatus } from '@/const/delta_robot';
 import { useDeltaRobot } from '@/hooks/use_delta_robot';
-import { cn } from '@/utils/style';
 
 export const MiniGameLockComponent: SubPopupComponentProps<MiniGameLockData> = ({ prop }) => {
   const { miniGameIds } = prop;

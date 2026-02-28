@@ -1,4 +1,4 @@
-import type { ZmdAlertFullProps } from '@themes/types/alert';
+import type { ZmdAlertFullProps } from '@endfieldmap/map-web-theme-types/alert';
 import { type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 

@@ -7,6 +7,8 @@ import { ImagePool, logger } from '@endfieldmap/tools';
 import ImageLayer from 'ol/layer/Image';
 import { ImageStatic } from 'ol/source';
 
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
+
 export interface TierLayerConfig {
   tierDataManager: TierDataManager;
   mapDataManager: MapDataManager;
@@ -22,7 +24,7 @@ export class TierLayer extends SingleLayerBase {
     this.tierDataManager = tierDataManager;
     this.mapDataManager = mapDataManager;
     this.layer = new ImageLayer({
-      zIndex: -1,
+      zIndex: Z_INDEX.TIER,
     });
     this.layer.set(LayerTypeKey, LayerType.TIER);
   }

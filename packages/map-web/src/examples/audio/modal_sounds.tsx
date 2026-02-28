@@ -3,11 +3,10 @@
  * 展示如何为弹窗、对话框等UI元素添加打开/关闭音效
  */
 
+import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { useAudio } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
-
-import { SoundType } from '@/const/audio_config';
-import { useAudio } from '@/hooks/use_audio';
 
 /**
  * 示例 1: 简单的弹窗音效

@@ -1,8 +1,8 @@
 import { useTranslation } from '@endfieldmap/map-service';
+import { Dialog } from '@endfieldmap/web-components';
 import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 import { useState } from 'react';
 
-import { Dialog } from '@/components/common/dialog';
 import { FeedbackIcon } from '@/components/common/icons';
 
 export const HeaderMenuFeedback = ({ className }: { className?: string }) => {

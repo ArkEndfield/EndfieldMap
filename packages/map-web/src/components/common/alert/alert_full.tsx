@@ -1,11 +1,11 @@
-import { type ZmdAlertFullProps } from '@themes/types/alert';
+import type { ZmdAlertFullProps } from '@endfieldmap/map-web-theme-types/alert';
+import { shortcutService, useWindow } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useWindow } from '@/context/window';
-import shortcutService from '@/services/shortcut';
 import uiManager from '@/services/ui_manager';
+import { useTranslation } from '@endfieldmap/map-service';
 
 const AlertFullRenderer = observer((props: ZmdAlertFullProps) => {
   const AlertFullComponent = uiManager.ThemedComponents.alert.AlertFull;
@@ -29,10 +29,13 @@ export const ZmdAlertFull = ({
   loading = false,
   dismissible = true,
   keyboardCloseable,
+  confirmText,
+  cancelText,
   ...props
 }: ZmdAlertFullProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const currentWindow = useWindow();
+  const { t } = useTranslation();
 
   // Logic Handlers
   const handleClose = useCallback(() => {
@@ -160,6 +163,8 @@ export const ZmdAlertFull = ({
   return createPortal(
     <AlertFullRenderer
       {...props}
+      confirmText={confirmText || t('confirm')}
+      cancelText={cancelText || t('cancel')}
       dismissible={dismissible}
       loading={loading || isProcessing}
       onDismiss={handleDismiss}

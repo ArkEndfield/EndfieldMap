@@ -1,8 +1,8 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { LocalStorageDB } from '@endfieldmap/tools';
+import { EndfieldFormButton } from '@endfieldmap/web-components';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { EndfieldFormButton } from '@/components/common/endfield_components/form/button';
 import { Loading } from '@/components/common/settings/components/loading';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
@@ -14,8 +14,8 @@ const clearAll = (confirmText: string): Promise<boolean> => {
     alert.confirm({
       content: confirmText,
       async onConfirm() {
-        // 清空用户数据库中的所有数据（触发删除事件）
-        await Promise.all([LocalStorageDB.clear(), service.databaseService.clearUserDataWithEvents()]);
+        await service.databaseService.clearUserDataWithEvents();
+        LocalStorageDB.clear();
         resolve(true);
       },
       onCancel() {
