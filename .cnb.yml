@@ -39,7 +39,7 @@ main:
         - name: 安装 pnpm
           script: npm install -g pnpm
         - name: 安装依赖
-          script: pnpm install
+          script: pnpm install --filter @endfieldmap/map-web...
         - name: 构建包
           script: pnpm build:web
         - name: 部署到服务器
@@ -59,7 +59,7 @@ main:
         - name: 安装 pnpm
           script: npm install -g pnpm
         - name: 安装依赖
-          script: pnpm install
+          script: pnpm install --filter '!@endfieldmap/map-native' --filter '!@endfieldmap/map-web'
         - name: 构建所有包
           script: pnpm run build:packages
         - name: 配置 GitHub Packages 认证
@@ -80,7 +80,7 @@ main:
         - name: 安装 pnpm
           script: npm install -g pnpm
         - name: 安装依赖
-          script: pnpm install
+          script: pnpm install --filter @endfieldmap/web-components...
         - name: 构建组件文档
           script: pnpm build:components:docs
         - name: 部署到服务器
