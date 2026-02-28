@@ -14,6 +14,7 @@
     "dev:components": "pnpm -C packages/web-components storybook",
     "build": "turbo run build",
     "build:web": "turbo run build --filter=@endfieldmap/map-web",
+    "build:packages": "turbo run build --filter=!@endfieldmap/map-web --filter=!@endfieldmap/map-native",
     "build:components": "turbo run build --filter=@endfieldmap/web-components",
     "build:components:docs": "turbo run build --filter=@endfieldmap/web-components && pnpm -C packages/web-components build-storybook",
     "build:adapter:ol": "turbo run build --filter=@endfieldmap/map-adapter-ol",

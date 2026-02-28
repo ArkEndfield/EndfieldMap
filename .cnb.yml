@@ -61,7 +61,7 @@ main:
         - name: 安装依赖
           script: pnpm install
         - name: 构建所有包
-          script: pnpm run build:base && pnpm -C packages/map-adapter-ol build && pnpm -C packages/map-adapter-maplibre build && pnpm -C packages/storage-web build && pnpm -C packages/storage-mmkv build && pnpm -C packages/storage-expo-sqlite build && pnpm -C packages/map-web-theme-types build && pnpm -C packages/web-components build
+          script: pnpm run build:packages
         - name: 配置 GitHub Packages 认证
           script: echo "//npm.pkg.github.com/:_authToken=${GH_PKG_TOKEN}" >> .npmrc
         - name: 发布包
