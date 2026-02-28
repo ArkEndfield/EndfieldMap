@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { BindIcon, EditIcon } from '@/components/common/icons';
+import { BindIcon, EditIcon } from '@endfieldmap/web-components';
 import { UserModal } from '@/components/common/user/modal';
 import { ActionPanel } from '@/components/features/user/info/action_panel';
 import { BindUid } from '@/components/features/user/info/bind_uid';

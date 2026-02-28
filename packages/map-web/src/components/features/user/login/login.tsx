@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { TickCircleIcon } from '@/components/common/icons';
+import { TickCircleIcon } from '@endfieldmap/web-components';
 import { UserInput } from '@/components/common/user/input';
 import { type LoginFormData, loginSchema } from '@/const/schema/auth';
 import { service } from '@/services';

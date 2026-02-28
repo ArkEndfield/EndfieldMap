@@ -5,7 +5,7 @@ import { ButtonWithAudio, Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-c
 import { AnimatePresence, motion } from 'motion/react';
 import type { MouseEvent } from 'react';
 
-import { EditIcon, ShareIcon, TrashIcon } from '@/components/common/icons';
+import { EditIcon, ShareIcon, TrashIcon } from '@endfieldmap/web-components';
 
 export interface PresetListItemProps {
   index: number;

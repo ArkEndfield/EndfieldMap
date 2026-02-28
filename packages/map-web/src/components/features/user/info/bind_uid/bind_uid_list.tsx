@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import type { GameRole } from '@/@types/game_role';
-import { ArrowLeftIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
+import { ArrowLeftIcon, CheckCircleIcon, QuestionIcon } from '@endfieldmap/web-components';
 
 interface BindUidListProps {
   /** 可绑定的角色列表 */

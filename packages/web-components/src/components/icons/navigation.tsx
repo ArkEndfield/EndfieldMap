@@ -1,4 +1,4 @@
-import type { IconProps } from '@eftypes/icon';
+import type { IconProps } from '@endfieldmap/web-components/types/icon';
 
 export const ChevronUp = (props: IconProps) => (
   <svg width="1em" height="1em" viewBox="0 0 125 76" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>

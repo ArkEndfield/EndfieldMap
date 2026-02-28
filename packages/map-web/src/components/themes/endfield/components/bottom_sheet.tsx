@@ -4,7 +4,7 @@ import { motion, useAnimation } from 'motion/react';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-import { ChevronUpTriangle } from '@/components/common/icons';
+import { ChevronUpTriangle } from '@endfieldmap/web-components';
 
 /**
  * BottomSheet 各元素的自定义样式类名

@@ -21,6 +21,17 @@ export * from './types/form';
 export * from './components/icons/common';
 export * from './components/icons/alert';
 export * from './components/icons/endfield';
+export * from './components/icons/action';
+export * from './components/icons/edit';
+export * from './components/icons/electric_pole';
+export * from './components/icons/layout';
+export * from './components/icons/logo';
+export * from './components/icons/map';
+export * from './components/icons/misc';
+export * from './components/icons/navigation';
+export * from './components/icons/social';
+export * from './components/icons/ui';
+export * from './components/icons/user';
 
 // Base components
 export * from './components/button_with_audio';

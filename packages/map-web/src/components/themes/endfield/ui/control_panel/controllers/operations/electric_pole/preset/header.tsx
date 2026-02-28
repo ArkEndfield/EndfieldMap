@@ -1,8 +1,8 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
 
-import { ElectricPoleIconPole } from '@/components/common/icons';
-import { PlusIcon } from '@/components/common/icons';
+import { ElectricPoleIconPole } from '@endfieldmap/web-components';
+import { PlusIcon } from '@endfieldmap/web-components';
 
 interface PresetHeaderProps {
   onCreate: () => void;

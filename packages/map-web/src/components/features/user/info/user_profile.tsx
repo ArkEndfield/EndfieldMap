@@ -6,7 +6,7 @@ import { ZmdSquareButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 
-import { CheckCircleIcon, SyncIcon } from '@/components/common/icons';
+import { CheckCircleIcon, SyncIcon } from '@endfieldmap/web-components';
 import { service } from '@/services';
 
 // ==================== 用户头像组件 ====================

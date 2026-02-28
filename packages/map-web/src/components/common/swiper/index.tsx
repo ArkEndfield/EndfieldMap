@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { ChevronUp, ChevronUpTriangle } from '@/components/common/icons';
+import { ChevronUp, ChevronUpTriangle } from '@endfieldmap/web-components';
 import uiManager from '@/services/ui_manager';
 
 export interface SwiperProps {

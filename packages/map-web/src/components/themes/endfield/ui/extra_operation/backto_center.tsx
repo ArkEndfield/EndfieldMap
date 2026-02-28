@@ -3,7 +3,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
-import { CenterIcon } from '@/components/common/icons';
+import { CenterIcon } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 
 export const BackToCenter = observer(() => {

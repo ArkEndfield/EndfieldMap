@@ -10,7 +10,7 @@ import {
   ElectricPoleIconRepeater,
   ElectricPoleIconZipline80,
   ElectricPoleIconZipline110,
-} from '@/components/common/icons';
+} from '@endfieldmap/web-components';
 import { service } from '@/services';
 
 const ElectricPoleTypeSelector: React.FC = observer(() => {

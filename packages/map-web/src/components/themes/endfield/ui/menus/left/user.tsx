@@ -2,7 +2,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 import { useState } from 'react';
 
-import { UserIcon } from '@/components/common/icons';
+import { UserIcon } from '@endfieldmap/web-components';
 import { UserCenter } from '@/components/features/user';
 
 export const HeaderMenuUser = ({ className }: { className?: string }) => {

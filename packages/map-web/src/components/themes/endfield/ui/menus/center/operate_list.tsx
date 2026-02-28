@@ -8,7 +8,7 @@ import { OperateMenu } from '@themes/endfield/ui/menus/center/operate_menu';
 import { menus } from '@themes/endfield/ui/menus/left/list';
 import { observer } from 'mobx-react-lite';
 
-import { CustomPointIcon, ElectricPoleIconPole, FilterIcon } from '@/components/common/icons';
+import { CustomPointIcon, ElectricPoleIconPole, FilterIcon } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 

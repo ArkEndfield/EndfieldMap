@@ -7,7 +7,7 @@ import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controlle
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { Logo } from '@/components/common/icons';
+import { Logo } from '@endfieldmap/web-components';
 import { BottomSheet } from '@/components/themes/endfield/components/bottom_sheet';
 import { service } from '@/services';
 

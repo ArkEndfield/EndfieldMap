@@ -3,7 +3,7 @@ import { cn } from '@endfieldmap/tools';
 import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
-import { PiPIcon } from '@/components/common/icons';
+import { PiPIcon } from '@endfieldmap/web-components';
 import uiManager from '@/services/ui_manager';
 
 export const PiPButton = observer(() => {

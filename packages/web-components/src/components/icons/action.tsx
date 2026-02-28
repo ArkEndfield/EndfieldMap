@@ -1,4 +1,4 @@
-import type { IconProps } from '@eftypes/icon';
+import type { IconProps } from '@endfieldmap/web-components/types/icon';
 
 export const ClearIcon = (props: IconProps) => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="1em" height="1em" {...props}>

@@ -2,7 +2,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
 
-import { BilibiliIcon, DiscordIcon, Logo, QQIcon } from '@/components/common/icons';
+import { BilibiliIcon, DiscordIcon, Logo, QQIcon } from '@endfieldmap/web-components';
 import { UserModal } from '@/components/common/user/modal';
 import { LoginForm } from '@/components/features/user/login/login';
 import { RegisterForm } from '@/components/features/user/login/register';

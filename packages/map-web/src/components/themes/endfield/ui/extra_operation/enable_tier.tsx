@@ -2,7 +2,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
-import { LayerSwitchIcon } from '@/components/common/icons';
+import { LayerSwitchIcon } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
 

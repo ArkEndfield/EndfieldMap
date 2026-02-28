@@ -5,7 +5,7 @@ import { OperationContainer } from '@themes/endfield/components/topbar/operation
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
 
-import { EditAddIcon, EditConnectIcon, EditDeleteIcon, EditDisconnectIcon } from '@/components/common/icons';
+import { EditAddIcon, EditConnectIcon, EditDeleteIcon, EditDisconnectIcon } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useElectricMode } from '@/hooks/use_electric_mode';
 import { service } from '@/services';

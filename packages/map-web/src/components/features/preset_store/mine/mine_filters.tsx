@@ -2,7 +2,7 @@ import type { MineTab, PresetType } from '@endfieldmap/map-service';
 import { useTranslation } from '@endfieldmap/map-service';
 import { EndfieldToggle, ZmdRoundIconButton } from '@endfieldmap/web-components';
 
-import { RefreshIcon } from '@/components/common/icons';
+import { RefreshIcon } from '@endfieldmap/web-components';
 import { PRESET_TYPE_OPTIONS, TAB_OPTIONS } from '@/const/preset_store';
 
 interface MineFiltersProps {

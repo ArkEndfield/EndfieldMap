@@ -5,7 +5,7 @@ import { ScrollArea,ZmdRoundButton, ZmdRoundIconButton } from '@endfieldmap/web-
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ArrowLeftIcon, ImportIcon, UserIcon, ViewAltIcon } from '@/components/common/icons';
+import { ArrowLeftIcon, ImportIcon, UserIcon, ViewAltIcon } from '@endfieldmap/web-components';
 import { MapPreview } from '@/components/common/map-preview';
 import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';

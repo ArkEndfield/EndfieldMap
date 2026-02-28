@@ -3,7 +3,7 @@ import { ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { EditIcon } from '@/components/common/icons';
+import { EditIcon } from '@endfieldmap/web-components';
 import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 

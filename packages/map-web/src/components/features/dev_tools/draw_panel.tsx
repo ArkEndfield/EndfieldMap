@@ -5,7 +5,7 @@ import { useWindow } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
-import { CloseIcon, EditIcon, TrashIcon, ViewAltIcon } from '@/components/common/icons';
+import { CloseIcon, EditIcon, TrashIcon, ViewAltIcon } from '@endfieldmap/web-components';
 import { Draws } from '@/components/features/dev_tools/draws';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';

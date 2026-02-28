@@ -1,4 +1,4 @@
-import type { IconProps } from '@eftypes/icon';
+import type { IconProps } from '@endfieldmap/web-components/types/icon';
 
 export const Logo = (props: IconProps) => (
   <svg

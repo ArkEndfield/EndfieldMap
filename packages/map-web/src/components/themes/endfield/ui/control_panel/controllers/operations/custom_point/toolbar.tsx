@@ -3,7 +3,7 @@ import { OperationContainer } from '@themes/endfield/components/topbar/operation
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
 
-import { EditAddIcon, EditDeleteIcon } from '@/components/common/icons';
+import { EditAddIcon, EditDeleteIcon } from '@endfieldmap/web-components';
 import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
 
 export const CustomPointManagerToolbar = observer(() => {
