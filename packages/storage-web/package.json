@@ -23,7 +23,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc -p tsconfig.build.json --noEmit && vite build",
     "prepack": "cp ../../LICENSE . 2>/dev/null || true",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

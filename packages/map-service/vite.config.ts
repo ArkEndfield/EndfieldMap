@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       dts({
-        include: ['src/**/*'],
+        include: ['src/**/*.ts'],
         tsconfigPath: 'tsconfig.build.json',
         outDirs: 'dist',
         entryRoot: 'src',
