@@ -32,8 +32,9 @@
     "lint:fix": "pnpm -r lint:fix",
     "changeset": "changeset",
     "version:packages": "changeset version",
-    "publish:packages": "pnpm run build:base && pnpm -r publish --access public",
-    "release": "bash scripts/release.sh"
+    "publish:packages": "turbo run build && pnpm -r publish --access public",
+    "release": "bash scripts/release.sh",
+    "clean": "find . -name 'dist' -type d -not -path '*/node_modules/*' -exec rm -rf {} + && rm -rf .turbo && find . -name '.turbo' -type d -not -path '*/node_modules/*' -exec rm -rf {} +"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

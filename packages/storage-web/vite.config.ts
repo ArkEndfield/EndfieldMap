@@ -29,7 +29,7 @@ export default defineConfig({
   plugins: [
     dts({
       include: ['src/**/*'],
-      tsconfigPath: 'tsconfig.json',
+      tsconfigPath: 'tsconfig.build.json',
       outDirs: 'dist',
       entryRoot: 'src',
       insertTypesEntry: true,

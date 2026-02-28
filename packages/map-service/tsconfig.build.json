@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "isolatedModules": false
+  },
+  "exclude": ["node_modules", "dist", "src/@types/i18next.d.ts"],
+  "references": []
+}
