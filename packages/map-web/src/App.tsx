@@ -5,10 +5,15 @@ import { LoadingStageId } from '@/const/loading';
 import { loadingManager } from '@/services/loading';
 
 const EndfieldMap = React.lazy(async () => {
-  loadingManager.updateStageProgress(LoadingStageId.COMPONENTS, 10);
-  const module = await import('@/Map');
-  loadingManager.completeStage(LoadingStageId.COMPONENTS);
-  return module;
+  try {
+    loadingManager.updateStageProgress(LoadingStageId.COMPONENTS, 10);
+    const module = await import('@/Map');
+    loadingManager.completeStage(LoadingStageId.COMPONENTS);
+    return module;
+  } catch (error) {
+    loadingManager.setError(error instanceof Error ? error : new Error(String(error)));
+    throw error;
+  }
 });
 
 function App() {
