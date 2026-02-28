@@ -32,7 +32,13 @@
   "peerDependencies": {
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
+    "@maplibre/maplibre-react-native": "^10.4.2",
     "mobx": "^6.15.0"
+  },
+  "peerDependenciesMeta": {
+    "@maplibre/maplibre-react-native": {
+      "optional": true
+    }
   },
   "files": [
     "dist",
