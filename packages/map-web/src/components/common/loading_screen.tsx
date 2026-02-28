@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { loadingManager } from '@/services/loading';
 
@@ -9,23 +9,30 @@ interface LoadingScreenProps {
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const completeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const unsubscribe = loadingManager.subscribe((state) => {
       setProgress(state.displayProgress);
 
-      // 只有当显示进度也达到100%时才认为是真正的完成
+      // 只有当显示进度也达到99.9%时才认为是真正的完成
       // 放宽一点点判断，因为可能有浮点数误差
       if (state.isComplete && state.displayProgress >= 99.9 && !isComplete) {
         setIsComplete(true);
         // 延迟调用 onComplete，让动画完成并停留一会儿
         // 增加到 800ms
-        setTimeout(() => onComplete?.(), 800);
+        completeTimerRef.current = setTimeout(() => onComplete?.(), 800);
       }
     });
 
     return unsubscribe;
   }, [onComplete, isComplete]);
+
+  useEffect(() => {
+    return () => {
+      if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
+    };
+  }, []);
 
   // 同步到初始加载器
   useEffect(() => {

@@ -91,6 +91,6 @@ export interface IVisibilityService {
  */
 export interface IEntityMarkService {
   getAllMapMarkData(): Promise<{ mapId: string; entityId: number; marked: boolean }[]>;
-  addScribe(callback: (mapId: string, id: number, marked: boolean) => void): void;
+  addSubscribe(callback: (mapId: string, id: number, marked: boolean) => void): void;
   setMarkData(mapId: string, id: number, marked: boolean): Promise<unknown>;
 }

@@ -59,11 +59,21 @@ export type ShortcutString = Key | Combo1 | Combo2 | Combo3 | (string & {});
 class ShortcutService {
   private listeners: ShortcutListener[] = [];
   private isExecuting = false;
+  private boundHandleKeydown: ((e: KeyboardEvent) => void) | null = null;
 
   constructor() {
     if (typeof window !== 'undefined') {
-      window.addEventListener('keydown', this.handleKeydown.bind(this));
+      this.boundHandleKeydown = this.handleKeydown.bind(this);
+      window.addEventListener('keydown', this.boundHandleKeydown);
     }
+  }
+
+  public destroy(): void {
+    if (typeof window !== 'undefined' && this.boundHandleKeydown) {
+      window.removeEventListener('keydown', this.boundHandleKeydown);
+      this.boundHandleKeydown = null;
+    }
+    this.listeners = [];
   }
 
   public register(listener: ShortcutListener): () => void;

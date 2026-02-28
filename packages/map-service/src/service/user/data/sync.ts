@@ -67,6 +67,7 @@ export class SyncService<T, R> {
 
   private replicationStates: Map<SyncCollectionKey, RxReplicationState<SyncDocument, SyncCheckpoint>> = new Map();
   private isSyncing: boolean = false;
+  private startingSyncPromise: Promise<void> | null = null;
   private consecutiveErrorCount: number = 0;
   private static readonly MAX_CONSECUTIVE_ERRORS = 5;
   private databaseService: DatabaseService<T, R>;
@@ -91,6 +92,16 @@ export class SyncService<T, R> {
   }
 
   public async startSync(): Promise<void> {
+    if (this.startingSyncPromise) {
+      return this.startingSyncPromise;
+    }
+    this.startingSyncPromise = this._startSync();
+    return this.startingSyncPromise.finally(() => {
+      this.startingSyncPromise = null;
+    });
+  }
+
+  private async _startSync(): Promise<void> {
     if (this.isSyncing) {
       logger.warn('[SyncService] Sync already running, stopping first...');
       await this.stopSync();

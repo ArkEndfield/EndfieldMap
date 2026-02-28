@@ -8,9 +8,9 @@ import { service } from '@/services';
  * 监听 ENTITY_HOVER 和 CONNECTION_HOVER 事件，设置 hover 状态
  * @param adapter 地图适配器
  */
-export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter) {
+export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter): () => void {
   // 监听 entity_hover 事件，设置 hover feature
-  adapter.event.on(MAP_EVENT.ENTITY_HOVER, (event) => {
+  const disposeEntityHover = adapter.event.on(MAP_EVENT.ENTITY_HOVER, (event) => {
     if (
       service.dataService.mapDataService.customPointDataService.isCreating ||
       service.dataService.mapDataService.electricPoleDataService.isCreating ||
@@ -33,7 +33,7 @@ export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter) {
   });
 
   // 监听 connection_hover 事件，设置 hover connection
-  adapter.event.on(MAP_EVENT.CONNECTION_HOVER, (event) => {
+  const disposeConnectionHover = adapter.event.on(MAP_EVENT.CONNECTION_HOVER, (event) => {
     if (
       service.dataService.mapDataService.customPointDataService.isCreating ||
       service.dataService.mapDataService.electricPoleDataService.isCreating ||
@@ -56,4 +56,9 @@ export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter) {
       adapter.hoverConnectionController.clearHoverConnection();
     }
   });
+
+  return () => {
+    disposeEntityHover();
+    disposeConnectionHover();
+  };
 }

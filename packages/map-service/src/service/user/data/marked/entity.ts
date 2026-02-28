@@ -65,11 +65,6 @@ export class EntityMarkService<T, R> extends BaseUserDataService<EntityMarkCallb
     this.subscriptions.push(sub);
   }
 
-  /** @deprecated Use addSubscribe instead */
-  public addScribe(callback: EntityMarkCallback) {
-    this.addSubscribe(callback);
-  }
-
   public clearAllData() {
     return this.db.find().remove();
   }

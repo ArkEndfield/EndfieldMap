@@ -35,11 +35,13 @@ export class MapService {
   public adapter: EndfieldMapAdapter | null = null;
   public initPromise: Promise<{ adapter: EndfieldMapAdapter } | undefined> | null =
     null;
+  private eventDisposers: Array<() => void> = [];
 
   constructor(public container: HTMLElement) {
-    // TODO: 后面删掉，部署无妨
-    // @ts-expect-error 方便线上调试用
-    window.mapService = this;
+    if (isDev) {
+      // @ts-expect-error 方便线上调试用
+      window.mapService = this;
+    }
   }
   async init() {
     if (this.initPromise) return this.initPromise;
@@ -102,7 +104,7 @@ export class MapService {
       this.adapter.renderAreaName();
 
       // 初始化鼠标指针样式监听器
-      initCursorEventListeners(this.adapter);
+      this.eventDisposers.push(initCursorEventListeners(this.adapter));
 
       // LOADING
       loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
@@ -111,13 +113,13 @@ export class MapService {
       loadingManager.completeStage(LoadingStageId.MAP_RENDER);
       loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);
       // 初始化激活feature事件监听器，用于设置和清除激活的feature
-      initActiveFeatureEventListeners(this.adapter!);
+      this.eventDisposers.push(initActiveFeatureEventListeners(this.adapter!));
 
       // 初始化激活feature事件监听器，用于设置和清除激活的feature
-      initContextMenuEventListeners(this.adapter!);
+      this.eventDisposers.push(initContextMenuEventListeners(this.adapter!));
 
       // 初始化hover事件监听器，用于设置和清除hover的feature
-      initHoverFeatureEventListeners(this.adapter!);
+      this.eventDisposers.push(initHoverFeatureEventListeners(this.adapter!));
       return {
         adapter: this.adapter,
       };

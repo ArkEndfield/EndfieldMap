@@ -36,13 +36,14 @@ export function useMapAdapter(containerRef: React.RefObject<HTMLDivElement | nul
 
   useEffect(() => {
     // 监听语言变化
-    i18n.on('languageChanged', () => {
+    const handleLanguageChange = () => {
       if (adapter.current) {
         adapter.current.renderAreaName();
       }
-    });
+    };
+    i18n.on('languageChanged', handleLanguageChange);
     return () => {
-      i18n.off('languageChanged');
+      i18n.off('languageChanged', handleLanguageChange);
     };
   }, [i18n]);
 

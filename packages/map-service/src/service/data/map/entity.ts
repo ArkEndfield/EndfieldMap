@@ -43,7 +43,7 @@ export class EntityDataService {
   }
 
   private initSubscriptions() {
-    this.deps.entityMarkService.addScribe((mapId, id, marked) => {
+    this.deps.entityMarkService.addSubscribe((mapId, id, marked) => {
       this.deps.adapterRegistry.adapter.entityController.setMarked(mapId, id, marked);
     });
 

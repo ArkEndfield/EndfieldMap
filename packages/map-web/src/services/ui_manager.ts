@@ -32,6 +32,7 @@ class UIManager {
       if (!this.mediaQueryList) {
         this.mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
       }
+      this.mediaQueryList.removeEventListener('change', this.handleSystemThemeChange);
       this.mediaQueryList.addEventListener('change', this.handleSystemThemeChange);
       this.handleSystemThemeChange(this.mediaQueryList);
     } else {

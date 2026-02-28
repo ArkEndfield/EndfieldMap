@@ -96,6 +96,8 @@ export class ElectricPoleDataService extends BasePresetDataService<
   @observable accessor isDeletingConnection: boolean = false;
 
   private connectionClickEventInitialized: boolean = false;
+  private eventListenerDisposers: Array<() => void> = [];
+  private reactionDisposers: Array<() => void> = [];
 
   constructor(deps: ElectricPoleDataServiceDeps) {
     super(deps);
@@ -104,7 +106,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
   public async init() {
     this.initEntityClickEvent();
     this.initElectricPoleClickEvent();
-    reaction(
+    const reactionDisposer = reaction(
       () => this.deps.adapterRegistry.adapter.mapController.dataManager.currentMapId,
       () => {
         if (this.connectingPole) {
@@ -114,6 +116,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
       },
       { fireImmediately: true }
     );
+    this.reactionDisposers.push(reactionDisposer);
     await this.initFromStorage();
   }
 
@@ -251,10 +254,11 @@ export class ElectricPoleDataService extends BasePresetDataService<
   }
 
   private initEntityClickEvent() {
-    this.deps.adapterRegistry.adapter.event.on(MAP_EVENT.MAP_CLICK, async (event) => {
+    const dispose = this.deps.adapterRegistry.adapter.event.on(MAP_EVENT.MAP_CLICK, async (event) => {
       if (!this.isCreating) return;
       await this.createElectricPole(event.coordinate);
     });
+    this.eventListenerDisposers.push(dispose);
   }
 
   public async createElectricPole(coordinate: MapCoordinate) {
@@ -333,6 +337,13 @@ export class ElectricPoleDataService extends BasePresetDataService<
     });
   }
 
+  public dispose() {
+    this.eventListenerDisposers.forEach((d) => d());
+    this.eventListenerDisposers = [];
+    this.reactionDisposers.forEach((d) => d());
+    this.reactionDisposers = [];
+  }
+
   @action
   public toggleAutoConnect() {
     this.autoConnect = !this.autoConnect;
@@ -352,12 +363,13 @@ export class ElectricPoleDataService extends BasePresetDataService<
   }
 
   private initElectricPoleClickEvent() {
-    this.deps.adapterRegistry.adapter.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
+    const dispose = this.deps.adapterRegistry.adapter.event.on(MAP_EVENT.ENTITY_CLICK, (event) => {
       if (!this.isDeleting) return;
       const instance = event.instance;
       if (!(instance instanceof ElectricPoleDataInstance)) return;
       this.deleteElectricPole(instance);
     });
+    this.eventListenerDisposers.push(dispose);
   }
 
   @action
@@ -374,10 +386,11 @@ export class ElectricPoleDataService extends BasePresetDataService<
     if (this.connectionClickEventInitialized) return;
     this.connectionClickEventInitialized = true;
 
-    this.deps.adapterRegistry.adapter.event.on(MAP_EVENT.CONNECTION_CLICK, (event) => {
+    const dispose = this.deps.adapterRegistry.adapter.event.on(MAP_EVENT.CONNECTION_CLICK, (event) => {
       if (!this.isDeletingConnection) return;
       this.deleteConnection(event.instance, event.targetId);
     });
+    this.eventListenerDisposers.push(dispose);
   }
 
   @action

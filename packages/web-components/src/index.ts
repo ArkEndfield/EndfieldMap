@@ -10,7 +10,6 @@ export * from './hooks/use_audio';
 export * from './services/audio_service';
 export * from './services/audio_config';
 export * from './services/shortcut';
-export * from './services/shortcut';
 
 // Types
 export * from './types/icon';

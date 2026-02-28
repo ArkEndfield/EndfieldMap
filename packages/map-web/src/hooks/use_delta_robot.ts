@@ -1,6 +1,6 @@
 import type { Grid, ParsedLevel } from '@endfieldmap/map-service';
 import { logger } from '@endfieldmap/tools';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { DeltaRobotStatus } from '@/const/delta_robot';
 import { service } from '@/services';
@@ -11,6 +11,7 @@ export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
   const [solutionGrid, setSolutionGrid] = useState<Grid | null>(null);
   const [status, setStatus] = useState<DeltaRobotStatus>(DeltaRobotStatus.Idle);
   const [solvingTime, setSolvingTime] = useState<number>(-1);
+  const solveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 加载关卡数据
   const loadLevel = useCallback(async (level: string) => {
@@ -47,6 +48,12 @@ export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
     if (levelList.length > 0) selectLevel(levelList[0]);
   }, [levelList, selectLevel]);
 
+  useEffect(() => {
+    return () => {
+      if (solveTimerRef.current) clearTimeout(solveTimerRef.current);
+    };
+  }, []);
+
   // 求解拼图
   const handleSolve = () => {
     if (!levelData || levelData.pieces.length === 0) {
@@ -56,7 +63,7 @@ export const useDeltaRobot = ({ levelList }: { levelList: string[] }) => {
     setStatus(DeltaRobotStatus.Solving);
 
     // 使用 setTimeout 避免阻塞 UI
-    setTimeout(() => {
+    solveTimerRef.current = setTimeout(() => {
       try {
         const { sizeX, sizeY, obstaclesFlat, pieces, rowConstraints, colConstraints, groups } = levelData;
 

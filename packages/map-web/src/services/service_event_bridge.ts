@@ -10,7 +10,11 @@ import { loadingManager } from '@/services/loading';
  *
  * Call once during application bootstrap, before any service fires events.
  */
+let initialized = false;
+
 export function initServiceEventBridge(): void {
+  if (initialized) return;
+  initialized = true;
   serviceEmitter.on(SERVICE_EVENT.ALERT_INFO, (data) => {
     const content = typeof data === 'string' ? data : data.content;
     alert.info(content);

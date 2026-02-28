@@ -259,7 +259,7 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
    * 恢复用户数据到数据库
    */
   private async restoreUserData(db: RxDatabase<UserDataDBCollections>, snapshot: UserDataSnapshot): Promise<void> {
-    await Promise.all([
+    const results = await Promise.allSettled([
       db.electricPoleNode.bulkInsert(snapshot.electricPoleNode as never[]),
       db.electricPolePreset.bulkInsert(snapshot.electricPolePreset as never[]),
       db.customPointNode.bulkInsert(snapshot.customPointNode as never[]),
@@ -267,6 +267,10 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
       db.entityMark.bulkInsert(snapshot.entityMark as never[]),
       db.entityVisibility.bulkInsert(snapshot.entityVisibility as never[]),
     ]);
+    const failures = results.filter((r) => r.status === 'rejected');
+    if (failures.length > 0) {
+      logger.error('[Storage] Partial restore failure:', failures);
+    }
   }
 
   /**
