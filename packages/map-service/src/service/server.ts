@@ -7,6 +7,7 @@ import type {
   SyncCollectionName,
 } from '@endfieldmap/map-service/@types/sync';
 import type { I18nService } from '@endfieldmap/map-service/service/i18n';
+import { logger } from '@endfieldmap/tools';
 
 export interface ServerServiceConfig {
   backendHost: string;
@@ -236,7 +237,7 @@ export class ServerService {
         const errorData = await response.json();
         backendMessage = errorData?.message;
       } catch {
-        // 解析失败时忽略，使用默认消息
+        logger.debug('Failed to parse 401 response body, using default message');
       }
       return this.unauthorizedHandler<T>(url, options, backendMessage);
     }

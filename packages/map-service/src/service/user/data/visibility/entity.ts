@@ -1,6 +1,7 @@
 import type { EntityData, MapData } from '@endfieldmap/map-core';
 import type { VisibilityDataSchemaType } from '@endfieldmap/map-service/service/db/export';
 import { BaseUserDataService, type BaseUserDataServiceConfig } from '@endfieldmap/map-service/service/user/data/_base';
+import { logger } from '@endfieldmap/tools';
 
 export type EntityVisibilityCallback = (
   mapId: MapData['id'],
@@ -62,8 +63,8 @@ export class EntityVisibilityService<T, R> extends BaseUserDataService<EntityVis
               callback(changeEvent.documentData.mapId, entityKey as EntityData['entityDataIdKey'], false);
               break;
           }
-        } catch (_e) {
-          // ignore callback errors
+        } catch (e) {
+          logger.warn('Entity visibility callback error', e);
         }
       }
     });
@@ -157,8 +158,8 @@ export class ScopedEntityVisibilityService<T, R> extends BaseUserDataService<Sco
               callback(data.mapId, entityKey, false);
               break;
           }
-        } catch (_e) {
-          // ignore callback errors
+        } catch (e) {
+          logger.warn('Scoped visibility callback error', e);
         }
       }
     });

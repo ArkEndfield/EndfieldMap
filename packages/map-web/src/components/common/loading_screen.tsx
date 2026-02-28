@@ -29,10 +29,8 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
   // 同步到初始加载器
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof window !== 'undefined' && (window as any).__LOADING_PROGRESS__) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).__LOADING_PROGRESS__.target = progress;
+    if (typeof window !== 'undefined' && window.__LOADING_PROGRESS__) {
+      window.__LOADING_PROGRESS__.target = progress;
     }
   }, [progress]);
 
@@ -42,8 +40,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       // 让 LoadingScreen 稍微等待一下再调用 hide
       // hide 内部已经有了针对 CSS transition 的等待逻辑
       // 这里只需要触发它
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).__LOADING_PROGRESS__?.hide();
+      window.__LOADING_PROGRESS__?.hide();
     }
   }, [isComplete]);
 

@@ -44,7 +44,7 @@ const customPointNodeSchemaLiteral = {
       properties: {
         name: { type: 'string' },
       },
-      additionalProperties: true, // 允许 EnityProperties 的其他动态属性
+      additionalProperties: true, // 允许 EntityProperties 的其他动态属性
     },
 
     createdAt: { type: 'number' },
