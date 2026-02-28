@@ -13,7 +13,7 @@ export class MapDataManager {
    * @param data 地图数据
    */
   constructor(data: MapDataJson) {
-    if (!data.data || !data.version) {
+    if (!data.data || !data.version || data.data.length === 0) {
       throw new Error('Invalid map data');
     }
     this.data = data.data;

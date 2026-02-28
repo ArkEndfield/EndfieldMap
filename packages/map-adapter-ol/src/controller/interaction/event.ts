@@ -23,6 +23,7 @@ export class EventController {
   private electricPoleController: ElectricPoleController;
   private customPointController: CustomPointController;
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
+  private disposeListeners: Array<() => void> = [];
 
   constructor(config: EventControllerConfig) {
     this.entityController = config.entityController;
@@ -33,9 +34,14 @@ export class EventController {
     this.registerContextMenuEventHandlers();
   }
 
+  public dispose() {
+    this.disposeListeners.forEach((dispose) => dispose());
+    this.disposeListeners = [];
+  }
+
   private registerClickEventHandlers() {
     // 点击事件
-    this.emitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
+    const disposeClick = this.emitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
       // 获取所有当前显示的电线杆渲染器（每种设备类型一个）
       const electricPoleLayers = this.electricPoleController.render.currentPoleRenderers.filter((r) => r.visible);
       // 获取所有当前显示的自定义标点渲染器（每种类型一个）
@@ -107,10 +113,11 @@ export class EventController {
         });
       }
     });
+    this.disposeListeners.push(disposeClick);
   }
 
   private registerContextMenuEventHandlers() {
-    this.emitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
+    const disposeContextMenu = this.emitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
       // 获取所有当前显示的电线杆渲染器
       const electricPoleLayers = this.electricPoleController.render.currentPoleRenderers.filter((r) => r.visible);
       // 获取所有当前显示的自定义标点渲染器
@@ -162,5 +169,6 @@ export class EventController {
         event: detail,
       });
     });
+    this.disposeListeners.push(disposeContextMenu);
   }
 }

@@ -148,6 +148,19 @@ export class HoverLayer extends SingleLayerBase {
   }
 
   /**
+   * 销毁hover图层，取消动画
+   */
+  public dispose(): void {
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    this.source.clear();
+    this.animatedRing = null;
+    this.fadingRings = [];
+  }
+
+  /**
    * 创建样式
    */
   private createStyle(feature: FeatureLike): Style[] {

@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { useAdapter } from '@/context/adapter';
@@ -21,6 +21,12 @@ export const ZoomControls = observer(function ZoomControls() {
     }, 500);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+    };
+  }, []);
+
   const handleZoomIn = useCallback(() => {
     const base = targetZoom.current ?? view.currentZoom ?? zoomConfig.default;
     const next = Math.min(Math.round(base) + 1, zoomConfig.max);
@@ -38,7 +44,7 @@ export const ZoomControls = observer(function ZoomControls() {
   }, [view, zoomConfig, scheduleReset]);
 
   return (
-    <View className="absolute right-4 bottom-[230px] overflow-hidden rounded-[10px] bg-bg-glass shadow-md shadow-black/15 elevation-4">
+    <View className="absolute right-4 bottom-57.5 overflow-hidden rounded-[10px] bg-bg-glass shadow-md shadow-black/15 elevation-4">
       <Pressable className="h-11 w-11 items-center justify-center" onPress={handleZoomIn}>
         <Text className="text-[22px] font-normal leading-6 text-text-secondary">+</Text>
       </Pressable>

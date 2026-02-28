@@ -18,6 +18,10 @@ export class EndfieldMapEvent {
   public offView: View['un'];
   /** 事件 */
   public event: EndfieldMapEmitter<OLMapEventPayloads>;
+  /** contextmenu DOM 监听器（用于清理） */
+  private contextMenuHandler: ((e: MouseEvent) => void) | null = null;
+  /** contextmenu 所在的 viewport 元素 */
+  private viewport: HTMLElement | null = null;
 
   constructor(mapInstance: EndfieldMap, emitter: EndfieldMapEmitter<OLMapEventPayloads>) {
     const map = mapInstance.map;
@@ -28,6 +32,17 @@ export class EndfieldMapEvent {
     this.offView = view.un.bind(view);
     this.event = emitter;
     this.initEmitter(mapInstance);
+  }
+
+  /**
+   * 清理 DOM 事件监听器
+   */
+  public dispose(): void {
+    if (this.viewport && this.contextMenuHandler) {
+      this.viewport.removeEventListener('contextmenu', this.contextMenuHandler);
+      this.contextMenuHandler = null;
+      this.viewport = null;
+    }
   }
 
   private initEmitter(mapInstance: EndfieldMap) {
@@ -58,8 +73,8 @@ export class EndfieldMapEvent {
       this.event.fire(MAP_EVENT.MAP_CENTER_CHANGE, view.getCenter());
     });
 
-    const viewport = map.getViewport();
-    viewport.addEventListener('contextmenu', (domEvent: MouseEvent) => {
+    this.viewport = map.getViewport();
+    this.contextMenuHandler = (domEvent: MouseEvent) => {
       domEvent.preventDefault();
       const pixel = map.getEventPixel(domEvent) as [number, number];
       const coordinate = map.getCoordinateFromPixel(pixel);
@@ -70,6 +85,7 @@ export class EndfieldMapEvent {
         map,
       };
       this.event.fire(MAP_EVENT.MAP_CONTEXT_MENU, detail);
-    });
+    };
+    this.viewport.addEventListener('contextmenu', this.contextMenuHandler);
   }
 }

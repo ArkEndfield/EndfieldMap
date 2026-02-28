@@ -2,6 +2,8 @@ import { SERVICE_EVENT, serviceEmitter } from '@endfieldmap/map-service';
 
 import { alertApi } from '@/components/ui/alert';
 
+let initialized = false;
+
 /**
  * Bridges `serviceEmitter` events from `@endfieldmap/map-service` to concrete
  * UI implementations in `map-native` (alert dialogs, etc.).
@@ -9,6 +11,8 @@ import { alertApi } from '@/components/ui/alert';
  * Call once during application bootstrap, before any service fires events.
  */
 export function initServiceEventBridge(): void {
+  if (initialized) return;
+  initialized = true;
   serviceEmitter.on(SERVICE_EVENT.ALERT_INFO, (data) => {
     const content = typeof data === 'string' ? data : data.content;
     alertApi.info(content);

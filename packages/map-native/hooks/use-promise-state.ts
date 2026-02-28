@@ -20,24 +20,26 @@ export const usePromiseState = <T, R extends unknown[]>(
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const { fun, onSuccess, onFailed } = config;
+
   const execute = useCallback(
     async (...args: R) => {
       if (loading) return;
       setLoading(true);
       setError(null);
       try {
-        const result = await config.fun(...args);
+        const result = await fun(...args);
         setData(result);
-        config.onSuccess?.(result);
+        onSuccess?.(result);
       } catch (err) {
         const e = err instanceof Error ? err : new Error(String(err));
         setError(e);
-        config.onFailed?.(e);
+        onFailed?.(e);
       } finally {
         setLoading(false);
       }
     },
-    [config, loading],
+    [fun, onSuccess, onFailed, loading],
   );
 
   return { data, error, loading, execute };

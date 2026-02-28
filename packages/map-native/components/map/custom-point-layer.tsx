@@ -1,12 +1,12 @@
 import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
-import { MAP_EVENT } from '@endfieldmap/map-core';
 import type { CustomPointDataInstance } from '@endfieldmap/map-core';
+import { MAP_EVENT } from '@endfieldmap/map-core';
 import {
+  type CameraRef,
   CircleLayer,
   Images,
   ShapeSource,
   SymbolLayer,
-  type CameraRef,
 } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -42,6 +42,8 @@ function useIconScales(
   const keySig = iconKeys.join(',');
 
   useEffect(() => {
+    let mounted = true;
+
     for (const key of iconKeys) {
       if (scales[key] !== undefined || pendingRef.current.has(key)) continue;
       pendingRef.current.add(key);
@@ -50,17 +52,23 @@ function useIconScales(
         uri,
         (w) => {
           pendingRef.current.delete(key);
+          if (!mounted) return;
           const s = w > 0 ? ICON_TARGET_PX / w : FALLBACK_SCALE;
           setScales((prev) => (prev[key] === s ? prev : { ...prev, [key]: s }));
         },
         () => {
           pendingRef.current.delete(key);
+          if (!mounted) return;
           setScales((prev) =>
             prev[key] === FALLBACK_SCALE ? prev : { ...prev, [key]: FALLBACK_SCALE }
           );
         }
       );
     }
+
+    return () => {
+      mounted = false;
+    };
   }, [keySig, entityImageBase, scales, iconKeys]);
 
   return scales;

@@ -439,6 +439,12 @@ export class EndfieldMapAdapter {
       this.devToolsController.dispose();
     }
 
+    // 清理事件控制器
+    this.eventController.dispose();
+
+    // 清理 DOM 事件监听器
+    this.eventManager.dispose();
+
     // 清理事件
     this.event.removeAllListeners();
 

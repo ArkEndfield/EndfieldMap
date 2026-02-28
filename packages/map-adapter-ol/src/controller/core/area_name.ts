@@ -25,7 +25,7 @@ export class AreaNameController extends Disposer {
       ...config,
       getName: (name) => this.getName(name),
     });
-    this.emitter.on(MAP_EVENT.ZOOM_CHANGE, this.setAreaName.bind(this));
+    this.disposers.push(this.emitter.on(MAP_EVENT.ZOOM_CHANGE, this.setAreaName.bind(this)));
     this.initListener();
   }
 

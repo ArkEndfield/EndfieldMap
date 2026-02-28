@@ -214,6 +214,15 @@ export class ActiveLayer extends SingleLayerBase {
     this.fadeRadiusExpand = 0;
   }
 
+  /**
+   * 销毁active图层，取消动画
+   */
+  public dispose(): void {
+    this.cancelAllAnimations();
+    this.source.clear();
+    this.activeFeature = null;
+  }
+
   private easeOutCubic(t: number): number {
     return 1 - Math.pow(1 - t, 3);
   }

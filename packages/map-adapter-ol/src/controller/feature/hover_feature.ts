@@ -10,7 +10,7 @@ import type { OLMapHoverEventDetail } from '@endfieldmap/map-adapter-ol/types/ev
 import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
 import type { DataInstance, DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
 import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH, EntityInstanceKey,MAP_EVENT } from '@endfieldmap/map-core';
-import { debounce, logger } from '@endfieldmap/tools';
+import { debounce, type DebouncedFunction, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
@@ -46,7 +46,7 @@ export class HoverFeatureController {
   /** 检查 feature 是否激活的函数 */
   private checkIsActive?: (instance: DataInstance) => boolean;
   /** 防抖后的hover处理函数 */
-  private debouncedHandleHover: ReturnType<typeof debounce<[OLMapHoverEventDetail], Promise<void>>> | null = null;
+  private debouncedHandleHover: DebouncedFunction<[OLMapHoverEventDetail], Promise<void>> | null = null;
   /** Hover图层 */
   public hoverLayer: HoverLayer;
   /** 地图实例 */
@@ -280,10 +280,14 @@ export class HoverFeatureController {
    * 销毁控制器，清理事件监听器
    */
   public dispose() {
+    this.debouncedHandleHover?.cancel();
+    this.debouncedHandleHover = null;
     this.unregisterEventHandlers();
     this.clearHoverFeature();
     // 隐藏hover效果
     this.hoverLayer.hideHover();
+    // 销毁hover图层
+    this.hoverLayer.dispose();
     // 从地图中移除hover图层
     this.mapInstance.map.removeLayer(this.hoverLayer.layer);
   }

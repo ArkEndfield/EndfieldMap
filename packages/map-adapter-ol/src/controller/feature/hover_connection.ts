@@ -3,7 +3,7 @@ import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event
 import type { OLMapHoverEventDetail } from '@endfieldmap/map-adapter-ol/types/event';
 import type { DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
 import { MAP_EVENT } from '@endfieldmap/map-core';
-import { debounce, logger } from '@endfieldmap/tools';
+import { debounce, type DebouncedFunction, logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 
@@ -31,7 +31,7 @@ export class HoverConnectionController {
   /** 获取连接图层的函数 */
   private getConnectionLayers: () => ElectricPoleRenderer[];
   /** 防抖后的hover处理函数 */
-  private debouncedHandleHover: ReturnType<typeof debounce<[OLMapHoverEventDetail], Promise<void>>> | null = null;
+  private debouncedHandleHover: DebouncedFunction<[OLMapHoverEventDetail], Promise<void>> | null = null;
   /** 事件发射器 */
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
 
@@ -199,6 +199,8 @@ export class HoverConnectionController {
    * 销毁控制器，清理事件监听器
    */
   public dispose() {
+    this.debouncedHandleHover?.cancel();
+    this.debouncedHandleHover = null;
     this.unregisterEventHandlers();
     this.clearHoverConnection();
   }

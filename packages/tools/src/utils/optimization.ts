@@ -30,15 +30,20 @@ export function isPromise<T>(value: T | Promise<T>): value is Promise<T> {
  * @param immediate 是否立即执行
  * @returns 防抖后的函数
  */
+export interface DebouncedFunction<TArgs extends unknown[], TReturn> {
+  (...args: TArgs): Promise<TReturn> | undefined;
+  cancel(): void;
+}
+
 export function debounce<TArgs extends unknown[], TReturn>(
   func: CallableFunction<TArgs, TReturn>,
   delay: number,
   immediate = false
-): (...args: TArgs) => Promise<TReturn> | undefined {
+): DebouncedFunction<TArgs, TReturn> {
   let timeoutId: NodeJS.Timeout | null = null;
   let lastPromise: Promise<TReturn> | undefined;
 
-  return (...args: TArgs): Promise<TReturn> | undefined => {
+  const debounced = (...args: TArgs): Promise<TReturn> | undefined => {
     const callNow = immediate && !timeoutId;
 
     if (timeoutId) {
@@ -70,6 +75,15 @@ export function debounce<TArgs extends unknown[], TReturn>(
 
     return lastPromise;
   };
+
+  debounced.cancel = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
+
+  return debounced;
 }
 
 /**
