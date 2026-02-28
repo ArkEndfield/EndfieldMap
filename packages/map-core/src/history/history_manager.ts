@@ -71,14 +71,14 @@ export class HistoryManager {
     try {
       this.paused = true;
       command.undo();
-      this.paused = false;
       this.redoStack.push(command);
       logger.debug('[HistoryManager] Command undone:', command.description);
       return true;
     } catch (error) {
-      this.paused = false;
       logger.error('[HistoryManager] Undo failed:', error);
       return false;
+    } finally {
+      this.paused = false;
     }
   }
 
@@ -96,14 +96,14 @@ export class HistoryManager {
     try {
       this.paused = true;
       command.execute();
-      this.paused = false;
       this.undoStack.push(command);
       logger.debug('[HistoryManager] Command redone:', command.description);
       return true;
     } catch (error) {
-      this.paused = false;
       logger.error('[HistoryManager] Redo failed:', error);
       return false;
+    } finally {
+      this.paused = false;
     }
   }
 

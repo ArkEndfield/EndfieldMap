@@ -69,7 +69,7 @@ export class EndfieldMapAdapter {
   /** 缩放控制器 */
   public zoomController: ZoomController | null = null;
   /** 快捷键控制器 */
-  public KeyboardMoveController: KeyboardMoveController | null = null;
+  public keyboardMoveController: KeyboardMoveController | null = null;
   /** DevTools 控制器（仅开发模式） */
   public devToolsController: DevToolsController | null = null;
   /** 事件 */
@@ -78,6 +78,8 @@ export class EndfieldMapAdapter {
   @observable accessor enableHover: boolean = true;
   /** hover debounce time */
   @observable accessor hoverDebounceTime: number = 0;
+  /** 批量选中更新定时器 */
+  private selectionUpdateTimer: number | null = null;
 
   constructor(config: AdapterConfig) {
     if (config.consolaReporter) {
@@ -177,7 +179,7 @@ export class EndfieldMapAdapter {
     this.layerController.addLayer(LayerType.TIER_OVERLAY_MASK, this.tierController.tierOverlayMaskLayer);
     this.layerController.addLayer(LayerType.TIER, this.tierController.tierLayer);
 
-    this.KeyboardMoveController = new KeyboardMoveController({
+    this.keyboardMoveController = new KeyboardMoveController({
       speed: 0.5,
       mapInstance,
     });
@@ -188,7 +190,6 @@ export class EndfieldMapAdapter {
     }
 
     // 设置 selection 的回调，通过 controller 批量更新 selected 状态
-    let updateTimer: number | null = null;
     const pendingUpdates = new Map<string, { mapId: MapData['id']; levelLogicId: number; selected: boolean }>();
 
     mapInstance.selection.setOnSelectionChange((feature, selected) => {
@@ -206,13 +207,13 @@ export class EndfieldMapAdapter {
       pendingUpdates.set(key, { mapId, levelLogicId, selected });
 
       // 使用 requestAnimationFrame 批量更新
-      if (!updateTimer) {
-        updateTimer = requestAnimationFrame(() => {
+      if (!this.selectionUpdateTimer) {
+        this.selectionUpdateTimer = requestAnimationFrame(() => {
           if (pendingUpdates.size > 0) {
             this.entityController.batchSetSelected(Array.from(pendingUpdates.values()));
             pendingUpdates.clear();
           }
-          updateTimer = null;
+          this.selectionUpdateTimer = null;
         });
       }
     });
@@ -405,16 +406,43 @@ export class EndfieldMapAdapter {
    * 销毁适配器，清理所有资源
    */
   public dispose(): void {
+    // 取消待处理的批量选中更新
+    if (this.selectionUpdateTimer) {
+      cancelAnimationFrame(this.selectionUpdateTimer);
+      this.selectionUpdateTimer = null;
+    }
+
+    // 清理 feature 控制器
+    this.activeFeatureController.dispose();
+    this.hoverFeatureController.dispose();
+    this.hoverConnectionController.dispose();
+
+    // 清理实体控制器（继承自 Disposer，含 reaction 等）
+    this.entityController.dispose();
+    this.electricPoleController.dispose();
+    this.customPointController.dispose();
+
+    // 清理其他控制器
+    this.areaNameController.dispose();
+    this.tierController.dispose();
+    this.popupController?.dispose();
+    this.keyboardMoveController?.dispose();
+
     // 取消注册缩放控件
     if (this.zoomController) {
       this.mapController.olMapRenderer.map.removeControl(this.zoomController);
       this.zoomController.dispose();
     }
+
     // 清理 DevTools 控制器
     if (this.devToolsController) {
       this.devToolsController.dispose();
     }
-    // 清理地图控制器
+
+    // 清理事件
+    this.event.removeAllListeners();
+
+    // 清理地图控制器（最后清理，因为其他控制器可能依赖地图实例）
     this.mapController.dispose();
   }
 }

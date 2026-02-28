@@ -22,6 +22,7 @@ export abstract class BaseDataManager<T extends BaseEntityDataWithInfo, I extend
   accessor instances: I[] = [];
 
   /** ID到实例的映射，用于快速查找 */
+  @observable.ref
   protected accessor instanceMap: Map<number, I> = new Map();
 
   constructor(config: DataManagerConfig) {

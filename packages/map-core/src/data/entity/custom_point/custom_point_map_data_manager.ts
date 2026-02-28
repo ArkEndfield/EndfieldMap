@@ -1,4 +1,4 @@
-import { Disposer } from '@endfieldmap/map-core/commom/disposer';
+import { Disposer } from '@endfieldmap/map-core/common/disposer';
 import { CustomPointDataManager } from '@endfieldmap/map-core/data/entity/custom_point/custom_point_data_manager';
 import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import type { MapData } from '@endfieldmap/map-core/types';

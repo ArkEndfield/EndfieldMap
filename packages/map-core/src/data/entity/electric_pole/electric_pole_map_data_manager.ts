@@ -1,4 +1,4 @@
-import { Disposer } from '@endfieldmap/map-core/commom/disposer';
+import { Disposer } from '@endfieldmap/map-core/common/disposer';
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core/const/electric_pole';
 import { ElectricPoleDataInstance } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_instance';
 import { ElectricPoleDataManager } from '@endfieldmap/map-core/data/entity/electric_pole/electric_pole_data_manager';

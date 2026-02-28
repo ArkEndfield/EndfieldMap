@@ -5,6 +5,7 @@ import { logger } from '@endfieldmap/tools';
  */
 interface ListenerInfo {
   handler: globalThis.EventListener;
+  event: string;
   once: boolean;
 }
 
@@ -64,7 +65,7 @@ export class EndfieldMapEmitter<TEventMap extends Record<string, unknown> = Reco
     };
 
     this.eventCenter.addEventListener(event, handler);
-    this.listenerMap.set(listener, { handler, once: isOnce });
+    this.listenerMap.set(listener, { handler, event, once: isOnce });
 
     const currentCount = this.listenerCounts.get(event) ?? 0;
     this.listenerCounts.set(event, currentCount + 1);
@@ -108,19 +109,24 @@ export class EndfieldMapEmitter<TEventMap extends Record<string, unknown> = Reco
   }
 
   /**
-   * 移除指定事件的所有监听器
+   * 移除指定事件的所有监听器，或移除所有事件的所有监听器
    */
   public removeAllListeners<T extends keyof TEventMap & string>(event?: T): void {
     if (event) {
+      // 只移除属于指定 event 的 listener
       for (const [listener, info] of this.listenerMap.entries()) {
-        this.eventCenter.removeEventListener(event, info.handler);
-        this.listenerMap.delete(listener);
+        if (info.event === event) {
+          this.eventCenter.removeEventListener(event, info.handler);
+          this.listenerMap.delete(listener);
+        }
       }
       this.listenerCounts.set(event, 0);
     } else {
-      for (const [listener] of this.listenerMap.entries()) {
-        this.listenerMap.delete(listener);
+      // 移除所有 listener，使用记录的 event 名正确清理 EventTarget
+      for (const [, info] of this.listenerMap.entries()) {
+        this.eventCenter.removeEventListener(info.event, info.handler);
       }
+      this.listenerMap.clear();
       this.listenerCounts.clear();
     }
   }

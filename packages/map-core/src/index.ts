@@ -1,4 +1,4 @@
-export * from '@endfieldmap/map-core/commom/disposer';
+export * from '@endfieldmap/map-core/common/disposer';
 export * from '@endfieldmap/map-core/const';
 export * from '@endfieldmap/map-core/data';
 export * from '@endfieldmap/map-core/event/emitter';

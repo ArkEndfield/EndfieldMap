@@ -142,12 +142,11 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
   }
 
   /**
-   * 判断是否可以连接到指定对象
+   * 断言是否可以连接到指定对象
    * @param pole 目标电线杆实例
-   * @returns 是否可以连接
    * @throws ElectricPoleError 如果不满足连接条件则抛出对应错误
    */
-  public canConnectTo(pole: ElectricPoleDataInstance): boolean {
+  public assertCanConnectTo(pole: ElectricPoleDataInstance): void {
     if (pole.id === this.id) {
       throw new ElectricPoleError('connect_to_self', this.id);
     }
@@ -175,8 +174,6 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
     if (distance > this.zoneRadius) {
       throw new ElectricPoleError('distance_too_far', this.id);
     }
-
-    return true;
   }
 
   /**
