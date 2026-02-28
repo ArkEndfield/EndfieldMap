@@ -200,15 +200,12 @@ export class EndfieldMapAdapter {
       isGroupVisible: (instance) => this.entityRegistry.isGroupVisible(instance),
     });
     this.hoverFeatureController = new HoverFeatureController({
-      getClusteredLayers: () => this.entityRegistry.getClusteredLayers(),
-      getNonClusteredLayers: () => this.entityRegistry.getNonClusteredLayers(),
       checkIsActive: (instance) => this.activeFeatureController.activeFeature === instance,
       disableHoverFeature: config.map?.disableHoverFeature,
       mapInstance,
       emitter: this.event,
     });
     this.hoverConnectionController = new HoverConnectionController({
-      getConnectionLayers: () => this.electricPoleController?.render.currentPoleRenderers || [],
       disableHoverConnection: config.map?.disableHoverFeature,
       emitter: this.event,
     });
@@ -216,6 +213,7 @@ export class EndfieldMapAdapter {
       getClusteredLayers: () => this.entityRegistry.getClusteredLayers(),
       getNonClusteredLayers: () => this.entityRegistry.getNonClusteredLayers(),
       getConnectionRenderers: () => this.electricPoleController?.render.currentPoleRenderers || [],
+      disableHover: config.map?.disableHoverFeature,
       emitter: this.event,
     });
   }
@@ -313,6 +311,7 @@ export class EndfieldMapAdapter {
   @action
   public setHoverFeatureEnable(enable: boolean) {
     this.enableHover = enable;
+    this.eventController.setHoverEnable(enable);
     this.hoverFeatureController.setEnable(enable);
     this.hoverConnectionController.setEnable(enable);
   }
@@ -324,8 +323,7 @@ export class EndfieldMapAdapter {
   @action
   public setHoverDebounceTime(time: number) {
     this.hoverDebounceTime = time;
-    this.hoverFeatureController.setDebounceTime(time);
-    this.hoverConnectionController.setDebounceTime(time);
+    this.eventController.setHoverDebounceTime(time);
   }
 
   /**

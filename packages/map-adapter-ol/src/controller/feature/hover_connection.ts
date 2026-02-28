@@ -1,14 +1,12 @@
-import { ElectricPoleRenderer } from '@endfieldmap/map-adapter-ol/render/renderer';
+import type { ConnectionCapableRenderer } from '@endfieldmap/map-adapter-ol/controller/interaction/event';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import type { OLMapHoverEventDetail } from '@endfieldmap/map-adapter-ol/types/event';
-import type { DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
+import type { DisposeListener, EndfieldMapEmitter } from '@endfieldmap/map-core';
 import { MAP_EVENT } from '@endfieldmap/map-core';
-import { debounce, type DebouncedFunction, logger } from '@endfieldmap/tools';
+import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { FeatureLike } from 'ol/Feature';
 
 export interface HoverConnectionControllerConfig {
-  getConnectionLayers: () => ElectricPoleRenderer[];
   disableHoverConnection?: boolean;
   emitter: EndfieldMapEmitter<OLMapEventPayloads>;
 }
@@ -16,113 +14,38 @@ export interface HoverConnectionControllerConfig {
 /**
  * HoverConnectionController
  * 用于管理当前hover的connection（一次只有一个）
+ *
+ * 被动模式：不自行监听 MAP_HOVER 事件，由 EventController 完成命中检测后
+ * 通过 CONNECTION_HOVER 事件 → map-web service → 调用 setHoverConnection() 设置hover目标。
+ * 与 ActiveFeatureController / HoverFeatureController 保持同一模式。
  */
 export class HoverConnectionController {
   /** 当前hover的connection feature */
   @observable accessor hoverFeature: FeatureLike | null = null;
   /** 当前hover的connection所属renderer */
-  @observable accessor hoverRenderer: ElectricPoleRenderer | null = null;
-  /** 是否开启防抖 */
-  @observable accessor debounceTime: number = 0;
+  @observable accessor hoverRenderer: ConnectionCapableRenderer | null = null;
   /** 是否禁用 */
   private disabled: boolean = false;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
-  /** 获取连接图层的函数 */
-  private getConnectionLayers: () => ElectricPoleRenderer[];
-  /** 防抖后的hover处理函数 */
-  private debouncedHandleHover: DebouncedFunction<[OLMapHoverEventDetail], Promise<void>> | null = null;
   /** 事件发射器 */
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
 
   constructor(config: HoverConnectionControllerConfig) {
-    this.getConnectionLayers = config.getConnectionLayers;
     this.disabled = config.disableHoverConnection ?? false;
     this.emitter = config.emitter;
-    this.updateDebouncedHoverHandler();
     if (!this.disabled) {
       this.registerEventHandlers();
     }
   }
 
   /**
-   * 更新防抖处理函数
-   */
-  private updateDebouncedHoverHandler() {
-    if (this.debounceTime > 0) {
-      this.debouncedHandleHover = debounce(this.handleHover.bind(this), this.debounceTime);
-    } else {
-      this.debouncedHandleHover = null;
-    }
-  }
-
-  /**
-   * 处理hover事件的核心逻辑
-   */
-  private async handleHover(detail: OLMapHoverEventDetail): Promise<void> {
-    const { event } = detail;
-    const coordinate = event.coordinate;
-    if (!coordinate) {
-      // 发出清除hover的事件
-      this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
-        feature: null,
-        renderer: null,
-        event,
-      });
-      return;
-    }
-
-    const renderers = this.getConnectionLayers();
-    const visibleRenderers = renderers.filter((r) => r.getConnectionVisible());
-    if (visibleRenderers.length === 0) {
-      // 发出清除hover的事件
-      this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
-        feature: null,
-        renderer: null,
-        event,
-      });
-      return;
-    }
-
-    // 遍历所有连线图层查找hover目标
-    for (const connectionRenderer of visibleRenderers) {
-      const clickedFeatures = await connectionRenderer.connectionLayer.getFeatures(event.pixel as [number, number]);
-      if (clickedFeatures.length > 0) {
-        const feature = clickedFeatures[0];
-        // 发出CONNECTION_HOVER事件，由UI层处理设置hover状态
-        this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
-          feature,
-          renderer: connectionRenderer,
-          event,
-        });
-        return;
-      }
-    }
-
-    // 没有命中任何连线
-    this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, {
-      feature: null,
-      renderer: null,
-      event,
-    });
-  }
-
-  /**
-   * 注册事件处理器
+   * 注册事件处理器（仅用于自动清除 hover 状态的场景事件）
    */
   private registerEventHandlers() {
     if (this.disabled) {
       return;
     }
-
-    // 监听MAP_HOVER事件：检测连接线的hover
-    const disposeHover = this.emitter.on(MAP_EVENT.MAP_HOVER, (detail) => {
-      if (this.debounceTime > 0 && this.debouncedHandleHover) {
-        this.debouncedHandleHover(detail);
-      } else {
-        this.handleHover(detail);
-      }
-    });
 
     // 监听选择开始事件
     const disposeSelectionStart = this.emitter.on(MAP_EVENT.SELECTION_START, () => {
@@ -140,7 +63,7 @@ export class HoverConnectionController {
       }
     });
 
-    this.disposeListeners.push(disposeHover, disposeSelectionStart, disposeZoomChange);
+    this.disposeListeners.push(disposeSelectionStart, disposeZoomChange);
   }
 
   /**
@@ -149,7 +72,7 @@ export class HoverConnectionController {
    * @param renderer 连接所属的渲染器
    */
   @action
-  public setHoverConnection(feature: FeatureLike | null, renderer: ElectricPoleRenderer | null) {
+  public setHoverConnection(feature: FeatureLike | null, renderer: ConnectionCapableRenderer | null) {
     // 如果新旧feature相同，不做任何处理
     if (this.hoverFeature === feature) {
       return;
@@ -199,8 +122,6 @@ export class HoverConnectionController {
    * 销毁控制器，清理事件监听器
    */
   public dispose() {
-    this.debouncedHandleHover?.cancel();
-    this.debouncedHandleHover = null;
     this.unregisterEventHandlers();
     this.clearHoverConnection();
   }
@@ -233,11 +154,9 @@ export class HoverConnectionController {
   }
 
   /**
-   * 设置防抖时间
+   * 设置防抖时间（兼容接口；实际防抖已由 EventController 统一管理）
    */
-  @action
-  public setDebounceTime(time: number) {
-    this.debounceTime = time;
-    this.updateDebouncedHoverHandler();
+  public setDebounceTime(_time: number) {
+    // 防抖逻辑已迁移至 EventController.setHoverDebounceTime()
   }
 }

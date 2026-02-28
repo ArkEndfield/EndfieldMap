@@ -1,3 +1,4 @@
+import type { ConnectionCapableRenderer } from '@endfieldmap/map-adapter-ol/controller/interaction/event';
 import type { ElectricPoleRenderer } from '@endfieldmap/map-adapter-ol/render/renderer';
 import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
 import type { DataInstance, ElectricPoleDataInstance, EntityDataInstance } from '@endfieldmap/map-core';
@@ -95,7 +96,7 @@ export type OLMapEventPayloads = {
   };
   'connection:hover': {
     feature: FeatureLike | null;
-    renderer?: ElectricPoleRenderer | null;
+    renderer?: ConnectionCapableRenderer | null;
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
   };
   'connection:context_menu': {
@@ -116,7 +117,7 @@ export type OLMapEventPayloads = {
   'hover:connection:change': {
     oldFeature: FeatureLike | null;
     newFeature: FeatureLike | null;
-    renderer?: ElectricPoleRenderer | null;
+    renderer?: ConnectionCapableRenderer | null;
   };
   'selection:start': void;
 }

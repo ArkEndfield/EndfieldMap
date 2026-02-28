@@ -1,22 +1,13 @@
-import {
-  type EntityHitTestResult,
-  hitTestEntitiesAt,
-  selectTopmostHitResult,
-} from '@endfieldmap/map-adapter-ol/event/entity_hit_test';
 import { HoverLayer } from '@endfieldmap/map-adapter-ol/render/layers/hover';
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import type { OLMapHoverEventDetail } from '@endfieldmap/map-adapter-ol/types/event';
-import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
-import type { DataInstance, DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
-import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH, EntityInstanceKey,MAP_EVENT } from '@endfieldmap/map-core';
-import { debounce, type DebouncedFunction, logger } from '@endfieldmap/tools';
+import type { DataInstance, DisposeListener, EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH, MAP_EVENT } from '@endfieldmap/map-core';
+import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 export interface HoverFeatureControllerConfig {
-  getClusteredLayers: () => HitTestableLayer[];
-  getNonClusteredLayers: () => HitTestableLayer[];
   checkIsActive?: (instance: DataInstance) => boolean;
   disableHoverFeature?: boolean;
   mapInstance: EndfieldMap;
@@ -26,24 +17,20 @@ export interface HoverFeatureControllerConfig {
 /**
  * HoverFeatureController
  * 用于管理当前hover的feature（一次只有一个）
+ *
+ * 被动模式：不自行监听 MAP_HOVER 事件，由 EventController 完成命中检测后
+ * 通过 ENTITY_HOVER 事件 → map-web service → 调用 setHoverFeature() 设置hover目标。
+ * 与 ActiveFeatureController 保持同一模式。
  */
 export class HoverFeatureController {
   /** 当前hover的feature */
   @observable accessor hoverFeature: DataInstance | null = null;
-  /** 是否开启防抖 */
-  @observable accessor debounceTime: number = 0;
   /** 是否禁用 */
   private accessor disabled: boolean = false;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
-  /** 获取聚合实体图层的函数 */
-  private getClusteredLayers: () => HitTestableLayer[];
-  /** 获取非聚合实体图层的函数 */
-  private getNonClusteredLayers: () => HitTestableLayer[];
   /** 检查 feature 是否激活的函数 */
   private checkIsActive?: (instance: DataInstance) => boolean;
-  /** 防抖后的hover处理函数 */
-  private debouncedHandleHover: DebouncedFunction<[OLMapHoverEventDetail], Promise<void>> | null = null;
   /** Hover图层 */
   public hoverLayer: HoverLayer;
   /** 地图实例 */
@@ -52,13 +39,10 @@ export class HoverFeatureController {
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
 
   constructor(config: HoverFeatureControllerConfig) {
-    this.getClusteredLayers = config.getClusteredLayers;
-    this.getNonClusteredLayers = config.getNonClusteredLayers;
     this.checkIsActive = config.checkIsActive;
     this.disabled = config.disableHoverFeature ?? false;
     this.mapInstance = config.mapInstance;
     this.emitter = config.emitter;
-    this.updateDebouncedHoverHandler();
 
     // 创建HoverLayer实例
     this.hoverLayer = new HoverLayer();
@@ -71,109 +55,12 @@ export class HoverFeatureController {
   }
 
   /**
-   * 更新防抖处理函数
-   */
-  private updateDebouncedHoverHandler() {
-    if (this.debounceTime > 0) {
-      this.debouncedHandleHover = debounce(this.handleHover.bind(this), this.debounceTime);
-    } else {
-      this.debouncedHandleHover = null;
-    }
-  }
-
-  /**
-   * 处理hover事件的核心逻辑
-   */
-  private async handleHover(detail: OLMapHoverEventDetail): Promise<void> {
-    const { event } = detail;
-    const coordinate = event.coordinate as Coordinate | undefined;
-    if (!coordinate) {
-      // 发出清除hover的事件
-      this.emitter.fire(MAP_EVENT.ENTITY_HOVER, {
-        instance: null,
-        coordinate: null,
-        event,
-      });
-      return;
-    }
-
-    const nonClusteredLayers = this.getNonClusteredLayers().filter((layer) => layer.visible);
-    const clusteredLayers = this.getClusteredLayers().filter((layer) => layer.visible);
-
-    const allHoveredFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
-      {
-        coordinate,
-        pixel: [event.pixel[0], event.pixel[1]],
-        map: event.map,
-      },
-      nonClusteredLayers,
-      clusteredLayers
-    );
-
-    // 如果没有命中任何feature，发出清除hover的事件
-    if (allHoveredFeatures.length === 0) {
-      this.emitter.fire(MAP_EVENT.ENTITY_HOVER, {
-        instance: null,
-        coordinate: null,
-        event,
-      });
-      return;
-    }
-
-    // 选择最上层的 layer（基于 z-index 和添加顺序）
-    const selectedLayerFeatures = selectTopmostHitResult(allHoveredFeatures);
-    if (!selectedLayerFeatures) {
-      this.emitter.fire(MAP_EVENT.ENTITY_HOVER, {
-        instance: null,
-        coordinate: null,
-        event,
-      });
-      return;
-    }
-    const features = selectedLayerFeatures.features;
-
-    // 取第一个feature作为hover target
-    const feature = features[0];
-    const dataInstance = feature.get(EntityInstanceKey) as DataInstance;
-
-    // 确定hover坐标
-    let hoverCoordinate: Coordinate;
-    if (features.length > 1) {
-      // 聚合情况：使用聚合中心坐标（Cluster feature 的几何中心）
-      const clusterCenter = selectedLayerFeatures.layer.getClosestClusterCenter?.(coordinate);
-      if (clusterCenter) {
-        hoverCoordinate = clusterCenter;
-      } else {
-        hoverCoordinate = dataInstance.coordinates;
-      }
-    } else {
-      // 单个feature：使用feature自己的坐标
-      hoverCoordinate = dataInstance.coordinates;
-    }
-
-    // 发出ENTITY_HOVER事件，由UI层处理设置hover状态
-    this.emitter.fire(MAP_EVENT.ENTITY_HOVER, {
-      instance: dataInstance,
-      coordinate: hoverCoordinate,
-      event,
-    });
-  }
-
-  /**
-   * 注册事件处理器
+   * 注册事件处理器（仅用于自动清除 hover 状态的场景事件）
    */
   private registerEventHandlers() {
     if (this.disabled) {
       return;
     }
-    // 监听MAP_HOVER事件：使用统一的实体命中检测（与 click 共享）
-    const disposeHover = this.emitter.on(MAP_EVENT.MAP_HOVER, (detail) => {
-      if (this.debounceTime > 0 && this.debouncedHandleHover) {
-        this.debouncedHandleHover(detail);
-      } else {
-        this.handleHover(detail);
-      }
-    });
 
     // 监听选择开始事件
     const disposeSelectionStart = this.emitter.on(MAP_EVENT.SELECTION_START, () => {
@@ -207,13 +94,7 @@ export class HoverFeatureController {
       }
     });
 
-    this.disposeListeners.push(
-      disposeHover,
-      disposeSelectionStart,
-      disposeClusterClick,
-      disposeZoomChange,
-      disposeActiveFeatureChange
-    );
+    this.disposeListeners.push(disposeSelectionStart, disposeClusterClick, disposeZoomChange, disposeActiveFeatureChange);
   }
 
   /**
@@ -275,8 +156,6 @@ export class HoverFeatureController {
    * 销毁控制器，清理事件监听器
    */
   public dispose() {
-    this.debouncedHandleHover?.cancel();
-    this.debouncedHandleHover = null;
     this.unregisterEventHandlers();
     this.clearHoverFeature();
     // 隐藏hover效果
@@ -316,11 +195,9 @@ export class HoverFeatureController {
   }
 
   /**
-   * 设置防抖时间
+   * 设置防抖时间（兼容接口；实际防抖已由 EventController 统一管理）
    */
-  @action
-  public setDebounceTime(time: number) {
-    this.debounceTime = time;
-    this.updateDebouncedHoverHandler();
+  public setDebounceTime(_time: number) {
+    // 防抖逻辑已迁移至 EventController.setHoverDebounceTime()
   }
 }
