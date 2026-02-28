@@ -37,34 +37,31 @@ export interface AdapterConfig {
 
 export class EndfieldMapAdapter {
   /** 容器 */
-  public container: HTMLElement;
+  /** 容器 */
+  public container!: HTMLElement;
   /** 静态资源管理器 */
-  public asset: EndfieldMapAsset;
+  public asset!: EndfieldMapAsset;
   /** 地图控制器 */
-  public mapController: MapController;
+  public mapController!: MapController;
   /** 图层管理器 */
-  public layerController: EndfieldMapLayerController;
+  public layerController!: EndfieldMapLayerController;
   /** 事件管理器 */
-  public eventManager: EndfieldMapEvent;
+  public eventManager!: EndfieldMapEvent;
   /** 区域名称控制器 */
-  public areaNameController: AreaNameController;
-  /** 地图图层控制器 */
-  // public mapLayerController: MapLayerController;
+  public areaNameController!: AreaNameController;
   /** 实体数据管理器 */
-  public entityController: EntityController;
+  public entityController!: EntityController;
   /** 电线杆数据管理器 */
-  public electricPoleController: ElectricPoleController;
-  public customPointController: CustomPointController;
-  public tierController: TierController;
-  public eventController: EventController;
+  public electricPoleController!: ElectricPoleController;
+  public customPointController!: CustomPointController;
+  public tierController!: TierController;
+  public eventController!: EventController;
   /** 激活特征控制器 */
-  public activeFeatureController: ActiveFeatureController;
+  public activeFeatureController!: ActiveFeatureController;
   /** Hover特征控制器 */
-  public hoverFeatureController: HoverFeatureController;
+  public hoverFeatureController!: HoverFeatureController;
   /** Hover连接控制器 */
-  public hoverConnectionController: HoverConnectionController;
-  /** 数据控制器 */
-  // public dataController: DataController;
+  public hoverConnectionController!: HoverConnectionController;
   /** Popup控制器 */
   public popupController: PopupController | null = null;
   /** 缩放控制器 */
@@ -74,9 +71,9 @@ export class EndfieldMapAdapter {
   /** DevTools 控制器（仅开发模式） */
   public devToolsController: DevToolsController | null = null;
   /** 实体类型注册表（统一管理实体类型的搜索、可见性等） */
-  public entityRegistry: EntityTypeRegistry;
+  public entityRegistry!: EntityTypeRegistry;
   /** 事件 */
-  public event: EndfieldMapEmitter<OLMapEventPayloads>;
+  public event!: EndfieldMapEmitter<OLMapEventPayloads>;
   /** 是否开启hover效果 */
   @observable accessor enableHover: boolean = true;
   /** hover debounce time */
@@ -85,6 +82,18 @@ export class EndfieldMapAdapter {
   private selectionUpdateTimer: number | null = null;
 
   constructor(config: AdapterConfig) {
+    this.initCore(config);
+    this.initEntitySystem();
+    this.initEntityRegistry();
+    this.initInteraction(config);
+    this.initUI(config);
+    this.initSelectionHandler();
+  }
+
+  // #region 初始化阶段
+
+  /** 阶段 1：核心基础设施（日志、事件总线、地图引擎） */
+  private initCore(config: AdapterConfig): void {
     if (config.consolaReporter) {
       logger.addReporter(config.consolaReporter);
     }
@@ -104,13 +113,19 @@ export class EndfieldMapAdapter {
       emitter: this.event,
     });
 
-    // 提取核心实例，方便后续传递
     const mapDataManager = this.mapController.dataManager;
     const mapInstance = this.mapController.olMapRenderer;
 
     this.eventManager = new EndfieldMapEvent(mapInstance, this.event);
     this.layerController = new EndfieldMapLayerController(mapInstance);
     this.areaNameController = new AreaNameController({ mapDataManager, emitter: this.event });
+  }
+
+  /** 阶段 2：实体系统（Entity / ElectricPole / CustomPoint / Tier 控制器） */
+  private initEntitySystem(): void {
+    const mapDataManager = this.mapController.dataManager;
+    const mapInstance = this.mapController.olMapRenderer;
+
     this.entityController = new EntityController({
       mapDataManager,
       mapInstance,
@@ -131,8 +146,10 @@ export class EndfieldMapAdapter {
       mapDataManager,
       mapInstance,
     });
+  }
 
-    // 初始化实体类型注册表
+  /** 阶段 3：实体类型注册表（可扩展的搜索 / 可见性 / hit test 分发） */
+  private initEntityRegistry(): void {
     this.entityRegistry = new EntityTypeRegistry();
     this.entityRegistry.register({
       matchesInstance: (instance) => instance.entityType !== '#ElectricPole' && instance.entityType !== '#CustomPoint',
@@ -170,6 +187,11 @@ export class EndfieldMapAdapter {
       clustered: false,
       isGroupVisible: (instance) => this.customPointController.getTypeVisible(instance.entityDataIdKey),
     });
+  }
+
+  /** 阶段 4：交互控制器（Active / Hover / Selection / Event） */
+  private initInteraction(config: AdapterConfig): void {
+    const mapInstance = this.mapController.olMapRenderer;
 
     this.activeFeatureController = new ActiveFeatureController({
       disableActiveFeature: config.map?.disableActiveFeature,
@@ -196,14 +218,17 @@ export class EndfieldMapAdapter {
       getConnectionRenderers: () => this.electricPoleController?.render.currentPoleRenderers || [],
       emitter: this.event,
     });
-    // 初始化popup控制器（默认启用）
+  }
+
+  /** 阶段 5：UI 控件（Popup / Zoom / 图层注册 / 快捷键 / DevTools） */
+  private initUI(config: AdapterConfig): void {
+    const mapInstance = this.mapController.olMapRenderer;
+
     if (config.popup?.enabled !== false) {
       this.popupController = new PopupController(mapInstance, this.event);
     }
 
-    // 初始化缩放控制器
     this.zoomController = new ZoomController(this.event);
-    // 注册缩放控件到地图 TODO: 不知道后面可不可以去掉
     this.mapController.olMapRenderer.map.addControl(this.zoomController);
 
     this.layerController.addLayer(LayerType.AREA_NAME, this.areaNameController.areaNameLayer);
@@ -215,29 +240,28 @@ export class EndfieldMapAdapter {
       mapInstance,
     });
 
-    // 开发模式下初始化 DevTools 控制器
     if (config.isDev) {
       this.devToolsController = new DevToolsController({ mapInstance });
     }
+  }
 
-    // 设置 selection 的回调，通过 controller 批量更新 selected 状态
+  /** 阶段 6：Selection 回调（通过 Controller 批量更新 selected 状态） */
+  private initSelectionHandler(): void {
+    const mapInstance = this.mapController.olMapRenderer;
     const pendingUpdates = new Map<string, { mapId: MapData['id']; levelLogicId: number; selected: boolean }>();
 
     mapInstance.selection.setOnSelectionChange((feature, selected) => {
       const dataInstance = feature.get(EntityInstanceKey) as EntityDataInstance | undefined;
       if (!dataInstance) return;
 
-      // 状态没变化，跳过
       if (dataInstance.selected === selected) return;
 
       const mapId = this.mapController.dataManager.currentMapId;
       const levelLogicId = dataInstance.id;
       const key = `${mapId}-${levelLogicId}`;
 
-      // 收集待更新的项
       pendingUpdates.set(key, { mapId, levelLogicId, selected });
 
-      // 使用 requestAnimationFrame 批量更新
       if (!this.selectionUpdateTimer) {
         this.selectionUpdateTimer = requestAnimationFrame(() => {
           if (pendingUpdates.size > 0) {
@@ -249,6 +273,8 @@ export class EndfieldMapAdapter {
       }
     });
   }
+
+  // #endregion
 
   /**
    * 渲染地图
