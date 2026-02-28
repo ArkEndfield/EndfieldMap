@@ -15,9 +15,8 @@ import { action, observable } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
 export interface HoverFeatureControllerConfig {
-  getEntityLayers: () => HitTestableLayer[];
-  getElectricPoleLayers: () => HitTestableLayer[];
-  getCustomPointLayers: () => HitTestableLayer[];
+  getClusteredLayers: () => HitTestableLayer[];
+  getNonClusteredLayers: () => HitTestableLayer[];
   checkIsActive?: (instance: DataInstance) => boolean;
   disableHoverFeature?: boolean;
   mapInstance: EndfieldMap;
@@ -37,12 +36,10 @@ export class HoverFeatureController {
   private accessor disabled: boolean = false;
   /** 事件监听器释放函数 */
   private disposeListeners: DisposeListener[] = [];
-  /** 获取实体图层的函数 */
-  private getEntityLayers: () => HitTestableLayer[];
-  /** 获取电线杆图层的函数 */
-  private getElectricPoleLayers: () => HitTestableLayer[];
-  /** 获取自定义标点图层的函数 */
-  private getCustomPointLayers: () => HitTestableLayer[];
+  /** 获取聚合实体图层的函数 */
+  private getClusteredLayers: () => HitTestableLayer[];
+  /** 获取非聚合实体图层的函数 */
+  private getNonClusteredLayers: () => HitTestableLayer[];
   /** 检查 feature 是否激活的函数 */
   private checkIsActive?: (instance: DataInstance) => boolean;
   /** 防抖后的hover处理函数 */
@@ -55,9 +52,8 @@ export class HoverFeatureController {
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
 
   constructor(config: HoverFeatureControllerConfig) {
-    this.getEntityLayers = config.getEntityLayers;
-    this.getElectricPoleLayers = config.getElectricPoleLayers;
-    this.getCustomPointLayers = config.getCustomPointLayers;
+    this.getClusteredLayers = config.getClusteredLayers;
+    this.getNonClusteredLayers = config.getNonClusteredLayers;
     this.checkIsActive = config.checkIsActive;
     this.disabled = config.disableHoverFeature ?? false;
     this.mapInstance = config.mapInstance;
@@ -101,9 +97,8 @@ export class HoverFeatureController {
       return;
     }
 
-    const electricPoleLayers = this.getElectricPoleLayers().filter((layer) => layer.visible);
-    const customPointLayers = this.getCustomPointLayers().filter((layer) => layer.visible);
-    const entityLayers = this.getEntityLayers().filter((layer) => layer.visible);
+    const nonClusteredLayers = this.getNonClusteredLayers().filter((layer) => layer.visible);
+    const clusteredLayers = this.getClusteredLayers().filter((layer) => layer.visible);
 
     const allHoveredFeatures: EntityHitTestResult[] = await hitTestEntitiesAt(
       {
@@ -111,8 +106,8 @@ export class HoverFeatureController {
         pixel: [event.pixel[0], event.pixel[1]],
         map: event.map,
       },
-      [...electricPoleLayers, ...customPointLayers],
-      entityLayers
+      nonClusteredLayers,
+      clusteredLayers
     );
 
     // 如果没有命中任何feature，发出清除hover的事件

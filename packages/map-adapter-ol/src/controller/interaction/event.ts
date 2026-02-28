@@ -1,34 +1,42 @@
-import { CustomPointController } from '@endfieldmap/map-adapter-ol/controller/entity/custom_point_controller';
-import { ElectricPoleController } from '@endfieldmap/map-adapter-ol/controller/entity/electric_pole_controller';
-import { EntityController } from '@endfieldmap/map-adapter-ol/controller/entity/entity_controller';
 import {
   type EntityHitTestResult,
   hitTestEntitiesAt,
   selectTopmostHitResult,
 } from '@endfieldmap/map-adapter-ol/event/entity_hit_test';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import type { ElectricPoleDataInstance, EndfieldMapEmitter,EntityDataInstance } from '@endfieldmap/map-core';
-import { ConnectionTargetIdKey, EntityInstanceKey,MAP_EVENT } from '@endfieldmap/map-core';
+import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
+import type { ElectricPoleDataInstance, EndfieldMapEmitter, EntityDataInstance } from '@endfieldmap/map-core';
+import { ConnectionTargetIdKey, EntityInstanceKey, MAP_EVENT } from '@endfieldmap/map-core';
 import { boundingExtent } from 'ol/extent';
+import type { FeatureLike } from 'ol/Feature';
+
+/**
+ * 具备连接线命中测试能力的渲染器接口
+ */
+export interface ConnectionCapableRenderer {
+  visible: boolean;
+  getConnectionVisible(): boolean;
+  getConnectionFeatures(pixel: [number, number]): Promise<FeatureLike[]>;
+}
 
 export interface EventControllerConfig {
-  entityController: EntityController;
-  electricPoleController: ElectricPoleController;
-  customPointController: CustomPointController;
+  getClusteredLayers: () => HitTestableLayer[];
+  getNonClusteredLayers: () => HitTestableLayer[];
+  getConnectionRenderers?: () => ConnectionCapableRenderer[];
   emitter: EndfieldMapEmitter<OLMapEventPayloads>;
 }
 
 export class EventController {
-  private entityController: EntityController;
-  private electricPoleController: ElectricPoleController;
-  private customPointController: CustomPointController;
+  private getClusteredLayers: () => HitTestableLayer[];
+  private getNonClusteredLayers: () => HitTestableLayer[];
+  private getConnectionRenderers: () => ConnectionCapableRenderer[];
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
   private disposeListeners: Array<() => void> = [];
 
   constructor(config: EventControllerConfig) {
-    this.entityController = config.entityController;
-    this.electricPoleController = config.electricPoleController;
-    this.customPointController = config.customPointController;
+    this.getClusteredLayers = config.getClusteredLayers;
+    this.getNonClusteredLayers = config.getNonClusteredLayers;
+    this.getConnectionRenderers = config.getConnectionRenderers ?? (() => []);
     this.emitter = config.emitter;
     this.registerClickEventHandlers();
     this.registerContextMenuEventHandlers();
@@ -42,11 +50,8 @@ export class EventController {
   private registerClickEventHandlers() {
     // 点击事件
     const disposeClick = this.emitter.on(MAP_EVENT.MAP_CLICK, async (event) => {
-      // 获取所有当前显示的电线杆渲染器（每种设备类型一个）
-      const electricPoleLayers = this.electricPoleController.render.currentPoleRenderers.filter((r) => r.visible);
-      // 获取所有当前显示的自定义标点渲染器（每种类型一个）
-      const customPointLayers = this.customPointController.currentRenderer.filter((r) => r.visible);
-      const entityLayers = this.entityController.render.currentRenderer.filter((layer) => layer.visible);
+      const nonClusteredLayers = this.getNonClusteredLayers().filter((r) => r.visible);
+      const clusteredLayers = this.getClusteredLayers().filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = hitTestEntitiesAt(
         {
@@ -54,14 +59,14 @@ export class EventController {
           pixel: event.pixel as [number, number],
           map: event.map,
         },
-        [...electricPoleLayers, ...customPointLayers],
-        entityLayers
+        nonClusteredLayers,
+        clusteredLayers
       );
 
       // 如果没有命中实体，尝试命中电线连接
       if (allClickedFeatures.length === 0) {
-        const renderers = electricPoleLayers;
-        for (const renderer of renderers) {
+        const connectionRenderers = this.getConnectionRenderers().filter((r) => r.visible);
+        for (const renderer of connectionRenderers) {
           if (!renderer.getConnectionVisible()) continue;
 
           const clickedFeatures = await renderer.getConnectionFeatures(event.pixel as [number, number]);
@@ -74,7 +79,6 @@ export class EventController {
             feature: feature,
             instance,
             targetId,
-            renderer,
             event,
           });
           return;
@@ -118,11 +122,8 @@ export class EventController {
 
   private registerContextMenuEventHandlers() {
     const disposeContextMenu = this.emitter.on(MAP_EVENT.MAP_CONTEXT_MENU, async (detail) => {
-      // 获取所有当前显示的电线杆渲染器
-      const electricPoleLayers = this.electricPoleController.render.currentPoleRenderers.filter((r) => r.visible);
-      // 获取所有当前显示的自定义标点渲染器
-      const customPointLayers = this.customPointController.currentRenderer.filter((r) => r.visible);
-      const entityLayers = this.entityController.render.currentRenderer.filter((layer) => layer.visible);
+      const nonClusteredLayers = this.getNonClusteredLayers().filter((r) => r.visible);
+      const clusteredLayers = this.getClusteredLayers().filter((layer) => layer.visible);
 
       const allClickedFeatures: EntityHitTestResult[] = hitTestEntitiesAt(
         {
@@ -130,14 +131,14 @@ export class EventController {
           pixel: detail.pixel,
           map: detail.map,
         },
-        [...electricPoleLayers, ...customPointLayers],
-        entityLayers
+        nonClusteredLayers,
+        clusteredLayers
       );
 
       // 如果没有命中实体，尝试命中电线连接
       if (allClickedFeatures.length === 0) {
-        const renderers = electricPoleLayers;
-        for (const renderer of renderers) {
+        const connectionRenderers = this.getConnectionRenderers().filter((r) => r.visible);
+        for (const renderer of connectionRenderers) {
           if (!renderer.getConnectionVisible()) continue;
 
           const clickedFeatures = await renderer.getConnectionFeatures(detail.pixel);
@@ -145,7 +146,6 @@ export class EventController {
 
           this.emitter.fire(MAP_EVENT.CONNECTION_CONTEXT_MENU, {
             feature: clickedFeatures[0],
-            renderer,
             event: detail,
           });
           return;

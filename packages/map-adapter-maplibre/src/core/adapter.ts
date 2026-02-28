@@ -8,7 +8,7 @@ import { MapController } from '@endfieldmap/map-adapter-maplibre/controller/map_
 import { TierController } from '@endfieldmap/map-adapter-maplibre/controller/tier_controller';
 import type { MapLibreAdapterConfig } from '@endfieldmap/map-adapter-maplibre/types';
 import type { CustomPointDataInstance, DataInstance, ElectricPoleDataInstance, EntityDataInstance, MapData, MapEventEmitter } from '@endfieldmap/map-core';
-import { EndfieldMapAsset, EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { EndfieldMapAsset, EndfieldMapEmitter, EntitySearchRegistry } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
 
@@ -29,6 +29,7 @@ export class MapLibreAdapter {
   public readonly activeFeatureController: ActiveFeatureController;
   public readonly hoverFeatureController: HoverFeatureController;
   public readonly hoverConnectionController: HoverConnectionController;
+  public readonly entityRegistry: EntitySearchRegistry;
   public readonly event: EndfieldMapEmitter<MapEventEmitter>;
 
   @observable accessor enableHover = false;
@@ -54,6 +55,39 @@ export class MapLibreAdapter {
     this.activeFeatureController = new ActiveFeatureController();
     this.hoverFeatureController = new HoverFeatureController();
     this.hoverConnectionController = new HoverConnectionController();
+
+    // 初始化实体类型注册表
+    this.entityRegistry = new EntitySearchRegistry();
+    this.entityRegistry.register({
+      matchesInstance: (instance) => instance.entityType !== '#ElectricPole' && instance.entityType !== '#CustomPoint',
+      searchById: (mapId, id) => this.entityController.getInstanceById(mapId, id),
+      toggleVisible: (instance) => {
+        const entityInstance = instance as EntityDataInstance;
+        this.entityController.setGroupVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
+      },
+      isGroupVisible: (instance) => {
+        const managers = this.entityController.dataManager.mapData.get(instance.mapId);
+        const groupManager = managers?.get(instance.entityDataIdKey);
+        return groupManager?.groupVisible ?? true;
+      },
+    });
+    this.entityRegistry.register({
+      matchesInstance: (instance) => instance.entityType === '#ElectricPole',
+      searchById: (mapId, id) => this.electricPoleController.dataManager.getMapManager(mapId).getById(id),
+      toggleVisible: () => {
+        this.electricPoleController.setVisible(true);
+        this.electricPoleController.setZoneVisible(true);
+      },
+      isGroupVisible: () => this.electricPoleController.dataManager.visible,
+    });
+    this.entityRegistry.register({
+      matchesInstance: (instance) => instance.entityType === '#CustomPoint',
+      searchById: (mapId, id) => this.customPointController.dataManager.getMapManager(mapId).getById(id),
+      toggleVisible: () => {
+        this.customPointController.setCustomPointVisible(true);
+      },
+      isGroupVisible: (instance) => this.customPointController.getTypeVisible(instance.entityDataIdKey),
+    });
   }
 
   @action
@@ -103,38 +137,9 @@ export class MapLibreAdapter {
       return false;
     }
 
-    let targetInstance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance | undefined;
+    // 通过注册表在所有已注册实体类型中搜索
     const mapIds = this.mapController.dataManager.mapIds;
-
-    for (const mapId of mapIds) {
-      const instance = this.entityController.getInstanceById(mapId, id);
-      if (instance) {
-        targetInstance = instance;
-        break;
-      }
-    }
-
-    if (!targetInstance) {
-      for (const mapId of mapIds) {
-        const manager = this.electricPoleController.dataManager.getMapManager(mapId);
-        const instance = manager.getById(id);
-        if (instance) {
-          targetInstance = instance;
-          break;
-        }
-      }
-    }
-
-    if (!targetInstance) {
-      for (const mapId of mapIds) {
-        const manager = this.customPointController.dataManager.getMapManager(mapId);
-        const instance = manager.getById(id);
-        if (instance) {
-          targetInstance = instance;
-          break;
-        }
-      }
-    }
+    const targetInstance = this.entityRegistry.searchById(mapIds, id);
 
     if (!targetInstance) {
       logger.warn(`[MapLibreAdapter] Entity ${id} not found.`);
@@ -153,22 +158,14 @@ export class MapLibreAdapter {
     zoom?: number
   ): Promise<void> {
     const targetMapId = instance.mapId;
-    const entityType = instance.entityType;
 
     if (this.mapController.dataManager.currentMapId !== targetMapId) {
       this.renderMap(targetMapId);
     }
 
+    // 自动切换可见性（通过注册表统一分发）
     if (autoToggleVisible) {
-      if (entityType === '#ElectricPole') {
-        this.electricPoleController.setVisible(true);
-        this.electricPoleController.setZoneVisible(true);
-      } else if (entityType === '#CustomPoint') {
-        this.customPointController.setCustomPointVisible(true);
-      } else {
-        const entityInstance = instance as EntityDataInstance;
-        this.entityController.setGroupVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
-      }
+      this.entityRegistry.toggleVisible(instance);
     }
 
     if (autoSetActive) {

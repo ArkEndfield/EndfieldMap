@@ -13,10 +13,11 @@ import { EventController } from '@endfieldmap/map-adapter-ol/controller/interact
 import { KeyboardMoveController } from '@endfieldmap/map-adapter-ol/controller/interaction/keyboard';
 import { PopupController } from '@endfieldmap/map-adapter-ol/controller/interaction/popup';
 import { TierController } from '@endfieldmap/map-adapter-ol/controller/tier';
+import { EntityTypeRegistry } from '@endfieldmap/map-adapter-ol/core/entity_registry';
 import { EndfieldMapEvent } from '@endfieldmap/map-adapter-ol/event/map';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
 import type { CustomPointDataInstance, ElectricPoleDataInstance, EndfieldMapAssetConfig, EntityDataInstance, MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core';
-import { EndfieldMapAsset, EndfieldMapEmitter, EntityInstanceKey, LayerType  } from '@endfieldmap/map-core';
+import { EndfieldMapAsset, EndfieldMapEmitter, EntityInstanceKey, LayerType } from '@endfieldmap/map-core';
 import type { LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
@@ -72,6 +73,8 @@ export class EndfieldMapAdapter {
   public keyboardMoveController: KeyboardMoveController | null = null;
   /** DevTools 控制器（仅开发模式） */
   public devToolsController: DevToolsController | null = null;
+  /** 实体类型注册表（统一管理实体类型的搜索、可见性等） */
+  public entityRegistry: EntityTypeRegistry;
   /** 事件 */
   public event: EndfieldMapEmitter<OLMapEventPayloads>;
   /** 是否开启hover效果 */
@@ -128,27 +131,55 @@ export class EndfieldMapAdapter {
       mapDataManager,
       mapInstance,
     });
-    this.activeFeatureController = new ActiveFeatureController({
-      disableActiveFeature: config.map?.disableActiveFeature,
-      mapInstance,
-      emitter: this.event,
+
+    // 初始化实体类型注册表
+    this.entityRegistry = new EntityTypeRegistry();
+    this.entityRegistry.register({
+      matchesInstance: (instance) => instance.entityType !== '#ElectricPole' && instance.entityType !== '#CustomPoint',
+      searchById: (mapId, id) => this.entityController.getInstanceById(mapId, id),
+      toggleVisible: (instance) => {
+        const entityInstance = instance as EntityDataInstance;
+        this.entityController.setGroupVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
+      },
+      getHitTestLayers: () => this.entityController?.render.currentRenderer || [],
+      clustered: true,
       isGroupVisible: (instance) => {
-        const entityType = instance.entityType;
-        if (entityType === '#ElectricPole') {
-          return this.electricPoleController.dataManager.visible;
-        }
-        if (entityType === '#CustomPoint') {
-          return this.customPointController.getTypeVisible(instance.entityDataIdKey);
-        }
         const managers = this.entityController.dataManager.mapData.get(instance.mapId);
         const groupManager = managers?.get(instance.entityDataIdKey);
         return groupManager?.groupVisible ?? true;
       },
     });
+    this.entityRegistry.register({
+      matchesInstance: (instance) => instance.entityType === '#ElectricPole',
+      searchById: (mapId, id) => this.electricPoleController.dataManager.getMapManager(mapId).getById(id),
+      toggleVisible: () => {
+        this.electricPoleController.setVisible(true);
+        this.electricPoleController.setZoneVisible(true);
+      },
+      getHitTestLayers: () => this.electricPoleController?.render.currentPoleRenderers || [],
+      clustered: false,
+      isGroupVisible: () => this.electricPoleController.dataManager.visible,
+    });
+    this.entityRegistry.register({
+      matchesInstance: (instance) => instance.entityType === '#CustomPoint',
+      searchById: (mapId, id) => this.customPointController.dataManager.getMapManager(mapId).getById(id),
+      toggleVisible: () => {
+        this.customPointController.setCustomPointVisible(true);
+      },
+      getHitTestLayers: () => this.customPointController?.currentRenderer || [],
+      clustered: false,
+      isGroupVisible: (instance) => this.customPointController.getTypeVisible(instance.entityDataIdKey),
+    });
+
+    this.activeFeatureController = new ActiveFeatureController({
+      disableActiveFeature: config.map?.disableActiveFeature,
+      mapInstance,
+      emitter: this.event,
+      isGroupVisible: (instance) => this.entityRegistry.isGroupVisible(instance),
+    });
     this.hoverFeatureController = new HoverFeatureController({
-      getEntityLayers: () => this.entityController?.render.currentRenderer || [],
-      getElectricPoleLayers: () => this.electricPoleController?.render.currentPoleRenderers || [],
-      getCustomPointLayers: () => this.customPointController?.currentRenderer || [],
+      getClusteredLayers: () => this.entityRegistry.getClusteredLayers(),
+      getNonClusteredLayers: () => this.entityRegistry.getNonClusteredLayers(),
       checkIsActive: (instance) => this.activeFeatureController.activeFeature === instance,
       disableHoverFeature: config.map?.disableHoverFeature,
       mapInstance,
@@ -160,9 +191,9 @@ export class EndfieldMapAdapter {
       emitter: this.event,
     });
     this.eventController = new EventController({
-      entityController: this.entityController,
-      electricPoleController: this.electricPoleController,
-      customPointController: this.customPointController,
+      getClusteredLayers: () => this.entityRegistry.getClusteredLayers(),
+      getNonClusteredLayers: () => this.entityRegistry.getNonClusteredLayers(),
+      getConnectionRenderers: () => this.electricPoleController?.render.currentPoleRenderers || [],
       emitter: this.event,
     });
     // 初始化popup控制器（默认启用）
@@ -300,45 +331,9 @@ export class EndfieldMapAdapter {
       return false;
     }
 
-    let targetInstance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance | undefined;
-
-    // 使用加载完毕的数据索引地图
+    // 通过注册表在所有已注册实体类型中搜索
     const mapIds = this.mapController.dataManager.mapIds;
-
-    // 1. 搜索游戏内的标点
-    for (const mapId of mapIds) {
-      const instance = this.entityController.getInstanceById(mapId, id);
-      if (instance) {
-        targetInstance = instance;
-        break;
-      }
-    }
-
-    // 2. 搜索电线杆
-    if (!targetInstance) {
-      for (const mapId of mapIds) {
-        const manager = this.electricPoleController.dataManager.getMapManager(mapId);
-        const instance = manager.getById(id);
-        if (instance) {
-          targetInstance = instance;
-          break;
-        }
-      }
-    }
-
-    // 3. 搜索自定义标点
-    if (!targetInstance) {
-      for (const mapId of mapIds) {
-        const manager = this.customPointController.dataManager.getMapManager(mapId);
-        const instance = manager.getById(id);
-        if (instance) {
-          targetInstance = instance;
-          break;
-        }
-      }
-    }
-
-    // TODO： 如果以后新增的话需要更新
+    const targetInstance = this.entityRegistry.searchById(mapIds, id);
 
     if (!targetInstance) {
       logger.warn(`[moveToEntity] Entity ${id} not found.`);
@@ -351,7 +346,7 @@ export class EndfieldMapAdapter {
 
   /**
    * 移动到指定 entity 实例
-   * @param instance entity实例 TODO: 如果以后增加的话，这里要同步更新
+   * @param instance entity实例
    * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
    * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
    * @param animationTime 移动视图animate的时间（可选，默认为1s）
@@ -365,25 +360,15 @@ export class EndfieldMapAdapter {
     zoom?: number
   ) {
     const targetMapId = instance.mapId;
-    const entityType = instance.entityType;
 
     // 切换地图
     if (this.mapController.dataManager.currentMapId !== targetMapId) {
       this.renderMap(targetMapId);
     }
 
-    // 自动切换可见性
+    // 自动切换可见性（通过注册表统一分发）
     if (autoToggleVisible) {
-      if (entityType === '#ElectricPole') {
-        this.electricPoleController.setVisible(true);
-        this.electricPoleController.setZoneVisible(true);
-      } else if (entityType === '#CustomPoint') {
-        this.customPointController.setCustomPointVisible(true);
-      } else {
-        // Standard Entity
-        const entityInstance = instance as EntityDataInstance;
-        this.entityController.setGroupVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
-      }
+      this.entityRegistry.toggleVisible(instance);
     }
 
     // 自动激活特征
