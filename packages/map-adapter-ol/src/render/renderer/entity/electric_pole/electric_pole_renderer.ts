@@ -2,6 +2,8 @@ import {
   CONNECTION_STYLE_HOVER,
   CONNECTION_STYLE_NORMAL,
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_style';
+import { createElectricPoleWebGLStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_webgl_style';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
 import {
   ConnectionTargetIdKey,
@@ -20,10 +22,6 @@ import { LineString, Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import VectorSource from 'ol/source/Vector';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
-
-import { createElectricPoleWebGLStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_webgl_style';
 
 /**
  * 电线杆渲染器配置
@@ -132,10 +130,7 @@ export class ElectricPoleRenderer {
     this.connectionSource = new VectorSource();
     this.connectionLayer = new VectorLayer({
       source: this.connectionSource,
-      style: (feature) => {
-        const isHovered = this.hoveredFeature === feature;
-        return isHovered ? CONNECTION_STYLE_HOVER : CONNECTION_STYLE_NORMAL;
-      },
+      style: this.connectionStyleFunction.bind(this),
       renderBuffer: config.renderBuffer ?? 100,
       visible: config.initialVisible ?? true,
       zIndex: Z_INDEX.CONNECTION,
@@ -360,6 +355,13 @@ export class ElectricPoleRenderer {
   // #endregion
 
   // #region 私有方法
+
+  /**
+   * 连线样式函数：直接返回预创建的样式常量，避免每帧创建新对象
+   */
+  private connectionStyleFunction(feature: FeatureLike) {
+    return this.hoveredFeature === feature ? CONNECTION_STYLE_HOVER : CONNECTION_STYLE_NORMAL;
+  }
 
   /**
    * 添加单个 feature

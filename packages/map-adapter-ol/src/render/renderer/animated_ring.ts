@@ -1,4 +1,3 @@
-import { observable } from 'mobx';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import { Point } from 'ol/geom';
@@ -21,16 +20,16 @@ export class AnimatedRingFeature {
   private endRadius: number;
 
   /** 当前半径 */
-  @observable accessor currentRadius: number;
+  private currentRadius: number;
 
   /** 淡出开始时的半径 */
   private fadeOutStartRadius: number = 0;
 
   /** 动画进度 (0-1) */
-  @observable accessor progress: number = 0;
+  private progress: number = 0;
 
   /** 透明度 (0-1) */
-  @observable accessor opacity: number = 1;
+  private opacity: number = 1;
 
   /** 动画持续时间（毫秒） */
   private duration: number = 400; // 稍微慢一点以便看清

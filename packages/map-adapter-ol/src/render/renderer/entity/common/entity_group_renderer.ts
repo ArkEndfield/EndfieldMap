@@ -134,6 +134,8 @@ export class EntityGroupRenderer {
       style: createClusterBadgeCanvasStyle(),
       visible: config.initialVisible ?? true,
       zIndex: Z_INDEX.ENTITY_BADGE, // 确保在 WebGL 层之上
+      updateWhileAnimating: false,
+      updateWhileInteracting: false,
     });
     this.badgeLayer.set(LayerTypeKey, LayerType.ENTITY);
   }

@@ -115,28 +115,40 @@ export function createEntityGroupWebGLStyle(config: EntityGroupStyleConfig): Fla
 /**
  * 创建聚合 badge 的 Canvas 样式函数
  * Canvas 支持文本渲染,用于在聚合点上显示数量
+ * 使用缓存避免每帧重复创建 Style 对象
  */
 export function createClusterBadgeCanvasStyle(): StyleFunction {
+  const EMPTY_STYLE: Style[] = [];
+  const badgeRadius = 7;
+  const styleCache = new Map<number, Style[]>();
+
+  // 预创建共用的 badge 圆形样式（与文本无关，所有 badge 共享同一个圆）
+  const badgeCircleStyle = new Style({
+    image: new CircleStyle({
+      radius: badgeRadius,
+      fill: new Fill({ color: DEFAULT_STROKE_COLOR }),
+      stroke: new Stroke({ color: DEFAULT_FILL_COLOR, width: 2.5 }),
+      displacement: [ENTITY_RADIUS, ICON_DISPLACEMENT_Y + ENTITY_RADIUS],
+    }),
+  });
+
   return (feature: FeatureLike) => {
     const clusterSize = feature.get('clusterSize') as number;
 
     if (!clusterSize || clusterSize <= 1) {
-      return [];
+      return EMPTY_STYLE;
+    }
+
+    const cached = styleCache.get(clusterSize);
+    if (cached) {
+      return cached;
     }
 
     const text = clusterSize > 999 ? '999+' : clusterSize.toString();
     const fontSize = clusterSize > 99 ? 8 : clusterSize > 9 ? 9 : 10;
-    const badgeRadius = 7;
 
-    return [
-      new Style({
-        image: new CircleStyle({
-          radius: badgeRadius,
-          fill: new Fill({ color: DEFAULT_STROKE_COLOR }),
-          stroke: new Stroke({ color: DEFAULT_FILL_COLOR, width: 2.5 }),
-          displacement: [ENTITY_RADIUS, ICON_DISPLACEMENT_Y + ENTITY_RADIUS],
-        }),
-      }),
+    const styles = [
+      badgeCircleStyle,
       new Style({
         text: new Text({
           text: text,
@@ -149,5 +161,8 @@ export function createClusterBadgeCanvasStyle(): StyleFunction {
         }),
       }),
     ];
+
+    styleCache.set(clusterSize, styles);
+    return styles;
   };
 }
