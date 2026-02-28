@@ -2,7 +2,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
 
-import { ChevronUpTriangle } from '@/components/common/icons';
+import { ChevronUpTriangle } from '@endfieldmap/web-components';
 
 export const FoldButton = ({
   open,

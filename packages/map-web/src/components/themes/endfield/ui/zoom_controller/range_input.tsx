@@ -3,7 +3,7 @@ import { cn } from '@endfieldmap/tools';
 import { ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
-import { MinusIcon, PlusIcon } from '@/components/common/icons';
+import { MinusIcon, PlusIcon } from '@endfieldmap/web-components';
 
 export interface RangeBarProps {
   value?: number;

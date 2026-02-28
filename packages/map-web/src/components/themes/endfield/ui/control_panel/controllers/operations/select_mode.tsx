@@ -4,7 +4,7 @@ import ToggleButton from '@themes/endfield/ui/control_panel/components/toggle_bu
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { MultiOperationIcon } from '@/components/common/icons';
+import { MultiOperationIcon } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 

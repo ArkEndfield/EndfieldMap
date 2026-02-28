@@ -1,7 +1,7 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { motion } from 'motion/react';
 
-import { EditIcon, LogoutIcon, PlusIcon } from '@/components/common/icons';
+import { EditIcon, LogoutIcon, PlusIcon } from '@endfieldmap/web-components';
 import { ActionButton } from '@/components/features/user/info/action_button';
 
 // ==================== 操作面板组件 ====================

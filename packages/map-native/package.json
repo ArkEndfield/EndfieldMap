@@ -1,7 +1,7 @@
 {
   "name": "@endfieldmap/map-native",
   "main": "./index.js",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -12,7 +12,8 @@
     "build:android": "expo run:android --variant release",
     "build:ios": "expo run:ios --variant release",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@endfieldmap/map-adapter-maplibre": "workspace:*",
@@ -82,8 +83,6 @@
     "@babel/plugin-transform-class-properties": "^7.28.6",
     "@tailwindcss/postcss": "^4.2.1",
     "@types/react": "~19.2.14",
-    "eslint": "^10.0.2",
-    "eslint-config-expo": "~55.0.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.2.1"
   },

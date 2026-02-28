@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
-import { DecoTriTriangle, VisibleWithDeco } from '@/components/common/icons';
+import { DecoTriTriangle, VisibleWithDeco } from '@endfieldmap/web-components';
 
 interface EntityGroupProps {
   iconColor?: string;

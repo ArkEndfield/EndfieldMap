@@ -7,7 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { KeyIcon } from '@/components/common/icons';
+import { KeyIcon } from '@endfieldmap/web-components';
 import { Input } from '@/components/common/input';
 import { changePasswordSchema } from '@/const/schema/auth';
 import { service } from '@/services';

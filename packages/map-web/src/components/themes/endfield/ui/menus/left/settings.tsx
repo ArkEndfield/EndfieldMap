@@ -1,7 +1,7 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 
-import { CogIcon } from '@/components/common/icons';
+import { CogIcon } from '@endfieldmap/web-components';
 import uiManager from '@/services/ui_manager';
 
 export const HeaderMenuSettings = ({ className }: { className?: string }) => {

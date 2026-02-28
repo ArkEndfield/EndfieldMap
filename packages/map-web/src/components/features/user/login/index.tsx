@@ -2,7 +2,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
 
-import { BilibiliIcon, DiscordIcon, Logo, QQIcon, GitHubIcon} from '@/components/common/icons';
+import { BilibiliIcon, DiscordIcon, Logo, QQIcon, GitHubIcon} from '@endfieldmap/web-components';
 import { UserModal } from '@/components/common/user/modal';
 import { LoginForm } from '@/components/features/user/login/login';
 import { RegisterForm } from '@/components/features/user/login/register';
@@ -71,7 +71,7 @@ export const LoginModal = ({ open, onClose }: { open: boolean; onClose: () => vo
         </div>
           {/* 第三方登录按钮 */}
           <div className="flex gap-3 justify-center">
-            {/* <ThirdPartyButton icon={<QQIcon className="text-[#12B7F5]" />} label="QQ" /> */}
+            <ThirdPartyButton icon={<QQIcon className="text-[#12B7F5]" />} label="QQ" />
             <ThirdPartyButton icon={<BilibiliIcon className="text-[#FB7299]" />} label="Bilibili" />
             <ThirdPartyButton icon={<DiscordIcon className="text-[#5865F2]" />} label="Discord" />
             <ThirdPartyButton icon={<GitHubIcon className="text-[#FFFFFF]" />} label="GitHub" />

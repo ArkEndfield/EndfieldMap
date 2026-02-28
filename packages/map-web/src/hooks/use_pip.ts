@@ -15,10 +15,9 @@ export function usePiP({ onOpen, onClose }: UsePiPOptions = {}) {
 
   const requestPiP = useCallback(
     async (width: number, height: number) => {
-      if (!isSupported) return;
+      if (!isSupported || !window.documentPictureInPicture) return;
 
       try {
-        // @ts-ignore - documentPictureInPicture type definition might be missing
         const windowProxy = await window.documentPictureInPicture.requestWindow({
           width,
           height,
@@ -35,7 +34,7 @@ export function usePiP({ onOpen, onClose }: UsePiPOptions = {}) {
               style.textContent = cssRules;
               windowProxy.document.head.appendChild(style);
             }
-          } catch (e) {
+          } catch (_e) {
             // Fallback for cross-origin stylesheets or if cssRules access is denied
             if (styleSheet.href) {
               const link = document.createElement('link');

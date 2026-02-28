@@ -3,7 +3,7 @@ import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
 import type { ButtonHTMLAttributes } from 'react';
 
-import { LayerIcon } from '@/components/common/icons';
+import { LayerIcon } from '@endfieldmap/web-components';
 
 export interface SubTitleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;

@@ -2,7 +2,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { cn } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 
-import { UserIcon } from '@/components/common/icons';
+import { UserIcon } from '@endfieldmap/web-components';
 import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { service } from '@/services';
 

@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
-import { ChevronUp } from '@/components/common/icons';
+import { ChevronUp } from '@endfieldmap/web-components';
 import { SettingsPage } from '@/components/features/settings';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useMapPiP } from '@/hooks/use_map_pip';

@@ -2,7 +2,7 @@ import { Trans, useTranslation } from '@endfieldmap/map-service';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
 
-import { BilibiliIcon, DiscordIcon, QQIcon } from '@/components/common/icons';
+import { BilibiliIcon, DiscordIcon, QQIcon } from '@endfieldmap/web-components';
 import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { FlashWrapper } from '@/components/common/settings/components/flash_wrapper';
 import ShuffleText from '@/components/common/shuffle_text';

@@ -4,7 +4,7 @@ import { cn } from '@endfieldmap/tools';
 import { ScrollArea } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 
-import { BindIcon, CheckCircleIcon, QuestionIcon } from '@/components/common/icons';
+import { BindIcon, CheckCircleIcon, QuestionIcon } from '@endfieldmap/web-components';
 
 // ==================== UID 列表项组件 ====================
 const UidListItem = ({

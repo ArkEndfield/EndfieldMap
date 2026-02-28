@@ -39,7 +39,7 @@ export interface BaseEntityDataWithInfo extends BaseEntityData {
   entityInfo?: EntityInfoData;
 }
 
-export interface EnityProperties {
+export interface EntityProperties {
   /** 在完成任务后隐藏 */
   is_hide_after_mission?: string;
   /** 最大数量 */
@@ -67,7 +67,7 @@ export interface EnityProperties {
  */
 export interface EntityData extends BaseEntityDataWithInfo {
   /** 属性 */
-  properties: EnityProperties;
+  properties: EntityProperties;
   /** 进度锁定条件？ */
   progressLockCondition: object;
   /** 组件 */
@@ -81,7 +81,7 @@ export interface ElectricPoleData extends BaseEntityDataWithInfo {
   entityDataIdKey: typeof ElectricPoleIdKey;
   entityType: '#ElectricPole';
   templateId: typeof ElectricPoleKey;
-  properties: EnityProperties & {
+  properties: EntityProperties & {
     /** 电线杆子类型 key（电线杆 / 中继器 / 滑索等） */
     deviceKey?: ElectricPoleDeviceKey;
     /**
@@ -100,7 +100,7 @@ export interface CustomPointData extends BaseEntityDataWithInfo {
   entityDataIdKey: CustomPointTypeId;
   entityType: '#CustomPoint';
   templateId: typeof CustomPointKey;
-  properties: EnityProperties & {
+  properties: EntityProperties & {
     name?: string;
   };
 }

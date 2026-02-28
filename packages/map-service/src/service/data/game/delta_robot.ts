@@ -14,7 +14,7 @@ import type {
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
 import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { DeltaRobotParsedLevelSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/delta_robot';
-import { JSONLoader } from '@endfieldmap/tools';
+import { JSONLoader, logger } from '@endfieldmap/tools';
 
 export interface DeltaRobotConfig<T, R> {
   jsonLoader: JSONLoader;
@@ -92,7 +92,7 @@ export class DeltaRobotService<T, R> {
 
       return parsed;
     } catch (error) {
-      console.error(`Failed to load level ${levelId}:`, error);
+      logger.error(`Failed to load level ${levelId}:`, error);
       return null;
     }
   }
@@ -240,7 +240,7 @@ export class DeltaRobotService<T, R> {
             });
           }
         } catch (e) {
-          console.error(`Failed to load piece ${block.blockID}`, e);
+          logger.error(`Failed to load piece ${block.blockID}`, e);
           // 继续加载其他拼图块
         }
       }
@@ -648,11 +648,11 @@ export class DeltaRobotService<T, R> {
     // 校验面积一致性
     for (let g = 0; g < numGroups; g++) {
       if ((rowConstraintSums[g] ?? 0) !== (colConstraintSums[g] ?? 0)) {
-        console.warn(`[Solver] Group ${g}: Row sum (${rowConstraintSums[g]}) != Col sum (${colConstraintSums[g]})`);
+        logger.warn(`[Solver] Group ${g}: Row sum (${rowConstraintSums[g]}) != Col sum (${colConstraintSums[g]})`);
         return null;
       }
       if ((currentGroupArea[g] ?? 0) !== (rowConstraintSums[g] ?? 0)) {
-        console.warn(
+        logger.warn(
           `[Solver] Group ${g}: Pieces+Obs area (${currentGroupArea[g]}) != Constraints (${rowConstraintSums[g]})`
         );
         return null;

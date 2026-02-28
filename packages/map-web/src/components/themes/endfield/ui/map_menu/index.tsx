@@ -9,7 +9,7 @@ import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
 
-import { ChangeMapIcon, SwitchIcon } from '@/components/common/icons';
+import { ChangeMapIcon, SwitchIcon } from '@endfieldmap/web-components';
 import { MapButton } from '@/components/themes/endfield/ui/map_menu/button';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useClickOutside } from '@/hooks/use_click_outside';

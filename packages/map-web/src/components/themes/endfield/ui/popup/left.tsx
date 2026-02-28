@@ -12,7 +12,7 @@ import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { Guide } from '@/components/common/guide';
-import { ChevronUpTriangle } from '@/components/common/icons';
+import { ChevronUpTriangle } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useActiveFeatureName } from '@/hooks/use_entity_name';
 import { service } from '@/services';

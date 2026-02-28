@@ -3,7 +3,7 @@ import { useTranslation } from '@endfieldmap/map-service';
 import { ButtonWithAudio, Tooltip } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
-import { TrashIcon } from '@/components/common/icons';
+import { TrashIcon } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 

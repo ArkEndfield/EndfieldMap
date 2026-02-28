@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@/components/common/icons';
+import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@endfieldmap/web-components';
 import { ContentWrapper } from '@/components/common/settings/components/content_wrapper';
 import { BgDeco } from '@/components/common/settings/components/deco';
 import { type TabItem, TabList } from '@/components/common/settings/tabs';

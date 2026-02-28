@@ -3,7 +3,7 @@ import { Dialog } from '@endfieldmap/web-components';
 import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 import { useState } from 'react';
 
-import { FeedbackIcon } from '@/components/common/icons';
+import { FeedbackIcon } from '@endfieldmap/web-components';
 
 export const HeaderMenuFeedback = ({ className }: { className?: string }) => {
   const [open, setOpen] = useState(false);

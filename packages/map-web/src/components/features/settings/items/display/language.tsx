@@ -3,7 +3,7 @@ import type { Language } from '@endfieldmap/tools';
 import { cn } from '@endfieldmap/tools';
 import { EndfieldSelect } from '@endfieldmap/web-components';
 
-import { TranslateIcon } from '@/components/common/icons';
+import { TranslateIcon } from '@endfieldmap/web-components';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { SETTINGS_KEYS } from '@/const/settings';

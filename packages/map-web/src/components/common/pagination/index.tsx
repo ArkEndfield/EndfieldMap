@@ -3,7 +3,7 @@ import { cn } from '@endfieldmap/tools';
 import { ZmdRoundButton, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { useCallback, useMemo } from 'react';
 
-import { ChevronUp } from '@/components/common/icons';
+import { ChevronUp } from '@endfieldmap/web-components';
 
 export type PaginationLoadStatus = 'idle' | 'loading' | 'success' | 'error';
 

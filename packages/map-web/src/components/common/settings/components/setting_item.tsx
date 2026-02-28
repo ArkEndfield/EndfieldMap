@@ -3,7 +3,7 @@ import { ButtonWithAudio, useIsMobile } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 
-import { QuestionIcon } from '@/components/common/icons';
+import { QuestionIcon } from '@endfieldmap/web-components';
 import { Tooltip } from '@/components/common/tooltip';
 import uiManager from '@/services/ui_manager';
 export interface SettingItemProps {

@@ -8,8 +8,10 @@ export * from '@/services/loading/progress_interpolator';
 declare global {
   interface Window {
     __LOADING_PROGRESS__?: {
+      target: number;
       update: (stageId: LoadingStageId, progress: number) => void;
       fail: (error: Error) => void;
+      hide: () => void;
     };
   }
 }

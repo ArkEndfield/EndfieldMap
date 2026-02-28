@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import type { GameRole } from '@/@types/game_role';
-import { KeyIcon, ScanIcon } from '@/components/common/icons';
+import { KeyIcon, ScanIcon } from '@endfieldmap/web-components';
 import { QRCodeLogin } from '@/components/features/user/info/bind_uid/login/qrcode';
 import { TokenLogin } from '@/components/features/user/info/bind_uid/login/token';
 import { service } from '@/services';

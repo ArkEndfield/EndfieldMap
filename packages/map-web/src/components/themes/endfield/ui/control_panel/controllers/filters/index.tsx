@@ -5,8 +5,8 @@ import { Tooltip, ZmdSquareButton } from '@endfieldmap/web-components';
 import ToggleButton from '@themes/endfield/ui/control_panel/components/toggle_button';
 import { observer } from 'mobx-react-lite';
 
-import { RefreshIcon } from '@/components/common/icons';
-import { FilterMarked, FilterUnMarked } from '@/components/common/icons';
+import { RefreshIcon } from '@endfieldmap/web-components';
+import { FilterMarked, FilterUnMarked } from '@endfieldmap/web-components';
 import { service } from '@/services';
 
 const filterModes = [

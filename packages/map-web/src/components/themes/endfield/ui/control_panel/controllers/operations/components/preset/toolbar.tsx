@@ -1,7 +1,7 @@
 import { useTranslation } from '@endfieldmap/map-service';
 import { Tooltip, ZmdSquareButton, ZmdSquareIconButton } from '@endfieldmap/web-components';
 
-import { BatchDeleteIcon, ExportIcon, ImportIcon, StoreIcon } from '@/components/common/icons';
+import { BatchDeleteIcon, ExportIcon, ImportIcon, StoreIcon } from '@endfieldmap/web-components';
 
 interface PresetToolbarProps {
   hasSelection: boolean;

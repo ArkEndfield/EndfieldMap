@@ -4,7 +4,7 @@ import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio, Tooltip, useIsMobile } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 
-import { FilterMarked, FilterUnMarked } from '@/components/common/icons';
+import { FilterMarked, FilterUnMarked } from '@endfieldmap/web-components';
 import { service } from '@/services';
 
 export interface MarkButtonProps {

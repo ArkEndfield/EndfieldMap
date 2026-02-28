@@ -9,3 +9,11 @@ interface ImportMetaEnv {
   readonly VITE_BACKEND_HOST: string;
   readonly VITE_ASSETS_HOST: string;
 }
+
+interface DocumentPictureInPicture {
+  requestWindow(options?: { width?: number; height?: number }): Promise<Window>;
+}
+
+interface Window {
+  documentPictureInPicture?: DocumentPictureInPicture;
+}
