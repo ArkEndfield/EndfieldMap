@@ -375,12 +375,20 @@ export class EndfieldSelectionInteraction {
   }
 
   /**
-   * 销毁实例
+   * 销毁实例，清理所有事件监听器和交互
    */
   @action
   public destroy() {
     this._disposeEntityClickListener?.();
     this._disposeEntityClickListener = undefined;
     this.clearSelection();
+
+    // 移除交互
+    const map = this.mapInstance.map;
+    map.removeInteraction(this.select);
+    map.removeInteraction(this.dragBox);
+
+    // 清理回调引用
+    this.onSelectionChange = undefined;
   }
 }

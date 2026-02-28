@@ -119,6 +119,7 @@ export class EntityRender {
   /**
    * 更新指定 feature 的状态
    * 遍历指定地图的所有渲染器查找匹配的 feature
+   * 同时刷新该 feature 所在聚合特征的属性
    */
   public updateFeatureState(
     mapId: MapData['id'],
@@ -129,6 +130,7 @@ export class EntityRender {
     if (mapRenderers) {
       for (const renderer of mapRenderers.values()) {
         renderer.updateFeatureState(featureId, state);
+        renderer.refreshClusterPropsForFeature(featureId);
       }
     }
   }

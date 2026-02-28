@@ -2,6 +2,7 @@ import {
   createClusterBadgeCanvasStyle,
   createEntityGroupWebGLStyle,
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/entity_group_style';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import type { EntityDataInstance } from '@endfieldmap/map-core';
 import {
   DEFAULT_CLUSTER_DISTANCE,
@@ -13,13 +14,13 @@ import {
 } from '@endfieldmap/map-core';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
+import type { EventsKey } from 'ol/events';
 import { Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import WebGLVectorLayer from 'ol/layer/WebGLVector';
+import { unByKey } from 'ol/Observable';
 import { Cluster } from 'ol/source';
 import VectorSource from 'ol/source/Vector';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 /**
  * Entity组渲染器配置
@@ -95,6 +96,9 @@ export class EntityGroupRenderer {
 
   /** Feature 映射：dataInstance.id -> Feature */
   private featureMap: Map<number, Feature> = new Map();
+
+  /** Cluster 事件监听器 keys，用于 dispose 时清理 */
+  private clusterEventKeys: EventsKey[] = [];
 
   constructor(config: EntityGroupRendererConfig) {
     // 初始化数据源
@@ -187,6 +191,7 @@ export class EntityGroupRenderer {
   /**
    * 批量更新所有 features 的状态
    * 用于 markedFilterMode 变化时批量设置 visible
+   * 使用 silent 模式逐个更新属性，最后一次性触发 source 刷新
    */
   public updateAllFeaturesState(updater: (id: number, feature: Feature) => FeatureStateUpdate): void {
     for (const [id, feature] of this.featureMap) {
@@ -204,9 +209,9 @@ export class EntityGroupRenderer {
       if (state.active !== undefined) {
         feature.set('active', state.active ? 1 : 0, true);
       }
-
-      feature.changed();
     }
+    // 批量更新完成后，一次性触发渲染刷新（而非逐个 feature.changed()）
+    this.baseSource.changed();
   }
 
   /**
@@ -265,6 +270,12 @@ export class EntityGroupRenderer {
    * 销毁渲染器
    */
   public dispose(): void {
+    // 清理 Cluster 事件监听器
+    for (const key of this.clusterEventKeys) {
+      unByKey(key);
+    }
+    this.clusterEventKeys = [];
+
     this.featureMap.clear();
     this.baseSource.clear();
     this.layer.dispose();
@@ -311,56 +322,81 @@ export class EntityGroupRenderer {
   }
 
   /**
+   * 同步单个聚合特征的属性
+   */
+  private syncClusterFeatureProps(clusterFeature: Feature): void {
+    const subFeatures = clusterFeature.get('features') as Feature[] | undefined;
+    const size = subFeatures ? subFeatures.length : 1;
+    clusterFeature.set('clusterSize', size, true);
+
+    if (subFeatures && subFeatures.length > 0) {
+      // 计算 marked 状态：0=都不是, 1=部分marked, 2=全部marked
+      const markedCount = subFeatures.filter((f) => f.get('marked') === 1).length;
+      let markedState = 0;
+      if (markedCount === subFeatures.length) {
+        markedState = 2; // 全部marked
+      } else if (markedCount > 0) {
+        markedState = 1; // 部分marked
+      }
+
+      // 计算 selected 状态：0=都不是, 1=部分selected, 2=全部selected
+      const selectedCount = subFeatures.filter((f) => f.get('selected') === 1).length;
+      let selectedState = 0;
+      if (selectedCount === subFeatures.length) {
+        selectedState = 2; // 全部selected
+      } else if (selectedCount > 0) {
+        selectedState = 1; // 部分selected
+      }
+
+      const hasActive = subFeatures.some((f) => f.get('active') === 1) ? 1 : 0;
+
+      clusterFeature.set('marked', markedCount > 0 ? 1 : 0, true);
+      clusterFeature.set('markedState', markedState, true);
+      clusterFeature.set('selected', selectedCount > 0 ? 1 : 0, true);
+      clusterFeature.set('selectedState', selectedState, true);
+      clusterFeature.set('active', hasActive, true);
+    }
+  }
+
+  /**
    * 设置聚合属性同步
-   * 监听 Cluster source 的变化，将聚合属性写入 cluster feature
+   * 仅监听 addfeature 事件，避免 change 事件导致每次平移/缩放时全量遍历
    */
   private setupClusterPropertySync(): void {
-    const syncClusterFeatureProps = (clusterFeature: Feature) => {
+    this.clusterEventKeys.push(
+      this.clusterSource.on('addfeature', (event) => {
+        if (event.feature) {
+          this.syncClusterFeatureProps(event.feature);
+        }
+      })
+    );
+  }
+
+  /**
+   * 刷新指定 feature 所在聚合特征的属性
+   * 在 updateFeatureState 后调用，仅刷新受影响的聚合特征
+   */
+  public refreshClusterPropsForFeature(featureId: number): void {
+    const feature = this.featureMap.get(featureId);
+    if (!feature) return;
+
+    for (const clusterFeature of this.clusterSource.getFeatures()) {
       const subFeatures = clusterFeature.get('features') as Feature[] | undefined;
-      const size = subFeatures ? subFeatures.length : 1;
-      clusterFeature.set('clusterSize', size, true);
-
-      if (subFeatures && subFeatures.length > 0) {
-        // 计算 marked 状态：0=都不是, 1=部分marked, 2=全部marked
-        const markedCount = subFeatures.filter((f) => f.get('marked') === 1).length;
-        let markedState = 0;
-        if (markedCount === subFeatures.length) {
-          markedState = 2; // 全部marked
-        } else if (markedCount > 0) {
-          markedState = 1; // 部分marked
-        }
-
-        // 计算 selected 状态：0=都不是, 1=部分selected, 2=全部selected
-        const selectedCount = subFeatures.filter((f) => f.get('selected') === 1).length;
-        let selectedState = 0;
-        if (selectedCount === subFeatures.length) {
-          selectedState = 2; // 全部selected
-        } else if (selectedCount > 0) {
-          selectedState = 1; // 部分selected
-        }
-
-        const hasActive = subFeatures.some((f) => f.get('active') === 1) ? 1 : 0;
-
-        clusterFeature.set('marked', markedCount > 0 ? 1 : 0, true);
-        clusterFeature.set('markedState', markedState, true);
-        clusterFeature.set('selected', selectedCount > 0 ? 1 : 0, true);
-        clusterFeature.set('selectedState', selectedState, true);
-        clusterFeature.set('active', hasActive, true);
+      if (subFeatures?.includes(feature)) {
+        this.syncClusterFeatureProps(clusterFeature);
+        break;
       }
-    };
+    }
+  }
 
-    this.clusterSource.on('addfeature', (event) => {
-      if (event.feature) {
-        syncClusterFeatureProps(event.feature);
-      }
-    });
-
-    this.clusterSource.on('change', () => {
-      const features = this.clusterSource.getFeatures();
-      for (const clusterFeature of features) {
-        syncClusterFeatureProps(clusterFeature);
-      }
-    });
+  /**
+   * 刷新所有聚合特征的属性
+   * 在批量状态更新后调用
+   */
+  public refreshAllClusterProps(): void {
+    for (const clusterFeature of this.clusterSource.getFeatures()) {
+      this.syncClusterFeatureProps(clusterFeature);
+    }
   }
 
   // #endregion

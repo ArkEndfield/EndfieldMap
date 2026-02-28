@@ -257,6 +257,7 @@ export class EntityController extends Disposer {
         const marked = feature.get('marked') === 1;
         return { visible: this.isFeatureVisibleByFilter(marked, mode) };
       });
+      renderer.refreshAllClusterProps();
     }
   }
 
@@ -305,6 +306,7 @@ export class EntityController extends Disposer {
         instance.setVisible(visible);
         return { visible };
       });
+      renderer.refreshAllClusterProps();
     }
   }
 
@@ -385,6 +387,8 @@ export class EntityController extends Disposer {
         for (const update of updates) {
           renderer.updateFeatureState(update.id, { selected: update.selected });
         }
+        // 批量更新后一次性刷新聚合属性
+        renderer.refreshAllClusterProps();
       }
     }
   }

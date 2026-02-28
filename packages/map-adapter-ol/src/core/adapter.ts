@@ -448,6 +448,9 @@ export class EndfieldMapAdapter {
     // 清理事件
     this.event.removeAllListeners();
 
+    // 清理选择交互（在地图控制器之前，因为依赖地图实例）
+    this.mapController.selection.destroy();
+
     // 清理地图控制器（最后清理，因为其他控制器可能依赖地图实例）
     this.mapController.dispose();
   }
