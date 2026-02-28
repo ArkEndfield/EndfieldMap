@@ -1,14 +1,13 @@
 import { createHoverCornerStyle } from '@endfieldmap/map-adapter-ol/render/factory';
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
 import { AnimatedRingFeature } from '@endfieldmap/map-adapter-ol/render/renderer/animated_ring';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import { LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import type { Coordinate } from 'ol/coordinate';
 import type { FeatureLike } from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type Style from 'ol/style/Style';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 /**
  * Hover图层
@@ -42,7 +41,7 @@ export class HoverLayer extends SingleLayerBase {
       source: this.source,
       style: this.createStyle.bind(this),
       updateWhileAnimating: true,
-      updateWhileInteracting: true,
+      updateWhileInteracting: false,
       zIndex: Z_INDEX.HOVER,
     });
 

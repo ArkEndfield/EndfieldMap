@@ -1,5 +1,6 @@
 import { createHoverCornerStyle } from '@endfieldmap/map-adapter-ol/render/factory';
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import { LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
@@ -8,8 +9,6 @@ import { Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type Style from 'ol/style/Style';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 /**
  * Active图层
@@ -58,7 +57,7 @@ export class ActiveLayer extends SingleLayerBase {
       source: this.source,
       style: this.createStyle.bind(this),
       updateWhileAnimating: true,
-      updateWhileInteracting: true,
+      updateWhileInteracting: false,
       zIndex: Z_INDEX.ACTIVE,
     });
 
