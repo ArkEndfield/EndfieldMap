@@ -1,5 +1,5 @@
 import type { SwiperData } from '@endfieldmap/map-service/@types/swiper';
-import { ServerService } from '@endfieldmap/map-service/service/server';
+import type { ServerService } from '@endfieldmap/map-service/service/server';
 import { logger } from '@endfieldmap/tools';
 import { observable } from 'mobx';
 

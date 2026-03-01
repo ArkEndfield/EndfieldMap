@@ -1,7 +1,6 @@
 export * from '@endfieldmap/map-service/service/db/schema/game_data/chest_reward';
 export * from '@endfieldmap/map-service/service/db/schema/game_data/delta_robot';
 export * from '@endfieldmap/map-service/service/db/schema/game_data/dungeon_series';
-export * from '@endfieldmap/map-service/service/db/schema/game_data/guide';
 export * from '@endfieldmap/map-service/service/db/schema/game_data/item';
 export * from '@endfieldmap/map-service/service/db/schema/user_data/custom_point';
 export * from '@endfieldmap/map-service/service/db/schema/user_data/electric_pole';

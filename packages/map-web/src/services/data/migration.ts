@@ -26,8 +26,6 @@ enum StorageKey {
   CHEST_REWARD = 'chest_reward',
   /** DungeonSeries */
   DUNGEON_SERIES = 'dungeon_series',
-  /** Guide */
-  GUIDE = 'guide',
   /** DeltaRobotLevel */
   DELTA_ROBOT_LEVEL = 'delta_robot_level',
 }

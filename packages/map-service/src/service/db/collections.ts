@@ -10,7 +10,6 @@ import {
   dungeonSeriesSchema,
   type DungeonSeriesSchemaType,
 } from '@endfieldmap/map-service/service/db/schema/game_data/dungeon_series';
-import { guideSchema, type GuideSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/guide';
 import { itemSchema, type ItemSchemaType } from '@endfieldmap/map-service/service/db/schema/game_data/item';
 import {
   type CustomPointNodeCollection,
@@ -64,7 +63,6 @@ export type GameDataDBCollections = {
   gameItem: RxCollection<ItemSchemaType>;
   gameChestReward: RxCollection<ChestRewardSchemaType>;
   gameDungeonSeries: RxCollection<DungeonSeriesSchemaType>;
-  gameGuide: RxCollection<GuideSchemaType>;
   gameDeltaRobotParsedLevel: RxCollection<DeltaRobotParsedLevelSchemaType>;
 };
 
@@ -104,10 +102,6 @@ export const gameDataCollectionsSchema = {
   gameDungeonSeries: {
     schema: dungeonSeriesSchema,
   },
-  gameGuide: {
-    schema: guideSchema,
-  },
-
   gameDeltaRobotParsedLevel: {
     schema: deltaRobotParsedLevelSchema,
   },
@@ -140,14 +134,12 @@ export class GameDataCollections {
   public gameItem: RxCollection<ItemSchemaType>;
   public gameChestReward: RxCollection<ChestRewardSchemaType>;
   public gameDungeonSeries: RxCollection<DungeonSeriesSchemaType>;
-  public gameGuide: RxCollection<GuideSchemaType>;
   public gameDeltaRobotParsedLevel: RxCollection<DeltaRobotParsedLevelSchemaType>;
 
   constructor(db: RxDatabase<GameDataDBCollections>) {
     this.gameItem = db.gameItem;
     this.gameChestReward = db.gameChestReward;
     this.gameDungeonSeries = db.gameDungeonSeries;
-    this.gameGuide = db.gameGuide;
 
     this.gameDeltaRobotParsedLevel = db.gameDeltaRobotParsedLevel;
   }

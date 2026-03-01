@@ -25,7 +25,6 @@ const DEFAULT_EXCLUDE_COLLECTIONS: ReadonlySet<string> = new Set([
   'gameItem',
   'gameChestReward',
   'gameDungeonSeries',
-  'gameGuide',
   'gameDeltaRobotParsedLevel',
 ]);
 

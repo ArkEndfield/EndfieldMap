@@ -1,4 +1,4 @@
-import { AdapterRegistry } from '@endfieldmap/map-service/service/adapter_registry';
+import type { AdapterRegistry } from '@endfieldmap/map-service/service/adapter_registry';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
 import { AnnouncementDataService } from '@endfieldmap/map-service/service/data/announcement';
 import { ChestRewardDataService } from '@endfieldmap/map-service/service/data/game/chest_reward';
@@ -11,8 +11,8 @@ import { MapDataService } from '@endfieldmap/map-service/service/data/map';
 import { SwiperDataService } from '@endfieldmap/map-service/service/data/swiper';
 import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { I18nService } from '@endfieldmap/map-service/service/i18n';
-import { PresetService } from '@endfieldmap/map-service/service/preset_service';
-import { ServerService } from '@endfieldmap/map-service/service/server';
+import type { PresetService } from '@endfieldmap/map-service/service/preset_service';
+import type { ServerService } from '@endfieldmap/map-service/service/server';
 import type { UserService } from '@endfieldmap/map-service/service/user';
 import type { JSONLoader } from '@endfieldmap/tools';
 
@@ -33,7 +33,7 @@ export class DataService<T, R> {
   public chestRewardDataService: ChestRewardDataService<T, R>;
   public dungeonSeriesDataService: DungeonSeriesDataService<T, R>;
   public noteDataService: NoteDataService;
-  public guideDataService: GuideDataService<T, R>;
+  public guideDataService: GuideDataService;
   public swiperDataService: SwiperDataService;
   public mapDataService: MapDataService<T, R>;
   public announcementDataService: AnnouncementDataService;
@@ -66,9 +66,7 @@ export class DataService<T, R> {
       jsonLoader: config.jsonLoader,
     });
     this.guideDataService = new GuideDataService({
-      assetService: config.assetService,
-      jsonLoader: config.jsonLoader,
-      databaseService: config.databaseService,
+      serverService: config.serverService,
     });
     this.swiperDataService = new SwiperDataService({
       serverService: config.serverService,
@@ -92,7 +90,6 @@ export class DataService<T, R> {
       this.chestRewardDataService.init(),
       this.dungeonSeriesDataService.init(),
       this.noteDataService.init(),
-      this.guideDataService.init(),
     ]);
   }
 }

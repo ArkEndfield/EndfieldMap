@@ -3,75 +3,62 @@ import '@/components/common/guide/captions.css';
 import '@/components/common/guide/thumbnails.css';
 
 import type { CustomPointData, ElectricPoleData, EntityData } from '@endfieldmap/map-core';
-import type { GuideInfoDetail, GuideNodeType } from '@endfieldmap/map-service';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Lightbox, { type ControllerRef, type Slide } from 'yet-another-react-lightbox';
 import Captions from 'yet-another-react-lightbox/plugins/captions';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
 import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
-import { GuideNode } from '@/components/common/guide/node';
 import { service } from '@/services';
 
-const collectImages = (nodes: GuideNodeType[]) => {
-  const slides: Slide[] = [];
-  const imageIndexMap = new Map<GuideNodeType, number>();
-  let globalTextBuffer: string[] = [];
-
-  const processNodes = (nodeList: GuideNodeType[]) => {
-    for (const node of nodeList) {
-      if (node.type === 'text') {
-        globalTextBuffer.push(node.text);
-      } else if (node.type === 'image') {
-        const isBase64 = node.src.startsWith('data:image');
-        const description = globalTextBuffer.join('');
-        imageIndexMap.set(node, slides.length);
-        slides.push({
-          src: isBase64 ? node.src : `/images/guides/e0m2_3_flashback_008.png`,
-          description: description || undefined,
-        });
-        globalTextBuffer = [];
-      } else if (node.type === 'node') {
-        processNodes(node.nodes);
-      }
-    }
-  };
-
-  processNodes(nodes);
-  return { slides, imageIndexMap };
-};
+import { useGuide } from '@endfieldmap/map-service/hooks/use_guide';
 
 export const Guide = ({ entity }: { entity: EntityData | CustomPointData | ElectricPoleData }) => {
-  const [guide, setGuide] = useState<GuideInfoDetail | null>(null);
+  const { data: guide, loading, error } = useGuide(service, entity.levelLogicId);
   const [showImage, setShowImage] = useState(false);
   const [index, setIndex] = useState(0);
   const imageRef = useRef<ControllerRef>(null);
-
-  const getGuideData = useCallback(async () => {
-    const guides = await service.dataService.guideDataService.getGuide(entity.levelLogicId);
-    return guides;
-  }, [entity.levelLogicId]);
-
-  const { slides, imageIndexMap } = collectImages(guide?.nodes ?? []);
 
   const handleImageClick = useCallback((imageIndex: number) => {
     setIndex(imageIndex);
     setShowImage(true);
   }, []);
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setGuide(null);
-    getGuideData().then((data) => {
-      if (data) {
-        setGuide(data);
-      }
-    });
-  }, [getGuideData]);
+  if (loading) {
+    return <div className="text-gray-500 text-sm py-4 text-center">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-sm py-4 text-center">Load Error</div>;
+  }
+
+  if (!guide) {
+    return null;
+  }
+
+  // 构造Lightbox slides
+  const slides: Slide[] = guide?.images?.map((src) => ({ src })) ?? [];
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
+      {/* 文字描述在上方 */}
+      {guide?.description && (
+        <div className="text-base text-gray-800 mb-2 whitespace-pre-line">{guide.description}</div>
+      )}
+      {/* 图片竖向排列 */}
+      <div className="flex flex-col gap-2">
+        {guide?.images?.map((src, idx) => (
+          <img
+            key={idx}
+            src={src.startsWith('data:image') ? src : src}
+            alt={`guide-img-${idx}`}
+            className="max-w-full h-auto max-h-64 rounded-lg cursor-pointer hover:opacity-80 transition-opacity border"
+            onClick={() => handleImageClick(idx)}
+          />
+        ))}
+      </div>
+      {/* 图片预览弹窗 */}
       <Lightbox
         index={index}
         controller={{
@@ -97,9 +84,6 @@ export const Guide = ({ entity }: { entity: EntityData | CustomPointData | Elect
           },
         }}
       />
-      {guide?.nodes.map((node, index) => (
-        <GuideNode key={index} node={node} onImageClick={handleImageClick} imageIndexMap={imageIndexMap} />
-      ))}
     </div>
   );
 };
