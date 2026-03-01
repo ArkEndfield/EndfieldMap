@@ -25,7 +25,7 @@ export class EntityRender {
 
   private mapInstance: EndfieldMap;
 
-  /** 当前已添加到地图的图层（包括 WebGL 主图层和 Canvas badge 图层） */
+  /** 当前已添加到地图的图层 */
   private currentLayers: Layer[] = [];
 
   constructor(config: EntityRenderConfig) {
@@ -65,7 +65,7 @@ export class EntityRender {
 
   /**
    * 切换到指定地图
-   * 清除旧图层，添加新地图的图层（包括 WebGL 主图层和 Canvas badge 图层）
+   * 清除旧图层，添加新地图的图层
    */
   public switchMap(mapId: MapData['id']): void {
     // 清除旧图层
@@ -75,12 +75,8 @@ export class EntityRender {
     const mapRenderers = this.renders.get(mapId);
     if (mapRenderers) {
       for (const renderer of mapRenderers.values()) {
-        // 添加 WebGL 主图层
         this.mapInstance.map.addLayer(renderer.layer);
         this.currentLayers.push(renderer.layer);
-        // 添加 Canvas badge 图层
-        this.mapInstance.map.addLayer(renderer.badgeLayer);
-        this.currentLayers.push(renderer.badgeLayer);
       }
     }
   }
@@ -139,11 +135,10 @@ export class EntityRender {
    * 获取当前显示的渲染器列表（用于 hit test）
    */
   public get currentRenderer(): EntityGroupRenderer[] {
-    // 从 currentLayers 中找对应的渲染器（注意 currentLayers 现在包含 WebGL 和 Canvas 两种图层）
+    // 从 currentLayers 中找对应的渲染器
     const renderers: EntityGroupRenderer[] = [];
     for (const [, mapRenderers] of this.renders) {
       for (const renderer of mapRenderers.values()) {
-        // 检查 WebGL 主图层是否在 currentLayers 中
         if (this.currentLayers.includes(renderer.layer)) {
           renderers.push(renderer);
         }

@@ -1,4 +1,5 @@
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import type { MapBaseRegionData, MapData, MapDataManager, OverrideRegionData } from '@endfieldmap/map-core';
 import { FeatureType, FeatureTypeKey, LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import { Feature } from 'ol';
@@ -9,8 +10,6 @@ import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 import Text from 'ol/style/Text';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 const FEATURE_NAME_KEY = 'areaName';
 

@@ -1,11 +1,10 @@
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import { DEFAULT_OPACITY, LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import { observable } from 'mobx';
 import ImageLayer from 'ol/layer/Image';
 import { ImageStatic } from 'ol/source';
 import type ImageSource from 'ol/source/Image';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 export interface TierOverlayMaskConfig {
   opacity?: number;

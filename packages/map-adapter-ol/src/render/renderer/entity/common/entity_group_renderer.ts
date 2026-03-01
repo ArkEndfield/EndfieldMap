@@ -1,7 +1,4 @@
-import {
-  createClusterBadgeCanvasStyle,
-  createEntityGroupWebGLStyle,
-} from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/entity_group_style';
+import { createEntityGroupCanvasStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/entity_group_style';
 import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import type { EntityDataInstance } from '@endfieldmap/map-core';
 import {
@@ -17,7 +14,6 @@ import type { Coordinate } from 'ol/coordinate';
 import type { EventsKey } from 'ol/events';
 import { Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
-import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import { unByKey } from 'ol/Observable';
 import { Cluster } from 'ol/source';
 import VectorSource from 'ol/source/Vector';
@@ -71,9 +67,8 @@ export interface FeatureStateUpdate {
 }
 
 /**
- * Entity组渲染器（WebGL）
+ * Entity组渲染器（Canvas）
  * 负责渲染单个 Entity 组的所有 Entity
- * 使用 WebGLVectorLayer 替代 VectorLayer 以获得更好的渲染性能
  *
  * 设计原则：
  * - 不持有 DataManager 引用
@@ -82,11 +77,8 @@ export interface FeatureStateUpdate {
  * - 通过 Controller 显式调用 addFeatures/removeFeatures/updateFeatureState 更新渲染
  */
 export class EntityGroupRenderer {
-  /** WebGL 图层（主要渲染层） */
-  public readonly layer: WebGLVectorLayer;
-
-  /** Canvas 图层（聚合 badge 文本层） */
-  public readonly badgeLayer: VectorLayer;
+  /** Canvas 图层 */
+  public readonly layer: VectorLayer;
 
   /** 基础数据源 */
   private readonly baseSource: VectorSource;
@@ -112,32 +104,20 @@ export class EntityGroupRenderer {
     // 监听聚合特征变化，将 clusterSize/marked/selected 写入 cluster feature 属性
     this.setupClusterPropertySync();
 
-    // 生成 WebGL FlatStyle
-    const flatStyles = createEntityGroupWebGLStyle({
+    // 生成 Canvas StyleFunction（合并了背景、图标和聚合 badge）
+    const styleFunction = createEntityGroupCanvasStyle({
       iconPath: config.iconPath,
       enableShadow: config.enableShadow,
     });
 
-    // 初始化 WebGL 图层 — 主要渲染层
-    this.layer = new WebGLVectorLayer({
+    // 初始化 Canvas 图层
+    this.layer = new VectorLayer({
       source: this.clusterSource,
-      style: flatStyles,
+      style: styleFunction,
       visible: config.initialVisible ?? true,
       zIndex: Z_INDEX.ENTITY,
-      disableHitDetection: false,
     });
     this.layer.set(LayerTypeKey, LayerType.ENTITY);
-
-    // 初始化 Canvas 图层 — 聚合 badge 文本层
-    this.badgeLayer = new VectorLayer({
-      source: this.clusterSource,
-      style: createClusterBadgeCanvasStyle(),
-      visible: config.initialVisible ?? true,
-      zIndex: Z_INDEX.ENTITY_BADGE, // 确保在 WebGL 层之上
-      updateWhileAnimating: false,
-      updateWhileInteracting: false,
-    });
-    this.badgeLayer.set(LayerTypeKey, LayerType.ENTITY);
   }
 
   // #region 公共 API —— 由 Controller 调用
@@ -166,7 +146,7 @@ export class EntityGroupRenderer {
 
   /**
    * 更新单个 feature 的状态
-   * 将状态更新写入 feature 属性，WebGL 表达式自动响应
+   * 将状态更新写入 feature 属性，Canvas StyleFunction 自动响应
    * @param id feature ID
    * @param state 状态更新
    */
@@ -229,7 +209,6 @@ export class EntityGroupRenderer {
    */
   public setVisible(visible: boolean): void {
     this.layer.setVisible(visible);
-    this.badgeLayer.setVisible(visible);
   }
 
   /**
@@ -264,7 +243,6 @@ export class EntityGroupRenderer {
    */
   public refresh(): void {
     this.layer.changed();
-    this.badgeLayer.changed();
     this.clusterSource.changed();
   }
 
@@ -281,7 +259,6 @@ export class EntityGroupRenderer {
     this.featureMap.clear();
     this.baseSource.clear();
     this.layer.dispose();
-    this.badgeLayer.dispose();
   }
 
   // #endregion
@@ -297,7 +274,7 @@ export class EntityGroupRenderer {
     feature.set(FeatureTypeKey, FeatureType.ENTITY);
     feature.set(EntityInstanceKey, item.dataInstance);
 
-    // 设置属性供 WebGL 表达式读取
+    // 设置属性供 Canvas StyleFunction 读取
     feature.set('visible', item.visible ? 1 : 0);
     feature.set('marked', item.marked ? 1 : 0);
     feature.set('selected', item.selected ? 1 : 0);

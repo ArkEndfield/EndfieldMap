@@ -1,14 +1,14 @@
-import { DEFAULT_ICON_SIZE } from '@endfieldmap/map-core';
-import type { FlatStyle, NumberExpression } from 'ol/style/flat';
-
 import {
   CUSTOM_POINT_BG_SVG,
   ICON_DISPLACEMENT_Y,
-  RENDER_SCALE,
   SVG_DISPLACEMENT_Y,
   SVG_HEIGHT,
   SVG_WIDTH,
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/marker_background_svg';
+import { DEFAULT_ICON_SIZE } from '@endfieldmap/map-core';
+import type { FeatureLike } from 'ol/Feature';
+import Icon from 'ol/style/Icon';
+import Style from 'ol/style/Style';
 
 const ENTITY_SIZE = DEFAULT_ICON_SIZE;
 
@@ -17,41 +17,49 @@ export interface CustomPointStyleConfig {
 }
 
 /**
- * 统一透明度表达式
- * active=1 → 0.75
- * 默认 → 1.0
+ * 创建 CustomPoint 的 Canvas StyleFunction 样式
+ * 使用预生成的 SVG 背景 + 图标层
  */
-const OPACITY_EXPRESSION = ['case', ['==', ['get', 'active'], 1], 0.75, 1] as NumberExpression;
-
-/**
- * 创建 CustomPoint 的 WebGL FlatStyle 样式
- * 使用预生成的 SVG 背景替代多层 WebGL 图形
- */
-export function createCustomPointWebGLStyle(config: CustomPointStyleConfig): FlatStyle[] {
+export function createCustomPointCanvasStyle(config: CustomPointStyleConfig): (feature: FeatureLike) => Style[] {
   const { iconPath } = config;
 
-  const styles: FlatStyle[] = [];
+  // 预创建 Icon 实例
+  const bgIcon = new Icon({
+    src: CUSTOM_POINT_BG_SVG,
+    anchor: [0.5, 0.5],
+    width: SVG_WIDTH,
+    height: SVG_HEIGHT,
+    displacement: [0, SVG_DISPLACEMENT_Y],
+  });
 
-  // 1. 背景 SVG（深色配色）
-  styles.push({
-    'icon-src': CUSTOM_POINT_BG_SVG,
-    'icon-anchor': [0.5, 0.5],
-    'icon-width': SVG_WIDTH * RENDER_SCALE,
-    'icon-height': SVG_HEIGHT * RENDER_SCALE,
-    'icon-scale': 1 / RENDER_SCALE,
-    'icon-displacement': [0, SVG_DISPLACEMENT_Y],
-    'icon-opacity': OPACITY_EXPRESSION,
-  } as FlatStyle);
+  const entityIcon = new Icon({
+    src: iconPath,
+    anchor: [0.5, 0.5],
+    width: ENTITY_SIZE,
+    height: ENTITY_SIZE,
+    displacement: [0, ICON_DISPLACEMENT_Y],
+  });
 
-  // 2. 图标层
-  styles.push({
-    'icon-src': iconPath,
-    'icon-anchor': [0.5, 0.5],
-    'icon-width': ENTITY_SIZE,
-    'icon-height': ENTITY_SIZE,
-    'icon-displacement': [0, ICON_DISPLACEMENT_Y],
-    'icon-opacity': OPACITY_EXPRESSION,
-  } as FlatStyle);
+  // 样式缓存
+  const cache = new Map<number, Style[]>();
 
-  return styles;
+  return (feature: FeatureLike): Style[] => {
+    const active = (feature.get('active') as number) ?? 0;
+
+    const cached = cache.get(active);
+    if (cached) return cached;
+
+    const opacity = active === 1 ? 0.75 : 1;
+
+    const bg = bgIcon.clone();
+    bg.setOpacity(opacity);
+
+    const icon = entityIcon.clone();
+    icon.setOpacity(opacity);
+
+    const styles = [new Style({ image: bg }), new Style({ image: icon })];
+
+    cache.set(active, styles);
+    return styles;
+  };
 }

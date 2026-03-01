@@ -1,3 +1,4 @@
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import {
   DevToolsFeatureBaseStyleKey,
   type DevToolsFeatureData,
@@ -14,8 +15,6 @@ import type { Geometry } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type Style from 'ol/style/Style';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 /**
  * DevTools 渲染器配置

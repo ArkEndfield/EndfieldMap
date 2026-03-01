@@ -1,13 +1,12 @@
 import { SingleLayerBase } from '@endfieldmap/map-adapter-ol/render/layers/_base';
 import { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import { emptyImage, emptyImageBase64String } from '@endfieldmap/map-adapter-ol/utils/image';
 import type { MapDataManager } from '@endfieldmap/map-core';
 import { LayerType, LayerTypeKey, TierDataInstance, TierDataManager } from '@endfieldmap/map-core';
 import { ImagePool, logger } from '@endfieldmap/tools';
 import ImageLayer from 'ol/layer/Image';
 import { ImageStatic } from 'ol/source';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 export interface TierLayerConfig {
   tierDataManager: TierDataManager;

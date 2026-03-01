@@ -3,7 +3,6 @@ import { ElectricPoleRenderer } from '@endfieldmap/map-adapter-ol/render/rendere
 import { ElectricPoleZoneRenderer } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_zone_renderer';
 import type { MapData } from '@endfieldmap/map-core';
 import type VectorLayer from 'ol/layer/Vector';
-import type WebGLVectorLayer from 'ol/layer/WebGLVector';
 
 export interface ElectricPoleRenderConfig {
   mapInstance: EndfieldMap;
@@ -32,7 +31,7 @@ export class ElectricPoleRender {
   private renders: Map<MapData['id'], Map<string, DeviceRenderers>> = new Map();
 
   /** 当前显示的图层 */
-  private currentLayers: (WebGLVectorLayer | VectorLayer)[] = [];
+  private currentLayers: VectorLayer[] = [];
 
   /** 地图实例 */
   private mapInstance: EndfieldMap;

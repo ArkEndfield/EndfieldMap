@@ -1,7 +1,7 @@
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import { CustomPointRenderer } from '@endfieldmap/map-adapter-ol/render/renderer/entity/custom_point/custom_point_renderer';
 import type { MapData } from '@endfieldmap/map-core';
-import type WebGLVectorLayer from 'ol/layer/WebGLVector';
+import type VectorLayer from 'ol/layer/Vector';
 
 export interface CustomPointRenderConfig {
   mapInstance: EndfieldMap;
@@ -22,7 +22,7 @@ export class CustomPointRender {
   private renders: Map<MapData['id'], Map<string, CustomPointRenderer>> = new Map();
 
   /** 当前显示的图层 */
-  private currentLayers: WebGLVectorLayer[] = [];
+  private currentLayers: VectorLayer[] = [];
 
   /** 地图实例 */
   private mapInstance: EndfieldMap;

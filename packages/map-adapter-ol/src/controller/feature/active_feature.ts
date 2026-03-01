@@ -4,7 +4,7 @@ import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event
 import type { DataInstance, DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
 import { DEFAULT_ICON_SIZE, DEFAULT_STROKE_WIDTH, MAP_EVENT } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
-import { action, observable, reaction, type IReactionDisposer } from 'mobx';
+import { action, type IReactionDisposer, observable, reaction } from 'mobx';
 
 export interface ActiveFeatureControllerConfig {
   disableActiveFeature?: boolean;

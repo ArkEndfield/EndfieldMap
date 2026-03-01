@@ -17,8 +17,6 @@ export const Z_INDEX = {
   CONNECTION: 4,
   /** 通用标点 */
   ENTITY: 5,
-  /** 聚合数字标签 */
-  ENTITY_BADGE: 6,
   /** 创建点（电线杆、自定义标点） */
   CREATE_POINT: 7,
   /** 悬浮动画 */

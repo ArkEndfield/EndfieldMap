@@ -1,4 +1,5 @@
 import { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import { tileLoadFunction } from '@endfieldmap/map-adapter-ol/utils/image';
 import type { EndfieldMapAsset, MapData, MapDataManager } from '@endfieldmap/map-core';
 import {
@@ -12,8 +13,6 @@ import {
 } from '@endfieldmap/map-core';
 import TileLayer from 'ol/layer/Tile';
 import { XYZ } from 'ol/source';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 export interface MapRenderConfig {
   mapDataManager: MapDataManager;

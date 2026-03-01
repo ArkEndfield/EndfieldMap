@@ -1,8 +1,8 @@
 import {
   CONNECTION_STYLE_HOVER,
   CONNECTION_STYLE_NORMAL,
+  createElectricPoleCanvasStyle,
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_style';
-import { createElectricPoleWebGLStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/electric_pole/electric_pole_webgl_style';
 import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
 import {
@@ -20,7 +20,6 @@ import type { Coordinate } from 'ol/coordinate';
 import type { FeatureLike } from 'ol/Feature';
 import { LineString, Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
-import WebGLVectorLayer from 'ol/layer/WebGLVector';
 import VectorSource from 'ol/source/Vector';
 
 /**
@@ -76,19 +75,18 @@ export interface ConnectionData {
 }
 
 /**
- * 电线杆渲染器（WebGL 点层 + VectorLayer 连线层）
+ * 电线杆渲染器（Canvas 点层 + VectorLayer 连线层）
  *
  * 设计原则：
  * - 不持有 DataManager 引用
  * - 不包含 MobX 监听（仅保留 hoveredFeature observable）
  * - 通过 Controller 显式调用 addFeatures/removeFeatures/updateFeatureState 更新渲染
- * - 连线层保持 VectorLayer（WebGL 不支持 LineString）
  */
 export class ElectricPoleRenderer {
-  /** 实体图层（WebGL） */
-  public readonly entityLayer: WebGLVectorLayer;
+  /** 实体图层（Canvas） */
+  public readonly entityLayer: VectorLayer;
 
-  /** 连线图层（VectorLayer，WebGL 不支持 LineString） */
+  /** 连线图层（VectorLayer） */
   public readonly connectionLayer: VectorLayer;
 
   /** 当前hover的连线feature */
@@ -110,19 +108,18 @@ export class ElectricPoleRenderer {
     logger.debug('[ElectricPoleRenderer] init', { config });
     this.entitySource = new VectorSource();
 
-    // 生成 WebGL FlatStyle
-    const flatStyles = createElectricPoleWebGLStyle({
+    // 生成 Canvas StyleFunction
+    const styleFunction = createElectricPoleCanvasStyle({
       iconPath: config.iconPath,
       enableShadow: config.enableShadow,
     });
 
-    // 初始化 WebGL 实体图层
-    this.entityLayer = new WebGLVectorLayer({
+    // 初始化 Canvas 实体图层
+    this.entityLayer = new VectorLayer({
       source: this.entitySource,
-      style: flatStyles,
+      style: styleFunction,
       visible: config.initialVisible ?? true,
       zIndex: Z_INDEX.CREATE_POINT,
-      disableHitDetection: false,
     });
     this.entityLayer.set(LayerTypeKey, LayerType.ELECTRIC_POLE);
 
@@ -149,7 +146,7 @@ export class ElectricPoleRenderer {
   /**
    * 图层 getter（实现 HitTestableLayer 接口）
    */
-  public get layer(): WebGLVectorLayer {
+  public get layer(): VectorLayer {
     return this.entityLayer;
   }
 
@@ -343,11 +340,7 @@ export class ElectricPoleRenderer {
     this.connectionMap.clear();
     this.entitySource.clear();
     this.connectionSource.clear();
-    try {
-      this.entityLayer.dispose();
-    } catch {
-      // WebGL context may already be lost or layer never rendered
-    }
+    this.entityLayer.dispose();
   }
 
   // #endregion
@@ -370,7 +363,7 @@ export class ElectricPoleRenderer {
     feature.set(FeatureTypeKey, FeatureType.ENTITY);
     feature.set(EntityInstanceKey, item.dataInstance);
 
-    // 设置属性供 WebGL 表达式读取
+    // 设置属性供 Canvas StyleFunction 读取
     feature.set('visible', item.visible ? 1 : 0);
     feature.set('active', item.active ? 1 : 0);
 

@@ -1,3 +1,4 @@
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import type { ElectricPoleDataInstance } from '@endfieldmap/map-core';
 import { ELECTRIC_POLE_DEVICE_CONFIGS } from '@endfieldmap/map-core/const/electric_pole';
 import { logger } from '@endfieldmap/tools';
@@ -9,8 +10,6 @@ import VectorSource from 'ol/source/Vector';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 
 /**
  * 按设备类型缓存区域样式，避免每次渲染都重新创建

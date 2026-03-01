@@ -1,3 +1,5 @@
+import { createCustomPointCanvasStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/custom_point/custom_point_style';
+import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import type { CustomPointDataInstance } from '@endfieldmap/map-core';
 import {
   EntityInstanceKey,
@@ -9,12 +11,8 @@ import {
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import { Point } from 'ol/geom';
-import WebGLVectorLayer from 'ol/layer/WebGLVector';
+import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-
-import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
-
-import { createCustomPointWebGLStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/custom_point/custom_point_style';
 
 /**
  * 自定义标点渲染器配置
@@ -53,7 +51,7 @@ export interface CustomPointFeatureStateUpdate {
 }
 
 /**
- * 自定义标点渲染器（WebGL）
+ * 自定义标点渲染器（Canvas）
  * 负责渲染单个类型的自定义标点
  *
  * 设计原则：
@@ -63,7 +61,7 @@ export interface CustomPointFeatureStateUpdate {
  */
 export class CustomPointRenderer {
   /** 图层实例 */
-  public readonly layer: WebGLVectorLayer;
+  public readonly layer: VectorLayer;
 
   /** 数据源 */
   private readonly source: VectorSource;
@@ -75,18 +73,17 @@ export class CustomPointRenderer {
     // 初始化数据源
     this.source = new VectorSource();
 
-    // 生成 WebGL FlatStyle
-    const flatStyles = createCustomPointWebGLStyle({
+    // 生成 Canvas StyleFunction
+    const styleFunction = createCustomPointCanvasStyle({
       iconPath: config.iconPath,
     });
 
-    // 初始化 WebGL 图层
-    this.layer = new WebGLVectorLayer({
+    // 初始化 Canvas 图层
+    this.layer = new VectorLayer({
       source: this.source,
-      style: flatStyles,
+      style: styleFunction,
       visible: config.initialVisible ?? true,
       zIndex: Z_INDEX.CREATE_POINT,
-      disableHitDetection: false,
     });
     this.layer.set(LayerTypeKey, LayerType.CUSTOM_POINT);
   }
@@ -193,11 +190,7 @@ export class CustomPointRenderer {
   public dispose(): void {
     this.featureMap.clear();
     this.source.clear();
-    try {
-      this.layer.dispose();
-    } catch {
-      // WebGL context may already be lost or layer never rendered
-    }
+    this.layer.dispose();
   }
 
   // #endregion
@@ -213,7 +206,7 @@ export class CustomPointRenderer {
     feature.set(FeatureTypeKey, FeatureType.ENTITY);
     feature.set(EntityInstanceKey, item.dataInstance);
 
-    // 设置属性供 WebGL 表达式读取
+    // 设置属性供 Canvas StyleFunction 读取
     feature.set('visible', item.visible ? 1 : 0);
     feature.set('active', item.active ? 1 : 0);
 
