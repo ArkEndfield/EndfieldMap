@@ -7,7 +7,7 @@ import PresetSelectBar from '@themes/endfield/ui/control_panel/controllers/opera
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { useCustomPointPresetPanel } from '@/hooks/use_custom_point_preset_panel';
+import { useCustomPointPresetPanel } from '@endfieldmap/map-service';
 import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
 import { catchErrorWithTip } from '@/utils/handler';
@@ -33,7 +33,7 @@ const CustomPointPresetPanel: React.FC = observer(() => {
     handleRenamePreset,
     handleClickImport,
     handleImportFileChange,
-  } = useCustomPointPresetPanel();
+  } = useCustomPointPresetPanel(service);
 
   const handleOpenStore = () => {
     uiManager.openPresetStore('custom_point');
@@ -112,7 +112,7 @@ const CustomPointPresetPanel: React.FC = observer(() => {
         type="file"
         accept="application/json"
         className="hidden"
-        onChange={handleImportFileChange}
+        onChange={(e) => handleImportFileChange(e.target.files?.[0])}
       />
     </div>
   );

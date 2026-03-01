@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import type { MapService } from '@endfieldmap/map-service/service';
 import type { GuideInfo } from '@endfieldmap/map-service/@types/guide';
+import type { MapService } from '@endfieldmap/map-service/service';
+import { useEffect,useState } from 'react';
 
 const guideCache = new Map<number, GuideInfo>();
 
@@ -49,7 +49,7 @@ export const useGuide = <T, R>(service: MapService<T, R>, id?: number) => {
         setData(result);
         setLoading(false);
       })
-      .catch((err: any) => {
+      .catch((err) => {
         if (abortController.signal.aborted) {
           return;
         }

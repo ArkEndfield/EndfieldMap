@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { alertApi } from '@/components/ui/alert/alert-api';
-import { useMobxSource } from '@/hooks/use-mobx-source';
 import { service } from '@/services/map-service';
+import { useMobxSource } from '@endfieldmap/map-service';
 
 export interface PresetItem {
   id: string;
@@ -25,7 +25,7 @@ export const useElectricPolePresetPanel = () => {
       q.from({
         presets: collections.user.electricPolePreset.tanStackDbCollection,
       }),
-    [collections],
+    [collections]
   );
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -80,7 +80,7 @@ export const useElectricPolePresetPanel = () => {
                   logger.error('批量删除电线杆预设失败:', id, error);
                   resolve({ success: false, id });
                 });
-            }),
+            })
         );
         const result = await Promise.all(tasks);
         const fail = result.filter((item) => !item.success);
@@ -92,7 +92,7 @@ export const useElectricPolePresetPanel = () => {
             t('sidebar:operation.electric_pole.preset.delete.batch_fail_tip', {
               count: failCount,
               ids: failIds.join(''),
-            }),
+            })
           );
         }
       },

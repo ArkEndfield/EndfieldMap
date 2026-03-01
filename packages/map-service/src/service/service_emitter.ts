@@ -3,6 +3,7 @@ import { EndfieldMapEmitter } from '@endfieldmap/map-core';
 export const SERVICE_EVENT = {
   ALERT_INFO: 'service:alert:info',
   ALERT_CONFIRM: 'service:alert:confirm',
+  ALERT_PROMPT: 'service:alert:prompt',
   ALERT_SHOW: 'service:alert:show',
   LOADING_PROGRESS: 'service:loading:progress',
   LOADING_COMPLETE: 'service:loading:complete',
@@ -16,6 +17,13 @@ export type ServiceEventMap = {
     dismissible?: boolean;
     onConfirm?: () => void | Promise<void>;
     onCancel?: () => void | Promise<void>;
+  };
+  [SERVICE_EVENT.ALERT_PROMPT]: {
+    content: string;
+    defaultValue?: string;
+    placeholder?: string;
+    onConfirm?: (value: string) => void | Promise<boolean | void>;
+    onCancel?: () => void | Promise<boolean | void>;
   };
   [SERVICE_EVENT.ALERT_SHOW]: {
     content: string;

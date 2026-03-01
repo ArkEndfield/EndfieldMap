@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import { OperationTip } from '@/components/operations/operation-tip';
 import { useCustomPointMode } from '@/hooks/use-custom-point-mode';
-import { useMobxSource } from '@/hooks/use-mobx-source';
 import { service } from '@/services/map-service';
+import { useMobxSource } from '@endfieldmap/map-service';
 
 import { PointTypeSelector } from './point-type-selector';
 
@@ -25,9 +25,7 @@ export const PointOperationTip: React.FC = observer(() => {
 
   if (!isInAnyMode) return null;
 
-  const tipText = tipTextKey
-    ? t(`operation.custom_point.${tipTextKey}.in_mode`, { defaultValue: '操作模式中' })
-    : '';
+  const tipText = tipTextKey ? t(`operation.custom_point.${tipTextKey}.in_mode`, { defaultValue: '操作模式中' }) : '';
 
   return (
     <View

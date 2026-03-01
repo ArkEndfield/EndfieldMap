@@ -9,10 +9,24 @@ export type {
   RequiredNodeFields,
 } from '@endfieldmap/map-service/service/user/data/preset/_base';
 
+export interface PresetItem {
+  id: string;
+  name: string;
+}
+
 /**
  * 电线杆预设服务接口 (包含 connect/disconnect 方法)
  */
-export interface IElectricPolePresetDataService<TPreset, TNodeSchema extends { id: string; presetId: string; mapId: string; levelLogicId: number; properties: Record<string, unknown> }> {
+export interface IElectricPolePresetDataService<
+  TPreset,
+  TNodeSchema extends {
+    id: string;
+    presetId: string;
+    mapId: string;
+    levelLogicId: number;
+    properties: Record<string, unknown>;
+  },
+> {
   getPresetById(id: string): Promise<TPreset | null>;
   getPresetByIdForExport(id: string): Promise<TPreset | null>;
   createPreset(
@@ -25,7 +39,15 @@ export interface IElectricPolePresetDataService<TPreset, TNodeSchema extends { i
   getAllPresetMetadata(): Promise<PresetSchemaType[]>;
   renameNode(mapId: MapData['id'], presetId: string, levelLogicId: number, newName: string): Promise<void>;
   deleteNode(mapId: MapData['id'], presetId: string, levelLogicId: number): Promise<void>;
-  createNode(mapId: MapData['id'], presetId: string, nodeData: Omit<TNodeSchema, 'id' | 'createdAt' | 'updatedAt' | 'mapId' | 'presetId'> & { id?: string; createdAt?: number; updatedAt?: number }): Promise<TNodeSchema>;
+  createNode(
+    mapId: MapData['id'],
+    presetId: string,
+    nodeData: Omit<TNodeSchema, 'id' | 'createdAt' | 'updatedAt' | 'mapId' | 'presetId'> & {
+      id?: string;
+      createdAt?: number;
+      updatedAt?: number;
+    }
+  ): Promise<TNodeSchema>;
   addNodeSubscribe(
     callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void
   ): void;
@@ -47,7 +69,16 @@ export interface IElectricPolePresetDataService<TPreset, TNodeSchema extends { i
 /**
  * 自定义标点预设服务接口 (包含 changeNodeType 方法)
  */
-export interface ICustomPointPresetDataService<TPreset, TNodeSchema extends { id: string; presetId: string; mapId: string; levelLogicId: number; properties: Record<string, unknown> }> {
+export interface ICustomPointPresetDataService<
+  TPreset,
+  TNodeSchema extends {
+    id: string;
+    presetId: string;
+    mapId: string;
+    levelLogicId: number;
+    properties: Record<string, unknown>;
+  },
+> {
   getPresetById(id: string): Promise<TPreset | null>;
   getPresetByIdForExport(id: string): Promise<TPreset | null>;
   createPreset(
@@ -60,16 +91,19 @@ export interface ICustomPointPresetDataService<TPreset, TNodeSchema extends { id
   getAllPresetMetadata(): Promise<PresetSchemaType[]>;
   renameNode(mapId: MapData['id'], presetId: string, levelLogicId: number, newName: string): Promise<void>;
   deleteNode(mapId: MapData['id'], presetId: string, levelLogicId: number): Promise<void>;
-  createNode(mapId: MapData['id'], presetId: string, nodeData: Omit<TNodeSchema, 'id' | 'createdAt' | 'updatedAt' | 'mapId' | 'presetId'> & { id?: string; createdAt?: number; updatedAt?: number }): Promise<TNodeSchema>;
+  createNode(
+    mapId: MapData['id'],
+    presetId: string,
+    nodeData: Omit<TNodeSchema, 'id' | 'createdAt' | 'updatedAt' | 'mapId' | 'presetId'> & {
+      id?: string;
+      createdAt?: number;
+      updatedAt?: number;
+    }
+  ): Promise<TNodeSchema>;
   addNodeSubscribe(
     callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: TNodeSchema, prevData?: TNodeSchema) => void
   ): void;
-  changeNodeType(
-    mapId: MapData['id'],
-    presetId: string,
-    levelLogicId: number,
-    newType: string
-  ): Promise<void>;
+  changeNodeType(mapId: MapData['id'], presetId: string, levelLogicId: number, newType: string): Promise<void>;
   addPresetSubscribe(callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: PresetSchemaType) => void): void;
 }
 

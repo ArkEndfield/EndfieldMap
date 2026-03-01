@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 import { OperationTip } from '@/components/operations/operation-tip';
 import { useElectricPoleMode } from '@/hooks/use-electric-pole-mode';
-import { useMobxSource } from '@/hooks/use-mobx-source';
 import { service } from '@/services/map-service';
 
 import { PoleTypeSelector } from './pole-type-selector';
+import { useMobxSource } from '@endfieldmap/map-service';
 
 export const PoleOperationTip: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
@@ -17,12 +17,10 @@ export const PoleOperationTip: React.FC = observer(() => {
   const { getCurrentMode, getCurrentModeTipText, stopAllModes } = useElectricPoleMode();
 
   const isCreating = useMobxSource(() => service.dataService.mapDataService.electricPoleDataService.isCreating);
-  const isConnecting = useMobxSource(
-    () => service.dataService.mapDataService.electricPoleDataService.isConnecting,
-  );
+  const isConnecting = useMobxSource(() => service.dataService.mapDataService.electricPoleDataService.isConnecting);
   const isDeleting = useMobxSource(() => service.dataService.mapDataService.electricPoleDataService.isDeleting);
   const isDeletingConnection = useMobxSource(
-    () => service.dataService.mapDataService.electricPoleDataService.isDeletingConnection,
+    () => service.dataService.mapDataService.electricPoleDataService.isDeletingConnection
   );
 
   const currentMode = getCurrentMode();
@@ -31,9 +29,7 @@ export const PoleOperationTip: React.FC = observer(() => {
 
   if (!isInAnyMode) return null;
 
-  const tipText = tipTextKey
-    ? t(`operation.electric_pole.${tipTextKey}.in_mode`, { defaultValue: '操作模式中' })
-    : '';
+  const tipText = tipTextKey ? t(`operation.electric_pole.${tipTextKey}.in_mode`, { defaultValue: '操作模式中' }) : '';
 
   return (
     <View

@@ -1,4 +1,4 @@
-import { SERVICE_EVENT,serviceEmitter } from '@endfieldmap/map-service';
+import { SERVICE_EVENT, serviceEmitter } from '@endfieldmap/map-service';
 
 import { alert } from '@/components/common/alert/alert_api';
 import type { LoadingStageId } from '@/const/loading';
@@ -34,6 +34,24 @@ export function initServiceEventBridge(): void {
       content: data.content,
       hideCancel: data.hideCancel,
       onCancel: data.onCancel,
+    });
+  });
+
+  serviceEmitter.on(SERVICE_EVENT.ALERT_PROMPT, (data) => {
+    alert.prompt({
+      content: data.content,
+      defaultValue: data.defaultValue,
+      placeholder: data.placeholder,
+      onConfirm: async (val) => {
+        if (!data.onConfirm) return true;
+        const res = await data.onConfirm(val);
+        return res !== false;
+      },
+      onCancel: async () => {
+        if (!data.onCancel) return true;
+        const res = await data.onCancel();
+        return res !== false;
+      },
     });
   });
 

@@ -8,7 +8,7 @@ import SharePresetForm from '@themes/endfield/ui/control_panel/controllers/opera
 import { observer } from 'mobx-react-lite';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { useElectricPolePresetPanel } from '@/hooks/use_electric_pole_preset_panel';
+import { useElectricPolePresetPanel } from '@endfieldmap/map-service';
 import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
 import { catchErrorWithTip } from '@/utils/handler';
@@ -34,7 +34,7 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
     handleRenamePreset,
     handleClickImport,
     handleImportFileChange,
-  } = useElectricPolePresetPanel();
+  } = useElectricPolePresetPanel(service);
 
   const handleOpenStore = () => {
     uiManager.openPresetStore('electric_pole');
@@ -68,7 +68,12 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
       ),
       onConfirm: () =>
         catchErrorWithTip(async () => {
-          await service.dataService.mapDataService.electricPoleDataService.sharePreset(id, shareName, shareDescription, shareType);
+          await service.dataService.mapDataService.electricPoleDataService.sharePreset(
+            id,
+            shareName,
+            shareDescription,
+            shareType
+          );
           alert.info('分享成功');
         }),
     });
@@ -118,7 +123,7 @@ const ElectricPolePresetPanel: React.FC = observer(() => {
         type="file"
         accept="application/json"
         className="hidden"
-        onChange={handleImportFileChange}
+        onChange={(e) => handleImportFileChange(e.target.files?.[0])}
       />
     </div>
   );

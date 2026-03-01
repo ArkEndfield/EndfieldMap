@@ -7,13 +7,16 @@ import { GameMapView } from '@/components/map/game-map-view';
 import { PointOperationTip } from '@/components/operations/custom-point/point-operation-tip';
 import { CustomPointSheet, type CustomPointSheetRef } from '@/components/operations/custom-point/custom-point-sheet';
 import { PoleOperationTip } from '@/components/operations/electric-pole/pole-operation-tip';
-import { ElectricPoleSheet, type ElectricPoleSheetRef } from '@/components/operations/electric-pole/electric-pole-sheet';
+import {
+  ElectricPoleSheet,
+  type ElectricPoleSheetRef,
+} from '@/components/operations/electric-pole/electric-pole-sheet';
 import { EntityFilterSheet, type EntityFilterSheetRef } from '@/components/ui/entity-filter-sheet';
 import { MapSwitcher } from '@/components/ui/map-switcher';
 import { ZoomControls } from '@/components/ui/zoom-controls';
 import { AdapterProvider, useAdapter } from '@/context/adapter';
 import { useMapInit } from '@/hooks/use-map-init';
-import { useMobxSource } from '@/hooks/use-mobx-source';
+import { useMobxSource } from '@endfieldmap/map-service';
 
 export default function MapScreen() {
   const { t } = useTranslation('common');
@@ -23,7 +26,9 @@ export default function MapScreen() {
     return (
       <View className="flex-1 items-center justify-center bg-bg-secondary">
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text className="mt-3 text-[15px] text-text-tertiary">{t('common:loading', { defaultValue: '加载中...' })}</Text>
+        <Text className="mt-3 text-[15px] text-text-tertiary">
+          {t('common:loading', { defaultValue: '加载中...' })}
+        </Text>
       </View>
     );
   }
@@ -31,7 +36,9 @@ export default function MapScreen() {
   if (error || !adapter) {
     return (
       <View className="flex-1 items-center justify-center bg-bg-secondary">
-        <Text className="mb-2 text-lg font-semibold text-error">{t('common:load_error', { defaultValue: '加载失败' })}</Text>
+        <Text className="mb-2 text-lg font-semibold text-error">
+          {t('common:load_error', { defaultValue: '加载失败' })}
+        </Text>
         <Text className="px-10 text-center text-[13px] text-text-placeholder">{error?.message ?? 'Unknown error'}</Text>
       </View>
     );
@@ -83,19 +90,25 @@ function MapContent() {
           className="rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
           onPress={handleOpenCustomPoint}
         >
-          <Text className="text-[15px] font-semibold text-primary">{t('header:head_menu.custom', { defaultValue: '自定义标点' })}</Text>
+          <Text className="text-[15px] font-semibold text-primary">
+            {t('header:head_menu.custom', { defaultValue: '自定义标点' })}
+          </Text>
         </Pressable>
         <Pressable
           className="rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
           onPress={handleOpenElectricPole}
         >
-          <Text className="text-[15px] font-semibold text-primary">{t('header:head_menu.poles', { defaultValue: '电线杆管理' })}</Text>
+          <Text className="text-[15px] font-semibold text-primary">
+            {t('header:head_menu.poles', { defaultValue: '电线杆管理' })}
+          </Text>
         </Pressable>
         <Pressable
           className="rounded-3xl bg-bg-glass px-5 py-3 shadow-md shadow-black/15 elevation-4"
           onPress={handleOpenFilter}
         >
-          <Text className="text-[15px] font-semibold text-primary">{t('header:head_menu.filter', { defaultValue: '资源标点筛选' })}</Text>
+          <Text className="text-[15px] font-semibold text-primary">
+            {t('header:head_menu.filter', { defaultValue: '资源标点筛选' })}
+          </Text>
         </Pressable>
       </View>
 
