@@ -184,6 +184,10 @@ export const useCustomPointPresetPanel = <T, R>(service: MapService<T, R>) => {
     }
   };
 
+  const canShare = () => {
+    return customPointDataService.canShare;
+  };
+
   return {
     presets,
     currentPresetId,
@@ -201,5 +205,6 @@ export const useCustomPointPresetPanel = <T, R>(service: MapService<T, R>) => {
     handleRenamePreset,
     handleClickImport,
     handleImportFileChange,
+    canShare,
   };
 };

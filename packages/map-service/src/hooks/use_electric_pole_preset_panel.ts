@@ -183,6 +183,10 @@ export const useElectricPolePresetPanel = <T, R>(service: MapService<T, R>) => {
     }
   };
 
+  const canShare = () => {
+    return electricPoleDataService.canShare;
+  };
+
   return {
     presets,
     currentPresetId,
@@ -200,5 +204,6 @@ export const useElectricPolePresetPanel = <T, R>(service: MapService<T, R>) => {
     handleRenamePreset,
     handleClickImport,
     handleImportFileChange,
+    canShare,
   };
 };

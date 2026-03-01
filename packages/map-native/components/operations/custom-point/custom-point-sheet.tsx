@@ -9,7 +9,8 @@ import { PointOperationButtons } from '@/components/operations/custom-point/poin
 import { PresetList } from '@/components/operations/preset/preset-list';
 import { PresetSelectBar } from '@/components/operations/preset/preset-select-bar';
 import { PresetToolbar } from '@/components/operations/preset/preset-toolbar';
-import { useCustomPointPresetPanel } from '@/hooks/use-custom-point-preset-panel';
+import { service } from '@/services/map-service';
+import { useCustomPointPresetPanel } from '@endfieldmap/map-service';
 
 export interface CustomPointSheetRef {
   present: () => void;
@@ -38,7 +39,7 @@ export const CustomPointSheet = observer(
       handleDeletePreset,
       handleRenamePreset,
       canShare,
-    } = useCustomPointPresetPanel();
+    } = useCustomPointPresetPanel(service);
 
     const handleSharePreset = useCallback(
       (id: string, name: string) => {
@@ -49,7 +50,7 @@ export const CustomPointSheet = observer(
           params: { presetId: id, presetType: 'custom_point', defaultName: name },
         });
       },
-      [canShare, router],
+      [canShare, router]
     );
 
     useImperativeHandle(ref, () => ({
@@ -70,9 +71,7 @@ export const CustomPointSheet = observer(
               {t('header:head_menu.custom', { defaultValue: '自定义标点' })}
             </Text>
             <Pressable className="rounded-lg bg-primary px-4 py-2" onPress={handleCreatePreset}>
-              <Text className="text-sm font-medium text-white">
-                {t('common:create', { defaultValue: '新建' })}
-              </Text>
+              <Text className="text-sm font-medium text-white">{t('common:create', { defaultValue: '新建' })}</Text>
             </Pressable>
           </View>
 
@@ -121,5 +120,5 @@ export const CustomPointSheet = observer(
         </View>
       </TrueSheet>
     );
-  }),
+  })
 );

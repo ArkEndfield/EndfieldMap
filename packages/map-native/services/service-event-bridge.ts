@@ -27,6 +27,16 @@ export function initServiceEventBridge(): void {
     });
   });
 
+  serviceEmitter.on(SERVICE_EVENT.ALERT_PROMPT, (data) => {
+    alertApi.prompt({
+      content: data.content,
+      defaultValue: data.defaultValue,
+      placeholder: data.placeholder,
+      onConfirm: data.onConfirm,
+      onCancel: data.onCancel,
+    });
+  });
+
   serviceEmitter.on(SERVICE_EVENT.ALERT_SHOW, (data) => {
     alertApi.show({
       content: data.content,

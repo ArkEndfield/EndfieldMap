@@ -10,7 +10,7 @@ import { PresetList } from '@/components/operations/preset/preset-list';
 import { PresetSelectBar } from '@/components/operations/preset/preset-select-bar';
 import { PresetToolbar } from '@/components/operations/preset/preset-toolbar';
 import { useAdapter } from '@/context/adapter';
-import { useElectricPolePresetPanel } from '@/hooks/use-electric-pole-preset-panel';
+import { useElectricPolePresetPanel } from '@endfieldmap/map-service';
 import { service } from '@/services/map-service';
 
 export interface ElectricPoleSheetRef {
@@ -42,7 +42,7 @@ export const ElectricPoleSheet = observer(
       handleDeletePreset,
       handleRenamePreset,
       canShare,
-    } = useElectricPolePresetPanel();
+    } = useElectricPolePresetPanel(service);
 
     const handleSharePreset = useCallback(
       (id: string, name: string) => {
@@ -53,7 +53,7 @@ export const ElectricPoleSheet = observer(
           params: { presetId: id, presetType: 'electric_pole', defaultName: name },
         });
       },
-      [canShare, router],
+      [canShare, router]
     );
 
     useImperativeHandle(ref, () => ({
@@ -74,9 +74,7 @@ export const ElectricPoleSheet = observer(
               {t('header:head_menu.poles', { defaultValue: '电线杆管理' })}
             </Text>
             <Pressable className="rounded-lg bg-primary px-4 py-2" onPress={handleCreatePreset}>
-              <Text className="text-sm font-medium text-white">
-                {t('common:create', { defaultValue: '新建' })}
-              </Text>
+              <Text className="text-sm font-medium text-white">{t('common:create', { defaultValue: '新建' })}</Text>
             </Pressable>
           </View>
 
@@ -90,9 +88,7 @@ export const ElectricPoleSheet = observer(
             </Text>
             <Switch
               value={isZoneVisible}
-              onValueChange={() =>
-                service.dataService.mapDataService.electricPoleDataService.toggleZoneVisibility()
-              }
+              onValueChange={() => service.dataService.mapDataService.electricPoleDataService.toggleZoneVisibility()}
               trackColor={{ false: '#767577', true: '#007AFF' }}
               thumbColor={isZoneVisible ? '#fff' : '#f4f3f4'}
               style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
@@ -141,5 +137,5 @@ export const ElectricPoleSheet = observer(
         </View>
       </TrueSheet>
     );
-  }),
+  })
 );
