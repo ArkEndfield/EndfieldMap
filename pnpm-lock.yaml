@@ -12,6 +12,10 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      rxdb:
+        specifier: ^16.21.1
+        version: 16.21.1(rxjs@7.8.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -128,6 +132,42 @@ importers:
         specifier: ^6.15.0
         version: 6.15.0
 
+  packages/map-hooks:
+    dependencies:
+      '@endfieldmap/map-core':
+        specifier: workspace:*
+        version: link:../map-core
+      '@endfieldmap/map-service':
+        specifier: workspace:*
+        version: link:../map-service
+      '@endfieldmap/tools':
+        specifier: workspace:*
+        version: link:../tools
+      '@tanstack/react-db':
+        specifier: ^0.1.72
+        version: 0.1.72(react@19.2.4)(typescript@5.9.3)
+      '@tanstack/rxdb-db-collection':
+        specifier: ^0.1.60
+        version: 0.1.60(rxdb@16.21.1(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
+      mobx:
+        specifier: ^6.15.0
+        version: 6.15.0
+      react:
+        specifier: ^19.2.0
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.4(react@19.2.4)
+      react-i18next:
+        specifier: ^16.5.4
+        version: 16.5.4(i18next@25.8.13(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      rxdb:
+        specifier: ^16.21.1
+        version: 16.21.1(rxjs@7.8.2)
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+
   packages/map-native:
     dependencies:
       '@endfieldmap/map-adapter-maplibre':
@@ -136,6 +176,9 @@ importers:
       '@endfieldmap/map-core':
         specifier: workspace:*
         version: link:../map-core
+      '@endfieldmap/map-hooks':
+        specifier: workspace:*
+        version: link:../map-hooks
       '@endfieldmap/map-service':
         specifier: workspace:*
         version: link:../map-service
@@ -311,8 +354,8 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0
       zod:
-        specifier: ^4.3.6
-        version: 4.3.6
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@babel/plugin-proposal-decorators':
         specifier: ^7.29.0
@@ -341,12 +384,6 @@ importers:
       '@endfieldmap/tools':
         specifier: workspace:*
         version: link:../tools
-      '@tanstack/react-db':
-        specifier: ^0.1.72
-        version: 0.1.72(react@19.2.4)(typescript@5.9.3)
-      '@tanstack/rxdb-db-collection':
-        specifier: ^0.1.60
-        version: 0.1.60(rxdb@16.21.1(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
       i18next:
         specifier: ^25.8.13
         version: 25.8.13(typescript@5.9.3)
@@ -359,9 +396,6 @@ importers:
       mobx:
         specifier: ^6.15.0
         version: 6.15.0
-      react-i18next:
-        specifier: ^16.5.4
-        version: 16.5.4(i18next@25.8.13(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
       rxdb:
         specifier: ^16.21.1
         version: 16.21.1(rxjs@7.8.2)
@@ -381,6 +415,9 @@ importers:
       '@endfieldmap/map-core':
         specifier: workspace:*
         version: link:../map-core
+      '@endfieldmap/map-hooks':
+        specifier: workspace:*
+        version: link:../map-hooks
       '@endfieldmap/map-service':
         specifier: workspace:*
         version: link:../map-service
@@ -478,8 +515,8 @@ importers:
         specifier: ^3.29.1
         version: 3.29.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       zod:
-        specifier: ^4.3.6
-        version: 4.3.6
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       prettier:
         specifier: 3.8.1
@@ -8784,9 +8821,6 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.3.6:
-    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
-
   zstddec@0.2.0:
     resolution: {integrity: sha512-oyPnDa1X5c13+Y7mA/FDMNJrn4S8UNBe0KCqtDmor40Re7ALrPN6npFwyYVRRh+PqozZQdeg23QtbcamZnG5rA==}
 
@@ -10465,7 +10499,7 @@ snapshots:
       postcss: 8.4.49
       resolve-from: 5.0.0
     optionalDependencies:
-      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.3(react@19.2.3))(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -10575,7 +10609,7 @@ snapshots:
       '@expo/json-file': 10.0.13-canary-20260212-4f61309
       '@react-native/normalize-colors': 0.84.0
       debug: 4.4.3
-      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.3(react@19.2.3))(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       resolve-from: 5.0.0
       semver: 7.7.4
       xml2js: 0.6.0
@@ -13487,7 +13521,7 @@ snapshots:
       resolve-from: 5.0.0
     optionalDependencies:
       '@babel/runtime': 7.28.6
-      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.3(react@19.2.3))(react-native@0.84.0(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -14242,8 +14276,8 @@ snapshots:
       '@babel/parser': 7.29.0
       eslint: 10.0.2(jiti@2.6.1)
       hermes-parser: 0.25.1
-      zod: 4.3.6
-      zod-validation-error: 4.0.2(zod@4.3.6)
+      zod: 3.25.76
+      zod-validation-error: 4.0.2(zod@3.25.76)
     transitivePeerDependencies:
       - supports-color
 
@@ -18887,12 +18921,10 @@ snapshots:
       '@zarrita/storage': 0.1.4
       numcodecs: 0.3.2
 
-  zod-validation-error@4.0.2(zod@4.3.6):
+  zod-validation-error@4.0.2(zod@3.25.76):
     dependencies:
-      zod: 4.3.6
+      zod: 3.25.76
 
   zod@3.25.76: {}
-
-  zod@4.3.6: {}
 
   zstddec@0.2.0: {}

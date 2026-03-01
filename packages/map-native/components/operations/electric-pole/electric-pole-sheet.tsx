@@ -10,7 +10,7 @@ import { PresetList } from '@/components/operations/preset/preset-list';
 import { PresetSelectBar } from '@/components/operations/preset/preset-select-bar';
 import { PresetToolbar } from '@/components/operations/preset/preset-toolbar';
 import { useAdapter } from '@/context/adapter';
-import { useElectricPolePresetPanel } from '@endfieldmap/map-service';
+import { useElectricPolePresetPanel } from '@endfieldmap/map-hooks';
 import { service } from '@/services/map-service';
 
 export interface ElectricPoleSheetRef {

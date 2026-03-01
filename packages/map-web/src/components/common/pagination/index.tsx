@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ZmdRoundButton, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { useCallback, useMemo } from 'react';

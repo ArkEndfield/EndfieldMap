@@ -14,6 +14,7 @@
   "dependencies": {
     "@endfieldmap/map-adapter-ol": "workspace:*",
     "@endfieldmap/map-core": "workspace:*",
+    "@endfieldmap/map-hooks": "workspace:*",
     "@endfieldmap/map-service": "workspace:*",
     "@endfieldmap/map-web-theme-types": "workspace:*",
     "@endfieldmap/storage-web": "workspace:*",
@@ -46,7 +47,7 @@
     "swiper": "^12.1.2",
     "tailwindcss": "^4.2.1",
     "yet-another-react-lightbox": "^3.29.1",
-    "zod": "^4.3.6"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "prettier": "3.8.1",

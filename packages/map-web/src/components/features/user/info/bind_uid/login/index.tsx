@@ -1,5 +1,5 @@
 import type { BindType } from '@endfieldmap/map-service';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';

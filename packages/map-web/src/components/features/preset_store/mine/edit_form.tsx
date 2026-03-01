@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { EndfieldSwitch } from '@endfieldmap/web-components';
 import { useState } from 'react';
 

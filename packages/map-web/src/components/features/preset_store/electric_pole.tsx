@@ -1,5 +1,5 @@
 import type { ElectricPoleType, PresetStoreResponseItem } from '@endfieldmap/map-service';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { EndfieldToggle, ScrollArea } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';

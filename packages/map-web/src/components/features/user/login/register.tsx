@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { CheckboxToggle, ZmdSquareButton } from '@endfieldmap/web-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';

@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { InVisibleIcon, useAudio, useIsMobile,VisibleIcon } from '@endfieldmap/web-components';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';

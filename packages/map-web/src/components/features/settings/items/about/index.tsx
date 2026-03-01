@@ -1,4 +1,5 @@
-import { Trans, useTranslation } from '@endfieldmap/map-service';
+import { Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
 

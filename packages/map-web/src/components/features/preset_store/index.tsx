@@ -1,5 +1,5 @@
 import type { PresetStoreTab } from '@endfieldmap/map-service';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio, Dialog } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';

@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "erasableSyntaxOnly": false,
+    "jsx": "react-jsx",
+    "paths": {
+      "@endfieldmap/map-hooks": ["./src/index.ts"],
+      "@endfieldmap/map-hooks/*": ["./src/*"]
+    }
+  },
+  "references": [{ "path": "../tools" }, { "path": "../map-core" }, { "path": "../map-service" }],
+  "include": ["src/**/*", "src/**/*.json"],
+  "exclude": ["node_modules", "dist"]
+}

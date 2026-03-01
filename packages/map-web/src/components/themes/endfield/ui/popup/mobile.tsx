@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { EndfieldSwitch, ScrollArea } from '@endfieldmap/web-components';
 import { BottomSheet } from '@themes/endfield/components/bottom_sheet';
 import { LeftContent } from '@themes/endfield/ui/popup/left';

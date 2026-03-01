@@ -2,7 +2,6 @@ import { Language } from '@endfieldmap/tools';
 import type { FallbackLng } from 'i18next';
 import i18n from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
-import { initReactI18next } from 'react-i18next';
 
 const ns = ['common', 'error', 'header', 'lang', 'popup', 'sidebar', 'settings', 'agreement'] as const;
 type NSType = (typeof ns)[number];
@@ -11,7 +10,10 @@ export interface I18nServiceConfig {
   hooks?: Parameters<typeof i18n.use>[0][];
   isDev?: boolean;
   afterLoad?: () => void;
-  resourceLoader: (language: string, namespace: string) => Promise<{ default: Record<string, unknown> } | Record<string, unknown>>;
+  resourceLoader: (
+    language: string,
+    namespace: string
+  ) => Promise<{ default: Record<string, unknown> } | Record<string, unknown>>;
   onLoaded?: (
     ns: readonly NSType[],
     loaded: {
@@ -39,10 +41,7 @@ export class I18nService {
 
   constructor(config: I18nServiceConfig) {
     const hooks = config.hooks || [];
-    this.i18n.use(
-      resourcesToBackend(config.resourceLoader)
-    );
-    this.i18n.use(initReactI18next);
+    this.i18n.use(resourcesToBackend(config.resourceLoader));
     for (const hook of hooks) {
       this.i18n.use(hook);
     }

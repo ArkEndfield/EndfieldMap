@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { LocalStorageDB } from '@endfieldmap/tools';
 import { EndfieldFormButton } from '@endfieldmap/web-components';
 

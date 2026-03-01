@@ -1,5 +1,5 @@
 import type { UidInfo } from '@endfieldmap/map-service';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ScrollArea } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';

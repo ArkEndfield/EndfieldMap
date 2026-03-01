@@ -1,5 +1,5 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { useIsMobile, WindowProvider,ZmdSquareButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';

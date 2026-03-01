@@ -12,7 +12,7 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { service } from '@/services';
 
-import { useGuide } from '@endfieldmap/map-service/hooks/use_guide';
+import { useGuide } from '@endfieldmap/map-hooks';
 
 export const Guide = ({ entity }: { entity: EntityData | CustomPointData | ElectricPoleData }) => {
   const { data: guide, loading, error } = useGuide(service, entity.levelLogicId);

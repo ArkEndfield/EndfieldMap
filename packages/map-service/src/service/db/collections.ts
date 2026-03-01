@@ -36,10 +36,6 @@ import {
   visibilityDataSchema,
   type VisibilityDataSchemaType,
 } from '@endfieldmap/map-service/service/db/schema/user_data/visibility';
-import type { Collection as TSCollection } from '@tanstack/react-db';
-import { createCollection } from '@tanstack/react-db';
-import type { RxDBCollectionConfig } from '@tanstack/rxdb-db-collection';
-import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
 import type { RxCollection, RxDatabase } from 'rxdb';
 
 /**
@@ -147,16 +143,8 @@ export class GameDataCollections {
 
 export class Collection<T extends object> {
   public collection: RxCollection<T>;
-  public tanStackDbCollection: TSCollection<T, string>;
 
-  constructor(collection: RxCollection<T>, options?: Omit<RxDBCollectionConfig<T>, 'rxCollection'>) {
+  constructor(collection: RxCollection<T>) {
     this.collection = collection;
-    this.tanStackDbCollection = createCollection(
-      rxdbCollectionOptions({
-        rxCollection: collection,
-        startSync: true,
-        ...options,
-      })
-    );
   }
 }

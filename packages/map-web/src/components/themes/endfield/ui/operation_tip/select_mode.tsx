@@ -1,5 +1,5 @@
 import { type DataInstance, EntityInstanceKey } from '@endfieldmap/map-core';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { EndfieldFormButton } from '@endfieldmap/web-components';
 import { OperationTip } from '@themes/endfield/components/topbar/operation_tip';
 import { observer } from 'mobx-react-lite';

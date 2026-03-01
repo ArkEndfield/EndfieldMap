@@ -1,5 +1,5 @@
 import type { MineTab, PresetType } from '@endfieldmap/map-service';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { EndfieldToggle, ZmdRoundIconButton } from '@endfieldmap/web-components';
 
 import { RefreshIcon } from '@endfieldmap/web-components';

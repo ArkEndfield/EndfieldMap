@@ -1,5 +1,5 @@
 import type { MapData } from '@endfieldmap/map-core';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio, Deco7Dots, useIsMobile } from '@endfieldmap/web-components';

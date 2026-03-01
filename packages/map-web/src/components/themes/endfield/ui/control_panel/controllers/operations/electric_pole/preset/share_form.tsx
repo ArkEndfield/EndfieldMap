@@ -1,5 +1,5 @@
 import type { ElectricPoleType } from '@endfieldmap/map-service';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { EndfieldSelect } from '@endfieldmap/web-components';
 import { useMemo, useState } from 'react';
 

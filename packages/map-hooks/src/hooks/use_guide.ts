@@ -1,6 +1,6 @@
-import type { GuideInfo } from '@endfieldmap/map-service/@types/guide';
-import type { MapService } from '@endfieldmap/map-service/service';
-import { useEffect,useState } from 'react';
+import type { GuideInfo } from '@endfieldmap/map-service';
+import type { MapService } from '@endfieldmap/map-service';
+import { useEffect, useState } from 'react';
 
 const guideCache = new Map<number, GuideInfo>();
 
@@ -37,7 +37,7 @@ export const useGuide = <T, R>(service: MapService<T, R>, id?: number) => {
 
     service.dataService.guideDataService
       .getGuide(id, { signal: abortController.signal })
-      .then((result) => {
+      .then((result: GuideInfo | undefined) => {
         if (abortController.signal.aborted) {
           return;
         }
@@ -49,7 +49,7 @@ export const useGuide = <T, R>(service: MapService<T, R>, id?: number) => {
         setData(result);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         if (abortController.signal.aborted) {
           return;
         }

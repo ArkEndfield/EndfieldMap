@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { PresetListItem } from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/list_item';
 
 import type { PresetItem } from '@endfieldmap/map-service';

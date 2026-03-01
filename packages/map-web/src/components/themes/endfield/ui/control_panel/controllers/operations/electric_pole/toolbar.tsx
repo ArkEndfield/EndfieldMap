@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { EndfieldSquareSwitch } from '@endfieldmap/web-components';
 // import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';

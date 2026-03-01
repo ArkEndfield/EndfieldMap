@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { ZmdSquareButton } from '@endfieldmap/web-components';
 
 import { alert } from '@/components/common/alert/alert_api';

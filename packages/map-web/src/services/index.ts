@@ -1,6 +1,7 @@
 import { MapService } from '@endfieldmap/map-service';
 import { setAudioBaseUrl } from '@endfieldmap/web-components';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 import { LoadingStageId } from '@/const/loading';
@@ -9,7 +10,7 @@ import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 
 const localeModules = import.meta.glob<{ default: Record<string, unknown> }>(
-  '../../../map-service/src/locales/**/*.json',
+  '../../../map-service/src/locales/**/*.json'
 );
 
 let initialLoadComplete = false;
@@ -24,7 +25,7 @@ export const service = new MapService({
       if (loader) return loader();
       return Promise.reject(new Error(`Missing locale: ${language}/${namespace}`));
     },
-    hooks: [LanguageDetector],
+    hooks: [LanguageDetector, initReactI18next],
     afterLoad: () => {
       loadingManager.completeStage(LoadingStageId.I18N);
       initialLoadComplete = true;

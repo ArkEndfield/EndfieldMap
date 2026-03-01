@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { FilterAndEntityPanelMobile } from '@themes/endfield/ui/control_panel/controllers/filter_and_entity_panel.mobile';

@@ -10,7 +10,7 @@ import { PresetList } from '@/components/operations/preset/preset-list';
 import { PresetSelectBar } from '@/components/operations/preset/preset-select-bar';
 import { PresetToolbar } from '@/components/operations/preset/preset-toolbar';
 import { service } from '@/services/map-service';
-import { useCustomPointPresetPanel } from '@endfieldmap/map-service';
+import { useCustomPointPresetPanel } from '@endfieldmap/map-hooks';
 
 export interface CustomPointSheetRef {
   present: () => void;

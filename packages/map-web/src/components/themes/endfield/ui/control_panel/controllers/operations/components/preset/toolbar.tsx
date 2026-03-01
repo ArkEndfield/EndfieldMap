@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { Tooltip, ZmdSquareButton, ZmdSquareIconButton } from '@endfieldmap/web-components';
 
 import { BatchDeleteIcon, ExportIcon, ImportIcon, StoreIcon } from '@endfieldmap/web-components';

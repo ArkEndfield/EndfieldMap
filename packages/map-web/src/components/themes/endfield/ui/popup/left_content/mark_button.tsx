@@ -1,5 +1,5 @@
 import type { DataInstance } from '@endfieldmap/map-core';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio, Tooltip, useIsMobile } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';

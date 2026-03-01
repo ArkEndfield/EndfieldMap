@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
 
 import { CustomPointIcon } from '@endfieldmap/web-components';

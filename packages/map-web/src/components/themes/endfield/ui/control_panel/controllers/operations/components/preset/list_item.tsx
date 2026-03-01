@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { numberPadString } from '@endfieldmap/tools';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio, Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { MapService } from '@endfieldmap/map-service/service';
+import type { MapService } from '@endfieldmap/map-service';
 import type { Announcement, AnnouncementBreif } from '@endfieldmap/map-service/@types/announcement';
 
 interface UseAnnouncementOptions {

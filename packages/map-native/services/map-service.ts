@@ -3,6 +3,7 @@ import { getRxStorageExpoSQLite } from '@endfieldmap/storage-expo-sqlite';
 import { MapService } from '@endfieldmap/map-service';
 import { registerStorageAdapter } from '@endfieldmap/tools';
 import * as SQLite from 'expo-sqlite';
+import { initReactI18next } from 'react-i18next';
 import { createMMKV } from 'react-native-mmkv';
 
 import { NativeLanguageDetector } from './language-detector';
@@ -26,7 +27,7 @@ export const service = new MapService({
   },
   i18nConfig: {
     resourceLoader: nativeResourceLoader,
-    hooks: [NativeLanguageDetector],
+    hooks: [NativeLanguageDetector, initReactI18next],
   },
   backendHost,
   assetsHost,

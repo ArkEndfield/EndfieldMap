@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { HeaderMenuTemplate } from '@themes/endfield/ui/menus/left/_template';
 import { useState } from 'react';
 

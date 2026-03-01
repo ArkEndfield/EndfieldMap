@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { OperationTip } from '@/components/operations/operation-tip';
 import { useCustomPointMode } from '@/hooks/use-custom-point-mode';
 import { service } from '@/services/map-service';
-import { useMobxSource } from '@endfieldmap/map-service';
+import { useMobxSource } from '@endfieldmap/map-hooks';
 
 import { PointTypeSelector } from './point-type-selector';
 

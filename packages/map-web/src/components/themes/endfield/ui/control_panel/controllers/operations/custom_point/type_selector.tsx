@@ -1,6 +1,6 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';

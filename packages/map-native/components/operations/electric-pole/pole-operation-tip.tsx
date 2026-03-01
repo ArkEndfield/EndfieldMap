@@ -9,7 +9,7 @@ import { useElectricPoleMode } from '@/hooks/use-electric-pole-mode';
 import { service } from '@/services/map-service';
 
 import { PoleTypeSelector } from './pole-type-selector';
-import { useMobxSource } from '@endfieldmap/map-service';
+import { useMobxSource } from '@endfieldmap/map-hooks';
 
 export const PoleOperationTip: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');

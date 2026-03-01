@@ -16,7 +16,7 @@ import { MapSwitcher } from '@/components/ui/map-switcher';
 import { ZoomControls } from '@/components/ui/zoom-controls';
 import { AdapterProvider, useAdapter } from '@/context/adapter';
 import { useMapInit } from '@/hooks/use-map-init';
-import { useMobxSource } from '@endfieldmap/map-service';
+import { useMobxSource } from '@endfieldmap/map-hooks';
 
 export default function MapScreen() {
   const { t } = useTranslation('common');

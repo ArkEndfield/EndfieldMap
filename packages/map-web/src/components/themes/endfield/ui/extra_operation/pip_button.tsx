@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';

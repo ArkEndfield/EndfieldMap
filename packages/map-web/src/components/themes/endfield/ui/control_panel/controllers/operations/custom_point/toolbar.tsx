@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';

@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import type { Language } from '@endfieldmap/tools';
 import { cn } from '@endfieldmap/tools';
 import { EndfieldSelect } from '@endfieldmap/web-components';
@@ -7,12 +7,12 @@ import { TranslateIcon } from '@endfieldmap/web-components';
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { SETTINGS_KEYS } from '@/const/settings';
-import { useCurrentLanguage } from '@/hooks/use_current_language';
+import { useCurrentLanguage } from '@endfieldmap/map-hooks';
 import { service } from '@/services';
 
 export const LanguageSetting = () => {
   const { t, i18n } = useTranslation('settings');
-  const currentLocale = useCurrentLanguage();
+  const currentLocale = useCurrentLanguage(service);
 
   const changeLanguage = (locale: Language) => {
     i18n.changeLanguage(locale);

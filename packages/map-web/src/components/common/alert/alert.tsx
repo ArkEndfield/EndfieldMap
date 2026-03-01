@@ -5,7 +5,7 @@ import { Suspense, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import uiManager from '@/services/ui_manager';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 
 const AlertRenderer = observer((props: ZmdAlertProps) => {
   const AlertComponent = uiManager.ThemedComponents.alert.Alert;

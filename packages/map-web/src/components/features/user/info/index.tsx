@@ -1,4 +1,4 @@
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { Dialog } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';

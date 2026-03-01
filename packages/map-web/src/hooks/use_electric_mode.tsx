@@ -1,6 +1,6 @@
 import type { ElectricMode } from '@eftypes/electric_pole';
 import type { Resources } from '@endfieldmap/map-service';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { differenceArray } from '@endfieldmap/tools';
 
 import { alert } from '@/components/common/alert/alert_api';

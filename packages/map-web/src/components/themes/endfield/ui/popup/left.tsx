@@ -1,6 +1,6 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointDataInstance, CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
-import { useTranslation } from '@endfieldmap/map-service';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { EndfieldSelect, ScrollArea, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { DeleteButton } from '@themes/endfield/ui/popup/left_content/delete_button';
