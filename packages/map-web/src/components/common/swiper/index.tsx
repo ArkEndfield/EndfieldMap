@@ -1,20 +1,20 @@
 import '@/components/common/swiper/index.css';
 
-import type { SwiperConfig } from '@endfieldmap/map-service';
+import type { SwiperData } from '@endfieldmap/map-service';
 import { cn } from '@endfieldmap/tools';
 import { useIsMobile,ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { ChevronUp, ChevronUpTriangle } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { ChevronUp, ChevronUpTriangle } from '@endfieldmap/web-components';
 import uiManager from '@/services/ui_manager';
 
 export interface SwiperProps {
   expanded?: boolean;
   autoplayDelay?: number;
   autoplay?: boolean;
-  config?: SwiperConfig;
+  data?: SwiperData[];
   className?: string;
   classNames?: {
     container?: string;
@@ -35,10 +35,7 @@ export const Swiper = observer(
     expanded = false,
     autoplayDelay = 2500,
     autoplay = true,
-    config = {
-      enable: false,
-      list: [],
-    },
+    data = [],
     className = '',
     classNames = {},
   }: SwiperProps) => {
@@ -46,9 +43,7 @@ export const Swiper = observer(
     const [activeIndex, setActiveIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const swiperConfig = config;
-    const list = swiperConfig.list;
-    const count = list.length;
+    const count = data.length;
 
     // 清理定时器
     const clearTimer = useCallback(() => {
@@ -102,7 +97,7 @@ export const Swiper = observer(
       [goTo]
     );
 
-    if (!swiperConfig.enable || count === 0) {
+    if (count === 0) {
       return null;
     }
 
@@ -129,10 +124,10 @@ export const Swiper = observer(
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                {list.map((data, index) => (
+                {data.map((item, index) => (
                   <a
-                    key={`${data.cover}-${index}`}
-                    href={data.link}
+                    key={`${item.image_url}-${index}`}
+                    href={item.link_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
@@ -141,7 +136,7 @@ export const Swiper = observer(
                     )}
                   >
                     <img
-                      src={data.cover}
+                      src={item.image_url}
                       alt=""
                       className={cn('w-full h-full object-cover', classNames?.image)}
                       referrerPolicy="no-referrer"
@@ -160,10 +155,9 @@ export const Swiper = observer(
               </div>
               {/* 分页条 */}
               <div className={cn('flex gap-0.5 mt-0.5', classNames?.pagination)} onClick={handlePaginationClick}>
-                {list.map((_, index) => (
+                {data.map((item, index) => (
                   <div
-                    key={index}
-                    data-index={index}
+                    key={item.id}
                     className={cn(
                       'flex-1 h-0.5 md:h-1 cursor-pointer',
                       index === activeIndex ? 'bg-[#dfd54a]' : 'bg-[#818182]',

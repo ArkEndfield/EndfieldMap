@@ -1,12 +1,15 @@
 export interface SwiperData {
-  cid: number;
-  cover: string;
-  link: string;
-  title: string;
-  type: string;
-}
+  id: number;
+  image_url: string;
+  link_url: string;
 
-export interface SwiperConfig {
-  enable: boolean;
-  list: Array<SwiperData>;
+  created_at: number;
+  updated_at: number;
+  start_at: number;
+  end_at: number;
+
+  title: string;
+  remark: string;
+  sort_order: number;
+  status: number;
 }

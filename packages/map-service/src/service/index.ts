@@ -68,6 +68,7 @@ export class MapService<T, R> {
       userService: this.userService,
       presetService: this.presetService,
       adapterRegistry: this.adapterRegistry,
+      serverService: this.serverService,
     });
     this.langHashService = new LangHashService({
       jsonLoader: this.jsonLoader,
