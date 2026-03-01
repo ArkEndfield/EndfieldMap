@@ -193,7 +193,6 @@ export class ElectricPoleRenderer {
     }
 
     feature.changed();
-    this.entitySource.changed();
   }
 
   /**
@@ -212,7 +211,6 @@ export class ElectricPoleRenderer {
     }
 
     this.entitySource.changed();
-    this.entityLayer.changed();
   }
 
   // #region 连线管理

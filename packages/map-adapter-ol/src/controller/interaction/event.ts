@@ -283,11 +283,14 @@ export class EventController {
       } else {
         this.emitter.fire(MAP_EVENT.ENTITY_HOVER, { instance: null, coordinate: null, event });
       }
-    } else {
-      this.emitter.fire(MAP_EVENT.ENTITY_HOVER, { instance: null, coordinate: null, event });
+      // 实体层已命中，跳过连接线检测
+      this.emitter.fire(MAP_EVENT.CONNECTION_HOVER, { feature: null, renderer: null, event });
+      return;
     }
 
-    // — 连接线 hover —
+    this.emitter.fire(MAP_EVENT.ENTITY_HOVER, { instance: null, coordinate: null, event });
+
+    // — 连接线 hover（仅在实体层未命中时检测）—
     const connectionRenderers = this.getConnectionRenderers().filter((r) => r.visible);
     const visibleRenderers = connectionRenderers.filter((r) => r.getConnectionVisible());
     if (visibleRenderers.length === 0) {

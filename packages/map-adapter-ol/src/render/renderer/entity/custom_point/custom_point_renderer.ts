@@ -156,7 +156,6 @@ export class CustomPointRenderer {
     }
 
     this.source.changed();
-    this.layer.changed();
   }
 
   /**
