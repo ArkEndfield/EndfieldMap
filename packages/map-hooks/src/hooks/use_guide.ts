@@ -2,10 +2,10 @@ import type { GuideInfo } from '@endfieldmap/map-service';
 import type { MapService } from '@endfieldmap/map-service';
 import { useEffect, useState } from 'react';
 
-const guideCache = new Map<number, GuideInfo>();
+const guideCache = new Map<number, GuideInfo | null>();
 
 export const useGuide = <T, R>(service: MapService<T, R>, id?: number) => {
-  const [data, setData] = useState<GuideInfo | undefined>(id ? guideCache.get(id) : undefined);
+  const [data, setData] = useState<GuideInfo | null | undefined>(id ? guideCache.get(id) : null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -37,16 +37,14 @@ export const useGuide = <T, R>(service: MapService<T, R>, id?: number) => {
 
     service.dataService.guideDataService
       .getGuide(id, { signal: abortController.signal })
-      .then((result: GuideInfo | undefined) => {
+      .then((result) => {
         if (abortController.signal.aborted) {
           return;
         }
 
-        if (result) {
-          guideCache.set(id, result);
-        }
+        guideCache.set(id, result ?? null);
 
-        setData(result);
+        setData(result ?? null);
         setLoading(false);
       })
       .catch((err: Error) => {

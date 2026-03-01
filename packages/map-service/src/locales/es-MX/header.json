@@ -1,6 +1,8 @@
 {
-  "feedback": {
-    "title": "Comentarios"
+  "announcement": {
+    "title": "Anuncios",
+    "change_log": "Registro de cambios",
+    "feedback": "Feedback"
   },
   "map": {
     "change_map": "Cambiar mapa",

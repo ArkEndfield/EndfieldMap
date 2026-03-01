@@ -1,6 +1,8 @@
 {
-  "feedback": {
-    "title": "Feedback"
+  "announcement": {
+    "title": "Announcement",
+    "change_log": "Change Log",
+    "feedback": "Feedback"
   },
   "map": {
     "change_map": "Switch Map",

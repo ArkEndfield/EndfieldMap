@@ -12,13 +12,8 @@
     { "path": "../map-adapter-maplibre" },
     { "path": "../storage-mmkv" },
     { "path": "../storage-expo-sqlite" },
-    { "path": "../tools" }
+    { "path": "../tools" },
+    { "path": "../map-hooks" }
   ],
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "nativewind-env.d.ts"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]
 }

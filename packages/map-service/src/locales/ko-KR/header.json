@@ -1,6 +1,8 @@
 {
-  "feedback": {
-    "title": "피드백"
+  "announcement": {
+    "title": "공지",
+    "change_log": "업데이트 로그",
+    "feedback": "피드백"
   },
   "map": {
     "change_map": "지도 전환",

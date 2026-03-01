@@ -1,5 +1,5 @@
-import { HeaderMenuFeedback } from '@themes/endfield/ui/menus/left/feedback';
+import { HeaderMenuAnnouncement } from '@themes/endfield/ui/menus/left/announcement';
 import { HeaderMenuSettings } from '@themes/endfield/ui/menus/left/settings';
 import { HeaderMenuUser } from '@themes/endfield/ui/menus/left/user';
 
-export const menus = [HeaderMenuFeedback, HeaderMenuSettings, HeaderMenuUser];
+export const menus = [HeaderMenuAnnouncement, HeaderMenuSettings, HeaderMenuUser];

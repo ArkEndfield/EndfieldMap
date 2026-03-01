@@ -1,6 +1,8 @@
 {
-  "feedback": {
-    "title": "反馈"
+  "announcement": {
+    "title": "公告",
+    "change_log": "更新日志",
+    "feedback": "反馈"
   },
   "map": {
     "change_map": "切换地图",

@@ -64,3 +64,6 @@ export * from './components/toggle/checkbox_toggle';
 
 // Tooltip
 export * from './components/tooltip';
+
+// Logo Loading
+export * from './components/logo_loading';

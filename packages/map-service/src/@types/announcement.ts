@@ -8,6 +8,8 @@ export interface AnnouncementBreif {
   lang: string;
   /** 公告发布时间 */
   published_at: number;
+  /** 公告分类 */
+  category: string;
   /** 公告标题 */
   title: string;
   /** 公告版本 */
@@ -19,4 +21,16 @@ export interface Announcement extends AnnouncementBreif {
   content: string;
   /** 公告链接 */
   link: string;
+}
+
+export interface AnnouncementBreifWithRead extends AnnouncementBreif {
+  /** 是否已读 */
+  read: boolean;
+}
+
+export interface CategoriedAnnouncementBreif {
+  [category: AnnouncementBreif['category']]: {
+    hasUnread: boolean;
+    list: AnnouncementBreifWithRead[];
+  };
 }

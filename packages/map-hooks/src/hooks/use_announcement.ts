@@ -1,20 +1,23 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { MapService } from '@endfieldmap/map-service';
-import type { Announcement, AnnouncementBreif } from '@endfieldmap/map-service/@types/announcement';
+import type {
+  Announcement,
+  AnnouncementBreif,
+  CategoriedAnnouncementBreif,
+} from '@endfieldmap/map-service/@types/announcement';
+import { LocalStorageKey, LocalStorageValue } from '@endfieldmap/tools';
 
-interface UseAnnouncementOptions {
-  pageSize?: number;
-}
+const readAnnouncementLocalStorage = new LocalStorageValue<Announcement['id'][]>({
+  storageKey: LocalStorageKey.READ_ANNOUNCEMENT,
+  initialValue: [],
+});
 
-export const useAnnouncement = <T, R>(service: MapService<T, R>, options: UseAnnouncementOptions = {}) => {
-  const { pageSize = 10 } = options;
-
+export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
+  const readAnnouncementIds = readAnnouncementLocalStorage.value;
   // List State
-  const [list, setList] = useState<AnnouncementBreif[]>([]);
+  const [listData, setListData] = useState<AnnouncementBreif[]>([]);
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [listError, setListError] = useState<Error | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const [hasMore, setHasMore] = useState<boolean>(true);
 
   // Detail State
   const [detail, setDetail] = useState<Announcement | undefined>(undefined);
@@ -25,49 +28,65 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>, options: UseAnn
   const listAbortControllerRef = useRef<AbortController | null>(null);
   const detailAbortControllerRef = useRef<AbortController | null>(null);
 
-  const loadList = useCallback(
-    async (targetPage: number, isRefresh: boolean = false) => {
-      if (listAbortControllerRef.current) {
-        listAbortControllerRef.current.abort();
+  const list = useMemo(() => {
+    const data = listData.map((item) => {
+      return {
+        ...item,
+        read: readAnnouncementIds.includes(item.id),
+      };
+    });
+
+    const categoriedList = data.reduce((acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = {
+          hasUnread: false,
+          list: [],
+        };
       }
-
-      const abortController = new AbortController();
-      listAbortControllerRef.current = abortController;
-
-      setListLoading(true);
-      setListError(null);
-
-      try {
-        const result = await service.dataService.announcementDataService.loadAnnouncementList(pageSize, targetPage, {
-          signal: abortController.signal,
-        });
-
-        if (abortController.signal.aborted) return;
-
-        setList((prev) => (isRefresh ? result || [] : [...prev, ...(result || [])]));
-        setPage(targetPage);
-        setHasMore(result ? result.length >= pageSize : false);
-      } catch (err: any) {
-        if (abortController.signal.aborted || err.name === 'AbortError') return;
-        setListError(err);
-      } finally {
-        if (!abortController.signal.aborted) {
-          setListLoading(false);
-          listAbortControllerRef.current = null;
-        }
+      acc[item.category].list.push(item);
+      if (!item.read) {
+        acc[item.category].hasUnread = true;
       }
-    },
-    [service, pageSize]
-  );
+      return acc;
+    }, {} as CategoriedAnnouncementBreif);
 
-  const refreshList = useCallback(() => {
-    return loadList(1, true);
-  }, [loadList]);
+    return categoriedList;
+  }, [listData, readAnnouncementIds]);
 
-  const loadMore = useCallback(() => {
-    if (!hasMore || listLoading) return;
-    return loadList(page + 1, false);
-  }, [loadList, page, hasMore, listLoading]);
+  const hasUnread = useMemo(() => {
+    return Object.values(list).some((item) => item.hasUnread);
+  }, [list]);
+
+  const loadList = useCallback(async () => {
+    if (listAbortControllerRef.current) {
+      listAbortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    listAbortControllerRef.current = abortController;
+
+    setListLoading(true);
+    setListError(null);
+
+    try {
+      const result = await service.dataService.announcementDataService.loadAnnouncementList({
+        signal: abortController.signal,
+      });
+
+      if (abortController.signal.aborted) return;
+
+      setListData(result.sort((a, b) => b.published_at - a.published_at));
+      return result;
+    } catch (err) {
+      if (err instanceof Error && (abortController.signal.aborted || err.name === 'AbortError')) return;
+      setListError(err instanceof Error ? err : new Error('Failed to load announcement list'));
+    } finally {
+      if (!abortController.signal.aborted) {
+        setListLoading(false);
+        listAbortControllerRef.current = null;
+      }
+    }
+  }, [service]);
 
   const loadDetail = useCallback(
     async (id: number) => {
@@ -80,7 +99,7 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>, options: UseAnn
 
       setDetailLoading(true);
       setDetailError(null);
-      setDetail(undefined); // Clear previous detail when loading a new one
+      setDetail(undefined);
 
       try {
         const result = await service.dataService.announcementDataService.loadAnnouncementDetail(id, {
@@ -90,9 +109,10 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>, options: UseAnn
         if (abortController.signal.aborted) return;
 
         setDetail(result);
-      } catch (err: any) {
-        if (abortController.signal.aborted || err.name === 'AbortError') return;
-        setDetailError(err);
+        setRead(id);
+      } catch (err) {
+        if (err instanceof Error && (abortController.signal.aborted || err.name === 'AbortError')) return;
+        setDetailError(err instanceof Error ? err : new Error('Failed to load announcement detail'));
       } finally {
         if (!abortController.signal.aborted) {
           setDetailLoading(false);
@@ -102,6 +122,18 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>, options: UseAnn
     },
     [service]
   );
+
+  const refreshList = useCallback(async () => {
+    const result = await loadList();
+    if (result) {
+      loadDetail(result[0].id);
+    }
+    return result;
+  }, [loadList, loadDetail]);
+
+  const setRead = useCallback((id: number) => {
+    readAnnouncementLocalStorage.value = [...readAnnouncementLocalStorage.value, id];
+  }, []);
 
   // Initial load
   useEffect(() => {
@@ -119,12 +151,13 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>, options: UseAnn
     listLoading,
     listError,
     refreshList,
-    loadMore,
-    hasMore,
 
     detail,
     detailLoading,
     detailError,
     loadDetail,
+
+    setRead,
+    hasUnread,
   };
 };

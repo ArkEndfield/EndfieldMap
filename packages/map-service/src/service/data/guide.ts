@@ -12,7 +12,7 @@ export class GuideDataService {
     this.serverService = config.serverService as ServerService;
   }
 
-  public async getGuide(id: number, options?: RequestInit): Promise<GuideInfo | undefined> {
+  public async getGuide(id: number, options?: RequestInit): Promise<GuideInfo | null> {
     return this.serverService.apiGet<GuideInfo>(`/guides/${id}`, undefined, options);
   }
 }

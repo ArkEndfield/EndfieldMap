@@ -12,15 +12,8 @@ export class AnnouncementDataService {
     this.serverService = config.serverService;
   }
 
-  public loadAnnouncementList(pageSize: number = 10, page: number = 1, options?: RequestInit) {
-    return this.serverService.apiGet<AnnouncementBreif[]>(
-      '/announcements',
-      {
-        limit: pageSize,
-        page: page,
-      },
-      options
-    );
+  public loadAnnouncementList(options?: RequestInit) {
+    return this.serverService.apiGet<AnnouncementBreif[]>('/announcements', undefined, options);
   }
 
   public async loadAnnouncementDetail(id: number, options?: RequestInit) {

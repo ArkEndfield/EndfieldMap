@@ -1,5 +1,5 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
-import { CustomPointDataInstance, CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
+import { CustomPointDataInstance, CustomPointKey, customPointTypes, ElectricPoleKey } from '@endfieldmap/map-core';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { EndfieldSelect, ScrollArea, ZmdRoundIconButton } from '@endfieldmap/web-components';
@@ -25,13 +25,19 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const entityInfo = activeFeature?.entityInfo;
 
   const isCustomPoint = entityInfo?.category === CustomPointKey;
+  const isElectricPole = entityInfo?.category === ElectricPoleKey;
+
   const { name: displayName, categoryName } = useActiveFeatureName(activeFeature);
 
   const handleChangePointType = async (newType: CustomPointTypeId) => {
     if (!activeFeature || !isCustomPoint) return;
 
     try {
-      await service.dataService.mapDataService.customPointDataService.changePointType(activeFeature.mapId, activeFeature.id, newType);
+      await service.dataService.mapDataService.customPointDataService.changePointType(
+        activeFeature.mapId,
+        activeFeature.id,
+        newType
+      );
     } catch (error) {
       console.error('Failed to change point type:', error);
     }
@@ -61,7 +67,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           </PopupHeader>
 
           <ScrollArea className="flex-1 min-h-0 p-3">
-            <Guide entity={activeFeature.data} />
+            {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} />}
 
             {/* 自定义标点类型选择 */}
             {isCustomPoint && (

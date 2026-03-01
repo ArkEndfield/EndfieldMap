@@ -29,7 +29,8 @@
     { "path": "../map-adapter-maplibre" },
     { "path": "../storage-web" },
     { "path": "../map-web-theme-types" },
-    { "path": "../web-components" }
+    { "path": "../web-components" },
+    { "path": "../map-hooks" }
   ],
   "include": ["src", "./env.d.ts"]
 }

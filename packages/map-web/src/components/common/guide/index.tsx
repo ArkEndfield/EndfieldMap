@@ -13,6 +13,7 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import { service } from '@/services';
 
 import { useGuide } from '@endfieldmap/map-hooks';
+import { Logo, LogoLoading } from '@endfieldmap/web-components';
 
 export const Guide = ({ entity }: { entity: EntityData | CustomPointData | ElectricPoleData }) => {
   const { data: guide, loading, error } = useGuide(service, entity.levelLogicId);
@@ -26,11 +27,20 @@ export const Guide = ({ entity }: { entity: EntityData | CustomPointData | Elect
   }, []);
 
   if (loading) {
-    return <div className="text-gray-500 text-sm py-4 text-center">Loading...</div>;
+    return (
+      <div className="flex justify-center py-4">
+        <LogoLoading className="text-[#81807f]" />
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-red-500 text-sm py-4 text-center">Load Error</div>;
+    return (
+      <div className="flex flex-col items-center py-4 gap-2">
+        <Logo className="text-red-500" />
+        <span className="text-red-500 text-xs text-center">{error.message}</span>
+      </div>
+    );
   }
 
   if (!guide) {

@@ -1,6 +1,8 @@
 {
-  "feedback": {
-    "title": "Обратная связь"
+  "announcement": {
+    "title": "Объявление",
+    "change_log": "Обновления",
+    "feedback": "Обратная связь"
   },
   "map": {
     "change_map": "Сменить карту",
