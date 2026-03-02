@@ -77,7 +77,7 @@ export const Announcements = ({
       <div className="shrink-0 w-56 h-full overflow-hidden">
         {listLoading ? (
           <CenterContainer>
-            <LogoLoading />
+            <LogoLoading className="mr-2" />
           </CenterContainer>
         ) : listError ? (
           <CenterContainer>
