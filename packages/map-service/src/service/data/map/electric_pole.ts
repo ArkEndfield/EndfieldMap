@@ -1,5 +1,4 @@
-import type { MapCoordinate } from '@endfieldmap/map-core';
-import type { ElectricPoleData, ElectricPoleDeviceKey } from '@endfieldmap/map-core';
+import type { ElectricPoleData, ElectricPoleDeviceKey, MapCoordinate } from '@endfieldmap/map-core';
 import {
   DEFAULT_ELECTRIC_POLE_DEVICE_KEY,
   ElectricPoleDataInstance,
@@ -7,7 +6,11 @@ import {
   isSameElectricPoleConnectionType,
   MAP_EVENT,
 } from '@endfieldmap/map-core';
-import type { ElectricMode,ElectricPolePreset, ElectricPolePresetExportBundle } from '@endfieldmap/map-service/@types/electric_pole';
+import type {
+  ElectricMode,
+  ElectricPolePreset,
+  ElectricPolePresetExportBundle,
+} from '@endfieldmap/map-service/@types/electric_pole';
 import type {
   IElectricPolePresetDataService,
   IVisibilityService,
@@ -33,10 +36,7 @@ import { action, computed, observable, reaction } from 'mobx';
 /**
  * 获取电线杆错误的 i18n 消息
  */
-function getElectricPoleErrorMessage(
-  error: unknown,
-  translate: I18nService['translate']
-): string {
+function getElectricPoleErrorMessage(error: unknown, translate: I18nService['translate']): string {
   if (error instanceof ElectricPoleError) {
     return translate(`error:electric_pole.${error.i18nKey}`, {
       defaultValue: error.message,
@@ -82,7 +82,11 @@ export class ElectricPoleDataService extends BasePresetDataService<
   }
 
   protected onVisibilityChange(mapId: string, key: string, visible: boolean): void {
-    this.deps.adapterRegistry.adapter.electricPoleController.setMapDeviceVisible(mapId, key as ElectricPoleDeviceKey, visible);
+    this.deps.adapterRegistry.adapter.electricPoleController.setMapDeviceVisible(
+      mapId,
+      key as ElectricPoleDeviceKey,
+      visible
+    );
   }
 
   @observable accessor isCreating: boolean = false;
@@ -145,7 +149,10 @@ export class ElectricPoleDataService extends BasePresetDataService<
       }
       switch (type) {
         case 'DELETE':
-          this.deps.adapterRegistry.adapter.electricPoleController.deleteElectricPole(docData.mapId, docData.levelLogicId);
+          this.deps.adapterRegistry.adapter.electricPoleController.deleteElectricPole(
+            docData.mapId,
+            docData.levelLogicId
+          );
           this.deps.adapterRegistry.adapter.hoverFeatureController.clearHoverFeature();
           break;
         case 'INSERT': {
@@ -166,7 +173,9 @@ export class ElectricPoleDataService extends BasePresetDataService<
           const currConnections: ElectricPoleData['levelLogicId'][] =
             (docData.properties?.connections as ElectricPoleData['levelLogicId'][]) ?? [];
 
-          const manager = this.deps.adapterRegistry.adapter.electricPoleController.dataManager.getMapManager(docData.mapId);
+          const manager = this.deps.adapterRegistry.adapter.electricPoleController.dataManager.getMapManager(
+            docData.mapId
+          );
           const instance = manager.getById(docData.levelLogicId);
           if (instance) {
             const connectionChanges = diff(prevConnections, currConnections);
@@ -220,13 +229,11 @@ export class ElectricPoleDataService extends BasePresetDataService<
       }
     });
 
-    this.deps.electricPolePresetDataService.addPresetSubscribe(
-      ((type: string, docData: { id: string }) => {
-        if (type === 'DELETE' && docData.id === this.currentPresetId.value) {
-          this.reset();
-        }
-      }) as PresetSubscribeCallback
-    );
+    this.deps.electricPolePresetDataService.addPresetSubscribe(((type: string, docData: { id: string }) => {
+      if (type === 'DELETE' && docData.id === this.currentPresetId.value) {
+        this.reset();
+      }
+    }) as PresetSubscribeCallback);
   }
 
   @action
@@ -275,7 +282,11 @@ export class ElectricPoleDataService extends BasePresetDataService<
     }
     try {
       await this.updateItemVisibility(mapId, this.creatingDeviceKey, true);
-      const data = this.deps.adapterRegistry.adapter.electricPoleController.createElectricPoleData(mapId, coordinate, type);
+      const data = this.deps.adapterRegistry.adapter.electricPoleController.createElectricPoleData(
+        mapId,
+        coordinate,
+        type
+      );
       if (data) {
         await this.deps.electricPolePresetDataService.createNode(mapId, currentPresetId, data);
       }
@@ -465,6 +476,9 @@ export class ElectricPoleDataService extends BasePresetDataService<
             defaultValue: `连接失败：${errorMsg}，点击切换将当前连接的电线杆切换为点击的电线杆`,
             message: errorMsg,
           }),
+          cancelText: this.translate('error:electric_pole.switch', {
+            defaultValue: '切换',
+          }) as string,
           onCancel: () => {
             this.setConnectingPole(pole);
           },

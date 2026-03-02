@@ -22,6 +22,8 @@ export function initServiceEventBridge(): void {
     alertApi.confirm({
       content: data.content,
       dismissible: data.dismissible,
+      confirmText: data.confirmText,
+      cancelText: data.cancelText,
       onConfirm: data.onConfirm,
       onCancel: data.onCancel,
     });
@@ -41,6 +43,8 @@ export function initServiceEventBridge(): void {
     alertApi.show({
       content: data.content,
       hideCancel: data.hideCancel,
+      confirmText: data.confirmText,
+      cancelText: data.cancelText,
       onCancel: data.onCancel,
     });
   });

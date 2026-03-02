@@ -15,6 +15,8 @@ export type ServiceEventMap = {
   [SERVICE_EVENT.ALERT_CONFIRM]: {
     content: string;
     dismissible?: boolean;
+    confirmText?: string;
+    cancelText?: string;
     onConfirm?: () => void | Promise<void>;
     onCancel?: () => void | Promise<void>;
   };
@@ -28,6 +30,8 @@ export type ServiceEventMap = {
   [SERVICE_EVENT.ALERT_SHOW]: {
     content: string;
     hideCancel?: boolean;
+    confirmText?: string;
+    cancelText?: string;
     onCancel?: () => void | Promise<void>;
   };
   [SERVICE_EVENT.LOADING_PROGRESS]: { stageId: string; progress: number };

@@ -24,6 +24,8 @@ export function initServiceEventBridge(): void {
     alert.confirm({
       content: data.content,
       dismissible: data.dismissible,
+      confirmText: data.confirmText,
+      cancelText: data.cancelText,
       onConfirm: data.onConfirm,
       onCancel: data.onCancel,
     });
@@ -33,6 +35,8 @@ export function initServiceEventBridge(): void {
     alert.show({
       content: data.content,
       hideCancel: data.hideCancel,
+      confirmText: data.confirmText,
+      cancelText: data.cancelText,
       onCancel: data.onCancel,
     });
   });
