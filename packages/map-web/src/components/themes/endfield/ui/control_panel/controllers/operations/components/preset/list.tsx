@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Logo } from '@endfieldmap/web-components';
 import { PresetListItem } from '@themes/endfield/ui/control_panel/controllers/operations/components/preset/list_item';
 
 import type { PresetItem } from '@endfieldmap/map-service';
@@ -18,8 +19,9 @@ const EmptyPresetList = () => {
   const { t } = useTranslation('sidebar');
 
   return (
-    <div className="rounded-md max-h-64 overflow-y-auto bg-white/10">
-      <div className="py-6 text-center text-xs text-gray-400">{t('operation.preset.empty')}</div>
+    <div className="py-4 flex flex-col items-center justify-center gap-2 text-gray-400">
+      <Logo className="text-3xl" />
+      <span className="text-xs">{t('operation.preset.empty')}</span>
     </div>
   );
 };

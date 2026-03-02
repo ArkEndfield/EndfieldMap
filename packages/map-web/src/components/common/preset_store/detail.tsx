@@ -1,7 +1,12 @@
-import type { CustomPointPreset, ElectricPolePreset,PresetStoreDetailData, PresetType } from '@endfieldmap/map-service';
+import type {
+  CustomPointPreset,
+  ElectricPolePreset,
+  PresetStoreDetailData,
+  PresetType,
+} from '@endfieldmap/map-service';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
-import { ScrollArea,ZmdRoundButton, ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { Logo, LogoLoading, ScrollArea, ZmdRoundButton, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { alert } from '@/components/common/alert/alert_api';
@@ -111,9 +116,15 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
       const importData = await service.presetService.getPresetImportData(id);
 
       if (detail.preset_type === 'electric_pole') {
-        await service.dataService.mapDataService.electricPoleDataService.importPreset(importData.name, importData.snapshot);
+        await service.dataService.mapDataService.electricPoleDataService.importPreset(
+          importData.name,
+          importData.snapshot
+        );
       } else {
-        await service.dataService.mapDataService.customPointDataService.importPreset(importData.name, importData.snapshot);
+        await service.dataService.mapDataService.customPointDataService.importPreset(
+          importData.name,
+          importData.snapshot
+        );
       }
 
       return true;
@@ -139,17 +150,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
           </span>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <div className="flex items-center gap-2 text-gray-500">
-            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            <span>{t('common:loading', { defaultValue: '加载中...' })}</span>
-          </div>
+          <LogoLoading className="text-2xl" glowColor="#999999" />
         </div>
       </div>
     );
@@ -168,6 +169,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
           </span>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center gap-3">
+          <Logo className="text-4xl text-red-500" />
           <div className="text-red-500 text-sm">{error || t('common:load_error', { defaultValue: '加载失败' })}</div>
           <ZmdRoundButton type="default" onClick={onBack} showIcon={false}>
             {t('common:back', { defaultValue: '返回' })}

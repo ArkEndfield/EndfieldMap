@@ -1,5 +1,6 @@
 import type { DealedRewardItem } from '@endfieldmap/map-service';
 import { useTranslation } from 'react-i18next';
+import { Logo } from '@endfieldmap/web-components';
 import { Item } from '@themes/endfield/components/item';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 
@@ -28,7 +29,12 @@ const DungeonEntryComponent: SubPopupComponentProps<DungeonEntryComponent> = ({ 
   }, [getRewadData, system_inst_key]);
 
   if (!rewards || Object.keys(rewards).length <= 0) {
-    return <div className="text-center text-gray-400 py-4">暂无奖励信息</div>;
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 text-gray-400 py-4">
+        <Logo className="text-3xl" />
+        <span className="text-xs">暂无奖励信息</span>
+      </div>
+    );
   }
 
   return (
