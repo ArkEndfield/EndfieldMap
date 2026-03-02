@@ -362,6 +362,16 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
   @action
   public setCreatingDeviceKey(key: ElectricPoleDeviceKey) {
+    // 如果有正在连线的电线杆，并且不能互相连接，那就清除
+    if (this.connectingPole) {
+      // 获取配置
+      const connectingConfig = getElectricPoleDeviceConfig(this.connectingPole.deviceKey);
+      const config = getElectricPoleDeviceConfig(key);
+      if (connectingConfig.connectionType !== config.connectionType) {
+        // 清空 active
+        this.clearActiveFeature();
+      }
+    }
     this.creatingDeviceKey = key;
   }
 
