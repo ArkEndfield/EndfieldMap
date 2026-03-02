@@ -50,6 +50,9 @@ export default defineConfig(({ command, mode }) => {
         }),
       VitePWA({
         registerType: 'autoUpdate',
+        workbox: {
+          navigateFallbackDenylist: [/^\/docs/],
+        },
         includeAssets: ['favicon.ico', 'locales/**/*.json', 'images/**/*.png', 'images/**/*.jpg', 'images/**/*.svg'],
         manifest: {
           name: '终末地地图资源查询 - ZMDMAP',
