@@ -50,7 +50,7 @@ main:
             echo "${SSH_KEY}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
             # 使用 rsync 清空并同步文件到服务器
-            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" packages/map-web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
+            rsync -avz --delete --exclude='/docs' -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" packages/map-web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
   web_trigger_publish_packages:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
