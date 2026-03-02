@@ -20,7 +20,6 @@ export const Guide = ({ entity }: { entity: EntityData | CustomPointData | Elect
   const [showImage, setShowImage] = useState(false);
   const [index, setIndex] = useState(0);
   const imageRef = useRef<ControllerRef>(null);
-
   const handleImageClick = useCallback((imageIndex: number) => {
     setIndex(imageIndex);
     setShowImage(true);
@@ -53,9 +52,7 @@ export const Guide = ({ entity }: { entity: EntityData | CustomPointData | Elect
   return (
     <div className="flex flex-col gap-4">
       {/* 文字描述在上方 */}
-      {guide?.description && (
-        <div className="text-base text-gray-800 mb-2 whitespace-pre-line">{guide.description}</div>
-      )}
+      <div className="text-sm mb-2 whitespace-pre-line">{guide.description}</div>
       {/* 图片竖向排列 */}
       <div className="flex flex-col gap-2">
         {guide?.images?.map((src, idx) => (
