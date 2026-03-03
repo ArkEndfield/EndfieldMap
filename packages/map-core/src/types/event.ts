@@ -58,11 +58,11 @@ export type MapEventEmitter = {
     coordinate: MapCoordinate | null;
   };
   [MAP_EVENT.ENTITY_CONTEXT_MENU]: {
-    instance: DataInstance;
+    entities: Array<{ instance: DataInstance }>;
     event: MapContextMenuEventDetail;
   };
   [MAP_EVENT.ENTITY_MIDDLE_CLICK]: {
-    instance: DataInstance;
+    entities: Array<{ instance: DataInstance }>;
     event: MapContextMenuEventDetail;
   };
   [MAP_EVENT.CONNECTION_CLICK]: {

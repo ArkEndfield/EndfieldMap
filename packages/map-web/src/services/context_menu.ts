@@ -22,13 +22,14 @@ export function initContextMenuEventListeners(adapter: EndfieldMapAdapter): () =
   // 中键一键标记
   const disposeEntityMiddleClick = adapter.event.on(MAP_EVENT.ENTITY_MIDDLE_CLICK, (event) => {
     logger.debug('entity_middle_click', event);
-    if (!event.instance) return;
-    if (!event.instance?.markable) return null;
-    service.dataService.mapDataService.entityDataService.markEntity(
-      event.instance.mapId,
-      event.instance.id,
-      !event.instance.marked
-    );
+    for (const entity of event.entities) {
+      if (!entity.instance?.markable) continue;
+      service.dataService.mapDataService.entityDataService.markEntity(
+        entity.instance.mapId,
+        entity.instance.id,
+        !entity.instance.marked
+      );
+    }
   });
 
   return () => {

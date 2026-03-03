@@ -83,15 +83,11 @@ export type OLMapEventPayloads = {
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
   };
   'entity:context_menu': {
-    instance: DataInstance;
-    feature: FeatureLike;
-    layer: HitTestableLayer;
+    entities: Array<{ instance: DataInstance; feature: FeatureLike }>;
     event: OLMapContextMenuEventDetail;
   };
   'entity:middle_click': {
-    instance: DataInstance;
-    feature: FeatureLike;
-    layer: HitTestableLayer;
+    entities: Array<{ instance: DataInstance; feature: FeatureLike }>;
     event: OLMapContextMenuEventDetail;
   };
   'connection:click': {
