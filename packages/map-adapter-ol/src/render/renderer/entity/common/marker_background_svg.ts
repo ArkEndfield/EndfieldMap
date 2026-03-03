@@ -53,7 +53,7 @@ function buildSvgDataUri(fillColor: string, strokeColor: string, outerStrokeColo
   const svg = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${SVG_WIDTH * RENDER_SCALE}" height="${SVG_HEIGHT * RENDER_SCALE}" viewBox="0 0 ${SVG_WIDTH} ${SVG_HEIGHT}">`,
     `<circle cx="${CX}" cy="${CY}" r="${OUTER_RING_R}" fill="none" stroke="${outerStroke}" stroke-width="${SW}"/>`,
-    `<circle cx="${CX}" cy="${CY}" r="${BG_CIRCLE_R}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="${SW}"/>`,
+    `<circle cx="${CX}" cy="${CY}" r="${BG_CIRCLE_R}" fill="${fillColor}" fill-opacity="0.75" stroke="${strokeColor}" stroke-width="${SW}"/>`,
     `<polygon points="${trianglePoints(CX - RADIUS, CY, DECO_R, Math.PI / 2)}" fill="${strokeColor}"/>`,
     `<polygon points="${trianglePoints(CX + RADIUS, CY, DECO_R, -Math.PI / 2)}" fill="${strokeColor}"/>`,
     `<polygon points="${trianglePoints(CX, bottomCy, BOTTOM_R, Math.PI)}" fill="${strokeColor}"/>`,
@@ -70,7 +70,7 @@ export const ENTITY_BG_SVG = buildSvgDataUri(DEFAULT_FILL_COLOR, DEFAULT_STROKE_
 export const ENTITY_SELECTED_BG_SVG = buildSvgDataUri(
   DEFAULT_FILL_COLOR,
   DEFAULT_SELECTED_COLOR,
-  DEFAULT_SELECTED_COLOR,
+  DEFAULT_SELECTED_COLOR
 );
 
 /** 电线杆背景（与 Entity 组相同配色） */
