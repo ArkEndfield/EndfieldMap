@@ -1,13 +1,7 @@
 import { createCustomPointCanvasStyle } from '@endfieldmap/map-adapter-ol/render/renderer/entity/custom_point/custom_point_style';
 import { Z_INDEX } from '@endfieldmap/map-adapter-ol/render/zIndex';
 import type { CustomPointDataInstance } from '@endfieldmap/map-core';
-import {
-  EntityInstanceKey,
-  FeatureType,
-  FeatureTypeKey,
-  LayerType,
-  LayerTypeKey,
-} from '@endfieldmap/map-core';
+import { EntityInstanceKey, FeatureType, FeatureTypeKey, LayerType, LayerTypeKey } from '@endfieldmap/map-core';
 import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import { Point } from 'ol/geom';

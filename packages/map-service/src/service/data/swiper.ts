@@ -1,7 +1,7 @@
 import type { SwiperData } from '@endfieldmap/map-service/@types/swiper';
 import type { ServerService } from '@endfieldmap/map-service/service/server';
 import { logger } from '@endfieldmap/tools';
-import { observable } from 'mobx';
+import { observable, runInAction } from 'mobx';
 
 export interface SwiperDataServiceConfig {
   serverService: ServerService;
@@ -20,7 +20,9 @@ export class SwiperDataService {
   public async loadSwiperList() {
     try {
       const data = await this.serverService.apiGet<SwiperData[]>('/banners');
-      this.data = data;
+      runInAction(() => {
+        this.data = data;
+      });
     } catch (error) {
       logger.error('Failed to load swiper data:', error);
     }
