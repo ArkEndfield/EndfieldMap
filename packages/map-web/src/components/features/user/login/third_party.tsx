@@ -1,5 +1,6 @@
 import { cn } from '@endfieldmap/tools';
-
+import { alert } from '@/components/common/alert/alert_api';
+import { useTranslation } from 'react-i18next';
 import { service } from '@/services';
 
 export const ThirdPartyButton = ({
@@ -11,6 +12,7 @@ export const ThirdPartyButton = ({
   label: string;
   className?: string;
 }) => {
+  const { t } = useTranslation('error');
   // 根据label获取登录URL
   const getLoginUrl = (provider: string) => {
     const urls = {
@@ -44,7 +46,9 @@ export const ThirdPartyButton = ({
         window.removeEventListener('message', messageHandler);
       } else if (event.data.type === 'LOGIN_FAILED') {
         console.log('Login failed', event.data.error);
+        loginWindow?.close();
         window.removeEventListener('message', messageHandler);
+        alert.info({content: <div className="text-center">{t("login_failed") + t(event.data.error)}</div>,});
       }
     };
 
