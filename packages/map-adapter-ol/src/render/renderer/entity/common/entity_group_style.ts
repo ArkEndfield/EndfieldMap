@@ -8,12 +8,8 @@ import {
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/marker_background_svg';
 import { DEFAULT_FILL_COLOR, DEFAULT_ICON_SIZE, DEFAULT_STROKE_COLOR } from '@endfieldmap/map-core';
 import type { FeatureLike } from 'ol/Feature';
-import CircleStyle from 'ol/style/Circle';
-import Fill from 'ol/style/Fill';
 import Icon from 'ol/style/Icon';
-import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
-import Text from 'ol/style/Text';
 
 const ENTITY_SIZE = DEFAULT_ICON_SIZE;
 const ENTITY_RADIUS = ENTITY_SIZE / 2;
@@ -24,6 +20,53 @@ export interface EntityGroupStyleConfig {
 }
 
 const BADGE_RADIUS = 7;
+
+/**
+ * 将 Badge 的背景圆圈和文字绘制到离屏 Canvas 中，作为单一 Image 返回。
+ * 解决 OpenLayers 同一 zIndex 层级下 Text 总是浮在 Image 之上的渲染问题。
+ */
+function createBadgeIcon(clusterSize: number, opacity: number): Icon {
+  const text = clusterSize > 999 ? '999+' : clusterSize.toString();
+  const fontSize = clusterSize > 99 ? 8 : clusterSize > 9 ? 9 : 10;
+
+  // 画布大小，预留出描边 (Stroke) 的空间
+  const canvasSize = BADGE_RADIUS * 2 + 8;
+  const center = canvasSize / 2;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
+
+  // 提升 2 倍分辨率来绘制，防止 Canvas 在高分屏下文字模糊
+  const pixelRatio = 2;
+  canvas.width = canvasSize * pixelRatio;
+  canvas.height = canvasSize * pixelRatio;
+  ctx.scale(pixelRatio, pixelRatio);
+
+  ctx.globalAlpha = opacity;
+
+  // 1. 绘制背景圆
+  ctx.beginPath();
+  ctx.arc(center, center, BADGE_RADIUS, 0, Math.PI * 2);
+  ctx.fillStyle = DEFAULT_STROKE_COLOR;
+  ctx.fill();
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = DEFAULT_FILL_COLOR;
+  ctx.stroke();
+
+  // 2. 绘制文字
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `bold ${fontSize}px Outfit, Arial, sans-serif`;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText(text, center, center + 1);
+
+  return new Icon({
+    img: canvas,
+    width: canvasSize,
+    height: canvasSize,
+    displacement: [ENTITY_RADIUS, ICON_DISPLACEMENT_Y + ENTITY_RADIUS],
+  });
+}
 
 /**
  * 创建 Entity 组的 Canvas StyleFunction 样式
@@ -88,29 +131,16 @@ export function createEntityGroupCanvasStyle(config: EntityGroupStyleConfig): (f
 
     // 3. 聚合 badge（如果 clusterSize > 1）
     if (clusterSize > 1) {
-      const badgeCircle = new CircleStyle({
-        radius: BADGE_RADIUS,
-        fill: new Fill({ color: DEFAULT_STROKE_COLOR }),
-        stroke: new Stroke({ color: DEFAULT_FILL_COLOR, width: 2.5 }),
-        displacement: [ENTITY_RADIUS, ICON_DISPLACEMENT_Y + ENTITY_RADIUS],
-      });
-      badgeCircle.setOpacity(opacity);
-      styles.push(new Style({ image: badgeCircle }));
-
-      const text = clusterSize > 999 ? '999+' : clusterSize.toString();
-      const fontSize = clusterSize > 99 ? 8 : clusterSize > 9 ? 9 : 10;
-
-      const badgeText = new Text({
-        text: text,
-        font: `bold ${fontSize}px Outfit, Arial, sans-serif`,
-        fill: new Fill({ color: `rgba(255, 255, 255, ${opacity})` }),
-        textAlign: 'center',
-        textBaseline: 'middle',
-        offsetX: ENTITY_RADIUS,
-        offsetY: -(ICON_DISPLACEMENT_Y + ENTITY_RADIUS),
-      });
-      styles.push(new Style({ text: badgeText }));
+      styles.push(
+        new Style({
+          image: createBadgeIcon(clusterSize, opacity),
+        })
+      );
     }
+
+    // 4. Z-Index 层级管理：选中/活跃标点整体覆盖在普通标点之上
+    const zIndex = selected === 1 ? 10 : active === 1 ? 5 : 0;
+    styles.forEach((s) => s.setZIndex(zIndex));
 
     cache.set(key, styles);
     return styles;
