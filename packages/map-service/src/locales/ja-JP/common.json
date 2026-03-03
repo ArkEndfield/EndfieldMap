@@ -28,7 +28,7 @@
   },
   "operate": {
     "mark": "マーク",
-    "mark_tip": "(右クリックで一括マーク)",
+    "mark_tip": "(中クリックで高速マーク)",
     "marked": "マーク済み",
     "unmark": "マーク解除",
     "clear_selection": "選択解除",

@@ -28,7 +28,7 @@
   },
   "operate": {
     "mark": "标记",
-    "mark_tip": "(右键一键标记)",
+    "mark_tip": "(中键一键标记)",
     "marked": "已标记",
     "unmark": "取消标记",
     "clear_selection": "清空选择",

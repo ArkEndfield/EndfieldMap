@@ -28,7 +28,7 @@
   },
   "operate": {
     "mark": "Mark",
-    "mark_tip": "(Right-click for fast-toggle)",
+    "mark_tip": "(Middle-click for fast-mark)",
     "marked": "Marked",
     "unmark": "Unmark",
     "clear_selection": "Clear Selection",

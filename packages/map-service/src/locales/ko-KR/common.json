@@ -28,7 +28,7 @@
   },
   "operate": {
     "mark": "표시",
-    "mark_tip": "(오른쪽 클릭으로 일괄 표시)",
+    "mark_tip": "(중간 클릭으로 빠르게 표시)",
     "marked": "표시됨",
     "unmark": "표시 해제",
     "clear_selection": "선택 해제",

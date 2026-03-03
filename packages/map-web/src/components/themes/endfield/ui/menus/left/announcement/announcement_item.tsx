@@ -2,6 +2,7 @@ import type { AnnouncementBreifWithRead } from '@endfieldmap/map-service/@types/
 import { SoundType } from '@endfieldmap/map-web-theme-types';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
+import i18next from 'i18next';
 
 export interface AnnouncementItemProps {
   item: AnnouncementBreifWithRead;
@@ -12,7 +13,8 @@ export interface AnnouncementItemProps {
 
 export const AnnouncementItem = ({ item, active, isRead, onClick }: AnnouncementItemProps) => {
   const time = new Date(item.published_at * 1000);
-  const month = time.getMonth() + 1;
+  const dateTimeFormat1 = new Intl.DateTimeFormat(i18next.language, {month: "short"})
+  const month = dateTimeFormat1.format(time);
   const day = time.getDate();
 
   return (
@@ -48,7 +50,7 @@ export const AnnouncementItem = ({ item, active, isRead, onClick }: Announcement
                 active ? 'bg-[#313131]' : 'bg-[#989898]'
               )}
             />
-            <div className="absolute bottom-0 right-0 text-xs">{month}月</div>
+            <div className="absolute bottom-0 right-0 text-xs">{month}</div>
             <div className={cn('absolute -right-2 top-2 bottom-2 w-[1.5px] bg-[#989898]', active && 'bg-[#313131]')} />
           </div>
           <div className="flex-1 line-clamp-2 text-sm font-medium my-auto">{item.title}</div>
