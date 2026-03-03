@@ -16,7 +16,7 @@ export type MapContextMenuEventDetail = {
   pixel: [number, number];
   coordinate: MapCoordinate | undefined;
   originalEvent: MouseEvent;
-}
+};
 
 /**
  * 抽象事件映射（无 OL 依赖）
@@ -36,6 +36,7 @@ export type MapEventEmitter = {
   };
   [MAP_EVENT.MAP_CENTER_CHANGE]: MapCoordinate | undefined;
   [MAP_EVENT.MAP_CONTEXT_MENU]: MapContextMenuEventDetail;
+  [MAP_EVENT.MAP_MIDDLE_CLICK]: MapContextMenuEventDetail;
   [MAP_EVENT.MAP_MOVE_END]: void;
 
   [MAP_EVENT.FEATURE_SELECT]: {
@@ -60,6 +61,10 @@ export type MapEventEmitter = {
     instance: DataInstance;
     event: MapContextMenuEventDetail;
   };
+  [MAP_EVENT.ENTITY_MIDDLE_CLICK]: {
+    instance: DataInstance;
+    event: MapContextMenuEventDetail;
+  };
   [MAP_EVENT.CONNECTION_CLICK]: {
     instance: ElectricPoleDataInstance;
     targetId: number;
@@ -68,6 +73,9 @@ export type MapEventEmitter = {
     targetId: number | null;
   };
   [MAP_EVENT.CONNECTION_CONTEXT_MENU]: {
+    event: MapContextMenuEventDetail;
+  };
+  [MAP_EVENT.CONNECTION_MIDDLE_CLICK]: {
     event: MapContextMenuEventDetail;
   };
   [MAP_EVENT.ACTIVE_FEATURE_CHANGE]: {
@@ -85,7 +93,7 @@ export type MapEventEmitter = {
     newTargetId: number | null;
   };
   [MAP_EVENT.SELECTION_START]: void;
-}
+};
 
 /**
  * 事件监听器选项

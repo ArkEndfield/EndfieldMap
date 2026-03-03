@@ -42,7 +42,7 @@ export type OLMapContextMenuEventDetail = {
   coordinate: Coordinate | undefined;
   originalEvent: MouseEvent;
   map: OlMap;
-}
+};
 
 /**
  * OL-specific 事件映射（用于 OL adapter 内部事件处理）
@@ -59,6 +59,7 @@ export type OLMapEventPayloads = {
   };
   'map:center:change': Coordinate | undefined;
   'map:context_menu': OLMapContextMenuEventDetail;
+  'map:middle_click': OLMapContextMenuEventDetail;
   'feature:select': {
     features: Feature<Point>[];
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
@@ -87,6 +88,12 @@ export type OLMapEventPayloads = {
     layer: HitTestableLayer;
     event: OLMapContextMenuEventDetail;
   };
+  'entity:middle_click': {
+    instance: DataInstance;
+    feature: FeatureLike;
+    layer: HitTestableLayer;
+    event: OLMapContextMenuEventDetail;
+  };
   'connection:click': {
     feature: FeatureLike;
     instance: ElectricPoleDataInstance;
@@ -100,6 +107,11 @@ export type OLMapEventPayloads = {
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
   };
   'connection:context_menu': {
+    feature: FeatureLike;
+    renderer?: ElectricPoleRenderer;
+    event: OLMapContextMenuEventDetail;
+  };
+  'connection:middle_click': {
     feature: FeatureLike;
     renderer?: ElectricPoleRenderer;
     event: OLMapContextMenuEventDetail;
@@ -120,4 +132,4 @@ export type OLMapEventPayloads = {
     renderer?: ConnectionCapableRenderer | null;
   };
   'selection:start': void;
-}
+};

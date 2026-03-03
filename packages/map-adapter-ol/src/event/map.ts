@@ -1,7 +1,7 @@
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import type { OLMapContextMenuEventDetail, OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core';
-import { DEFAULT_ZOOM,MAP_EVENT } from '@endfieldmap/map-core';
+import { DEFAULT_ZOOM, MAP_EVENT } from '@endfieldmap/map-core';
 import type { Map as OlMap, MapBrowserEvent, View } from 'ol';
 
 /**
@@ -20,6 +20,8 @@ export class EndfieldMapEvent {
   public event: EndfieldMapEmitter<OLMapEventPayloads>;
   /** contextmenu DOM 监听器（用于清理） */
   private contextMenuHandler: ((e: MouseEvent) => void) | null = null;
+  /** auxclick（中键）DOM 监听器（用于清理） */
+  private auxClickHandler: ((e: MouseEvent) => void) | null = null;
   /** contextmenu 所在的 viewport 元素 */
   private viewport: HTMLElement | null = null;
 
@@ -38,9 +40,15 @@ export class EndfieldMapEvent {
    * 清理 DOM 事件监听器
    */
   public dispose(): void {
-    if (this.viewport && this.contextMenuHandler) {
-      this.viewport.removeEventListener('contextmenu', this.contextMenuHandler);
-      this.contextMenuHandler = null;
+    if (this.viewport) {
+      if (this.contextMenuHandler) {
+        this.viewport.removeEventListener('contextmenu', this.contextMenuHandler);
+        this.contextMenuHandler = null;
+      }
+      if (this.auxClickHandler) {
+        this.viewport.removeEventListener('auxclick', this.auxClickHandler);
+        this.auxClickHandler = null;
+      }
       this.viewport = null;
     }
   }
@@ -74,6 +82,8 @@ export class EndfieldMapEvent {
     });
 
     this.viewport = map.getViewport();
+
+    // 右键菜单事件
     this.contextMenuHandler = (domEvent: MouseEvent) => {
       domEvent.preventDefault();
       const pixel = map.getEventPixel(domEvent) as [number, number];
@@ -87,5 +97,22 @@ export class EndfieldMapEvent {
       this.event.fire(MAP_EVENT.MAP_CONTEXT_MENU, detail);
     };
     this.viewport.addEventListener('contextmenu', this.contextMenuHandler);
+
+    // 中键点击事件
+    this.auxClickHandler = (domEvent: MouseEvent) => {
+      // auxclick 包含中键(1)和其他按键，只处理中键
+      if (domEvent.button !== 1) return;
+      domEvent.preventDefault();
+      const pixel = map.getEventPixel(domEvent) as [number, number];
+      const coordinate = map.getCoordinateFromPixel(pixel);
+      const detail: OLMapContextMenuEventDetail = {
+        pixel,
+        coordinate: coordinate ?? undefined,
+        originalEvent: domEvent,
+        map,
+      };
+      this.event.fire(MAP_EVENT.MAP_MIDDLE_CLICK, detail);
+    };
+    this.viewport.addEventListener('auxclick', this.auxClickHandler);
   }
 }

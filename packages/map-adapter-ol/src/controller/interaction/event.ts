@@ -6,7 +6,12 @@ import {
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
 import type { OLMapHoverEventDetail } from '@endfieldmap/map-adapter-ol/types/event';
 import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
-import type { DataInstance, ElectricPoleDataInstance, EndfieldMapEmitter, EntityDataInstance } from '@endfieldmap/map-core';
+import type {
+  DataInstance,
+  ElectricPoleDataInstance,
+  EndfieldMapEmitter,
+  EntityDataInstance,
+} from '@endfieldmap/map-core';
 import { ConnectionTargetIdKey, EntityInstanceKey, MAP_EVENT } from '@endfieldmap/map-core';
 import { debounce, type DebouncedFunction } from '@endfieldmap/tools';
 import { boundingExtent } from 'ol/extent';
@@ -51,6 +56,7 @@ export class EventController {
     this.hoverDisabled = config.disableHover ?? false;
     this.registerClickEventHandlers();
     this.registerContextMenuEventHandlers();
+    this.registerMiddleClickEventHandlers();
     if (!this.hoverDisabled) {
       this.registerHoverEventHandlers();
     }
@@ -216,6 +222,58 @@ export class EventController {
       });
     });
     this.disposeListeners.push(disposeContextMenu);
+  }
+
+  private registerMiddleClickEventHandlers() {
+    const disposeMiddleClick = this.emitter.on(MAP_EVENT.MAP_MIDDLE_CLICK, async (detail) => {
+      const nonClusteredLayers = this.getNonClusteredLayers().filter((r) => r.visible);
+      const clusteredLayers = this.getClusteredLayers().filter((layer) => layer.visible);
+
+      const allClickedFeatures: EntityHitTestResult[] = hitTestEntitiesAt(
+        {
+          coordinate: detail.coordinate,
+          pixel: detail.pixel,
+          map: detail.map,
+        },
+        nonClusteredLayers,
+        clusteredLayers
+      );
+
+      // 如果没有命中实体，尝试命中电线连接
+      if (allClickedFeatures.length === 0) {
+        const connectionRenderers = this.getConnectionRenderers().filter((r) => r.visible);
+        for (const renderer of connectionRenderers) {
+          if (!renderer.getConnectionVisible()) continue;
+
+          const clickedFeatures = await renderer.getConnectionFeatures(detail.pixel);
+          if (clickedFeatures.length === 0) continue;
+
+          this.emitter.fire(MAP_EVENT.CONNECTION_MIDDLE_CLICK, {
+            feature: clickedFeatures[0],
+            event: detail,
+          });
+          return;
+        }
+        return;
+      }
+
+      // 选择最上层的 layer（基于 z-index 和添加顺序）
+      const selectedLayerFeatures = selectTopmostHitResult(allClickedFeatures);
+      if (!selectedLayerFeatures) return;
+      const features = selectedLayerFeatures.features;
+
+      // 中键只针对单个实体触发，如果命中多个，选择第一个
+      const feature = features[0];
+      const instance = feature.get(EntityInstanceKey) as EntityDataInstance;
+
+      this.emitter.fire(MAP_EVENT.ENTITY_MIDDLE_CLICK, {
+        instance,
+        feature,
+        layer: selectedLayerFeatures.layer,
+        event: detail,
+      });
+    });
+    this.disposeListeners.push(disposeMiddleClick);
   }
 
   // #region Hover 事件处理
