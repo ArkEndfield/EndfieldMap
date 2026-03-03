@@ -36,17 +36,17 @@
     "prepack": "cp ../../LICENSE . 2>/dev/null || true"
   },
   "peerDependencies": {
-    "mobx": "^6.15.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
     "@endfieldmap/map-web-theme-types": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
-    "motion": "^12.34.3"
+    "mobx": "^6.15.0",
+    "motion": "^12.34.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@storybook/react-vite": "^10.2.12",
+    "@storybook/react-vite": "^10.2.14",
     "@tailwindcss/vite": "^4.2.1",
-    "storybook": "^10.2.12",
+    "storybook": "^10.2.14",
     "tailwindcss": "^4.2.1"
   },
   "files": [
