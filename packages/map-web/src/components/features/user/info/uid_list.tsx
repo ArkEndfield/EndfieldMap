@@ -22,11 +22,26 @@ const UidListItem = ({
   return (
     <div
       className={cn(
-        'flex items-center gap-3 px-3 py-2 transition-colors',
+        'group/uid-item relative flex items-center gap-3 px-3 py-2 transition-all duration-200',
         'bg-black/30 border border-white/5',
-        isChecked ? 'border-[#FDFB73]/30 bg-[#FDFB73]/5' : 'hover:bg-black/50'
+        isChecked ? 'border-[#FDFB73]/30 bg-[#FDFB73]/5' : 'hover:bg-black/50 hover:border-white/10'
       )}
     >
+      {/* Top-left corner accent */}
+      <div
+        className={cn(
+          'absolute top-0 left-0 w-2 h-2 border-t border-l transition-colors duration-200',
+          isChecked ? 'border-[#FDFB73]/50' : 'border-transparent group-hover/uid-item:border-white/15'
+        )}
+      />
+      {/* Bottom-right corner accent */}
+      <div
+        className={cn(
+          'absolute bottom-0 right-0 w-2 h-2 border-b border-r transition-colors duration-200',
+          isChecked ? 'border-[#FDFB73]/50' : 'border-transparent group-hover/uid-item:border-white/15'
+        )}
+      />
+
       {/* 勾选图标 */}
       <button
         type="button"
@@ -51,7 +66,8 @@ const UidListItem = ({
       </div>
 
       {/* UID 信息 */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 flex items-center gap-2">
+        <span className="w-1 h-1 bg-[#fdde55]/40 rotate-45 shrink-0" />
         <span className="text-white font-medium">{data.uid === '0' ? t('user.uid.default') : `UID ${data.uid}`}</span>
       </div>
 
@@ -82,18 +98,19 @@ export const UidList = ({
       transition={{ duration: 0.3, delay: 0.2 }}
     >
       {/* 列表标题 */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-2 shrink-0 pb-2 border-b border-white/8">
         <div className="w-5 h-5 rounded-full bg-[#FDFB73] text-black flex items-center justify-center">
           <BindIcon />
         </div>
         <h4 className="text-white font-medium">{t('user.uid.list')}</h4>
+        <span className="w-1.5 h-1.5 bg-[#fdde55]/30 rotate-45 ml-auto" />
       </div>
 
       {/* UID 列表滚动区域 */}
       {uidList.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center gap-2">
-          <QuestionIcon className="w-6 h-6" />
-          <span className="text-white/50 text-xs">{t('user.uid.not_bind')}</span>
+        <div className="flex-1 flex flex-col items-center justify-center gap-2.5">
+          <QuestionIcon className="w-6 h-6 text-[#fdde55]/30" />
+          <span className="text-white/40 text-xs">{t('user.uid.not_bind')}</span>
         </div>
       ) : (
         <ScrollArea className="flex-1 min-h-0 mt-2" scrollY scrollX={false} scrollbarY="auto" contentClassName="pr-2">

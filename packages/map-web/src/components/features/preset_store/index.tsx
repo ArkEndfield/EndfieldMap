@@ -89,7 +89,7 @@ export const PresetStore: React.FC = observer(() => {
               initial={{ opacity: 0, x: '100%' }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: '100%' }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              transition={{ duration: 0.25, ease: [0.2, 1, 0.3, 1] }}
               className="absolute inset-0 bg-white z-10"
             >
               <PresetStoreDetail id={selectedId} onBack={handleBack} />
