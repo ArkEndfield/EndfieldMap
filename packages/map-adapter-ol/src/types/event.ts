@@ -1,6 +1,5 @@
 import type { ConnectionCapableRenderer } from '@endfieldmap/map-adapter-ol/controller/interaction/event';
 import type { ElectricPoleRenderer } from '@endfieldmap/map-adapter-ol/render/renderer';
-import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
 import type { DataInstance, ElectricPoleDataInstance, EntityDataInstance } from '@endfieldmap/map-core';
 import type { Feature, Map as OlMap, MapBrowserEvent, MapEvent } from 'ol';
 import type { Coordinate } from 'ol/coordinate';

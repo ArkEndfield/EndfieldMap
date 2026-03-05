@@ -1,9 +1,23 @@
+import {
+  SVG_DISPLACEMENT_Y,
+  SVG_HEIGHT,
+  SVG_WIDTH,
+} from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/marker_background_svg';
 import type { HitTestableLayer } from '@endfieldmap/map-adapter-ol/types/layer';
 import { EntityInstanceKey, FeatureType, FeatureTypeKey } from '@endfieldmap/map-core';
 import type { Map as OlMap } from 'ol';
 import type { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
+import type { Extent } from 'ol/extent';
 import type { Point } from 'ol/geom';
+
+// ============================================================================
+// Hit area (marker bounds in screen pixels relative to feature pixel position)
+// ============================================================================
+
+const HIT_HALF_WIDTH = SVG_WIDTH / 2;
+const HIT_ABOVE = SVG_DISPLACEMENT_Y + SVG_HEIGHT / 2;
+const HIT_BELOW = SVG_HEIGHT / 2 - SVG_DISPLACEMENT_Y;
 
 // ============================================================================
 // Types
@@ -34,6 +48,44 @@ type EntityLayer = HitTestableLayer;
 // ============================================================================
 // Utility Functions
 // ============================================================================
+
+/**
+ * 根据点击坐标和当前分辨率，构建用于 R-tree 空间查询的 extent（地图坐标）。
+ * 将 marker 的像素边界转换为地图单位。
+ */
+function createSearchExtent(coordinate: Coordinate, resolution: number): Extent {
+  const [cx, cy] = coordinate;
+  const r = resolution;
+  return [
+    cx - HIT_HALF_WIDTH * r,
+    cy - HIT_ABOVE * r,
+    cx + HIT_HALF_WIDTH * r,
+    cy + HIT_BELOW * r,
+  ];
+}
+
+/**
+ * 判断点击像素是否在 feature 的 marker 边界内（屏幕像素）。
+ * 与 createSearchExtent 对应的精确像素级检查。
+ */
+function isPixelInMarkerBounds(clickPixel: [number, number], featurePixel: [number, number]): boolean {
+  const [cpx, cpy] = clickPixel;
+  const [fpx, fpy] = featurePixel;
+  if (Math.abs(cpx - fpx) > HIT_HALF_WIDTH) return false;
+  const dy = cpy - fpy;
+  return dy >= -HIT_ABOVE && dy <= HIT_BELOW;
+}
+
+/**
+ * 从 feature 的 style 属性推断 z-index（与 entity_group_style 中 selected=10, active=5, normal=0 一致）
+ */
+function getFeatureStyleZIndex(feature: Feature<Point>): number {
+  const selected = (feature.get('selected') as number) ?? 0;
+  const active = (feature.get('active') as number) ?? 0;
+  if (selected === 1) return 10;
+  if (active === 1) return 5;
+  return 0;
+}
 
 /**
  * 检查特征是否为有效的 Entity 特征
@@ -74,105 +126,111 @@ function filterAndSortClusterFeatures(clusterFeatures: Feature<Point>[], layer: 
 
 /**
  * 处理非聚簇实体图层（电线杆，自定义点）
- * 使用 map.forEachFeatureAtPixel 获取正确的渲染顺序
+ * 使用 R-tree 空间查询 + 像素精确检查，避免 getImageData 调用
  */
 function hitTestNonClusteredLayer(
   input: EntityHitTestInput,
   layer: HitTestableLayer,
   results: EntityHitTestResult[]
 ): void {
-  const { pixel, map } = input;
+  const { coordinate, pixel, map } = input;
+  const source = layer.layer.getSource();
+  if (!source || !('getFeaturesInExtent' in source)) return;
 
-  // 使用 OpenLayers 的 forEachFeatureAtPixel 来获取正确的渲染顺序
-  // 这个方法会按照实际渲染顺序返回特征（从上到下）
-  let hitFeature: Feature<Point> | null = null;
+  const view = map.getView();
+  const resolution = view.getResolution();
+  if (!resolution) return;
 
-  map.forEachFeatureAtPixel(
-    pixel,
-    (feature) => {
-      const pointFeature = feature as Feature<Point>;
+  const extent = createSearchExtent(coordinate, resolution);
+  const candidates = source.getFeaturesInExtent(extent) as Feature<Point>[];
 
-      // 检查特征是否可见
-      if (!isFeatureVisible(pointFeature, layer)) {
-        return false; // 继续查找
-      }
-
-      // 找到第一个可见的特征
-      hitFeature = pointFeature;
-      return true; // 停止查找
-    },
-    {
-      layerFilter: (l) => l === layer.layer,
-      hitTolerance: 0,
-    }
-  );
-
-  if (hitFeature) {
-    results.push({ features: [hitFeature], layer });
+  const hitCandidates: Feature<Point>[] = [];
+  for (const feature of candidates) {
+    if (!isFeatureVisible(feature, layer)) continue;
+    const geom = feature.getGeometry();
+    if (!geom || geom.getType() !== 'Point') continue;
+    const coord = (geom as Point).getCoordinates();
+    const featurePixel = map.getPixelFromCoordinate(coord) as [number, number];
+    if (!isPixelInMarkerBounds(pixel, featurePixel)) continue;
+    hitCandidates.push(feature);
   }
+
+  if (hitCandidates.length === 0) return;
+
+  hitCandidates.sort((a, b) => {
+    const za = getFeatureStyleZIndex(a);
+    const zb = getFeatureStyleZIndex(b);
+    if (zb !== za) return zb - za;
+    const coordA = (a.getGeometry() as Point).getCoordinates();
+    const coordB = (b.getGeometry() as Point).getCoordinates();
+    const pxA = map.getPixelFromCoordinate(coordA) as [number, number];
+    const pxB = map.getPixelFromCoordinate(coordB) as [number, number];
+    const distA = (pixel[0] - pxA[0]) ** 2 + (pixel[1] - pxA[1]) ** 2;
+    const distB = (pixel[0] - pxB[0]) ** 2 + (pixel[1] - pxB[1]) ** 2;
+    return distA - distB;
+  });
+
+  results.push({ features: [hitCandidates[0]], layer });
 }
 
 /**
  * 处理聚簇实体图层（通用点）
- * 使用 map.forEachFeatureAtPixel 获取正确的渲染顺序
+ * 使用 R-tree 空间查询 + 像素精确检查，兼容 distance=0 非聚合
  */
 function hitTestClusteredLayer(
   input: EntityHitTestInput,
   layer: HitTestableLayer,
   results: EntityHitTestResult[]
 ): void {
-  const { pixel, map } = input;
+  const { coordinate, pixel, map } = input;
+  const source = layer.layer.getSource();
+  if (!source || !('getFeaturesInExtent' in source)) return;
 
-  // 使用 OpenLayers 的 forEachFeatureAtPixel 来获取正确的渲染顺序
-  // 这个方法会按照实际渲染顺序返回特征（从上到下）
-  let hitClusterFeature: Feature<Point> | undefined;
+  const view = map.getView();
+  const resolution = view.getResolution();
+  if (!resolution) return;
 
-  map.forEachFeatureAtPixel(
-    pixel,
-    (feature) => {
-      // 只处理当前图层的特征
-      const clusterFeature = feature as Feature<Point>;
-      let clusterFeatures = clusterFeature.get('features') as Feature<Point>[] | undefined;
+  const extent = createSearchExtent(coordinate, resolution);
+  const clusterCandidates = source.getFeaturesInExtent(extent) as Feature<Point>[];
 
-      // 兼容非 Cluster Source 的情况（当聚合被禁用时，使用的是 baseSource）
-      if (!clusterFeatures) {
-        // 如果是原始 feature，将其包装为数组
-        if (clusterFeature.get(EntityInstanceKey)) {
-          clusterFeatures = [clusterFeature];
-        }
-      }
+  const hitClusters: Feature<Point>[] = [];
+  for (const clusterFeature of clusterCandidates) {
+    const geom = clusterFeature.getGeometry();
+    if (!geom || geom.getType() !== 'Point') continue;
+    const coord = (geom as Point).getCoordinates();
+    const featurePixel = map.getPixelFromCoordinate(coord) as [number, number];
+    if (!isPixelInMarkerBounds(pixel, featurePixel)) continue;
 
-      if (!clusterFeatures || clusterFeatures.length === 0) {
-        return false; // 继续查找
-      }
-
-      // 检查是否有可见特征
-      const hasVisibleFeatures = clusterFeatures.some((f) => isFeatureVisible(f, layer));
-      if (!hasVisibleFeatures) {
-        return false; // 继续查找
-      }
-
-      // 找到第一个包含可见特征的聚簇
-      hitClusterFeature = clusterFeature;
-      return true; // 停止查找
-    },
-    {
-      layerFilter: (l) => l === layer.layer,
-      hitTolerance: 0,
+    let subFeatures = clusterFeature.get('features') as Feature<Point>[] | undefined;
+    if (!subFeatures && clusterFeature.get(EntityInstanceKey)) {
+      subFeatures = [clusterFeature];
     }
-  );
+    if (!subFeatures?.length || !subFeatures.some((f) => isFeatureVisible(f, layer))) continue;
 
-  if (!hitClusterFeature) {
-    return;
+    hitClusters.push(clusterFeature);
   }
 
-  // 获取聚簇中的所有特征并过滤
-  // 获取聚簇中的所有特征并过滤
-  let clusterFeatures = hitClusterFeature.get('features') as Feature<Point>[] | undefined;
-  if (!clusterFeatures && hitClusterFeature.get(EntityInstanceKey)) {
-    clusterFeatures = [hitClusterFeature];
+  if (hitClusters.length === 0) return;
+
+  hitClusters.sort((a, b) => {
+    const za = getFeatureStyleZIndex(a);
+    const zb = getFeatureStyleZIndex(b);
+    if (zb !== za) return zb - za;
+    const coordA = (a.getGeometry() as Point).getCoordinates();
+    const coordB = (b.getGeometry() as Point).getCoordinates();
+    const pxA = map.getPixelFromCoordinate(coordA) as [number, number];
+    const pxB = map.getPixelFromCoordinate(coordB) as [number, number];
+    const distA = (pixel[0] - pxA[0]) ** 2 + (pixel[1] - pxA[1]) ** 2;
+    const distB = (pixel[0] - pxB[0]) ** 2 + (pixel[1] - pxB[1]) ** 2;
+    return distA - distB;
+  });
+
+  const topCluster = hitClusters[0];
+  let clusterFeatures = topCluster.get('features') as Feature<Point>[] | undefined;
+  if (!clusterFeatures && topCluster.get(EntityInstanceKey)) {
+    clusterFeatures = [topCluster];
   }
-  clusterFeatures = clusterFeatures || [];
+  clusterFeatures = clusterFeatures ?? [];
   const features = filterAndSortClusterFeatures(clusterFeatures, layer);
 
   if (features.length > 0) {
