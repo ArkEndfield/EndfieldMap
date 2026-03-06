@@ -16,7 +16,7 @@ export const ThirdPartyButton = ({
   // 根据label获取登录URL
   const getLoginUrl = (provider: string) => {
     const urls = {
-      qq: 'https://graph.qq.com/oauth2.0/authorize?client_id=102849620&response_type=token&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fqq%2Fcallback',
+      qq: 'https://graph.qq.com/oauth2.0/authorize?client_id=102898137&response_type=token&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fqq%2Fcallback',
       bilibili:
         'https://account.bilibili.com/h5/account-h5/auth/oauth?client_id=aadbd763480d47cb&callback=skip&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
       discord:

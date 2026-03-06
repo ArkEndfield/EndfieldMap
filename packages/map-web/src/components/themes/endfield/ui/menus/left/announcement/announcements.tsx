@@ -1,7 +1,12 @@
 import type { Announcement, CategoriedAnnouncementBreif } from '@endfieldmap/map-service/@types/announcement';
 import { motion } from 'motion/react';
 import { cn } from '@endfieldmap/tools';
-import { Logo, LogoLoading, ScrollArea } from '@endfieldmap/web-components';
+import { useState } from 'react';
+import { Logo,
+         LogoLoading,
+         ScrollArea,
+         useIsMobile,
+         ArrowLeftIcon } from '@endfieldmap/web-components';
 
 import { ScrollableList } from '@/components/common/scrollable_list';
 import { AnnouncementItem } from '@themes/endfield/ui/menus/left/announcement/announcement_item';
@@ -67,14 +72,25 @@ export const Announcements = ({
   detailError,
   loadDetail,
 }: AnnouncementsProps) => {
+  const isMobile = useIsMobile();
+  const [showListOnMobile, setShowListOnMobile] = useState(true);
   return (
     <motion.div
-      className={cn('absolute inset-0 flex p-4 pt-6', hidden && 'pointer-events-none')}
+      className={cn(
+        'absolute inset-0 flex flex-col md:flex-row p-4 pt-6',
+        hidden && 'pointer-events-none'
+      )}
       initial={false}
       animate={{ opacity: hidden ? 0 : 1 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="shrink-0 w-56 h-full overflow-hidden">
+      <div
+        className={cn(
+          'shrink-0 md:w-56 w-full md:h-full overflow-hidden',
+          showListOnMobile ? 'block' : 'hidden',
+          'md:block'
+        )}
+      >
         {listLoading ? (
           <CenterContainer>
             <LogoLoading className="mr-2" />
@@ -84,21 +100,31 @@ export const Announcements = ({
             <ErrorMessage error={listError} />
           </CenterContainer>
         ) : (
-          <ScrollableList className="h-full space-y-5">
+          <ScrollableList className={cn('h-full space-y-5', isMobile && 'ml-8')}>
             {list?.list.map((item) => (
               <AnnouncementItem
                 key={item.id}
                 item={item}
-                active={detail?.id === item.id}
+                active={((detail?.id === item.id) && !showListOnMobile)}
                 isRead={item.read}
-                onClick={() => loadDetail(item.id)}
+                onClick={() => {
+                  loadDetail(item.id);
+                  setShowListOnMobile(false);
+                }}
               />
             ))}
           </ScrollableList>
         )}
       </div>
 
-      <div className="flex-1 h-full overflow-hidden pr-2 pb-6 -ml-6">
+      <div
+        className={cn(
+          'flex-1 md:h-full h-1/2 overflow-hidden pb-6',
+          !isMobile && '-ml-7 pr-2',
+          showListOnMobile ? 'hidden' : 'block',
+          'md:block'
+        )}
+      >
         {detailLoading ? (
           <CenterContainer>
             <LogoLoading />
@@ -108,7 +134,18 @@ export const Announcements = ({
             <ErrorMessage error={detailError} />
           </CenterContainer>
         ) : (
-          <ContentContainer content={detail?.content ?? ''} />
+          <div className="h-full flex flex-col">
+            <div className="md:hidden mb-2">
+              <button
+                className="inline-flex items-center px-3 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300"
+                onClick={() => setShowListOnMobile(true)}
+              >
+                <ArrowLeftIcon className="mr-2" />
+                Back
+              </button>
+            </div>
+            <ContentContainer content={detail?.content ?? ''} />
+          </div>
         )}
       </div>
     </motion.div>

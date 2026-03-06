@@ -68,7 +68,7 @@ const AnnouncementsDialogInner = <T extends React.Key>({
               soundType={SoundType.TICK}
               key={tab.key}
               className={cn(
-                'w-41.5 h-10.5 relative text-lg px-5 font-medium bg-bottom bg-no-repeat bg-[url(/images/bg/bulletin-type-inactive.png)] bg-cover',
+                'w-45 h-11.5 relative text-lg px-5 font-medium bg-bottom bg-no-repeat bg-[url(/images/bg/bulletin-type-inactive.png)] bg-cover',
                 activeTab === tab.key ? 'text-white' : 'text-[#9f9f9f] hover:opacity-80'
               )}
               onClick={() => onTabChange(tab.key)}
@@ -80,7 +80,7 @@ const AnnouncementsDialogInner = <T extends React.Key>({
                 <div className="absolute -inset-px border border-[#EE7E31] animate-ping" />
               </div>
               <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 h-12.5 w-48.75 bg-[url(/images/bg/bulletin-type-active.png)] bg-contain bg-no-repeat"
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 h-13.75 w-54 bg-[url(/images/bg/bulletin-type-active.png)] bg-contain bg-no-repeat"
                 hidden={activeTab !== tab.key}
               />
               <div className="relative z-1 w-full flex gap-2 items-center">
