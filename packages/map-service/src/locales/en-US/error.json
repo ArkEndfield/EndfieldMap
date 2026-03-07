@@ -29,6 +29,8 @@
   "access_denied": "Access denied",
   "illegal_nickname": "Illegal nickname",
   "network_error": "Network error, please try again later",
+  "state_mismatch": "State code invalid",
+  "oauth_in_progress": "A Third-party login is already in progress, please close the popup window before opening a new one.",
   "login_expired": "Login expired, please log in again",
   "no_user_info": "User information does not exist",
   "sync_failed_too_much": "Sync failed too many times, auto-sync has been stopped. Please check your network connection and click \"Sync Now\" to retry. If the problem persists, please join the community to provide feedback.",

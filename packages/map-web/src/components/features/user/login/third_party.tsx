@@ -16,7 +16,7 @@ export const ThirdPartyButton = ({
   // 根据label获取登录URL
   const getLoginUrl = (provider: string) => {
     const urls = {
-      qq: 'https://graph.qq.com/oauth2.0/authorize?client_id=102898137&response_type=token&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fqq%2Fcallback',
+      qq: 'https://graph.qq.com/oauth2.0/authorize?client_id=102898137&response_type=code&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fqq%2Fcallback',
       bilibili:
         'https://account.bilibili.com/h5/account-h5/auth/oauth?client_id=aadbd763480d47cb&callback=skip&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
       discord:
@@ -28,7 +28,13 @@ export const ThirdPartyButton = ({
   };
 
   const handleClick = () => {
-    const url = getLoginUrl(label.toLowerCase());
+    // if (sessionStorage.getItem('oauth_state')) {
+    //   alert.info({content: <div className="text-center">{t("oauth_in_progress")}</div>,});
+    //   return;
+    // }
+    // const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    // sessionStorage.setItem('oauth_state', state);
+    const url = getLoginUrl(label.toLowerCase());//  + `&state=${state}`;
     const width = 500;
     const height = 600;
     const left = (window.screen.width - width) / 2;
@@ -37,19 +43,36 @@ export const ThirdPartyButton = ({
     // 打开登录窗口
     const loginWindow = window.open(url, label + ' Login', `width=${width},height=${height},left=${left},top=${top}`);
 
+    // if (loginWindow) {
+    //   const checkInterval = setInterval(() => {
+    //     if (loginWindow.closed) {
+    //       clearInterval(checkInterval);
+    //       console.log('oauth window closed');
+    //       sessionStorage.removeItem('oauth_state');
+    //     }
+    //   }, 200);
+    // } else {
+    //   console.log('oauth window was blocked');
+    // }
     // 监听登录结果
     const messageHandler = (event: MessageEvent) => {
       if (event.data.type === 'LOGIN_SUCCESS') {
-        console.log('Login success');
-        service.userService.thirdparty(event.data.userInfo.token);
+        // if (event.data.state !== sessionStorage.getItem('oauth_state')) {
+        //   console.log('State mismatch');
+        //   alert.info({content: <div className="text-center">{t("login_failed") + t("state_mismatch")}</div>,});
+        // } else {
+          console.log('Login success');
+          service.userService.thirdparty(event.data.userInfo.token);
+        // }
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
       } else if (event.data.type === 'LOGIN_FAILED') {
-        console.log('Login failed', event.data.error);
+        console.log('Login failed: ', event.data.error);
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
         alert.info({content: <div className="text-center">{t("login_failed") + t(event.data.error)}</div>,});
       }
+      // sessionStorage.removeItem('oauth_state');
     };
 
     window.addEventListener('message', messageHandler);
