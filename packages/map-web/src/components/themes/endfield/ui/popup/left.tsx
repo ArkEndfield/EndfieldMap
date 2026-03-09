@@ -1,8 +1,8 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointDataInstance, CustomPointKey, customPointTypes, ElectricPoleKey } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { EndfieldSelect, ScrollArea, ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { ChevronUpTriangle } from '@endfieldmap/web-components';
 import { DeleteButton } from '@themes/endfield/ui/popup/left_content/delete_button';
 import { Footer } from '@themes/endfield/ui/popup/left_content/footer';
 import { PopupHeader } from '@themes/endfield/ui/popup/left_content/header';
@@ -10,9 +10,9 @@ import { MarkButton } from '@themes/endfield/ui/popup/left_content/mark_button';
 import { RenameButton } from '@themes/endfield/ui/popup/left_content/rename_button';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 
 import { Guide } from '@/components/common/guide';
-import { ChevronUpTriangle } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useActiveFeatureName } from '@/hooks/use_entity_name';
 import { service } from '@/services';
@@ -66,28 +66,35 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
             <DeleteButton entity={activeFeature} />
           </PopupHeader>
 
-          <ScrollArea className="flex-1 min-h-0 p-3">
-            {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} />}
+          <div className="flex-1 min-h-0 relative">
+            <ScrollArea className="h-full">
+              <div className="pb-12">
+                {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} />}
 
-            {/* 自定义标点类型选择 */}
-            {isCustomPoint && (
-              <div className="mt-3 shrink-0">
-                <div className="text-xs text-[#aaaaaa] mb-1">{t('popup:custom_point.change_type')}</div>
-                <EndfieldSelect
-                  value={(activeFeature as CustomPointDataInstance).typeId}
-                  options={customPointTypeOptions}
-                  onChange={handleChangePointType}
-                />
+                {/* 自定义标点类型选择 */}
+                {isCustomPoint && (
+                  <div className="mt-3 shrink-0">
+                    <div className="text-xs text-[#aaaaaa] mb-1">{t('popup:custom_point.change_type')}</div>
+                    <EndfieldSelect
+                      value={(activeFeature as CustomPointDataInstance).typeId}
+                      options={customPointTypeOptions}
+                      onChange={handleChangePointType}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </ScrollArea>
+            </ScrollArea>
+            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-[#272827] to-transparent" />
+          </div>
 
-          <Footer
-            name={displayName || ''}
-            pic={getEntityIcon(entityInfo.category, entityInfo.entityInfo.pic)}
-            id={activeFeature.id}
-            categoryName={categoryName}
-          />
+          <div className="absolute bottom-0 left-0 right-0 z-2">
+            <Footer
+              name={displayName || ''}
+              pic={getEntityIcon(entityInfo.category, entityInfo.entityInfo.pic)}
+              id={activeFeature.id}
+              categoryName={categoryName}
+            />
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

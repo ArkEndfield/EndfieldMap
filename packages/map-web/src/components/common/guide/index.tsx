@@ -3,6 +3,8 @@ import '@/components/common/guide/captions.css';
 import '@/components/common/guide/thumbnails.css';
 
 import type { CustomPointData, ElectricPoleData, EntityData } from '@endfieldmap/map-core';
+import { useGuide } from '@endfieldmap/map-hooks';
+import { Logo, LogoLoading } from '@endfieldmap/web-components';
 import { useCallback, useRef, useState } from 'react';
 import Lightbox, { type ControllerRef, type Slide } from 'yet-another-react-lightbox';
 import Captions from 'yet-another-react-lightbox/plugins/captions';
@@ -11,9 +13,6 @@ import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { service } from '@/services';
-
-import { useGuide } from '@endfieldmap/map-hooks';
-import { Logo, LogoLoading } from '@endfieldmap/web-components';
 
 export const Guide = ({ entity }: { entity: EntityData | CustomPointData | ElectricPoleData }) => {
   const { data: guide, loading, error } = useGuide(service, entity.levelLogicId);
@@ -28,7 +27,7 @@ export const Guide = ({ entity }: { entity: EntityData | CustomPointData | Elect
   if (loading) {
     return (
       <div className="flex justify-center py-4">
-        <LogoLoading className="text-[#81807f]" />
+        <LogoLoading className="text-[#81807f] text-base" />
       </div>
     );
   }
@@ -50,9 +49,9 @@ export const Guide = ({ entity }: { entity: EntityData | CustomPointData | Elect
   const slides: Slide[] = guide?.images?.map((src) => ({ src })) ?? [];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2 p-3 pr-6">
       {/* 文字描述在上方 */}
-      <div className="text-lg lg:text-sm mb-2 whitespace-pre-line">{guide.description}</div>
+      <div className="text-sm whitespace-pre-line">{guide.description}</div>
       {/* 图片竖向排列 */}
       <div className="flex flex-col gap-2">
         {guide?.images?.map((src, idx) => (

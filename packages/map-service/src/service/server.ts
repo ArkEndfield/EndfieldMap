@@ -158,7 +158,7 @@ export class ServerService {
           Authorization: `Bearer ${newToken}`,
         },
       };
-      return this.request<T>(url, retryOptions);
+      return this.request<T>(url, retryOptions, true);
     }
 
     // 开始刷新 Token
@@ -195,7 +195,7 @@ export class ServerService {
         this.onTokenRefreshed?.(this.token);
         this.processQueue();
 
-        // 重试原始请求
+        // 重试原始请求，标记为刷新后重试以防止再次进入刷新循环
         const retryOptions = {
           ...options,
           headers: {
@@ -204,7 +204,7 @@ export class ServerService {
           },
         };
 
-        return this.request<T>(url, retryOptions);
+        return this.request<T>(url, retryOptions, true);
       }
 
       throw new Error(
@@ -225,12 +225,24 @@ export class ServerService {
   /**
    * 底层请求方法
    * 不自动添加 Token 和 API 前缀
+   * @param isRetryAfterRefresh 标记是否是刷新 token 后的重试请求，防止无限循环
    */
-  public async request<T>(url: string, options?: RequestInit): Promise<T> {
+  public async request<T>(url: string, options?: RequestInit, isRetryAfterRefresh: boolean = false): Promise<T> {
     const fullURL = new URL(url, this.backendHost || window.location.origin);
     const response = await fetch(fullURL, options);
 
     if (response.status === 401) {
+      // 如果是刷新 token 后的重试请求仍然 401，直接登出，不再尝试刷新
+      if (isRetryAfterRefresh) {
+        this.triggerLogout();
+        throw new Error(
+          this.i18nService.translate('not_login', {
+            ns: 'error',
+            defaultValue: '未登录',
+          })
+        );
+      }
+
       // 解析响应体获取后端返回的 message
       let backendMessage: string | undefined;
       try {

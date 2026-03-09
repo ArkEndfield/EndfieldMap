@@ -18,6 +18,7 @@ import type { Point } from 'ol/geom';
 const HIT_HALF_WIDTH = SVG_WIDTH / 2;
 const HIT_ABOVE = SVG_DISPLACEMENT_Y + SVG_HEIGHT / 2;
 const HIT_BELOW = SVG_HEIGHT / 2 - SVG_DISPLACEMENT_Y;
+const HIT_CENTER_OFFSET_Y = (HIT_ABOVE - HIT_BELOW) / 2;
 
 // ============================================================================
 // Types
@@ -88,6 +89,32 @@ function getFeatureStyleZIndex(feature: Feature<Point>): number {
 }
 
 /**
+ * 计算光标到 feature marker 视觉中心的平方距离。
+ * marker 的视觉中心相对于 feature 像素坐标向上偏移 HIT_CENTER_OFFSET_Y。
+ */
+function markerCenterDistSq(clickPixel: [number, number], featurePixel: [number, number]): number {
+  const dx = clickPixel[0] - featurePixel[0];
+  const dy = clickPixel[1] - (featurePixel[1] - HIT_CENTER_OFFSET_Y);
+  return dx * dx + dy * dy;
+}
+
+/**
+ * 比较两个 hit 候选 feature 的优先级：style z-index 高者优先，相同则距光标更近的 marker 优先。
+ */
+function compareHitCandidates(
+  a: Feature<Point>,
+  b: Feature<Point>,
+  pixel: [number, number],
+  map: OlMap
+): number {
+  const zDiff = getFeatureStyleZIndex(b) - getFeatureStyleZIndex(a);
+  if (zDiff !== 0) return zDiff;
+  const pxA = map.getPixelFromCoordinate((a.getGeometry() as Point).getCoordinates()) as [number, number];
+  const pxB = map.getPixelFromCoordinate((b.getGeometry() as Point).getCoordinates()) as [number, number];
+  return markerCenterDistSq(pixel, pxA) - markerCenterDistSq(pixel, pxB);
+}
+
+/**
  * 检查特征是否为有效的 Entity 特征
  * 可见性和 markedFilterMode 过滤已在渲染器层通过 feature.visible 属性和 geometryFunction 处理，
  * hit test 命中的 feature 一定是可见的，无需再检查
@@ -134,11 +161,11 @@ function hitTestNonClusteredLayer(
   results: EntityHitTestResult[]
 ): void {
   const { coordinate, pixel, map } = input;
+  if (!coordinate) return;
   const source = layer.layer.getSource();
   if (!source || !('getFeaturesInExtent' in source)) return;
 
-  const view = map.getView();
-  const resolution = view.getResolution();
+  const resolution = map.getView().getResolution();
   if (!resolution) return;
 
   const extent = createSearchExtent(coordinate, resolution);
@@ -149,27 +176,14 @@ function hitTestNonClusteredLayer(
     if (!isFeatureVisible(feature, layer)) continue;
     const geom = feature.getGeometry();
     if (!geom || geom.getType() !== 'Point') continue;
-    const coord = (geom as Point).getCoordinates();
-    const featurePixel = map.getPixelFromCoordinate(coord) as [number, number];
+    const featurePixel = map.getPixelFromCoordinate((geom as Point).getCoordinates()) as [number, number];
     if (!isPixelInMarkerBounds(pixel, featurePixel)) continue;
     hitCandidates.push(feature);
   }
 
   if (hitCandidates.length === 0) return;
 
-  hitCandidates.sort((a, b) => {
-    const za = getFeatureStyleZIndex(a);
-    const zb = getFeatureStyleZIndex(b);
-    if (zb !== za) return zb - za;
-    const coordA = (a.getGeometry() as Point).getCoordinates();
-    const coordB = (b.getGeometry() as Point).getCoordinates();
-    const pxA = map.getPixelFromCoordinate(coordA) as [number, number];
-    const pxB = map.getPixelFromCoordinate(coordB) as [number, number];
-    const distA = (pixel[0] - pxA[0]) ** 2 + (pixel[1] - pxA[1]) ** 2;
-    const distB = (pixel[0] - pxB[0]) ** 2 + (pixel[1] - pxB[1]) ** 2;
-    return distA - distB;
-  });
-
+  hitCandidates.sort((a, b) => compareHitCandidates(a, b, pixel, map));
   results.push({ features: [hitCandidates[0]], layer });
 }
 
@@ -183,11 +197,11 @@ function hitTestClusteredLayer(
   results: EntityHitTestResult[]
 ): void {
   const { coordinate, pixel, map } = input;
+  if (!coordinate) return;
   const source = layer.layer.getSource();
   if (!source || !('getFeaturesInExtent' in source)) return;
 
-  const view = map.getView();
-  const resolution = view.getResolution();
+  const resolution = map.getView().getResolution();
   if (!resolution) return;
 
   const extent = createSearchExtent(coordinate, resolution);
@@ -197,8 +211,7 @@ function hitTestClusteredLayer(
   for (const clusterFeature of clusterCandidates) {
     const geom = clusterFeature.getGeometry();
     if (!geom || geom.getType() !== 'Point') continue;
-    const coord = (geom as Point).getCoordinates();
-    const featurePixel = map.getPixelFromCoordinate(coord) as [number, number];
+    const featurePixel = map.getPixelFromCoordinate((geom as Point).getCoordinates()) as [number, number];
     if (!isPixelInMarkerBounds(pixel, featurePixel)) continue;
 
     let subFeatures = clusterFeature.get('features') as Feature<Point>[] | undefined;
@@ -212,18 +225,7 @@ function hitTestClusteredLayer(
 
   if (hitClusters.length === 0) return;
 
-  hitClusters.sort((a, b) => {
-    const za = getFeatureStyleZIndex(a);
-    const zb = getFeatureStyleZIndex(b);
-    if (zb !== za) return zb - za;
-    const coordA = (a.getGeometry() as Point).getCoordinates();
-    const coordB = (b.getGeometry() as Point).getCoordinates();
-    const pxA = map.getPixelFromCoordinate(coordA) as [number, number];
-    const pxB = map.getPixelFromCoordinate(coordB) as [number, number];
-    const distA = (pixel[0] - pxA[0]) ** 2 + (pixel[1] - pxA[1]) ** 2;
-    const distB = (pixel[0] - pxB[0]) ** 2 + (pixel[1] - pxB[1]) ** 2;
-    return distA - distB;
-  });
+  hitClusters.sort((a, b) => compareHitCandidates(a, b, pixel, map));
 
   const topCluster = hitClusters[0];
   let clusterFeatures = topCluster.get('features') as Feature<Point>[] | undefined;
