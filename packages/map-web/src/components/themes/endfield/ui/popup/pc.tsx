@@ -110,7 +110,7 @@ const PCPopup: React.FC = observer(() => {
                 scale: 1,
               }}
               transition={{ type: 'spring', bounce: 0.35, duration: 0.35 }}
-              className="w-auto flex pointer-events-auto relative z-0 h-64"
+              className="w-auto flex pointer-events-auto relative z-0 h-82"
             >
               {/* 指向feature的三角箭头 */}
               <div className="absolute left-39 -translate-x-1/2 top-full -mt-px -translate-y-1 w-0 h-0 border-l-16 border-r-16 border-t-16 border-l-transparent border-r-transparent border-t-[#272827] z-1" />
