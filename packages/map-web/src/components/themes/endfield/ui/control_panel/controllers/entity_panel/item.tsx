@@ -69,12 +69,20 @@ const EntityItem = observer(
         <div
           className={cn(
             'flex items-center gap-1 p-1 overflow-hidden w-full bg-[#1d1d1d] rounded-full relative z-1 text-[#cccccc]',
-            active && 'bg-[#fffa00] text-[#4c4c4c]',
+            active && 'text-[#4c4c4c]',
             !active && 'hover:bg-[#222222]',
             'border-[0.5px] border-[#898989]/30'
           )}
         >
-          <div className="w-6 h-5 flex justify-center items-center shrink-0">
+          {/* Active 状态填充层 */}
+          <div
+            className="absolute inset-0 rounded-full bg-[#fffa00] pointer-events-none"
+            style={{
+              width: active ? '100%' : '0%',
+              transition: 'width 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)',
+            }}
+          />
+          <div className="w-6 h-5 flex justify-center items-center shrink-0 relative z-1">
             <div
               className={cn(
                 'w-full h-full rounded-full flex items-center justify-center',
@@ -83,11 +91,17 @@ const EntityItem = observer(
               )}
             >
               {children ||
-                (iconSrc && <img src={iconSrc} alt={displayName} className="w-full h-full object-contain" />)}
+                (iconSrc && (
+                  <img
+                    src={iconSrc}
+                    alt={displayName}
+                    className={cn('w-full h-full object-contain', active && 'drop-shadow-[0_0_5px_rgba(0,0,0,0.65)]')}
+                  />
+                ))}
             </div>
           </div>
 
-          <div className="flex flex-1 relative items-center justify-between overflow-hidden">
+          <div className="flex flex-1 relative z-1 items-center justify-between overflow-hidden">
             <div className="flex-1 mr-0.5 min-w-0 text-left truncate">{displayName}</div>
 
             {!hideCount && entity && (
