@@ -42,4 +42,5 @@ export interface GuideInfo extends GuideInfoBrief {
   layer_map: string;
   video_links: string[];
   visible: string;
+  refreshable: '' | '是' | '否';
 }

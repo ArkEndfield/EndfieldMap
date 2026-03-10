@@ -110,10 +110,10 @@ const PCPopup: React.FC = observer(() => {
                 scale: 1,
               }}
               transition={{ type: 'spring', bounce: 0.35, duration: 0.35 }}
-              className="w-auto flex pointer-events-auto relative z-0 h-64"
+              className="w-auto flex pointer-events-auto relative z-0 h-64 shadow-[0_8px_32px_rgba(0,0,0,0.45),0_2px_8px_rgba(0,0,0,0.3)] ring-1 ring-white/10"
             >
               {/* 指向feature的三角箭头 */}
-              <div className="absolute left-39 -translate-x-1/2 top-full -mt-px -translate-y-1 w-0 h-0 border-l-16 border-r-16 border-t-16 border-l-transparent border-r-transparent border-t-[#272827] z-1" />
+              <div className="absolute left-39 -translate-x-1/2 top-full -mt-px -translate-y-1 w-0 h-0 border-l-16 border-r-16 border-t-16 border-l-transparent border-r-transparent border-t-[#272827] z-1 drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)]" />
               {/* 左侧内容 */}
               <LeftContentContainer
                 showSubPopup={showSubPopup}

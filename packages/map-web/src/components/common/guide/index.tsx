@@ -14,6 +14,22 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { service } from '@/services';
 
+const UnrefreshableTip = () => {
+  return (
+    <div className="relative inline-flex items-center self-start py-0.5 pl-1.5 pr-1.5 text-xs mx-auto">
+      {/* 淡底 */}
+      <div className="absolute inset-0 rounded-[2px] bg-white/6 ring-[0.5px] ring-white/10" />
+      {/* 四角 L 形角标，更小 */}
+      <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-[#fcee21]/90" />
+      <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-[#fcee21]/90" />
+      <div className="absolute top-0 right-0 w-1 h-1 border-t border-r border-[#fcee21]/90" />
+      <div className="absolute bottom-0 left-0 w-1 h-1 border-b border-l border-[#fcee21]/90" />
+      {/* TODO: i18n */}
+      <span className="relative z-1 text-[#fcee21] font-medium tracking-wide">一次性</span>
+    </div>
+  );
+};
+
 export const Guide = ({ entity }: { entity: EntityData | CustomPointData | ElectricPoleData }) => {
   const { data: guide, loading, error } = useGuide(service, entity.levelLogicId);
   const [showImage, setShowImage] = useState(false);
@@ -50,6 +66,8 @@ export const Guide = ({ entity }: { entity: EntityData | CustomPointData | Elect
 
   return (
     <div className="flex flex-col gap-2 p-3 pr-6">
+      {/* 是否一次性 */}
+      {!!guide.refreshable && guide.refreshable === '否' && <UnrefreshableTip />}
       {/* 文字描述在上方 */}
       <div className="text-sm whitespace-pre-line">{guide.description}</div>
       {/* 图片竖向排列 */}
