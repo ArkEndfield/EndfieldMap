@@ -489,8 +489,10 @@ export class ElectricPoleDataService extends BasePresetDataService<
   private innerConnectElectricPole(pole: ElectricPoleDataInstance) {
     if (this.connectingPole) {
       try {
+        // 点击同一电线杆：仅清除当前连接起点，方便换其他杆，不退出连线模式
         if (this.connectingPole === pole) {
-          this.clearActiveFeature();
+          this.connectingPole = null;
+          this.deps.adapterRegistry.adapter.activeFeatureController?.clearActiveFeature?.();
           return;
         }
 
