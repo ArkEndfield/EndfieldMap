@@ -20,7 +20,7 @@ import { useActiveFeatureName } from '@/hooks/use_entity_name';
 import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';
 
-import { glowShadow } from './leftContentUtils';
+const glowShadow = (opacity: number, blur = 6) => `0 0 ${blur}px rgba(252,238,33,${opacity})`;
 
 const UnrefreshableTip = () => {
   return (
