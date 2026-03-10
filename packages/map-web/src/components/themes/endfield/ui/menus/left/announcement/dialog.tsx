@@ -1,6 +1,6 @@
 import { SoundType } from '@endfieldmap/map-web-theme-types';
 import { cn } from '@endfieldmap/tools';
-import { ButtonWithAudio, CloseButton, shortcutService } from '@endfieldmap/web-components';
+import { ButtonWithAudio, CloseButton, shortcutService, useIsMobile } from '@endfieldmap/web-components';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useRef } from 'react';
 
@@ -28,6 +28,7 @@ const AnnouncementsDialogInner = <T extends React.Key>({
   onTabChange,
 }: AnnouncementsDialogProps<T>) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     dialogRef.current?.showModal();
@@ -46,7 +47,7 @@ const AnnouncementsDialogInner = <T extends React.Key>({
       }}
     >
       <motion.div
-        className="w-4xl h-120 max-h-full bg-white relative flex flex-col origin-center rounded-sm overflow-hidden"
+        className={cn('w-4xl max-h-full bg-white relative flex flex-col origin-center rounded-sm overflow-hidden', isMobile ? 'h-full' : 'h-120')}
         initial={{ scaleY: 0, opacity: 0 }}
         animate={{ scaleY: 1, opacity: 1, transition: { duration: 0.15, ease: 'easeOut' } }}
         exit={{ scaleY: 0, opacity: 0, transition: { duration: 0.1, ease: 'easeIn' } }}
