@@ -161,6 +161,33 @@ export class ElectricPoleRender {
   }
 
   /**
+   * 获取当前所有显示的 zone 渲染器
+   */
+  public get currentZoneRenderers(): ElectricPoleZoneRenderer[] {
+    const result: ElectricPoleZoneRenderer[] = [];
+    for (const [, mapRenderers] of this.renders) {
+      for (const renderers of mapRenderers.values()) {
+        if (this.currentLayers.includes(renderers.zone.layer)) {
+          result.push(renderers.zone);
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 设置当前 hover 的电线杆 id（高亮该杆关联的连线与 zone，由 Controller 在 ENTITY_HOVER 为电线杆时调用）
+   */
+  public setHoveredPoleId(poleId: number | null): void {
+    for (const pole of this.currentPoleRenderers) {
+      pole.setHoveredPoleId(poleId);
+    }
+    for (const zone of this.currentZoneRenderers) {
+      zone.setHoveredPoleId(poleId);
+    }
+  }
+
+  /**
    * 设置所有渲染器可见性
    */
   public setVisible(visible: boolean): void {

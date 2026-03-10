@@ -20,9 +20,14 @@ export const CONNECTION_STYLE_NORMAL = new Style({
   stroke: new Stroke({ color: '#FFD700', width: 2 }),
 });
 
-/** 连线hover样式 */
+/** 连线 hover 样式（直接悬停在连线上） */
 export const CONNECTION_STYLE_HOVER = new Style({
   stroke: new Stroke({ color: '#FFA500', width: 4 }),
+});
+
+/** 连线「电线杆悬停」样式：与当前悬停电线杆相关的连线，降低不透明度 */
+export const CONNECTION_STYLE_POLE_HOVER = new Style({
+  stroke: new Stroke({ color: '#FFA500', width: 2 }),
 });
 
 /**

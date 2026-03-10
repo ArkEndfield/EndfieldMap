@@ -43,6 +43,10 @@ export interface ElectricPoleDeviceConfig {
   fillColor?: string;
   /** 描边色 (Hex/RGBA) */
   strokeColor?: string;
+  /** 悬停时的填充色 (RGBA)，不设则用 fillColor */
+  hoverFill?: string;
+  /** 悬停时的描边色 (Hex/RGBA)，不设则用 strokeColor */
+  hoverStroke?: string;
 }
 
 export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, ElectricPoleDeviceConfig> = {
@@ -56,6 +60,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     connectionType: 'electric',
     fillColor: 'rgba(228, 169, 21, 0.15)',
     strokeColor: '#E4A915',
+    hoverFill: 'rgba(228, 169, 21, 0.5)',
+    hoverStroke: '#E4A915',
   },
   repeater: {
     key: 'repeater',
@@ -67,6 +73,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     connectionType: 'electric',
     fillColor: 'rgba(36, 136, 255, 0.15)',
     strokeColor: '#2488FF',
+    hoverFill: 'rgba(36, 136, 255, 0.5)',
+    hoverStroke: '#2488FF',
   },
   zipline_80: {
     key: 'zipline_80',
@@ -78,6 +86,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     connectionType: 'zipline',
     fillColor: 'rgba(129, 211, 0, 0.15)',
     strokeColor: '#81D300',
+    hoverFill: 'rgba(129, 211, 0, 0.5)',
+    hoverStroke: '#81D300',
   },
   zipline_110: {
     key: 'zipline_110',
@@ -89,6 +99,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     connectionType: 'zipline',
     fillColor: 'rgba(0, 194, 120, 0.15)',
     strokeColor: '#00C278',
+    hoverFill: 'rgba(0, 194, 120, 0.5)',
+    hoverStroke: '#00C278',
   },
 };
 

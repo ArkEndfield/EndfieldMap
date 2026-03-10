@@ -17,7 +17,7 @@ import { EntityTypeRegistry } from '@endfieldmap/map-adapter-ol/core/entity_regi
 import { EndfieldMapEvent } from '@endfieldmap/map-adapter-ol/event/map';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
 import type { CustomPointDataInstance, ElectricPoleDataInstance, EndfieldMapAssetConfig, EntityDataInstance, MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core';
-import { EndfieldMapAsset, EndfieldMapEmitter, EntityInstanceKey, LayerType } from '@endfieldmap/map-core';
+import { EndfieldMapAsset, EndfieldMapEmitter, EntityInstanceKey, LayerType, MAP_EVENT } from '@endfieldmap/map-core';
 import type { LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';
@@ -215,6 +215,15 @@ export class EndfieldMapAdapter {
       getConnectionRenderers: () => this.electricPoleController?.render.currentPoleRenderers || [],
       disableHover: config.map?.disableHoverFeature,
       emitter: this.event,
+    });
+
+    // 电线杆 hover 时高亮其关联连线与 zone
+    this.event.on(MAP_EVENT.HOVER_FEATURE_CHANGE, ({ newFeature }) => {
+      if (newFeature?.entityType === '#ElectricPole') {
+        this.electricPoleController.setHoveredPole(newFeature as ElectricPoleDataInstance);
+      } else {
+        this.electricPoleController.setHoveredPole(null);
+      }
     });
   }
 

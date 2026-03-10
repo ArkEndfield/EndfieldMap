@@ -76,6 +76,14 @@ export class ElectricPoleController extends Disposer {
     return this.render.currentElectricPoleInstance.zone;
   }
 
+  /**
+   * 设置当前 hover 的电线杆（用于高亮该杆关联的连线与 zone）
+   * 由 adapter 监听 HOVER_FEATURE_CHANGE 后，若 newFeature 为电线杆则调用
+   */
+  public setHoveredPole(instance: ElectricPoleDataInstance | null): void {
+    this.render.setHoveredPoleId(instance ? instance.id : null);
+  }
+
   // #region 数据操作
 
   /**
@@ -282,41 +290,48 @@ export class ElectricPoleController extends Disposer {
       },
     ]);
 
-    // 添加 zone
-    renderers.zone.addZones([
-      {
-        id: instance.id,
-        coordinates: instance.coordinates,
-        radius: instance.zoneRadius,
-        dataInstance: instance,
-        visible: instance.visible,
-      },
-    ]);
+    // 添加 zone（新建时从半径 0 做展开动画）
+    renderers.zone.addZones(
+      [
+        {
+          id: instance.id,
+          coordinates: instance.coordinates,
+          radius: instance.zoneRadius,
+          dataInstance: instance,
+          visible: instance.visible,
+        },
+      ],
+      { animate: true }
+    );
 
-    // 添加连线（outgoing connections）
+    // 添加连线（outgoing，从发出点到连接点伸展动画）
     for (const target of instance.outgoingConnections) {
       if (instance.visible && target.visible) {
-        renderers.pole.addConnection({
-          fromInstance: instance,
-          fromCoordinates: instance.coordinates,
-          targetId: target.id,
-          targetCoordinates: target.coordinates,
-        });
+        renderers.pole.addConnection(
+          {
+            fromInstance: instance,
+            fromCoordinates: instance.coordinates,
+            targetId: target.id,
+            targetCoordinates: target.coordinates,
+          },
+          { animate: true }
+        );
       }
     }
 
-    // 添加反向连线（incoming connections）
-    // 其他电线杆可能已经指向这个新建的电线杆
+    // 添加反向连线（incoming）
     for (const source of instance.incomingConnections) {
-      // 查找源电线杆的渲染器
       const sourceRenderers = this.render.getRenderer(mapId, source.deviceKey);
       if (sourceRenderers && source.visible && instance.visible) {
-        sourceRenderers.pole.addConnection({
-          fromInstance: source,
-          fromCoordinates: source.coordinates,
-          targetId: instance.id,
-          targetCoordinates: instance.coordinates,
-        });
+        sourceRenderers.pole.addConnection(
+          {
+            fromInstance: source,
+            fromCoordinates: source.coordinates,
+            targetId: instance.id,
+            targetCoordinates: instance.coordinates,
+          },
+          { animate: true }
+        );
       }
     }
 
@@ -340,15 +355,18 @@ export class ElectricPoleController extends Disposer {
     // 数据层：建立连接
     fromInstance.connectTo(toInstance);
 
-    // 渲染层：添加连线
+    // 渲染层：添加连线（从发出点到连接点伸展动画）
     const renderers = this.render.getRenderer(mapId, fromInstance.deviceKey);
     if (renderers && fromInstance.visible && toInstance.visible) {
-      renderers.pole.addConnection({
-        fromInstance,
-        fromCoordinates: fromInstance.coordinates,
-        targetId: toInstance.id,
-        targetCoordinates: toInstance.coordinates,
-      });
+      renderers.pole.addConnection(
+        {
+          fromInstance,
+          fromCoordinates: fromInstance.coordinates,
+          targetId: toInstance.id,
+          targetCoordinates: toInstance.coordinates,
+        },
+        { animate: true }
+      );
     }
   }
 
@@ -368,10 +386,10 @@ export class ElectricPoleController extends Disposer {
     // 数据层：断开连接
     fromInstance.disconnectOutgoingTo(toId);
 
-    // 渲染层：移除连线
+    // 渲染层：移除连线（先收缩到起点再移除）
     const renderers = this.render.getRenderer(mapId, fromInstance.deviceKey);
     if (renderers) {
-      renderers.pole.removeConnection(fromId, toId);
+      renderers.pole.removeConnection(fromId, toId, { animate: true });
     }
   }
 
@@ -393,11 +411,11 @@ export class ElectricPoleController extends Disposer {
     // 从数据管理器移除（含清理连接关系）
     const result = manager.removeWithCleanup(id);
 
-    // 从渲染器移除
+    // 从渲染器移除：点立即移除，连线收缩动画后移除，zone 收缩动画后移除
     const renderers = this.render.getRenderer(mapId, deviceKey);
     if (renderers) {
-      renderers.pole.removeFeatures([id]);
-      renderers.zone.removeZones([id]);
+      renderers.pole.removeFeatures([id], { animateConnections: true });
+      renderers.zone.removeZones([id], { animate: true });
     }
 
     return result;
