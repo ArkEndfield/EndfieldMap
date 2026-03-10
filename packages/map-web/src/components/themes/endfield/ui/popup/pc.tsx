@@ -1,5 +1,5 @@
 import { cn } from '@endfieldmap/tools';
-import { ScrollArea } from '@endfieldmap/web-components';
+import { ScrollArea, shortcutService } from '@endfieldmap/web-components';
 import { LeftContentContainer } from '@themes/endfield/ui/popup/left';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
@@ -38,6 +38,7 @@ const RightContent: React.FC<{
 
 const PCPopup: React.FC = observer(() => {
   const { adapter } = useAdapter();
+  const [isExpand, setIsExpand] = useState(false);
   const activeFeature = adapter?.activeFeatureController.activeFeature;
   const entity = activeFeature?.data;
   const subPopupItems = getRightComponents(entity);
@@ -75,7 +76,9 @@ const PCPopup: React.FC = observer(() => {
     }
   }, [adapter, activeFeature]);
 
-  const [isExpand, setIsExpand] = useState(false);
+  const showPopup = activeFeature &&
+  !service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode &&
+  !service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode;
 
   const handleExpandButton = () => {
     setIsExpand((isExpand) => !isExpand);
@@ -87,11 +90,19 @@ const PCPopup: React.FC = observer(() => {
     }
   };
 
+  useEffect(() => {
+    if (!showPopup) return;
+    const dispose = shortcutService.register('Escape', (e: KeyboardEvent) => {
+      e.preventDefault();
+      adapter.activeFeatureController.clearActiveFeature();
+      return true;
+    });
+    return () => dispose();
+  }, [showPopup, adapter]);
+
   return createPortal(
     <AnimatePresence>
-      {activeFeature &&
-        !service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode &&
-        !service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode && (
+      { showPopup && (
           <motion.div
             key="desktop-popup"
             initial={{ opacity: 0, y: 18, scale: 0.9 }}
