@@ -85,6 +85,7 @@ export interface IElectricPoleController {
   connectElectricPoles(mapId: MapData['id'], fromId: number, toId: number): void;
   disconnectElectricPoles(mapId: MapData['id'], fromId: number, toId: number): void;
   deleteElectricPole(mapId: MapData['id'], id: number): boolean;
+  updateElectricPolePosition(mapId: MapData['id'], instanceId: number, newCoordinate: MapCoordinate): void;
   setZoneVisible(visible: boolean): void;
   setVisible(visible: boolean): void;
   setDeviceVisible(deviceKey: ElectricPoleDeviceKey, visible: boolean): void;

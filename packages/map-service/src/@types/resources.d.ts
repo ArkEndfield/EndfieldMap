@@ -282,6 +282,7 @@ interface Resources {
     "operate": {
       "clear_selection": "清空选择",
       "mark": "标记",
+      "mark_tip": "(中键一键标记)",
       "marked": "已标记",
       "rename": "重命名",
       "unmark": "取消标记"
@@ -306,6 +307,7 @@ interface Resources {
     "yes": "是"
   },
   "error": {
+    "access_denied": "用户拒绝授权",
     "custom_point": {
       "create_failed": "创建失败：{{message}}",
       "delete_corrupted_preset": "删除损坏预设",
@@ -323,16 +325,21 @@ interface Resources {
       "delete_pole": "删除电线杆",
       "different_connection_type": "不能连接不同类型的设备",
       "distance_too_far": "两个设备之间的距离太远",
+      "move_failed": "移动失败：{{message}}",
       "no_preset_selected": "未选择电线杆预设，无法创建电线杆，请先创建或选择预设。",
       "preset_corrupted": "电线杆预设 \"{{name}}\" 数据已损坏，请检查并重新创建预设。",
       "source_slots_full": "当前设备的连接槽位已满",
       "switch": "切换",
       "target_slots_full": "目标设备的连接槽位已满"
     },
+    "illegal_nickname": "昵称违规",
     "login_expired": "登录已过期，请重新登录",
+    "login_failed": "登录失败：",
+    "network_error": "网络错误，请稍后再试",
     "no_user_info": "用户信息不存在",
     "not_bind_uid": "未绑定 uid",
     "not_login": "未登录",
+    "oauth_in_progress": "已经有一个第三方登录正在进行中，请先关闭弹窗后再进行登录。",
     "qr_code": {
       "expired": "二维码已过期",
       "generate": "生成二维码失败",
@@ -350,12 +357,15 @@ interface Resources {
       "username_too_long": "用户名最多20个字符",
       "username_too_short": "用户名至少3个字符"
     },
+    "state_mismatch": "状态码不匹配",
     "sync_failed_too_much": "同步失败次数过多，已自动停止同步。请检查网络连接后点击\"立即同步\"重试，如果仍然有问题，请加入社群反馈。",
     "unknown": "未知错误"
   },
   "header": {
-    "feedback": {
-      "title": "反馈"
+    "announcement": {
+      "change_log": "更新日志",
+      "feedback": "反馈",
+      "title": "公告"
     },
     "head_menu": {
       "custom": "自定义标点",
@@ -6130,6 +6140,10 @@ interface Resources {
         "filter": {
           "pole": "电线杆",
           "zipline": "滑索"
+        },
+        "move": {
+          "in_mode": "正在移动电线杆",
+          "start": "移动"
         },
         "no_data": "暂无电线杆数据",
         "preset": {

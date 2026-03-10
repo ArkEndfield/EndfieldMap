@@ -1,1 +1,1 @@
-export const modes = ['isCreating', 'isConnecting', 'isDeleting', 'isDeletingConnection'] as const;
+export const modes = ['isCreating', 'isConnecting', 'isDeleting', 'isDeletingConnection', 'isMoving'] as const;

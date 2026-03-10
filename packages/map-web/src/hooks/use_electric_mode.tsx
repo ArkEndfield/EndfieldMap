@@ -22,7 +22,7 @@ type NestedKeyOf<T, Prefix extends string = ''> = T extends object
 /** 只包含有 in_mode 子键的路径 */
 type ModeTipTextKeys = Extract<
   NestedKeyOf<ElectricPoleTranslation>,
-  'create' | 'connect' | 'delete' | 'connect.delete'
+  'create' | 'connect' | 'delete' | 'connect.delete' | 'move'
 >;
 
 const modeTipText: Record<ElectricMode, ModeTipTextKeys> = {
@@ -30,6 +30,7 @@ const modeTipText: Record<ElectricMode, ModeTipTextKeys> = {
   isCreating: 'create',
   isDeleting: 'delete',
   isDeletingConnection: 'connect.delete',
+  isMoving: 'move',
 };
 
 export const useElectricMode = () => {
@@ -47,6 +48,8 @@ export const useElectricMode = () => {
         return electricPoleDataService.isDeleting;
       case 'isDeletingConnection':
         return electricPoleDataService.isDeletingConnection;
+      case 'isMoving':
+        return electricPoleDataService.isMoving;
       default:
         return false;
     }
@@ -82,6 +85,7 @@ export const useElectricMode = () => {
     if (electricPoleDataService.isConnecting) return 'isConnecting';
     if (electricPoleDataService.isDeleting) return 'isDeleting';
     if (electricPoleDataService.isDeletingConnection) return 'isDeletingConnection';
+    if (electricPoleDataService.isMoving) return 'isMoving';
     return null;
   };
 
@@ -124,6 +128,7 @@ export const useElectricMode = () => {
       isConnecting: electricPoleDataService.isConnecting,
       isDeleting: electricPoleDataService.isDeleting,
       isDeletingConnection: electricPoleDataService.isDeletingConnection,
+      isMoving: electricPoleDataService.isMoving,
     },
     getCurrentMode,
     isInOtherMode: adapter.mapController.selection.isSelecting,

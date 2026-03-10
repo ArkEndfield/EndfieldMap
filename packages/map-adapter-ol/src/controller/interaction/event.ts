@@ -33,6 +33,10 @@ export interface EventControllerConfig {
   getConnectionRenderers?: () => ConnectionCapableRenderer[];
   emitter: EndfieldMapEmitter<OLMapEventPayloads>;
   disableHover?: boolean;
+  /** 若返回的实例与本次点击命中的 instance 相同，则不 fire ENTITY_CLICK（用于拖拽结束后抑制一次点击） */
+  getEntityClickSuppress?: () => DataInstance | null;
+  /** 抑制 ENTITY_CLICK 后调用，用于清除 suppress 状态 */
+  onEntityClickSuppressed?: () => void;
 }
 
 export class EventController {
@@ -40,6 +44,8 @@ export class EventController {
   private getNonClusteredLayers: () => HitTestableLayer[];
   private getConnectionRenderers: () => ConnectionCapableRenderer[];
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
+  private getEntityClickSuppress?: () => DataInstance | null;
+  private onEntityClickSuppressed?: () => void;
   private disposeListeners: Array<() => void> = [];
   /** Hover 是否禁用 */
   private hoverDisabled: boolean;
@@ -53,6 +59,8 @@ export class EventController {
     this.getNonClusteredLayers = config.getNonClusteredLayers;
     this.getConnectionRenderers = config.getConnectionRenderers ?? (() => []);
     this.emitter = config.emitter;
+    this.getEntityClickSuppress = config.getEntityClickSuppress;
+    this.onEntityClickSuppressed = config.onEntityClickSuppressed;
     this.hoverDisabled = config.disableHover ?? false;
     this.registerClickEventHandlers();
     this.registerContextMenuEventHandlers();
@@ -159,6 +167,12 @@ export class EventController {
         // 处理单个实体点击
         const feature = features[0];
         const instance = feature.get(EntityInstanceKey) as EntityDataInstance;
+        const suppress = this.getEntityClickSuppress?.();
+        if (suppress !== undefined && suppress !== null && suppress === instance) {
+          this.onEntityClickSuppressed?.();
+          event.hasHit = true;
+          return;
+        }
         // 标记事件已被处理，防止被视为地图空白处点击
         event.hasHit = true;
 

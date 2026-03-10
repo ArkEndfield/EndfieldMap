@@ -53,6 +53,7 @@ export type OLMapEventPayloads = {
   'map:click': MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent> & {
     hasHit?: boolean;
   };
+  'map:pointerdown': MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
   'map:hover': {
     event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>;
   };

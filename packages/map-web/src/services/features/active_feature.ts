@@ -15,11 +15,12 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter): ()
     if (adapter.mapController.selection.isSelecting) return;
     const { instance } = event;
 
-    // 电线杆特殊处理：在操作模式下进行连接操作
+    // 电线杆特殊处理：在操作模式下进行连接操作（移动改为 hover 拖拽，不在此处理）
     if (service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode) {
-      if (service.dataService.mapDataService.electricPoleDataService.isConnecting || service.dataService.mapDataService.electricPoleDataService.isCreating) {
+      const epService = service.dataService.mapDataService.electricPoleDataService;
+      if (epService.isConnecting || epService.isCreating) {
         if (instance instanceof ElectricPoleDataInstance)
-          service.dataService.mapDataService.electricPoleDataService.connectElectricPole(instance);
+          epService.connectElectricPole(instance);
       }
       return;
     }

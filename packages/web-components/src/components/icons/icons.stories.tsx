@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
 
 import { ClearIcon, RefreshIcon, EditIcon, ExportIcon, ImportIcon, SwitchIcon, TrashIcon, ScanIcon, SyncIcon, ShareIcon } from '../icons/action';
-import { MultiOperationIcon, EditAddIcon, EditDeleteIcon, BatchDeleteIcon, EditConnectIcon, EditDisconnectIcon } from '../icons/edit';
+import { MultiOperationIcon, EditAddIcon, EditMoveIcon, EditDeleteIcon, BatchDeleteIcon, EditConnectIcon, EditDisconnectIcon } from '../icons/edit';
 import { ElectricPoleIconPole, ElectricPoleIconRepeater, ElectricPoleIconZipline80, ElectricPoleIconZipline110 } from '../icons/electric_pole';
 import { TranslateIcon, LayoutAndLanguageIcon, LayoutIcon, ThemeIcon } from '../icons/layout';
 import { Logo } from '../icons/logo';
@@ -59,6 +59,7 @@ export const Edit: StoryObj = {
     <IconGrid>
       <IconItem name="MultiOperationIcon"><MultiOperationIcon /></IconItem>
       <IconItem name="EditAddIcon"><EditAddIcon /></IconItem>
+      <IconItem name="EditMoveIcon"><EditMoveIcon /></IconItem>
       <IconItem name="EditDeleteIcon"><EditDeleteIcon /></IconItem>
       <IconItem name="BatchDeleteIcon"><BatchDeleteIcon /></IconItem>
       <IconItem name="EditConnectIcon"><EditConnectIcon /></IconItem>

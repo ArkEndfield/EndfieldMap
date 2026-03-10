@@ -7,6 +7,7 @@ import { CustomPointController } from '@endfieldmap/map-adapter-ol/controller/en
 import { ElectricPoleController } from '@endfieldmap/map-adapter-ol/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-adapter-ol/controller/entity/entity_controller';
 import { ActiveFeatureController } from '@endfieldmap/map-adapter-ol/controller/feature/active_feature';
+import { ElectricPoleDragController, InitPoleDragOptions } from '@endfieldmap/map-adapter-ol/controller/feature/electric_pole_drag';
 import { HoverConnectionController } from '@endfieldmap/map-adapter-ol/controller/feature/hover_connection';
 import { HoverFeatureController } from '@endfieldmap/map-adapter-ol/controller/feature/hover_feature';
 import { EventController } from '@endfieldmap/map-adapter-ol/controller/interaction/event';
@@ -62,6 +63,8 @@ export class EndfieldMapAdapter {
   public hoverFeatureController!: HoverFeatureController;
   /** Hover连接控制器 */
   public hoverConnectionController!: HoverConnectionController;
+  /** 电线杆拖拽控制器 */
+  public electricPoleDragController!: ElectricPoleDragController;
   /** Popup控制器 */
   public popupController: PopupController | null = null;
   /** 缩放控制器 */
@@ -209,12 +212,21 @@ export class EndfieldMapAdapter {
       disableHoverConnection: config.map?.disableHoverFeature,
       emitter: this.event,
     });
+    this.electricPoleDragController = new ElectricPoleDragController({
+      mapInstance,
+      electricPoleController: this.electricPoleController,
+      getCurrentMapId: () => this.mapController.dataManager.currentMapId,
+      hoverFeatureController: this.hoverFeatureController,
+      emitter: this.event,
+    });
     this.eventController = new EventController({
       getClusteredLayers: () => this.entityRegistry.getClusteredLayers(),
       getNonClusteredLayers: () => this.entityRegistry.getNonClusteredLayers(),
       getConnectionRenderers: () => this.electricPoleController?.render.currentPoleRenderers || [],
       disableHover: config.map?.disableHoverFeature,
       emitter: this.event,
+      getEntityClickSuppress: () => this.electricPoleDragController.getLastDraggedPoleInstance(),
+      onEntityClickSuppressed: () => this.electricPoleDragController.clearLastDraggedPoleInstance(),
     });
 
     // 电线杆 hover 时高亮其关联连线与 zone
@@ -336,6 +348,27 @@ export class EndfieldMapAdapter {
   }
 
   /**
+   * 初始化电线杆拖拽：注入 canDragPole 与 onEnd，不依赖激活标点；hover 到杆上 pointerdown 即开始拖拽。
+   */
+  public initPoleDrag(
+    options: InitPoleDragOptions
+  ): void {
+    this.electricPoleDragController.initPoleDrag(options);
+  }
+
+  /**
+   * 拖拽结束后若 move 校验失败，由 Web 调用以回滚杆位置。
+   */
+  public revertPoleDrag(): void {
+    this.electricPoleDragController.revertPoleDrag();
+  }
+
+  /** 是否正在拖拽电线杆（用于拖拽期间抑制 hover 更新） */
+  public isPoleDragging(): boolean {
+    return this.electricPoleDragController.isPoleDragging();
+  }
+
+  /**
    * 设置是否启用聚合标点
    * @param enable 是否启用聚合
    */
@@ -434,6 +467,7 @@ export class EndfieldMapAdapter {
     this.activeFeatureController.dispose();
     this.hoverFeatureController.dispose();
     this.hoverConnectionController.dispose();
+    this.electricPoleDragController.dispose();
 
     // 清理实体控制器（继承自 Disposer，含 reaction 等）
     this.entityController.dispose();

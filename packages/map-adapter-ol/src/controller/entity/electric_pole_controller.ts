@@ -12,7 +12,7 @@ import {
   getElectricPoleDeviceConfig,
   IdGenerator
 } from '@endfieldmap/map-core';
-import { calculateXYZDistance, logger } from '@endfieldmap/tools';
+import { calculateDistance, calculateXYZDistance, logger } from '@endfieldmap/tools';
 import { action, reaction } from 'mobx';
 import type { Coordinate } from 'ol/coordinate';
 
@@ -419,6 +419,79 @@ export class ElectricPoleController extends Disposer {
     }
 
     return result;
+  }
+
+  /**
+   * 移动电线杆到新位置（含重复检测、连线距离校验，并同步渲染）
+   */
+  @action
+  public updateElectricPolePosition(
+    mapId: MapData['id'],
+    instanceId: number,
+    newCoordinate: Coordinate
+  ): void {
+    const manager = this.dataManager.getMapManager(mapId);
+    const instance = manager.getById(instanceId);
+    if (!instance) {
+      logger.error('[ElectricPoleController] Instance not found for move', { mapId, instanceId });
+      return;
+    }
+
+    const crd: [number, number] = [newCoordinate[0], newCoordinate[1]];
+    const xyzPosition = this.mapDataManager.crd2xyz(crd, mapId);
+
+    // 重复检测：与其它电线杆距离至少 0.5（排除自身）
+    const duplicateRadius = 0.5;
+    for (const other of manager.instances) {
+      if (other.id === instanceId) continue;
+      const distance = calculateXYZDistance(xyzPosition, other.position);
+      if (distance < duplicateRadius) {
+        throw new Error(
+          `[ElectricPoleController] Move would create duplicate electric pole (distance: ${distance})`
+        );
+      }
+    }
+
+    // 连线距离校验：移动后与所有已连接杆的距离须在各自 zone 内
+    for (const other of instance.connectedPoles) {
+      const distance = calculateDistance(newCoordinate as [number, number], other.coordinates);
+      if (distance > instance.zoneRadius) {
+        throw new Error(
+          `[ElectricPoleController] Move would exceed zone radius to pole ${other.id} (distance: ${distance}, limit: ${instance.zoneRadius})`
+        );
+      }
+      if (distance > other.zoneRadius) {
+        throw new Error(
+          `[ElectricPoleController] Move would exceed target pole zone radius (distance: ${distance}, limit: ${other.zoneRadius})`
+        );
+      }
+    }
+
+    instance.updatePosition(xyzPosition);
+
+    const deviceKey = instance.deviceKey;
+    const renderers = this.render.getRenderer(mapId, deviceKey);
+    if (renderers) {
+      renderers.pole.updateFeatureCoordinates(instanceId, instance.coordinates);
+      renderers.zone.updateZoneGeometry(instanceId, instance.coordinates, instance.zoneRadius);
+
+      for (const target of instance.outgoingConnections) {
+        renderers.pole.updateConnection(
+          instance.id,
+          target.id,
+          instance.coordinates,
+          target.coordinates
+        );
+      }
+      for (const source of instance.incomingConnections) {
+        renderers.pole.updateConnection(
+          source.id,
+          instance.id,
+          source.coordinates,
+          instance.coordinates
+        );
+      }
+    }
   }
 
   /**

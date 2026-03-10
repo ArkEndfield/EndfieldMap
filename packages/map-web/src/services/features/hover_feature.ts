@@ -18,6 +18,12 @@ export function initHoverFeatureEventListeners(adapter: EndfieldMapAdapter): () 
     )
       return;
 
+    // 电线杆拖拽期间不更新 hover，避免松手前 pointermove 再次触发指示器
+    if (adapter.isPoleDragging?.()) {
+      adapter.hoverFeatureController.clearHoverFeature();
+      return;
+    }
+
     const { instance, coordinate } = event;
     const lastHoveredFeature = adapter.hoverFeatureController.hoverFeature;
     // 避免重复设置相同的 feature

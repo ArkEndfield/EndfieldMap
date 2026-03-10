@@ -1,6 +1,7 @@
 export const MAP_EVENT = {
   ZOOM_CHANGE: 'zoom:change',
   MAP_CLICK: 'map:click',
+  MAP_POINTERDOWN: 'map:pointerdown',
   MAP_HOVER: 'map:hover',
   MAP_CENTER_CHANGE: 'map:center:change',
   MAP_CONTEXT_MENU: 'map:context_menu',

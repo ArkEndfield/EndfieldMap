@@ -1,9 +1,8 @@
+import { Collection } from '@endfieldmap/map-service';
 import { type Collection as TSCollection, createCollection } from '@tanstack/react-db';
 import { rxdbCollectionOptions } from '@tanstack/rxdb-db-collection';
 import { useMemo } from 'react';
 import type { RxCollection } from 'rxdb';
-
-import { Collection } from '@endfieldmap/map-service';
 
 export const useCollection = <T extends object>(
   collection: RxCollection<T> | Collection<T>

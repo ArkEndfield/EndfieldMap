@@ -115,6 +115,19 @@ export class MapService {
       // 初始化激活feature事件监听器，用于设置和清除激活的feature
       this.eventDisposers.push(initActiveFeatureEventListeners(this.adapter!));
 
+      // 电线杆移动：需先进入移动模式，hover 到杆上 pointerdown 即拖拽，松手校验并持久化，失败则回退
+      const electricPoleDataService = service.dataService.mapDataService.electricPoleDataService;
+      this.adapter.initPoleDrag({
+        canDragPole: () => electricPoleDataService.isMoving,
+        onEnd: async (instance, newCoord) => {
+          try {
+            await electricPoleDataService.moveElectricPole(instance, newCoord);
+          } catch {
+            this.adapter!.revertPoleDrag();
+          }
+        },
+      });
+
       // 初始化激活feature事件监听器，用于设置和清除激活的feature
       this.eventDisposers.push(initContextMenuEventListeners(this.adapter!));
 

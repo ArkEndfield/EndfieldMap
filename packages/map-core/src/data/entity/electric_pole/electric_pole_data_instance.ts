@@ -11,6 +11,7 @@ import type {
   ElectricPoleDataInstanceConfig,
   EntityInfoData,
 } from '@endfieldmap/map-core/types/entity';
+import type { Position } from '@endfieldmap/map-core/types/position';
 import { calculateDistance, ElectricPoleError } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 
@@ -63,6 +64,14 @@ export class ElectricPoleDataInstance extends BaseDataInstance<ElectricPoleData>
   @computed
   get coordinates(): MapCoordinate {
     return this.mapDataManager.xyz2crd(this._data.position, this.mapId);
+  }
+
+  /**
+   * 更新位置（用于移动电线杆）
+   */
+  @action
+  public updatePosition(newPosition: Position): void {
+    this._data.position = { ...newPosition };
   }
 
   /**

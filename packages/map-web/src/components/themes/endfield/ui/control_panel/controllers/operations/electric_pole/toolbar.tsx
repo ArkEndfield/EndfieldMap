@@ -1,11 +1,17 @@
-import { useTranslation } from 'react-i18next';
 import { EndfieldSquareSwitch } from '@endfieldmap/web-components';
+import {
+  EditAddIcon,
+  EditConnectIcon,
+  EditDeleteIcon,
+  EditDisconnectIcon,
+  EditMoveIcon,
+} from '@endfieldmap/web-components';
 // import { OperatorToggleButton } from '@themes/endfield/control_panel/controllers/operations/components/button';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
-import { EditAddIcon, EditConnectIcon, EditDeleteIcon, EditDisconnectIcon } from '@endfieldmap/web-components';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useElectricMode } from '@/hooks/use_electric_mode';
 import { service } from '@/services';
@@ -26,6 +32,13 @@ export const PoleManagerToolbar = observer(() => {
       icon: <EditAddIcon />,
       active: currentMode === 'isCreating',
       onClick: () => toggleMode('isCreating'),
+    },
+    {
+      key: 'isMoving',
+      label: t('operation.electric_pole.move.start'),
+      icon: <EditMoveIcon />,
+      active: currentMode === 'isMoving',
+      onClick: () => toggleMode('isMoving'),
     },
     {
       key: 'isDeleting',

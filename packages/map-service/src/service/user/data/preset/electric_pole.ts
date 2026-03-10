@@ -99,6 +99,29 @@ export class ElectricPolePresetDataService<T, R> extends BasePresetService<Elect
     return doc._data as ElectricPoleNodeSchemaType;
   }
 
+  public async updateNodePosition(
+    mapId: MapData['id'],
+    presetId: string,
+    levelLogicId: number,
+    newPosition: { x: number; y: number; z: number }
+  ): Promise<ElectricPoleNodeSchemaType | null> {
+    const nodeId = BasePresetService.createId(mapId, presetId, levelLogicId);
+    const doc = await this.nodesDB
+      .findOne({ selector: { id: nodeId } as NodeSelector<ElectricPoleNodeSchemaType> })
+      .exec();
+    if (!doc) {
+      logger.warn(`Node not found for position update: ${nodeId}`);
+      return null;
+    }
+    await doc.update({
+      $set: {
+        position: newPosition,
+        updatedAt: Date.now(),
+      } as Partial<ElectricPoleNodeSchemaType>,
+    });
+    return doc._data as ElectricPoleNodeSchemaType;
+  }
+
   public clearAllData() {
     return this.presetDB.find().remove();
   }

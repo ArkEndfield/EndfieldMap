@@ -9,6 +9,7 @@
     "connect_failed": "连接失败：{{message}}",
     "connect_failed_with_switch": "连接失败：{{message}}，点击切换将当前连接的电线杆切换为点击的电线杆",
     "create_failed": "创建失败：{{message}}",
+    "move_failed": "移动失败：{{message}}",
     "delete_pole": "删除电线杆",
     "switch": "切换",
     "no_preset_selected": "未选择电线杆预设，无法创建电线杆，请先创建或选择预设。",

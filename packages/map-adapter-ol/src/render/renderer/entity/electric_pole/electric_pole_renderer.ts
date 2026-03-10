@@ -218,6 +218,23 @@ export class ElectricPoleRenderer {
   }
 
   /**
+   * 获取指定 id 的 OL Feature（用于拖拽等交互）
+   */
+  public getFeature(id: number): Feature | undefined {
+    return this.featureMap.get(id);
+  }
+
+  /**
+   * 更新单个 feature 的坐标（用于移动电线杆）
+   */
+  public updateFeatureCoordinates(id: number, coordinates: Coordinate): void {
+    const feature = this.featureMap.get(id);
+    if (!feature) return;
+    feature.setGeometry(new Point(coordinates));
+    feature.changed();
+  }
+
+  /**
    * 更新单个 feature 的状态
    */
   public updateFeatureState(id: number, state: ElectricPoleFeatureStateUpdate): void {

@@ -111,6 +111,16 @@ export class ElectricPoleController implements IElectricPoleController {
   }
 
   @action
+  updateElectricPolePosition(mapId: MapData['id'], instanceId: number, newCoordinate: MapCoordinate): void {
+    const manager = this.dataManager.getMapManager(mapId);
+    const instance = manager.getById(instanceId);
+    if (!instance) return;
+    const xyzPosition = this.mapDataManager.crd2xyz(newCoordinate, mapId);
+    instance.updatePosition(xyzPosition);
+    this.bumpVersion();
+  }
+
+  @action
   setZoneVisible(visible: boolean): void {
     this.dataManager.setZoneVisible(visible);
   }

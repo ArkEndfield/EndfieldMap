@@ -98,6 +98,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
   @observable accessor isDeleting: boolean = false;
   @observable accessor isDeletingConnection: boolean = false;
+  @observable accessor isMoving: boolean = false;
 
   private connectionClickEventInitialized: boolean = false;
   private eventListenerDisposers: Array<() => void> = [];
@@ -223,6 +224,21 @@ export class ElectricPoleDataService extends BasePresetDataService<
             if (prevData.properties?.name !== docData.properties?.name) {
               instance.rename((docData.properties?.name as string) || 'Unnamed Electric Pole');
             }
+            const prevPos = prevData.position;
+            const currPos = docData.position;
+            if (
+              prevPos &&
+              currPos &&
+              (prevPos.x !== currPos.x || prevPos.y !== currPos.y || prevPos.z !== currPos.z)
+            ) {
+              const mapDataManager = this.deps.adapterRegistry.adapter.mapController.dataManager;
+              const newCrd = mapDataManager.xyz2crd(currPos, docData.mapId);
+              this.deps.adapterRegistry.adapter.electricPoleController.updateElectricPolePosition(
+                docData.mapId,
+                docData.levelLogicId,
+                newCrd
+              );
+            }
           }
           break;
         }
@@ -301,6 +317,35 @@ export class ElectricPoleDataService extends BasePresetDataService<
     }
   }
 
+  public async moveElectricPole(pole: ElectricPoleDataInstance, coordinate: MapCoordinate) {
+    const mapId = pole.mapId;
+    const presetId = this.currentPresetId.value;
+    if (!presetId) return;
+    const controller = this.deps.adapterRegistry.adapter.electricPoleController;
+    try {
+      controller.updateElectricPolePosition(mapId, pole.id, coordinate as [number, number]);
+      const manager = controller.dataManager.getMapManager(mapId);
+      const updated = manager.getById(pole.id);
+      if (updated) {
+        await this.deps.electricPolePresetDataService.updateNodePosition(
+          mapId,
+          presetId,
+          pole.id,
+          updated.position
+        );
+      }
+    } catch (error) {
+      const errorMsg = getElectricPoleErrorMessage(error, this.translate.bind(this));
+      serviceEmitter.fire(SERVICE_EVENT.ALERT_INFO, {
+        content: this.translate('error:electric_pole.move_failed', {
+          defaultValue: '移动失败：{{message}}',
+          message: errorMsg,
+        }),
+      });
+      throw error;
+    }
+  }
+
   @action
   public setModeState(mode: ElectricMode, enable: boolean) {
     switch (mode) {
@@ -332,6 +377,9 @@ export class ElectricPoleDataService extends BasePresetDataService<
           this.initConnectionClickEvent();
           this.clearActiveFeature();
         }
+        break;
+      case 'isMoving':
+        this.isMoving = enable;
         break;
     }
   }
@@ -441,7 +489,10 @@ export class ElectricPoleDataService extends BasePresetDataService<
   private innerConnectElectricPole(pole: ElectricPoleDataInstance) {
     if (this.connectingPole) {
       try {
-        if (this.connectingPole === pole) return;
+        if (this.connectingPole === pole) {
+          this.clearActiveFeature();
+          return;
+        }
 
         if (this.connectingPole.isConnectedTo(pole.id)) {
           throw new ElectricPoleError('already_connected', this.connectingPole.id);

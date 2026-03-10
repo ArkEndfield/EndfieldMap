@@ -64,6 +64,13 @@ export class EndfieldMapEvent {
       this.event.fire(MAP_EVENT.MAP_CLICK, event);
     });
 
+    (this.onMap as (type: string, listener: (e: MapBrowserEvent<PointerEvent>) => void) => void)(
+      'pointerdown',
+      (event) => {
+        this.event.fire(MAP_EVENT.MAP_POINTERDOWN, event);
+      }
+    );
+
     // hover 实体（包含普通实体和电线杆），只转发浏览器事件，命中逻辑复用点击的控制器逻辑
     this.onMap('pointermove', (event: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>) => {
       // 拖拽过程中不处理 pointermove 以避免 hover 逻辑干扰拖拽（包括平移和框选）

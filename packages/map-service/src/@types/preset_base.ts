@@ -63,6 +63,12 @@ export interface IElectricPolePresetDataService<
     levelLogicId: number,
     targetLevelLogicId: number
   ): Promise<TNodeSchema | null>;
+  updateNodePosition(
+    mapId: MapData['id'],
+    presetId: string,
+    levelLogicId: number,
+    newPosition: { x: number; y: number; z: number }
+  ): Promise<TNodeSchema | null>;
   addPresetSubscribe(callback: (operation: 'INSERT' | 'UPDATE' | 'DELETE', docData: PresetSchemaType) => void): void;
 }
 

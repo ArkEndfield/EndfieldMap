@@ -28,6 +28,26 @@ export const EditAddIcon = (props: IconProps) => (
   </svg>
 );
 
+/** 编辑 + 移动：与 EditAdd 同风格，右下角为移动十字架（参考 1024 视图下的四向箭头 path） */
+export const EditMoveIcon = (props: IconProps) => (
+  <svg
+    fill="currentColor"
+    width="1em"
+    height="1em"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    viewBox="1.55 1.45 8.2 8.4"
+    {...props}
+  >
+    {/* 右下角：移动十字架，再放大并往左上移以免超出 viewBox */}
+    <g transform="translate(6.05,6.25) scale(0.004)">
+      <path d="M554.666667 469.333333V256h128l-170.666667-170.666667-170.666667 170.666667h128v213.333333H256V341.333333l-170.666667 170.666667 170.666667 170.666667v-128h213.333333v213.333333H341.333333l170.666667 170.666667 170.666667-170.666667h-128v-213.333333h213.333333v128l170.666667-170.666667-170.666667-170.666667v128h-213.333333z" />
+    </g>
+    {/* 铅笔与 EditAdd 相同 */}
+    <path d="M1.72,8.09l-.17.17v1.45h1.44l.42-.42.24-.25-1.44-1.45-.49.5ZM8.3,1.45L2.63,7.17l1.44,1.45,5.67-5.72-1.44-1.45Z" />
+  </svg>
+);
+
 export const EditDeleteIcon = (props: IconProps) => (
   <svg
     fill="currentColor"
