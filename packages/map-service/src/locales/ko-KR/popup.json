@@ -2,6 +2,7 @@
   "entity": {
     "title": "엔티티 정보"
   },
+  "unrefreshable": "한 번만",
   "reward": {
     "title": "보상",
     "chest": {

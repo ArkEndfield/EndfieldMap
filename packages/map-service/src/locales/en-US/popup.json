@@ -2,6 +2,7 @@
   "entity": {
     "title": "Entity Information"
   },
+  "unrefreshable": "One-time only",
   "reward": {
     "title": "Rewards",
     "chest": {

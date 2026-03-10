@@ -2,6 +2,7 @@
   "entity": {
     "title": "Информация об объекте"
   },
+  "unrefreshable": "Одноразовый",
   "reward": {
     "title": "Награды",
     "chest": {

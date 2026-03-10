@@ -2,6 +2,7 @@
   "entity": {
     "title": "實體資訊"
   },
+  "unrefreshable": "一次性",
   "reward": {
     "title": "獎勵",
     "chest": {

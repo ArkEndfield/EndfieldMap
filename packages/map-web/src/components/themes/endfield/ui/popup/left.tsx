@@ -23,6 +23,7 @@ import { getEntityIcon } from '@/utils/entity';
 const glowShadow = (opacity: number, blur = 6) => `0 0 ${blur}px rgba(252,238,33,${opacity})`;
 
 const UnrefreshableTip = () => {
+  const { t } = useTranslation('popup');
   return (
     <div className="relative py-0.5 pl-1.5 pr-1.5 text-xs">
       {/* 淡底 + 主题色发光（直角轮廓，呼吸动画） */}
@@ -42,8 +43,7 @@ const UnrefreshableTip = () => {
       <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-[#fcee21]/90" />
       <div className="absolute top-0 right-0 w-1 h-1 border-t border-r border-[#fcee21]/90" />
       <div className="absolute bottom-0 left-0 w-1 h-1 border-b border-l border-[#fcee21]/90" />
-      {/* TODO: i18n */}
-      <span className="relative z-1 text-[#fcee21] font-medium tracking-wide">一次性</span>
+      <span className="relative z-1 text-[#fcee21] font-medium tracking-wide">{t('popup:unrefreshable')}</span>
     </div>
   );
 };

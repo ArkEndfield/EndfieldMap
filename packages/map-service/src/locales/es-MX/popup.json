@@ -2,6 +2,7 @@
   "entity": {
     "title": "Información de entidad"
   },
+  "unrefreshable": "Una sola vez",
   "reward": {
     "title": "Recompensas",
     "chest": {

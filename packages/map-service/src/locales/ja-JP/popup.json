@@ -2,6 +2,7 @@
   "entity": {
     "title": "エンティティ情報"
   },
+  "unrefreshable": "一度きり",
   "reward": {
     "title": "報酬",
     "chest": {
