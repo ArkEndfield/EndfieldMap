@@ -1,5 +1,5 @@
 import { cn } from '@endfieldmap/tools';
-import { CloseButton, PortalContext, shortcutService } from '@endfieldmap/web-components';
+import { CloseButton, PortalContext } from '@endfieldmap/web-components';
 import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -118,14 +118,18 @@ const UserModalInner: React.FC<UserModalProps> = ({
     }
   }, [isProcessing, onClose, onOpenChange]);
 
+  // 原生 dialog 会吞掉 Escape，在 dialog 上单独监听并处理
   useEffect(() => {
-    if (!open || !keyboardCloseable) return;
-    const dispose = shortcutService.register('Escape', () => {
+    if (!open || !dialogElement || !keyboardCloseable) return;
+    const el = dialogElement;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
       handleClose();
-      return true;
-    });
-    return () => dispose();
-  }, [open, keyboardCloseable, handleClose]);
+    };
+    el.addEventListener('keydown', handler, true);
+    return () => el.removeEventListener('keydown', handler, true);
+  }, [open, keyboardCloseable, dialogElement, handleClose]);
 
   return (
     <dialog

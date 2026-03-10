@@ -1,19 +1,16 @@
+import './announcement-content.css';
+
 import type { Announcement, CategoriedAnnouncementBreif } from '@endfieldmap/map-service/@types/announcement';
-import { motion } from 'motion/react';
 import { cn } from '@endfieldmap/tools';
+import { ArrowLeftIcon,Logo, LogoLoading, ScrollArea, useIsMobile } from '@endfieldmap/web-components';
+import { AnnouncementItem } from '@themes/endfield/ui/menus/left/announcement/announcement_item';
+import { Markdown } from '@tiptap/markdown';
+import { EditorContent,useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { motion } from 'motion/react';
 import { useState } from 'react';
-import { Logo,
-         LogoLoading,
-         ScrollArea,
-         useIsMobile,
-         ArrowLeftIcon } from '@endfieldmap/web-components';
 
 import { ScrollableList } from '@/components/common/scrollable_list';
-import { AnnouncementItem } from '@themes/endfield/ui/menus/left/announcement/announcement_item';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { Markdown } from '@tiptap/markdown';
-import './announcement-content.css';
 
 export interface AnnouncementsProps {
   hidden?: boolean;
@@ -86,7 +83,7 @@ export const Announcements = ({
     >
       <div
         className={cn(
-          'shrink-0 md:w-56 w-full md:h-full overflow-hidden',
+          'shrink-0 md:w-56 w-full h-full overflow-hidden',
           showListOnMobile ? 'block' : 'hidden',
           'md:block'
         )}
@@ -105,7 +102,7 @@ export const Announcements = ({
               <AnnouncementItem
                 key={item.id}
                 item={item}
-                active={((detail?.id === item.id) && !showListOnMobile)}
+                active={((detail?.id === item.id) && !isMobile)}
                 isRead={item.read}
                 onClick={() => {
                   loadDetail(item.id);

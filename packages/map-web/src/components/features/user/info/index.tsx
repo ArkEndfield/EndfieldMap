@@ -1,10 +1,10 @@
-import { useTranslation } from 'react-i18next';
 import { Dialog } from '@endfieldmap/web-components';
+import { BindIcon, EditIcon } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { BindIcon, EditIcon } from '@endfieldmap/web-components';
 import { UserModal } from '@/components/common/user/modal';
 import { ActionPanel } from '@/components/features/user/info/action_panel';
 import { BindUid } from '@/components/features/user/info/bind_uid';
@@ -77,7 +77,11 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
   };
 
   if (!userInfo) {
-    return null;
+    return (
+      <UserModal open={open} onClose={onClose} className="w-4xl" keyboardCloseable={!bindUidOpen && !settingsOpen}>
+        <div className="flex gap-6 p-6 h-80 items-center justify-center">No User Info</div>
+      </UserModal>
+    );
   }
 
   return (
