@@ -20,7 +20,7 @@ import { useActiveFeatureName } from '@/hooks/use_entity_name';
 import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';
 
-const glowShadow = (opacity: number, blur = 6) => `0 0 ${blur}px rgba(252,238,33,${opacity})`;
+import { glowShadow } from './leftContentUtils';
 
 const UnrefreshableTip = () => {
   return (
@@ -48,10 +48,10 @@ const UnrefreshableTip = () => {
   );
 };
 
-export const LeftContent = observer(({ className }: { className?: string }) => {
+const LeftContent = observer(({ className }: { className?: string }) => {
   const { adapter } = useAdapter();
   const { t } = useTranslation(['popup', 'common']);
-  const [videoLinks, setVideoLinks] = useState<string[]>([]);
+  const [videoLink, setVideoLink] = useState<string>('');
   const [unRefreshable, setUnRefreshable] = useState<boolean>(false);
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityInfo = activeFeature?.entityInfo;
@@ -60,9 +60,6 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const isElectricPole = entityInfo?.category === ElectricPoleKey;
 
   const { name: displayName, categoryName } = useActiveFeatureName(activeFeature);
-
-  // TODO: 视频链接
-  console.log('videoLinks', videoLinks);
 
   const handleChangePointType = async (newType: CustomPointTypeId) => {
     if (!activeFeature || !isCustomPoint) return;
@@ -96,7 +93,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           className={cn('relative z-1 flex flex-col h-full', className)}
         >
           <PopupHeader onClose={() => adapter.activeFeatureController.clearActiveFeature?.()} start={unRefreshable && <UnrefreshableTip />}>
-            <PlayVideoButton videoLinks={videoLinks} />
+            <PlayVideoButton videoLink={videoLink} />
             <MarkButton entity={activeFeature} />
             <RenameButton entity={activeFeature} />
             <DeleteButton entity={activeFeature} />
@@ -105,7 +102,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           <div className="flex-1 min-h-0 relative">
             <ScrollArea className="h-full">
               <div className="pb-12">
-                {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} onVideoLinksChange={setVideoLinks} onUnRefreshableChange={setUnRefreshable} />}
+                {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} onVideoLinkChange={setVideoLink} onUnRefreshableChange={setUnRefreshable} />}
 
                 {/* 自定义标点类型选择 */}
                 {isCustomPoint && (
@@ -138,7 +135,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
 });
 
 /** 左边弹窗内容 */
-export const LeftContentContainer: React.FC<{
+const LeftContentContainer: React.FC<{
   showSubPopup: boolean;
   toggleExpand: () => void;
   isExpanded: boolean;
@@ -166,3 +163,5 @@ export const LeftContentContainer: React.FC<{
     </div>
   );
 };
+
+export { LeftContent, LeftContentContainer };

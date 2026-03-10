@@ -15,7 +15,7 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import { service } from '@/services';
 
 
-export const Guide = ({ entity, onVideoLinksChange, onUnRefreshableChange }: { entity: EntityData | CustomPointData | ElectricPoleData, onVideoLinksChange: (videoLinks: string[]) => void, onUnRefreshableChange: (unRefreshable: boolean) => void }) => {
+export const Guide = ({ entity, onVideoLinkChange, onUnRefreshableChange }: { entity: EntityData | CustomPointData | ElectricPoleData, onVideoLinkChange: (videoLink: string) => void, onUnRefreshableChange: (unRefreshable: boolean) => void }) => {
   const { data: guide, loading, error } = useGuide(service, entity.levelLogicId);
   const [showImage, setShowImage] = useState(false);
   const [index, setIndex] = useState(0);
@@ -26,9 +26,9 @@ export const Guide = ({ entity, onVideoLinksChange, onUnRefreshableChange }: { e
   }, []);
 
   useEffect(() => {
-    onVideoLinksChange(guide?.video_links ?? []);
+    onVideoLinkChange(guide?.video_links?.[0] ?? '');
     onUnRefreshableChange(guide?.refreshable === '否');
-  }, [guide, onVideoLinksChange, onUnRefreshableChange]);
+  }, [guide, onVideoLinkChange, onUnRefreshableChange]);
 
   if (loading) {
     return (
