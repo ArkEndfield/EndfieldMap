@@ -3,24 +3,56 @@ import { CustomPointDataInstance, CustomPointKey, customPointTypes, ElectricPole
 import { cn } from '@endfieldmap/tools';
 import { EndfieldSelect, ScrollArea, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { ChevronUpTriangle } from '@endfieldmap/web-components';
-import { DeleteButton } from '@themes/endfield/ui/popup/left_content/delete_button';
 import { Footer } from '@themes/endfield/ui/popup/left_content/footer';
 import { PopupHeader } from '@themes/endfield/ui/popup/left_content/header';
-import { MarkButton } from '@themes/endfield/ui/popup/left_content/mark_button';
-import { RenameButton } from '@themes/endfield/ui/popup/left_content/rename_button';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Guide } from '@/components/common/guide';
+import { DeleteButton } from '@/components/themes/endfield/ui/popup/left_content/buttons/delete_button';
+import { MarkButton } from '@/components/themes/endfield/ui/popup/left_content/buttons/mark_button';
+import { PlayVideoButton } from '@/components/themes/endfield/ui/popup/left_content/buttons/play_video';
+import { RenameButton } from '@/components/themes/endfield/ui/popup/left_content/buttons/rename_button';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useActiveFeatureName } from '@/hooks/use_entity_name';
 import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';
 
+const glowShadow = (opacity: number, blur = 6) => `0 0 ${blur}px rgba(252,238,33,${opacity})`;
+
+const UnrefreshableTip = () => {
+  return (
+    <div className="relative py-0.5 pl-1.5 pr-1.5 text-xs">
+      {/* 淡底 + 主题色发光（直角轮廓，呼吸动画） */}
+      <motion.div
+        className="absolute inset-0 bg-white/6 ring-[0.5px] ring-white/10"
+        animate={{
+          boxShadow: [glowShadow(0.2), glowShadow(0.6, 8), glowShadow(0.2)],
+        }}
+        transition={{
+          duration: 2.2,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+      {/* 四角 L 形角标，更小 */}
+      <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-[#fcee21]/90" />
+      <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-[#fcee21]/90" />
+      <div className="absolute top-0 right-0 w-1 h-1 border-t border-r border-[#fcee21]/90" />
+      <div className="absolute bottom-0 left-0 w-1 h-1 border-b border-l border-[#fcee21]/90" />
+      {/* TODO: i18n */}
+      <span className="relative z-1 text-[#fcee21] font-medium tracking-wide">一次性</span>
+    </div>
+  );
+};
+
 export const LeftContent = observer(({ className }: { className?: string }) => {
   const { adapter } = useAdapter();
   const { t } = useTranslation(['popup', 'common']);
+  const [videoLinks, setVideoLinks] = useState<string[]>([]);
+  const [unRefreshable, setUnRefreshable] = useState<boolean>(false);
   const activeFeature = adapter.activeFeatureController.activeFeature;
   const entityInfo = activeFeature?.entityInfo;
 
@@ -28,6 +60,9 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
   const isElectricPole = entityInfo?.category === ElectricPoleKey;
 
   const { name: displayName, categoryName } = useActiveFeatureName(activeFeature);
+
+  // TODO: 视频链接
+  console.log('videoLinks', videoLinks);
 
   const handleChangePointType = async (newType: CustomPointTypeId) => {
     if (!activeFeature || !isCustomPoint) return;
@@ -60,7 +95,8 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           transition={{ duration: 0.15 }}
           className={cn('relative z-1 flex flex-col h-full', className)}
         >
-          <PopupHeader onClose={() => adapter.activeFeatureController.clearActiveFeature?.()}>
+          <PopupHeader onClose={() => adapter.activeFeatureController.clearActiveFeature?.()} start={unRefreshable && <UnrefreshableTip />}>
+            <PlayVideoButton videoLinks={videoLinks} />
             <MarkButton entity={activeFeature} />
             <RenameButton entity={activeFeature} />
             <DeleteButton entity={activeFeature} />
@@ -69,7 +105,7 @@ export const LeftContent = observer(({ className }: { className?: string }) => {
           <div className="flex-1 min-h-0 relative">
             <ScrollArea className="h-full">
               <div className="pb-12">
-                {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} />}
+                {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} onVideoLinksChange={setVideoLinks} onUnRefreshableChange={setUnRefreshable} />}
 
                 {/* 自定义标点类型选择 */}
                 {isCustomPoint && (

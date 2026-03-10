@@ -1,11 +1,10 @@
 import type { DataInstance } from '@endfieldmap/map-core';
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
-import { ButtonWithAudio, Tooltip } from '@endfieldmap/web-components';
+import { ButtonWithAudio, EditIcon,Tooltip } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { EditIcon } from '@endfieldmap/web-components';
 import { service } from '@/services';
 
 export interface RenameButtonProps {

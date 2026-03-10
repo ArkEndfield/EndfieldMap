@@ -1,11 +1,11 @@
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio, Deco7Dots } from '@endfieldmap/web-components';
-
 import { PowerIcon } from '@endfieldmap/web-components';
 
 export interface PopupHeaderProps {
   onClose: () => void;
   children?: React.ReactNode;
+  start?: React.ReactNode;
 }
 
 const CloseButton = ({ onClick }: { onClick?: () => void }) => (
@@ -14,18 +14,21 @@ const CloseButton = ({ onClick }: { onClick?: () => void }) => (
   </ButtonWithAudio>
 );
 
-export const PopupHeader = ({ onClose, children }: PopupHeaderProps) => {
+export const PopupHeader = ({ onClose, children, start }: PopupHeaderProps) => {
   return (
     <div
       className={cn(
         'flex items-center justify-between relative px-2 gap-1',
-        'h-10 flex items-center justify-end border-b border-[#383938]',
+        'h-10 flex items-center border-b border-[#383938]',
         'before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:-z-1 before:bg-[url(/images/bg/tex_6tri.png)] before:bg-no-repeat before:bg-contain before:bg-right before:opacity-10',
         'after:absolute after:left-0 after:-bottom-1 after:h-1 after:w-16 after:bg-[#383938] after:-z-1'
       )}
     >
       <Deco7Dots className={cn('absolute top-1/2 -translate-y-1/2 scale-x-[-1] text-lg left-1', 'text-[#383938]')} />
-      <div className="h-full flex items-center gap-1">{children}</div>
+      <div className="h-full flex-1 flex gap-1 pl-4">
+        <div className='h-full flex items-center'>{start}</div>
+        <div className='h-full flex items-center flex-1 justify-end'>{children}</div>
+      </div>
       <CloseButton onClick={onClose} />
     </div>
   );
