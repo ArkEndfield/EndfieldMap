@@ -75,8 +75,8 @@ importers:
         specifier: 3.8.1
         version: 3.8.1
       turbo:
-        specifier: ^2.8.12
-        version: 2.8.12
+        specifier: ^2.8.16
+        version: 2.8.16
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -8510,38 +8510,38 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  turbo-darwin-64@2.8.12:
-    resolution: {integrity: sha512-EiHJmW2MeQQx+21x8hjMHw/uPhXt9PIxvDrxzOtyVwrXzL0tQmsxtO4qHf2l7uA+K6PUJ4+TjY1MHZDuCvWXrw==}
+  turbo-darwin-64@2.8.16:
+    resolution: {integrity: sha512-KWa4hUMWrpADC6Q/wIHRkBLw6X6MV9nx6X7hSXbTrrMz0KdaKhmfudUZ3sS76bJFmgArBU25cSc0AUyyrswYxg==}
     cpu: [x64]
     os: [darwin]
 
-  turbo-darwin-arm64@2.8.12:
-    resolution: {integrity: sha512-cbqqGN0vd7ly2TeuaM8k9AK9u1CABO4kBA5KPSqovTiLL3sORccn/mZzJSbvQf0EsYRfU34MgW5FotfwW3kx8Q==}
+  turbo-darwin-arm64@2.8.16:
+    resolution: {integrity: sha512-NBgaqBDLQSZlJR4D5XCkQq6noaO0RvIgwm5eYFJYL3bH5dNu8o0UBpq7C5DYnQI8+ybyoHFjT5/icN4LeUYLow==}
     cpu: [arm64]
     os: [darwin]
 
-  turbo-linux-64@2.8.12:
-    resolution: {integrity: sha512-jXKw9j4r4q6s0goSXuKI3aKbQK2qiNeP25lGGEnq018TM6SWRW1CCpPMxyG91aCKrub7wDm/K45sGNT4ZFBcFQ==}
+  turbo-linux-64@2.8.16:
+    resolution: {integrity: sha512-VYPdcCRevI9kR/hr1H1xwXy7QQt/jNKiim1e1mjANBXD2E9VZWMkIL74J1Huad5MbU3/jw7voHOqDPLJPC2p6w==}
     cpu: [x64]
     os: [linux]
 
-  turbo-linux-arm64@2.8.12:
-    resolution: {integrity: sha512-BRJCMdyXjyBoL0GYpvj9d2WNfMHwc3tKmJG5ATn2Efvil9LsiOsd/93/NxDqW0jACtHFNVOPnd/CBwXRPiRbwA==}
+  turbo-linux-arm64@2.8.16:
+    resolution: {integrity: sha512-beq8tgUVI3uwkQkXJMiOr/hfxQRw54M3elpBwqgYFfemiK5LhCjjcwO0DkE8GZZfElBIlk+saMAQOZy3885wNQ==}
     cpu: [arm64]
     os: [linux]
 
-  turbo-windows-64@2.8.12:
-    resolution: {integrity: sha512-vyFOlpFFzQFkikvSVhVkESEfzIopgs2J7J1rYvtSwSHQ4zmHxkC95Q8Kjkus8gg+8X2mZyP1GS5jirmaypGiPw==}
+  turbo-windows-64@2.8.16:
+    resolution: {integrity: sha512-Ig7b46iUgiOIkea/D3Z7H+zNzvzSnIJcLYFpZLA0RxbUTrbLhv9qIPwv3pT9p/abmu0LXVKHxaOo+p26SuDhzw==}
     cpu: [x64]
     os: [win32]
 
-  turbo-windows-arm64@2.8.12:
-    resolution: {integrity: sha512-9nRnlw5DF0LkJClkIws1evaIF36dmmMEO84J5Uj4oQ8C0QTHwlH7DNe5Kq2Jdmu8GXESCNDNuUYG8Cx6W/vm3g==}
+  turbo-windows-arm64@2.8.16:
+    resolution: {integrity: sha512-fOWjbEA2PiE2HEnFQrwNZKYEdjewyPc2no9GmrXklZnTCuMsxeCN39aVlKpKpim03Zq/ykIuvApGwq8ZbfS2Yw==}
     cpu: [arm64]
     os: [win32]
 
-  turbo@2.8.12:
-    resolution: {integrity: sha512-auUAMLmi0eJhxDhQrxzvuhfEbICnVt0CTiYQYY8WyRJ5nwCDZxD0JG8bCSxT4nusI2CwJzmZAay5BfF6LmK7Hw==}
+  turbo@2.8.16:
+    resolution: {integrity: sha512-u6e9e3cTTpE2adQ1DYm3A3r8y3LAONEx1jYvJx6eIgSY4bMLxIxs0riWzI0Z/IK903ikiUzRPZ2c1Ph5lVLkhA==}
     hasBin: true
 
   tweetnacl@1.0.3:
@@ -10468,7 +10468,7 @@ snapshots:
 
   '@expo-google-fonts/material-symbols@0.4.24': {}
 
-  '@expo/cli@56.0.0-canary-20260212-4f61309(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-constants@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(typescript@5.9.3))(expo-font@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(expo-router@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)':
+  '@expo/cli@56.0.0-canary-20260212-4f61309(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-constants@56.0.0-canary-20260212-4f61309)(expo-font@56.0.0-canary-20260212-4f61309)(expo-router@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)':
     dependencies:
       '@expo/code-signing-certificates': 0.0.6
       '@expo/config': 56.0.0-canary-20260212-4f61309(typescript@5.9.3)
@@ -10485,7 +10485,7 @@ snapshots:
       '@expo/plist': 0.5.3-canary-20260212-4f61309
       '@expo/prebuild-config': 56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(typescript@5.9.3)
       '@expo/require-utils': 56.0.0-canary-20260212-4f61309(typescript@5.9.3)
-      '@expo/router-server': 56.0.0-canary-20260212-4f61309(@expo/metro-runtime@55.0.6)(expo-constants@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(typescript@5.9.3))(expo-font@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(expo-router@56.0.0-canary-20260212-4f61309)(expo-server@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@expo/router-server': 56.0.0-canary-20260212-4f61309(@expo/metro-runtime@55.0.6)(expo-constants@56.0.0-canary-20260212-4f61309)(expo-font@56.0.0-canary-20260212-4f61309)(expo-router@56.0.0-canary-20260212-4f61309)(expo-server@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@expo/schema-utils': 56.0.0-canary-20260212-4f61309
       '@expo/spawn-async': 1.7.2
       '@expo/ws-tunnel': 1.0.6
@@ -10530,7 +10530,7 @@ snapshots:
       ws: 8.19.0
       zod: 3.25.76
     optionalDependencies:
-      expo-router: 56.0.0-canary-20260212-4f61309(0e50276668ee668e623bf2dbc713ec50)
+      expo-router: 56.0.0-canary-20260212-4f61309(6204e2999b32f67f04b3e04503643d4e)
       react-native: 0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4)
     transitivePeerDependencies:
       - '@expo/dom-webview'
@@ -10870,7 +10870,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  '@expo/router-server@56.0.0-canary-20260212-4f61309(@expo/metro-runtime@55.0.6)(expo-constants@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(typescript@5.9.3))(expo-font@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(expo-router@56.0.0-canary-20260212-4f61309)(expo-server@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@expo/router-server@56.0.0-canary-20260212-4f61309(@expo/metro-runtime@55.0.6)(expo-constants@56.0.0-canary-20260212-4f61309)(expo-font@56.0.0-canary-20260212-4f61309)(expo-router@56.0.0-canary-20260212-4f61309)(expo-server@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       debug: 4.4.3
       expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
@@ -10880,7 +10880,7 @@ snapshots:
       react: 19.2.4
     optionalDependencies:
       '@expo/metro-runtime': 55.0.6(@expo/dom-webview@55.0.3)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
-      expo-router: 56.0.0-canary-20260212-4f61309(0e50276668ee668e623bf2dbc713ec50)
+      expo-router: 56.0.0-canary-20260212-4f61309(6204e2999b32f67f04b3e04503643d4e)
       react-dom: 19.2.4(react@19.2.4)
     transitivePeerDependencies:
       - supports-color
@@ -10901,7 +10901,7 @@ snapshots:
       react: 19.2.4
       react-native: 0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4)
 
-  '@expo/vector-icons@15.1.1(expo-font@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)':
+  '@expo/vector-icons@15.1.1(expo-font@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)':
     dependencies:
       expo-font: 56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
       react: 19.2.4
@@ -14814,6 +14814,55 @@ snapshots:
       - expo-font
       - supports-color
 
+  expo-router@56.0.0-canary-20260212-4f61309(6204e2999b32f67f04b3e04503643d4e):
+    dependencies:
+      '@expo/log-box': 56.0.0-canary-20260212-4f61309(@expo/dom-webview@55.0.3)(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      '@expo/metro-runtime': 55.0.6(@expo/dom-webview@55.0.3)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      '@expo/schema-utils': 56.0.0-canary-20260212-4f61309
+      '@radix-ui/react-slot': 1.2.0(@types/react@19.2.14)(react@19.2.4)
+      '@radix-ui/react-tabs': 1.1.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@react-navigation/bottom-tabs': 7.10.1(@react-navigation/native@7.1.28(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native-safe-area-context@5.7.0(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native-screens@4.24.0(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      '@react-navigation/native': 7.1.28(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      '@react-navigation/native-stack': 7.10.1(@react-navigation/native@7.1.28(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native-safe-area-context@5.7.0(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native-screens@4.24.0(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      client-only: 0.0.1
+      debug: 4.4.3
+      escape-string-regexp: 4.0.0
+      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      expo-constants: 56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(typescript@5.9.3)
+      expo-glass-effect: 56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      expo-image: 56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native-web@0.21.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      expo-linking: 55.0.7(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      expo-server: 56.0.0-canary-20260212-4f61309
+      expo-symbols: 56.0.0-canary-20260212-4f61309(expo-font@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      fast-deep-equal: 3.1.3
+      invariant: 2.2.4
+      nanoid: 3.3.11
+      query-string: 7.1.3
+      react: 19.2.4
+      react-fast-compare: 3.2.2
+      react-native: 0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4)
+      react-native-is-edge-to-edge: 1.2.1(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      react-native-safe-area-context: 5.7.0(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      react-native-screens: 4.24.0(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      semver: 7.6.3
+      server-only: 0.0.1
+      sf-symbols-typescript: 2.2.0
+      shallowequal: 1.1.0
+      use-latest-callback: 0.2.6(react@19.2.4)
+      vaul: 1.1.2(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+    optionalDependencies:
+      react-dom: 19.2.4(react@19.2.4)
+      react-native-gesture-handler: 2.30.0(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      react-native-reanimated: 4.2.2(react-native-worklets@0.7.4(@babel/core@7.29.0)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      react-native-web: 0.21.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+    transitivePeerDependencies:
+      - '@react-native-masked-view/masked-view'
+      - '@types/react'
+      - '@types/react-dom'
+      - expo-font
+      - supports-color
+    optional: true
+
   expo-server@56.0.0-canary-20260212-4f61309: {}
 
   expo-splash-screen@55.0.10(expo@56.0.0-canary-20260212-4f61309)(typescript@5.9.3):
@@ -14862,6 +14911,16 @@ snapshots:
       react-native: 0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4)
       sf-symbols-typescript: 2.2.0
 
+  expo-symbols@56.0.0-canary-20260212-4f61309(expo-font@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4):
+    dependencies:
+      '@expo-google-fonts/material-symbols': 0.4.24
+      expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      expo-font: 56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      react: 19.2.4
+      react-native: 0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4)
+      sf-symbols-typescript: 2.2.0
+    optional: true
+
   expo-system-ui@55.0.9(expo@56.0.0-canary-20260212-4f61309)(react-native-web@0.21.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4)):
     dependencies:
       '@react-native/normalize-colors': 0.83.2
@@ -14885,7 +14944,7 @@ snapshots:
   expo@56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.6
-      '@expo/cli': 56.0.0-canary-20260212-4f61309(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-constants@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(typescript@5.9.3))(expo-font@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(expo-router@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      '@expo/cli': 56.0.0-canary-20260212-4f61309(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-constants@56.0.0-canary-20260212-4f61309)(expo-font@56.0.0-canary-20260212-4f61309)(expo-router@56.0.0-canary-20260212-4f61309)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
       '@expo/config': 56.0.0-canary-20260212-4f61309(typescript@5.9.3)
       '@expo/config-plugins': 56.0.0-canary-20260212-4f61309
       '@expo/devtools': 56.0.0-canary-20260212-4f61309(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
@@ -14894,7 +14953,7 @@ snapshots:
       '@expo/log-box': 56.0.0-canary-20260212-4f61309(@expo/dom-webview@55.0.3)(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
       '@expo/metro': 54.2.0
       '@expo/metro-config': 56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(typescript@5.9.3)
-      '@expo/vector-icons': 15.1.1(expo-font@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      '@expo/vector-icons': 15.1.1(expo-font@56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
       '@ungap/structured-clone': 1.3.0
       babel-preset-expo: 56.0.0-canary-20260212-4f61309(@babel/core@7.29.0)(@babel/runtime@7.28.6)(expo@56.0.0-canary-20260212-4f61309)(react-refresh@0.14.2)
       expo-asset: 56.0.0-canary-20260212-4f61309(expo@56.0.0-canary-20260212-4f61309)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
@@ -18171,32 +18230,32 @@ snapshots:
       fsevents: 2.3.3
     optional: true
 
-  turbo-darwin-64@2.8.12:
+  turbo-darwin-64@2.8.16:
     optional: true
 
-  turbo-darwin-arm64@2.8.12:
+  turbo-darwin-arm64@2.8.16:
     optional: true
 
-  turbo-linux-64@2.8.12:
+  turbo-linux-64@2.8.16:
     optional: true
 
-  turbo-linux-arm64@2.8.12:
+  turbo-linux-arm64@2.8.16:
     optional: true
 
-  turbo-windows-64@2.8.12:
+  turbo-windows-64@2.8.16:
     optional: true
 
-  turbo-windows-arm64@2.8.12:
+  turbo-windows-arm64@2.8.16:
     optional: true
 
-  turbo@2.8.12:
+  turbo@2.8.16:
     optionalDependencies:
-      turbo-darwin-64: 2.8.12
-      turbo-darwin-arm64: 2.8.12
-      turbo-linux-64: 2.8.12
-      turbo-linux-arm64: 2.8.12
-      turbo-windows-64: 2.8.12
-      turbo-windows-arm64: 2.8.12
+      turbo-darwin-64: 2.8.16
+      turbo-darwin-arm64: 2.8.16
+      turbo-linux-64: 2.8.16
+      turbo-linux-arm64: 2.8.16
+      turbo-windows-64: 2.8.16
+      turbo-windows-arm64: 2.8.16
 
   tweetnacl@1.0.3: {}
 
