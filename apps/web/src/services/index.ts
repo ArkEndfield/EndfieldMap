@@ -10,7 +10,7 @@ import { loadingManager } from '@/services/loading';
 import { sentryReporter } from '@/services/logger';
 
 const localeModules = import.meta.glob<{ default: Record<string, unknown> }>(
-  '../../../map-service/src/locales/**/*.json'
+  '../../../../packages/map-service/src/locales/**/*.json'
 );
 
 let initialLoadComplete = false;
@@ -20,7 +20,7 @@ export const service = new MapService({
   isDev: isDev,
   i18nConfig: {
     resourceLoader: (language: string, namespace: string) => {
-      const key = `../../../map-service/src/locales/${language}/${namespace}.json`;
+      const key = `../../../../packages/map-service/src/locales/${language}/${namespace}.json`;
       const loader = localeModules[key];
       if (loader) return loader();
       return Promise.reject(new Error(`Missing locale: ${language}/${namespace}`));

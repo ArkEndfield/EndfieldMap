@@ -9,14 +9,14 @@ import { VitePWA } from 'vite-plugin-pwa';
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
   const alias = {
-    '@endfieldmap/map-adapter-ol': resolve(__dirname, '../map-adapter-ol/src'),
-    '@endfieldmap/map-core': resolve(__dirname, '../map-core/src'),
-    '@endfieldmap/tools': resolve(__dirname, '../tools/src'),
-    '@endfieldmap/map-service': resolve(__dirname, '../map-service/src'),
-    '@endfieldmap/storage-web': resolve(__dirname, '../storage-web/src'),
-    '@endfieldmap/map-web-theme-types': resolve(__dirname, '../map-web-theme-types/src'),
-    '@endfieldmap/web-components': resolve(__dirname, '../web-components/src'),
-    '@endfieldmap/map-hooks': resolve(__dirname, '../map-hooks/src'),
+    '@endfieldmap/map-adapter-ol': resolve(__dirname, '../../packages/map-adapter-ol/src'),
+    '@endfieldmap/map-core': resolve(__dirname, '../../packages/map-core/src'),
+    '@endfieldmap/tools': resolve(__dirname, '../../packages/tools/src'),
+    '@endfieldmap/map-service': resolve(__dirname, '../../packages/map-service/src'),
+    '@endfieldmap/storage-web': resolve(__dirname, '../../packages/storage-web/src'),
+    '@endfieldmap/map-web-theme-types': resolve(__dirname, '../../packages/map-web-theme-types/src'),
+    '@endfieldmap/web-components': resolve(__dirname, '../../packages/web-components/src'),
+    '@endfieldmap/map-hooks': resolve(__dirname, '../../packages/map-hooks/src'),
   };
   return {
     mode,

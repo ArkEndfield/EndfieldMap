@@ -1,0 +1,19 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "references": [
+    { "path": "../../packages/map-service" },
+    { "path": "../../packages/map-core" },
+    { "path": "../../packages/map-adapter-maplibre" },
+    { "path": "../../packages/storage-mmkv" },
+    { "path": "../../packages/storage-expo-sqlite" },
+    { "path": "../../packages/tools" },
+    { "path": "../../packages/map-hooks" }
+  ],
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]
+}

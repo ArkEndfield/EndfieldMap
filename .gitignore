@@ -24,13 +24,13 @@ dist-ssr
 *.sln
 *.sw?
 
-/packages/map-web/public/data/entity
-/packages/map-web/public/data/map
-/packages/map-web/public/data/item
-/packages/map-web/public/images/entity
-/packages/map-web/public/images/map
-/packages/map-web/public/images/item
-/packages/map-web/public/images/guides
+/apps/web/public/data/entity
+/apps/web/public/data/map
+/apps/web/public/data/item
+/apps/web/public/images/entity
+/apps/web/public/images/map
+/apps/web/public/images/item
+/apps/web/public/images/guides
 
 # TypeScript build info
 *.tsbuildinfo

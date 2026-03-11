@@ -39,7 +39,7 @@ main:
         - name: 安装 pnpm
           script: npm install -g pnpm
         - name: 安装依赖
-          script: pnpm install --filter @endfieldmap/map-web...
+          script: pnpm install --filter @endfieldmap/web...
         - name: 构建包
           script: pnpm build:web
         - name: 部署到服务器
@@ -50,7 +50,7 @@ main:
             echo "${SSH_KEY}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
             # 使用 rsync 清空并同步文件到服务器
-            rsync -avz --delete --exclude='/docs' -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" packages/map-web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
+            rsync -avz --delete --exclude='/docs' -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" apps/web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
   web_trigger_publish_packages:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
@@ -59,7 +59,7 @@ main:
         - name: 安装 pnpm
           script: npm install -g pnpm
         - name: 安装依赖
-          script: pnpm install --filter '!@endfieldmap/map-native' --filter '!@endfieldmap/map-web'
+          script: pnpm install --filter '!@endfieldmap/native' --filter '!@endfieldmap/web'
         - name: 构建所有包
           script: pnpm run build:packages
         - name: 配置 GitHub Packages 认证

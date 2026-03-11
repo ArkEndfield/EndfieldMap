@@ -22,15 +22,15 @@
     }
   },
   "references": [
-    { "path": "../tools" },
-    { "path": "../map-core" },
-    { "path": "../map-service" },
-    { "path": "../map-adapter-ol" },
-    { "path": "../map-adapter-maplibre" },
-    { "path": "../storage-web" },
-    { "path": "../map-web-theme-types" },
-    { "path": "../web-components" },
-    { "path": "../map-hooks" }
+    { "path": "../../packages/tools" },
+    { "path": "../../packages/map-core" },
+    { "path": "../../packages/map-service" },
+    { "path": "../../packages/map-adapter-ol" },
+    { "path": "../../packages/map-adapter-maplibre" },
+    { "path": "../../packages/storage-web" },
+    { "path": "../../packages/map-web-theme-types" },
+    { "path": "../../packages/web-components" },
+    { "path": "../../packages/map-hooks" }
   ],
   "include": ["src", "./env.d.ts"]
 }

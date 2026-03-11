@@ -93,104 +93,29 @@ importers:
         specifier: ^4.0.18
         version: 4.0.18(@types/node@25.3.3)(esbuild@0.27.3)(jiti@2.6.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
 
-  packages/map-adapter-maplibre:
-    dependencies:
-      '@endfieldmap/map-core':
-        specifier: workspace:*
-        version: link:../map-core
-      '@endfieldmap/tools':
-        specifier: workspace:*
-        version: link:../tools
-      '@maplibre/maplibre-react-native':
-        specifier: ^10.4.2
-        version: 10.4.2(@expo/config-plugins@55.0.6)(@types/geojson@7946.0.16)(@types/react@19.2.14)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
-      mobx:
-        specifier: ^6.15.0
-        version: 6.15.0
-
-  packages/map-adapter-ol:
-    dependencies:
-      '@endfieldmap/map-core':
-        specifier: workspace:*
-        version: link:../map-core
-      '@endfieldmap/tools':
-        specifier: workspace:*
-        version: link:../tools
-      mobx:
-        specifier: ^6.15.0
-        version: 6.15.0
-      ol:
-        specifier: ^10.8.0
-        version: 10.8.0
-
-  packages/map-core:
-    dependencies:
-      '@endfieldmap/tools':
-        specifier: workspace:*
-        version: link:../tools
-      mobx:
-        specifier: ^6.15.0
-        version: 6.15.0
-
-  packages/map-hooks:
-    dependencies:
-      '@endfieldmap/map-core':
-        specifier: workspace:*
-        version: link:../map-core
-      '@endfieldmap/map-service':
-        specifier: workspace:*
-        version: link:../map-service
-      '@endfieldmap/tools':
-        specifier: workspace:*
-        version: link:../tools
-      '@tanstack/react-db':
-        specifier: ^0.1.72
-        version: 0.1.72(react@19.2.4)(typescript@5.9.3)
-      '@tanstack/rxdb-db-collection':
-        specifier: ^0.1.60
-        version: 0.1.60(rxdb@16.21.1(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
-      mobx:
-        specifier: ^6.15.0
-        version: 6.15.0
-      react:
-        specifier: ^19.2.0
-        version: 19.2.4
-      react-dom:
-        specifier: ^19.2.0
-        version: 19.2.4(react@19.2.4)
-      react-i18next:
-        specifier: ^16.5.4
-        version: 16.5.4(i18next@25.8.13(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
-      rxdb:
-        specifier: ^16.21.1
-        version: 16.21.1(rxjs@7.8.2)
-      rxjs:
-        specifier: ^7.8.2
-        version: 7.8.2
-
-  packages/map-native:
+  apps/native:
     dependencies:
       '@endfieldmap/map-adapter-maplibre':
         specifier: workspace:*
-        version: link:../map-adapter-maplibre
+        version: link:../../packages/map-adapter-maplibre
       '@endfieldmap/map-core':
         specifier: workspace:*
-        version: link:../map-core
+        version: link:../../packages/map-core
       '@endfieldmap/map-hooks':
         specifier: workspace:*
-        version: link:../map-hooks
+        version: link:../../packages/map-hooks
       '@endfieldmap/map-service':
         specifier: workspace:*
-        version: link:../map-service
+        version: link:../../packages/map-service
       '@endfieldmap/storage-expo-sqlite':
         specifier: workspace:*
-        version: link:../storage-expo-sqlite
+        version: link:../../packages/storage-expo-sqlite
       '@endfieldmap/storage-mmkv':
         specifier: workspace:*
-        version: link:../storage-mmkv
+        version: link:../../packages/storage-mmkv
       '@endfieldmap/tools':
         specifier: workspace:*
-        version: link:../tools
+        version: link:../../packages/tools
       '@expo/metro-runtime':
         specifier: ~55.0.6
         version: 55.0.6(@expo/dom-webview@55.0.3)(expo@56.0.0-canary-20260212-4f61309)(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
@@ -376,63 +301,32 @@ importers:
         specifier: ^4.2.1
         version: 4.2.1
 
-  packages/map-service:
-    dependencies:
-      '@endfieldmap/map-core':
-        specifier: workspace:*
-        version: link:../map-core
-      '@endfieldmap/tools':
-        specifier: workspace:*
-        version: link:../tools
-      i18next:
-        specifier: ^25.8.13
-        version: 25.8.13(typescript@5.9.3)
-      i18next-resources-to-backend:
-        specifier: ^1.2.1
-        version: 1.2.1
-      microdiff:
-        specifier: ^1.5.0
-        version: 1.5.0
-      mobx:
-        specifier: ^6.15.0
-        version: 6.15.0
-      rxdb:
-        specifier: ^16.21.1
-        version: 16.21.1(rxjs@7.8.2)
-      rxjs:
-        specifier: ^7.8.2
-        version: 7.8.2
-    devDependencies:
-      i18next-cli:
-        specifier: ^1.47.8
-        version: 1.47.8(@types/node@25.3.3)(i18next@25.8.13(typescript@5.9.3))(typescript@5.9.3)
-
-  packages/map-web:
+  apps/web:
     dependencies:
       '@endfieldmap/map-adapter-ol':
         specifier: workspace:*
-        version: link:../map-adapter-ol
+        version: link:../../packages/map-adapter-ol
       '@endfieldmap/map-core':
         specifier: workspace:*
-        version: link:../map-core
+        version: link:../../packages/map-core
       '@endfieldmap/map-hooks':
         specifier: workspace:*
-        version: link:../map-hooks
+        version: link:../../packages/map-hooks
       '@endfieldmap/map-service':
         specifier: workspace:*
-        version: link:../map-service
+        version: link:../../packages/map-service
       '@endfieldmap/map-web-theme-types':
         specifier: workspace:*
-        version: link:../map-web-theme-types
+        version: link:../../packages/map-web-theme-types
       '@endfieldmap/storage-web':
         specifier: workspace:*
-        version: link:../storage-web
+        version: link:../../packages/storage-web
       '@endfieldmap/tools':
         specifier: workspace:*
-        version: link:../tools
+        version: link:../../packages/tools
       '@endfieldmap/web-components':
         specifier: workspace:*
-        version: link:../web-components
+        version: link:../../packages/web-components
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.14.2)(react@19.2.4)
@@ -542,6 +436,112 @@ importers:
       vite-plugin-pwa:
         specifier: ^1.2.0
         version: 1.2.0(vite@8.0.0-beta.16(@types/node@25.3.3)(esbuild@0.27.3)(jiti@2.6.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))(workbox-build@7.4.0(@types/babel__core@7.20.5))(workbox-window@7.4.0)
+
+  packages/map-adapter-maplibre:
+    dependencies:
+      '@endfieldmap/map-core':
+        specifier: workspace:*
+        version: link:../map-core
+      '@endfieldmap/tools':
+        specifier: workspace:*
+        version: link:../tools
+      '@maplibre/maplibre-react-native':
+        specifier: ^10.4.2
+        version: 10.4.2(@expo/config-plugins@55.0.6)(@types/geojson@7946.0.16)(@types/react@19.2.14)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      mobx:
+        specifier: ^6.15.0
+        version: 6.15.0
+
+  packages/map-adapter-ol:
+    dependencies:
+      '@endfieldmap/map-core':
+        specifier: workspace:*
+        version: link:../map-core
+      '@endfieldmap/tools':
+        specifier: workspace:*
+        version: link:../tools
+      mobx:
+        specifier: ^6.15.0
+        version: 6.15.0
+      ol:
+        specifier: ^10.8.0
+        version: 10.8.0
+
+  packages/map-core:
+    dependencies:
+      '@endfieldmap/tools':
+        specifier: workspace:*
+        version: link:../tools
+      mobx:
+        specifier: ^6.15.0
+        version: 6.15.0
+
+  packages/map-hooks:
+    dependencies:
+      '@endfieldmap/map-core':
+        specifier: workspace:*
+        version: link:../map-core
+      '@endfieldmap/map-service':
+        specifier: workspace:*
+        version: link:../map-service
+      '@endfieldmap/tools':
+        specifier: workspace:*
+        version: link:../tools
+      '@tanstack/react-db':
+        specifier: ^0.1.72
+        version: 0.1.72(react@19.2.4)(typescript@5.9.3)
+      '@tanstack/rxdb-db-collection':
+        specifier: ^0.1.60
+        version: 0.1.60(rxdb@16.21.1(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
+      mobx:
+        specifier: ^6.15.0
+        version: 6.15.0
+      react:
+        specifier: ^19.2.0
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.4(react@19.2.4)
+      react-i18next:
+        specifier: ^16.5.4
+        version: 16.5.4(i18next@25.8.13(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      rxdb:
+        specifier: ^16.21.1
+        version: 16.21.1(rxjs@7.8.2)
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+
+  packages/map-service:
+    dependencies:
+      '@endfieldmap/map-core':
+        specifier: workspace:*
+        version: link:../map-core
+      '@endfieldmap/tools':
+        specifier: workspace:*
+        version: link:../tools
+      i18next:
+        specifier: ^25.8.13
+        version: 25.8.13(typescript@5.9.3)
+      i18next-resources-to-backend:
+        specifier: ^1.2.1
+        version: 1.2.1
+      microdiff:
+        specifier: ^1.5.0
+        version: 1.5.0
+      mobx:
+        specifier: ^6.15.0
+        version: 6.15.0
+      rxdb:
+        specifier: ^16.21.1
+        version: 16.21.1(rxjs@7.8.2)
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+    devDependencies:
+      i18next-cli:
+        specifier: ^1.47.8
+        version: 1.47.8(@types/node@25.3.3)(i18next@25.8.13(typescript@5.9.3))(typescript@5.9.3)
 
   packages/map-web-theme-types: {}
 
