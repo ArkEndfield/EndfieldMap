@@ -101,7 +101,7 @@ const LeftContent = observer(({ className }: { className?: string }) => {
 
           <div className="flex-1 min-h-0 relative">
             <ScrollArea className="h-full">
-              <div className="pb-12">
+              <div className="pb-12 m-4">
                 {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} onVideoLinkChange={setVideoLink} onUnRefreshableChange={setUnRefreshable} />}
 
                 {/* 自定义标点类型选择 */}

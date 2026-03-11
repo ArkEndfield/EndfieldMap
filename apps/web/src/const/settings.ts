@@ -25,6 +25,7 @@ export const SETTINGS_KEYS = {
     CACHE: 'data.cache',
     STATE: 'data.state',
     ALL: 'data.all',
+    COPY_SENTRY_IDS: 'data.copy_sentry_ids',
   },
   ABOUT: {
     INFO: 'about.info',

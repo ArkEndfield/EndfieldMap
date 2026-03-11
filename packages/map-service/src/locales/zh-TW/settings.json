@@ -101,6 +101,17 @@
       "success": "清除所有儲存資料成功，重新整理網頁生效",
       "failed": "清除所有儲存資料失敗：{{reason}}",
       "description": "[危險操作]刪除所有儲存資料，包括狀態資料、標點篩選資料以及所有電線桿資料和自訂點位資料"
+    },
+    "debug": {
+      "title": "除錯",
+      "copy_sentry_ids": {
+        "title": "複製 Sentry 事件 ID",
+        "description": "將已儲存的 Sentry 日誌事件 ID 複製到剪貼簿，用於支援或除錯",
+        "copy": "複製 ID",
+        "success": "已複製 {{count}} 個事件 ID 到剪貼簿",
+        "empty": "暫無已儲存的 Sentry 事件 ID",
+        "failed": "複製到剪貼簿失敗"
+      }
     }
   },
   "about": {

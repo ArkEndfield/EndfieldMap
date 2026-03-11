@@ -101,6 +101,17 @@
       "success": "모든 저장 데이터 지우기 성공, 페이지를 새로고침하여 적용",
       "failed": "모든 저장 데이터 지우기 실패: {{reason}}",
       "description": "[위험한 작업] 모든 저장된 데이터 삭제, 상태 데이터, 마커 필터 데이터, 모든 전신주 데이터 및 사용자 지정 포인트 데이터 포함"
+    },
+    "debug": {
+      "title": "디버그",
+      "copy_sentry_ids": {
+        "title": "Sentry 이벤트 ID 복사",
+        "description": "지원 또는 디버깅을 위해 저장된 Sentry 로그 이벤트 ID를 클립보드에 복사합니다",
+        "copy": "ID 복사",
+        "success": "{{count}}개의 이벤트 ID가 클립보드에 복사되었습니다",
+        "empty": "저장된 Sentry 이벤트 ID가 아직 없습니다",
+        "failed": "클립보드에 복사하지 못했습니다"
+      }
     }
   },
   "about": {

@@ -101,6 +101,17 @@
       "success": "All storage data cleared successfully, refresh page to take effect",
       "failed": "Failed to clear all storage data: {{reason}}",
       "description": "[Dangerous Operation] Delete all stored data, including state data, marker filter data, all electric pole data and custom point data"
+    },
+    "debug": {
+      "title": "Debug",
+      "copy_sentry_ids": {
+        "title": "Copy Sentry Event IDs",
+        "description": "Copy stored Sentry log event IDs to clipboard for support or debugging",
+        "copy": "Copy IDs",
+        "success": "{{count}} event ID(s) copied to clipboard",
+        "empty": "No Sentry event IDs stored yet",
+        "failed": "Failed to copy to clipboard"
+      }
     }
   },
   "about": {

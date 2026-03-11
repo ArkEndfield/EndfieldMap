@@ -101,6 +101,17 @@
       "success": "Todos los datos de almacenamiento limpiados exitosamente, actualice la página para aplicar",
       "failed": "Error al limpiar todos los datos de almacenamiento: {{reason}}",
       "description": "[Operación peligrosa] Eliminar todos los datos almacenados, incluidos datos de estado, datos de filtro de marcadores, todos los datos de postes eléctricos y datos de puntos personalizados"
+    },
+    "debug": {
+      "title": "Depuración",
+      "copy_sentry_ids": {
+        "title": "Copiar ID de eventos Sentry",
+        "description": "Copiar los ID de eventos de log de Sentry almacenados al portapapeles para soporte o depuración",
+        "copy": "Copiar ID",
+        "success": "{{count}} ID de evento(s) copiados al portapapeles",
+        "empty": "Aún no hay ID de eventos Sentry almacenados",
+        "failed": "Error al copiar al portapapeles"
+      }
     }
   },
   "about": {
