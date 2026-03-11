@@ -32,8 +32,8 @@
     "@react-navigation/bottom-tabs": "^7.15.3",
     "@react-navigation/elements": "^2.9.8",
     "@react-navigation/native": "^7.1.31",
-    "@tanstack/react-db": "^0.1.74",
-    "@tanstack/rxdb-db-collection": "^0.1.62",
+    "@tanstack/react-db": "catalog:",
+    "@tanstack/rxdb-db-collection": "catalog:",
     "clsx": "^2.1.1",
     "event-target-polyfill": "^0.0.4",
     "expo": "56.0.0-canary-20260212-4f61309",
@@ -53,13 +53,13 @@
     "expo-symbols": "~55.0.4",
     "expo-system-ui": "~55.0.9",
     "expo-web-browser": "~55.0.9",
-    "i18next": "^25.8.13",
+    "i18next": "catalog:",
     "i18next-resources-to-backend": "^1.2.1",
-    "mobx": "^6.15.0",
+    "mobx": "catalog:",
     "mobx-react-lite": "^4.1.1",
     "nativewind": "5.0.0-preview.2",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-hook-form": "^7.71.2",
     "react-i18next": "^16.5.4",
     "react-native": "0.84.1",
@@ -74,18 +74,18 @@
     "react-native-svg": "^15.15.3",
     "react-native-web": "~0.21.2",
     "react-native-worklets": "0.7.4",
-    "rxdb": "^16.21.1",
-    "rxjs": "^7.8.2",
+    "rxdb": "catalog:",
+    "rxjs": "catalog:",
     "tailwind-merge": "^3.5.0",
-    "zod": "^4.3.6"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.29.0",
     "@babel/plugin-transform-class-properties": "^7.28.6",
-    "@tailwindcss/postcss": "^4.2.1",
-    "@types/react": "~19.2.14",
+    "@tailwindcss/postcss": "catalog:",
+    "@types/react": "catalog:",
     "postcss": "^8.5.8",
-    "tailwindcss": "^4.2.1"
+    "tailwindcss": "catalog:"
   },
   "private": true
 }

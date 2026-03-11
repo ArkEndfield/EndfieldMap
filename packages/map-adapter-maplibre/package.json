@@ -33,7 +33,7 @@
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
     "@maplibre/maplibre-react-native": "^10.4.2",
-    "mobx": "^6.15.0"
+    "mobx": "catalog:"
   },
   "peerDependenciesMeta": {
     "@maplibre/maplibre-react-native": {

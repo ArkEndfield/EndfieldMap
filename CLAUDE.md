@@ -4,19 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-- **Development**: `pnpm dev` (starts Vite dev server)
-- **Build**: `pnpm build` (builds tools, map-core, and web app)
-  - Build core only: `pnpm build:core`
-  - Build tools only: `pnpm build:tools`
-  - Build web app only: `pnpm build:web`
-- **Linting**: `pnpm lint` (runs ESLint)
-  - Fix lint issues: `pnpm lint:fix` (runs Prettier and ESLint fix)
-- **Testing**:
-  - Run all tests: `pnpm test` (if configured in root) or run per package
-  - map-core tests: `cd packages/map-core && pnpm test`
-  - tools tests: `cd packages/tools && pnpm test`
-- **Preview**: `pnpm preview` (serve production build locally)
-- **i18n**: `pnpm lng:type` (generate i18next types)
+- **Development**: `pnpm dev:web`, `pnpm dev:native`, `pnpm dev:components` (Storybook).
+- **Build**: `pnpm build` (build all); `pnpm build:web`, `pnpm build:packages`, `pnpm build:adapter:ol`, `pnpm build:adapter:maplibre`, `pnpm build:components` / `pnpm build:components:docs`.
+- **Linting**: `pnpm lint` (runs ESLint); `pnpm lint:fix` (Prettier + ESLint fix).
+- **Testing**: `pnpm test` (all packages); or per package, e.g. `cd packages/map-core && pnpm test`, `pnpm --filter "./packages/tools" test`.
+- **Preview**: `pnpm preview:web` (serve production web build locally).
+- **i18n**: `pnpm lng:type` (generate i18next types).
+- **Clean**: `pnpm clean` (remove dist, .turbo, tsbuildinfo).
 
 ## Architecture & Structure
 
@@ -24,17 +18,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a monorepo structure managed with pnpm workspaces.
 
-- `src/`: Main React web application
-  - `components/`: Reusable UI components
-  - `hooks/`: Custom React hooks
-  - `const/`: Shared constants and configuration
-  - `services/`: Data fetching and business logic
-  - `store/`: State management stores
-- `packages/`: Shared libraries
-  - `map-core/`: Core mapping logic and data structures
-  - `tools/`: Utility functions and build tools
-- `public/`: Static assets
-- `dist/`: Build output (do not edit)
+- `apps/web/`: Main React web application (Vite); source under `apps/web/src/` (components, hooks, const, services, store).
+- `apps/native/`: React Native (Expo) application.
+- `packages/`: Shared libraries (map-core, tools, map-adapter-ol, map-adapter-maplibre, map-hooks, map-service, web-components, etc.).
+- `public/`: Static assets (per app where used).
+- `dist/`: Build output (do not edit).
 
 ### Tech Stack
 

@@ -34,7 +34,7 @@
   "peerDependencies": {
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
-    "mobx": "^6.15.0",
+    "mobx": "catalog:",
     "ol": "^10.8.0"
   },
   "files": [

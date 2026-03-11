@@ -6,6 +6,7 @@
   "packageManager": "pnpm@10.30.1",
   "scripts": {
     "dev:web": "pnpm -C apps/web dev",
+    "preview:web": "pnpm -C apps/web preview",
     "dev:native": "pnpm -C apps/native start",
     "dev:android": "pnpm -C apps/native android",
     "dev:android:local": "pnpm -C apps/native android:local",
@@ -29,9 +30,9 @@
     "test": "turbo run test",
     "changeset": "changeset",
     "version:packages": "changeset version",
-    "publish:packages": "turbo run build && pnpm -r publish --access public",
+    "publish:packages": "turbo run build && changeset publish --access public",
     "release": "bash scripts/release.sh",
-    "clean": "find . -name 'dist' -type d -not -path '*/node_modules/*' -exec rm -rf {} + && rm -rf .turbo && find . -name '.turbo' -type d -not -path '*/node_modules/*' -exec rm -rf {} + && find . -name '*.tsbuildinfo' -not -path '*/node_modules/*' -delete"
+    "clean": "rimraf packages/*/dist apps/*/dist .turbo packages/*/.turbo apps/*/.turbo packages/*/*.tsbuildinfo apps/*/*.tsbuildinfo *.tsbuildinfo"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
@@ -41,24 +42,25 @@
     "@changesets/cli": "^2.29.8",
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.3.3",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "^5.1.4",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint": "^10.0.2",
+    "eslint": "catalog:",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^17.4.0",
-    "prettier": "3.8.1",
+    "prettier": "catalog:",
+    "rimraf": "^6.0.1",
     "turbo": "^2.8.16",
-    "typescript": "~5.9.3",
+    "typescript": "catalog:",
     "typescript-eslint": "^8.56.1",
     "unplugin-dts": "1.0.0-beta.6",
-    "vite": "8.0.0-beta.16",
-    "vitest": "^4.0.18"
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "pnpm": {
     "overrides": {
@@ -78,6 +80,6 @@
     ]
   },
   "dependencies": {
-    "rxdb": "^16.21.1"
+    "rxdb": "catalog:"
   }
 }

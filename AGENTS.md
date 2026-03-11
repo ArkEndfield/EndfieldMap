@@ -2,17 +2,19 @@
 
 ## Project Structure & Module Organization
 
-- The main web app lives in `src` (`App.tsx`, `main.tsx`, reusable UI in `src/components`, hooks in `src/hooks`, shared config/constants in `src/const`, and data/services in `src/services`).
-- Shared libraries are in `packages/map-core` and `packages/tools`, built with Vite and consumed via workspace dependencies.
-- Static assets go in `public`; build output is written to `dist` and should not be edited by hand.
+- The main web app lives in `apps/web` (source under `apps/web/src/`); native app in `apps/native`.
+- Shared libraries are in `packages/` (map-core, tools, map-adapters, map-hooks, map-service, web-components, etc.), built with Vite and consumed via workspace dependencies.
+- Static assets go in `public` (per app); build output is written to `dist` and should not be edited by hand.
 
 ## Build, Test, and Development Commands
 
-- `pnpm dev` – start the Vite dev server for the web app.
-- `pnpm build` – build tools, core, and the web app (`packages/*` and `src`).
-- `pnpm preview` – serve the production build locally using the latest build.
+- `pnpm dev:web`, `pnpm dev:native`, `pnpm dev:components` – start dev for web app, native app, or Storybook.
+- `pnpm build` – build all. `pnpm build:web`, `pnpm build:packages`, `pnpm build:adapter:ol`, `pnpm build:adapter:maplibre`, `pnpm build:components` / `pnpm build:components:docs` for targeted builds.
+- `pnpm preview:web` – serve the production web build locally.
 - `pnpm lint` / `pnpm lint:fix` – run ESLint and Prettier checks or auto-fix issues.
-- Package tests (Vitest) run per package, e.g. `cd packages/map-core && pnpm test` or `pnpm --filter "./packages/tools" test`.
+- `pnpm clean` – remove `dist`, `.turbo`, and `*.tsbuildinfo` (cross-platform).
+- Package tests (Vitest): `pnpm test` for all, or e.g. `cd packages/map-core && pnpm test`, `pnpm --filter "./packages/tools" test`.
+- Library packages use `tsconfig.build.json` for build; apps (e.g. `apps/web`, `packages/web-components`) may use `tsconfig.app.json`.
 
 ## Coding Style & Naming Conventions
 
