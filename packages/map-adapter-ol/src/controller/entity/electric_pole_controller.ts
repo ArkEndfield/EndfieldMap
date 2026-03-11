@@ -395,6 +395,7 @@ export class ElectricPoleController extends Disposer {
 
   /**
    * 删除电线杆，同时同步渲染器
+   * 需在移除实例前收集「指向本杆」的入边来源，并从各自 deviceKey 的渲染器移除连线（不同类型杆在不同渲染器）
    */
   @action
   public deleteElectricPole(mapId: MapData['id'], id: number): boolean {
@@ -407,6 +408,15 @@ export class ElectricPoleController extends Disposer {
     }
 
     const deviceKey = instance.deviceKey;
+
+    // 先收集入边来源（其他杆指向本杆的连线在其「来源杆」的渲染器中）
+    const incomingSources = [...instance.incomingConnections];
+    for (const source of incomingSources) {
+      const sourceRenderers = this.render.getRenderer(mapId, source.deviceKey);
+      if (sourceRenderers) {
+        sourceRenderers.pole.removeConnection(source.id, id, { animate: true });
+      }
+    }
 
     // 从数据管理器移除（含清理连接关系）
     const result = manager.removeWithCleanup(id);
