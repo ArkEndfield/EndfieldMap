@@ -42,9 +42,12 @@
       "trchest": "Treasure Chest",
       "mineral": "Mineral",
       "enemy": "Enemy",
+      "disposable": "Disposable Resources",
+      "rare_gather": "Rare Gather Resources",
+      "common_gather": "Common Gather Resources",
       "settlement": "Settlement",
       "spcstone": "Rare Mineral",
-      "special": "Special Point",
+      "special": "Fixed Points",
       "plant": "Plant Material",
       "narrative": "World Narrative Fragment",
       "dnarrative": "World Narrative Echo",
@@ -54,7 +57,7 @@
       "#electric_pole": "Electric Pole",
       "#custom_point": "Custom Point",
       "#note": "Intelligence Archives",
-      "#egg": "Egg"
+      "#egg": "???"
     }
   },
   "operation": {
@@ -75,6 +78,14 @@
     "electric_pole": {
       "display": "Show Electric Poles",
       "no_data": "No electric pole data available",
+      "filter": {
+        "pole": "Pole",
+        "zipline": "Zipline"
+      },
+      "sub_type": {
+        "pole": "Pole",
+        "zipline": "Zipline"
+      },
       "create": {
         "start": "Create",
         "auto_connect": "Auto Connect",
@@ -101,6 +112,10 @@
       "delete": {
         "start": "Delete",
         "in_mode": "Deleting electric pole"
+      },
+      "move": {
+        "start": "Move",
+        "in_mode": "Moving electric pole"
       },
       "zone": {
         "display": "Show Electric Pole Range"

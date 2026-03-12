@@ -42,9 +42,12 @@
       "trchest": "보물 상자",
       "mineral": "광물",
       "enemy": "적",
+      "disposable": "일회용 리소스",
+      "rare_gather": "희귀 채집 리소스",
+      "common_gather": "일반 채집 리소스",
       "settlement": "정착지",
       "spcstone": "희귀 광물",
-      "special": "특수 포인트",
+      "special": "고정 포인트",
       "plant": "식물 재료",
       "narrative": "세계 서사 조각",
       "dnarrative": "세계 서사 메아리",
@@ -54,7 +57,7 @@
       "#electric_pole": "전신주",
       "#custom_point": "사용자 지정 포인트",
       "#note": "정보 아카이브",
-      "#egg": "계란"
+      "#egg": "???"
     }
   },
   "operation": {
@@ -75,6 +78,14 @@
     "electric_pole": {
       "display": "전신주 표시",
       "no_data": "전신주 데이터가 없습니다",
+      "filter": {
+        "pole": "전신주",
+        "zipline": "짚라인"
+      },
+      "sub_type": {
+        "pole": "전신주",
+        "zipline": "짚라인"
+      },
       "create": {
         "start": "생성",
         "auto_connect": "자동 연결",
@@ -101,6 +112,10 @@
       "delete": {
         "start": "삭제",
         "in_mode": "전신주 삭제 중"
+      },
+      "move": {
+        "start": "이동",
+        "in_mode": "전신주 이동 중"
       },
       "zone": {
         "display": "전신주 범위 표시"

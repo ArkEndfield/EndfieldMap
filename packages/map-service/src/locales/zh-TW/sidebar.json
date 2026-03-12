@@ -42,9 +42,12 @@
       "trchest": "寶箱",
       "mineral": "礦物",
       "enemy": "敵人",
+      "disposable": "一次性資源",
+      "rare_gather": "稀有採集資源",
+      "common_gather": "普通採集資源",
       "settlement": "定居點",
       "spcstone": "稀有礦物",
-      "special": "特殊點位",
+      "special": "固定點位",
       "plant": "植物類素材",
       "narrative": "世界敘事碎片",
       "dnarrative": "世界敘事迴響",
@@ -75,6 +78,14 @@
     "electric_pole": {
       "display": "顯示電線桿",
       "no_data": "暫無電線桿資料",
+      "filter": {
+        "pole": "電線桿",
+        "zipline": "滑索"
+      },
+      "sub_type": {
+        "pole": "電線桿",
+        "zipline": "滑索"
+      },
       "create": {
         "start": "建立",
         "auto_connect": "自動連接",
@@ -101,6 +112,10 @@
       "delete": {
         "start": "刪除",
         "in_mode": "正在刪除電線桿"
+      },
+      "move": {
+        "start": "移動",
+        "in_mode": "正在移動電線桿"
       },
       "zone": {
         "display": "顯示電線桿範圍"

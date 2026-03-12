@@ -42,9 +42,12 @@
       "trchest": "宝箱",
       "mineral": "鉱物",
       "enemy": "敵",
+      "disposable": "使い捨てリソース",
+      "rare_gather": "レア採取リソース",
+      "common_gather": "通常採取リソース",
       "settlement": "集落",
       "spcstone": "レア鉱物",
-      "special": "特殊ポイント",
+      "special": "固定ポイント",
       "plant": "植物素材",
       "narrative": "世界の物語の断片",
       "dnarrative": "世界の物語の残響",
@@ -54,7 +57,7 @@
       "#electric_pole": "電柱",
       "#custom_point": "カスタムポイント",
       "#note": "情報アーカイブ",
-      "#egg": "エッグ"
+      "#egg": "???"
     }
   },
   "operation": {
@@ -75,6 +78,14 @@
     "electric_pole": {
       "display": "電柱を表示",
       "no_data": "電柱データがありません",
+      "filter": {
+        "pole": "電柱",
+        "zipline": "ジップライン"
+      },
+      "sub_type": {
+        "pole": "電柱",
+        "zipline": "ジップライン"
+      },
       "create": {
         "start": "作成",
         "auto_connect": "自動接続",
@@ -101,6 +112,10 @@
       "delete": {
         "start": "削除",
         "in_mode": "電柱を削除中"
+      },
+      "move": {
+        "start": "移動",
+        "in_mode": "電柱を移動中"
       },
       "zone": {
         "display": "電柱の範囲を表示"

@@ -42,9 +42,12 @@
       "trchest": "Cofre del tesoro",
       "mineral": "Mineral",
       "enemy": "Enemigo",
+      "disposable": "Recursos desechables",
+      "rare_gather": "Recursos de recolección raros",
+      "common_gather": "Recursos de recolección comunes",
       "settlement": "Asentamiento",
       "spcstone": "Mineral raro",
-      "special": "Punto especial",
+      "special": "Puntos fijos",
       "plant": "Material vegetal",
       "narrative": "Fragmento narrativo del mundo",
       "dnarrative": "Eco narrativo del mundo",
@@ -54,7 +57,7 @@
       "#electric_pole": "Poste eléctrico",
       "#custom_point": "Punto personalizado",
       "#note": "Archivos de Inteligencia",
-      "#egg": "Huevo"
+      "#egg": "???"
     }
   },
   "operation": {
@@ -75,6 +78,14 @@
     "electric_pole": {
       "display": "Mostrar postes eléctricos",
       "no_data": "No hay datos de postes eléctricos disponibles",
+      "filter": {
+        "pole": "Poste",
+        "zipline": "Tirolina"
+      },
+      "sub_type": {
+        "pole": "Poste",
+        "zipline": "Tirolina"
+      },
       "create": {
         "start": "Crear",
         "auto_connect": "Conectar automáticamente",
@@ -101,6 +112,10 @@
       "delete": {
         "start": "Eliminar",
         "in_mode": "Eliminando poste eléctrico"
+      },
+      "move": {
+        "start": "Mover",
+        "in_mode": "Moviendo poste eléctrico"
       },
       "zone": {
         "display": "Mostrar rango de poste eléctrico"
