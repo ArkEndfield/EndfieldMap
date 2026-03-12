@@ -13,7 +13,7 @@ export class AssetService {
       mapImage: this.createFullUrl('/images/map'),
       mapData: this.createFullUrl('/data/entity/1.1.9'),
       entityData: this.createFullUrl('/data/entity/1.1.9'),
-      tierData: this.createFullUrl('/data/tier'),
+      tierData: this.createFullUrl('/data/entity/1.1.9'),
       langHash: this.createFullUrl('/data/entity/1.1.9'),
       entityImage: this.createFullUrl('/images/icon'),
       itemData: this.createFullUrl('/dev/item'),
