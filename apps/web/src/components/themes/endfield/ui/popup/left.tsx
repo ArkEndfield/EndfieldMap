@@ -101,12 +101,12 @@ const LeftContent = observer(({ className }: { className?: string }) => {
 
           <div className="flex-1 min-h-0 relative">
             <ScrollArea className="h-full">
-              <div className="pb-12 m-4">
+              <div className="pb-12">
                 {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} onVideoLinkChange={setVideoLink} onUnRefreshableChange={setUnRefreshable} />}
 
                 {/* 自定义标点类型选择 */}
                 {isCustomPoint && (
-                  <div className="mt-3 shrink-0">
+                  <div className="mt-3 shrink-0 m-4">
                     <div className="text-xs text-[#aaaaaa] mb-1">{t('popup:custom_point.change_type')}</div>
                     <EndfieldSelect
                       value={(activeFeature as CustomPointDataInstance).typeId}
