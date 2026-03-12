@@ -51,4 +51,10 @@ export const contributors: ContributorInfo[] = [
     home: 'https://github.com/KimigaiiWuyi',
     noReferrer: true,
   },
+  {
+    name: 'Student233',
+    avatar: 'https://avatars.githubusercontent.com/u/60351161?v=4',
+    home: 'https://github.com/HaloStudent233',
+    noReferrer: true,
+  },
 ];

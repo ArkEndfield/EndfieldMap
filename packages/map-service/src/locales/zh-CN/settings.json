@@ -101,6 +101,17 @@
       "success": "清除所有储存数据成功，刷新网页生效",
       "failed": "清除所有储存数据失败：{{reason}}",
       "description": "[危险操作]删除所有存储数据，包括状态数据、标点筛选数据以及所有电线杆数据和自定义点位数据"
+    },
+    "debug": {
+      "title": "调试",
+      "copy_sentry_ids": {
+        "title": "复制 Sentry 事件 ID",
+        "description": "将已存储的 Sentry 日志事件 ID 复制到剪贴板，用于支持或调试",
+        "copy": "复制 ID",
+        "success": "已复制 {{count}} 个事件 ID 到剪贴板",
+        "empty": "暂无已存储的 Sentry 事件 ID",
+        "failed": "复制到剪贴板失败"
+      }
     }
   },
   "about": {
