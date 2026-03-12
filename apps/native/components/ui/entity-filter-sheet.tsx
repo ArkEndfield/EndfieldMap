@@ -213,7 +213,7 @@ export const EntityFilterSheet = observer(
 
     const CATEGORY_ORDER = [
       CustomPointKey, ElectricPoleKey, NoteKey,
-      'other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative',
+      'disposable', 'trchest', 'rare_gather', 'common_gather', 'system', 'enemy', 'dnarrative', 'narrative',
     ];
 
     const groupedStats: { category: string; stats: FilterStat[] }[] = [];

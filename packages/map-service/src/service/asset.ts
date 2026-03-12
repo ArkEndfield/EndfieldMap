@@ -11,10 +11,10 @@ export class AssetService {
   public get url() {
     return {
       mapImage: this.createFullUrl('/images/map'),
-      mapData: this.createFullUrl('/data/map'),
-      entityData: this.createFullUrl('/data/entity'),
+      mapData: this.createFullUrl('/data/entity/1.1.9'),
+      entityData: this.createFullUrl('/data/entity/1.1.9'),
       tierData: this.createFullUrl('/data/tier'),
-      langHash: this.createFullUrl('/data/entity'),
+      langHash: this.createFullUrl('/data/entity/1.1.9'),
       entityImage: this.createFullUrl('/images/icon'),
       itemData: this.createFullUrl('/dev/item'),
       itemImage: this.createFullUrl('/images/icon'),

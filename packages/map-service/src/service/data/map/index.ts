@@ -130,7 +130,7 @@ export class MapDataService<T, R> {
   private async loadEntityData(retry_times: number = 0): Promise<void> {
     try {
       const [jsonData, infoData] = await Promise.all([
-        this.jsonLoader.loadJSON<EntityJsonDataList>(`${this.deps.assetService.url.entityData}/level_entities_categorized.json`),
+        this.jsonLoader.loadJSON<EntityJsonDataList>(`${this.deps.assetService.url.entityData}/level_entities_categorized_with_region.json`),
         this.jsonLoader.loadJSON<EntityInfoDataJson>(`${this.deps.assetService.url.entityData}/entity_info.json`),
       ]);
       if (jsonData && infoData) {

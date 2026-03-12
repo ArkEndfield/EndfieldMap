@@ -102,7 +102,8 @@ const EntityPanel = observer(() => {
 
     // 按 category 名称排序
     // result.sort((a, b) => a.category.localeCompare(b.category));
-    const hardCordOrder = ['other', 'trchest', 'plant', 'mineral', 'system', 'enemy', 'dnarrative', 'narrative'];
+    console.log(result)
+    const hardCordOrder = ['disposable', 'trchest', 'rare_gather', 'common_gather', 'system', 'enemy', 'dnarrative', 'narrative'];
     result.sort((a, b) => hardCordOrder.indexOf(a.category) - hardCordOrder.indexOf(b.category));
     return result;
   }, [entities, searchQuery, t]);
