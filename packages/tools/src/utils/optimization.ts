@@ -105,6 +105,7 @@ export function throttle<TArgs extends unknown[], TReturn>(
   let lastArgs: TArgs | null = null;
   let lastResult: TReturn | undefined;
   let lastPromise: Promise<TReturn> | undefined;
+  let hasInvoked = false;
 
   const execute = (args: TArgs): Promise<TReturn> | TReturn | undefined => {
     lastCallTime = Date.now();
@@ -132,17 +133,31 @@ export function throttle<TArgs extends unknown[], TReturn>(
     const now = Date.now();
     const timeSinceLastCall = now - lastCallTime;
 
-    if (timeSinceLastCall >= interval || (leading && lastCallTime === 0)) {
+    if (leading) {
+      if (timeSinceLastCall >= interval || lastCallTime === 0) {
+        // 超过间隔时间或首次调用（leading 模式），可以执行
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+        hasInvoked = true;
+        return execute(args);
+      }
+    } else if (hasInvoked && timeSinceLastCall >= interval) {
       // 超过间隔时间或首次调用（leading 模式），可以执行
       if (timeoutId) {
         clearTimeout(timeoutId);
         timeoutId = null;
       }
+      hasInvoked = true;
       return execute(args);
-    } else if (!timeoutId && trailing) {
+    }
+
+    if (!timeoutId && trailing) {
       // 间隔内，设置延迟执行
       lastArgs = args;
-      timeoutId = setTimeout(delayedExecute, interval - timeSinceLastCall);
+      const waitTime = hasInvoked ? Math.max(interval - timeSinceLastCall, 0) : interval;
+      timeoutId = setTimeout(delayedExecute, waitTime);
     }
 
     return lastPromise || lastResult;
