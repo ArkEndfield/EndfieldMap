@@ -105,10 +105,14 @@
     "debug": {
       "title": "デバッグ",
       "copy_sentry_ids": {
-        "title": "Sentry イベント ID をコピー",
-        "description": "サポートやデバッグ用に、保存された Sentry ログイベント ID をクリップボードにコピーします",
-        "copy": "ID をコピー",
-        "success": "{{count}} 件のイベント ID をクリップボードにコピーしました",
+        "title": "Error Diagnostics",
+        "description": "Copy the device ID or recent Sentry events so support can trace errors and replays for the same device",
+        "device_id_label": "Device ID",
+        "event_count": "Recent errors recorded: {{count}}",
+        "copy_device": "Copy Device ID",
+        "copy_events": "Copy All Event IDs",
+        "copy_device_success": "Device ID copied to clipboard",
+        "copy_events_success": "{{count}} event ID(s) copied to clipboard",
         "empty": "保存された Sentry イベント ID はまだありません",
         "failed": "クリップボードへのコピーに失敗しました"
       }

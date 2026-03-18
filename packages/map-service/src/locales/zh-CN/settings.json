@@ -105,10 +105,14 @@
     "debug": {
       "title": "调试",
       "copy_sentry_ids": {
-        "title": "复制 Sentry 事件 ID",
-        "description": "将已存储的 Sentry 日志事件 ID 复制到剪贴板，用于支持或调试",
-        "copy": "复制 ID",
-        "success": "已复制 {{count}} 个事件 ID 到剪贴板",
+        "title": "错误诊断信息",
+        "description": "复制设备 ID 或最近记录的 Sentry 事件，用于支持定位同一设备上的报错与回放",
+        "device_id_label": "设备 ID",
+        "event_count": "最近记录错误：{{count}} 个",
+        "copy_device": "复制设备 ID",
+        "copy_events": "复制所有事件 ID",
+        "copy_device_success": "设备 ID 已复制到剪贴板",
+        "copy_events_success": "已复制 {{count}} 个事件 ID 到剪贴板",
         "empty": "暂无已存储的 Sentry 事件 ID",
         "failed": "复制到剪贴板失败"
       }

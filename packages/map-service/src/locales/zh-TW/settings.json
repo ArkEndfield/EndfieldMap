@@ -105,10 +105,14 @@
     "debug": {
       "title": "除錯",
       "copy_sentry_ids": {
-        "title": "複製 Sentry 事件 ID",
-        "description": "將已儲存的 Sentry 日誌事件 ID 複製到剪貼簿，用於支援或除錯",
-        "copy": "複製 ID",
-        "success": "已複製 {{count}} 個事件 ID 到剪貼簿",
+        "title": "錯誤診斷資訊",
+        "description": "複製裝置 ID 或最近記錄的 Sentry 事件，方便支援追蹤同一裝置上的錯誤與回放",
+        "device_id_label": "裝置 ID",
+        "event_count": "最近記錄錯誤：{{count}} 個",
+        "copy_device": "複製裝置 ID",
+        "copy_events": "複製所有事件 ID",
+        "copy_device_success": "裝置 ID 已複製到剪貼簿",
+        "copy_events_success": "已複製 {{count}} 個事件 ID 到剪貼簿",
         "empty": "暫無已儲存的 Sentry 事件 ID",
         "failed": "複製到剪貼簿失敗"
       }

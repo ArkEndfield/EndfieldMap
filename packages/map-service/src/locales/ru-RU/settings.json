@@ -105,10 +105,14 @@
     "debug": {
       "title": "Отладка",
       "copy_sentry_ids": {
-        "title": "Копировать ID событий Sentry",
-        "description": "Скопировать сохранённые ID событий логов Sentry в буфер обмена для поддержки или отладки",
-        "copy": "Копировать ID",
-        "success": "{{count}} ID событий скопированы в буфер обмена",
+        "title": "Error Diagnostics",
+        "description": "Copy the device ID or recent Sentry events so support can trace errors and replays for the same device",
+        "device_id_label": "Device ID",
+        "event_count": "Recent errors recorded: {{count}}",
+        "copy_device": "Copy Device ID",
+        "copy_events": "Copy All Event IDs",
+        "copy_device_success": "Device ID copied to clipboard",
+        "copy_events_success": "{{count}} event ID(s) copied to clipboard",
         "empty": "Сохранённых ID событий Sentry пока нет",
         "failed": "Не удалось скопировать в буфер обмена"
       }

@@ -1,33 +1,10 @@
-import { logger } from '@endfieldmap/tools';
+import { getVersionInfo, logger } from '@endfieldmap/tools';
 import * as Sentry from '@sentry/react';
 
 import { isDev, sentryDsn } from '@/services/env';
+import { getDeviceId, sentryDiagnosticsStore } from '@/services/sentry_diagnostics';
 
-/** Max number of Sentry event IDs to keep in memory (for user to copy when reporting issues). */
-const MAX_STORED_EVENT_IDS = 100;
-
-const storedSentryEventIds: string[] = [];
-
-export function getStoredSentryEventIds(): readonly string[] {
-  return [...storedSentryEventIds];
-}
-
-export function getLastSentryEventId(): string | undefined {
-  return storedSentryEventIds[storedSentryEventIds.length - 1];
-}
-
-export function clearStoredSentryEventIds(): void {
-  storedSentryEventIds.length = 0;
-}
-
-function storeSentryEventId(eventId: string | undefined): void {
-  if (eventId) {
-    storedSentryEventIds.push(eventId);
-    if (storedSentryEventIds.length > MAX_STORED_EVENT_IDS) {
-      storedSentryEventIds.shift();
-    }
-  }
-}
+const versionInfo = getVersionInfo();
 
 if (!isDev) {
   Sentry.init({
@@ -38,7 +15,24 @@ if (!isDev) {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     beforeSend(event) {
-      storeSentryEventId(event.event_id);
+      sentryDiagnosticsStore.storeSentryEventId(event.event_id);
+
+      // 添加设备 ID 到事件用户信息中，帮助开发者识别问题发生的具体设备
+      const deviceId = getDeviceId();
+      event.user = {
+        ...event.user,
+        id: deviceId,
+      };
+
+      // 添加版本信息到事件上下文
+      event.contexts = {
+        ...event.contexts,
+        app: {
+          app_version: versionInfo.commitHash,
+          build_time: versionInfo.buildTime,
+        },
+      };
+
       return event;
     },
   });
