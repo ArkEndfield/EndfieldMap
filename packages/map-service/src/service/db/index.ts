@@ -166,6 +166,12 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
 
     const prevUserDB = this.user_db;
 
+    // 用户选择「不保留」或登出清除本地时，必须丢弃此前失败流程可能残留的待迁移快照，
+    // 否则 migrateUserData 会把旧快照写进新库，与当前选择不一致。
+    if (!migrate) {
+      this.prepareToMigrate = null;
+    }
+
     // 如果需要迁移，先保存 local_user_db 的数据
     if (migrate && prevUserDB) {
       logger.info('[Storage] Preparing data migration from local to user database');

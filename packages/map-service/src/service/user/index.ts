@@ -91,8 +91,8 @@ export class UserService<T, R> {
     }
     const findUid = this.auth.uidList.find((uid) => uid.uid === currentUid);
     if (!findUid) {
-      this.stopSync();
-      this.switchUid(void 0);
+      await this.stopSync();
+      await this.switchUid(void 0);
       return;
     }
     this.serverService.setUid(currentUid);
@@ -128,11 +128,21 @@ export class UserService<T, R> {
         }),
         dismissible: false,
         onConfirm: async () => {
+          const uidLabel =
+            uid === '0' ? this.i18nService.translate('user.uid.default', { ns: 'header' }) : uid;
           serviceEmitter.fire(SERVICE_EVENT.ALERT_CONFIRM, {
             dismissible: false,
             content: this.i18nService.translate('user.switch_confirm_keep', {
               ns: 'header',
-              uid: uid === '0' ? this.i18nService.translate('user.uid.default', { ns: 'header' }) : uid,
+              uid: uidLabel,
+            }),
+            // 必须用明确文案：通用「取消」会被理解成「关闭弹窗/返回上一步」，
+            // 但此处 onCancel 实际表示「不保留本地」，会造成误触后数据被清空。
+            confirmText: this.i18nService.translate('user.switch_confirm_keep_btn_merge', {
+              ns: 'header',
+            }),
+            cancelText: this.i18nService.translate('user.switch_confirm_keep_btn_cloud', {
+              ns: 'header',
             }),
             onConfirm: async () => {
               resolve(1);

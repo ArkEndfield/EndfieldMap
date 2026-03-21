@@ -417,7 +417,9 @@ interface Resources {
         "title": "注销账户"
       },
       "switch_confirm": "切换到 uid {{uid}} 以开始同步吗？",
-      "switch_confirm_keep": "是否保留当前数据到 uid {{uid}} ？",
+      "switch_confirm_keep": "是否把当前本地数据合并到 UID {{uid}}？（选「不保留」会清空本地并以云端为准）",
+      "switch_confirm_keep_btn_cloud": "不保留（用云端）",
+      "switch_confirm_keep_btn_merge": "保留并合并",
       "sync": {
         "no_uid_tip": "切换一个UID后开始同步数据",
         "start_now": "立即同步",

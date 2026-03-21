@@ -37,7 +37,7 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
   };
 
   const handleSwitchToUid = (uid: string) => {
-    service.userService.switchUid(uid);
+    void catchErrorWithTip(() => service.userService.switchUid(uid));
   };
 
   const handleLogout = async () => {
