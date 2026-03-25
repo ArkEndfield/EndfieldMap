@@ -17,11 +17,11 @@ export const COLLECTION_TABS: CollectionTab[] = [
     icon: BookIcon,
     component: lazy(() => import('./items/note')),
   },
-  {
-    key: 'resource_map',
-    label: '资源采集地图总览',
-    component: lazy(() => import('./items/temp')),
-  },
+  // {
+  //   key: 'resource_map',
+  //   label: '资源采集地图总览',
+  //   component: lazy(() => import('./items/temp')),
+  // },
   // {
   //   key: 'building',
   //   label: '建筑图鉴与蓝图管理',
