@@ -7,7 +7,10 @@ import { CustomPointController } from '@endfieldmap/map-adapter-ol/controller/en
 import { ElectricPoleController } from '@endfieldmap/map-adapter-ol/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-adapter-ol/controller/entity/entity_controller';
 import { ActiveFeatureController } from '@endfieldmap/map-adapter-ol/controller/feature/active_feature';
-import { ElectricPoleDragController, InitPoleDragOptions } from '@endfieldmap/map-adapter-ol/controller/feature/electric_pole_drag';
+import {
+  ElectricPoleDragController,
+  InitPoleDragOptions,
+} from '@endfieldmap/map-adapter-ol/controller/feature/electric_pole_drag';
 import { HoverConnectionController } from '@endfieldmap/map-adapter-ol/controller/feature/hover_connection';
 import { HoverFeatureController } from '@endfieldmap/map-adapter-ol/controller/feature/hover_feature';
 import { EventController } from '@endfieldmap/map-adapter-ol/controller/interaction/event';
@@ -17,7 +20,14 @@ import { TierController } from '@endfieldmap/map-adapter-ol/controller/tier';
 import { EntityTypeRegistry } from '@endfieldmap/map-adapter-ol/core/entity_registry';
 import { EndfieldMapEvent } from '@endfieldmap/map-adapter-ol/event/map';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import type { CustomPointDataInstance, ElectricPoleDataInstance, EndfieldMapAssetConfig, EntityDataInstance, MapData, MapDataJson, SimpleMapConfig } from '@endfieldmap/map-core';
+import type {
+  ElectricPoleDataInstance,
+  EndfieldMapAssetConfig,
+  EntityDataInstance,
+  MapData,
+  MapDataJson,
+  SimpleMapConfig,
+} from '@endfieldmap/map-core';
 import { EndfieldMapAsset, EndfieldMapEmitter, EntityInstanceKey, LayerType, MAP_EVENT } from '@endfieldmap/map-core';
 import type { LoggerReporter } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
@@ -157,10 +167,6 @@ export class EndfieldMapAdapter {
     this.entityRegistry.register({
       matchesInstance: (instance) => instance.entityType !== '#ElectricPole' && instance.entityType !== '#CustomPoint',
       searchById: (mapId, id) => this.entityController.getInstanceById(mapId, id),
-      toggleVisible: (instance) => {
-        const entityInstance = instance as EntityDataInstance;
-        this.entityController.setGroupVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
-      },
       getHitTestLayers: () => this.entityController?.render.currentRenderer || [],
       clustered: true,
       isGroupVisible: (instance) => {
@@ -172,10 +178,6 @@ export class EndfieldMapAdapter {
     this.entityRegistry.register({
       matchesInstance: (instance) => instance.entityType === '#ElectricPole',
       searchById: (mapId, id) => this.electricPoleController.dataManager.getMapManager(mapId).getById(id),
-      toggleVisible: () => {
-        this.electricPoleController.setVisible(true);
-        this.electricPoleController.setZoneVisible(true);
-      },
       getHitTestLayers: () => this.electricPoleController?.render.currentPoleRenderers || [],
       clustered: false,
       isGroupVisible: () => this.electricPoleController.dataManager.visible,
@@ -183,9 +185,6 @@ export class EndfieldMapAdapter {
     this.entityRegistry.register({
       matchesInstance: (instance) => instance.entityType === '#CustomPoint',
       searchById: (mapId, id) => this.customPointController.dataManager.getMapManager(mapId).getById(id),
-      toggleVisible: () => {
-        this.customPointController.setCustomPointVisible(true);
-      },
       getHitTestLayers: () => this.customPointController?.currentRenderer || [],
       clustered: false,
       isGroupVisible: (instance) => this.customPointController.getTypeVisible(instance.entityDataIdKey),
@@ -350,9 +349,7 @@ export class EndfieldMapAdapter {
   /**
    * 初始化电线杆拖拽：注入 canDragPole 与 onEnd，不依赖激活标点；hover 到杆上 pointerdown 即开始拖拽。
    */
-  public initPoleDrag(
-    options: InitPoleDragOptions
-  ): void {
+  public initPoleDrag(options: InitPoleDragOptions): void {
     this.electricPoleDragController.initPoleDrag(options);
   }
 
@@ -374,83 +371,6 @@ export class EndfieldMapAdapter {
    */
   public setClusterEnable(enable: boolean) {
     this.entityController.setClusterEnable(enable);
-  }
-
-  /**
-   * 移动到指定 entity
-   * @param entityId entity的id
-   * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
-   * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
-   * @param animationTime 移动视图animate的时间（可选，默认为1s）
-   * @param zoom 是否同时调整缩放（默认为undefined，即没有值，如果有值就同时设置缩放）
-   */
-  public async moveToEntity(
-    entityId: string | number,
-    autoToggleVisible: boolean = true,
-    autoSetActive: boolean = false,
-    animationTime: number = 1000,
-    zoom?: number
-  ): Promise<boolean> {
-    const id = typeof entityId === 'string' ? parseInt(entityId, 10) : entityId;
-    if (isNaN(id)) {
-      logger.warn('[EndfieldMapAdapter] Invalid entity ID:', entityId);
-      return false;
-    }
-
-    // 通过注册表在所有已注册实体类型中搜索
-    const mapIds = this.mapController.dataManager.mapIds;
-    const targetInstance = this.entityRegistry.searchById(mapIds, id);
-
-    if (!targetInstance) {
-      logger.warn(`[moveToEntity] Entity ${id} not found.`);
-      return false;
-    }
-
-    await this.moveToEntityInstance(targetInstance, autoToggleVisible, autoSetActive, animationTime, zoom);
-    return true;
-  }
-
-  /**
-   * 移动到指定 entity 实例
-   * @param instance entity实例
-   * @param autoToggleVisible 是否自动将该类entity设为visible（如果用户筛选entity的时候取消了显示，就自动打开，可选，默认为true）
-   * @param autoSetActive 是否将该entity设为active_feature（这样就会自动打开弹窗，可选，默认为false）
-   * @param animationTime 移动视图animate的时间（可选，默认为1s）
-   * @param zoom 是否同时调整缩放（默认为undefined，即没有值，如果有值就同时设置缩放）
-   */
-  public async moveToEntityInstance(
-    instance: EntityDataInstance | ElectricPoleDataInstance | CustomPointDataInstance,
-    autoToggleVisible: boolean = true,
-    autoSetActive: boolean = false,
-    animationTime: number = 1000,
-    zoom?: number
-  ) {
-    const targetMapId = instance.mapId;
-
-    // 切换地图
-    if (this.mapController.dataManager.currentMapId !== targetMapId) {
-      this.renderMap(targetMapId);
-    }
-
-    // 自动切换可见性（通过注册表统一分发）
-    if (autoToggleVisible) {
-      this.entityRegistry.toggleVisible(instance);
-    }
-
-    // 自动激活特征
-    if (autoSetActive) {
-      this.activeFeatureController.setActiveFeature(instance);
-    }
-
-    // 移动地图
-    const center = instance.coordinates;
-    if (center) {
-      this.mapController.olMapRenderer.view.animate({
-        center,
-        zoom: zoom ?? this.mapController.olMapRenderer.view.getZoom(),
-        duration: animationTime,
-      });
-    }
   }
 
   /**

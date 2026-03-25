@@ -61,10 +61,6 @@ export class MapLibreAdapter {
     this.entityRegistry.register({
       matchesInstance: (instance) => instance.entityType !== '#ElectricPole' && instance.entityType !== '#CustomPoint',
       searchById: (mapId, id) => this.entityController.getInstanceById(mapId, id),
-      toggleVisible: (instance) => {
-        const entityInstance = instance as EntityDataInstance;
-        this.entityController.setGroupVisibility(entityInstance.mapId, entityInstance.entityDataIdKey, true);
-      },
       isGroupVisible: (instance) => {
         const managers = this.entityController.dataManager.mapData.get(instance.mapId);
         const groupManager = managers?.get(instance.entityDataIdKey);
@@ -74,18 +70,11 @@ export class MapLibreAdapter {
     this.entityRegistry.register({
       matchesInstance: (instance) => instance.entityType === '#ElectricPole',
       searchById: (mapId, id) => this.electricPoleController.dataManager.getMapManager(mapId).getById(id),
-      toggleVisible: () => {
-        this.electricPoleController.setVisible(true);
-        this.electricPoleController.setZoneVisible(true);
-      },
       isGroupVisible: () => this.electricPoleController.dataManager.visible,
     });
     this.entityRegistry.register({
       matchesInstance: (instance) => instance.entityType === '#CustomPoint',
       searchById: (mapId, id) => this.customPointController.dataManager.getMapManager(mapId).getById(id),
-      toggleVisible: () => {
-        this.customPointController.setCustomPointVisible(true);
-      },
       isGroupVisible: (instance) => this.customPointController.getTypeVisible(instance.entityDataIdKey),
     });
   }
@@ -122,64 +111,6 @@ export class MapLibreAdapter {
 
   setClusterEnable(enable: boolean): void {
     this.entityController.setClusterEnable(enable);
-  }
-
-  async moveToEntity(
-    entityId: string | number,
-    autoToggleVisible = true,
-    autoSetActive = false,
-    animationTime = 1000,
-    zoom?: number
-  ): Promise<boolean> {
-    const id = typeof entityId === 'string' ? parseInt(entityId, 10) : entityId;
-    if (isNaN(id)) {
-      logger.warn('[MapLibreAdapter] Invalid entity ID:', entityId);
-      return false;
-    }
-
-    // 通过注册表在所有已注册实体类型中搜索
-    const mapIds = this.mapController.dataManager.mapIds;
-    const targetInstance = this.entityRegistry.searchById(mapIds, id);
-
-    if (!targetInstance) {
-      logger.warn(`[MapLibreAdapter] Entity ${id} not found.`);
-      return false;
-    }
-
-    await this.moveToEntityInstance(targetInstance, autoToggleVisible, autoSetActive, animationTime, zoom);
-    return true;
-  }
-
-  async moveToEntityInstance(
-    instance: DataInstance,
-    autoToggleVisible = true,
-    autoSetActive = false,
-    animationTime = 1000,
-    zoom?: number
-  ): Promise<void> {
-    const targetMapId = instance.mapId;
-
-    if (this.mapController.dataManager.currentMapId !== targetMapId) {
-      this.renderMap(targetMapId);
-    }
-
-    // 自动切换可见性（通过注册表统一分发）
-    if (autoToggleVisible) {
-      this.entityRegistry.toggleVisible(instance);
-    }
-
-    if (autoSetActive) {
-      this.activeFeatureController.setActiveFeature(instance);
-    }
-
-    const center = instance.coordinates;
-    if (center) {
-      this.mapController.view.animate({
-        center,
-        zoom: zoom ?? this.mapController.view.getZoom(),
-        duration: animationTime,
-      });
-    }
   }
 
   dispose(): void {

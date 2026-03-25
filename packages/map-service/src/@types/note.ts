@@ -1,3 +1,5 @@
+import { MapData } from '@endfieldmap/map-core';
+
 // 单个分类项接口
 export interface CollectionIdItem {
   id: string;
@@ -20,6 +22,6 @@ export interface ResearchItem {
 
 // JSON 数据结构 (prts_investigate_tmpl.json)
 export interface InvestigateData {
-  domain_1: ResearchItem[];
-  domain_2: ResearchItem[];
+  mapId: MapData['id'];
+  collections: ResearchItem[];
 }

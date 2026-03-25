@@ -1,14 +1,14 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { useIsMobile, WindowProvider,ZmdSquareButton } from '@endfieldmap/web-components';
+import { ChevronUp } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { lazy, Suspense, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 import { AdapterProvider } from '@/components/common/adapter_provider';
 import { DevTip } from '@/components/common/dev_tip';
-import { ChevronUp } from '@endfieldmap/web-components';
 import { SettingsPage } from '@/components/features/settings';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useMapPiP } from '@/hooks/use_map_pip';
@@ -81,6 +81,11 @@ const Controllers = observer(({ adapter }: ControllersProps) => {
           {/* 更多操作组件 */}
           <Suspense>
             <ThemedComponents.map.ExtraOperation />
+          </Suspense>
+
+          {/* 入口组件 */}
+          <Suspense>
+            <ThemedComponents.map.Entries />
           </Suspense>
 
           {/* DevTools */}

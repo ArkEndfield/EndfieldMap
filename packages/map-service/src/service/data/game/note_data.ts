@@ -12,7 +12,7 @@ export class NoteDataService {
   private jsonLoader: JSONLoader;
   private assetService: AssetService;
   @observable
-  accessor investigateData!: InvestigateData;
+  accessor investigateData!: InvestigateData[];
 
   constructor(config: NoteDataConfig) {
     this.jsonLoader = config.jsonLoader;
@@ -21,8 +21,8 @@ export class NoteDataService {
 
   @action
   public async init() {
-    const investigateDataUrl = `${this.assetService.url.entityData}/prts_investigate_tmpl.json`;
-    const investigateData = await this.jsonLoader.loadJSON<InvestigateData>(investigateDataUrl);
+    const investigateDataUrl = `${this.assetService.url.entityData}/prts_investigate_tmpl_2.json`;
+    const investigateData = await this.jsonLoader.loadJSON<InvestigateData[]>(investigateDataUrl);
     this.investigateData = investigateData;
   }
 }

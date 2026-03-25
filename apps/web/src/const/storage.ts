@@ -6,6 +6,7 @@ export enum UILocalStorageKey {
   AUDIO_ENABLED = 'audioEnabled',
   SWIPER_OPEN = 'swiperOpen',
   ENABLE_TIER = 'enableTier',
+  NOTE_CLOSE_ON_JUMP = 'noteCloseOnJump',
 }
 
 export enum UserLocalStorageKey {

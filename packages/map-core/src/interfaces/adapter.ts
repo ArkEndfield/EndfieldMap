@@ -9,7 +9,8 @@ import type {
   IMapController,
   ITierController,
 } from '@endfieldmap/map-core/interfaces/controllers';
-import type { DataInstance, MapEventEmitter } from '@endfieldmap/map-core/types/event';
+import type { EntitySearchRegistry } from '@endfieldmap/map-core/data/entity_search_registry';
+import type { MapEventEmitter } from '@endfieldmap/map-core/types/event';
 import type { MapData } from '@endfieldmap/map-core/types/map';
 
 /**
@@ -29,6 +30,7 @@ export interface IMapAdapter {
   readonly activeFeatureController: IActiveFeatureController;
   readonly hoverFeatureController: IHoverFeatureController;
   readonly hoverConnectionController: IHoverConnectionController;
+  readonly entityRegistry: EntitySearchRegistry;
 
   enableHover: boolean;
   hoverDebounceTime: number;
@@ -41,19 +43,5 @@ export interface IMapAdapter {
   setHoverFeatureEnable(enable: boolean): void;
   setHoverDebounceTime(time: number): void;
   setClusterEnable(enable: boolean): void;
-  moveToEntity(
-    entityId: string | number,
-    autoToggleVisible?: boolean,
-    autoSetActive?: boolean,
-    animationTime?: number,
-    zoom?: number
-  ): Promise<boolean>;
-  moveToEntityInstance(
-    instance: DataInstance,
-    autoToggleVisible?: boolean,
-    autoSetActive?: boolean,
-    animationTime?: number,
-    zoom?: number
-  ): Promise<void>;
   dispose(): void;
 }

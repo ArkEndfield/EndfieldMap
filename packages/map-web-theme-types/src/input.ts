@@ -12,6 +12,7 @@ export interface InputProps {
   minLength?: number;
   pattern?: string;
   inputClassName?: string;
+  className?: string;
   onValueChange?: (value: string) => void;
   content?: React.ReactNode;
   rows?: number;

@@ -318,7 +318,6 @@ const CoordinateJump = observer(() => {
 });
 
 const EntityLocate = observer(() => {
-  const { adapter } = useAdapter();
   const [entityId, setEntityId] = useState('');
 
   const handleLocate = async () => {
@@ -328,7 +327,7 @@ const EntityLocate = observer(() => {
       return;
     }
 
-    const found = await adapter.moveToEntity(id, true, true);
+    const found = await service.dataService.mapDataService.moveToEntity(id, true, true);
     if (!found) {
       alert.info(`未找到 levelLogicId 为 ${id} 的标点`);
     }

@@ -9,7 +9,6 @@ import { useMemo, useState } from 'react';
 
 import CustomPointList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/custom_point';
 import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
-import NoteEntityGroup from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/note';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 
@@ -102,8 +101,17 @@ const EntityPanel = observer(() => {
 
     // 按 category 名称排序
     // result.sort((a, b) => a.category.localeCompare(b.category));
-    console.log(result)
-    const hardCordOrder = ['disposable', 'trchest', 'rare_gather', 'common_gather', 'system', 'enemy', 'dnarrative', 'narrative'];
+    console.log(result);
+    const hardCordOrder = [
+      'disposable',
+      'trchest',
+      'rare_gather',
+      'common_gather',
+      'system',
+      'enemy',
+      'dnarrative',
+      'narrative',
+    ];
     result.sort((a, b) => hardCordOrder.indexOf(a.category) - hardCordOrder.indexOf(b.category));
     return result;
   }, [entities, searchQuery, t]);
@@ -141,7 +149,6 @@ const EntityPanel = observer(() => {
       <div>
         {!searchQuery && <CustomPointList />}
         {!searchQuery && <ElectricPoleList />}
-        <NoteEntityGroup searchQuery={searchQuery} />
         {categorizedEntities.map((categoryInfo) => (
           <EntityGroup
             key={categoryInfo.category}

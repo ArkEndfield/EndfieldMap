@@ -80,6 +80,10 @@ class UIManager {
     initialValue: true,
     storageKey: UILocalStorageKey.ENABLE_TIER,
   });
+  public noteCloseOnJump = new LocalStorageValue({
+    initialValue: false,
+    storageKey: UILocalStorageKey.NOTE_CLOSE_ON_JUMP,
+  });
 
   constructor() {
     this.settingsShown = false;
@@ -189,6 +193,7 @@ class UIManager {
         MapIndexMenu: components.get(ComponentType.MAP_INDEX_MENU),
         TierManager: components.get(ComponentType.TIER_MANAGER),
         ExtraOperation: components.get(ComponentType.EXTRA_OPERATION),
+        Entries: components.get(ComponentType.ENTRIES),
       },
       alert: {
         Alert: components.get(ComponentType.ALERT),

@@ -19,6 +19,7 @@ export enum ComponentType {
   ROOT_PROVIDER = 'RootProvider',
   TIER_MANAGER = 'TierManager',
   EXTRA_OPERATION = 'ExtraOperation',
+  ENTRIES = 'Entries',
 }
 
 export interface ThemedComponentMap {
@@ -37,6 +38,7 @@ export interface ThemedComponentMap {
   [ComponentType.ROOT_PROVIDER]: LazyExoticComponent<FC<ThemeRootContextProps>>;
   [ComponentType.TIER_MANAGER]: LazyExoticComponent<FC<object>>;
   [ComponentType.EXTRA_OPERATION]: LazyExoticComponent<FC<object>>;
+  [ComponentType.ENTRIES]: LazyExoticComponent<FC<object>>;
 }
 
 export type ThemedComponent<T extends ComponentType> = T extends keyof ThemedComponentMap

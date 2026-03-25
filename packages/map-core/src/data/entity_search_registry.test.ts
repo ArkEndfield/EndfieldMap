@@ -16,13 +16,11 @@ describe('EntitySearchRegistry', () => {
     registry.register({
       matchesInstance: () => false,
       searchById: (mapId, id) => (mapId === 'map-b' && id === 1 ? first : undefined),
-      toggleVisible: vi.fn(),
       isGroupVisible: vi.fn(),
     });
     registry.register({
       matchesInstance: () => false,
       searchById: (mapId, id) => (mapId === 'map-c' && id === 2 ? second : undefined),
-      toggleVisible: vi.fn(),
       isGroupVisible: vi.fn(),
     });
 
@@ -40,23 +38,18 @@ describe('EntitySearchRegistry', () => {
     registry.register({
       matchesInstance: (instance) => ((instance as unknown as TestInstance).kind === 'other'),
       searchById: () => undefined,
-      toggleVisible: vi.fn(),
       isGroupVisible: vi.fn().mockReturnValue(true),
     });
     registry.register({
       matchesInstance: (instance) => ((instance as unknown as TestInstance).kind === 'target'),
       searchById: () => undefined,
-      toggleVisible,
       isGroupVisible,
     });
 
     expect(registry.findRegistration(matchingInstance)).toMatchObject({
-      toggleVisible,
       isGroupVisible,
     });
 
-    registry.toggleVisible(matchingInstance);
-    expect(toggleVisible).toHaveBeenCalledWith(matchingInstance);
     expect(registry.isGroupVisible(matchingInstance)).toBe(false);
   });
 

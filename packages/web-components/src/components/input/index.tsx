@@ -15,6 +15,7 @@ export const EndfieldInput = ({
   maxLength,
   minLength,
   pattern,
+  className,
   inputClassName,
   onValueChange,
   content,
@@ -67,7 +68,7 @@ export const EndfieldInput = ({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className={cn('flex flex-col gap-3', className)}>
       {content && <div>{content}</div>}
       <div className="relative">
         {inputType === 'textarea' ? (

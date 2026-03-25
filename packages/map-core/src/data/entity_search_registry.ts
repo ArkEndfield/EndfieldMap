@@ -10,8 +10,6 @@ export interface EntitySearchRegistration {
   matchesInstance: (instance: DataInstance) => boolean;
   /** 在指定地图中按 ID 搜索数据实例 */
   searchById: (mapId: string, id: number) => DataInstance | undefined;
-  /** 自动切换可见性（用于 moveToEntity 的 autoToggleVisible） */
-  toggleVisible: (instance: DataInstance) => void;
   /** 检查实例所属组/类型是否可见 */
   isGroupVisible: (instance: DataInstance) => boolean;
 }
@@ -49,13 +47,6 @@ export class EntitySearchRegistry<T extends EntitySearchRegistration = EntitySea
    */
   findRegistration(instance: DataInstance): T | undefined {
     return this.registrations.find((r) => r.matchesInstance(instance));
-  }
-
-  /**
-   * 自动切换实例的可见性
-   */
-  toggleVisible(instance: DataInstance): void {
-    this.findRegistration(instance)?.toggleVisible(instance);
   }
 
   /**
