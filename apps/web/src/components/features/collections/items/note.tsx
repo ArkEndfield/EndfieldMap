@@ -257,7 +257,7 @@ const Note = observer(({ onClose }: { onClose?: () => void }) => {
       const csDesc = t(`lang:${collectionDesc}`, { defaultValue: collectionDesc || '' }).toLowerCase();
       const cName = t(`lang:${categoryName}`, { defaultValue: categoryName }).toLowerCase();
 
-      collectionList.forEach(({ id, levelLogicId }) => {
+      collectionList.forEach(({ id, levelLogicId, name, desc }) => {
         const canJump = !!levelLogicId;
         // TODO: i18n
         const tags = canJump ? ['地图收集'] : ['其他'];
@@ -268,8 +268,8 @@ const Note = observer(({ onClose }: { onClose?: () => void }) => {
           id,
           levelLogicId,
           canJump,
-          title: id,
-          summary: id,
+          title: name,
+          summary: desc,
           footerText,
           tags,
           accentColor: color,

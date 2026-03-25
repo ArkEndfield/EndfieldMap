@@ -4,6 +4,8 @@ import { MapData } from '@endfieldmap/map-core';
 export interface CollectionIdItem {
   id: string;
   levelLogicId: number;
+  name: string;
+  desc: string;
 }
 
 export interface CategoryItem {
