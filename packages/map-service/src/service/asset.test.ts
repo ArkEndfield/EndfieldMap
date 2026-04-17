@@ -14,7 +14,7 @@ describe('AssetService', () => {
     const service = new AssetService('https://assets.example.com/base/');
 
     expect(service.url.mapImage).toBe('https://assets.example.com/images/map');
-    expect(service.url.langHash).toBe('https://assets.example.com/data/entity/1.1.9');
+    expect(service.url.langHash).toBe('https://assets.example.com/data/entity/1.2.4');
     expect(service.url.audio).toBe('https://assets.example.com/audio');
   });
 });
