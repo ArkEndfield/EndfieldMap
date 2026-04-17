@@ -1,3 +1,4 @@
+import { readdirSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { sentryVitePlugin } from '@sentry/vite-plugin';
@@ -6,8 +7,22 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
+function removeSourceMaps(dir: string): void {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = resolve(dir, entry.name);
+    if (entry.isDirectory()) {
+      removeSourceMaps(fullPath);
+      continue;
+    }
+    if (entry.isFile() && fullPath.endsWith('.map')) {
+      rmSync(fullPath);
+    }
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
+  const sentryEnabled = Boolean(process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT);
   const alias = {
     '@endfieldmap/map-adapter-ol': resolve(__dirname, '../../packages/map-adapter-ol/src'),
     '@endfieldmap/map-core': resolve(__dirname, '../../packages/map-core/src'),
@@ -38,7 +53,7 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
       tailwindcss(),
-      !!process.env.SENTRY_AUTH_TOKEN &&
+      sentryEnabled &&
         sentryVitePlugin({
           authToken: process.env.SENTRY_AUTH_TOKEN,
           org: process.env.SENTRY_ORG,
@@ -51,6 +66,7 @@ export default defineConfig(({ command, mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         workbox: {
+          sourcemap: false,
           navigateFallbackDenylist: [/^\/docs/],
         },
         includeAssets: ['favicon.ico', 'locales/**/*.json', 'images/**/*.png', 'images/**/*.jpg', 'images/**/*.svg'],
@@ -73,6 +89,12 @@ export default defineConfig(({ command, mode }) => {
           ],
         },
       }),
+      sentryEnabled && {
+        name: 'cleanup-residual-sourcemaps',
+        closeBundle() {
+          removeSourceMaps(resolve(__dirname, 'dist'));
+        },
+      },
     ],
     resolve: {
       alias: {
@@ -86,7 +108,7 @@ export default defineConfig(({ command, mode }) => {
       allowedHosts: ['.cnb.run'],
     },
     build: {
-      sourcemap: 'hidden',
+      sourcemap: sentryEnabled ? 'hidden' : false,
       rollupOptions: {
         output: {
           manualChunks(id) {
