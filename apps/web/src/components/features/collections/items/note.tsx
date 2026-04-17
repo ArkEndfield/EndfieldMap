@@ -1,13 +1,14 @@
-import { ScrollArea, CheckboxToggle, ZmdRoundIconButton } from '@endfieldmap/web-components';
-import { AnimatePresence, motion } from 'motion/react';
-import { observer } from 'mobx-react-lite';
-import { useTranslation } from 'react-i18next';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { service } from '@/services';
-import { Input } from '@/components/common/input';
-import uiManager from '@/services/ui_manager';
-import { cn } from '@endfieldmap/tools';
 import type { CollectionIdItem } from '@endfieldmap/map-service/@types/note';
+import { cn } from '@endfieldmap/tools';
+import { CheckboxToggle, ScrollArea, ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { observer } from 'mobx-react-lite';
+import { AnimatePresence, motion } from 'motion/react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { Input } from '@/components/common/input';
+import { service } from '@/services';
+import uiManager from '@/services/ui_manager';
 
 interface NoteItem {
   id: string;
@@ -268,8 +269,8 @@ const Note = observer(({ onClose }: { onClose?: () => void }) => {
           id,
           levelLogicId,
           canJump,
-          title: name,
-          summary: desc,
+          title: t(`lang:${name}`, { defaultValue: name }),
+          summary: t(`lang:${desc}`, { defaultValue: desc }),
           footerText,
           tags,
           accentColor: color,
@@ -400,7 +401,6 @@ const Note = observer(({ onClose }: { onClose?: () => void }) => {
         </div>
 
         {/* 搜索框 */}
-        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div className="sticky top-0 z-2 pt-2 flex items-center gap-3" onKeyDown={handleSearchKeyDown}>
           <Input
             defaultValue={searchQuery}
