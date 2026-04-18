@@ -9,17 +9,21 @@ export class AssetService {
   }
 
   public get url() {
+    // TODO: 版本更新维护地址@skadi
     return {
-      mapImage: this.createFullUrl('/images/map'),
+      // 存数据的
       mapData: this.createFullUrl('/data/entity/1.2.4'),
       entityData: this.createFullUrl('/data/entity/1.2.4'),
       tierData: this.createFullUrl('/data/entity/1.2.4'),
       langHash: this.createFullUrl('/data/entity/1.2.4'),
+      itemData: this.createFullUrl('/data/entity/1.2.4'),
+      // TODO: 需要规范一下@skadi
+      miniGameData: this.createFullUrl('/data/minigame'),
+      // 存图片的
       entityImage: this.createFullUrl('/images/icon'),
-      itemData: this.createFullUrl('/dev/item'),
+      mapImage: this.createFullUrl('/images/map'),
       itemImage: this.createFullUrl('/images/icon'),
       tierImage: this.createFullUrl('/images/tier'),
-      miniGameData: this.createFullUrl('/data/minigame'),
       avatar: this.createFullUrl('/images/avatar'),
       misc: this.createFullUrl('/images/misc'),
       audio: this.createFullUrl('/audio'),
