@@ -3,6 +3,7 @@ import React, { Suspense } from 'react';
 import { LoadingScreen } from '@/components/common/loading_screen';
 import { LoadingStageId } from '@/const/loading';
 import { loadingManager } from '@/services/loading';
+import { SWUpdatePrompt } from '@/main.tsx';
 
 const EndfieldMap = React.lazy(async () => {
   try {
@@ -20,6 +21,7 @@ function App() {
   return (
     <>
       <LoadingScreen />
+      <SWUpdatePrompt />
       <Suspense fallback={null}>
         <EndfieldMap />
       </Suspense>
