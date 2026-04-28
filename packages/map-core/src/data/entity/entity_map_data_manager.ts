@@ -37,6 +37,14 @@ export class EntityMapDataManager {
   @observable
   accessor markedFilterMode: MarkedFeatureFilterMode = MarkedFeatureFilterMode.All;
 
+  /** 地图 level 列表：mapId -> map_level_id[] */
+  @observable
+  accessor mapLevelIdsByMap: Map<MapData['id'], string[]> = new Map();
+
+  /** 选中的地图 levels：mapId -> selected map_level_id set；未设置表示全选 */
+  @observable
+  accessor selectedLevelIdsByMap: Map<MapData['id'], Set<string>> = new Map();
+
   /** 是否禁用聚合 */
   @observable
   accessor disableCluster: boolean = false;
@@ -71,11 +79,13 @@ export class EntityMapDataManager {
         for (const mapItem of jsonData) {
           const mapId = mapItem.map_id;
           const groupManagerMap = new Map<string, EntityGroupManager>();
+          const mapLevelIds: string[] = [];
 
           const groupDataMap = new Map<string, { category: Category; entities: EntityData[] }>();
 
           // 收集该地图所有的entity数据，按entityDataIdKey分组，并注入entityInfo
           for (const levelItem of mapItem.levels) {
+            mapLevelIds.push(levelItem.map_level_id);
             for (const categoryItem of levelItem.categories) {
               const category = categoryItem.category;
               for (const entity of categoryItem.data) {
@@ -86,6 +96,7 @@ export class EntityMapDataManager {
                 if (entityInfo) {
                   entity.entityInfo = entityInfo;
                 }
+                entity.mapLevelId = levelItem.map_level_id;
 
                 // Grouping
                 let group = groupDataMap.get(key);
@@ -119,6 +130,7 @@ export class EntityMapDataManager {
 
           runInAction(() => {
             this.mapData.set(mapId, groupManagerMap);
+            this.mapLevelIdsByMap.set(mapId, mapLevelIds);
           });
         }
       }
@@ -156,7 +168,84 @@ export class EntityMapDataManager {
    */
   @computed
   get currentStats(): EntityInfoStats[] {
-    return this.currentGroupManagers.map((manager) => manager.stats);
+    const mapId = this.mapDataManager.currentMapId;
+    const stats: EntityInfoStats[] = [];
+
+    for (const manager of this.currentGroupManagers) {
+      const filteredInstances = manager.instances.filter((instance) =>
+        this.isLevelSelected(mapId, instance.data.mapLevelId)
+      );
+
+      if (filteredInstances.length === 0) {
+        continue;
+      }
+
+      stats.push({
+        ...manager.stats,
+        count: filteredInstances.length,
+        markedCount: filteredInstances.filter((instance) => instance.marked).length,
+        selectedCount: filteredInstances.filter((instance) => instance.selected).length,
+      });
+    }
+
+    return stats;
+  }
+
+  /**
+   * 获取地图的所有 level id
+   */
+  public getMapLevelIds(mapId: MapData['id']): string[] {
+    return [...(this.mapLevelIdsByMap.get(mapId) ?? [])];
+  }
+
+  /**
+   * 获取地图当前选中的 level id；未设置过时默认全选
+   */
+  public getSelectedLevelIds(mapId: MapData['id']): Set<string> {
+    const selected = this.selectedLevelIdsByMap.get(mapId);
+    return new Set(selected ?? this.getMapLevelIds(mapId));
+  }
+
+  /**
+   * 判断 level 是否被选中；没有 level 维度的数据默认不被过滤
+   */
+  public isLevelSelected(mapId: MapData['id'], levelId?: string): boolean {
+    if (!levelId) {
+      return true;
+    }
+    return this.getSelectedLevelIds(mapId).has(levelId);
+  }
+
+  /**
+   * 设置地图选中的 levels
+   */
+  @action
+  public setSelectedLevels(mapId: MapData['id'], levelIds: string[]): void {
+    const knownLevelIds = new Set(this.getMapLevelIds(mapId));
+    const selectedLevelIds = levelIds.filter((levelId) => knownLevelIds.has(levelId));
+    this.selectedLevelIdsByMap.set(mapId, new Set(selectedLevelIds));
+  }
+
+  /**
+   * 设置单个 level 是否选中
+   */
+  @action
+  public setLevelSelected(mapId: MapData['id'], levelId: string, selected: boolean): void {
+    const nextSelectedLevelIds = this.getSelectedLevelIds(mapId);
+    if (selected) {
+      nextSelectedLevelIds.add(levelId);
+    } else {
+      nextSelectedLevelIds.delete(levelId);
+    }
+    this.setSelectedLevels(mapId, [...nextSelectedLevelIds]);
+  }
+
+  /**
+   * 重置地图 level 选择为全选
+   */
+  @action
+  public resetSelectedLevels(mapId: MapData['id']): void {
+    this.selectedLevelIdsByMap.delete(mapId);
   }
 
   /**

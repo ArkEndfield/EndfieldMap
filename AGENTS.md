@@ -39,3 +39,12 @@
 
 - Prefer minimal, targeted changes aligned with existing patterns and directory layout.
 - Do not introduce new dependencies or tooling without clear justification in the PR description or accompanying notes.
+
+## Entity Level Filtering Rules
+
+- Any future filtering or toggling behavior based on `level_entities_categorized_with_region.json` or its `levels` / `map_level_id` data must be implemented as derived UI/render state only.
+- Do not filter, crop, or skip `levels`, `categories`, or entity `instances` while loading `level_entities_categorized_with_region.json`. The full dataset must remain in memory.
+- Level-based filtering may only affect map rendering by updating each render feature's `visible` state and left-side entity panel statistics through `EntityMapDataManager.currentStats` or equivalent derived stats.
+- Level-based filtering must not affect `getInstanceById`, player mark import/export/write flows, or entity group visibility persistence.
+- Do not route level filters through `entityVisibilityService`, group visibility storage, player mark storage, import/export data formats, or any database-backed user preference unless explicitly requested as a separate non-destructive UI preference.
+- Hidden levels must remain reversible: re-enabling a level should immediately restore its instances in rendering/statistics without requiring data reload and without losing marked, selected, active, or visibility state.

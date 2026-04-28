@@ -86,6 +86,14 @@ export class EntityController extends Disposer {
     return this.dataManager.getInstanceById(mapId, id);
   }
 
+  public getMapLevelIds(mapId: MapData['id']): string[] {
+    return this.dataManager.getMapLevelIds(mapId);
+  }
+
+  public getSelectedLevelIds(mapId: MapData['id']): string[] {
+    return [...this.dataManager.getSelectedLevelIds(mapId)];
+  }
+
   // #endregion
 
   // #region 事件处理
@@ -170,14 +178,12 @@ export class EntityController extends Disposer {
           enableShadow: false,
         });
 
-        const filterMode = this.dataManager.markedFilterMode;
-
         // 生成 FeatureData 并批量添加
         const featureDataList: FeatureData[] = manager.instances.map((instance) => ({
           id: instance.id,
           coordinates: instance.coordinates,
           dataInstance: instance,
-          visible: this.isFeatureVisibleByFilter(instance.marked, filterMode),
+          visible: this.isFeatureRenderable(instance),
           marked: instance.marked,
           selected: instance.selected,
           active: instance.active,
@@ -243,6 +249,14 @@ export class EntityController extends Disposer {
     }
   }
 
+  private isFeatureRenderable(instance: EntityDataInstance): boolean {
+    return (
+      instance.visible &&
+      this.isFeatureVisibleByFilter(instance.marked, this.dataManager.markedFilterMode) &&
+      this.dataManager.isLevelSelected(instance.mapId, instance.data.mapLevelId)
+    );
+  }
+
   /**
    * 应用 marked 过滤模式到当前地图的所有渲染器
    * 通过设置每个 feature 的 visible 属性来控制显隐
@@ -254,11 +268,45 @@ export class EntityController extends Disposer {
 
     for (const renderer of renderers) {
       renderer.updateAllFeaturesState((_id, feature) => {
-        const marked = feature.get('marked') === 1;
-        return { visible: this.isFeatureVisibleByFilter(marked, mode) };
+        const instance = feature.get(EntityInstanceKey) as EntityDataInstance | undefined;
+        if (!instance) {
+          const marked = feature.get('marked') === 1;
+          return { visible: this.isFeatureVisibleByFilter(marked, mode) };
+        }
+        return { visible: this.isFeatureRenderable(instance) };
       });
       renderer.refreshAllClusterProps();
     }
+  }
+
+  private applyLevelFilter(mapId: MapData['id']): void {
+    const renderers = this.render.getRenderers(mapId);
+    for (const renderer of renderers) {
+      renderer.updateAllFeaturesState((_id, feature) => {
+        const instance = feature.get(EntityInstanceKey) as EntityDataInstance | undefined;
+        if (!instance) return {};
+        return { visible: this.isFeatureRenderable(instance) };
+      });
+      renderer.refreshAllClusterProps();
+    }
+  }
+
+  @action
+  public setSelectedLevels(mapId: MapData['id'], levelIds: string[]): void {
+    this.dataManager.setSelectedLevels(mapId, levelIds);
+    this.applyLevelFilter(mapId);
+  }
+
+  @action
+  public setLevelSelected(mapId: MapData['id'], levelId: string, selected: boolean): void {
+    this.dataManager.setLevelSelected(mapId, levelId, selected);
+    this.applyLevelFilter(mapId);
+  }
+
+  @action
+  public resetSelectedLevels(mapId: MapData['id']): void {
+    this.dataManager.resetSelectedLevels(mapId);
+    this.applyLevelFilter(mapId);
   }
 
   /**
@@ -271,10 +319,9 @@ export class EntityController extends Disposer {
     // 同步渲染
     const instance = this.dataManager.getInstanceById(mapId, levelLogicId);
     if (instance) {
-      const visible = this.isFeatureVisibleByFilter(instance.marked, this.dataManager.markedFilterMode);
       this.render.updateFeatureState(mapId, instance.id, {
         marked: instance.marked,
-        visible,
+        visible: this.isFeatureRenderable(instance),
       });
     }
   }
@@ -288,7 +335,7 @@ export class EntityController extends Disposer {
     if (!instance) return;
     instance.setVisible(visible);
     this.render.updateFeatureState(mapId, instance.id, {
-      visible,
+      visible: this.isFeatureRenderable(instance),
     });
   }
 
@@ -304,7 +351,7 @@ export class EntityController extends Disposer {
         const instance = feature.get(EntityInstanceKey);
         if (!instance) return { visible };
         instance.setVisible(visible);
-        return { visible };
+        return { visible: this.isFeatureRenderable(instance) };
       });
       renderer.refreshAllClusterProps();
     }

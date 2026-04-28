@@ -37,6 +37,10 @@
     "unmarked": "未標記",
     "reset": "重置",
     "search_placeholder": "搜尋...",
+    "area": {
+      "title": "區域篩選",
+      "level": {}
+    },
     "category": {
       "ether": "醚質",
       "trchest": "寶箱",

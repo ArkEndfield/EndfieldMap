@@ -46,6 +46,26 @@ function createJsonData(): EntityJsonDataList {
             },
           ],
         },
+        {
+          map_level_id: 'lv2',
+          categories: [
+            {
+              category: 'enemy',
+              data: [
+                {
+                  levelLogicId: 3,
+                  entityDataIdKey: 'enemy_a',
+                  templateId: 'enemy_template',
+                  entityType: '#Entity',
+                  position: { x: 5, y: 0, z: 6 },
+                  properties: {},
+                  progressLockCondition: {},
+                  componentProperties: {},
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
   ];
@@ -71,11 +91,13 @@ describe('EntityMapDataManager', () => {
 
     expect(manager.dataLoaded).toBe(true);
     expect(manager.currentGroupManagers).toHaveLength(1);
-    expect(manager.currentGroupManagers[0]?.count).toBe(2);
+    expect(manager.currentGroupManagers[0]?.count).toBe(3);
+    expect(manager.getMapLevelIds('map_1')).toEqual(['lv1', 'lv2']);
+    expect([...manager.getSelectedLevelIds('map_1')]).toEqual(['lv1', 'lv2']);
     expect(manager.currentStats).toEqual([
       expect.objectContaining({
         entityDataIdKey: 'enemy_a',
-        count: 2,
+        count: 3,
         category: 'enemy',
       }),
     ]);
@@ -93,6 +115,36 @@ describe('EntityMapDataManager', () => {
 
     manager.setGroupVisibility('map_1', 'enemy_a', true);
     expect(manager.currentGroupManagers[0]?.groupVisible).toBe(true);
+  });
+
+  it('filters current stats by selected levels without dropping instances or marks', async () => {
+    const manager = new EntityMapDataManager(createMapDataManager());
+    await manager.loadData(createJsonData(), createInfoData());
+
+    manager.setLevelSelected('map_1', 'lv2', false);
+
+    expect(manager.currentStats).toEqual([
+      expect.objectContaining({
+        entityDataIdKey: 'enemy_a',
+        count: 2,
+        markedCount: 0,
+      }),
+    ]);
+
+    const hiddenLevelInstance = manager.getInstanceById('map_1', 3);
+    expect(hiddenLevelInstance?.data.mapLevelId).toBe('lv2');
+
+    manager.setMarked('map_1', 3, true);
+    expect(hiddenLevelInstance?.marked).toBe(true);
+    expect(manager.currentStats[0]?.markedCount).toBe(0);
+
+    manager.setLevelSelected('map_1', 'lv2', true);
+    expect(manager.currentStats[0]).toEqual(
+      expect.objectContaining({
+        count: 3,
+        markedCount: 1,
+      })
+    );
   });
 
   it('imports visibility data and updates filter flags', async () => {

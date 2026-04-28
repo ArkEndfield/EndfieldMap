@@ -38,6 +38,29 @@ export class EntityController implements IEntityController {
     return this.dataManager.getInstanceById(mapId, id);
   }
 
+  getMapLevelIds(mapId: MapData['id']): string[] {
+    return this.dataManager.getMapLevelIds(mapId);
+  }
+
+  getSelectedLevelIds(mapId: MapData['id']): string[] {
+    return [...this.dataManager.getSelectedLevelIds(mapId)];
+  }
+
+  @action
+  setSelectedLevels(mapId: MapData['id'], levelIds: string[]): void {
+    this.dataManager.setSelectedLevels(mapId, levelIds);
+  }
+
+  @action
+  setLevelSelected(mapId: MapData['id'], levelId: string, selected: boolean): void {
+    this.dataManager.setLevelSelected(mapId, levelId, selected);
+  }
+
+  @action
+  resetSelectedLevels(mapId: MapData['id']): void {
+    this.dataManager.resetSelectedLevels(mapId);
+  }
+
   loadData(jsonData: EntityJsonDataList, infoData: EntityInfoDataJson): void {
     this.dataManager.loadData(jsonData, infoData);
   }
@@ -146,6 +169,14 @@ export class EntityController implements IEntityController {
     }
   }
 
+  isFeatureRenderable(instance: EntityDataInstance): boolean {
+    return (
+      instance.visible &&
+      this.isFeatureVisibleByFilter(instance.marked) &&
+      this.dataManager.isLevelSelected(instance.mapId, instance.data.mapLevelId)
+    );
+  }
+
   @computed
   get currentVisibleInstances(): EntityDataInstance[] {
     if (!this.dataManager.dataLoaded) return [];
@@ -156,7 +187,7 @@ export class EntityController implements IEntityController {
     for (const manager of managers) {
       if (!manager.groupVisible) continue;
       for (const instance of manager.instances) {
-        if (!this.isFeatureVisibleByFilter(instance.marked)) continue;
+        if (!this.isFeatureRenderable(instance)) continue;
         result.push(instance);
       }
     }

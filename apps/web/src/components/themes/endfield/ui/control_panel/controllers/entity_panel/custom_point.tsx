@@ -108,6 +108,7 @@ const CustomPointList: React.FC = observer(() => {
     <EntityGroup
       title={t('filter.category.#custom_point')}
       subtitle="CUSTOM POINT"
+      defaultOpen={false}
       totalCount={totalCount}
       onIconClick={handleToggleAll}
       iconColor={allDisplayed ? '#f9f853' : '#ffffff'}

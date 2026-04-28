@@ -7,6 +7,7 @@ import { Search } from '@themes/endfield/ui/control_panel/controllers/entity_pan
 import { observer } from 'mobx-react-lite';
 import { useMemo, useState } from 'react';
 
+import { AreaFilter } from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/area_filter';
 import CustomPointList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/custom_point';
 import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
 import { useAdapter } from '@/hooks/use_adapter';
@@ -147,6 +148,7 @@ const EntityPanel = observer(() => {
       </div>
 
       <div>
+        {!searchQuery && <AreaFilter />}
         {!searchQuery && <CustomPointList />}
         {!searchQuery && <ElectricPoleList />}
         {categorizedEntities.map((categoryInfo) => (

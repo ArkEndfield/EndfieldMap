@@ -37,6 +37,8 @@ export interface BaseEntityData {
 export interface BaseEntityDataWithInfo extends BaseEntityData {
   /** Entity信息 */
   entityInfo?: EntityInfoData;
+  /** 所属地图 level，由 EntityMapDataManager 在运行时注入 */
+  mapLevelId?: string;
 }
 
 export interface EntityProperties {
