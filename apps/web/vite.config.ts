@@ -124,6 +124,10 @@ export default defineConfig(({ command, mode }) => {
               if (id.includes('@tanstack/react-db') || id.includes('@tanstack/rxdb-db-collection')) {
                 return 'tanstack-db-vendor';
               }
+              // Sentry 监控（必须在 /react/ 规则之前，否则 @sentry/react 会被错误归类）
+              if (id.includes('@sentry/')) {
+                return 'sentry-vendor';
+              }
               // React 核心
               if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('scheduler')) {
                 return 'react-vendor';
@@ -147,10 +151,6 @@ export default defineConfig(({ command, mode }) => {
               // Swiper 轮播
               if (id.includes('/swiper/')) {
                 return 'swiper-vendor';
-              }
-              // Sentry 监控
-              if (id.includes('@sentry/')) {
-                return 'sentry-vendor';
               }
               // 图片查看器
               if (id.includes('yet-another-react-lightbox')) {
