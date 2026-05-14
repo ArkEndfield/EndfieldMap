@@ -1,28 +1,24 @@
-import 'yet-another-react-lightbox/styles.css';
-import '@/components/common/guide/captions.css';
-import '@/components/common/guide/thumbnails.css';
-
 import type { CustomPointData, ElectricPoleData, EntityData } from '@endfieldmap/map-core';
 import { useGuide } from '@endfieldmap/map-hooks';
 import { Logo, LogoLoading } from '@endfieldmap/web-components';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import Lightbox, { type ControllerRef, type Slide } from 'yet-another-react-lightbox';
-import Captions from 'yet-another-react-lightbox/plugins/captions';
-import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
-import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
-import Zoom from 'yet-another-react-lightbox/plugins/zoom';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { type ControllerRef, type Slide } from 'yet-another-react-lightbox';
 
 import { GuideUploadPanel } from '@/components/common/guide/upload_panel';
 import { service } from '@/services';
+
+const GuideLightbox = lazy(() => import('@/components/common/guide/lightbox'));
 
 
 export const Guide = ({ entity, onVideoLinkChange, onUnRefreshableChange }: { entity: EntityData | CustomPointData | ElectricPoleData, onVideoLinkChange: (videoLink: string) => void, onUnRefreshableChange: (unRefreshable: boolean) => void }) => {
   const { data: guide, loading, error } = useGuide(service, entity.levelLogicId);
   const [showImage, setShowImage] = useState(false);
+  const [lightboxLoaded, setLightboxLoaded] = useState(false);
   const [index, setIndex] = useState(0);
   const imageRef = useRef<ControllerRef>(null);
   const handleImageClick = useCallback((imageIndex: number) => {
     setIndex(imageIndex);
+    setLightboxLoaded(true);
     setShowImage(true);
   }, []);
 
@@ -86,32 +82,35 @@ export const Guide = ({ entity, onVideoLinkChange, onUnRefreshableChange }: { en
       </div>
       {/* 用户上传入口 */}
       <GuideUploadPanel entity={entity} guide={guide} />
-      {/* 图片预览弹窗 */}
-      <Lightbox
-        index={index}
-        controller={{
-          ref: imageRef,
-          closeOnPullDown: true,
-          closeOnPullUp: true,
-          closeOnBackdropClick: true,
-        }}
-        on={{
-          view: ({ index }) => {
-            setIndex(index);
-          },
-        }}
-        animation={{ fade: 300 }}
-        carousel={{ finite: true }}
-        open={showImage}
-        close={() => setShowImage(false)}
-        slides={slides}
-        plugins={[Captions, Fullscreen, Thumbnails, Zoom]}
-        styles={{
-          button: {
-            cursor: 'unset',
-          },
-        }}
-      />
+      {/* 图片预览弹窗（首次打开时按需加载 Lightbox chunk） */}
+      {lightboxLoaded && (
+        <Suspense fallback={null}>
+          <GuideLightbox
+            index={index}
+            controller={{
+              ref: imageRef,
+              closeOnPullDown: true,
+              closeOnPullUp: true,
+              closeOnBackdropClick: true,
+            }}
+            on={{
+              view: ({ index }) => {
+                setIndex(index);
+              },
+            }}
+            animation={{ fade: 300 }}
+            carousel={{ finite: true }}
+            open={showImage}
+            close={() => setShowImage(false)}
+            slides={slides}
+            styles={{
+              button: {
+                cursor: 'unset',
+              },
+            }}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };
