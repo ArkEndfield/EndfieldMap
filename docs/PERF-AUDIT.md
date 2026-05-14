@@ -328,6 +328,61 @@
 
 ---
 
+## 5. 执行追踪（branch `perf/audit-followups`）
+
+### 已完成
+
+| # | 项 | 状态 | Commit | 实测结果 |
+|---|---|---|---|---|
+| 1 | BUG-1 Manifest 512 typo | ✅ Done | `9d49867` | 字符纠正，PWA 大图标可正常加载 |
+| 2 | P0-6 删 `appType:'mpa'` | ✅ Done | `2c86b85` | SPA 行为恢复默认 |
+| 3 | P0-2 PWA `includeAssets` 删 images | ⚠️ Partial | `5fe7924` | 仅省 ~1.5 MB（事实表明 lang chunks 才是大头，非 images）|
+| 4 | BUG-4 apiRequest 标 `isRetryAfterRefresh` | ✅ Done | `cf072dc` | 401 边角不再多发 refresh |
+| 5 | P0-7 react-scan 异步 | ✅ Done | `fe8c652` | 静态 import 删除 |
+| 6 | P0-4 Sentry 异步 | ✅ Done | `b7a088f` + `b769115` | **react-vendor 754 KB → 528 KB（-226 KB）**；sentry-vendor 独立 209 KB chunk；顺手清理三处重复 `logger.addReporter` |
+| 7 | P0-5 Lightbox `React.lazy` | ✅ Done | `0f09d64` | lightbox-vendor 52 KB 独立 chunk + lightbox.css 拆出；首次点击图片才加载 |
+| 8 | BUG-2/3 SW 提示 | ✅ Done | `6fe1abd` | 改用 `alert.info` + `useTranslation`；新增 `common:sw_update_available` 文案（zh-CN/en-US）；alert_api 走 dynamic import 保持 entry 6.8 KB |
+| 9 | P0-1 字体加载 | ✅ Done | `9c35466` | `@import url` 删除（不再渲染阻塞）；改 HTML `<link>` + preconnect；字重清单 30 → 14（删 Roboto + Noto/Outfit 精简）|
+| 10 | P0-3 i18n manualChunks 按 locale | ⚠️ Partial | `1b64d6c` | chunk 命名稳定（`lang-zh-CN-*.js` 等），单 locale 改动只影响自身 hash；**precache 体积未减少**（仍 17.6 MB），见下方"待决策" |
+
+### 配套修复
+
+| Commit | 内容 |
+|---|---|
+| `b769115` | manualChunks 中 `@sentry/` 规则前置（pre-existing bug：原顺序导致 `@sentry/react` 匹配 `/react/` 落到 react-vendor） |
+| `3d3104d` | 触及文件的 `simple-import-sort` autofix 收尾 |
+
+### 关键量化
+
+| 指标 | Before | After |
+|---|---|---|
+| react-vendor | 754 KB | 528 KB（-226 KB / -30%）|
+| sentry-vendor | 不存在（混在 react-vendor） | 独立 209 KB（lazy） |
+| lightbox-vendor | 同步加载链 | 52 KB 独立 lazy chunk |
+| entry chunk (`index-*.js`) | ~481 KB（旧基线） | ~6.8 KB |
+| 字体请求权重总数 | 30 | 14 |
+| CSS @import 渲染阻塞 | 是 | 否 |
+| PWA precache | 153 entries / 17606 KiB | 97 entries / 17647 KiB（条目 -56，体积几乎不变） |
+
+### 偏差与发现
+
+1. **PERF-AUDIT 对 P0-2 的判断事实有误**：原文写"precache 17 MB 大部分是 images/\*\*"。实测 `public/images` 仅 1.5 MB / 18 文件，`dist/assets/lang-*.js` 共 14 MB 才是大头。P0-2 修复仍有语义正确性（PWA 不该精确预缓存图片），但体积收益远低于预期。
+2. **pre-existing manualChunks 顺序 bug**：`/react/` 规则匹配 `@sentry/react/`，导致 Sentry 一直被错误归入 react-vendor。配合 P0-4 暴露后修复，是本轮第二大单项收益。
+3. **logger.addReporter 三重注册**：`logger.ts` + `MapService` + `EndfieldMapAdapter` 各自 addReporter 同一个 sentryReporter，Sentry 事件会被发送 2-3 次。重构 P0-4 时一并清理。
+
+### 待决策 / 未执行
+
+| # | 项 | 阻塞原因 |
+|---|---|---|
+| 11 | PWA precache 真正瘦身（仅 precache fallback locale 的 lang chunk） | 离线 UX trade-off：用户切换到未缓存的语言会断；需产品决策 |
+| 12 | P0-8 build 串行 `tsc + vite` 拆并行 | CI pipeline 层面，不影响本地 build |
+| 13 | P0-9 `Map.tsx` 内部二级 `React.lazy` | 开放性 UI 重构，需先列子树清单 |
+| 14 | BUG-5 alert 体系归一（alert / alert_full / alert_api / alert_full_api 4 文件） | 影响面大，需架构决策选哪套留 |
+| 15 | BUG-6 react-compiler + MobX observer 兼容性验证 | 需要真实浏览器环境 + observer 组件用例 |
+| 16 | 字体进一步自托管子集化 | 需下载字体源、做 zh-Hans subset，本次仅做"轻量优化" |
+
+---
+
 ## 相关文档
 
 - [CLAUDE.md](../CLAUDE.md) — 仓库总览与架构
