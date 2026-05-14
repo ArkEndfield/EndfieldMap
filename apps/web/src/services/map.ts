@@ -10,7 +10,7 @@ import { isDev } from '@/services/env';
 import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initHoverFeatureEventListeners } from '@/services/features/hover_feature';
 import { loadingManager } from '@/services/loading';
-import { sentryReporter } from '@/services/logger';
+import '@/services/logger';
 import { initServiceEventBridge } from '@/services/service_event_bridge';
 
 const assets = service.assetService.url;
@@ -90,7 +90,6 @@ export class MapService {
         container: this.container,
         data: mapData,
         asset: assets,
-        consolaReporter: sentryReporter,
         isDev: isDev,
       });
 

@@ -7,7 +7,6 @@ import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { LoadingStageId } from '@/const/loading';
 import { assetsHost, backendHost, isDev } from '@/services/env';
 import { loadingManager } from '@/services/loading';
-import { sentryReporter } from '@/services/logger';
 
 const localeModules = import.meta.glob<{ default: Record<string, unknown> }>(
   '../../../../packages/map-service/src/locales/**/*.json'
@@ -16,7 +15,6 @@ const localeModules = import.meta.glob<{ default: Record<string, unknown> }>(
 let initialLoadComplete = false;
 
 export const service = new MapService({
-  consolaReporter: sentryReporter,
   isDev: isDev,
   i18nConfig: {
     resourceLoader: (language: string, namespace: string) => {
