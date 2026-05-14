@@ -6,7 +6,6 @@ import { disablePageZoom, registerStorageAdapter } from '@endfieldmap/tools';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { createRoot } from 'react-dom/client';
 import { useEffect } from 'react';
-import { scan } from 'react-scan';
 
 import App from '@/App.tsx';
 import { isDev, isScanEnabled } from '@/services/env';
@@ -15,9 +14,7 @@ registerStorageAdapter(new WebStorageAdapter());
 
 if (!isDev) disablePageZoom();
 if (isScanEnabled) {
-  scan({
-    enabled: isDev,
-  });
+  import('react-scan').then(({ scan }) => scan({ enabled: isDev }));
 }
 
 export function SWUpdatePrompt() {
