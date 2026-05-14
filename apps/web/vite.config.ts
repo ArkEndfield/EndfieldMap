@@ -111,6 +111,11 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
+            // 多语种 JSON 按 locale 分包，每个 locale 一份 chunk，
+            // 命名稳定便于 PWA 缓存与单独失效（仅该 locale 修改才让 chunk hash 变）
+            const localeMatch = id.match(/\/locales\/([^/]+)\/[^/]+\.json$/);
+            if (localeMatch) return `lang-${localeMatch[1]}`;
+
             if (id.includes('node_modules')) {
               // RxJS
               if (id.includes('/rxjs/')) {
