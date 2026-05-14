@@ -311,7 +311,7 @@ export class ServerService {
         },
       };
       const fullApiUrl = `/api/v1${url}`;
-      const data = await this.request<ServerResponse<T>>(fullApiUrl, options);
+      const data = await this.request<ServerResponse<T>>(fullApiUrl, options, true);
 
       if (data.code !== 0) {
         throw new Error(
