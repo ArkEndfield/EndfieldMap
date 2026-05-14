@@ -304,6 +304,7 @@ interface Resources {
       "desc": "降序",
       "like_count": "热度"
     },
+    "sw_update_available": "ZMDMAP 有新版本可用，点击确定后页面将刷新以获取最新内容",
     "yes": "是"
   },
   "error": {

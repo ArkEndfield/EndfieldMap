@@ -57,5 +57,6 @@
   "pip": {
     "playing": "Map is playing in Picture-in-Picture",
     "back": "Bring back to tab"
-  }
+  },
+  "sw_update_available": "ZMDMAP has a new version. Click OK to refresh the page and load the latest content."
 }

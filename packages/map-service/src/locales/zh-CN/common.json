@@ -57,5 +57,6 @@
   "pip": {
     "playing": "地图正在画中画模式播放",
     "back": "返回标签页"
-  }
+  },
+  "sw_update_available": "ZMDMAP 有新版本可用，点击确定后页面将刷新以获取最新内容"
 }
