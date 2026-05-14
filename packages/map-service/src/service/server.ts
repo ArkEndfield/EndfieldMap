@@ -42,6 +42,13 @@ export class ServerService {
     this.token = token;
   }
 
+  /**
+   * 获取当前 Token（只读访问，给特殊路径请求用）
+   */
+  public getToken(): string | null {
+    return this.token;
+  }
+
   public setUid(uid?: string | null) {
     this.uid = uid || null;
   }

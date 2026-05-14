@@ -25,5 +25,36 @@
     "no_puzzle_piece": "No Puzzle Pieces",
     "solving": "Solving...",
     "start_solve": "Find solution"
+  },
+  "upload": {
+    "entry": "Upload guide info",
+    "entry_login_required": "Login to upload guide info",
+    "title": "Upload guide info",
+    "description_label": "Description",
+    "description_placeholder": "Write a description (1-500 chars)",
+    "images_label": "Screenshots",
+    "images_hint": "png / jpeg / webp / gif, up to {{size}} MB each, max {{count}} images",
+    "add_image": "Add screenshot",
+    "remove_image": "Remove",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "cancel": "Cancel",
+    "open": "Expand",
+    "close": "Collapse",
+    "validation": {
+      "description_required": "Description is required",
+      "description_too_long": "Description must be 500 chars or less",
+      "image_too_large": "{{name}} exceeds {{size}} MB",
+      "image_type_unsupported": "{{name}} type is not supported",
+      "image_count_exceeded": "At most {{count}} screenshots allowed",
+      "image_read_failed": "Failed to read {{name}}"
+    },
+    "result": {
+      "success": "Uploaded",
+      "already_exists_fallback": "Guide already existed; data has been appended",
+      "upload_failed_retry": "Image upload failed; please retry later",
+      "submit_failed": "Submit failed: {{message}}",
+      "not_login": "Please login before uploading"
+    }
   }
 }

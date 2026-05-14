@@ -12,6 +12,7 @@ import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
 import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
+import { GuideUploadPanel } from '@/components/common/guide/upload_panel';
 import { service } from '@/services';
 
 
@@ -48,7 +49,8 @@ export const Guide = ({ entity, onVideoLinkChange, onUnRefreshableChange }: { en
   }
 
   if (!guide) {
-    return null;
+    // 无 guide 数据时，仍允许已登录用户上传创建新的标点信息
+    return <GuideUploadPanel entity={entity} guide={null} />;
   }
 
   // 构造Lightbox slides
@@ -82,6 +84,8 @@ export const Guide = ({ entity, onVideoLinkChange, onUnRefreshableChange }: { en
           </div>
         ))}
       </div>
+      {/* 用户上传入口 */}
+      <GuideUploadPanel entity={entity} guide={guide} />
       {/* 图片预览弹窗 */}
       <Lightbox
         index={index}
