@@ -68,7 +68,7 @@ export default defineConfig(({ command, mode }) => {
           sourcemap: false,
           navigateFallbackDenylist: [/^\/docs/],
         },
-        includeAssets: ['favicon.ico', 'locales/**/*.json', 'images/**/*.png', 'images/**/*.jpg', 'images/**/*.svg'],
+        includeAssets: ['favicon.ico', 'locales/**/*.json'],
         manifest: {
           name: '终末地地图资源查询 - ZMDMAP',
           short_name: 'ZMDMap',
