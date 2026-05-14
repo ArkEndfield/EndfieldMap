@@ -1,3 +1,5 @@
+import '@/services/logger';
+
 import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { logger } from '@endfieldmap/tools';
 
@@ -10,7 +12,6 @@ import { isDev } from '@/services/env';
 import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initHoverFeatureEventListeners } from '@/services/features/hover_feature';
 import { loadingManager } from '@/services/loading';
-import '@/services/logger';
 import { initServiceEventBridge } from '@/services/service_event_bridge';
 
 const assets = service.assetService.url;

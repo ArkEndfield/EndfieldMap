@@ -3,9 +3,9 @@ import '@/index.css';
 
 import { WebStorageAdapter } from '@endfieldmap/storage-web';
 import { disablePageZoom, registerStorageAdapter } from '@endfieldmap/tools';
-import { useRegisterSW } from 'virtual:pwa-register/react';
-import { createRoot } from 'react-dom/client';
 import { useEffect } from 'react';
+import { createRoot } from 'react-dom/client';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 import App from '@/App.tsx';
 import { isDev, isScanEnabled } from '@/services/env';
