@@ -51,7 +51,23 @@ main:
             chmod 600 ~/.ssh/id_rsa
             # 使用 rsync 清空并同步文件到服务器
             rsync -avz --delete --exclude='/docs' -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" apps/web/dist/ ${SERVER_USER}@${SERVER_HOST}:${DEPLOY_PATH}
-  web_trigger_publish_packages:
+  web_trigger_publish_npm:
+    - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
+      docker:
+        image: node:22
+      stages:
+        - name: 安装 pnpm
+          script: npm install -g pnpm
+        - name: 安装依赖
+          script: pnpm install --filter '!@endfieldmap/native' --filter '!@endfieldmap/web'
+        - name: 构建所有包
+          script: pnpm run build:packages
+        - name: 配置 npm 认证
+          script: |
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
+        - name: 发布包到 npm
+          script: pnpm changeset publish
+  web_trigger_publish_github:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22

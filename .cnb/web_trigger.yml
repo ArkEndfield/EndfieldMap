@@ -7,9 +7,16 @@ branch:
           roles:
             - owner
             - master
-      - name: 发布 npm 包
+      - name: 发布包到 GitHub Packages
+        description: 手动触发发布 @endfieldmap 所有包到 GitHub Packages
+        event: web_trigger_publish_github
+        permissions:
+          roles:
+            - owner
+            - master
+      - name: 发布包到 npm
         description: 手动触发发布 @endfieldmap 所有包到 npm
-        event: web_trigger_publish_packages
+        event: web_trigger_publish_npm
         permissions:
           roles:
             - owner
