@@ -64,6 +64,7 @@ main:
           script: pnpm run build:packages
         - name: 配置 npm 认证
           script: |
+            echo "registry=https://registry.npmjs.org/" > .npmrc
             echo "@endfieldmap:registry=https://registry.npmjs.org/" >> .npmrc
             echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
         - name: 发布包到 npm
