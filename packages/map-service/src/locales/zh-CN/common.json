@@ -64,7 +64,8 @@
     "copy_success": "链接已复制到剪贴板",
     "copy_failed": "复制失败",
     "select_categories": "选择要包含的分类",
-    "confirm_copy": "复制链接"
+    "confirm_copy": "复制链接",
+    "select_more": "选择更多分类"
   },
   "context_menu": {
     "share": "复制分享链接"

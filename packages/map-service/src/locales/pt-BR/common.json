@@ -7,6 +7,7 @@
     "copy_success": "Link copiado para a área de transferência",
     "copy_failed": "Falha ao copiar",
     "select_categories": "Selecionar categorias para incluir",
-    "confirm_copy": "Copiar link"
+    "confirm_copy": "Copiar link",
+    "select_more": "Selecionar mais categorias"
   }
 }

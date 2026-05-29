@@ -64,7 +64,8 @@
     "copy_success": "Link copied to clipboard",
     "copy_failed": "Copy failed",
     "select_categories": "Select categories to include",
-    "confirm_copy": "Copy Link"
+    "confirm_copy": "Copy Link",
+    "select_more": "Select more categories"
   },
   "context_menu": {
     "share": "Copy Share Link"

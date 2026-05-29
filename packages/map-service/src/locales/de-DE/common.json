@@ -7,6 +7,7 @@
     "copy_success": "Link in Zwischenablage kopiert",
     "copy_failed": "Kopieren fehlgeschlagen",
     "select_categories": "Kategorien zum Einschließen auswählen",
-    "confirm_copy": "Link kopieren"
+    "confirm_copy": "Link kopieren",
+    "select_more": "Weitere Kategorien auswählen"
   }
 }

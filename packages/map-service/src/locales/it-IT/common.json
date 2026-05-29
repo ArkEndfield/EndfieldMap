@@ -7,6 +7,7 @@
     "copy_success": "Link copiato negli appunti",
     "copy_failed": "Copia fallita",
     "select_categories": "Seleziona le categorie da includere",
-    "confirm_copy": "Copia link"
+    "confirm_copy": "Copia link",
+    "select_more": "Seleziona altre categorie"
   }
 }

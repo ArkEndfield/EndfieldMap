@@ -63,7 +63,8 @@
     "copy_success": "リンクをクリップボードにコピーしました",
     "copy_failed": "コピーに失敗しました",
     "select_categories": "含めるカテゴリを選択",
-    "confirm_copy": "リンクをコピー"
+    "confirm_copy": "リンクをコピー",
+    "select_more": "他のカテゴリを選択"
   },
   "context_menu": {
     "share": "共有リンクをコピー"

@@ -59,7 +59,8 @@
     "copy_success": "連結已複製到剪貼簿",
     "copy_failed": "複製失敗",
     "select_categories": "選擇要包含的分類",
-    "confirm_copy": "複製連結"
+    "confirm_copy": "複製連結",
+    "select_more": "選擇更多分類"
   },
   "context_menu": {
     "share": "複製分享連結"

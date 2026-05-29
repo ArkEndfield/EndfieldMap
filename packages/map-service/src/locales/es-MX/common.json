@@ -59,7 +59,8 @@
     "copy_success": "Enlace copiado al portapapeles",
     "copy_failed": "Error al copiar",
     "select_categories": "Seleccionar categorías a incluir",
-    "confirm_copy": "Copiar enlace"
+    "confirm_copy": "Copiar enlace",
+    "select_more": "Seleccionar más categorías"
   },
   "context_menu": {
     "share": "Copiar enlace para compartir"

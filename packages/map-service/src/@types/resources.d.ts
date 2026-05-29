@@ -306,7 +306,8 @@ interface Resources {
       "copy_failed": "复制失败",
       "copy_link": "复制分享链接",
       "copy_success": "链接已复制到剪贴板",
-      "select_categories": "选择要包含的分类"
+      "select_categories": "选择要包含的分类",
+      "select_more": "选择更多分类"
     },
     "sort": {
       "asc": "升序",
