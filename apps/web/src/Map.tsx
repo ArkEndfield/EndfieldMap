@@ -20,6 +20,7 @@ import uiManager from '@/services/ui_manager';
 const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
 const ZmdSwiper = lazy(() => import('@/components/features/swiper'));
 const PresetStore = lazy(() => import('@/components/features/preset_store'));
+const ContextMenu = lazy(() => import('@/components/themes/endfield/ui/context_menu'));
 
 export interface ControllersProps {
   adapter: EndfieldMapAdapter;
@@ -46,6 +47,11 @@ const Controllers = observer(({ adapter }: ControllersProps) => {
           {/* 弹窗组件 */}
           <Suspense>
             <ThemedComponents.map.Popup />
+          </Suspense>
+
+          {/* 右键菜单 */}
+          <Suspense>
+            <ContextMenu />
           </Suspense>
 
           {/* 操作提示组件 */}
