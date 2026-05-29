@@ -11,6 +11,7 @@ import { StorageService } from '@/services/data/storage';
 import { isDev } from '@/services/env';
 import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initHoverFeatureEventListeners } from '@/services/features/hover_feature';
+import { applyShareLinkParams, initShareLink } from '@/services/share_link';
 import { loadingManager } from '@/services/loading';
 import { initServiceEventBridge } from '@/services/service_event_bridge';
 
@@ -133,6 +134,10 @@ export class MapService {
 
       // 初始化hover事件监听器，用于设置和清除hover的feature
       this.eventDisposers.push(initHoverFeatureEventListeners(this.adapter!));
+
+      initShareLink();
+      await applyShareLinkParams();
+
       return {
         adapter: this.adapter,
       };
