@@ -1,12 +1,12 @@
 {
-  "share": {
+  "context_menu": {
+    "share": "Copiar link de compartilhamento"
+  },
+  "share_link": {
     "copy_link": "Copiar link de compartilhamento",
     "copy_success": "Link copiado para a área de transferência",
     "copy_failed": "Falha ao copiar",
     "select_categories": "Selecionar categorias para incluir",
     "confirm_copy": "Copiar link"
-  },
-  "context_menu": {
-    "share": "Copiar link de compartilhamento"
   }
 }

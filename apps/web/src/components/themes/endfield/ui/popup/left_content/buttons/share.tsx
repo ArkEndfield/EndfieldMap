@@ -114,7 +114,7 @@ export const ShareButton: React.FC<ShareButtonProps> = observer(({ entity }) => 
   return (
     <div className="relative" ref={buttonRef}>
       <Tooltip
-        tooltip={t('share.copy_link')}
+        tooltip={t('share_link.copy_link')}
         as={ButtonWithAudio}
         placement="bottom"
         asProps={{
@@ -140,7 +140,7 @@ export const ShareButton: React.FC<ShareButtonProps> = observer(({ entity }) => 
             )}
           >
             <div className="px-2 py-1.5 text-xs text-white/50 border-b border-[#383938]">
-              {t('share.select_categories')}
+              {t('share_link.select_categories')}
             </div>
             <div className="max-h-48 overflow-y-auto py-1">
               {categories.map((cat) => (
@@ -160,7 +160,7 @@ export const ShareButton: React.FC<ShareButtonProps> = observer(({ entity }) => 
                 )}
                 onClick={handleCopy}
               >
-                {t('share.confirm_copy')}
+                {t('share_link.confirm_copy')}
               </ButtonWithAudio>
             </div>
           </motion.div>

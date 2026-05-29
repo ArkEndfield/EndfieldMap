@@ -79,9 +79,9 @@ export function buildShareLink(mapId: string, levelLogicId?: number, entityDataI
 export async function copyShareLink(link: string, t: (key: string) => string): Promise<void> {
   try {
     await navigator.clipboard.writeText(link);
-    alert.info(t('share.copy_success'));
+    alert.info(t('share_link.copy_success'));
   } catch {
-    alert.info(t('share.copy_failed'));
+    alert.info(t('share_link.copy_failed'));
   }
 }
 

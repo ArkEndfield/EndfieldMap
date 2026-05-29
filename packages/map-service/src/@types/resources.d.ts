@@ -300,7 +300,8 @@ interface Resources {
     "retry": "重试",
     "search_placeholder": "搜索...",
     "select_all": "全选",
-    "share": {
+    "share": "分享",
+    "share_link": {
       "confirm_copy": "复制链接",
       "copy_failed": "复制失败",
       "copy_link": "复制分享链接",

@@ -59,7 +59,7 @@
     "back": "Bring back to tab"
   },
   "sw_update_available": "ZMDMAP has a new version. Click OK to refresh the page and load the latest content.",
-  "share": {
+  "share_link": {
     "copy_link": "Copy Share Link",
     "copy_success": "Link copied to clipboard",
     "copy_failed": "Copy failed",

@@ -1,12 +1,12 @@
 {
-  "share": {
+  "context_menu": {
+    "share": "Salin tautan berbagi"
+  },
+  "share_link": {
     "copy_link": "Salin tautan berbagi",
     "copy_success": "Tautan disalin ke papan klip",
     "copy_failed": "Gagal menyalin",
     "select_categories": "Pilih kategori untuk disertakan",
     "confirm_copy": "Salin tautan"
-  },
-  "context_menu": {
-    "share": "Salin tautan berbagi"
   }
 }
