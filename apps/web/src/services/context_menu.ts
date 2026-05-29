@@ -1,4 +1,5 @@
 import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
+import type { MapCoordinate } from '@endfieldmap/map-core';
 import { MAP_EVENT } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 
@@ -11,7 +12,7 @@ export function initContextMenuEventListeners(adapter: EndfieldMapAdapter): () =
     contextMenuManager.open({
       type: 'connection',
       pixel: event.event.pixel,
-      coordinate: event.event.coordinate,
+      coordinate: event.event.coordinate as MapCoordinate | undefined,
       originalEvent: event.event.originalEvent,
     });
   });
@@ -22,7 +23,7 @@ export function initContextMenuEventListeners(adapter: EndfieldMapAdapter): () =
       type: 'entity',
       entities: event.entities.map((e) => e.instance).filter(Boolean),
       pixel: event.event.pixel,
-      coordinate: event.event.coordinate,
+      coordinate: event.event.coordinate as MapCoordinate | undefined,
       originalEvent: event.event.originalEvent,
     });
   });
@@ -32,7 +33,7 @@ export function initContextMenuEventListeners(adapter: EndfieldMapAdapter): () =
     contextMenuManager.open({
       type: 'map',
       pixel: event.pixel,
-      coordinate: event.coordinate,
+      coordinate: event.coordinate as MapCoordinate | undefined,
       originalEvent: event.originalEvent,
     });
   });
