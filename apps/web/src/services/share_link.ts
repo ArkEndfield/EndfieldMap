@@ -29,27 +29,27 @@ export async function applyShareLinkParams(): Promise<void> {
   const entityId = params.id as number | undefined;
   const selectKeys = params.select as string[] | undefined;
 
-  if (!mapId) return;
-
   const adapter = service.adapterRegistry?.adapter;
   if (!adapter) return;
 
   const validMapIds = adapter.mapController.dataManager.mapIds;
-  if (!validMapIds.includes(mapId)) {
-    logger.warn('[ShareLink] Invalid map ID:', mapId);
-    return;
+
+  if (mapId) {
+    if (!validMapIds.includes(mapId)) {
+      logger.warn('[ShareLink] Invalid map ID:', mapId);
+      return;
+    }
+    service.dataService.mapDataService.mapStateDataService.setCurrentMap(mapId);
   }
 
-  service.dataService.mapDataService.mapStateDataService.setCurrentMap(mapId);
-
   if (selectKeys && selectKeys.length > 0) {
-    const targetMapId = mapId;
+    const targetMapId = mapId ?? service.dataService.mapDataService.mapStateDataService.currentMap.value;
     for (const key of selectKeys) {
       service.dataService.mapDataService.entityDataService.setEntityGroupVisibility(targetMapId, key, true);
     }
   }
 
-  if (entityId !== undefined && !isNaN(entityId)) {
+  if (mapId && entityId !== undefined && !isNaN(entityId)) {
     const found = await service.dataService.mapDataService.moveToEntity(entityId, true, true);
     if (!found) {
       logger.warn('[ShareLink] Entity not found:', entityId);

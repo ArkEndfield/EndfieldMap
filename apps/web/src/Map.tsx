@@ -49,10 +49,12 @@ const Controllers = observer(({ adapter }: ControllersProps) => {
             <ThemedComponents.map.Popup />
           </Suspense>
 
-          {/* 右键菜单 */}
-          <Suspense>
-            <ContextMenu />
-          </Suspense>
+          {/* 右键菜单（仅 PC） */}
+          {!isMobile && (
+            <Suspense>
+              <ContextMenu />
+            </Suspense>
+          )}
 
           {/* 操作提示组件 */}
           <Suspense>
