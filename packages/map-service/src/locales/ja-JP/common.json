@@ -57,5 +57,15 @@
   "pip": {
     "playing": "マップはピクチャーインピクチャーで再生中です",
     "back": "タブに戻る"
+  },
+  "share": {
+    "copy_link": "共有リンクをコピー",
+    "copy_success": "リンクをクリップボードにコピーしました",
+    "copy_failed": "コピーに失敗しました",
+    "select_categories": "含めるカテゴリを選択",
+    "confirm_copy": "リンクをコピー"
+  },
+  "context_menu": {
+    "share": "共有リンクをコピー"
   }
 }

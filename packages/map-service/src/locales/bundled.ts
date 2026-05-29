@@ -1,5 +1,6 @@
 // 完整语言 (8 namespaces)
 // 部分语言 (仅 lang namespace)
+import deDECommon from './de-DE/common.json';
 import deDELang from './de-DE/lang.json';
 import enUSAgreement from './en-US/agreement.json';
 import enUSCommon from './en-US/common.json';
@@ -17,8 +18,11 @@ import esMXLang from './es-MX/lang.json';
 import esMXPopup from './es-MX/popup.json';
 import esMXSettings from './es-MX/settings.json';
 import esMXSidebar from './es-MX/sidebar.json';
+import frFRCommon from './fr-FR/common.json';
 import frFRLang from './fr-FR/lang.json';
+import idIDCommon from './id-ID/common.json';
 import idIDLang from './id-ID/lang.json';
+import itITCommon from './it-IT/common.json';
 import itITLang from './it-IT/lang.json';
 import jaJPAgreement from './ja-JP/agreement.json';
 import jaJPCommon from './ja-JP/common.json';
@@ -36,6 +40,7 @@ import koKRLang from './ko-KR/lang.json';
 import koKRPopup from './ko-KR/popup.json';
 import koKRSettings from './ko-KR/settings.json';
 import koKRSidebar from './ko-KR/sidebar.json';
+import ptBRCommon from './pt-BR/common.json';
 import ptBRLang from './pt-BR/lang.json';
 import ruRUAgreement from './ru-RU/agreement.json';
 import ruRUCommon from './ru-RU/common.json';
@@ -45,7 +50,9 @@ import ruRULang from './ru-RU/lang.json';
 import ruRUPopup from './ru-RU/popup.json';
 import ruRUSettings from './ru-RU/settings.json';
 import ruRUSidebar from './ru-RU/sidebar.json';
+import thTHCommon from './th-TH/common.json';
 import thTHLang from './th-TH/lang.json';
+import viVNCommon from './vi-VN/common.json';
 import viVNLang from './vi-VN/lang.json';
 import zhCNAgreement from './zh-CN/agreement.json';
 import zhCNCommon from './zh-CN/common.json';
@@ -138,13 +145,13 @@ export const bundledResources: Record<string, Record<string, Record<string, unkn
     settings: esMXSettings,
     agreement: esMXAgreement,
   },
-  'de-DE': { lang: deDELang },
-  'fr-FR': { lang: frFRLang },
-  'id-ID': { lang: idIDLang },
-  'it-IT': { lang: itITLang },
-  'pt-BR': { lang: ptBRLang },
-  'th-TH': { lang: thTHLang },
-  'vi-VN': { lang: viVNLang },
+  'de-DE': { lang: deDELang, common: deDECommon },
+  'fr-FR': { lang: frFRLang, common: frFRCommon },
+  'id-ID': { lang: idIDLang, common: idIDCommon },
+  'it-IT': { lang: itITLang, common: itITCommon },
+  'pt-BR': { lang: ptBRLang, common: ptBRCommon },
+  'th-TH': { lang: thTHLang, common: thTHCommon },
+  'vi-VN': { lang: viVNLang, common: viVNCommon },
 };
 
 /**

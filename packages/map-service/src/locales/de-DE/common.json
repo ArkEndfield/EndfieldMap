@@ -1,0 +1,12 @@
+{
+  "share": {
+    "copy_link": "Freigabelink kopieren",
+    "copy_success": "Link in Zwischenablage kopiert",
+    "copy_failed": "Kopieren fehlgeschlagen",
+    "select_categories": "Kategorien zum Einschließen auswählen",
+    "confirm_copy": "Link kopieren"
+  },
+  "context_menu": {
+    "share": "Freigabelink kopieren"
+  }
+}

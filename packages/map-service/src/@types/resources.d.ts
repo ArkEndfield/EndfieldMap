@@ -251,6 +251,9 @@ interface Resources {
     "batch_delete": "批量删除",
     "cancel": "取消",
     "confirm": "确认",
+    "context_menu": {
+      "share": "复制分享链接"
+    },
     "custom_point": {
       "type": {
         "custom_point_1": "标点1",
@@ -297,7 +300,13 @@ interface Resources {
     "retry": "重试",
     "search_placeholder": "搜索...",
     "select_all": "全选",
-    "share": "分享",
+    "share": {
+      "confirm_copy": "复制链接",
+      "copy_failed": "复制失败",
+      "copy_link": "复制分享链接",
+      "copy_success": "链接已复制到剪贴板",
+      "select_categories": "选择要包含的分类"
+    },
     "sort": {
       "asc": "升序",
       "created_at": "时间",

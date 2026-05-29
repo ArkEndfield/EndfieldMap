@@ -53,5 +53,15 @@
     "backup_no_store": "No se encontró almacenamiento de datos, no se puede crear copia de seguridad.",
     "success": "Migración de datos completada. Los datos antiguos se han importado correctamente a la nueva estructura de almacenamiento.",
     "fail": "La migración de datos falló. Actualice la página e intente de nuevo. Si falla varias veces, contacte al desarrollador."
+  },
+  "share": {
+    "copy_link": "Copiar enlace para compartir",
+    "copy_success": "Enlace copiado al portapapeles",
+    "copy_failed": "Error al copiar",
+    "select_categories": "Seleccionar categorías a incluir",
+    "confirm_copy": "Copiar enlace"
+  },
+  "context_menu": {
+    "share": "Copiar enlace para compartir"
   }
 }

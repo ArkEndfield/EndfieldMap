@@ -57,5 +57,15 @@
   "pip": {
     "playing": "지도가 PIP 모드에서 재생 중입니다",
     "back": "탭으로 돌아가기"
+  },
+  "share": {
+    "copy_link": "공유 링크 복사",
+    "copy_success": "링크가 클립보드에 복사되었습니다",
+    "copy_failed": "복사 실패",
+    "select_categories": "포함할 카테고리 선택",
+    "confirm_copy": "링크 복사"
+  },
+  "context_menu": {
+    "share": "공유 링크 복사"
   }
 }

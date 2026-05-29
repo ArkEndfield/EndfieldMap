@@ -53,5 +53,15 @@
     "backup_no_store": "未找到資料儲存，無法備份。",
     "success": "資料遷移完成，舊資料已成功匯入新儲存結構。",
     "fail": "資料遷移失敗，請重新整理頁面重試，如多次失敗請聯絡開發者。"
+  },
+  "share": {
+    "copy_link": "複製分享連結",
+    "copy_success": "連結已複製到剪貼簿",
+    "copy_failed": "複製失敗",
+    "select_categories": "選擇要包含的分類",
+    "confirm_copy": "複製連結"
+  },
+  "context_menu": {
+    "share": "複製分享連結"
   }
 }
