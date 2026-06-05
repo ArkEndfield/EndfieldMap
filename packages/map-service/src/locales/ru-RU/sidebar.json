@@ -37,6 +37,10 @@
     "unmarked": "Неотмеченные",
     "reset": "Сбросить",
     "search_placeholder": "Поиск...",
+    "area": {
+      "title": "Фильтр областей",
+      "level": {}
+    },
     "category": {
       "ether": "Эфир",
       "trchest": "Сундук с сокровищами",

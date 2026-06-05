@@ -37,6 +37,10 @@
     "unmarked": "未マーク",
     "reset": "リセット",
     "search_placeholder": "検索...",
+    "area": {
+      "title": "エリアフィルター",
+      "level": {}
+    },
     "category": {
       "ether": "エーテル",
       "trchest": "宝箱",

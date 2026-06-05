@@ -97,6 +97,7 @@ const ElectricPoleList: React.FC = observer(() => {
     <EntityGroup
       title={t('filter.category.#electric_pole')}
       subtitle="ELECTRIC POLE"
+      defaultOpen={false}
       totalCount={totalCount}
       onIconClick={handleToggleAll}
       iconColor={allDisplayed ? '#f9f853' : '#ffffff'}

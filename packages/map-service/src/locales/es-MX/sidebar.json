@@ -37,6 +37,10 @@
     "unmarked": "Sin marcar",
     "reset": "Reiniciar",
     "search_placeholder": "Buscar...",
+    "area": {
+      "title": "Filtro de áreas",
+      "level": {}
+    },
     "category": {
       "ether": "Éter",
       "trchest": "Cofre del tesoro",

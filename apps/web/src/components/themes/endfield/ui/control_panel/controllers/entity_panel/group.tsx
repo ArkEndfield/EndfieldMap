@@ -104,47 +104,6 @@ export default function EntityGroup({
           <div className="h-1" />
         </motion.div>
       </div>
-
-      {/* 收集进度条 */}
-      {!!totalCount && (
-        <div className="relative font-[Outfit] pb-2">
-          <div className="w-full h-0.5 bg-[#898989]">
-            <div
-              className="h-full bg-[#fffa00]"
-              style={{ width: `${((markedCount ?? 0) / ((totalCount ?? 1) > 0 ? totalCount : 1)) * 100}%` }}
-            />
-          </div>
-          <div className="text-xs flex relative opacity-0 group-hover:opacity-100 transition-opacity">
-            <div
-              className="text-[#fffa00] absolute top-0 -translate-x-1/2"
-              style={{
-                left: `clamp(calc(0% + ${(markedCount ?? 0).toString().length * 0.35}ch), ${((markedCount ?? 0) / totalCount) * 100}%, calc(100% - ${(markedCount ?? 0).toString().length * 0.35}ch))`,
-              }}
-            >
-              <div
-                className="scale-70 tabular-nums origin-top-left"
-                style={{
-                  width: `${(markedCount ?? 0).toString().length * 0.7}ch`,
-                  height: '1em',
-                }}
-              >
-                {markedCount}
-              </div>
-            </div>
-            <div className="ml-auto text-[#a0a0a0] pr-2">
-              <div
-                className="scale-70 tabular-nums origin-top-left"
-                style={{
-                  width: `${totalCount.toString().length * 0.7}ch`,
-                  height: '1em',
-                }}
-              >
-                {totalCount}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

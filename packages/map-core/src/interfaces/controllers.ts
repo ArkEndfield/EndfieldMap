@@ -49,6 +49,11 @@ export interface IEntityController {
   get currentStats(): EntityInfoStats[];
   getMapGroupManagerList(mapId: MapData['id']): EntityGroupManager[];
   getInstanceById(mapId: MapData['id'], id: number): EntityDataInstance | undefined;
+  getMapLevelIds(mapId: MapData['id']): string[];
+  getSelectedLevelIds(mapId: MapData['id']): string[];
+  setSelectedLevels(mapId: MapData['id'], levelIds: string[]): void;
+  setLevelSelected(mapId: MapData['id'], levelId: string, selected: boolean): void;
+  resetSelectedLevels(mapId: MapData['id']): void;
   loadData(jsonData: EntityJsonDataList, infoData: EntityInfoDataJson): void;
   setClusterEnable(enable: boolean): void;
   setMarked(mapId: MapData['id'], levelLogicId: EntityData['levelLogicId'], marked: boolean): void;

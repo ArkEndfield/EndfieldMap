@@ -37,6 +37,10 @@
     "unmarked": "Unmarked",
     "reset": "Reset",
     "search_placeholder": "Search...",
+    "area": {
+      "title": "Area Filter",
+      "level": {}
+    },
     "category": {
       "ether": "Ether",
       "trchest": "Treasure Chest",
