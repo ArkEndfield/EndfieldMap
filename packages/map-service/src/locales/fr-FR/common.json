@@ -1,0 +1,13 @@
+{
+  "context_menu": {
+    "share": "Copier le lien de partage"
+  },
+  "share_link": {
+    "copy_link": "Copier le lien de partage",
+    "copy_success": "Lien copié dans le presse-papiers",
+    "copy_failed": "Échec de la copie",
+    "select_categories": "Sélectionner les catégories à inclure",
+    "confirm_copy": "Copier le lien",
+    "select_more": "Sélectionner plus de catégories"
+  }
+}

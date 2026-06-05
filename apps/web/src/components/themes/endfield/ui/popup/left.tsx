@@ -15,6 +15,7 @@ import { DeleteButton } from '@/components/themes/endfield/ui/popup/left_content
 import { MarkButton } from '@/components/themes/endfield/ui/popup/left_content/buttons/mark_button';
 import { PlayVideoButton } from '@/components/themes/endfield/ui/popup/left_content/buttons/play_video';
 import { RenameButton } from '@/components/themes/endfield/ui/popup/left_content/buttons/rename_button';
+import { ShareButton } from '@/components/themes/endfield/ui/popup/left_content/buttons/share';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useActiveFeatureName } from '@/hooks/use_entity_name';
 import { service } from '@/services';
@@ -95,6 +96,7 @@ const LeftContent = observer(({ className }: { className?: string }) => {
           <PopupHeader onClose={() => adapter.activeFeatureController.clearActiveFeature?.()} start={unRefreshable && <UnrefreshableTip />}>
             <PlayVideoButton videoLink={videoLink} />
             <MarkButton entity={activeFeature} />
+            <ShareButton entity={activeFeature} />
             <RenameButton entity={activeFeature} />
             <DeleteButton entity={activeFeature} />
           </PopupHeader>

@@ -1,0 +1,13 @@
+{
+  "context_menu": {
+    "share": "Sao chép liên kết chia sẻ"
+  },
+  "share_link": {
+    "copy_link": "Sao chép liên kết chia sẻ",
+    "copy_success": "Đã sao chép liên kết vào bộ nhớ tạm",
+    "copy_failed": "Sao chép thất bại",
+    "select_categories": "Chọn danh mục để bao gồm",
+    "confirm_copy": "Sao chép liên kết",
+    "select_more": "Chọn thêm danh mục"
+  }
+}

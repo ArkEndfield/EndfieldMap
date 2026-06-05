@@ -25,5 +25,36 @@
     "no_puzzle_piece": "暂无拼图块",
     "solving": "求解中...",
     "start_solve": "开始求解"
+  },
+  "upload": {
+    "entry": "上传我的标点信息",
+    "entry_login_required": "登录后可上传标点信息",
+    "title": "上传标点信息",
+    "description_label": "描述",
+    "description_placeholder": "请填写描述（1-500 字）",
+    "images_label": "截图",
+    "images_hint": "支持 png / jpeg / webp / gif，单图不超过 {{size}} MB，最多 {{count}} 张",
+    "add_image": "添加截图",
+    "remove_image": "移除",
+    "submit": "提交",
+    "submitting": "提交中...",
+    "cancel": "取消",
+    "open": "展开",
+    "close": "收起",
+    "validation": {
+      "description_required": "请填写描述",
+      "description_too_long": "描述不能超过 500 字",
+      "image_too_large": "截图 {{name}} 超过 {{size}} MB",
+      "image_type_unsupported": "截图 {{name}} 格式不支持",
+      "image_count_exceeded": "最多上传 {{count}} 张截图",
+      "image_read_failed": "截图 {{name}} 读取失败"
+    },
+    "result": {
+      "success": "上传成功",
+      "already_exists_fallback": "标点已存在，已自动追加到已有数据",
+      "upload_failed_retry": "图片上传失败，请检查网络或稍后重试",
+      "submit_failed": "提交失败：{{message}}",
+      "not_login": "请先登录后再上传"
+    }
   }
 }

@@ -57,5 +57,17 @@
   "pip": {
     "playing": "Map is playing in Picture-in-Picture",
     "back": "Bring back to tab"
+  },
+  "sw_update_available": "ZMDMAP has a new version. Click OK to refresh the page and load the latest content.",
+  "share_link": {
+    "copy_link": "Copy Share Link",
+    "copy_success": "Link copied to clipboard",
+    "copy_failed": "Copy failed",
+    "select_categories": "Select categories to include",
+    "confirm_copy": "Copy Link",
+    "select_more": "Select more categories"
+  },
+  "context_menu": {
+    "share": "Copy Share Link"
   }
 }

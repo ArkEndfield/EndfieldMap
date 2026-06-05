@@ -1,4 +1,5 @@
 export * from '@endfieldmap/map-service/service/data/game';
+export * from '@endfieldmap/map-service/service/data/guide';
 export * from '@endfieldmap/map-service/service/data/index';
 export * from '@endfieldmap/map-service/service/data/map/base/base_preset';
 export * from '@endfieldmap/map-service/service/data/map/custom_point';

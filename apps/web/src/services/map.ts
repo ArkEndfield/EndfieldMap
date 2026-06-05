@@ -1,3 +1,5 @@
+import '@/services/logger';
+
 import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { logger } from '@endfieldmap/tools';
 
@@ -9,8 +11,8 @@ import { StorageService } from '@/services/data/storage';
 import { isDev } from '@/services/env';
 import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initHoverFeatureEventListeners } from '@/services/features/hover_feature';
+import { applyShareLinkParams, initShareLink } from '@/services/share_link';
 import { loadingManager } from '@/services/loading';
-import { sentryReporter } from '@/services/logger';
 import { initServiceEventBridge } from '@/services/service_event_bridge';
 
 const assets = service.assetService.url;
@@ -90,7 +92,6 @@ export class MapService {
         container: this.container,
         data: mapData,
         asset: assets,
-        consolaReporter: sentryReporter,
         isDev: isDev,
       });
 
@@ -133,6 +134,10 @@ export class MapService {
 
       // 初始化hover事件监听器，用于设置和清除hover的feature
       this.eventDisposers.push(initHoverFeatureEventListeners(this.adapter!));
+
+      initShareLink();
+      await applyShareLinkParams();
+
       return {
         adapter: this.adapter,
       };

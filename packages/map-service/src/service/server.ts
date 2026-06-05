@@ -42,6 +42,13 @@ export class ServerService {
     this.token = token;
   }
 
+  /**
+   * 获取当前 Token（只读访问，给特殊路径请求用）
+   */
+  public getToken(): string | null {
+    return this.token;
+  }
+
   public setUid(uid?: string | null) {
     this.uid = uid || null;
   }
@@ -304,7 +311,7 @@ export class ServerService {
         },
       };
       const fullApiUrl = `/api/v1${url}`;
-      const data = await this.request<ServerResponse<T>>(fullApiUrl, options);
+      const data = await this.request<ServerResponse<T>>(fullApiUrl, options, true);
 
       if (data.code !== 0) {
         throw new Error(

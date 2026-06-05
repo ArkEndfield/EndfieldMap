@@ -57,5 +57,17 @@
   "pip": {
     "playing": "地图正在画中画模式播放",
     "back": "返回标签页"
+  },
+  "sw_update_available": "ZMDMAP 有新版本可用，点击确定后页面将刷新以获取最新内容",
+  "share_link": {
+    "copy_link": "复制分享链接",
+    "copy_success": "链接已复制到剪贴板",
+    "copy_failed": "复制失败",
+    "select_categories": "选择要包含的分类",
+    "confirm_copy": "复制链接",
+    "select_more": "选择更多分类"
+  },
+  "context_menu": {
+    "share": "复制分享链接"
   }
 }

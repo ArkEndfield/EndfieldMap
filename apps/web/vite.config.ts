@@ -40,7 +40,6 @@ export default defineConfig(({ command, mode }) => {
       __COMMIT_HASH__: JSON.stringify(process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || ''),
       __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
     },
-    appType: 'mpa',
     plugins: [
       react({
         babel: {
@@ -69,7 +68,7 @@ export default defineConfig(({ command, mode }) => {
           sourcemap: false,
           navigateFallbackDenylist: [/^\/docs/],
         },
-        includeAssets: ['favicon.ico', 'locales/**/*.json', 'images/**/*.png', 'images/**/*.jpg', 'images/**/*.svg'],
+        includeAssets: ['favicon.ico', 'locales/**/*.json'],
         manifest: {
           name: '终末地地图资源查询 - ZMDMAP',
           short_name: 'ZMDMap',
@@ -82,7 +81,7 @@ export default defineConfig(({ command, mode }) => {
               type: 'image/png',
             },
             {
-              src: 'ndroid-chrome-512x512.png',
+              src: 'android-chrome-512x512.png',
               sizes: '512x512',
               type: 'image/png',
             },
@@ -112,6 +111,11 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
+            // 多语种 JSON 按 locale 分包，每个 locale 一份 chunk，
+            // 命名稳定便于 PWA 缓存与单独失效（仅该 locale 修改才让 chunk hash 变）
+            const localeMatch = id.match(/\/locales\/([^/]+)\/[^/]+\.json$/);
+            if (localeMatch) return `lang-${localeMatch[1]}`;
+
             if (id.includes('node_modules')) {
               // RxJS
               if (id.includes('/rxjs/')) {
@@ -124,6 +128,10 @@ export default defineConfig(({ command, mode }) => {
               // TanStack DB
               if (id.includes('@tanstack/react-db') || id.includes('@tanstack/rxdb-db-collection')) {
                 return 'tanstack-db-vendor';
+              }
+              // Sentry 监控（必须在 /react/ 规则之前，否则 @sentry/react 会被错误归类）
+              if (id.includes('@sentry/')) {
+                return 'sentry-vendor';
               }
               // React 核心
               if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('scheduler')) {
@@ -148,10 +156,6 @@ export default defineConfig(({ command, mode }) => {
               // Swiper 轮播
               if (id.includes('/swiper/')) {
                 return 'swiper-vendor';
-              }
-              // Sentry 监控
-              if (id.includes('@sentry/')) {
-                return 'sentry-vendor';
               }
               // 图片查看器
               if (id.includes('yet-another-react-lightbox')) {

@@ -1,0 +1,13 @@
+{
+  "context_menu": {
+    "share": "Copia link di condivisione"
+  },
+  "share_link": {
+    "copy_link": "Copia link di condivisione",
+    "copy_success": "Link copiato negli appunti",
+    "copy_failed": "Copia fallita",
+    "select_categories": "Seleziona le categorie da includere",
+    "confirm_copy": "Copia link",
+    "select_more": "Seleziona altre categorie"
+  }
+}
