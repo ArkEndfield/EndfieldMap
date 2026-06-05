@@ -23,8 +23,8 @@ export default function EntityGroup({
   title = 'TITLE',
   subtitle = 'SUBTITLE',
   children,
-  totalCount,
-  markedCount,
+  totalCount: _totalCount,
+  markedCount: _markedCount,
   onToggle,
   onIconClick,
 }: EntityGroupProps) {
