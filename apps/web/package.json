@@ -9,7 +9,9 @@
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "prettier --write . && eslint . --fix",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@endfieldmap/map-adapter-ol": "workspace:*",
