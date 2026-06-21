@@ -2,6 +2,7 @@ import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { cn } from '@endfieldmap/tools';
 import { useIsMobile, WindowProvider,ZmdSquareButton } from '@endfieldmap/web-components';
 import { ChevronUp } from '@endfieldmap/web-components';
+import { ShareSelectBar } from '@themes/endfield/ui/share_select';
 import { observer } from 'mobx-react-lite';
 import { lazy, Suspense, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -59,6 +60,11 @@ const Controllers = observer(({ adapter }: ControllersProps) => {
           {/* 操作提示组件 */}
           <Suspense>
             <ThemedComponents.map.OperationTip />
+          </Suspense>
+
+          {/* 分享 select 底部标签条 */}
+          <Suspense>
+            <ShareSelectBar />
           </Suspense>
 
           {/* 缩放组件 */}
