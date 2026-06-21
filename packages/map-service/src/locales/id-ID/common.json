@@ -8,6 +8,12 @@
     "copy_failed": "Gagal menyalin",
     "select_categories": "Pilih kategori untuk disertakan",
     "confirm_copy": "Salin tautan",
-    "select_more": "Pilih kategori lainnya"
+    "select_more": "Pilih kategori lainnya",
+    "not_on_current_map": "Jenis penanda ini tidak ada di peta saat ini",
+    "not_on_map_switched": "Jenis penanda ini tidak ada di peta saat ini. Beralih ke peta tempatnya berada.",
+    "not_on_map_ask": "Beberapa jenis penanda tidak ada di peta saat ini. Beralih ke {{map}} untuk melihatnya?",
+    "located_at": "di {{map}}",
+    "close": "Tutup",
+    "id_not_on_map_switched": "Penanda target tidak ada di peta yang ditentukan. Beralih ke {{map}}."
   }
 }

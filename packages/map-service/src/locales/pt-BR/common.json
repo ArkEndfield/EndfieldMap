@@ -8,6 +8,12 @@
     "copy_failed": "Falha ao copiar",
     "select_categories": "Selecionar categorias para incluir",
     "confirm_copy": "Copiar link",
-    "select_more": "Selecionar mais categorias"
+    "select_more": "Selecionar mais categorias",
+    "not_on_current_map": "Este tipo de marcador não está no mapa atual",
+    "not_on_map_switched": "Este tipo de marcador não está no mapa atual. Alternado para o mapa onde ele existe.",
+    "not_on_map_ask": "Alguns tipos de marcador não estão no mapa atual. Mudar para {{map}} para vê-los?",
+    "located_at": "em {{map}}",
+    "close": "Fechar",
+    "id_not_on_map_switched": "O marcador alvo não está no mapa especificado. Alternado para {{map}}."
   }
 }

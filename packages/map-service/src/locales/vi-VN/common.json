@@ -8,6 +8,12 @@
     "copy_failed": "Sao chép thất bại",
     "select_categories": "Chọn danh mục để bao gồm",
     "confirm_copy": "Sao chép liên kết",
-    "select_more": "Chọn thêm danh mục"
+    "select_more": "Chọn thêm danh mục",
+    "not_on_current_map": "Loại điểm đánh dấu này không có trên bản đồ hiện tại",
+    "not_on_map_switched": "Loại điểm đánh dấu này không có trên bản đồ hiện tại. Đã chuyển sang bản đồ có nó.",
+    "not_on_map_ask": "Một số loại điểm đánh dấu không có trên bản đồ hiện tại. Chuyển sang {{map}} để xem?",
+    "located_at": "ở {{map}}",
+    "close": "Đóng",
+    "id_not_on_map_switched": "Điểm đánh dấu mục tiêu không có trên bản đồ đã chỉ định. Đã chuyển sang {{map}}."
   }
 }

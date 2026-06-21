@@ -302,10 +302,16 @@ interface Resources {
     "select_all": "全选",
     "share": "分享",
     "share_link": {
+      "close": "关闭",
       "confirm_copy": "复制链接",
       "copy_failed": "复制失败",
       "copy_link": "复制分享链接",
       "copy_success": "链接已复制到剪贴板",
+      "id_not_on_map_switched": "目标标点不在指定地图，已为你切换到〔{{map}}〕",
+      "located_at": "位于 {{map}}",
+      "not_on_current_map": "该标点类型不在当前地图",
+      "not_on_map_ask": "部分标点类型不在当前地图，是否切换到〔{{map}}〕查看？",
+      "not_on_map_switched": "该标点类型不在当前地图，已为你切换至所在地图",
       "select_categories": "选择要包含的分类",
       "select_more": "选择更多分类"
     },

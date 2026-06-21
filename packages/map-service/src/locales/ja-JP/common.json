@@ -64,7 +64,13 @@
     "copy_failed": "コピーに失敗しました",
     "select_categories": "含めるカテゴリを選択",
     "confirm_copy": "リンクをコピー",
-    "select_more": "他のカテゴリを選択"
+    "select_more": "他のカテゴリを選択",
+    "not_on_current_map": "このマーカー種別は現在のマップにありません",
+    "not_on_map_switched": "このマーカー種別は現在のマップにありません。存在するマップに切り替えました。",
+    "not_on_map_ask": "一部のマーカー種別は現在のマップにありません。{{map}} に切り替えて表示しますか？",
+    "located_at": "{{map}} にあります",
+    "close": "閉じる",
+    "id_not_on_map_switched": "対象マーカーは指定のマップにありません。{{map}} に切り替えました。"
   },
   "context_menu": {
     "share": "共有リンクをコピー"

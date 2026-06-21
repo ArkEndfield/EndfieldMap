@@ -8,6 +8,12 @@
     "copy_failed": "Copia fallita",
     "select_categories": "Seleziona le categorie da includere",
     "confirm_copy": "Copia link",
-    "select_more": "Seleziona altre categorie"
+    "select_more": "Seleziona altre categorie",
+    "not_on_current_map": "Questo tipo di segnaposto non è sulla mappa corrente",
+    "not_on_map_switched": "Questo tipo di segnaposto non è sulla mappa corrente. Passato alla mappa in cui esiste.",
+    "not_on_map_ask": "Alcuni tipi di segnaposto non sono sulla mappa corrente. Passare a {{map}} per vederli?",
+    "located_at": "su {{map}}",
+    "close": "Chiudi",
+    "id_not_on_map_switched": "Il segnaposto di destinazione non è sulla mappa specificata. Passato a {{map}}."
   }
 }

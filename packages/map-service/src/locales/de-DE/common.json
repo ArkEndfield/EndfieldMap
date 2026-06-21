@@ -8,6 +8,12 @@
     "copy_failed": "Kopieren fehlgeschlagen",
     "select_categories": "Kategorien zum Einschließen auswählen",
     "confirm_copy": "Link kopieren",
-    "select_more": "Weitere Kategorien auswählen"
+    "select_more": "Weitere Kategorien auswählen",
+    "not_on_current_map": "Dieser Markierungstyp ist nicht auf der aktuellen Karte",
+    "not_on_map_switched": "Dieser Markierungstyp ist nicht auf der aktuellen Karte. Zur entsprechenden Karte gewechselt.",
+    "not_on_map_ask": "Einige Markierungstypen sind nicht auf der aktuellen Karte. Zu {{map}} wechseln, um sie anzuzeigen?",
+    "located_at": "auf {{map}}",
+    "close": "Schließen",
+    "id_not_on_map_switched": "Die Zielmarkierung ist nicht auf der angegebenen Karte. Zu {{map}} gewechselt."
   }
 }

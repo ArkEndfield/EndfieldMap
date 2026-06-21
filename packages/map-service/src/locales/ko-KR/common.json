@@ -64,7 +64,13 @@
     "copy_failed": "복사 실패",
     "select_categories": "포함할 카테고리 선택",
     "confirm_copy": "링크 복사",
-    "select_more": "더 많은 카테고리 선택"
+    "select_more": "더 많은 카테고리 선택",
+    "not_on_current_map": "이 마커 유형은 현재 지도에 없습니다",
+    "not_on_map_switched": "이 마커 유형은 현재 지도에 없어 해당 지도로 전환했습니다.",
+    "not_on_map_ask": "일부 마커 유형이 현재 지도에 없습니다. {{map}}(으)로 전환하여 볼까요?",
+    "located_at": "{{map}}에 있음",
+    "close": "닫기",
+    "id_not_on_map_switched": "대상 마커가 지정한 지도에 없어 {{map}}(으)로 전환했습니다."
   },
   "context_menu": {
     "share": "공유 링크 복사"

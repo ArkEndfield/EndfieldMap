@@ -8,6 +8,12 @@
     "copy_failed": "Échec de la copie",
     "select_categories": "Sélectionner les catégories à inclure",
     "confirm_copy": "Copier le lien",
-    "select_more": "Sélectionner plus de catégories"
+    "select_more": "Sélectionner plus de catégories",
+    "not_on_current_map": "Ce type de marqueur n'est pas sur la carte actuelle",
+    "not_on_map_switched": "Ce type de marqueur n'est pas sur la carte actuelle. Basculé vers la carte où il existe.",
+    "not_on_map_ask": "Certains types de marqueurs ne sont pas sur la carte actuelle. Basculer vers {{map}} pour les voir ?",
+    "located_at": "sur {{map}}",
+    "close": "Fermer",
+    "id_not_on_map_switched": "Le marqueur cible n'est pas sur la carte spécifiée. Basculé vers {{map}}."
   }
 }

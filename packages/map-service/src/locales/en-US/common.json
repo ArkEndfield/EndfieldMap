@@ -65,7 +65,13 @@
     "copy_failed": "Copy failed",
     "select_categories": "Select categories to include",
     "confirm_copy": "Copy Link",
-    "select_more": "Select more categories"
+    "select_more": "Select more categories",
+    "not_on_current_map": "This marker type isn't on the current map",
+    "not_on_map_switched": "This marker type isn't on the current map. Switched to the map where it exists.",
+    "not_on_map_ask": "Some marker types aren't on the current map. Switch to {{map}} to view them?",
+    "located_at": "on {{map}}",
+    "close": "Close",
+    "id_not_on_map_switched": "The target marker isn't on the specified map. Switched to {{map}}."
   },
   "context_menu": {
     "share": "Copy Share Link"

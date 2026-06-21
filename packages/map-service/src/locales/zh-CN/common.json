@@ -65,7 +65,13 @@
     "copy_failed": "复制失败",
     "select_categories": "选择要包含的分类",
     "confirm_copy": "复制链接",
-    "select_more": "选择更多分类"
+    "select_more": "选择更多分类",
+    "not_on_current_map": "该标点类型不在当前地图",
+    "not_on_map_switched": "该标点类型不在当前地图，已为你切换至所在地图",
+    "not_on_map_ask": "部分标点类型不在当前地图，是否切换到〔{{map}}〕查看？",
+    "located_at": "位于 {{map}}",
+    "close": "关闭",
+    "id_not_on_map_switched": "目标标点不在指定地图，已为你切换到〔{{map}}〕"
   },
   "context_menu": {
     "share": "复制分享链接"
