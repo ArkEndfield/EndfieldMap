@@ -1,15 +1,15 @@
 import type { MapData } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio, Deco7Dots, useIsMobile } from '@endfieldmap/web-components';
+import { ChangeMapIcon, SwitchIcon } from '@endfieldmap/web-components';
 import { useMapChange } from '@themes/endfield/hooks/map_change';
 import { MapChangeAnimation } from '@themes/endfield/ui/map_menu/map_change_animation';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { ChangeMapIcon, SwitchIcon } from '@endfieldmap/web-components';
 import { MapButton } from '@/components/themes/endfield/ui/map_menu/button';
 import { useAdapter } from '@/hooks/use_adapter';
 import { useClickOutside } from '@/hooks/use_click_outside';
@@ -20,7 +20,7 @@ const ChangeMap: React.FC = observer(() => {
   const [showPopover, setShowPopover] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const { mapId, mapName, showChangeAnimation, changeMap } = useMapChange();
+  const { mapId, mapName, changeMap } = useMapChange();
   const allMaps = adapter.mapController.dataManager.data;
   const isMobile = useIsMobile();
 
@@ -135,7 +135,7 @@ const ChangeMap: React.FC = observer(() => {
           </div>
         </motion.div>
       </motion.div>
-      <MapChangeAnimation showChangeAnimation={showChangeAnimation} mapName={mapName} />
+      <MapChangeAnimation />
     </>
   );
 });

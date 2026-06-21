@@ -74,13 +74,13 @@ export async function applyShareLinkParams(): Promise<void> {
   // 3. id (priority over select; may switch map). Detect cross-map to prompt.
   let idAnchored = false;
   let idAlertShown = false;
-  if (mapId && entityId !== undefined && !isNaN(entityId)) {
+  if (entityId !== undefined && !isNaN(entityId)) {
     const instance = adapter.entityRegistry.searchById(validMapIds, entityId);
     if (!instance) {
       logger.warn('[ShareLink] Entity not found:', entityId);
     } else {
       const entityMapId = instance.mapId;
-      const idCrossMap = entityMapId !== mapId;
+      const idCrossMap = entityMapId !== targetMapId;
       await service.dataService.mapDataService.moveToEntityInstance(instance, true, true);
       idAnchored = true;
       targetMapId = mapState.currentMap.value;

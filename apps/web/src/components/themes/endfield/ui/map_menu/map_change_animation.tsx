@@ -1,17 +1,18 @@
-import type { MapData } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
 import { useWindow } from '@endfieldmap/web-components';
+import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
-interface MapChangeAnimationProps {
-  showChangeAnimation: boolean;
-  mapName: MapData['name'];
-}
+import { useAdapter } from '@/hooks/use_adapter';
+import { mapChangeAnimationStore } from '@/services/map_change_animation_store';
 
-export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({ showChangeAnimation, mapName }) => {
+export const MapChangeAnimation = observer(() => {
   const { t } = useTranslation(['header', 'lang']);
   const currentWindow = useWindow();
+  const { adapter } = useAdapter();
+  const showChangeAnimation = mapChangeAnimationStore.visible;
+  const mapName = adapter.mapController.dataManager.currentMap?.name || 'Unknown';
 
   return createPortal(
     <motion.div
@@ -119,4 +120,4 @@ export const MapChangeAnimation: React.FC<MapChangeAnimationProps> = ({ showChan
     </motion.div>,
     currentWindow.document.body
   );
-};
+});
