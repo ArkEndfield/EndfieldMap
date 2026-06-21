@@ -9,20 +9,27 @@
 本设计：
 1. 当 `select` 含不在当前/目标地图的类型时，用 **alert** 提示其所在地图，并按规则**自动切换**或**询问切换**。
 2. 复用 `operation_list.tsx`（`OperationList`）在**底部**常驻展示 `select` 的全部选择项，对**非当前地图**的项做**右上角徽章**标记。
+3. 当 `id` 指定的标点不在 `map` 指定地图、却存在于别的地图时，**alert 提示并自动切换**到标点所在地图；`id` 优先级高于 `select`。
 
 ## 2. 行为规则（已与需求方确认）
 
-### 2.1 切换策略：单个自动 · 多个询问
-- `offMap` 为空 → 不提示、不切换。
-- 链接带 `id`（指定标点，锚定地图）→ **仅提示，不切换**。
-- `selectKeys.length === 1` 且该项不在当前图 → **自动切换**到该类型所在地图。
-- 否则（多项且含越图项）→ **弹确认框询问**，目标 = 覆盖最多 `offMap` 类型的地图（并列取 `select` 中更靠前者）；取消则留在原图。
+### 2.1 id 解析跳转（优先级高于 select）
+- `id` 始终先于 `select` 解析，其所在地图作为后续 select 解析的锚点（目标地图）。
+- `id` 标点不在 `map` 指定地图、但存在于别的地图 → **alert 提示并自动切换**到标点所在地图。
+- `id` 标点就在指定地图上 → 正常定位，不提示。
+- `id` 标点任何地图都找不到 → 静默告警，`id` 不再锚定，回退到 select 切换逻辑。
 
-### 2.2 底部标签条交互：跨图跳转 · 本图切显隐
+### 2.2 select 切换策略：单个自动 · 多个询问
+- `offMap` 为空 → 不提示、不切换。
+- 已有**有效 id 锚定** → select 越图项**仅徽章标记**，不自动切换；若该 id 已触发跨图提示，则连 select 的 alert 也省略（避免双弹窗）。
+- `selectKeys.length === 1` 且该项不在当前图（且无 id 锚定）→ **自动切换**到该类型所在地图。
+- 否则（多项且含越图项，且无 id 锚定）→ **弹确认框询问**，目标 = 覆盖最多 `offMap` 类型的地图（并列取 `select` 中更靠前者）；取消则留在原图。
+
+### 2.3 底部标签条交互：跨图跳转 · 本图切显隐
 - 点击带徽章（非本图）的标签 → `setCurrentMap` 切换到该类型所在地图。
 - 点击本图标签 → `setEntityGroupVisibility` 切换该类型显隐。
 
-### 2.3 显示时机：随参数常驻 · 可关闭
+### 2.4 显示时机：随参数常驻 · 可关闭
 - URL 带 `select` 参数即显示。
 - 关闭按钮 → 隐藏并 `urlStateManager.removeParam('select')`。
 - 切换地图时徽章实时更新。
@@ -98,12 +105,14 @@ export const shareSelectStore = new ShareSelectStore();
 执行顺序：
 1. `map`：校验，`setCurrentMap`；`targetMapId = map ?? currentMap.value`。
 2. 在图 `select` 显隐：对存在于 `targetMapId` 的 key 调 `setEntityGroupVisibility(targetMapId, key, true)`。
-3. `id`：若有 → `moveToEntity(id)`（可能切图）；之后重读 `currentMap.value` 作为新的 `targetMapId`，补应用在新图上的 select 显隐。
-4. 解析剩余 offMap：`resolveSelectPlacement(buildMapsByKey(mapData), selectKeys, targetMapId, hasId)`。
+3. `id`（优先级 > select，可能切图）：`adapter.entityRegistry.searchById(mapIds, id)` 取实例。
+   - 找不到 → `logger.warn`，`idAnchored=false`。
+   - 找到 → 记 `entityMapId=instance.mapId`、`idCrossMap = (map!=null && entityMapId!==map)`；`moveToEntityInstance(instance, true, true)`（切到实体地图）；`idAnchored=true`；重读 `currentMap.value` 为 `targetMapId`，补应用 select 显隐；若 `idCrossMap` → `alert.info(id_not_on_map_switched, {map})` 且 `idAlertShown=true`。
+4. 解析剩余 offMap：`resolveSelectPlacement(buildMapsByKey(mapData), selectKeys, targetMapId, idAnchored)`。
 5. 按 `switchMode` 执行 + alert（仅当 `offMap.length > 0`）：
-   - `auto`：`setCurrentMap(target)` → 补显隐 → `alert.info(已切换)`。
-   - `ask`：`alert.confirm(...)` → true 则 `setCurrentMap(target)` + 补显隐；false 留原图。
-   - `none` 且 `offMap>0`（带 id）：`alert.info(分别位于…)`。
+   - `auto`：`setCurrentMap(target)` → 补显隐 → `alert.info(not_on_map_switched)`。
+   - `ask`：`alert.confirm(not_on_map_ask)` → true 则 `setCurrentMap(target)` + 补显隐；false 留原图。
+   - `none`（idAnchored）：仅当 `!idAlertShown` → `alert.info(not_on_current_map)`；否则只留徽章。
 6. `unknown`：`logger.warn`，不进标签条。
 7. `shareSelectStore.setSelect(selectKeys)`。
 
@@ -123,14 +132,15 @@ export const shareSelectStore = new ShareSelectStore();
 
 ## 6. i18n（`common` 命名空间，14 语言，之后 `pnpm lng:type`）
 
-新增约：
+新增（均在 `common` 的 `share_link` 对象内）：
 | key | zh-CN |
 |---|---|
 | `share_link.not_on_current_map` | 该标点类型不在当前地图 |
-| `share_link.not_on_map_switched` | 〔{{category}}〕不在当前地图，已切换到〔{{map}}〕 |
+| `share_link.not_on_map_switched` | 该标点类型不在当前地图，已为你切换至所在地图 |
 | `share_link.not_on_map_ask` | 部分标点类型不在当前地图，是否切换到〔{{map}}〕查看？ |
-| `share_link.exists_on` | {{category}} · 位于 {{map}} |
-| `share_select.close` | 关闭 |
+| `share_link.located_at` | 位于 {{map}} |
+| `share_link.close` | 关闭 |
+| `share_link.id_not_on_map_switched` | 目标标点不在指定地图，已为你切换到〔{{map}}〕 |
 
 ## 7. 测试
 
@@ -145,7 +155,8 @@ export const shareSelectStore = new ShareSelectStore();
 ## 8. 边界
 
 - offMap 某 key 多 homeMap：auto 取首个；ask 的最佳图按覆盖度。
-- `id` 与 select 冲突：`id` 优先锚定，越图 select 仅提示 + 徽章。
+- `id` 与 select 冲突：`id` 优先锚定，其所在地图为 select 解析目标图；越图 select 仅徽章（id 已弹跨图提示时连 select 的 alert 也省略）。
+- `id` 标点任何地图都找不到 → 静默告警，`id` 不锚定，回退到 select 切换逻辑。
 - key 在 `infoData` 有、但所有地图分组都没有 → `unknown`，跳过 chip。
 - 关闭标签条后清 URL `select`，再次分享不携带。
 

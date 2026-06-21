@@ -838,17 +838,25 @@ export async function applyShareLinkParams(): Promise<void> {
   // 2. on-map select visibility
   if (selectKeys && selectKeys.length > 0) applyVisibleOn(targetMapId, selectKeys);
 
-  // 3. id (may switch map); re-read current map afterwards
+  // 3. id (priority over select; may switch map). Detect cross-map to prompt.
   let idAnchored = false;
+  let idAlertShown = false;
   if (mapId && entityId !== undefined && !isNaN(entityId)) {
-    const found = await service.dataService.mapDataService.moveToEntity(entityId, true, true);
-    if (found) {
-      idAnchored = true;
-    } else {
+    const instance = adapter.entityRegistry.searchById(validMapIds, entityId);
+    if (!instance) {
       logger.warn('[ShareLink] Entity not found:', entityId);
+    } else {
+      const entityMapId = instance.mapId;
+      const idCrossMap = entityMapId !== mapId;
+      await service.dataService.mapDataService.moveToEntityInstance(instance, true, true);
+      idAnchored = true;
+      targetMapId = mapState.currentMap.value;
+      if (selectKeys && selectKeys.length > 0) applyVisibleOn(targetMapId, selectKeys);
+      if (idCrossMap) {
+        idAlertShown = true;
+        alert.info(translate('share_link.id_not_on_map_switched', { map: mapDisplayName(entityMapId) }));
+      }
     }
-    targetMapId = mapState.currentMap.value;
-    if (selectKeys && selectKeys.length > 0) applyVisibleOn(targetMapId, selectKeys);
   }
 
   // 4 & 5. cross-map resolution + alerts
@@ -882,7 +890,8 @@ export async function applyShareLinkParams(): Promise<void> {
           mapState.setCurrentMap(target);
           applyVisibleOn(target, selectKeys);
         }
-      } else {
+      } else if (!idAlertShown) {
+        // none + offMap (id-anchored): only inform if the id step didn't already alert.
         alert.info({
           content: <ShareSelectAlertContent title={translate('share_link.not_on_current_map')} items={items} />,
         });
@@ -977,7 +986,7 @@ git commit -m "feat(web): resolve cross-map select with alert + strip in applySh
 - Modify: `packages/map-service/src/locales/<locale>/common.json` ×14
 - Regenerate: `packages/map-service/src/@types/resources.d.ts`
 
-- [ ] **Step 1: Add 5 keys to each locale's `share_link` object**
+- [ ] **Step 1: Add 6 keys to each locale's `share_link` object**
 
 In every `packages/map-service/src/locales/<locale>/common.json`, add these keys **inside the existing `"share_link"` object** (alongside `copy_link`, etc.). Values per locale:
 
@@ -998,6 +1007,25 @@ In every `packages/map-service/src/locales/<locale>/common.json`, add these keys
 | th-TH | ไม่มีหมุดประเภทนี้บนแผนที่ปัจจุบัน | ไม่มีหมุดประเภทนี้บนแผนที่ปัจจุบัน เปลี่ยนไปยังแผนที่ที่มีหมุดนี้แล้ว | หมุดบางประเภทไม่อยู่บนแผนที่ปัจจุบัน สลับไปที่ {{map}} เพื่อดูหรือไม่? | อยู่ที่ {{map}} | ปิด |
 | vi-VN | Loại điểm đánh dấu này không có trên bản đồ hiện tại | Loại điểm đánh dấu này không có trên bản đồ hiện tại. Đã chuyển sang bản đồ có nó. | Một số loại điểm đánh dấu không có trên bản đồ hiện tại. Chuyển sang {{map}} để xem? | ở {{map}} | Đóng |
 
+Plus add `share_link.id_not_on_map_switched` (interpolates `{{map}}`) per locale:
+
+| locale | id_not_on_map_switched |
+|---|---|
+| zh-CN | 目标标点不在指定地图，已为你切换到〔{{map}}〕 |
+| zh-TW | 目標標點不在指定地圖，已為你切換到〔{{map}}〕 |
+| en-US | The target marker isn't on the specified map. Switched to {{map}}. |
+| ja-JP | 対象マーカーは指定のマップにありません。{{map}} に切り替えました。 |
+| ko-KR | 대상 마커가 지정한 지도에 없어 {{map}}(으)로 전환했습니다. |
+| de-DE | Die Zielmarkierung ist nicht auf der angegebenen Karte. Zu {{map}} gewechselt. |
+| es-MX | El marcador objetivo no está en el mapa especificado. Se cambió a {{map}}. |
+| fr-FR | Le marqueur cible n'est pas sur la carte spécifiée. Basculé vers {{map}}. |
+| id-ID | Penanda target tidak ada di peta yang ditentukan. Beralih ke {{map}}. |
+| it-IT | Il segnaposto di destinazione non è sulla mappa specificata. Passato a {{map}}. |
+| pt-BR | O marcador alvo não está no mapa especificado. Alternado para {{map}}. |
+| ru-RU | Целевая метка отсутствует на указанной карте. Выполнен переход на {{map}}. |
+| th-TH | หมุดเป้าหมายไม่อยู่บนแผนที่ที่ระบุ เปลี่ยนไปยัง {{map}} แล้ว |
+| vi-VN | Điểm đánh dấu mục tiêu không có trên bản đồ đã chỉ định. Đã chuyển sang {{map}}. |
+
 Example — `zh-CN/common.json` `share_link` becomes:
 
 ```json
@@ -1012,7 +1040,8 @@ Example — `zh-CN/common.json` `share_link` becomes:
     "not_on_map_switched": "该标点类型不在当前地图，已为你切换至所在地图",
     "not_on_map_ask": "部分标点类型不在当前地图，是否切换到〔{{map}}〕查看？",
     "located_at": "位于 {{map}}",
-    "close": "关闭"
+    "close": "关闭",
+    "id_not_on_map_switched": "目标标点不在指定地图，已为你切换到〔{{map}}〕"
   },
 ```
 
@@ -1066,9 +1095,10 @@ Run: `pnpm dev:web`, then visit these URLs (substitute real `map`/`id`/`select` 
 1. `?map=<mapA>&select=<keyOnMapA>` → strip shows the chip, no badge, no alert.
 2. `?map=<mapA>&select=<keyOnlyOnMapB>` (single) → alert "已切换至所在地图", map switches to B, chip un-badged after switch.
 3. `?map=<mapA>&select=<keyOnMapA>,<keyOnlyOnMapB>` (multiple) → confirm dialog offering `<mapB>`; confirm switches, cancel stays with a badged chip for the off-map key.
-4. `?map=<mapA>&id=<idOnMapA>&select=<keyOnlyOnMapB>` → entity opens on A, **info** alert (no switch), off-map chip badged.
-5. Click a badged chip → switches to its map. Click an on-map chip → toggles its visibility. Click ✕ → strip hides and `select` disappears from the URL.
-6. On a mobile viewport, confirm the bottom strip doesn't overlap bottom controls; if it does, bump `bottom-6` in `operation_list.tsx` (e.g. to `bottom-20` under a mobile check) and re-verify.
+4. `?map=<mapA>&id=<idOnMapA>&select=<keyOnlyOnMapB>` → entity opens on A, **info** alert for the off-map select (no switch, id anchors A), off-map chip badged.
+5. `?map=<mapA>&id=<idActuallyOnMapB>` → **info** alert "目标标点不在指定地图，已为你切换到 mapB", map switches to B (id outranks the `map` param). With an added off-map `select`, the strip badges it but no second alert fires.
+6. Click a badged chip → switches to its map. Click an on-map chip → toggles its visibility. Click ✕ → strip hides and `select` disappears from the URL.
+7. On a mobile viewport, confirm the bottom strip doesn't overlap bottom controls; if it does, bump `bottom-6` in `operation_list.tsx` (e.g. to `bottom-20` under a mobile check) and re-verify.
 
 - [ ] **Step 6: Restore the stashed dev-tools WIP location note**
 
