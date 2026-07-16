@@ -8,9 +8,11 @@ import { LoadingStageId } from '@/const/loading';
 import { assetsHost, backendHost, isDev } from '@/services/env';
 import { loadingManager } from '@/services/loading';
 
-const localeModules = import.meta.glob<{ default: Record<string, unknown> }>(
-  '../../../../packages/map-service/src/locales/**/*.json'
-);
+// lang 命名空间不打包，运行时由 MapService 从 CDN 外部加载，故排除 lang.json
+const localeModules = import.meta.glob<{ default: Record<string, unknown> }>([
+  '../../../../packages/map-service/src/locales/**/*.json',
+  '!../../../../packages/map-service/src/locales/**/lang.json',
+]);
 
 let initialLoadComplete = false;
 

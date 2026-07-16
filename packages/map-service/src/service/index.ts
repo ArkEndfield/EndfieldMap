@@ -38,15 +38,25 @@ export class MapService<T, R> {
     if (config.consolaReporter) {
       logger.addReporter(config.consolaReporter);
     }
+    this.assetService = new AssetService(config.assetsHost || '');
     this.i18nService = new I18nService({
       isDev: config.isDev,
       ...config.i18nConfig,
+      // lang 命名空间体量巨大（按 MD5 哈希存的实体名/描述），不再打包，
+      // 运行时按 locale 从 CDN 外部加载；其余命名空间沿用 app 传入的 loader。
+      resourceLoader: (language, namespace) => {
+        if (namespace === 'lang') {
+          return this.jsonLoader.loadJSON<Record<string, unknown>>(
+            `${this.assetService.url.langI18n}/${language}/lang.json`
+          );
+        }
+        return config.i18nConfig.resourceLoader(language, namespace);
+      },
     });
     this.serverService = new ServerService({
       backendHost: config.backendHost || '',
       i18nService: this.i18nService,
     });
-    this.assetService = new AssetService(config.assetsHost || '');
     this.databaseService = new DatabaseService({
       isDev: config.isDev,
       ...config.databaseConfig,
