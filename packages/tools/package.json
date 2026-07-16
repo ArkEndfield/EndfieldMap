@@ -34,10 +34,10 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "consola": "^3.4.2",
-    "tailwind-merge": "^3.5.0"
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "ol": "^10.8.0"
+    "ol": "^10.9.0"
   },
   "peerDependencies": {
     "mobx": "catalog:"

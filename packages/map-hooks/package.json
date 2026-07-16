@@ -35,7 +35,7 @@
     "mobx": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-i18next": "^16.5.4",
+    "react-i18next": "^17.0.9",
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/map-service": "workspace:*",
     "@endfieldmap/tools": "workspace:*",

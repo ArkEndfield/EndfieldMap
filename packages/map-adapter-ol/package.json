@@ -35,7 +35,7 @@
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
     "mobx": "catalog:",
-    "ol": "^10.8.0"
+    "ol": "^10.9.0"
   },
   "files": [
     "dist",
