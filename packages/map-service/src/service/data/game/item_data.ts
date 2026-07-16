@@ -24,7 +24,10 @@ export class ItemDataService<T, R> {
     const data = await this.jsonLoader.loadJSON<Record<string, ItemSchemaType>>(
       `${this.assetService.url.itemData}/item_table.json`
     );
-    const items = Object.values(data || {});
+    const items = Object.entries(data || {}).map(([id, item]) => ({
+      ...item,
+      id, // 用 JSON key 覆盖 item 内部的 id，确保主键唯一
+    }));
     if (items.length > 0) {
       await this.databaseService.gameDatabase.gameItem.bulkUpsert(items);
     }
