@@ -130,6 +130,10 @@ export const Announcements = ({
           <CenterContainer>
             <ErrorMessage error={detailError} />
           </CenterContainer>
+        ) : !detail ? (
+          <CenterContainer>
+            <Logo />
+          </CenterContainer>
         ) : (
           <div className="h-full flex flex-col">
             <div className="md:hidden mb-2">

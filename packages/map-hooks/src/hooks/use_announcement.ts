@@ -123,13 +123,13 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
     [service]
   );
 
+  // 仅加载列表，不自动预览最新公告详情。
+  // 之前这里会 loadDetail(result[0].id)，而 loadDetail 会 setRead，
+  // 导致最新公告在用户还没点开时就被标记为已读 —— 最新的不显示 "new"、
+  // 图标也不出小红点。已读改为仅在用户点击具体公告时触发（见 loadDetail）。
   const refreshList = useCallback(async () => {
-    const result = await loadList();
-    if (result) {
-      loadDetail(result[0].id);
-    }
-    return result;
-  }, [loadList, loadDetail]);
+    return loadList();
+  }, [loadList]);
 
   const setRead = useCallback((id: number) => {
     readAnnouncementLocalStorage.value = [...readAnnouncementLocalStorage.value, id];
