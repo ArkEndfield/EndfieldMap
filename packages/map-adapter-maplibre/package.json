@@ -29,6 +29,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
+  "devDependencies": {
+    "@endfieldmap/map-core": "workspace:*",
+    "@endfieldmap/tools": "workspace:*"
+  },
   "peerDependencies": {
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",

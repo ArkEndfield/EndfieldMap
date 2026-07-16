@@ -31,6 +31,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
+  "devDependencies": {
+    "@endfieldmap/tools": "workspace:*"
+  },
   "peerDependencies": {
     "@endfieldmap/tools": "workspace:*",
     "mobx": "catalog:"
