@@ -18,7 +18,7 @@ const db = SQLite.openDatabaseSync('endfieldmap_rxdb');
 db.execSync('PRAGMA journal_mode=WAL');
 db.execSync('PRAGMA synchronous=NORMAL');
 
-const assetsHost = 'https://assets.zmdmap.com';
+const assetsHost = 'https://assets.fz.wiki';
 const backendHost = 'https://api.zmdmap.com';
 
 export const service = new MapService({

@@ -72,12 +72,12 @@ export class DeltaRobotService<T, R> {
 
     try {
       // 加载关卡数据
-      const levelUrl = `${this.assetService.url.miniGameData}/delta_robot/${levelId}.json`;
+      const levelUrl = `${this.assetService.url.miniGameData}/puzzle/chessboard/${levelId}.json`;
       const levelData = await this.jsonLoader.loadJSON<LevelData>(levelUrl);
 
       // 拼图块加载器
       const pieceLoader = async (blockId: string) => {
-        const pieceUrl = `${this.assetService.url.miniGameData}/delta_robot/${blockId}.json`;
+        const pieceUrl = `${this.assetService.url.miniGameData}/puzzle/block/${blockId}.json`;
         return this.jsonLoader.loadJSON<PieceData>(pieceUrl);
       };
 

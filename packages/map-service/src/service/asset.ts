@@ -9,24 +9,25 @@ export class AssetService {
   }
 
   public get url() {
-    // TODO: 版本更新维护地址@skadi
     return {
       // 存数据的
-      mapData: this.createFullUrl('/data/entity/1.4.4'),
-      entityData: this.createFullUrl('/data/entity/1.4.4'),
-      tierData: this.createFullUrl('/data/entity/1.4.4'),
-      langHash: this.createFullUrl('/data/entity/1.4.4'),
-      itemData: this.createFullUrl('/data/entity/1.4.4'),
-      // TODO: 需要规范一下@skadi
-      miniGameData: this.createFullUrl('/data/minigame'),
+      mapData: this.createFullUrl('/output_beyondmap'),
+      entityData: this.createFullUrl('/output_beyondmap'),
+      tierData: this.createFullUrl('/output_beyondmap'),
+      langHash: this.createFullUrl('/output_beyondmap'),
+      // i18n lang 命名空间：运行时按 locale 从 CDN 外部加载
+      // 完整地址为 `${langI18n}/${locale}/lang.json`
+      langI18n: this.createFullUrl('/output_beyondmap/i18n'),
+      itemData: this.createFullUrl('/output_beyondmap'),
+      miniGameData: this.createFullUrl('/output_beyondmap/minigame'),
       // 存图片的
-      entityImage: this.createFullUrl('/images/icon'),
-      mapImage: this.createFullUrl('/images/map'),
-      itemImage: this.createFullUrl('/images/icon'),
-      tierImage: this.createFullUrl('/images/tier'),
-      avatar: this.createFullUrl('/images/avatar'),
-      misc: this.createFullUrl('/images/misc'),
-      audio: this.createFullUrl('/audio'),
+      entityImage: this.createFullUrl('/output_image/itemiconbig'),
+      mapImage: "https://assets.zmdmap.com/images/map",
+      itemImage: this.createFullUrl('/output_image/itemiconbig'),
+      tierImage: this.createFullUrl('/output_image/tier'),
+      avatar: 'https://assets.zmdmap.com/images/avatar',
+      misc: 'https://assets.zmdmap.com/images/misc',
+      audio: "https://assets.zmdmap.com/audio",
     } as const;
   }
 }
