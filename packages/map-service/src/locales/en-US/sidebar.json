@@ -45,6 +45,7 @@
       "ether": "Ether",
       "trchest": "Treasure Chest",
       "mineral": "Mineral",
+      "gas": "Gas",
       "enemy": "Enemy",
       "disposable": "Disposable Resources",
       "rare_gather": "Rare Gather Resources",

@@ -699,6 +699,7 @@ export default interface Resources {
         "dungeon": "副本点位",
         "enemy": "敌人",
         "ether": "醚质",
+        "gas": "气体",
         "mineral": "矿物",
         "narrative": "世界叙事碎片",
         "other": "其他",
