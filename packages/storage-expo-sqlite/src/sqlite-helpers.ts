@@ -184,10 +184,10 @@ export function getAttachment(
   docId: string,
   attachmentId: string,
   digest: string,
-): string | null {
-  const q = sql`SELECT data FROM ${id(attachmentTableName)} WHERE doc_id = ${docId} AND attachment_id = ${attachmentId} AND digest = ${digest}`;
-  const row = db.getFirstSync<{ data: string }>(q.text, q.params);
-  return row ? row.data : null;
+): { data: string; type: string } | null {
+  const q = sql`SELECT data, type FROM ${id(attachmentTableName)} WHERE doc_id = ${docId} AND attachment_id = ${attachmentId} AND digest = ${digest}`;
+  const row = db.getFirstSync<{ data: string; type: string }>(q.text, q.params);
+  return row ? { data: row.data, type: row.type } : null;
 }
 
 export function setAttachment(
