@@ -67,6 +67,7 @@ export default defineConfig(({ command, mode }) => {
         workbox: {
           sourcemap: false,
           navigateFallbackDenylist: [/^\/docs/],
+          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4 MiB, to allow larger locale chunks like lang-th-TH
         },
         includeAssets: ['favicon.ico', 'locales/**/*.json'],
         manifest: {
