@@ -1,10 +1,24 @@
+import { execSync } from 'node:child_process';
 import path from 'path';
 import dts from 'unplugin-dts/vite';
 import { defineConfig } from 'vite';
 
+/** CI 变量缺失时（本地构建 / env 未透传）兜底取 git commit hash，避免退化成时间戳 */
+function gitCommitHash(): string {
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString()
+      .trim();
+  } catch {
+    return '';
+  }
+}
+
 export default defineConfig({
   define: {
-    __COMMIT_HASH__: JSON.stringify(process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || ''),
+    __COMMIT_HASH__: JSON.stringify(
+      process.env.CNB_COMMIT || process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || gitCommitHash()
+    ),
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },
   build: {
