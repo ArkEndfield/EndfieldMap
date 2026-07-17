@@ -1,7 +1,7 @@
 import type { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
-import type { DataInstance, DisposeListener,EndfieldMapEmitter } from '@endfieldmap/map-core';
-import { DEFAULT_ICON_SIZE,MAP_EVENT } from '@endfieldmap/map-core';
+import type { DataInstance, DisposeListener, EndfieldMapEmitter } from '@endfieldmap/map-core';
+import { DEFAULT_ICON_SIZE, MAP_EVENT } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import type { Coordinate } from 'ol/coordinate';
 import Overlay from 'ol/Overlay';
@@ -111,8 +111,11 @@ export class PopupController {
   /**
    * 更新popup位置（桌面端）
    * 当地图视图改变时可能需要调用
+   * @param options.topInset 视口顶部被 HUD（如固定顶栏）占用的高度。
+   *   panIntoView 只处理 overlay 超出地图元素的情形；被悬浮 HUD 遮挡时
+   *   overlay 仍在地图内，需要按遮挡缺口额外平移视图。
    */
-  public updatePosition() {
+  public updatePosition(options?: { topInset?: number }) {
     if (!this.currentFeature || !this.overlay) return;
 
     this.overlay.panIntoView({
@@ -120,6 +123,27 @@ export class PopupController {
         duration: 250,
       },
       margin: 60,
+    });
+
+    const topInset = options?.topInset ?? 0;
+    if (topInset <= 0) return;
+
+    const element = this.overlay.getElement();
+    const targetElement = this.mapInstance.map.getTargetElement();
+    if (!element || !targetElement) return;
+
+    const deficit = topInset - (element.getBoundingClientRect().top - targetElement.getBoundingClientRect().top);
+    if (deficit <= 0) return;
+
+    const view = this.mapInstance.view;
+    const center = view.getCenter();
+    const resolution = view.getResolution();
+    if (!center || !resolution) return;
+
+    // 视图中心上移 deficit 像素，屏幕内容整体下移，让 overlay 顶端露出 HUD
+    view.animate({
+      center: [center[0], center[1] + deficit * resolution],
+      duration: 250,
     });
   }
 

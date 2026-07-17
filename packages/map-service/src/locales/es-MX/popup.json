@@ -25,5 +25,17 @@
     "no_puzzle_piece": "No hay piezas de rompecabezas",
     "solving": "Resolviendo...",
     "start_solve": "Iniciar resolución"
+  },
+  "balloon": {
+    "solution": "Solución de recuperación aérea",
+    "level_selection": "Seleccionar nivel (total {{levels}} niveles)",
+    "level_item": "Nivel {{id}}",
+    "level_index": "Nivel {{level}}",
+    "balloon_count": "Globos disponibles ({{amount}})",
+    "no_balloon": "No hay globos",
+    "solving": "Resolviendo...",
+    "start_solve": "Iniciar resolución",
+    "solution_nav": "Solución {{index}} / {{total}}",
+    "no_solution": "Sin solución"
   }
 }

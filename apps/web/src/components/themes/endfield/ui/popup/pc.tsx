@@ -28,13 +28,22 @@ const RightContent: React.FC<{
           isExpand ? 'ml-1' : '-ml-78'
         )}
       >
-        <ScrollArea contentClassName="w-full text-white text-xs" scrollbarX="hidden" className="flex-1">
+        <ScrollArea
+          contentClassName="w-full text-white text-xs"
+          scrollbarX="hidden"
+          className="flex-1"
+          trackClassName="bg-white/5"
+          thumbClassName="bg-white/25 hover:bg-white/40 shadow-none"
+        >
           {items}
         </ScrollArea>
       </motion.div>
     </AnimatePresence>
   );
 });
+
+/** 弹窗顶端至少让出的视口高度：顶部固定栏 h-11（44px）+ 余量 */
+const POPUP_TOP_INSET = 56;
 
 const PCPopup: React.FC = observer(() => {
   const { adapter } = useAdapter();
@@ -67,7 +76,7 @@ const PCPopup: React.FC = observer(() => {
 
     if (uiManager.adjustPopup.value) {
       const timeoutId = window.setTimeout(() => {
-        adapter.popupController?.updatePosition();
+        adapter.popupController?.updatePosition({ topInset: POPUP_TOP_INSET });
       }, 150);
 
       return () => {
@@ -76,17 +85,18 @@ const PCPopup: React.FC = observer(() => {
     }
   }, [adapter, activeFeature]);
 
-  const showPopup = activeFeature &&
-  !service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode &&
-  !service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode;
+  const showPopup =
+    activeFeature &&
+    !service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode &&
+    !service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode;
 
   const handleExpandButton = () => {
     setIsExpand((isExpand) => !isExpand);
-    // 调整位置
+    // 调整位置：等卡片高度过渡（300ms）结束后再算，否则按中间高度平移量会偏小
     if (uiManager.adjustPopup.value) {
       window.setTimeout(() => {
-        adapter.popupController?.updatePosition();
-      }, 200);
+        adapter.popupController?.updatePosition({ topInset: POPUP_TOP_INSET });
+      }, 380);
     }
   };
 
@@ -102,41 +112,42 @@ const PCPopup: React.FC = observer(() => {
 
   return createPortal(
     <AnimatePresence>
-      { showPopup && (
+      {showPopup && (
+        <motion.div
+          key="desktop-popup"
+          initial={{ opacity: 0, y: 18, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+          transition={{ type: 'spring', bounce: 0.4, duration: 0.45 }}
+          className="relative z-0"
+        >
+          {/* 内容 - 横向展开卡片容器 */}
           <motion.div
-            key="desktop-popup"
-            initial={{ opacity: 0, y: 18, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ type: 'spring', bounce: 0.4, duration: 0.45 }}
-            className="relative z-0"
+            key={activeFeature.id}
+            initial={{ opacity: 0, y: 6, scale: 0.96 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+            }}
+            transition={{ type: 'spring', bounce: 0.35, duration: 0.35 }}
+            className={cn(
+              'w-auto flex pointer-events-auto relative z-0 shadow-[0_8px_32px_rgba(0,0,0,0.45),0_2px_8px_rgba(0,0,0,0.3)] ring-1 ring-white/10',
+              'transition-[height] duration-300 ease-in-out',
+              // 展开求解面板时加高整卡，尽量容纳求解内容避免滚动
+              isExpand && showSubPopup ? 'h-96' : 'h-64'
+            )}
           >
-            {/* 内容 - 横向展开卡片容器 */}
-            <motion.div
-              key={activeFeature.id}
-              initial={{ opacity: 0, y: 6, scale: 0.96 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                scale: 1,
-              }}
-              transition={{ type: 'spring', bounce: 0.35, duration: 0.35 }}
-              className="w-auto flex pointer-events-auto relative z-0 h-64 shadow-[0_8px_32px_rgba(0,0,0,0.45),0_2px_8px_rgba(0,0,0,0.3)] ring-1 ring-white/10"
-            >
-              {/* 指向feature的三角箭头 */}
-              <div className="absolute left-39 -translate-x-1/2 top-full -mt-px -translate-y-1 w-0 h-0 border-l-16 border-r-16 border-t-16 border-l-transparent border-r-transparent border-t-[#272827] z-1 drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)]" />
-              {/* 左侧内容 */}
-              <LeftContentContainer
-                showSubPopup={showSubPopup}
-                isExpanded={isExpand}
-                toggleExpand={handleExpandButton}
-              />
+            {/* 指向feature的三角箭头 */}
+            <div className="absolute left-39 -translate-x-1/2 top-full -mt-px -translate-y-1 w-0 h-0 border-l-16 border-r-16 border-t-16 border-l-transparent border-r-transparent border-t-[#272827] z-1 drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)]" />
+            {/* 左侧内容 */}
+            <LeftContentContainer showSubPopup={showSubPopup} isExpanded={isExpand} toggleExpand={handleExpandButton} />
 
-              {/* 右侧展开内容 */}
-              <RightContent isExpand={isExpand && showSubPopup} items={subPopupItems} />
-            </motion.div>
+            {/* 右侧展开内容 */}
+            <RightContent isExpand={isExpand && showSubPopup} items={subPopupItems} />
           </motion.div>
-        )}
+        </motion.div>
+      )}
     </AnimatePresence>,
     container
   );

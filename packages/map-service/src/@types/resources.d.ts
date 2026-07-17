@@ -481,6 +481,18 @@ export default interface Resources {
     }
   },
   "popup": {
+    "balloon": {
+      "balloon_count": "可用气球（{{amount}} 只）",
+      "level_index": "第 {{level}} 关",
+      "level_item": "关卡 {{id}}",
+      "level_selection": "选择关卡（共 {{levels}} 关）",
+      "no_balloon": "暂无气球",
+      "no_solution": "无解",
+      "solution": "浮空回收方案",
+      "solution_nav": "第 {{index}} / {{total}} 解",
+      "solving": "求解中...",
+      "start_solve": "开始求解"
+    },
     "custom_point": {
       "change_type": "切换标点类型",
       "rename_tip": "请输入自定义点位名称"

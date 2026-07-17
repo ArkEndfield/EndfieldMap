@@ -26,6 +26,18 @@
     "solving": "Solving...",
     "start_solve": "Find solution"
   },
+  "balloon": {
+    "solution": "Aero-Salvage Solution",
+    "level_selection": "Select Level ({{levels}} total)",
+    "level_item": "Level {{id}}",
+    "level_index": "Level {{level}}",
+    "balloon_count": "{{amount}} Balloons available",
+    "no_balloon": "No balloons",
+    "solving": "Solving...",
+    "start_solve": "Find solution",
+    "solution_nav": "Solution {{index}} / {{total}}",
+    "no_solution": "No solution"
+  },
   "upload": {
     "entry": "Upload guide info",
     "entry_login_required": "Login to upload guide info",

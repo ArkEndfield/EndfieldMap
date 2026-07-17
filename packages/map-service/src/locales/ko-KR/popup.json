@@ -25,5 +25,17 @@
     "no_puzzle_piece": "퍼즐 조각이 없습니다",
     "solving": "해결 중...",
     "start_solve": "해결 시작"
+  },
+  "balloon": {
+    "solution": "부유 회수 솔루션",
+    "level_selection": "레벨 선택 (총 {{levels}} 레벨)",
+    "level_item": "레벨 {{id}}",
+    "level_index": "{{level}} 레벨",
+    "balloon_count": "사용 가능한 풍선 ({{amount}} 개)",
+    "no_balloon": "풍선이 없습니다",
+    "solving": "해결 중...",
+    "start_solve": "해결 시작",
+    "solution_nav": "해답 {{index}} / {{total}}",
+    "no_solution": "해답 없음"
   }
 }

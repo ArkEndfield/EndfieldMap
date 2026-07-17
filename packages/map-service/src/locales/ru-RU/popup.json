@@ -25,5 +25,17 @@
     "no_puzzle_piece": "Пазлы отсутствуют",
     "solving": "Решение...",
     "start_solve": "Начать решение"
+  },
+  "balloon": {
+    "solution": "Решение воздушной утилизации",
+    "level_selection": "Выберите уровень (всего {{levels}} уровней)",
+    "level_item": "Уровень {{id}}",
+    "level_index": "Уровень {{level}}",
+    "balloon_count": "Доступные шары ({{amount}} шт.)",
+    "no_balloon": "Шары отсутствуют",
+    "solving": "Решение...",
+    "start_solve": "Начать решение",
+    "solution_nav": "Решение {{index}} / {{total}}",
+    "no_solution": "Нет решения"
   }
 }

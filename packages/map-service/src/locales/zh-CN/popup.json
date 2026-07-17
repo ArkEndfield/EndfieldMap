@@ -26,6 +26,18 @@
     "solving": "求解中...",
     "start_solve": "开始求解"
   },
+  "balloon": {
+    "solution": "浮空回收方案",
+    "level_selection": "选择关卡（共 {{levels}} 关）",
+    "level_item": "关卡 {{id}}",
+    "level_index": "第 {{level}} 关",
+    "balloon_count": "可用气球（{{amount}} 只）",
+    "no_balloon": "暂无气球",
+    "solving": "求解中...",
+    "start_solve": "开始求解",
+    "solution_nav": "第 {{index}} / {{total}} 解",
+    "no_solution": "无解"
+  },
   "upload": {
     "entry": "上传我的标点信息",
     "entry_login_required": "登录后可上传标点信息",

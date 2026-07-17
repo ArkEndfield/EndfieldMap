@@ -1,6 +1,7 @@
 import type { AdapterRegistry } from '@endfieldmap/map-service/service/adapter_registry';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
 import { AnnouncementDataService } from '@endfieldmap/map-service/service/data/announcement';
+import { BalloonService } from '@endfieldmap/map-service/service/data/game/balloon';
 import { ChestRewardDataService } from '@endfieldmap/map-service/service/data/game/chest_reward';
 import { DeltaRobotService } from '@endfieldmap/map-service/service/data/game/delta_robot';
 import { DungeonSeriesDataService } from '@endfieldmap/map-service/service/data/game/dungeon_series';
@@ -28,6 +29,7 @@ export interface DataServiceConfig<T, R> {
 }
 
 export class DataService<T, R> {
+  public balloonService: BalloonService;
   public deltaRobotService: DeltaRobotService<T, R>;
   public itemDataService: ItemDataService<T, R>;
   public chestRewardDataService: ChestRewardDataService<T, R>;
@@ -39,6 +41,10 @@ export class DataService<T, R> {
   public announcementDataService: AnnouncementDataService;
 
   constructor(config: DataServiceConfig<T, R>) {
+    this.balloonService = new BalloonService({
+      assetService: config.assetService,
+      jsonLoader: config.jsonLoader,
+    });
     this.deltaRobotService = new DeltaRobotService({
       assetService: config.assetService,
       jsonLoader: config.jsonLoader,

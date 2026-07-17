@@ -25,5 +25,17 @@
     "no_puzzle_piece": "パズルピースがありません",
     "solving": "解決中...",
     "start_solve": "解決を開始"
+  },
+  "balloon": {
+    "solution": "浮遊回収ソリューション",
+    "level_selection": "レベル選択（全 {{levels}} レベル）",
+    "level_item": "レベル {{id}}",
+    "level_index": "{{level}} レベル",
+    "balloon_count": "利用可能な気球（{{amount}} 個）",
+    "no_balloon": "気球がありません",
+    "solving": "解決中...",
+    "start_solve": "解決を開始",
+    "solution_nav": "解 {{index}} / {{total}}",
+    "no_solution": "解なし"
   }
 }

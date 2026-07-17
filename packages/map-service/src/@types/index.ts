@@ -1,3 +1,4 @@
+export * from '@endfieldmap/map-service/@types/balloon';
 export * from '@endfieldmap/map-service/@types/custom_point';
 export * from '@endfieldmap/map-service/@types/delta_robot';
 export * from '@endfieldmap/map-service/@types/electric_pole';

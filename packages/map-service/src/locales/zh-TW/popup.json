@@ -24,5 +24,17 @@
     "no_puzzle_piece": "暫無拼圖塊",
     "solving": "求解中...",
     "start_solve": "開始求解"
+  },
+  "balloon": {
+    "solution": "浮空回收方案",
+    "level_selection": "選擇關卡（共 {{levels}} 關）",
+    "level_item": "關卡 {{id}}",
+    "level_index": "第 {{level}} 關",
+    "balloon_count": "可用氣球（{{amount}} 只）",
+    "no_balloon": "暫無氣球",
+    "solving": "求解中...",
+    "start_solve": "開始求解",
+    "solution_nav": "第 {{index}} / {{total}} 解",
+    "no_solution": "無解"
   }
 }
