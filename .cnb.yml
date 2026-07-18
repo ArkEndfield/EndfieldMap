@@ -29,6 +29,11 @@ main:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22
+        # 节点级文件缓存（copy-on-write，流水线成功后合并）：
+        # node_modules 让 pnpm install 增量化，.turbo/cache 持久化 turbo 构建缓存
+        volumes:
+          - ./node_modules
+          - ./.turbo/cache
       stages:
         - name: 读取版本号
           type: cnb:read-file
@@ -55,6 +60,11 @@ main:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22
+        # 节点级文件缓存（copy-on-write，流水线成功后合并）：
+        # node_modules 让 pnpm install 增量化，.turbo/cache 持久化 turbo 构建缓存
+        volumes:
+          - ./node_modules
+          - ./.turbo/cache
       stages:
         - name: 安装 pnpm
           script: npm install -g pnpm
@@ -73,6 +83,11 @@ main:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22
+        # 节点级文件缓存（copy-on-write，流水线成功后合并）：
+        # node_modules 让 pnpm install 增量化，.turbo/cache 持久化 turbo 构建缓存
+        volumes:
+          - ./node_modules
+          - ./.turbo/cache
       stages:
         - name: 安装 pnpm
           script: npm install -g pnpm
@@ -88,6 +103,11 @@ main:
     - imports: https://cnb.cool/bietiaop/ArkEndfield/secrets/-/blob/main/endfieldmap.yml
       docker:
         image: node:22
+        # 节点级文件缓存（copy-on-write，流水线成功后合并）：
+        # node_modules 让 pnpm install 增量化，.turbo/cache 持久化 turbo 构建缓存
+        volumes:
+          - ./node_modules
+          - ./.turbo/cache
       stages:
         - name: 读取版本号
           type: cnb:read-file
