@@ -1,11 +1,15 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["tsconfig.base.json", "pnpm-lock.yaml"],
-  "globalEnv": ["CNB_COMMIT", "CNB_BUILD_ID", "GITHUB_SHA"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
+    },
+    "@endfieldmap/web#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": ["CNB_COMMIT", "CNB_BUILD_ID", "GITHUB_SHA", "SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"]
     },
     "typecheck": {},
     "lint": {},

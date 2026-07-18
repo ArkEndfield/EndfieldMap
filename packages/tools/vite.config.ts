@@ -1,26 +1,11 @@
-import { execSync } from 'node:child_process';
 import path from 'path';
 import dts from 'unplugin-dts/vite';
 import { defineConfig } from 'vite';
 
-/** CI 变量缺失时（本地构建 / env 未透传）兜底取 git commit hash，避免退化成时间戳 */
-function gitCommitHash(): string {
-  try {
-    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
-      .toString()
-      .trim();
-  } catch {
-    return '';
-  }
-}
-
+// 不 define __COMMIT_HASH__/__BUILD_TIME__：保留裸标识符到 dist，由消费方（apps/web 的
+// define）在应用构建期替换。在包构建期烤入会让 tools 产物随 commit 变化，击穿整条
+// turbo 缓存链；无 define 的环境（native/Metro）靠 runtime.ts 的 typeof 守卫兜底。
 export default defineConfig({
-  define: {
-    __COMMIT_HASH__: JSON.stringify(
-      (process.env.CNB_COMMIT || process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || gitCommitHash()).slice(0, 8)
-    ),
-    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
