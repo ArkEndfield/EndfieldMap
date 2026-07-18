@@ -50,7 +50,7 @@ export default defineConfig(({ command, mode }) => {
     command,
     define: {
       __COMMIT_HASH__: JSON.stringify(
-        process.env.CNB_COMMIT || process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || gitCommitHash()
+        (process.env.CNB_COMMIT || process.env.CNB_BUILD_ID || process.env.GITHUB_SHA || gitCommitHash()).slice(0, 8)
       ),
       __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
     },
