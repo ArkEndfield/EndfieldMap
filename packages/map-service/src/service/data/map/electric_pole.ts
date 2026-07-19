@@ -3,6 +3,7 @@ import {
   DEFAULT_ELECTRIC_POLE_DEVICE_KEY,
   ElectricPoleDataInstance,
   getElectricPoleDeviceConfig,
+  isElectricPoleDeviceAvailableOnMap,
   isSameElectricPoleConnectionType,
   MAP_EVENT,
 } from '@endfieldmap/map-core';
@@ -113,10 +114,14 @@ export class ElectricPoleDataService extends BasePresetDataService<
     this.initElectricPoleClickEvent();
     const reactionDisposer = reaction(
       () => this.deps.adapterRegistry.adapter.mapController.dataManager.currentMapId,
-      () => {
+      (mapId) => {
         if (this.connectingPole) {
           this.connectingPole = null;
           this.deps.adapterRegistry.adapter.activeFeatureController.clearActiveFeature();
+        }
+        // 切图后若当前创建类型在新地图不可用（如暗管仅 map02），回退到默认类型
+        if (!isElectricPoleDeviceAvailableOnMap(this.creatingDeviceKey, mapId)) {
+          this.setCreatingDeviceKey(DEFAULT_ELECTRIC_POLE_DEVICE_KEY);
         }
       },
       { fireImmediately: true }
@@ -287,6 +292,14 @@ export class ElectricPoleDataService extends BasePresetDataService<
   public async createElectricPole(coordinate: MapCoordinate) {
     const mapId = this.deps.adapterRegistry.adapter.mapController.dataManager.currentMapId;
     const type = this.creatingDeviceKey;
+    if (!isElectricPoleDeviceAvailableOnMap(type, mapId)) {
+      serviceEmitter.fire(SERVICE_EVENT.ALERT_INFO, {
+        content: this.translate('error:electric_pole.device_not_available_on_map', {
+          defaultValue: '该设备在当前地图不可用',
+        }),
+      });
+      return;
+    }
     const currentPresetId = this.currentPresetId.value;
     if (!currentPresetId) {
       serviceEmitter.fire(SERVICE_EVENT.ALERT_INFO, {
@@ -486,6 +499,18 @@ export class ElectricPoleDataService extends BasePresetDataService<
     this.innerConnectElectricPole(pole);
   }
 
+  /** 断开暗管的全部现有连接（含入/出方向） */
+  private async disconnectAllForPipe(pipe: ElectricPoleDataInstance, presetId: string) {
+    const outgoing = [...pipe.outgoingConnections];
+    for (const target of outgoing) {
+      await this.deps.electricPolePresetDataService.disconnectPoles(pipe.mapId, presetId, pipe.id, target.id);
+    }
+    const incoming = [...pipe.incomingConnections];
+    for (const source of incoming) {
+      await this.deps.electricPolePresetDataService.disconnectPoles(pipe.mapId, presetId, source.id, pipe.id);
+    }
+  }
+
   private innerConnectElectricPole(pole: ElectricPoleDataInstance) {
     if (this.connectingPole) {
       try {
@@ -523,6 +548,25 @@ export class ElectricPoleDataService extends BasePresetDataService<
 
         const presetId = this.currentPresetId.value;
         if (!presetId) return;
+
+        // 暗管为成对连接：任一方已有连接时，需确认断开双方原有连接后再重新配对
+        if (getElectricPoleDeviceConfig(fromDeviceKey).connectionType === 'pipe') {
+          const from = this.connectingPole;
+          if (from.isConnected || pole.isConnected) {
+            serviceEmitter.fire(SERVICE_EVENT.ALERT_CONFIRM, {
+              content: this.translate('error:electric_pole.pipe_pair_confirm', {
+                defaultValue: '暗管为成对连接，继续操作将断开原有连接，是否继续？',
+              }),
+              onConfirm: async () => {
+                await this.disconnectAllForPipe(from, presetId);
+                await this.disconnectAllForPipe(pole, presetId);
+                await this.deps.electricPolePresetDataService.connectPoles(from.mapId, presetId, from.id, pole.id);
+                this.setConnectingPole(pole);
+              },
+            });
+            return;
+          }
+        }
 
         this.deps.electricPolePresetDataService.connectPoles(
           this.connectingPole.mapId,

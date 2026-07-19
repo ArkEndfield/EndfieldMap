@@ -101,7 +101,8 @@
             "repeater": "중계기",
             "zipline": "짚라인",
             "zipline_80": "짚라인(80m)",
-            "zipline_110": "짚라인(110m)"
+            "zipline_110": "짚라인(110m)",
+            "pipe": "지하 파이프"
           }
         },
         "in_mode": "전신주 생성 중"

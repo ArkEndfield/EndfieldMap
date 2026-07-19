@@ -13,7 +13,9 @@
     "switch": "Cambiar",
     "no_preset_selected": "No se ha seleccionado un preset de poste eléctrico. Por favor, crea o selecciona un preset primero.",
     "preset_corrupted": "Los datos del preset de poste eléctrico \"{{name}}\" están dañados. Por favor, verifica y crea el preset de nuevo.",
-    "delete_corrupted_preset": "Eliminar preset dañado"
+    "delete_corrupted_preset": "Eliminar preset dañado",
+    "pipe_pair_confirm": "Las tuberías subterráneas se conectan en pares. Si continúas, se romperán las conexiones existentes. ¿Continuar?",
+    "device_not_available_on_map": "Este dispositivo no está disponible en el mapa actual"
   },
   "custom_point": {
     "no_preset_selected": "No se ha seleccionado un preset de punto personalizado. Por favor, crea o selecciona un preset primero.",

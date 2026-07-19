@@ -13,7 +13,9 @@
     "switch": "Switch",
     "no_preset_selected": "No electric pole preset selected. Please create or select a preset first.",
     "preset_corrupted": "Electric pole preset \"{{name}}\" data is corrupted. Please check and recreate the preset.",
-    "delete_corrupted_preset": "Delete corrupted preset"
+    "delete_corrupted_preset": "Delete corrupted preset",
+    "pipe_pair_confirm": "Underground pipes connect in pairs. Continuing will break the existing connection(s). Continue?",
+    "device_not_available_on_map": "This device is not available on the current map"
   },
   "custom_point": {
     "no_preset_selected": "No custom point preset selected. Please create or select a preset first.",

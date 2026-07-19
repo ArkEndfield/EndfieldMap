@@ -346,10 +346,12 @@ export default interface Resources {
       "create_failed": "创建失败：{{message}}",
       "delete_corrupted_preset": "删除损坏预设",
       "delete_pole": "删除电线杆",
+      "device_not_available_on_map": "该设备在当前地图不可用",
       "different_connection_type": "不能连接不同类型的设备",
       "distance_too_far": "两个设备之间的距离太远",
       "move_failed": "移动失败：{{message}}",
       "no_preset_selected": "未选择电线杆预设，无法创建电线杆，请先创建或选择预设。",
+      "pipe_pair_confirm": "暗管为成对连接，继续操作将断开原有连接，是否继续？",
       "preset_corrupted": "电线杆预设 \"{{name}}\" 数据已损坏，请检查并重新创建预设。",
       "source_slots_full": "当前设备的连接槽位已满",
       "switch": "切换",
@@ -794,6 +796,7 @@ export default interface Resources {
           "device_type": {
             "label": "创建类型",
             "options": {
+              "pipe": "暗管",
               "pole": "电线杆",
               "repeater": "中继器",
               "zipline": "滑索",

@@ -4,11 +4,12 @@ import {
   ElectricPoleIdKey,
   ElectricPoleKey,
   getElectricPoleDeviceConfig,
+  isElectricPoleDeviceAvailableOnMap,
 } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
@@ -49,6 +50,11 @@ const ElectricPoleList: React.FC = observer(() => {
     allDeviceKeys.forEach((deviceKey) => {
       const groupInstances = groupMap.get(deviceKey) || [];
       const count = groupInstances.length;
+
+      // 当前地图不可用的设备类型（如暗管仅 map02）：无数据时不展示分组，有历史数据仍展示便于管理
+      if (count === 0 && !isElectricPoleDeviceAvailableOnMap(deviceKey, adapter.mapController.dataManager.currentMapId)) {
+        return;
+      }
 
       // 直接从 Controller 获取可见性状态（Source of Truth）
       const allVisible = adapter.electricPoleController.getDeviceVisible(deviceKey);

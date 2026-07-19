@@ -101,7 +101,8 @@
             "repeater": "Repeater",
             "zipline": "Zipline",
             "zipline_80": "Zipline (80m)",
-            "zipline_110": "Zipline (110m)"
+            "zipline_110": "Zipline (110m)",
+            "pipe": "Underground Pipe"
           }
         },
         "in_mode": "Creating electric pole"

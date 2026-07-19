@@ -1,21 +1,26 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core';
-import { ELECTRIC_POLE_DEVICE_CONFIGS } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
-import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
-import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
-import { observer } from 'mobx-react-lite';
-
+import { ELECTRIC_POLE_DEVICE_CONFIGS, isElectricPoleDeviceAvailableOnMap } from '@endfieldmap/map-core';
 import {
+  ElectricPoleIconPipe,
   ElectricPoleIconPole,
   ElectricPoleIconRepeater,
   ElectricPoleIconZipline80,
   ElectricPoleIconZipline110,
 } from '@endfieldmap/web-components';
+import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
+import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
+import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 
 const ElectricPoleTypeSelector: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');
+  const { adapter } = useAdapter();
   const selectedType = service.dataService.mapDataService.electricPoleDataService.creatingDeviceKey;
+  const currentMapId = adapter.mapController.dataManager.currentMapId;
+  const pipeAvailable = isElectricPoleDeviceAvailableOnMap('pipe', currentMapId);
 
   const handleSelectType = (deviceKey: ElectricPoleDeviceKey) => {
     service.dataService.mapDataService.electricPoleDataService.setCreatingDeviceKey(deviceKey);
@@ -58,6 +63,7 @@ const ElectricPoleTypeSelector: React.FC = observer(() => {
       </OperationItem>
 
       <OperationItem
+        rightBorder={pipeAvailable}
         actions={[
           {
             key: 'zipline_80',
@@ -83,6 +89,24 @@ const ElectricPoleTypeSelector: React.FC = observer(() => {
           }
         />
       </OperationItem>
+
+      {pipeAvailable && (
+        <OperationItem
+          actions={[
+            {
+              key: 'pipe',
+              icon: <ElectricPoleIconPipe />,
+              onClick: () => handleSelectType('pipe'),
+              active: selectedType === 'pipe',
+            },
+          ]}
+        >
+          <OperationItemTitle
+            title={t(`operation.electric_pole.create.device_type.options.pipe`)}
+            subTitle={ELECTRIC_POLE_DEVICE_CONFIGS.pipe.rangeMeters + 'M'}
+          />
+        </OperationItem>
+      )}
     </OperationContainer>
   );
 });

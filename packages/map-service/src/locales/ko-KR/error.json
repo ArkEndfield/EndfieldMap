@@ -13,7 +13,9 @@
     "switch": "전환",
     "no_preset_selected": "전신주 프리셋이 선택되지 않았습니다. 먼저 프리셋을 생성하거나 선택해주세요.",
     "preset_corrupted": "전신주 프리셋 \"{{name}}\" 데이터가 손상되었습니다. 확인 후 다시 생성해주세요.",
-    "delete_corrupted_preset": "손상된 프리셋 삭제"
+    "delete_corrupted_preset": "손상된 프리셋 삭제",
+    "pipe_pair_confirm": "지하 파이프는 한 쌍으로 연결됩니다. 계속하면 기존 연결이 끊어집니다. 계속하시겠습니까?",
+    "device_not_available_on_map": "현재 지도에서는 이 장치를 사용할 수 없습니다"
   },
   "custom_point": {
     "no_preset_selected": "사용자 정의 포인트 프리셋이 선택되지 않았습니다. 먼저 프리셋을 생성하거나 선택해주세요.",

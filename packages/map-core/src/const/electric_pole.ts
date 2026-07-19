@@ -10,9 +10,9 @@ import type { MapData } from '@endfieldmap/map-core/types';
 /** 用于换算的基准米数（当前 ELECTRIC_ZONE_RADIUS 表示 80m） */
 export const ELECTRIC_RANGE_BASE_METERS = 80;
 
-export type ElectricPoleDeviceKey = 'pole' | 'repeater' | 'zipline_80' | 'zipline_110';
+export type ElectricPoleDeviceKey = 'pole' | 'repeater' | 'zipline_80' | 'zipline_110' | 'pipe';
 
-export type ElectricPoleConnectionType = 'electric' | 'zipline';
+export type ElectricPoleConnectionType = 'electric' | 'zipline' | 'pipe';
 
 export interface ElectricPoleDeviceConfig {
   /** 类型 key（用于存储/逻辑判断） */
@@ -39,6 +39,8 @@ export interface ElectricPoleDeviceConfig {
   connectionType: ElectricPoleConnectionType;
   /** 按地图 ID 覆盖范围半径（可选） */
   rangeRadiusByMapId?: Partial<Record<MapData['id'], number>>;
+  /** 可用地图 ID 列表；不配置表示所有地图可用 */
+  availableMapIds?: MapData['id'][];
   /** 填充色 (RGBA) */
   fillColor?: string;
   /** 描边色 (Hex/RGBA) */
@@ -102,6 +104,21 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
     hoverFill: 'rgba(0, 194, 120, 0.5)',
     hoverStroke: '#00C278',
   },
+  pipe: {
+    key: 'pipe',
+    name: '暗管',
+    iconPic: 'electric_pipe',
+    rangeMeters: 300,
+    createLimit: false,
+    // 暗管为成对连接（一对一），由连接流程单独处理，不走通用槽位限制
+    maxConnections: false,
+    connectionType: 'pipe',
+    availableMapIds: ['map02'],
+    fillColor: 'rgba(157, 92, 255, 0.15)',
+    strokeColor: '#9D5CFF',
+    hoverFill: 'rgba(157, 92, 255, 0.5)',
+    hoverStroke: '#9D5CFF',
+  },
 };
 
 export const DEFAULT_ELECTRIC_POLE_DEVICE_KEY: ElectricPoleDeviceKey = 'pole';
@@ -113,4 +130,10 @@ export function getElectricPoleDeviceConfig(key: ElectricPoleDeviceKey): Electri
 
 export function isSameElectricPoleConnectionType(a: ElectricPoleDeviceKey, b: ElectricPoleDeviceKey): boolean {
   return getElectricPoleDeviceConfig(a).connectionType === getElectricPoleDeviceConfig(b).connectionType;
+}
+
+/** 设备在指定地图是否可用（未配置 availableMapIds 表示所有地图可用） */
+export function isElectricPoleDeviceAvailableOnMap(key: ElectricPoleDeviceKey, mapId: MapData['id']): boolean {
+  const { availableMapIds } = getElectricPoleDeviceConfig(key);
+  return !availableMapIds || availableMapIds.includes(mapId);
 }

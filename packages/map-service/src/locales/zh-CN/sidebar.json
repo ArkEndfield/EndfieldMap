@@ -101,7 +101,8 @@
             "repeater": "中继器",
             "zipline": "滑索",
             "zipline_80": "滑索(80m)",
-            "zipline_110": "滑索(110m)"
+            "zipline_110": "滑索(110m)",
+            "pipe": "暗管"
           }
         },
         "in_mode": "正在创建电线杆"

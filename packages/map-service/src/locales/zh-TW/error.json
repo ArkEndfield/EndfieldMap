@@ -13,7 +13,9 @@
     "switch": "切換",
     "no_preset_selected": "未選擇電線桿預設，無法創建電線桿，請先創建或選擇預設。",
     "preset_corrupted": "電線桿預設 \"{{name}}\" 數據已損壞，請檢查並重新創建預設。",
-    "delete_corrupted_preset": "刪除損壞預設"
+    "delete_corrupted_preset": "刪除損壞預設",
+    "pipe_pair_confirm": "暗管為成對連接，繼續操作將斷開原有連接，是否繼續？",
+    "device_not_available_on_map": "該設備在當前地圖不可用"
   },
   "custom_point": {
     "no_preset_selected": "未選擇自定義標點預設，無法創建標點，請先創建或選擇預設。",

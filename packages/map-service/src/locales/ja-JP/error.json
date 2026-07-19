@@ -13,7 +13,9 @@
     "switch": "切り替え",
     "no_preset_selected": "電柱プリセットが選択されていません。先にプリセットを作成または選択してください。",
     "preset_corrupted": "電柱プリセット \"{{name}}\" のデータが破損しています。確認して再作成してください。",
-    "delete_corrupted_preset": "破損したプリセットを削除"
+    "delete_corrupted_preset": "破損したプリセットを削除",
+    "pipe_pair_confirm": "地下パイプはペアで接続されます。続行すると既存の接続が切断されます。続行しますか？",
+    "device_not_available_on_map": "このデバイスは現在のマップでは利用できません"
   },
   "custom_point": {
     "no_preset_selected": "カスタムポイントプリセットが選択されていません。先にプリセットを作成または選択してください。",

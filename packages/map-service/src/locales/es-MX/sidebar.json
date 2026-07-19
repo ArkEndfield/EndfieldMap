@@ -101,7 +101,8 @@
             "repeater": "Repetidor",
             "zipline": "Tirolina",
             "zipline_80": "Tirolina (80m)",
-            "zipline_110": "Tirolina (110m)"
+            "zipline_110": "Tirolina (110m)",
+            "pipe": "Tubería subterránea"
           }
         },
         "in_mode": "Creando poste eléctrico"
