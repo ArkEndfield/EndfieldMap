@@ -8,6 +8,7 @@ import Counter from '@/components/common/count_up';
 import { Tooltip } from '@/components/common/tooltip';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import { useAdapter } from '@/hooks/use_adapter';
+import { contextMenuManager } from '@/services/context_menu_manager';
 
 interface AreaStats {
   count: number;
@@ -57,6 +58,20 @@ export const AreaFilter = observer(() => {
     return t(`lang:${region.name}`, { defaultValue: levelId });
   };
 
+  // 区域条目右键菜单：entities 为该区域内的全部点位实例
+  const handleLevelContextMenu = (levelId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    const instances = entityController
+      .getMapGroupManagerList(mapId)
+      .flatMap((groupManager) => groupManager.instances)
+      .filter((instance) => instance.data.mapLevelId === levelId);
+    contextMenuManager.open({
+      type: 'group',
+      entities: instances,
+      pixel: [e.clientX, e.clientY],
+      originalEvent: e.nativeEvent,
+    });
+  };
+
   return (
     <EntityGroup
       title={t('filter.area.title')}
@@ -92,6 +107,7 @@ export const AreaFilter = observer(() => {
                 as={ButtonWithAudio}
                 asProps={{
                   onClick: () => entityController.setLevelSelected(mapId, levelId, !active),
+                  onContextMenu: (e: React.MouseEvent<HTMLButtonElement>) => handleLevelContextMenu(levelId, e),
                   soundType: SoundType.TICK,
                   className: cn(
                     'select-none w-full rounded-full grow overflow-hidden flex items-center',

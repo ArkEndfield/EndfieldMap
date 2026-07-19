@@ -1,6 +1,9 @@
 {
   "context_menu": {
-    "share": "Copier le lien de partage"
+    "share": "Copier le lien de partage",
+    "mark_all": "Tout marquer",
+    "unmark_all": "Tout démarquer",
+    "nearest_unmarked": "Aller au point non marqué le plus proche"
   },
   "share_link": {
     "copy_link": "Copier le lien de partage",

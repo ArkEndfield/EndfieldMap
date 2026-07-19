@@ -69,6 +69,9 @@
     "id_not_on_map_switched": "El marcador objetivo no está en el mapa especificado. Se cambió a {{map}}."
   },
   "context_menu": {
-    "share": "Copiar enlace para compartir"
+    "share": "Copiar enlace para compartir",
+    "mark_all": "Marcar todo",
+    "unmark_all": "Desmarcar todo",
+    "nearest_unmarked": "Ir al punto sin marcar más cercano"
   }
 }

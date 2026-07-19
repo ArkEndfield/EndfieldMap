@@ -2,7 +2,8 @@ import type { DataInstance, MapCoordinate } from '@endfieldmap/map-core';
 import { action, makeObservable, observable } from 'mobx';
 
 export interface ContextMenuContext {
-  type: 'entity' | 'connection' | 'map';
+  /** group：侧边栏标点分组/区域条目（entities 为该组全部点位实例） */
+  type: 'entity' | 'connection' | 'map' | 'group';
   entities?: DataInstance[];
   pixel: [number, number];
   coordinate?: MapCoordinate;

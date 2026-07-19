@@ -252,7 +252,10 @@ export default interface Resources {
     "cancel": "取消",
     "confirm": "确认",
     "context_menu": {
-      "share": "复制分享链接"
+      "mark_all": "一键标记",
+      "nearest_unmarked": "跳转最近的未标记点位",
+      "share": "复制分享链接",
+      "unmark_all": "一键取消标记"
     },
     "custom_point": {
       "type": {

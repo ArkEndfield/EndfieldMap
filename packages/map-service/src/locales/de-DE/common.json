@@ -1,6 +1,9 @@
 {
   "context_menu": {
-    "share": "Freigabelink kopieren"
+    "share": "Freigabelink kopieren",
+    "mark_all": "Alle markieren",
+    "unmark_all": "Alle Markierungen aufheben",
+    "nearest_unmarked": "Zum nächsten unmarkierten Punkt springen"
   },
   "share_link": {
     "copy_link": "Freigabelink kopieren",

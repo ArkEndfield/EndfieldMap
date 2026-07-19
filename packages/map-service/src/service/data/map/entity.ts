@@ -57,6 +57,14 @@ export class EntityDataService {
     this.deps.entityMarkService.setMarkData(mapId, id, marked);
   }
 
+  /** 批量标记：controller 逐个更新（同步、廉价），持久化走一次 bulkUpsert，避免整组标记时逐条读写 DB */
+  public markEntities(mapId: MapData['id'], ids: EntityData['levelLogicId'][], marked: boolean) {
+    ids.forEach((id) => {
+      this.deps.adapterRegistry.adapter.entityController.setMarked(mapId, id, marked);
+    });
+    this.deps.entityMarkService.setMarkDataBulk(mapId, ids, marked);
+  }
+
   public setEntityGroupVisibility(mapId: MapData['id'], entityKey: EntityData['entityDataIdKey'], visible: boolean) {
     this.deps.adapterRegistry.adapter.entityController.setGroupVisibility(mapId, entityKey, visible);
     this.deps.entityVisibilityService.setVisibilityData(mapId, entityKey, visible);

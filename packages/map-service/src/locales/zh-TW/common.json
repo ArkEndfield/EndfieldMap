@@ -69,6 +69,9 @@
     "id_not_on_map_switched": "目標標點不在指定地圖，已為你切換到〔{{map}}〕"
   },
   "context_menu": {
-    "share": "複製分享連結"
+    "share": "複製分享連結",
+    "mark_all": "一鍵標記",
+    "unmark_all": "一鍵取消標記",
+    "nearest_unmarked": "跳轉最近的未標記點位"
   }
 }

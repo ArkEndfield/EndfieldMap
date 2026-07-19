@@ -1,4 +1,5 @@
 import { logger } from '@endfieldmap/tools';
+import { ShareIcon } from '@endfieldmap/web-components';
 import {
   ShareSelectAlertContent,
   type ShareSelectAlertItem,
@@ -180,6 +181,7 @@ function registerContextMenuItem(): void {
   contextMenuManager.register({
     id: 'share-link',
     label: 'context_menu.share',
+    icon: ShareIcon,
     order: 100,
     visible: (ctx) => ctx.type === 'entity' && !!ctx.entities && ctx.entities.length > 0,
     action: (ctx) => {

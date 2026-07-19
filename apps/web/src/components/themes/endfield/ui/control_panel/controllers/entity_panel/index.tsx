@@ -12,6 +12,7 @@ import CustomPointList from '@/components/themes/endfield/ui/control_panel/contr
 import ElectricPoleList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/electric_pole';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
+import { contextMenuManager } from '@/services/context_menu_manager';
 
 interface CategoryInfo {
   category: Category;
@@ -117,6 +118,32 @@ const EntityPanel = observer(() => {
     return result;
   }, [entities, searchQuery, t]);
 
+  const openGroupContextMenu = (entityDataIdKeys: Set<string>, e: React.MouseEvent<HTMLButtonElement>) => {
+    // 与区域筛选联动：只作用于当前选中区域内的点位（无 level 维度的数据不过滤）
+    const selectedLevelIds = new Set(adapter.entityController.getSelectedLevelIds(currentMap));
+    const instances = adapter.entityController
+      .getMapGroupManagerList(currentMap)
+      .filter((groupManager) => entityDataIdKeys.has(groupManager.entityDataIdKey))
+      .flatMap((groupManager) => groupManager.instances)
+      .filter((instance) => !instance.data.mapLevelId || selectedLevelIds.has(instance.data.mapLevelId));
+    contextMenuManager.open({
+      type: 'group',
+      entities: instances,
+      pixel: [e.clientX, e.clientY],
+      originalEvent: e.nativeEvent,
+    });
+  };
+
+  // 标点条目右键菜单：entities 为该类型标点的全部点位实例
+  const handleEntityContextMenu = (entityDataIdKey: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    openGroupContextMenu(new Set([entityDataIdKey]), e);
+  };
+
+  // 大分类组头右键菜单：entities 为该分类（经搜索过滤后）的全部点位实例
+  const handleCategoryContextMenu = (categoryInfo: CategoryInfo, e: React.MouseEvent<HTMLButtonElement>) => {
+    openGroupContextMenu(new Set(categoryInfo.entities.map((entity) => entity.entityDataIdKey)), e);
+  };
+
   // 切换分类显示/隐藏
   const handleCategoryClick = (category: Category, allDisplayed: boolean) => {
     const isShow = !allDisplayed;
@@ -157,6 +184,7 @@ const EntityPanel = observer(() => {
             title={t(`filter.category.${categoryInfo.category}`)}
             subtitle={categoryInfo.category}
             onIconClick={() => handleCategoryClick(categoryInfo.category, categoryInfo.allDisplayed)}
+            onHeaderContextMenu={(e) => handleCategoryContextMenu(categoryInfo, e)}
             iconColor={categoryInfo.allDisplayed ? '#f9f853' : '#ffffff'}
             totalCount={categoryInfo.entities.reduce((acc, entity) => acc + entity.count, 0)}
             markedCount={categoryInfo.entities.reduce((acc, entity) => acc + (entity.markedCount ?? 0), 0)}
@@ -177,6 +205,7 @@ const EntityPanel = observer(() => {
                       !entity.visible
                     )
                   }
+                  onContextMenu={(e) => handleEntityContextMenu(entity.entityDataIdKey, e)}
                   hideCount={false}
                 />
               ))}

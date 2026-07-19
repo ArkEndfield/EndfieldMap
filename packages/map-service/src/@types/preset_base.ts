@@ -133,4 +133,5 @@ export interface IEntityMarkService {
   getAllMapMarkData(): Promise<{ mapId: string; entityId: number; marked: boolean }[]>;
   addSubscribe(callback: (mapId: string, id: number, marked: boolean) => void): void;
   setMarkData(mapId: string, id: number, marked: boolean): Promise<unknown>;
+  setMarkDataBulk(mapId: string, ids: number[], marked: boolean): Promise<unknown>;
 }

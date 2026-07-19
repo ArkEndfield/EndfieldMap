@@ -32,6 +32,24 @@ export class EntityMarkService<T, R> extends BaseUserDataService<EntityMarkCallb
     return this.db.insert({ id: idString, mapId, entityId, marked, createdAt: now, updatedAt: now });
   }
 
+  public async setMarkDataBulk(mapId: MapData['id'], entityIds: EntityData['levelLogicId'][], marked: boolean) {
+    if (!entityIds.length) return;
+    const now = Date.now();
+    const idStrings = entityIds.map((entityId) => EntityMarkService.createId(mapId, entityId));
+    const existingDocs = await this.db.find({ selector: { id: { $in: idStrings } } }).exec();
+    const createdAtById = new Map(existingDocs.map((doc) => [doc.id, doc.createdAt]));
+    return this.db.bulkUpsert(
+      idStrings.map((id, index) => ({
+        id,
+        mapId,
+        entityId: entityIds[index],
+        marked,
+        createdAt: createdAtById.get(id) ?? now,
+        updatedAt: now,
+      }))
+    );
+  }
+
   public addSubscribe(callback: EntityMarkCallback) {
     this.callbacks.push(callback);
     this.registerDBSubscriptions();

@@ -15,6 +15,7 @@ interface EntityGroupProps {
   markedCount?: number;
   onToggle?: (isOpen: boolean) => void;
   onIconClick?: () => void;
+  onHeaderContextMenu?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function EntityGroup({
@@ -27,6 +28,7 @@ export default function EntityGroup({
   markedCount: _markedCount,
   onToggle,
   onIconClick,
+  onHeaderContextMenu,
 }: EntityGroupProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -54,6 +56,7 @@ export default function EntityGroup({
           'after:absolute after:left-0 after:right-0 after:top-0 after:bottom-0 after:z-0 after:bg-[repeating-linear-gradient(135deg,transparent,transparent_0.1em,rgba(255,255,255,0.01)_0.15em,rgba(255,255,255,0.01)_0.2em),linear-gradient(to_right,#3d3d3d,#272727)]'
         )}
         onClick={toggleContent}
+        onContextMenu={onHeaderContextMenu}
       >
         {/* Icon */}
         <VisibleWithDeco

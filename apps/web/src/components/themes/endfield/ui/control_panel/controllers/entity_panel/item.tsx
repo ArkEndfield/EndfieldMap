@@ -18,11 +18,21 @@ interface EntityItemProps {
   category?: string;
   active?: boolean;
   onClick?: () => void;
+  onContextMenu?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   children?: React.ReactNode;
 }
 
 const EntityItem = observer(
-  ({ hideCount = false, entity, category, active = false, onClick, children, hideMarked = false }: EntityItemProps) => {
+  ({
+    hideCount = false,
+    entity,
+    category,
+    active = false,
+    onClick,
+    onContextMenu,
+    children,
+    hideMarked = false,
+  }: EntityItemProps) => {
     const isMobile = useIsMobile();
     const { name: displayName } = useEntityName(entity);
 
@@ -51,6 +61,7 @@ const EntityItem = observer(
         as={ButtonWithAudio}
         asProps={{
           onClick,
+          onContextMenu,
           soundType: SoundType.TICK,
           className: cn(
             'select-none w-full rounded-full grow overflow-hidden flex items-center',

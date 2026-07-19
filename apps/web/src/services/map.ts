@@ -11,6 +11,7 @@ import { StorageService } from '@/services/data/storage';
 import { isDev } from '@/services/env';
 import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initHoverFeatureEventListeners } from '@/services/features/hover_feature';
+import { initGroupContextMenu } from '@/services/group_context_menu';
 import { applyShareLinkParams, initShareLink } from '@/services/share_link';
 import { loadingManager } from '@/services/loading';
 import { initServiceEventBridge } from '@/services/service_event_bridge';
@@ -131,6 +132,9 @@ export class MapService {
 
       // 初始化激活feature事件监听器，用于设置和清除激活的feature
       this.eventDisposers.push(initContextMenuEventListeners(this.adapter!));
+
+      // 侧边栏分组右键菜单项（一键标记 / 跳转最近未标记点位）
+      this.eventDisposers.push(initGroupContextMenu());
 
       // 初始化hover事件监听器，用于设置和清除hover的feature
       this.eventDisposers.push(initHoverFeatureEventListeners(this.adapter!));

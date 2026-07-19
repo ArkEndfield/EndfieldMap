@@ -1,6 +1,9 @@
 {
   "context_menu": {
-    "share": "Salin tautan berbagi"
+    "share": "Salin tautan berbagi",
+    "mark_all": "Tandai semua",
+    "unmark_all": "Hapus semua tanda",
+    "nearest_unmarked": "Ke titik belum ditandai terdekat"
   },
   "share_link": {
     "copy_link": "Salin tautan berbagi",

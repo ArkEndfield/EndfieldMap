@@ -74,6 +74,9 @@
     "id_not_on_map_switched": "The target marker isn't on the specified map. Switched to {{map}}."
   },
   "context_menu": {
-    "share": "Copy Share Link"
+    "share": "Copy Share Link",
+    "mark_all": "Mark All",
+    "unmark_all": "Unmark All",
+    "nearest_unmarked": "Go to Nearest Unmarked"
   }
 }

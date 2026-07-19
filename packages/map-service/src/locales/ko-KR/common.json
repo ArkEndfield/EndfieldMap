@@ -73,6 +73,9 @@
     "id_not_on_map_switched": "대상 마커가 지정한 지도에 없어 {{map}}(으)로 전환했습니다."
   },
   "context_menu": {
-    "share": "공유 링크 복사"
+    "share": "공유 링크 복사",
+    "mark_all": "모두 표시",
+    "unmark_all": "모두 표시 해제",
+    "nearest_unmarked": "가장 가까운 미표시 지점으로 이동"
   }
 }

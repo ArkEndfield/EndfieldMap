@@ -73,6 +73,9 @@
     "id_not_on_map_switched": "対象マーカーは指定のマップにありません。{{map}} に切り替えました。"
   },
   "context_menu": {
-    "share": "共有リンクをコピー"
+    "share": "共有リンクをコピー",
+    "mark_all": "一括マーク",
+    "unmark_all": "一括マーク解除",
+    "nearest_unmarked": "最寄りの未マーク地点へ移動"
   }
 }
