@@ -3,7 +3,9 @@
     "share": "Salin tautan berbagi",
     "mark_all": "Tandai semua",
     "unmark_all": "Hapus semua tanda",
-    "nearest_unmarked": "Ke titik belum ditandai terdekat"
+    "nearest_unmarked": "Ke titik belum ditandai terdekat",
+    "move_up": "Pindah ke atas",
+    "move_down": "Pindah ke bawah"
   },
   "share_link": {
     "copy_link": "Salin tautan berbagi",

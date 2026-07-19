@@ -45,6 +45,8 @@ export enum LocalStorageKey {
   // 20260720
   // 已自动弹窗提示过的公告
   PROMPTED_ANNOUNCEMENT = 'prompted_announcement',
+  // 侧边栏大分类自定义顺序
+  SIDEBAR_CATEGORY_ORDER = 'sidebar_category_order',
 }
 
 /** 加载状态枚举 */

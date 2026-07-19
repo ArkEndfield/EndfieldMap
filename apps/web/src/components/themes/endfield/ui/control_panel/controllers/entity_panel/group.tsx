@@ -1,6 +1,6 @@
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
-import { DecoTriTriangle, VisibleWithDeco } from '@endfieldmap/web-components';
+import { Deco7Dots, DecoTriTriangle, VisibleWithDeco } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
@@ -16,6 +16,8 @@ interface EntityGroupProps {
   onToggle?: (isOpen: boolean) => void;
   onIconClick?: () => void;
   onHeaderContextMenu?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  /** 传入即在 header 右侧渲染拖拽把手（用于分组排序） */
+  onDragHandlePointerDown?: (e: React.PointerEvent<HTMLDivElement>) => void;
 }
 
 export default function EntityGroup({
@@ -29,6 +31,7 @@ export default function EntityGroup({
   onToggle,
   onIconClick,
   onHeaderContextMenu,
+  onDragHandlePointerDown,
 }: EntityGroupProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -89,7 +92,19 @@ export default function EntityGroup({
           </div>
         )}
 
-        <div className="z-2 ml-auto shrink-0 grow-0 mr-4">
+        <div className="z-2 ml-auto shrink-0 grow-0 mr-4 flex items-center gap-2">
+          {onDragHandlePointerDown && (
+            <div
+              className="cursor-grab active:cursor-grabbing touch-none px-1 text-[#959595] hover:text-white"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                onDragHandlePointerDown(e);
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Deco7Dots />
+            </div>
+          )}
           <DecoTriTriangle className={cn('transition-transform text-sm', isOpen ? 'rotate-180' : '')} />
         </div>
       </ButtonWithAudio>

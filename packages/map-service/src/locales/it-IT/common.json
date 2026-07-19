@@ -3,7 +3,9 @@
     "share": "Copia link di condivisione",
     "mark_all": "Segna tutto",
     "unmark_all": "Rimuovi tutti i segni",
-    "nearest_unmarked": "Vai al punto non segnato più vicino"
+    "nearest_unmarked": "Vai al punto non segnato più vicino",
+    "move_up": "Sposta su",
+    "move_down": "Sposta giù"
   },
   "share_link": {
     "copy_link": "Copia link di condivisione",

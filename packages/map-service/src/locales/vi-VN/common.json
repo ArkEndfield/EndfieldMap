@@ -3,7 +3,9 @@
     "share": "Sao chép liên kết chia sẻ",
     "mark_all": "Đánh dấu tất cả",
     "unmark_all": "Bỏ đánh dấu tất cả",
-    "nearest_unmarked": "Đến điểm chưa đánh dấu gần nhất"
+    "nearest_unmarked": "Đến điểm chưa đánh dấu gần nhất",
+    "move_up": "Di chuyển lên",
+    "move_down": "Di chuyển xuống"
   },
   "share_link": {
     "copy_link": "Sao chép liên kết chia sẻ",

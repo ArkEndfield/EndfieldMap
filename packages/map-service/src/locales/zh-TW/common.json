@@ -72,6 +72,8 @@
     "share": "複製分享連結",
     "mark_all": "一鍵標記",
     "unmark_all": "一鍵取消標記",
-    "nearest_unmarked": "跳轉最近的未標記點位"
+    "nearest_unmarked": "跳轉最近的未標記點位",
+    "move_up": "上移",
+    "move_down": "下移"
   }
 }

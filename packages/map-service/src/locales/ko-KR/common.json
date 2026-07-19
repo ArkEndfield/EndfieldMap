@@ -76,6 +76,8 @@
     "share": "공유 링크 복사",
     "mark_all": "모두 표시",
     "unmark_all": "모두 표시 해제",
-    "nearest_unmarked": "가장 가까운 미표시 지점으로 이동"
+    "nearest_unmarked": "가장 가까운 미표시 지점으로 이동",
+    "move_up": "위로 이동",
+    "move_down": "아래로 이동"
   }
 }

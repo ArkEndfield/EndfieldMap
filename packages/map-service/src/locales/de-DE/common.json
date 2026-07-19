@@ -3,7 +3,9 @@
     "share": "Freigabelink kopieren",
     "mark_all": "Alle markieren",
     "unmark_all": "Alle Markierungen aufheben",
-    "nearest_unmarked": "Zum nächsten unmarkierten Punkt springen"
+    "nearest_unmarked": "Zum nächsten unmarkierten Punkt springen",
+    "move_up": "Nach oben verschieben",
+    "move_down": "Nach unten verschieben"
   },
   "share_link": {
     "copy_link": "Freigabelink kopieren",

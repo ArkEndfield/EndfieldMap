@@ -3,7 +3,9 @@
     "share": "Copier le lien de partage",
     "mark_all": "Tout marquer",
     "unmark_all": "Tout démarquer",
-    "nearest_unmarked": "Aller au point non marqué le plus proche"
+    "nearest_unmarked": "Aller au point non marqué le plus proche",
+    "move_up": "Monter",
+    "move_down": "Descendre"
   },
   "share_link": {
     "copy_link": "Copier le lien de partage",

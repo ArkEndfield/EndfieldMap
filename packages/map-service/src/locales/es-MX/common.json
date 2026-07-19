@@ -72,6 +72,8 @@
     "share": "Copiar enlace para compartir",
     "mark_all": "Marcar todo",
     "unmark_all": "Desmarcar todo",
-    "nearest_unmarked": "Ir al punto sin marcar más cercano"
+    "nearest_unmarked": "Ir al punto sin marcar más cercano",
+    "move_up": "Subir",
+    "move_down": "Bajar"
   }
 }

@@ -253,6 +253,8 @@ export default interface Resources {
     "confirm": "确认",
     "context_menu": {
       "mark_all": "一键标记",
+      "move_down": "下移",
+      "move_up": "上移",
       "nearest_unmarked": "跳转最近的未标记点位",
       "share": "复制分享链接",
       "unmark_all": "一键取消标记"

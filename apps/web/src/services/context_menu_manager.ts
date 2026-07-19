@@ -5,6 +5,8 @@ export interface ContextMenuContext {
   /** group：侧边栏标点分组/区域条目（entities 为该组全部点位实例） */
   type: 'entity' | 'connection' | 'map' | 'group';
   entities?: DataInstance[];
+  /** 由大分类组头触发时的分类 key（用于上移/下移等仅分类级的菜单项） */
+  category?: string;
   pixel: [number, number];
   coordinate?: MapCoordinate;
   originalEvent: MouseEvent;

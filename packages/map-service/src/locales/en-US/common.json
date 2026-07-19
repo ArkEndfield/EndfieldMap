@@ -77,6 +77,8 @@
     "share": "Copy Share Link",
     "mark_all": "Mark All",
     "unmark_all": "Unmark All",
-    "nearest_unmarked": "Go to Nearest Unmarked"
+    "nearest_unmarked": "Go to Nearest Unmarked",
+    "move_up": "Move Up",
+    "move_down": "Move Down"
   }
 }

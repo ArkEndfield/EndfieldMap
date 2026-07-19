@@ -9,6 +9,17 @@ export const ChevronUp = (props: IconProps) => (
   </svg>
 );
 
+export const ChevronDown = (props: IconProps) => (
+  <svg width="1em" height="1em" viewBox="0 0 125 76" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <g transform="rotate(180 62.374 37.8653)">
+      <path
+        d="M65.6787 28.3181L77.3359 16.6609L124.748 64.0734L113.091 75.7306L65.6787 28.3181ZM60.6687 0L72.9172 12.2421L12.2421 72.9172L0 60.6688L60.6687 0Z"
+        fill="currentColor"
+      />
+    </g>
+  </svg>
+);
+
 export const ChevronUpTriangle = (props: IconProps) => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
     <path d="M12 7L19 17H5L12 7Z" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />

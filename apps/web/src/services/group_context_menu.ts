@@ -1,9 +1,17 @@
 import type { DataInstance } from '@endfieldmap/map-core';
 import { EntityDataInstance } from '@endfieldmap/map-core';
-import { CenterIcon2, FilterMarked, FilterUnMarked } from '@endfieldmap/web-components';
+import { CenterIcon2, ChevronDown, ChevronUp, FilterMarked, FilterUnMarked } from '@endfieldmap/web-components';
 
 import { service } from '@/services';
+import { getDisplayedCategoryOrder, moveDisplayedCategory } from '@/services/category_order';
 import { contextMenuManager } from '@/services/context_menu_manager';
+
+/** 当前地图大分类的显示顺序（与 EntityPanel 排序一致，不受搜索过滤影响） */
+function getCurrentDisplayedCategories(): string[] {
+  const adapter = service.adapterRegistry?.adapter;
+  if (!adapter) return [];
+  return getDisplayedCategoryOrder(adapter.entityController.currentStats.map((stats) => stats.category));
+}
 
 /** 组内可标记、且标记状态为 marked 的实体点位（分组右键菜单只作用于普通实体） */
 function getMarkableEntities(entities: DataInstance[] | undefined, marked: boolean): EntityDataInstance[] {
@@ -90,9 +98,41 @@ export function initGroupContextMenu(): () => void {
     },
   });
 
+  const disposeMoveUp = contextMenuManager.register({
+    id: 'category-move-up',
+    label: 'context_menu.move_up',
+    icon: ChevronUp,
+    order: 30,
+    visible: (ctx) =>
+      ctx.type === 'group' && !!ctx.category && getCurrentDisplayedCategories().indexOf(ctx.category) > 0,
+    action: (ctx) => {
+      if (!ctx.category) return;
+      moveDisplayedCategory(getCurrentDisplayedCategories(), ctx.category, -1);
+    },
+  });
+
+  const disposeMoveDown = contextMenuManager.register({
+    id: 'category-move-down',
+    label: 'context_menu.move_down',
+    icon: ChevronDown,
+    order: 40,
+    visible: (ctx) => {
+      if (ctx.type !== 'group' || !ctx.category) return false;
+      const displayed = getCurrentDisplayedCategories();
+      const index = displayed.indexOf(ctx.category);
+      return index !== -1 && index < displayed.length - 1;
+    },
+    action: (ctx) => {
+      if (!ctx.category) return;
+      moveDisplayedCategory(getCurrentDisplayedCategories(), ctx.category, 1);
+    },
+  });
+
   return () => {
     disposeMarkAll();
     disposeUnmarkAll();
     disposeNearestUnmarked();
+    disposeMoveUp();
+    disposeMoveDown();
   };
 }
