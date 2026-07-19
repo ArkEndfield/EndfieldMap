@@ -41,6 +41,10 @@ export enum LocalStorageKey {
   // 20260302
   // 已读公告
   READ_ANNOUNCEMENT = 'read_announcement',
+
+  // 20260720
+  // 已自动弹窗提示过的公告
+  PROMPTED_ANNOUNCEMENT = 'prompted_announcement',
 }
 
 /** 加载状态枚举 */

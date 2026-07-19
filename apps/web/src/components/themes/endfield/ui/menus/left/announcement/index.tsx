@@ -5,7 +5,7 @@ import { Announcements } from '@themes/endfield/ui/menus/left/announcement/annou
 import { AnnouncementsDialog } from '@themes/endfield/ui/menus/left/announcement/dialog';
 import { Feedback } from '@themes/endfield/ui/menus/left/announcement/feedback';
 import { observer } from 'mobx-react-lite';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { service } from '@/services';
@@ -14,10 +14,28 @@ export const HeaderMenuAnnouncement = observer(({ className }: { className?: str
   const [open, setOpen] = useState(false);
   const { t } = useTranslation('header');
   const [activeTab, setActiveTab] = useState('change_log');
-  const { list, listError, listLoading, detail, detailLoading, detailError, loadDetail, hasUnread } =
-    useAnnouncement(service);
+  const {
+    list,
+    listError,
+    listLoading,
+    detail,
+    detailLoading,
+    detailError,
+    loadDetail,
+    hasUnread,
+    hasUnprompted,
+    markPrompted,
+  } = useAnnouncement(service);
   const showAnnouncements = activeTab !== 'feedback';
   const listData = list[activeTab];
+
+  // 检测到新公告时自动弹窗（每条公告只自动提示一次）。
+  // 只打开弹窗、不 loadDetail —— 预览即已读，自动预览会误清红点与 "new" 标记。
+  useEffect(() => {
+    if (!hasUnprompted) return;
+    setOpen(true);
+    markPrompted();
+  }, [hasUnprompted, markPrompted]);
 
   const handleOpen = () => {
     setOpen(true);

@@ -12,8 +12,14 @@ const readAnnouncementLocalStorage = new LocalStorageValue<Announcement['id'][]>
   initialValue: [],
 });
 
+const promptedAnnouncementLocalStorage = new LocalStorageValue<Announcement['id'][]>({
+  storageKey: LocalStorageKey.PROMPTED_ANNOUNCEMENT,
+  initialValue: [],
+});
+
 export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
   const readAnnouncementIds = readAnnouncementLocalStorage.value;
+  const promptedAnnouncementIds = promptedAnnouncementLocalStorage.value;
   // List State
   const [listData, setListData] = useState<AnnouncementBreif[]>([]);
   const [listLoading, setListLoading] = useState<boolean>(false);
@@ -56,6 +62,13 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
   const hasUnread = useMemo(() => {
     return Object.values(list).some((item) => item.hasUnread);
   }, [list]);
+
+  // 存在"未读且未自动弹窗提示过"的公告（用于加载时自动弹窗，避免每次刷新重复打扰）
+  const hasUnprompted = useMemo(() => {
+    return listData.some(
+      (item) => !readAnnouncementIds.includes(item.id) && !promptedAnnouncementIds.includes(item.id)
+    );
+  }, [listData, readAnnouncementIds, promptedAnnouncementIds]);
 
   const loadList = useCallback(async () => {
     if (listAbortControllerRef.current) {
@@ -135,6 +148,13 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
     readAnnouncementLocalStorage.value = [...readAnnouncementLocalStorage.value, id];
   }, []);
 
+  // 将当前列表全部记为"已自动提示过"。只影响自动弹窗去重，不影响已读/红点。
+  const markPrompted = useCallback(() => {
+    promptedAnnouncementLocalStorage.value = [
+      ...new Set([...promptedAnnouncementLocalStorage.value, ...listData.map((item) => item.id)]),
+    ];
+  }, [listData]);
+
   // Initial load
   useEffect(() => {
     refreshList();
@@ -159,5 +179,7 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
 
     setRead,
     hasUnread,
+    hasUnprompted,
+    markPrompted,
   };
 };
