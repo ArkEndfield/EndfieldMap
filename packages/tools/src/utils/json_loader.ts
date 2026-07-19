@@ -1,6 +1,6 @@
 import type { LoadingState } from '@endfieldmap/tools/const/enum';
 import { JSONLoaderError } from '@endfieldmap/tools/const/error';
-import { getVersionInfo } from '@endfieldmap/tools/utils/runtime';
+import { getVersionInfo, isDev } from '@endfieldmap/tools/utils/runtime';
 
 // 定义加载结果类型
 export interface LoadResult<T> {
@@ -16,9 +16,10 @@ export class JSONLoader {
    * @returns 添加了参数的URL
    */
   private addVersionToURL(url: string): string {
-    const { commitHash } = getVersionInfo();
+    // dev 模式下 commitHash 不随本地数据变化，改用时间戳避免命中缓存
+    const version = isDev ? Date.now().toString() : getVersionInfo().commitHash;
     const separator = url.includes('?') ? '&' : '?';
-    return `${url}${separator}v=${commitHash}`;
+    return `${url}${separator}v=${version}`;
   }
 
   /**

@@ -11,6 +11,7 @@ describe('JSONLoader', () => {
     vi.useRealTimers();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
   });
 
   it('appends a version query param and resolves successful JSON', async () => {
@@ -25,6 +26,24 @@ describe('JSONLoader', () => {
 
     await expect(loader.loadJSON('https://example.com/data.json')).resolves.toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledWith('https://example.com/data.json?v=commit-1');
+  });
+
+  it('uses a timestamp instead of the commit hash in dev mode', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubGlobal('__COMMIT_HASH__', 'commit-dev');
+    vi.setSystemTime(1721000000000);
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ ok: true }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    vi.resetModules();
+    const { JSONLoader: DevJSONLoader } = await import('./json_loader');
+    const loader = new DevJSONLoader();
+
+    await expect(loader.loadJSON('https://example.com/data.json')).resolves.toEqual({ ok: true });
+    expect(fetchMock).toHaveBeenCalledWith('https://example.com/data.json?v=1721000000000');
   });
 
   it('retries failed requests until one succeeds', async () => {
