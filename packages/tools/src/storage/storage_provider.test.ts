@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { IStorageAdapter } from './storage_adapter';
 import { LocalStorageDB } from './local_storage';
+import type { IStorageAdapter } from './storage_adapter';
 import { getStorageAdapter, registerStorageAdapter } from './storage_provider';
 
 describe('storage provider', () => {

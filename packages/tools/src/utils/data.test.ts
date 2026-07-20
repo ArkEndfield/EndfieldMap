@@ -1,6 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
 import { logger } from '@endfieldmap/tools/logger';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { downloadData } from './data';
 

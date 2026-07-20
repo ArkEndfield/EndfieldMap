@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { registerStorageAdapter } from './storage_provider';
 import { LocalStorageDB } from './local_storage';
+import { registerStorageAdapter } from './storage_provider';
 
 describe('LocalStorageDB', () => {
   afterEach(() => {

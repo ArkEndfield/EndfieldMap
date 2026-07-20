@@ -1,6 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
 import { StorageType } from '@endfieldmap/tools/const/enum';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { StorageManager } from './manager';
 
