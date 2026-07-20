@@ -90,7 +90,7 @@ export function initGroupContextMenu(): () => void {
       }
 
       // 目标点所在区域若被区域筛选取消勾选，跳过去也看不到点位，先恢复选中
-      const levelId = nearest.data.mapLevelId;
+      const levelId = nearest.mapLevelId;
       if (adapter && levelId && !adapter.entityController.getSelectedLevelIds(nearest.mapId).includes(levelId)) {
         adapter.entityController.setLevelSelected(nearest.mapId, levelId, true);
       }

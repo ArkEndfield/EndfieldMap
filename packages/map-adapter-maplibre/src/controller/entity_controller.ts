@@ -173,7 +173,9 @@ export class EntityController implements IEntityController {
     return (
       instance.visible &&
       this.isFeatureVisibleByFilter(instance.marked) &&
-      this.dataManager.isLevelSelected(instance.mapId, instance.data.mapLevelId)
+      // 用 mapLevelId 而非 data.mapLevelId：后者会 toJS 深拷贝整个实体数据，
+      // 而这里是逐实体跑满全图的热路径
+      this.dataManager.isLevelSelected(instance.mapId, instance.mapLevelId)
     );
   }
 

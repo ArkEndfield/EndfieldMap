@@ -496,6 +496,11 @@
         current: 0,
         target: 0,
         stages: {},
+        /** 上一帧时间戳，用于帧率无关缓动 */
+        lastFrame: 0,
+        /** 已收到退场请求，进度补满后播退场动画 */
+        finishing: false,
+        outroPlayed: false,
 
         update(stage, progress) {
           if (this.error) return;
@@ -509,26 +514,26 @@
         },
 
         calculateTotal() {
-          // 简单的加权平均
+          // 各阶段权重，按实测耗时分配，合计 100。
+          // 与 src/services/loading/index.ts 的 STAGE_CONFIGS 必须保持一致。
           const weights = {
             INIT: 5,
-            I18N: 8,
-            STORAGE: 12,
+            I18N: 15,
+            STORAGE: 25,
             COMPONENTS: 5,
-            MAP_ADAPTER: 10,
-            MAP_RENDER: 50,
-            ENTITY_RENDER: 10,
+            MAP_ADAPTER: 15,
+            MAP_RENDER: 10,
+            ENTITY_RENDER: 25,
           };
           let total = 0;
-          // 总权重应为所有预定义权重的和：5+8+12+5+10+50+10 = 100
-          const totalPossibleWeight = 100;
 
           for (const [stage, progress] of Object.entries(this.stages)) {
             const weight = weights[stage] || 0;
             total += (progress / 100) * weight;
           }
 
-          this.target = Math.min(100, (total / totalPossibleWeight) * 100);
+          // 进度只增不减，避免上报顺序造成的回跳
+          this.target = Math.max(this.target, Math.min(100, total));
 
           // 防止初始计算过低
           if (Object.keys(this.stages).length === 1 && this.stages.INIT) {
@@ -536,24 +541,33 @@
           }
         },
 
-        animate() {
-          const diff = this.target - this.current;
-          if (Math.abs(diff) > 0.1) {
-            this.current += diff * 0.1;
-            // 确保显示进度不超过 100
-            this.current = Math.min(100, this.current);
+        animate(timestamp) {
+          // 帧率无关的指数缓动：每秒补掉剩余差值的 ~92%。
+          // 原实现是「每帧补 10%」，高刷屏更快、低帧更慢，且收尾极慢——
+          // 数据早就好了进度条还在爬，正是刷新后「卡很久」的观感来源之一。
+          const deltaSeconds = this.lastFrame ? Math.min((timestamp - this.lastFrame) / 1000, 0.1) : 1 / 60;
+          this.lastFrame = timestamp;
+
+          // 收尾阶段直接拉满，别让用户为一段缓动多等
+          const target = this.finishing ? 100 : this.target;
+          const diff = target - this.current;
+
+          if (diff > 0.1) {
+            this.current = Math.min(100, this.current + diff * (1 - Math.pow(0.08, deltaSeconds)));
             this.render();
-          } else if (this.target >= 100 && this.current < 100) {
-            // 强制完成
-            this.current = 100;
+          } else if (diff > 0) {
+            this.current = target;
             this.render();
           }
 
-          // 如果未完成或需要继续渲染动画（例如淡出前最后一帧），继续循环
-          // 只有当完全结束并且 React 组件接管后调用 hide 才会真正停止
-          // 这里保持 loop 直到元素被移除
+          if (this.finishing && this.current >= 100) {
+            this.playOutro();
+            return;
+          }
+
+          // 保持 loop 直到元素被移除
           if (document.getElementById('initial-loader')) {
-            requestAnimationFrame(() => this.animate());
+            requestAnimationFrame((next) => this.animate(next));
           }
         },
 
@@ -605,34 +619,42 @@
           }
         },
 
+        /**
+         * 请求退场。进度条先补到 100%，animate 循环发现跑满后再播退场动画。
+         *
+         * 原实现是「无脑等 800ms 再开始退场」，跟进度条实际有没有跑完无关：
+         * 跑完了也要空等，没跑完照样开始擦除。现在等待时间由真实进度决定。
+         */
         hide() {
+          // animate 循环只要 loader 还在就一直跑，
+          // 它会把进度补满，再调用 playOutro
+          this.finishing = true;
+        },
+
+        playOutro() {
+          if (this.outroPlayed) return;
+          this.outroPlayed = true;
+
           const loader = document.getElementById('initial-loader');
+          if (!loader) return;
+
+          // 进度条 transition 跑完再擦除，避免视觉上「没满就没了」
           const progressFill = document.getElementById('progress-fill');
+          const transitionDuration = progressFill
+            ? parseFloat(getComputedStyle(progressFill).transitionDuration) * 1000
+            : 0;
 
-          if (loader && progressFill) {
-            // 获取 transition 时间，确保进度条跑完
-            const transitionDuration = parseFloat(getComputedStyle(progressFill).transitionDuration) * 1000;
-            const waitTime = Math.max(transitionDuration, 300);
+          setTimeout(() => {
+            // 第一阶段：开始 wipe 动画
+            loader.classList.add('wiping');
 
-            // 额外展示时间，让用户看清 100%
-            const displayTime = 500;
-
+            // 第二阶段：wipe 动画完成后 (0.5s)，开始淡出
             setTimeout(() => {
-              // 第一阶段：开始 wipe 动画
-              loader.classList.add('wiping');
-
-              // 第二阶段：wipe 动画完成后 (0.5s)，开始淡出
-              setTimeout(() => {
-                loader.classList.add('fade-out');
-                // 第三阶段：淡出完成后 (0.5s)，移除元素
-                setTimeout(() => loader.remove(), 500);
-              }, 500); // wipe duration
-            }, waitTime + displayTime);
-          } else if (loader) {
-            // 降级处理
-            loader.classList.add('fade-out');
-            setTimeout(() => loader.remove(), 500);
-          }
+              loader.classList.add('fade-out');
+              // 第三阶段：淡出完成后 (0.5s)，移除元素
+              setTimeout(() => loader.remove(), 500);
+            }, 500); // wipe duration
+          }, Math.max(transitionDuration, 150));
         },
 
         showcontact() {
@@ -646,7 +668,7 @@
       };
 
       // 启动动画
-      window.__LOADING_PROGRESS__.animate();
+      requestAnimationFrame((t) => window.__LOADING_PROGRESS__.animate(t));
       // 初始阶段
       window.__LOADING_PROGRESS__.update('INIT', 100);
       // 15秒后如果还未完成，显示联系方式

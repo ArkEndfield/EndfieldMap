@@ -1,55 +1,27 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 import { loadingManager } from '@/services/loading';
 
-interface LoadingScreenProps {
-  onComplete?: () => void;
-}
-
-export function LoadingScreen({ onComplete }: LoadingScreenProps) {
-  const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  const completeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+/**
+ * 加载进度的收尾控制。
+ *
+ * 界面本身由 `index.html` 里的内联加载器渲染（React 加载前就要出现），
+ * 这里只负责在全部阶段完成后触发它的退场动画。
+ *
+ * 之前这个组件还会把 React 侧插值出来的 displayProgress 反向写回
+ * `__LOADING_PROGRESS__.target`，把内联加载器按权重算好的目标值覆盖成
+ * 一个多绕了一层缓动的滞后值，进度条因此明显拖尾。现在进度只单向流动：
+ * 阶段进度 → 内联加载器加权求和 → 缓动 → CSS 变量。
+ */
+export function LoadingScreen() {
   useEffect(() => {
-    const unsubscribe = loadingManager.subscribe((state) => {
-      setProgress(state.displayProgress);
-
-      // 只有当显示进度也达到99.9%时才认为是真正的完成
-      // 放宽一点点判断，因为可能有浮点数误差
-      if (state.isComplete && state.displayProgress >= 99.9 && !isComplete) {
-        setIsComplete(true);
-        // 延迟调用 onComplete，让动画完成并停留一会儿
-        // 增加到 800ms
-        completeTimerRef.current = setTimeout(() => onComplete?.(), 800);
-      }
-    });
-
-    return unsubscribe;
-  }, [onComplete, isComplete]);
-
-  useEffect(() => {
-    return () => {
-      if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
-    };
-  }, []);
-
-  // 同步到初始加载器
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.__LOADING_PROGRESS__) {
-      window.__LOADING_PROGRESS__.target = progress;
-    }
-  }, [progress]);
-
-  // 完成后隐藏初始加载器
-  useEffect(() => {
-    if (isComplete) {
-      // 让 LoadingScreen 稍微等待一下再调用 hide
-      // hide 内部已经有了针对 CSS transition 的等待逻辑
-      // 这里只需要触发它
+    let hidden = false;
+    return loadingManager.subscribe((state) => {
+      if (hidden || !state.isComplete) return;
+      hidden = true;
       window.__LOADING_PROGRESS__?.hide();
-    }
-  }, [isComplete]);
+    });
+  }, []);
 
   return null; // 使用 index.html 中的初始加载器
 }

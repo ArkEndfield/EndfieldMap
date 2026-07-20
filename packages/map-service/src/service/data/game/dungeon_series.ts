@@ -1,6 +1,7 @@
 import type { DungeonSeriesSchemaType } from '@endfieldmap/map-service';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
 import type { ChestRewardDataService,DealedRewardItem } from '@endfieldmap/map-service/service/data/game/chest_reward';
+import { createGameDataLoader } from '@endfieldmap/map-service/service/data/game/game_data_cache';
 import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { JSONLoader } from '@endfieldmap/tools';
 
@@ -16,6 +17,16 @@ export class DungeonSeriesDataService<T, R> {
   private databaseService: DatabaseService<T, R>;
   private assetService: AssetService;
   private chestRewardDataService: ChestRewardDataService<T, R>;
+  private readonly ensureCached = createGameDataLoader<DungeonSeriesSchemaType>({
+    key: 'dungeon_series',
+    collection: () => this.databaseService.gameDatabase.gameDungeonSeries,
+    load: async () => {
+      const data = await this.jsonLoader.loadJSON<Record<string, DungeonSeriesSchemaType>>(
+        `${this.assetService.url.entityData}/dungeon_series.json`
+      );
+      return Object.values(data || {});
+    },
+  });
 
   constructor(config: DungeonSeriesDataConfig<T, R>) {
     this.jsonLoader = config.jsonLoader;
@@ -24,14 +35,12 @@ export class DungeonSeriesDataService<T, R> {
     this.chestRewardDataService = config.chestRewardDataService;
   }
 
-  public async init() {
-    const data = await this.jsonLoader.loadJSON<Record<string, Omit<DungeonSeriesSchemaType, 'id'>>>(
-      `${this.assetService.url.entityData}/dungeon_series.json`
-    );
-    const dungeonSeriesList = Object.values(data || {});
-    if (dungeonSeriesList.length > 0) {
-      await this.databaseService.gameDatabase.gameDungeonSeries.bulkUpsert(dungeonSeriesList);
-    }
+  /**
+   * 确保副本系列表已缓存到本地。多次调用共用同一个 Promise，
+   * 既可在启动后空闲时预热，也可由首个读取方按需触发。
+   */
+  public init(): Promise<void> {
+    return this.ensureCached();
   }
 
   private async getDungeonSeriesDataFromDB(id: string) {
@@ -44,6 +53,7 @@ export class DungeonSeriesDataService<T, R> {
 
   public async getDungeonSeriesDataById(id?: string) {
     if (!id) return;
+    await this.init();
     const data = await this.getDungeonSeriesDataFromDB(id);
     return data?.toJSON();
   }
