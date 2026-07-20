@@ -24,6 +24,15 @@ const translateAreaName = (name: string): string => {
 
 const SYNC_TIMEOUT_MS = 10_000;
 
+/** 等主线程闲下来再跑，别和首屏渲染抢 CPU */
+function whenIdle(callback: () => void): void {
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(() => callback(), { timeout: 5_000 });
+  } else {
+    setTimeout(callback, 1_000);
+  }
+}
+
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | undefined> {
   let timer: ReturnType<typeof setTimeout>;
   return Promise.race([
@@ -55,8 +64,18 @@ export class MapService {
   private async _init(): Promise<{ adapter: EndfieldMapAdapter } | undefined> {
     try {
       initServiceEventBridge();
+
+      // 地图 / 实体 JSON 只依赖网络，与数据库、i18n、本地迁移都无关。
+      // 先并行发起，别再排在存储初始化后面白等（实测省下约 1.7s）。
+      const mapDataReady = service.dataService.mapDataService.initData();
+      // 在被 await 之前先兜住 rejection，避免上游先抛错时变成 unhandled rejection
+      mapDataReady.catch(() => undefined);
+
       await service.init();
+      loadingManager.updateStageProgress(LoadingStageId.STORAGE, 40);
+
       await StorageService.initStorage();
+      loadingManager.updateStageProgress(LoadingStageId.STORAGE, 70);
 
       // Ensure sync is running after database is initialized.
       // updateUidList was called in UserService constructor but likely failed
@@ -73,18 +92,16 @@ export class MapService {
         }
       }
 
-      await service.dataService.mapDataService.initData();
-      
+      // LOADING 存储与用户数据就绪
+      loadingManager.completeStage(LoadingStageId.STORAGE);
+
+      await mapDataReady;
+
       const { mapData, entityData } = service.dataService.mapDataService;
 
       if (!mapData || !entityData) {
         throw new Error('加载地图数据或实体数据失败');
       }
-
-      // LOADING 初始化数据服务
-      loadingManager.updateStageProgress(LoadingStageId.STORAGE, 10);
-      // LOADING
-      loadingManager.completeStage(LoadingStageId.STORAGE);
 
       // LOADING
       loadingManager.updateStageProgress(LoadingStageId.MAP_ADAPTER, 20);
@@ -98,6 +115,10 @@ export class MapService {
 
       service.registerAdapter(this.adapter);
 
+      // LOADING 底图就绪，接下来是实体渲染（首屏最后一段重活）
+      loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
+      loadingManager.completeStage(LoadingStageId.MAP_RENDER);
+
       // 注入实体数据
       this.adapter.entityController.loadData(entityData[0], entityData[1]);
 
@@ -108,11 +129,6 @@ export class MapService {
       // 初始化鼠标指针样式监听器
       this.eventDisposers.push(initCursorEventListeners(this.adapter));
 
-      // LOADING
-      loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
-
-      loadingManager.updateStageProgress(LoadingStageId.MAP_RENDER, 10);
-      loadingManager.completeStage(LoadingStageId.MAP_RENDER);
       loadingManager.completeStage(LoadingStageId.ENTITY_RENDER);
       // 初始化激活feature事件监听器，用于设置和清除激活的feature
       this.eventDisposers.push(initActiveFeatureEventListeners(this.adapter!));
@@ -141,6 +157,12 @@ export class MapService {
 
       initShareLink();
       await applyShareLinkParams();
+
+      // 首屏已经完成，趁空闲把弹窗要用的游戏静态数据表补进 IndexedDB。
+      // 不 await：失败或未跑完时，读取方自己会触发加载。
+      whenIdle(() => {
+        void service.dataService.prefetchGameData();
+      });
 
       return {
         adapter: this.adapter,

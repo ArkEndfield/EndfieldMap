@@ -1,5 +1,6 @@
 import type { ChestRewardSchemaType } from '@endfieldmap/map-service';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
+import { createGameDataLoader } from '@endfieldmap/map-service/service/data/game/game_data_cache';
 import type { ItemDataService } from '@endfieldmap/map-service/service/data/game/item_data';
 import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { JSONLoader } from '@endfieldmap/tools';
@@ -33,6 +34,16 @@ export class ChestRewardDataService<T, R> {
   private databaseService: DatabaseService<T, R>;
   private assetService: AssetService;
   private itemDataService: ItemDataService<T, R>;
+  private readonly ensureCached = createGameDataLoader<ChestRewardSchemaType>({
+    key: 'chest_reward',
+    collection: () => this.databaseService.gameDatabase.gameChestReward,
+    load: async () => {
+      const data = await this.jsonLoader.loadJSON<Record<string, Omit<ChestRewardSchemaType, 'id'>>>(
+        `${this.assetService.url.entityData}/reward_table.json`
+      );
+      return Object.entries(data || {}).map(([id, reward]) => ({ id, ...reward }));
+    },
+  });
 
   constructor(config: ChestRewardDataConfig<T, R>) {
     this.jsonLoader = config.jsonLoader;
@@ -41,17 +52,12 @@ export class ChestRewardDataService<T, R> {
     this.itemDataService = config.itemDataService;
   }
 
-  public async init() {
-    const data = await this.jsonLoader.loadJSON<Record<string, Omit<ChestRewardSchemaType, 'id'>>>(
-      `${this.assetService.url.entityData}/reward_table.json`
-    );
-    const rewards = Object.entries(data || {}).map(([id, reward]) => ({
-      id,
-      ...reward,
-    }));
-    if (rewards.length > 0) {
-      await this.databaseService.gameDatabase.gameChestReward.bulkUpsert(rewards);
-    }
+  /**
+   * 确保奖励表已缓存到本地。多次调用共用同一个 Promise，
+   * 既可在启动后空闲时预热，也可由首个读取方按需触发。
+   */
+  public init(): Promise<void> {
+    return this.ensureCached();
   }
 
   private async getRewardDataFromDB(id: string) {
@@ -65,6 +71,7 @@ export class ChestRewardDataService<T, R> {
   public async getRewards(reward_id?: string): Promise<DealedRewardItem[]> {
     if (!reward_id) return [];
 
+    await this.init();
     const _rewardData = await this.getRewardDataFromDB(reward_id);
     const rewardItem = _rewardData?.toJSON();
 

@@ -138,7 +138,7 @@ const EntityPanel = observer(() => {
       .getMapGroupManagerList(currentMap)
       .filter((groupManager) => entityDataIdKeys.has(groupManager.entityDataIdKey))
       .flatMap((groupManager) => groupManager.instances)
-      .filter((instance) => !instance.data.mapLevelId || selectedLevelIds.has(instance.data.mapLevelId));
+      .filter((instance) => !instance.mapLevelId || selectedLevelIds.has(instance.mapLevelId));
     contextMenuManager.open({
       type: 'group',
       entities: instances,

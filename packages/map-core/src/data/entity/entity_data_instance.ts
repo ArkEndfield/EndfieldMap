@@ -31,6 +31,17 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
   }
 
   /**
+   * 获取所属地图 level id
+   *
+   * 与 `data.mapLevelId` 等价，但只读单个字段。`data` 会对整个 `_data` 做 `toJS`
+   * 深拷贝，在渲染筛选这类逐实体的热路径上代价极高，那里一律用这个 getter。
+   */
+  @computed
+  get mapLevelId(): string | undefined {
+    return this._data.mapLevelId;
+  }
+
+  /**
    * 获取分类
    */
   @computed

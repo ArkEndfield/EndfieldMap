@@ -45,9 +45,16 @@ export class KeyboardMoveController {
     }
     const disposer1 = domEventListener(window, 'keydown', this.handleKeyDown);
     const disposer2 = domEventListener(window, 'keyup', this.handleKeyUp);
+    // 窗口失焦（Alt+Tab 切换应用、系统级快捷键、点击其它窗口等）后，浏览器不再向本
+    // window 派发键盘事件，松键的 keyup 会丢失，导致 keyState 卡在按下状态、地图无限
+    // 滑动。失焦 / 页面隐藏时主动清空按键状态并停止循环，兜住 keyup 丢失的场景。
+    const disposer3 = domEventListener(window, 'blur', this.handleInterrupt);
+    const disposer4 = domEventListener(document, 'visibilitychange', this.handleVisibilityChange);
     this.disposer = () => {
       disposer1();
       disposer2();
+      disposer3();
+      disposer4();
     };
   }
 
@@ -86,6 +93,18 @@ export class KeyboardMoveController {
       if (!this.keyState.w && !this.keyState.a && !this.keyState.s && !this.keyState.d) {
         this.stopLoop();
       }
+    }
+  };
+
+  /** 窗口失焦等中断场景：清空按键状态并停止滑动，避免 keyup 丢失造成的持续滑动 */
+  private handleInterrupt = () => {
+    this.resetKeyState();
+    this.stopLoop();
+  };
+
+  private handleVisibilityChange = () => {
+    if (document.visibilityState === 'hidden') {
+      this.handleInterrupt();
     }
   };
 

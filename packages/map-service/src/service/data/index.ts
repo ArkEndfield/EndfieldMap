@@ -90,12 +90,26 @@ export class DataService<T, R> {
     });
   }
 
+  /**
+   * 启动期初始化。
+   *
+   * 只等待 UI 会同步读取的小体量数据（noteData）。物品 / 奖励 / 副本三张表
+   * 体积大且要写 IndexedDB，但只在打开弹窗时才被读到，因此不放在关键路径上：
+   * 它们由 `prefetchGameData` 在首屏渲染完成后补齐，也会被各自的读取方法
+   * 按需触发（`init` 内部做了 Promise 去重，不会重复加载）。
+   */
   public async init() {
-    await Promise.all([
+    await this.noteDataService.init();
+  }
+
+  /**
+   * 预热游戏静态数据表。失败不影响主流程——真正需要时读取方法会再试一次。
+   */
+  public async prefetchGameData(): Promise<void> {
+    await Promise.allSettled([
       this.itemDataService.init(),
       this.chestRewardDataService.init(),
       this.dungeonSeriesDataService.init(),
-      this.noteDataService.init(),
     ]);
   }
 }

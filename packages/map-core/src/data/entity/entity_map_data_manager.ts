@@ -172,23 +172,38 @@ export class EntityMapDataManager {
     const stats: EntityInfoStats[] = [];
 
     for (const manager of this.currentGroupManagers) {
-      const filteredInstances = manager.instances.filter((instance) =>
-        this.isLevelSelected(mapId, instance.data.mapLevelId)
-      );
+      // 单趟统计：原先 filter + 两次 filter 共三趟，实体量上万时纯属浪费
+      let count = 0;
+      let markedCount = 0;
+      let selectedCount = 0;
 
-      if (filteredInstances.length === 0) {
+      for (const instance of manager.instances) {
+        if (!this.isLevelSelected(mapId, instance.mapLevelId)) continue;
+        count++;
+        if (instance.marked) markedCount++;
+        if (instance.selected) selectedCount++;
+      }
+
+      if (count === 0) {
         continue;
       }
 
-      stats.push({
-        ...manager.stats,
-        count: filteredInstances.length,
-        markedCount: filteredInstances.filter((instance) => instance.marked).length,
-        selectedCount: filteredInstances.filter((instance) => instance.selected).length,
-      });
+      stats.push({ ...manager.stats, count, markedCount, selectedCount });
     }
 
     return stats;
+  }
+
+  /**
+   * 各地图 level id 的 Set 形式，供 `isLevelSelected` 免分配查询
+   */
+  @computed
+  private get mapLevelIdSetByMap(): Map<MapData['id'], Set<string>> {
+    const result = new Map<MapData['id'], Set<string>>();
+    for (const [mapId, levelIds] of this.mapLevelIdsByMap) {
+      result.set(mapId, new Set(levelIds));
+    }
+    return result;
   }
 
   /**
@@ -200,6 +215,8 @@ export class EntityMapDataManager {
 
   /**
    * 获取地图当前选中的 level id；未设置过时默认全选
+   *
+   * 返回的是副本，调用方可自由改动（`setLevelSelected` 依赖这点）。
    */
   public getSelectedLevelIds(mapId: MapData['id']): Set<string> {
     const selected = this.selectedLevelIdsByMap.get(mapId);
@@ -208,12 +225,20 @@ export class EntityMapDataManager {
 
   /**
    * 判断 level 是否被选中；没有 level 维度的数据默认不被过滤
+   *
+   * 这是逐实体调用的热路径（每次渲染筛选都要跑满全部实体），
+   * 因此直接查缓存好的 Set，不再每次构造数组 + Set。
    */
   public isLevelSelected(mapId: MapData['id'], levelId?: string): boolean {
     if (!levelId) {
       return true;
     }
-    return this.getSelectedLevelIds(mapId).has(levelId);
+    const selected = this.selectedLevelIdsByMap.get(mapId);
+    if (selected) {
+      return selected.has(levelId);
+    }
+    // 未设置过选中项 = 全选，等价于「levelId 属于该地图已知 level」
+    return this.mapLevelIdSetByMap.get(mapId)?.has(levelId) ?? false;
   }
 
   /**

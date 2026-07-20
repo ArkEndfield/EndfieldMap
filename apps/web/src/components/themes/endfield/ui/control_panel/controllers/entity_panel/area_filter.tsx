@@ -29,7 +29,7 @@ export const AreaFilter = observer(() => {
 
   for (const groupManager of entityController.getMapGroupManagerList(mapId)) {
     for (const instance of groupManager.instances) {
-      const levelId = instance.data.mapLevelId;
+      const levelId = instance.mapLevelId;
       if (!levelId) {
         continue;
       }
@@ -63,7 +63,7 @@ export const AreaFilter = observer(() => {
     const instances = entityController
       .getMapGroupManagerList(mapId)
       .flatMap((groupManager) => groupManager.instances)
-      .filter((instance) => instance.data.mapLevelId === levelId);
+      .filter((instance) => instance.mapLevelId === levelId);
     contextMenuManager.open({
       type: 'group',
       entities: instances,
