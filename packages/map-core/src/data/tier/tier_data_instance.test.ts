@@ -10,6 +10,7 @@ describe('TierDataInstance', () => {
         id: 'sub_1',
         name: 'Sub Tier',
         imagePath: '/tier.png',
+        regionId: 101,
         level: 1,
         index: 7,
       },

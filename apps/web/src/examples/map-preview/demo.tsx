@@ -27,6 +27,7 @@ const mockEntityJsonData: EntityJsonDataList = [
                 properties: {},
                 progressLockCondition: {},
                 componentProperties: {},
+                mapRegionId: 0,
               },
               {
                 levelLogicId: 1002,
@@ -37,6 +38,7 @@ const mockEntityJsonData: EntityJsonDataList = [
                 properties: {},
                 progressLockCondition: {},
                 componentProperties: {},
+                mapRegionId: 0,
               },
             ],
           },
@@ -52,6 +54,7 @@ const mockEntityJsonData: EntityJsonDataList = [
                 properties: {},
                 progressLockCondition: {},
                 componentProperties: {},
+                mapRegionId: 0,
               },
             ],
           },

@@ -49,7 +49,7 @@ describe('ElectricPoleDataInstance', () => {
 
     expect(pole.coordinates).toEqual([10, 10]);
     expect(pole.deviceKey).toBe('zipline_80');
-    expect(pole.entityInfo.entityInfo.pic).toBe('electric_slider_80');
+    expect(pole.entityInfo.entityInfo.pic).toBe('item_port_travel_pole_1');
     expect(pole.name).toBe('ElectricPole #1');
     expect(pole.markable).toBe(false);
     expect(pole.selectable).toBe(false);

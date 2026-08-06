@@ -6,7 +6,7 @@ import {
   SVG_HEIGHT,
   SVG_WIDTH,
 } from '@endfieldmap/map-adapter-ol/render/renderer/entity/common/marker_background_svg';
-import { DEFAULT_FILL_COLOR, DEFAULT_ICON_SIZE, DEFAULT_STROKE_COLOR } from '@endfieldmap/map-core';
+import { DEFAULT_FILL_COLOR, DEFAULT_ICON_SIZE, DEFAULT_STROKE_COLOR, TierBadgeState } from '@endfieldmap/map-core';
 import type { FeatureLike } from 'ol/Feature';
 import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
@@ -68,6 +68,63 @@ function createBadgeIcon(clusterSize: number, opacity: number): Icon {
   });
 }
 
+const TIER_BADGE_RADIUS = 6;
+
+/**
+ * 分层角标画布（上/下三角），全部渲染器共享同一份 Canvas
+ * @param direction 1 = 向下三角，-1 = 向上三角
+ */
+function createTierBadgeCanvas(direction: 1 | -1): HTMLCanvasElement {
+  const canvasSize = TIER_BADGE_RADIUS * 2 + 6;
+  const center = canvasSize / 2;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
+  const pixelRatio = 2;
+  canvas.width = canvasSize * pixelRatio;
+  canvas.height = canvasSize * pixelRatio;
+  ctx.scale(pixelRatio, pixelRatio);
+
+  ctx.beginPath();
+  ctx.arc(center, center, TIER_BADGE_RADIUS, 0, Math.PI * 2);
+  ctx.fillStyle = DEFAULT_STROKE_COLOR;
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = DEFAULT_FILL_COLOR;
+  ctx.stroke();
+
+  // 三角箭头（canvas y 轴向下，direction=1 时顶点朝下）
+  const r = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(center, center + direction * r);
+  ctx.lineTo(center - r, center - direction * (r * 0.7));
+  ctx.lineTo(center + r, center - direction * (r * 0.7));
+  ctx.closePath();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fill();
+
+  return canvas;
+}
+
+let tierBadgeCanvases: Record<number, HTMLCanvasElement> | null = null;
+
+/** 标点右下角的分层角标 Icon */
+function createTierBadgeIcon(tierBadge: number, opacity: number): Icon {
+  tierBadgeCanvases ??= {
+    [TierBadgeState.Up]: createTierBadgeCanvas(-1),
+    [TierBadgeState.Down]: createTierBadgeCanvas(1),
+  };
+  const canvas = tierBadgeCanvases[tierBadge];
+  const canvasSize = TIER_BADGE_RADIUS * 2 + 6;
+  return new Icon({
+    img: canvas,
+    width: canvasSize,
+    height: canvasSize,
+    displacement: [ENTITY_RADIUS, ICON_DISPLACEMENT_Y - ENTITY_RADIUS],
+    opacity,
+  });
+}
+
 /**
  * 创建 Entity 组的 Canvas StyleFunction 样式
  * 合并了背景 SVG、实体图标和聚合 badge 渲染
@@ -108,8 +165,9 @@ export function createEntityGroupCanvasStyle(config: EntityGroupStyleConfig): (f
     const selected = (feature.get('selected') as number) ?? 0;
     const active = (feature.get('active') as number) ?? 0;
     const clusterSize = (feature.get('clusterSize') as number) ?? 1;
+    const tierBadge = (feature.get('tierBadge') as number) ?? TierBadgeState.None;
 
-    const key = `${markedState}-${selected}-${active}-${clusterSize}`;
+    const key = `${markedState}-${selected}-${active}-${clusterSize}-${tierBadge}`;
     const cached = cache.get(key);
     if (cached) return cached;
 
@@ -138,7 +196,16 @@ export function createEntityGroupCanvasStyle(config: EntityGroupStyleConfig): (f
       );
     }
 
-    // 4. Z-Index 层级管理：选中/活跃标点整体覆盖在普通标点之上
+    // 4. 分层角标（右下角）：标点属于其他分层层级时显示上/下三角
+    if (tierBadge !== TierBadgeState.None) {
+      styles.push(
+        new Style({
+          image: createTierBadgeIcon(tierBadge, opacity),
+        })
+      );
+    }
+
+    // 5. Z-Index 层级管理：选中/活跃标点整体覆盖在普通标点之上
     const zIndex = selected === 1 ? 10 : active === 1 ? 5 : 0;
     styles.forEach((s) => s.setZIndex(zIndex));
 

@@ -42,6 +42,24 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
   }
 
   /**
+   * 所属 Tier 分层区域 ID（0 = 不在任何 Tier 区域内）
+   *
+   * 热路径 getter，理由同 `mapLevelId`。
+   */
+  @computed
+  get mapRegionId(): number {
+    return this._data.mapRegionId;
+  }
+
+  /**
+   * 游戏世界高度（position.y），用于判断标点相对当前分层层级的上下方向
+   */
+  @computed
+  get positionY(): number {
+    return this._data.position.y;
+  }
+
+  /**
    * 获取分类
    */
   @computed
@@ -63,6 +81,17 @@ export class EntityDataInstance extends BaseDataInstance<EntityData> {
   @computed
   get rewardId(): string | undefined {
     return this._data.properties.reward_id;
+  }
+
+  /**
+   * 叙事组件的 type_id（世界叙事碎片/回响用于解析具体标题）
+   */
+  @computed
+  get narrativeTypeId(): string | undefined {
+    const narrative = this._data.componentProperties?.['NarrativeComponent'] as
+      | { type_id?: string }
+      | undefined;
+    return narrative?.type_id || undefined;
   }
 
   /**

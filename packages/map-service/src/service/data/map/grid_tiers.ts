@@ -44,6 +44,8 @@ export class GridTiersDataService {
           id: name,
           name,
           imagePath: `${assetUrl.tierImage}/${imagePath}.png`,
+          // 图片 stem 固定以 `_tier_{mapRegionId}` 结尾（见数据管线 tier_anchor / grid_coordinates）
+          regionId: Number(/_tier_(\d+)$/.exec(imagePath)![1]),
           level: 2,
           index,
         })),
