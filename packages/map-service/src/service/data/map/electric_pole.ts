@@ -168,7 +168,7 @@ export class ElectricPoleDataService extends BasePresetDataService<
           );
 
           if (feature && this.autoConnect) {
-            this.innerConnectElectricPole(feature);
+            this.autoConnectElectricPole(feature);
           }
           break;
         }
@@ -483,6 +483,13 @@ export class ElectricPoleDataService extends BasePresetDataService<
       this.deps.adapterRegistry.adapter.activeFeatureController?.clearActiveFeature?.();
       return;
     }
+    // 创建模式下：残留的连线起点与当前创建类型不兼容时不能作为起点，
+    // 否则随后创建的设备会尝试与其连接并报「不能连接不同类型的设备」
+    if (this.isCreating && !isSameElectricPoleConnectionType(activeFeature.deviceKey, this.creatingDeviceKey)) {
+      this.connectingPole = null;
+      this.deps.adapterRegistry.adapter.activeFeatureController?.clearActiveFeature?.();
+      return;
+    }
     this.setConnectingPole(activeFeature);
   }
 
@@ -497,6 +504,68 @@ export class ElectricPoleDataService extends BasePresetDataService<
   public connectElectricPole(pole: ElectricPoleDataInstance) {
     if (!this.isConnecting) return;
     this.innerConnectElectricPole(pole);
+  }
+
+  /**
+   * 自动连接新创建的设备：
+   * - 优先连接当前连线起点（需同连接类型、范围可达、槽位未满）
+   * - 否则连接地图上最近的可连接同类型设备（电线杆/中继器互连，滑索连滑索）
+   * - 找不到可连接对象时静默跳过，不弹错误提示
+   */
+  private autoConnectElectricPole(pole: ElectricPoleDataInstance) {
+    const presetId = this.currentPresetId.value;
+    if (!presetId) return;
+
+    const target = this.findAutoConnectTarget(pole);
+    if (target) {
+      // 从覆盖范围可达对方的一侧发起连接（例如中继器 80m 覆盖到 30m 的电线杆时由中继器发起）
+      const distance = calculateDistance(pole.coordinates, target.coordinates);
+      const from = distance <= pole.zoneRadius ? pole : target;
+      const to = from === pole ? target : pole;
+      this.deps.electricPolePresetDataService.connectPoles(pole.mapId, presetId, from.id, to.id);
+    }
+
+    this.setConnectingPole(pole);
+  }
+
+  /**
+   * 查找自动连接目标：同连接类型、未连接、双方槽位未满、任一方覆盖范围可达。
+   * 优先返回当前连线起点，其次返回最近的候选。
+   */
+  private findAutoConnectTarget(pole: ElectricPoleDataInstance): ElectricPoleDataInstance | null {
+    const poleConfig = getElectricPoleDeviceConfig(pole.deviceKey);
+    if (poleConfig.maxConnections !== false && pole.connectionCount >= poleConfig.maxConnections) {
+      return null;
+    }
+
+    const manager = this.deps.adapterRegistry.adapter.electricPoleController.dataManager.getMapManager(pole.mapId);
+    let nearest: ElectricPoleDataInstance | null = null;
+    let nearestDistance = Infinity;
+
+    for (const candidate of manager.instances) {
+      if (candidate.id === pole.id) continue;
+      if (!isSameElectricPoleConnectionType(pole.deviceKey, candidate.deviceKey)) continue;
+      if (pole.isConnectedTo(candidate.id)) continue;
+
+      const candidateLimit = getElectricPoleDeviceConfig(candidate.deviceKey).maxConnections;
+      if (candidateLimit !== false && candidate.connectionCount >= candidateLimit) continue;
+
+      // 暗管为成对连接，自动模式只连接双方都空闲的暗管
+      if (poleConfig.connectionType === 'pipe' && (pole.isConnected || candidate.isConnected)) continue;
+
+      const distance = calculateDistance(pole.coordinates, candidate.coordinates);
+      if (distance > pole.zoneRadius && distance > candidate.zoneRadius) continue;
+
+      if (candidate === this.connectingPole) {
+        return candidate;
+      }
+      if (distance < nearestDistance) {
+        nearest = candidate;
+        nearestDistance = distance;
+      }
+    }
+
+    return nearest;
   }
 
   /** 断开暗管的全部现有连接（含入/出方向） */

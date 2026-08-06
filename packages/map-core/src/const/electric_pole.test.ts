@@ -27,21 +27,21 @@ describe('electric_pole constants', () => {
   it('returns device config by key', () => {
     expect(getElectricPoleDeviceConfig('pole')).toMatchObject({
       key: 'pole',
-      iconPic: 'electric_pole',
+      iconPic: 'item_port_power_diffuser_1',
       rangeMeters: 30,
       connectionType: 'electric',
       maxConnections: 10,
     });
     expect(getElectricPoleDeviceConfig('zipline_110')).toMatchObject({
       key: 'zipline_110',
-      iconPic: 'electric_slider_110',
+      iconPic: 'item_port_travel_pole_2',
       rangeMeters: 110,
       connectionType: 'zipline',
       maxConnections: false,
     });
     expect(getElectricPoleDeviceConfig('pipe')).toMatchObject({
       key: 'pipe',
-      iconPic: 'electric_pipe',
+      iconPic: 'item_port_udpipe_loader_1',
       rangeMeters: 300,
       connectionType: 'pipe',
       maxConnections: false,

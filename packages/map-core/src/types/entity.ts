@@ -74,6 +74,8 @@ export interface EntityData extends BaseEntityDataWithInfo {
   progressLockCondition: object;
   /** 组件 */
   componentProperties: Record<string, unknown>;
+  /** 所属 Tier 分层区域 ID（游戏内 Tier 体积的 mapRegionId），0 表示不在任何 Tier 区域内 */
+  mapRegionId: number;
 }
 
 /**

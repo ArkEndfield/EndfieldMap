@@ -1,9 +1,10 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
-import { ElectricPoleDataInstance, MAP_EVENT } from '@endfieldmap/map-core';
+import { ElectricPoleDataInstance, EntityDataInstance, MAP_EVENT } from '@endfieldmap/map-core';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { audioService } from '@endfieldmap/web-components';
 
 import { service } from '@/services';
+import uiManager from '@/services/ui_manager';
 
 /**
  * 初始化激活feature事件监听器
@@ -32,6 +33,20 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter): ()
 
     adapter.activeFeatureController.setActiveFeature(instance);
     audioService.play(SoundType.TICK);
+
+    // 点击不属于当前分层层级的标点时，打开其所在的分层地图；
+    // 视图动画中心传标点自身坐标，保证刚打开的详情弹窗不被甩出屏幕
+    if (uiManager.enableTier.value && instance instanceof EntityDataInstance) {
+      const tierDataManager = adapter.tierController.tierDataManager;
+      const region = tierDataManager.getTierRegion(instance.mapRegionId);
+      if (
+        region &&
+        (region.tierId !== tierDataManager.activeTier || region.subTierId !== tierDataManager.activeSubTier)
+      ) {
+        const { x, z } = instance.position;
+        void adapter.tierController.renderTier(region.mapId, [x, z], region.tierId, region.subTierId);
+      }
+    }
   });
 
   // 监听map_click事件，清除active_feature

@@ -55,7 +55,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
   pole: {
     key: 'pole',
     name: '电线杆',
-    iconPic: 'electric_pole',
+    // 游戏内官方物品图标：供电桩
+    iconPic: 'item_port_power_diffuser_1',
     rangeMeters: 30,
     createLimit: false,
     maxConnections: 10,
@@ -68,7 +69,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
   repeater: {
     key: 'repeater',
     name: '中继器',
-    iconPic: 'electric_repeater',
+    // 游戏内官方物品图标：中继器
+    iconPic: 'item_port_power_pole_2',
     rangeMeters: 80,
     createLimit: false,
     maxConnections: 100,
@@ -81,7 +83,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
   zipline_80: {
     key: 'zipline_80',
     name: '滑索(80m)',
-    iconPic: 'electric_slider_80',
+    // 游戏内官方物品图标：滑索架
+    iconPic: 'item_port_travel_pole_1',
     rangeMeters: 80,
     createLimit: false,
     maxConnections: false,
@@ -94,7 +97,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
   zipline_110: {
     key: 'zipline_110',
     name: '滑索(110m)',
-    iconPic: 'electric_slider_110',
+    // 游戏内官方物品图标：长距滑索架
+    iconPic: 'item_port_travel_pole_2',
     rangeMeters: 110,
     createLimit: false,
     maxConnections: false,
@@ -107,7 +111,8 @@ export const ELECTRIC_POLE_DEVICE_CONFIGS: Record<ElectricPoleDeviceKey, Electri
   pipe: {
     key: 'pipe',
     name: '暗管',
-    iconPic: 'electric_pipe',
+    // 游戏内官方物品图标：暗管入口
+    iconPic: 'item_port_udpipe_loader_1',
     rangeMeters: 300,
     createLimit: false,
     // 暗管为成对连接（一对一），由连接流程单独处理，不走通用槽位限制

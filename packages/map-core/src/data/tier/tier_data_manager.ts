@@ -1,11 +1,13 @@
 import type { MapDataManager } from '@endfieldmap/map-core/data/map/map';
 import { TierDataInstance } from '@endfieldmap/map-core/data/tier/tier_data_instance';
 import type { MapData } from '@endfieldmap/map-core/types/map';
-import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
+import type { GridTierItem, TierRegionRef } from '@endfieldmap/map-core/types/tier';
 import { action, makeObservable, observable } from 'mobx';
 
 export class TierDataManager {
   public tiers: Map<MapData['id'], Map<string, Map<string, TierDataInstance>>> = new Map();
+  /** Tier 区域 ID（标点 mapRegionId）-> 所在分层图层定位信息 */
+  private tierRegions: Map<number, TierRegionRef> = new Map();
   @observable accessor activeTier: string | null = null;
   @observable accessor activeSubTier: string | null = null;
   public readonly mapDataManager: MapDataManager;
@@ -29,6 +31,7 @@ export class TierDataManager {
     for (const item of items) {
       const instance = new TierDataInstance(mapId, item, position, this.mapDataManager);
       instances.set(instance.id, instance);
+      this.tierRegions.set(item.regionId, { mapId, tierId: regionKey, subTierId: item.id });
     }
 
     const mapIdTiers = this.tiers.get(mapId);
@@ -75,6 +78,11 @@ export class TierDataManager {
   clearActiveTier() {
     this.activeTier = null;
     this.activeSubTier = null;
+  }
+
+  /** 由标点的 mapRegionId 反查其所属的分层图层；0 或未映射的区域返回 undefined */
+  public getTierRegion(regionId: number): TierRegionRef | undefined {
+    return this.tierRegions.get(regionId);
   }
 
   get currentActiveTier(): TierDataInstance | null {

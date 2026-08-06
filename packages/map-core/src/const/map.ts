@@ -102,3 +102,15 @@ export enum MarkedFeatureFilterMode {
   Marked,
   Unmarked,
 }
+
+/**
+ * 标点分层角标状态
+ * - None：标点属于当前分层层级（或不在任何分层内），不显示角标
+ * - Up：标点所在分层位于当前层级上方
+ * - Down：标点所在分层位于当前层级下方
+ */
+export enum TierBadgeState {
+  None,
+  Up,
+  Down,
+}

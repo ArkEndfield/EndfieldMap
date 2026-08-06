@@ -22,6 +22,7 @@ function createTier(id: string) {
         id: `${id}_a`,
         name: 'A',
         imagePath: '/a.png',
+        regionId: 101,
         level: 1,
         index: 1,
       },
@@ -29,6 +30,7 @@ function createTier(id: string) {
         id: `${id}_b`,
         name: 'B',
         imagePath: '/b.png',
+        regionId: 102,
         level: 1,
         index: 2,
       },
@@ -45,6 +47,19 @@ describe('TierDataManager', () => {
     expect(instances.size).toBe(2);
     expect(instances.get('region_1_a')?.id).toBe('region_1_a');
     expect(manager.tiers.get('map_1')?.get('region_1')).toBe(instances);
+  });
+
+  it('indexes tier regions by mapRegionId', () => {
+    const manager = new TierDataManager(createMapDataManager());
+    manager.addTier('map_1' as never, createTier('region_1'));
+
+    expect(manager.getTierRegion(101)).toEqual({
+      mapId: 'map_1',
+      tierId: 'region_1',
+      subTierId: 'region_1_a',
+    });
+    expect(manager.getTierRegion(102)?.subTierId).toBe('region_1_b');
+    expect(manager.getTierRegion(0)).toBeUndefined();
   });
 
   it('sets active tiers and defaults sub tier to the first item', () => {
