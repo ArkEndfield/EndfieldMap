@@ -11,9 +11,10 @@ import type {
   EntityInfoDataJson,
   EntityInfoStats,
   EntityJsonDataList,
-  MapData,MapDataManager
+  MapData,MapDataManager,
+  TierDataManager
 } from '@endfieldmap/map-core';
-import { Disposer, EntityInstanceKey, EntityMapDataManager,MAP_EVENT, MarkedFeatureFilterMode } from '@endfieldmap/map-core';
+import { Disposer, EntityInstanceKey, EntityMapDataManager,MAP_EVENT, MarkedFeatureFilterMode, TierBadgeState } from '@endfieldmap/map-core';
 import { action, reaction } from 'mobx';
 
 export interface EntityControllerConfig {
@@ -21,6 +22,7 @@ export interface EntityControllerConfig {
   mapInstance: EndfieldMap;
   asset: EndfieldMapAsset;
   emitter: EndfieldMapEmitter<OLMapEventPayloads>;
+  tierDataManager: TierDataManager;
 }
 
 /**
@@ -49,11 +51,17 @@ export class EntityController extends Disposer {
 
   private asset: EndfieldMapAsset;
 
+  private tierDataManager: TierDataManager;
+
+  /** 分层角标总开关（跟随 Web 侧分层功能开关） */
+  private tierBadgeEnabled: boolean = true;
+
   constructor(config: EntityControllerConfig) {
     super();
     this.mapDataManager = config.mapDataManager;
     this.emitter = config.emitter;
     this.asset = config.asset;
+    this.tierDataManager = config.tierDataManager;
     this.dataManager = new EntityMapDataManager(config.mapDataManager);
     this.render = new EntityRender({
       mapInstance: config.mapInstance,
@@ -122,10 +130,26 @@ export class EntityController extends Disposer {
           // 应用 marked 过滤模式
           this.applyMarkedFilterMode();
 
+          // 刷新分层角标（切图后分层必然被清空，需要复位角标状态）
+          this.applyTierBadges();
+
           // 更新聚合距离
           this.updateClusterDistance(true);
         },
         { fireImmediately: true }
+      )
+    );
+
+    // 分层激活状态变化时，刷新标点的分层角标
+    this.disposers.push(
+      reaction(
+        () => [this.tierDataManager.activeTier, this.tierDataManager.activeSubTier],
+        () => {
+          if (!this.dataManager.dataLoaded) {
+            return;
+          }
+          this.applyTierBadges();
+        }
       )
     );
   }
@@ -146,6 +170,7 @@ export class EntityController extends Disposer {
     // 切换到当前地图
     this.render.switchMap(this.mapDataManager.currentMapId);
     this.applyMarkedFilterMode();
+    this.applyTierBadges();
     this.updateClusterDistance(true);
   }
 
@@ -368,6 +393,57 @@ export class EntityController extends Disposer {
 
     // 同步渲染
     this.render.setGroupVisible(mapId, entityKey, visible);
+  }
+
+  /**
+   * 刷新当前地图所有标点的分层角标状态
+   *
+   * 角标语义：标点所属的 Tier 分层不是当前视图层级时显示三角箭头，
+   * 方向由标点自身高度与当前激活分层的实体平均高度比较得出；
+   * 未打开分层时，处于分层内的标点统一显示向下箭头（表示需进入分层查看）。
+   */
+  public applyTierBadges(): void {
+    const tierDataManager = this.tierDataManager;
+    const activeTier = tierDataManager.activeTier;
+    const activeSubTier = tierDataManager.activeSubTier;
+    const activeRegionId = tierDataManager.currentActiveTier?.data.regionId;
+    const activeMeanY = activeRegionId === undefined ? undefined : this.dataManager.regionMeanY.get(activeRegionId);
+    const enabled = this.tierBadgeEnabled;
+
+    const renderers = this.render.getRenderers(this.mapDataManager.currentMapId);
+    for (const renderer of renderers) {
+      renderer.updateAllFeaturesState((_id, feature) => {
+        if (!enabled) {
+          return { tierBadge: TierBadgeState.None };
+        }
+        const instance = feature.get(EntityInstanceKey) as EntityDataInstance | undefined;
+        if (!instance) {
+          return {};
+        }
+        const region = tierDataManager.getTierRegion(instance.mapRegionId);
+        if (!region || (region.tierId === activeTier && region.subTierId === activeSubTier)) {
+          return { tierBadge: TierBadgeState.None };
+        }
+        if (activeMeanY === undefined) {
+          return { tierBadge: TierBadgeState.Down };
+        }
+        return { tierBadge: instance.positionY > activeMeanY ? TierBadgeState.Up : TierBadgeState.Down };
+      });
+      renderer.refreshAllClusterProps();
+    }
+  }
+
+  /**
+   * 设置分层角标总开关（Web 侧分层功能关闭时同步关闭角标）
+   */
+  public setTierBadgeEnabled(enabled: boolean): void {
+    if (this.tierBadgeEnabled === enabled) {
+      return;
+    }
+    this.tierBadgeEnabled = enabled;
+    if (this.dataManager.dataLoaded) {
+      this.applyTierBadges();
+    }
   }
 
   /**

@@ -45,6 +45,9 @@ export class EntityMapDataManager {
   @observable
   accessor selectedLevelIdsByMap: Map<MapData['id'], Set<string>> = new Map();
 
+  /** 每个 Tier 区域（mapRegionId）内实体的平均高度，用于判断跨层标点相对当前层级的上下方向 */
+  public readonly regionMeanY: Map<number, number> = new Map();
+
   /** 是否禁用聚合 */
   @observable
   accessor disableCluster: boolean = false;
@@ -76,6 +79,7 @@ export class EntityMapDataManager {
 
       // 处理entity数据
       if (jsonData) {
+        const regionYAcc = new Map<number, { sum: number; count: number }>();
         for (const mapItem of jsonData) {
           const mapId = mapItem.map_id;
           const groupManagerMap = new Map<string, EntityGroupManager>();
@@ -97,6 +101,16 @@ export class EntityMapDataManager {
                   entity.entityInfo = entityInfo;
                 }
                 entity.mapLevelId = levelItem.map_level_id;
+
+                if (entity.mapRegionId !== 0) {
+                  const acc = regionYAcc.get(entity.mapRegionId);
+                  if (acc) {
+                    acc.sum += entity.position.y;
+                    acc.count++;
+                  } else {
+                    regionYAcc.set(entity.mapRegionId, { sum: entity.position.y, count: 1 });
+                  }
+                }
 
                 // Grouping
                 let group = groupDataMap.get(key);
@@ -132,6 +146,10 @@ export class EntityMapDataManager {
             this.mapData.set(mapId, groupManagerMap);
             this.mapLevelIdsByMap.set(mapId, mapLevelIds);
           });
+        }
+
+        for (const [regionId, { sum, count }] of regionYAcc) {
+          this.regionMeanY.set(regionId, sum / count);
         }
       }
 

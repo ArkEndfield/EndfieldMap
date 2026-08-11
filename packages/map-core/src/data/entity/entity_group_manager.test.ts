@@ -14,6 +14,7 @@ function createEntity(id: number, entityInfo: EntityInfoData): EntityData {
     properties: {},
     progressLockCondition: {},
     componentProperties: {},
+    mapRegionId: 0,
     entityInfo,
   };
 }

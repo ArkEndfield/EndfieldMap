@@ -2,6 +2,7 @@ import '@/services/logger';
 
 import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { logger } from '@endfieldmap/tools';
+import { reaction } from 'mobx';
 
 import { LoadingStageId } from '@/const/loading';
 import { service } from '@/services';
@@ -15,6 +16,7 @@ import { initGroupContextMenu } from '@/services/group_context_menu';
 import { applyShareLinkParams, initShareLink } from '@/services/share_link';
 import { loadingManager } from '@/services/loading';
 import { initServiceEventBridge } from '@/services/service_event_bridge';
+import uiManager from '@/services/ui_manager';
 
 const assets = service.assetService.url;
 
@@ -113,7 +115,7 @@ export class MapService {
         isDev: isDev,
       });
 
-      service.registerAdapter(this.adapter);
+      const adapterRegistered = service.registerAdapter(this.adapter);
 
       // LOADING 底图就绪，接下来是实体渲染（首屏最后一段重活）
       loadingManager.completeStage(LoadingStageId.MAP_ADAPTER);
@@ -121,6 +123,18 @@ export class MapService {
 
       // 注入实体数据
       this.adapter.entityController.loadData(entityData[0], entityData[1]);
+
+      // 分层功能开关同步到标点的分层角标
+      this.eventDisposers.push(
+        reaction(
+          () => uiManager.enableTier.value,
+          (enabled) => this.adapter!.entityController.setTierBadgeEnabled(enabled),
+          { fireImmediately: true }
+        )
+      );
+
+      // grid_tiers 数据在 registerAdapter 内异步注册，完成后刷新一次分层角标
+      void adapterRegistered.then(() => this.adapter!.entityController.applyTierBadges());
 
       this.adapter.areaNameController.registerNameFunction(translateAreaName);
       // 按当前视图缩放同步一次区域名（避免初始缩放较小时仍显示详细名）

@@ -139,11 +139,17 @@ export class EndfieldMapAdapter {
     const mapDataManager = this.mapController.dataManager;
     const mapInstance = this.mapController.olMapRenderer;
 
+    // Tier 先于 Entity 创建：EntityController 依赖 tierDataManager 计算分层角标
+    this.tierController = new TierController({
+      mapDataManager,
+      mapInstance,
+    });
     this.entityController = new EntityController({
       mapDataManager,
       mapInstance,
       asset: this.asset,
       emitter: this.event,
+      tierDataManager: this.tierController.tierDataManager,
     });
     this.electricPoleController = new ElectricPoleController({
       mapDataManager,
@@ -154,10 +160,6 @@ export class EndfieldMapAdapter {
       mapDataManager,
       mapInstance,
       asset: this.asset,
-    });
-    this.tierController = new TierController({
-      mapDataManager,
-      mapInstance,
     });
   }
 

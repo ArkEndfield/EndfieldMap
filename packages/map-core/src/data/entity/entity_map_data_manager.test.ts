@@ -31,6 +31,7 @@ function createJsonData(): EntityJsonDataList {
                   properties: {},
                   progressLockCondition: {},
                   componentProperties: {},
+                  mapRegionId: 0,
                 },
                 {
                   levelLogicId: 2,
@@ -41,6 +42,7 @@ function createJsonData(): EntityJsonDataList {
                   properties: {},
                   progressLockCondition: {},
                   componentProperties: {},
+                  mapRegionId: 0,
                 },
               ],
             },
@@ -61,6 +63,7 @@ function createJsonData(): EntityJsonDataList {
                   properties: {},
                   progressLockCondition: {},
                   componentProperties: {},
+                  mapRegionId: 0,
                 },
               ],
             },

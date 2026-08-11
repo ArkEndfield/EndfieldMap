@@ -64,6 +64,8 @@ export interface FeatureStateUpdate {
   marked?: boolean;
   selected?: boolean;
   active?: boolean;
+  /** 分层角标状态（TierBadgeState） */
+  tierBadge?: number;
 }
 
 /**
@@ -166,6 +168,9 @@ export class EntityGroupRenderer {
     if (state.active !== undefined) {
       feature.set('active', state.active ? 1 : 0, true);
     }
+    if (state.tierBadge !== undefined) {
+      feature.set('tierBadge', state.tierBadge, true);
+    }
 
     feature.changed();
   }
@@ -190,6 +195,9 @@ export class EntityGroupRenderer {
       }
       if (state.active !== undefined) {
         feature.set('active', state.active ? 1 : 0, true);
+      }
+      if (state.tierBadge !== undefined) {
+        feature.set('tierBadge', state.tierBadge, true);
       }
     }
     // 批量更新完成后，一次性触发渲染刷新（而非逐个 feature.changed()）
@@ -280,6 +288,7 @@ export class EntityGroupRenderer {
     feature.set('selected', item.selected ? 1 : 0);
     feature.set('active', item.active ? 1 : 0);
     feature.set('clusterSize', 1);
+    feature.set('tierBadge', 0);
 
     this.featureMap.set(item.id, feature);
     this.baseSource.addFeature(feature);
@@ -328,6 +337,11 @@ export class EntityGroupRenderer {
       }
 
       const hasActive = subFeatures.some((f) => f.get('active') === 1) ? 1 : 0;
+
+      // 分层角标：仅当聚合内所有标点的角标状态一致时才在聚合点上展示
+      const firstTierBadge = (subFeatures[0].get('tierBadge') as number) ?? 0;
+      const uniformTierBadge = subFeatures.every((f) => f.get('tierBadge') === firstTierBadge);
+      clusterFeature.set('tierBadge', uniformTierBadge ? firstTierBadge : 0, true);
 
       clusterFeature.set('marked', markedCount > 0 ? 1 : 0, true);
       clusterFeature.set('markedState', markedState, true);
