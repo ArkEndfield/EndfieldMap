@@ -33,12 +33,12 @@
     "lng:type": "i18next-cli types"
   },
   "dependencies": {
-    "microdiff": "^1.5.0"
+    "microdiff": "^1.6.0"
   },
   "devDependencies": {
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
-    "i18next-cli": "^1.65.0"
+    "i18next-cli": "^1.71.3"
   },
   "peerDependencies": {
     "@endfieldmap/map-core": "workspace:*",
