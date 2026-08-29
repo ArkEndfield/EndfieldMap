@@ -9,9 +9,10 @@ export interface GuideInfoBrief {
 }
 
 export interface GuideInfo extends GuideInfoBrief {
-  images: string[];
+  /** 端点实测可为 null（无图攻略）。 */
+  images: string[] | null;
   layer_map: string;
-  video_links: string[];
+  video_links: string[] | null;
   visible: string;
   refreshable: '' | '是' | '否';
 }

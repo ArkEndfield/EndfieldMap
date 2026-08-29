@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "start": "expo start",
+    "test": "jest",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "android:local": "expo run:android --variant debugOptimized",
@@ -82,8 +83,13 @@
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.29.7",
     "@babel/plugin-transform-class-properties": "^7.29.7",
+    "@jest/globals": "^30.5.0",
     "@tailwindcss/postcss": "catalog:",
+    "@testing-library/react-native": "^14.0.1",
+    "@types/jest": "^30.0.0",
     "@types/react": "catalog:",
+    "jest": "^30.5.0",
+    "jest-expo": "^56.0.5",
     "postcss": "^8.5.26",
     "tailwindcss": "catalog:"
   },
