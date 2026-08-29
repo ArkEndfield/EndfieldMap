@@ -36,15 +36,13 @@ export class TierLayer extends SingleLayerBase {
         return;
       }
 
-      // TODO: 不知道可不可能有什么潜在问题
-      const mapData = this.mapDataManager.getMapData(tier.mapId);
-      if (!mapData) {
-        logger.error('[EndfieldMap | tier] mapData not found', tier);
-        resolve(null);
-        return;
-      }
-      // const scale = tier.mapId === 'map02' ? 75 : 75 / 2;
-      const scale = 75 / (16 / mapData.scale);
+    const mapData = this.mapDataManager.getMapData(tier.mapId);
+    if (!mapData) {
+      logger.error('[EndfieldMap | tier] mapData not found', tier);
+      resolve(null);
+      return;
+    }
+    const scale = 75 / (16 / mapData.scale);
       const img = ImagePool.getImage(imageUrl);
       if (img.isPool || img.image.complete || img.image.naturalWidth > 0 || img.image.naturalHeight > 0) {
         const scaledWidth = img.image.naturalWidth / scale;
@@ -60,7 +58,7 @@ export class TierLayer extends SingleLayerBase {
           resolve(img.image);
         };
         img.image.onerror = () => {
-          console.warn(`[TierLayer] Image not available: ${imageUrl}`);
+          logger.warn(`[TierLayer] Image not available: ${imageUrl}`);
           resolve(null);
         };
       }
@@ -86,17 +84,13 @@ export class TierLayer extends SingleLayerBase {
       return;
     }
 
-    try {
-      const source = new ImageStatic({
+    this.layer.setSource(
+      new ImageStatic({
         url: tier.imageUrl,
         projection: EndfieldMap.projection,
         imageExtent: tier.extent,
-      });
-
-      this.layer.setSource(source);
-    } catch (error) {
-      console.error('Failed to render tier:', error);
-    }
+      })
+    );
   }
 
   public clearTier(): void {

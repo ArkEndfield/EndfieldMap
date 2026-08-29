@@ -28,51 +28,25 @@ export const ThirdPartyButton = ({
   };
 
   const handleClick = () => {
-    // if (sessionStorage.getItem('oauth_state')) {
-    //   alert.info({content: <div className="text-center">{t("oauth_in_progress")}</div>,});
-    //   return;
-    // }
-    // const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    // sessionStorage.setItem('oauth_state', state);
-    const url = getLoginUrl(label.toLowerCase()); //  + `&state=${state}`;
+    const url = getLoginUrl(label.toLowerCase());
     const width = 500;
     const height = 600;
     const left = (window.screen.width - width) / 2;
     const top = (window.screen.height - height) / 2;
 
-    // 打开登录窗口
     const loginWindow = window.open(url, label + ' Login', `width=${width},height=${height},left=${left},top=${top}`);
 
-    // if (loginWindow) {
-    //   const checkInterval = setInterval(() => {
-    //     if (loginWindow.closed) {
-    //       clearInterval(checkInterval);
-    //       console.log('oauth window closed');
-    //       sessionStorage.removeItem('oauth_state');
-    //     }
-    //   }, 200);
-    // } else {
-    //   console.log('oauth window was blocked');
-    // }
     // 监听登录结果
     const messageHandler = (event: MessageEvent) => {
       if (event.data.type === 'LOGIN_SUCCESS') {
-        // if (event.data.state !== sessionStorage.getItem('oauth_state')) {
-        //   console.log('State mismatch');
-        //   alert.info({content: <div className="text-center">{t("login_failed") + t("state_mismatch")}</div>,});
-        // } else {
-        console.log('Login success');
         service.userService.thirdparty(event.data.userInfo.token);
-        // }
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
       } else if (event.data.type === 'LOGIN_FAILED') {
-        console.log('Login failed: ', event.data.error);
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
         alert.info({ content: <div className="text-center">{t('login_failed') + t(event.data.error)}</div> });
       }
-      // sessionStorage.removeItem('oauth_state');
     };
 
     window.addEventListener('message', messageHandler);

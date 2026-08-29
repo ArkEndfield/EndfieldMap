@@ -74,7 +74,7 @@ describe('EntityInfoSheet', () => {
     expect(screen.getByText('定位')).toBeTruthy();
   });
 
-  it('locates via MapDataService.moveToEntityInstance on press（round6 归属修正的锁定）', async () => {
+  it('locates via MapDataService.moveToEntityInstance on press', async () => {
     await render(<EntityInfoSheet instance={instance} onDismiss={jest.fn()} />);
 
     fireEvent.press(screen.getByText('定位'));

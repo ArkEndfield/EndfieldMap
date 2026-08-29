@@ -20,7 +20,7 @@ const getGuide = jest.mocked(service.dataService.guideDataService.getGuide);
 
 const entity = { levelLogicId: 3 } as EntityData;
 
-// 实测 GET /api/v1/guides/:id 的形状（扁平 GuideInfo，见 round6 契约排查）。
+// GET /api/v1/guides/:id 实测返回扁平 GuideInfo（description/images/video_links）。
 const flatGuide: GuideInfo = {
   record_id: 'reckhhE2TpTDUx0BkOq',
   internal_id: 10100023120,

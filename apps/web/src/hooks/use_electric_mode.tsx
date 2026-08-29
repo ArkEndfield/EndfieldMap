@@ -94,7 +94,6 @@ export const useElectricMode = () => {
     if (currentMode) return modeTipText[currentMode];
   };
 
-  // 保持原来的逻辑，但内部使用的是动态的 isInMode
   const isInOtherElectricPoleMode = (...args: ElectricMode[]) => {
     const otherModes = differenceArray([...modes], args);
     return isInMode(...otherModes);

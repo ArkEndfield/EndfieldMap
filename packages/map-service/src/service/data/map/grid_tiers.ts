@@ -50,16 +50,7 @@ export class GridTiersDataService {
           index,
         })),
       };
-      const mapId: MapData['id'] = id.split('_')[0] ?? 'map01';
-      // if (id.startsWith('map01')) {
-      //   mapId = 'map01';
-      // } else if (id.startsWith('map02')) {
-      //   mapId = 'map02';
-      // } else if (id.startsWith('dung01')) {
-      //   mapId = 'dung01';
-      // } else {
-      //   return;
-      // }
+      const mapId: MapData['id'] = id.split('_')[0];
       this.adapterRegistry.adapter.tierController.addTier(mapId, tierData);
       this.gridTiersData[mapId].push(tierData);
     });

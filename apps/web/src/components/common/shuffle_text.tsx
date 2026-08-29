@@ -355,7 +355,6 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({
         hoverDisposerRef.current = domEventListener(ref.current, 'mouseenter', handler);
       };
 
-      // 直接触发动画（不再使用 ScrollTrigger）
       build();
       if (scrambleCharset) randomizeScrambles();
       play();

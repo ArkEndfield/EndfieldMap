@@ -79,8 +79,8 @@ describe('useOptimisticList', () => {
   });
 
   it('honours a custom getItemId after prop identity changes (latest-ref sync)', async () => {
-    // round5 将 latest-ref 的渲染期写入改为 effect 同步；此用例锁定该语义：
-    // 传入新的 getId 函数后，下一次 merge 必须按新函数取键。
+    // latest-ref 经 effect 同步：传入新的 getId 函数后，
+    // 下一次 merge 必须按新函数取键。
     type Keyed = { key: string; id: number; name: string };
     const initial = await renderHook(
       ({ getId }: { getId: (item: Keyed) => string | number }) =>
