@@ -45,6 +45,13 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | undefined>
   ]).finally(() => clearTimeout(timer));
 }
 
+// dev 构建暴露到 window 的调试手柄（console 里直接操作地图实例）。
+declare global {
+  interface Window {
+    mapService?: MapService;
+  }
+}
+
 export class MapService {
   public adapter: EndfieldMapAdapter | null = null;
   public initPromise: Promise<{ adapter: EndfieldMapAdapter } | undefined> | null = null;
@@ -52,7 +59,6 @@ export class MapService {
 
   constructor(public container: HTMLElement) {
     if (isDev) {
-      // @ts-expect-error 方便线上调试用
       window.mapService = this;
     }
   }
