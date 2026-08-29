@@ -83,6 +83,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.29.7",
     "@babel/plugin-transform-class-properties": "^7.29.7",
+    "@babel/plugin-transform-class-static-block": "^7.29.7",
     "@jest/globals": "^30.5.0",
     "@tailwindcss/postcss": "catalog:",
     "@testing-library/react-native": "^14.0.1",

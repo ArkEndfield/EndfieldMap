@@ -10,6 +10,14 @@ module.exports = {
   preset: 'jest-expo',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
+    // 工作区包的 exports 只声明了 import 条件（Metro 可解析），jest 的
+    // CJS 解析需显式映射到源码；源码在 transformIgnorePatterns 白名单内。
+    '^@endfieldmap/map-core$': '<rootDir>/../../packages/map-core/src/index.ts',
+    '^@endfieldmap/map-core/(.*)$': '<rootDir>/../../packages/map-core/src/$1',
+    '^@endfieldmap/map-service$': '<rootDir>/../../packages/map-service/src/index.ts',
+    '^@endfieldmap/map-service/(.*)$': '<rootDir>/../../packages/map-service/src/$1',
+    '^@endfieldmap/tools$': '<rootDir>/../../packages/tools/src/index.ts',
+    '^@endfieldmap/tools/(.*)$': '<rootDir>/../../packages/tools/src/$1',
   },
   transformIgnorePatterns: [
     `node_modules/(?!\\.pnpm/|${allow})`,

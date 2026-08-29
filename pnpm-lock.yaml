@@ -348,6 +348,9 @@ importers:
       '@babel/plugin-transform-class-properties':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@babel/plugin-transform-class-static-block':
+        specifier: ^7.29.7
+        version: 7.29.7(@babel/core@7.29.7)
       '@jest/globals':
         specifier: ^30.5.0
         version: 30.5.0
