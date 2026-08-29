@@ -1,7 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
 import { ElectricPoleIdKey } from '@endfieldmap/map-core/const/map';
 import type { ElectricPoleData } from '@endfieldmap/map-core/types/entity';
+import { describe, expect, it } from 'vitest';
 
 import { ElectricPoleDataManager } from './electric_pole_data_manager';
 

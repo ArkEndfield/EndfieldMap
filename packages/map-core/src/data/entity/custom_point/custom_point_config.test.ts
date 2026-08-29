@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { CustomPointKey } from '@endfieldmap/map-core/const/map';
+import { describe, expect, it } from 'vitest';
 
 import {
   customPointTypeMap,

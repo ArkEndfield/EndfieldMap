@@ -2,6 +2,8 @@ import { Feature } from 'ol';
 import type { Coordinate } from 'ol/coordinate';
 import { Point } from 'ol/geom';
 
+import { easeOutCubic } from "../easing";
+
 /**
  * 动画圆环Feature
  * 用于hover效果的动画圆环，从大到小收缩直到贴合图标边缘
@@ -82,7 +84,7 @@ export class AnimatedRingFeature {
       const fadeProgress = Math.min(fadeElapsed / this.fadeOutDuration, 1);
 
       // 使用ease-out缓动函数
-      const easedProgress = this.easeOut(fadeProgress);
+      const easedProgress = easeOutCubic(fadeProgress);
 
       // 透明度从淡出开始时的透明度线性减少到0
       this.opacity = this.fadeOutStartOpacity * (1 - fadeProgress);
@@ -97,7 +99,7 @@ export class AnimatedRingFeature {
       this.progress = Math.min(elapsed / this.duration, 1);
 
       // 使用 cubic ease-out
-      const easedProgress = this.easeOutCubic(this.progress);
+      const easedProgress = easeOutCubic(this.progress);
 
       // 计算当前半径（从起始半径收缩到目标半径）
       this.currentRadius = this.startRadius - (this.startRadius - this.targetRadius) * easedProgress;
@@ -120,20 +122,6 @@ export class AnimatedRingFeature {
       this.fadeOutStartRadius = this.currentRadius; // 记录淡出开始时的半径
       this.fadeOutStartOpacity = this.opacity; // 记录淡出开始时的透明度
     }
-  }
-
-  /**
-   * cubic ease-out
-   */
-  private easeOutCubic(t: number): number {
-    return 1 - Math.pow(1 - t, 3);
-  }
-
-  /**
-   * quadratic ease-out
-   */
-  private easeOut(t: number): number {
-    return this.easeOutCubic(t);
   }
 
   /**

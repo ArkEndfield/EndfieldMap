@@ -1,12 +1,11 @@
 import { type DialogProps } from '@endfieldmap/map-web-theme-types/dialog';
 import { cn } from '@endfieldmap/tools';
-import { AnimatePresence, motion } from 'motion/react';
-import type React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 import { EndfieldCloseIcon } from '@endfieldmap/web-components/components/icons/endfield';
 import { shortcutService } from '@endfieldmap/web-components/services/shortcut';
+import { AnimatePresence, motion } from 'motion/react';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const CloseButton: React.FC<{
   onClick?: () => void;

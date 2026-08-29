@@ -1,6 +1,6 @@
-import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Tooltip } from '@endfieldmap/web-components/components/tooltip/index';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import React from 'react';
 
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Tooltip',

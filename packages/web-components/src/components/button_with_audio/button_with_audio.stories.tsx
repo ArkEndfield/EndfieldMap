@@ -1,8 +1,7 @@
-import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import React from 'react';
 
 const meta: Meta<typeof ButtonWithAudio> = {
   title: 'Components/ButtonWithAudio',

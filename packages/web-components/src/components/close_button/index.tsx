@@ -1,5 +1,4 @@
 import { cn } from '@endfieldmap/tools';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 
 export const CloseButton = ({ onClose, className }: { onClose: () => void; className?: string }) => {

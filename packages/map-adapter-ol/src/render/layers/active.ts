@@ -10,6 +10,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type Style from 'ol/style/Style';
 
+import { easeOutCubic } from "../easing";
+
 /**
  * Active图层
  * 用于显示active状态的四角标点
@@ -132,7 +134,7 @@ export class ActiveLayer extends SingleLayerBase {
 
     if (this.moveStartCoord && this.moveEndCoord) {
       const progress = Math.min((now - this.moveStartTime) / this.moveDuration, 1);
-      const eased = this.easeOutCubic(progress);
+      const eased = easeOutCubic(progress);
 
       const x = this.moveStartCoord[0] + (this.moveEndCoord[0] - this.moveStartCoord[0]) * eased;
       const y = this.moveStartCoord[1] + (this.moveEndCoord[1] - this.moveStartCoord[1]) * eased;
@@ -148,7 +150,7 @@ export class ActiveLayer extends SingleLayerBase {
 
     if (this.isFadingOut) {
       const progress = Math.min((now - this.fadeStartTime) / this.fadeDuration, 1);
-      const eased = this.easeOutCubic(progress);
+      const eased = easeOutCubic(progress);
 
       this.fadeOpacity = 1 - progress;
       this.fadeRadiusExpand = eased * 6;
@@ -190,7 +192,7 @@ export class ActiveLayer extends SingleLayerBase {
       return this.activeFeature!.getGeometry()!.getCoordinates();
     }
     const progress = Math.min((performance.now() - this.moveStartTime) / this.moveDuration, 1);
-    const eased = this.easeOutCubic(progress);
+    const eased = easeOutCubic(progress);
     return [
       this.moveStartCoord[0] + (this.moveEndCoord[0] - this.moveStartCoord[0]) * eased,
       this.moveStartCoord[1] + (this.moveEndCoord[1] - this.moveStartCoord[1]) * eased,
@@ -222,9 +224,6 @@ export class ActiveLayer extends SingleLayerBase {
     this.activeFeature = null;
   }
 
-  private easeOutCubic(t: number): number {
-    return 1 - Math.pow(1 - t, 3);
-  }
 
   // #endregion
 

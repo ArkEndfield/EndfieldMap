@@ -31,7 +31,6 @@ describe('EntitySearchRegistry', () => {
 
   it('finds matching registrations and delegates visibility operations', () => {
     const registry = new EntitySearchRegistry();
-    const toggleVisible = vi.fn();
     const isGroupVisible = vi.fn().mockReturnValue(false);
     const matchingInstance = { id: 1, kind: 'target' } as never;
 

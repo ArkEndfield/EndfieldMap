@@ -1,6 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-
 import { JSONLoader } from '@endfieldmap/tools/utils/json_loader';
+import { describe, expect, it, vi } from 'vitest';
 
 import { LangHashService } from './lang_hash';
 

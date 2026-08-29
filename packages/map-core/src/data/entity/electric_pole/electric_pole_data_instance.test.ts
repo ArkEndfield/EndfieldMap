@@ -1,8 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
-import { ElectricPoleError } from '@endfieldmap/tools';
-
 import { ElectricPoleIdKey } from '@endfieldmap/map-core/const/map';
+import { ElectricPoleError } from '@endfieldmap/tools';
+import { describe, expect, it } from 'vitest';
 
 import { ElectricPoleDataInstance } from './electric_pole_data_instance';
 

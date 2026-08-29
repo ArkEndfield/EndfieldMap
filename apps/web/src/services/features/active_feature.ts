@@ -16,7 +16,7 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter): ()
     if (adapter.mapController.selection.isSelecting) return;
     const { instance } = event;
 
-    // 电线杆特殊处理：在操作模式下进行连接操作（移动改为 hover 拖拽，不在此处理）
+    // 电线杆特殊处理：在操作模式下进行连接操作（移动交互由 hover 拖拽承担，不在此处理）
     if (service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode) {
       const epService = service.dataService.mapDataService.electricPoleDataService;
       if (epService.isConnecting || epService.isCreating) {

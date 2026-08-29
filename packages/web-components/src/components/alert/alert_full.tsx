@@ -1,14 +1,13 @@
 import type { ZmdAlertFullProps } from '@endfieldmap/map-web-theme-types/alert';
 import { cn } from '@endfieldmap/tools';
-import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef } from 'react';
-
 import ALERT_BANNER_BG_LEFT from '@endfieldmap/web-components/assets/alert/alert_banner_bg_left.png';
 import ALERT_BANNER_BG_RIGHT from '@endfieldmap/web-components/assets/alert/alert_banner_bg_right.png';
 import DECO_COMMON_LOGO_BG from '@endfieldmap/web-components/assets/deco_common_logo_bg.png';
 import { ZmdRoundButton } from '@endfieldmap/web-components/components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@endfieldmap/web-components/components/icons/alert';
 import { ScrollArea } from '@endfieldmap/web-components/components/scroll_area';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useRef } from 'react';
 
 export const ZmdAlertFull = ({
   open,

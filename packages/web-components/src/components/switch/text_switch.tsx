@@ -1,9 +1,7 @@
 import { cn } from '@endfieldmap/tools';
-import { motion } from 'motion/react';
-
-import type { EndfieldSwitchProps } from '@endfieldmap/web-components/types/form';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
+import type { EndfieldSwitchProps } from '@endfieldmap/web-components/types/form';
+import { motion } from 'motion/react';
 
 export const EndfieldSwitch = ({ checked, onChange, disabled, className, onText = 'ON', offText='OFF' }: EndfieldSwitchProps) => {
   const changeValue = (value: boolean) => {

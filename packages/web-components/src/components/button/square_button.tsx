@@ -1,12 +1,10 @@
 import { cn } from '@endfieldmap/tools';
-import { motion } from 'motion/react';
-
 import buttonTexture from '@endfieldmap/web-components/assets/button-texture.png';
 import texMainBtnDec from '@endfieldmap/web-components/assets/tex_mainBtn_dec.png';
-import type { ZmdButtonProps } from '@endfieldmap/web-components/types/button';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 import { Deco7Dots } from '@endfieldmap/web-components/components/icons/common';
+import type { ZmdButtonProps } from '@endfieldmap/web-components/types/button';
+import { motion } from 'motion/react';
 
 export const ZmdSquareButton = ({
   type = 'primary',

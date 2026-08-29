@@ -1,7 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
-
 import { EndfieldInput } from '@endfieldmap/web-components/components/input/index';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof EndfieldInput> = {
   title: 'Components/Input',

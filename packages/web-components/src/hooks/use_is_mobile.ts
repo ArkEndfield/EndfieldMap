@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-
 import { useWindow } from '@endfieldmap/web-components/contexts/window';
+import { useEffect, useState } from 'react';
 
 export const useIsMobile = () => {
   const currentWindow = useWindow();

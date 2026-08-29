@@ -1,6 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-
 import { logger } from '@endfieldmap/tools';
+import { describe, expect, it, vi } from 'vitest';
 
 import type { Command } from './command';
 import { HistoryManager } from './history_manager';

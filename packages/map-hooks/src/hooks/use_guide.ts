@@ -23,17 +23,21 @@ export const useGuide = <T, R>(service: MapService<T, R>, id?: number) => {
   const [error, setError] = useState<Error | null>(null);
   const [refetchToken, setRefetchToken] = useState<number>(0);
 
-  useEffect(() => {
-    if (id && guideCache.has(id)) {
-      setData(guideCache.get(id));
-      setLoading(false);
-      setError(null);
-    } else if (!id) {
+  // id 变化时的状态重置走渲染期调整（React 官方的 props 变化模式），
+  // 不在 effect 里同步 setState，避免级联渲染。
+  const [prevId, setPrevId] = useState(id);
+  if (prevId !== id) {
+    setPrevId(id);
+    if (!id) {
       setData(undefined);
       setLoading(false);
       setError(null);
+    } else if (guideCache.has(id)) {
+      setData(guideCache.get(id));
+      setLoading(false);
+      setError(null);
     }
-  }, [id]);
+  }
 
   // 缓存失效订阅：当 invalidateGuideCache 被调用时，递增 token 触发下方 useEffect 重新拉取
   useEffect(() => {
@@ -67,10 +71,14 @@ export const useGuide = <T, R>(service: MapService<T, R>, id?: number) => {
       return;
     }
 
-    setLoading(true);
-    setError(null);
-
     const abortController = new AbortController();
+    // 发起取数前的置位放到微任务里：不与 effect 同步段重叠，
+    // 避免同步 setState 引发的级联渲染。
+    queueMicrotask(() => {
+      if (abortController.signal.aborted) return;
+      setLoading(true);
+      setError(null);
+    });
 
     service.dataService.guideDataService
       .getGuide(id, { signal: abortController.signal })

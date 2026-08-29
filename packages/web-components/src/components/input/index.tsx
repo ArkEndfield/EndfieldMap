@@ -1,12 +1,11 @@
-import { cn } from '@endfieldmap/tools';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import type { InputProps } from '@endfieldmap/map-web-theme-types/input';
-import { useState } from 'react';
-
+import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 import { InVisibleIcon, VisibleIcon } from '@endfieldmap/web-components/components/icons/common';
 import { useWindow } from '@endfieldmap/web-components/contexts/window';
 import { useAudio } from '@endfieldmap/web-components/hooks/use_audio';
+import { useState } from 'react';
 
 export const EndfieldInput = ({
   placeholder,

@@ -1,7 +1,6 @@
+import { EndfieldSelect } from '@endfieldmap/web-components/components/select/index';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useState } from 'react';
-
-import { EndfieldSelect } from '@endfieldmap/web-components/components/select/index';
 
 const meta: Meta<typeof EndfieldSelect> = {
   title: 'Components/Select',

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+
 import { LogoLoading } from '.';
 
 const meta: Meta<typeof LogoLoading> = {
@@ -21,7 +22,7 @@ export const Default: Story = {
     className: 'text-[#81807f] text-6xl',
     glowColor: '#ffffff',
   },
-  render: (args: any) => (
+  render: (args) => (
     <div
       style={{ background: '#1e1c1c', padding: '40px', borderRadius: '8px', display: 'flex', justifyContent: 'center' }}
     >
@@ -35,7 +36,7 @@ export const CustomColor: Story = {
     className: 'text-[#4d4d4d] text-[100px]',
     glowColor: '#ffcc00',
   },
-  render: (args: any) => (
+  render: (args) => (
     <div
       style={{ background: '#2a2728', padding: '40px', borderRadius: '8px', display: 'flex', justifyContent: 'center' }}
     >

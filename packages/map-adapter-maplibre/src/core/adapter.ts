@@ -7,7 +7,7 @@ import { HoverFeatureController } from '@endfieldmap/map-adapter-maplibre/contro
 import { MapController } from '@endfieldmap/map-adapter-maplibre/controller/map_controller';
 import { TierController } from '@endfieldmap/map-adapter-maplibre/controller/tier_controller';
 import type { MapLibreAdapterConfig } from '@endfieldmap/map-adapter-maplibre/types';
-import type { CustomPointDataInstance, DataInstance, ElectricPoleDataInstance, EntityDataInstance, MapData, MapEventEmitter } from '@endfieldmap/map-core';
+import type { MapData, MapEventEmitter } from '@endfieldmap/map-core';
 import { EndfieldMapAsset, EndfieldMapEmitter, EntitySearchRegistry } from '@endfieldmap/map-core';
 import { logger } from '@endfieldmap/tools';
 import { action, observable } from 'mobx';

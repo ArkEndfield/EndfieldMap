@@ -1,8 +1,7 @@
 import { cn } from '@endfieldmap/tools';
+import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 import { AnimatePresence, motion } from 'motion/react';
 import type { ButtonHTMLAttributes } from 'react';
-
-import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 
 export interface CheckboxToggleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   checked: boolean;

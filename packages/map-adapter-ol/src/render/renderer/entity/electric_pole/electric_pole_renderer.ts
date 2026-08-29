@@ -23,6 +23,8 @@ import { LineString, Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 
+import { easeOutCubic } from "../../../easing";
+
 /**
  * 电线杆渲染器配置
  */
@@ -95,10 +97,6 @@ export interface RemoveFeaturesOptions {
 
 /** 连线动画时长（毫秒） */
 const CONNECTION_ANIMATION_DURATION_MS = 280;
-
-function easeOutCubic(t: number): number {
-  return 1 - (1 - t) ** 3;
-}
 
 /**
  * 电线杆渲染器（Canvas 点层 + VectorLayer 连线层）

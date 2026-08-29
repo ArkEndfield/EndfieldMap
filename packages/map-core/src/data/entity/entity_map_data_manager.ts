@@ -190,7 +190,7 @@ export class EntityMapDataManager {
     const stats: EntityInfoStats[] = [];
 
     for (const manager of this.currentGroupManagers) {
-      // 单趟统计：原先 filter + 两次 filter 共三趟，实体量上万时纯属浪费
+      // 单趟统计三个计数：实体量上万，多趟遍历的开销不可接受
       let count = 0;
       let markedCount = 0;
       let selectedCount = 0;

@@ -1,10 +1,8 @@
 import { cn } from '@endfieldmap/tools';
-import { forwardRef } from 'react';
-
 import buttonTexture from '@endfieldmap/web-components/assets/button-texture.png';
-import type { EndfieldFormButtonProps } from '@endfieldmap/web-components/types/form';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
+import type { EndfieldFormButtonProps } from '@endfieldmap/web-components/types/form';
+import { forwardRef } from 'react';
 
 export const EndfieldFormButton = forwardRef<HTMLButtonElement, EndfieldFormButtonProps>((props, ref) => {
   const { children, className, disabled, left, right, variant = 'default', ...rest } = props;

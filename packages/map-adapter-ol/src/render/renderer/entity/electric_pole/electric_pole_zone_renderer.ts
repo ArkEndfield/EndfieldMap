@@ -13,6 +13,8 @@ import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 
+import { easeOutCubic } from "../../../easing";
+
 /**
  * 按设备类型与是否高亮缓存区域样式，避免每次渲染都重新创建
  * key: `${deviceKey}-${highlighted}`
@@ -53,10 +55,6 @@ export interface RemoveZoneOptions {
 
 /** Zone 半径展开动画时长（毫秒） */
 const ZONE_ANIMATION_DURATION_MS = 320;
-
-function easeOutCubic(t: number): number {
-  return 1 - (1 - t) ** 3;
-}
 
 /**
  * Zone 数据

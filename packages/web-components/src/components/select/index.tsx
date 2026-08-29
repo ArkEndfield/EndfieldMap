@@ -1,14 +1,13 @@
-import { cn, domEventListener } from '@endfieldmap/tools';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
-import { AnimatePresence, motion } from 'motion/react';
-import { forwardRef, useEffect, useRef, useState } from 'react';
-
+import { cn, domEventListener } from '@endfieldmap/tools';
 import type {
   EndfieldSelectItem,
   EndfieldSelectOptionProps,
   EndfieldSelectProps,
   EndfieldSelectTriggerProps,
 } from '@endfieldmap/web-components/types/form';
+import { AnimatePresence, motion } from 'motion/react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import { ButtonWithAudio } from '../button_with_audio';
 import { ScrollArea } from '../scroll_area';

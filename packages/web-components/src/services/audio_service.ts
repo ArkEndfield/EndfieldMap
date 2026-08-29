@@ -1,5 +1,5 @@
-import { logger } from '@endfieldmap/tools';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
+import { logger } from '@endfieldmap/tools';
 import { action, observable, runInAction } from 'mobx';
 
 import { AUDIO_CONFIG, AUDIO_SETTINGS } from './audio_config';

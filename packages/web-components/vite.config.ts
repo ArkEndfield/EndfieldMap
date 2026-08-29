@@ -1,7 +1,7 @@
-import { copyFileSync, mkdirSync, readdirSync } from 'fs';
-import path from 'path';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import { copyFileSync, mkdirSync, readdirSync } from 'fs';
+import path from 'path';
 import dts from 'unplugin-dts/vite';
 import { defineConfig } from 'vite';
 

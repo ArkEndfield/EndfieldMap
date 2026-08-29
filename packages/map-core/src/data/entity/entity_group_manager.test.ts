@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import type { EntityData, EntityInfoData } from '@endfieldmap/map-core/types/entity';
+import { describe, expect, it } from 'vitest';
 
 import { EntityGroupManager } from './entity_group_manager';
 

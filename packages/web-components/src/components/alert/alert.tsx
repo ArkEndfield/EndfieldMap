@@ -1,13 +1,12 @@
 import type { ZmdAlertProps } from '@endfieldmap/map-web-theme-types';
 import { cn } from '@endfieldmap/tools';
-import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef } from 'react';
-
-import ALERT_BG from '@endfieldmap/web-components/assets/alert/alert_bg.png';
 import ALERT_BANNER_BG_LEFT from '@endfieldmap/web-components/assets/alert/alert_banner_bg_left.png';
 import ALERT_BANNER_BG_RIGHT from '@endfieldmap/web-components/assets/alert/alert_banner_bg_right.png';
+import ALERT_BG from '@endfieldmap/web-components/assets/alert/alert_bg.png';
 import { ZmdRoundButton } from '@endfieldmap/web-components/components/button/round_button';
 import { ZmdAlertCloseIcon, ZmdAlertTickIcon } from '@endfieldmap/web-components/components/icons/alert';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useRef } from 'react';
 
 const GLITCH_OPACITY = [0, 1, 1, 0, 0, 1, 1, 0, 0, 1];
 const GLITCH_TIMES = [0, 0.48, 0.82, 0.85, 0.87, 0.9, 0.92, 0.95, 0.97, 1];

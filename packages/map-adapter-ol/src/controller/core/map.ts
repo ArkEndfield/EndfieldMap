@@ -3,6 +3,7 @@ import { EndfieldMap } from '@endfieldmap/map-adapter-ol/render/olmap';
 import type { OLMapEventPayloads } from '@endfieldmap/map-adapter-ol/types/event';
 import type { EndfieldMapAsset, EndfieldMapEmitter, MapConfig, MapCoordinate, MapDataJson } from '@endfieldmap/map-core';
 import { MAP_EVENT, MapDataManager } from '@endfieldmap/map-core';
+import type { IMapView } from '@endfieldmap/map-core/interfaces/map_view';
 
 export interface MapControllerConfig {
   mapConfig: Omit<MapConfig, 'mapImageUrl'>;
@@ -16,6 +17,11 @@ export class MapController {
   public mapRenderer: MapRender;
   public dataManager: MapDataManager;
   private emitter: EndfieldMapEmitter<OLMapEventPayloads>;
+
+  /** IMapController.view：ol View 与 IMapView 方法集结构兼容。 */
+  get view(): IMapView | undefined {
+    return this.olMapRenderer.view as unknown as IMapView;
+  }
 
   constructor(config: MapControllerConfig) {
     const { mapConfig } = config;

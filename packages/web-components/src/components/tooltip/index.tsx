@@ -1,13 +1,12 @@
 import type { Position, TooltipProps } from '@endfieldmap/map-web-theme-types';
 import { cn } from '@endfieldmap/tools';
 import { domEventListener } from '@endfieldmap/tools';
-import { AnimatePresence, motion } from 'motion/react';
-import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-
 import { usePortalContainer } from '@endfieldmap/web-components/contexts/portal';
 import { useWindow } from '@endfieldmap/web-components/contexts/window';
 import { useIsMobile } from '@endfieldmap/web-components/hooks/use_is_mobile';
+import { AnimatePresence, motion } from 'motion/react';
+import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const TOOLTIP_OFFSET = 8;
 

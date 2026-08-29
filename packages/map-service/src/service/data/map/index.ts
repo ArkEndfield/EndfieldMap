@@ -1,4 +1,5 @@
 import type { EntityInfoDataJson, EntityJsonDataList, MapDataJson } from '@endfieldmap/map-core';
+import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import { AdapterRegistry } from '@endfieldmap/map-service/service/adapter_registry';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
 import { CustomPointDataService } from '@endfieldmap/map-service/service/data/map/custom_point';
@@ -11,7 +12,6 @@ import { PresetService } from '@endfieldmap/map-service/service/preset_service';
 import { serviceEmitter } from '@endfieldmap/map-service/service/service_emitter';
 import { SERVICE_EVENT } from '@endfieldmap/map-service/service/service_emitter';
 import type { UserService } from '@endfieldmap/map-service/service/user';
-import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import { type JSONLoader, logger } from '@endfieldmap/tools';
 
 export interface MapDataServiceDeps<T, R> {
@@ -179,7 +179,7 @@ export class MapDataService<T, R> {
         this.customPointDataService.changeVisibility(true);
       } else {
         // ordinary entity
-        const entityKey = (instance as any).entityDataIdKey;
+        const entityKey = 'entityDataIdKey' in instance ? instance.entityDataIdKey : undefined;
         if (entityKey) {
           this.entityDataService.setEntityGroupVisibility(instance.mapId, entityKey, true);
         }
@@ -188,14 +188,13 @@ export class MapDataService<T, R> {
 
     // 自动激活特征
     if (autoSetActive && adapter) {
-      adapter.activeFeatureController.setActiveFeature(instance as any);
+      adapter.activeFeatureController.setActiveFeature(instance);
     }
 
     // 移动地图
     const center = instance.coordinates;
     if (center && adapter) {
-      // @ts-ignore
-      const view = adapter.mapController.olMapRenderer?.view;
+      const view = adapter.mapController.view;
       if (view) {
         if (zoom !== undefined) {
           this.mapStateDataService.setMapZoom(targetMapId, zoom);

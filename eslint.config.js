@@ -9,7 +9,7 @@ import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescrip
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default defineConfig([
-  globalIgnores(['**/dist/**', '**/node_modules/**']),
+  globalIgnores(['**/dist/**', '**/node_modules/**', '**/src/@types/resources.d.ts']),
   reactHooks.configs.flat['recommended-latest'],
   {
     files: ['**/*.{ts,tsx}'],

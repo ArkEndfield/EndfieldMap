@@ -1,3 +1,4 @@
+import type { EntitySearchRegistry } from '@endfieldmap/map-core/data/entity_search_registry';
 import type { EndfieldMapEmitter } from '@endfieldmap/map-core/event/emitter';
 import type {
   IActiveFeatureController,
@@ -9,7 +10,6 @@ import type {
   IMapController,
   ITierController,
 } from '@endfieldmap/map-core/interfaces/controllers';
-import type { EntitySearchRegistry } from '@endfieldmap/map-core/data/entity_search_registry';
 import type { MapEventEmitter } from '@endfieldmap/map-core/types/event';
 import type { MapData } from '@endfieldmap/map-core/types/map';
 

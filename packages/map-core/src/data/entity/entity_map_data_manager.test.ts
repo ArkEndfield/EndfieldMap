@@ -1,7 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
 import { MarkedFeatureFilterMode } from '@endfieldmap/map-core/const/map';
 import type { EntityInfoDataJson, EntityJsonDataList } from '@endfieldmap/map-core/types/entity';
+import { describe, expect, it } from 'vitest';
 
 import { EntityMapDataManager } from './entity_map_data_manager';
 

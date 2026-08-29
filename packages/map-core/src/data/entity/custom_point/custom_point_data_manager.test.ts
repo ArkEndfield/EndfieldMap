@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import type { CustomPointData } from '@endfieldmap/map-core/types/entity';
+import { describe, expect, it } from 'vitest';
 
 import { CustomPointDataManager } from './custom_point_data_manager';
 

@@ -1,9 +1,7 @@
 import { cn } from '@endfieldmap/tools';
-import { motion } from 'motion/react';
-
-import type { EndfieldToggleProps } from '@endfieldmap/web-components/types/form';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
+import type { EndfieldToggleProps } from '@endfieldmap/web-components/types/form';
+import { motion } from 'motion/react';
 
 export const EndfieldToggle = <T extends React.Key>({
   options,

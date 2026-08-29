@@ -1,5 +1,4 @@
 import { cn } from '@endfieldmap/tools';
-
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 import { Deco7Dots } from '@endfieldmap/web-components/components/icons/common';
 

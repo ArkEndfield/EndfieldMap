@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import type { BaseEntityDataWithInfo } from '@endfieldmap/map-core/types/entity';
+import { describe, expect, it } from 'vitest';
 
 import { BaseDataInstance } from './data_instance';
 import { BaseDataManager } from './data_manager';

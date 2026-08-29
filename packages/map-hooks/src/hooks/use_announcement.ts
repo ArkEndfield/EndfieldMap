@@ -101,6 +101,10 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
     }
   }, [service]);
 
+  const setRead = useCallback((id: number) => {
+    readAnnouncementLocalStorage.value = [...readAnnouncementLocalStorage.value, id];
+  }, []);
+
   const loadDetail = useCallback(
     async (id: number) => {
       if (detailAbortControllerRef.current) {
@@ -133,20 +137,15 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
         }
       }
     },
-    [service]
+    [service, setRead]
   );
 
-  // 仅加载列表，不自动预览最新公告详情。
-  // 之前这里会 loadDetail(result[0].id)，而 loadDetail 会 setRead，
-  // 导致最新公告在用户还没点开时就被标记为已读 —— 最新的不显示 "new"、
-  // 图标也不出小红点。已读改为仅在用户点击具体公告时触发（见 loadDetail）。
+  // 仅加载列表，不自动预览最新公告详情：loadDetail 会 setRead，自动预览
+  // 会让最新公告在用户点开前就被标已读——不显示 "new"、图标也不出小红点。
+  // 已读只在用户点击具体公告时触发（见 loadDetail）。
   const refreshList = useCallback(async () => {
     return loadList();
   }, [loadList]);
-
-  const setRead = useCallback((id: number) => {
-    readAnnouncementLocalStorage.value = [...readAnnouncementLocalStorage.value, id];
-  }, []);
 
   // 将当前列表全部记为"已自动提示过"。只影响自动弹窗去重，不影响已读/红点。
   const markPrompted = useCallback(() => {
@@ -157,7 +156,8 @@ export const useAnnouncement = <T, R>(service: MapService<T, R>) => {
 
   // Initial load
   useEffect(() => {
-    refreshList();
+    // 首拉放到微任务，避免与 effect 同步段重叠的级联渲染。
+    queueMicrotask(() => void refreshList());
 
     return () => {
       // Cleanup on unmount

@@ -1,7 +1,6 @@
-import { type ComponentProps, forwardRef, type MouseEvent } from 'react';
-
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { useAudio } from '@endfieldmap/web-components/hooks/use_audio';
+import { type ComponentProps, forwardRef, type MouseEvent } from 'react';
 
 export interface ButtonWithAudioProps extends ComponentProps<'button'> {
   soundType?: SoundType;

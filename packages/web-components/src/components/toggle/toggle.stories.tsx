@@ -1,8 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import React, { useState } from 'react';
-
 import { CheckboxToggle } from '@endfieldmap/web-components/components/toggle/checkbox_toggle';
 import { EndfieldToggle } from '@endfieldmap/web-components/components/toggle/index';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import React, { useState } from 'react';
 
 const meta: Meta = {
   title: 'Components/Toggle',
