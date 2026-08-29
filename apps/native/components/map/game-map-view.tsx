@@ -1,17 +1,17 @@
-import { lngLatToPixel, pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
 import type { MapLibreAdapter } from '@endfieldmap/map-adapter-maplibre';
+import { lngLatToPixel, pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
+import type { CustomPointDataInstance,ElectricPoleDataInstance, EntityDataInstance } from '@endfieldmap/map-core';
 import { MAP_EVENT } from '@endfieldmap/map-core';
-import type { EntityDataInstance, ElectricPoleDataInstance, CustomPointDataInstance } from '@endfieldmap/map-core';
-import { Camera, Logger, MapView, setAccessToken, type CameraRef } from '@maplibre/maplibre-react-native';
+import { Camera, type CameraRef,Logger, MapView, setAccessToken } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 
 import { AreaNameLayer } from './area-name-layer';
 import { CustomPointMarkerLayer } from './custom-point-layer';
 import { ElectricPoleMarkerLayer } from './electric-pole-layer';
-import { EntityMarkerLayer, type CameraPositionRef } from './entity-marker-layer';
+import { type CameraPositionRef,EntityMarkerLayer } from './entity-marker-layer';
 
 setAccessToken(null);
 Logger.setLogLevel('warning');

@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
 import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
-import { observer } from 'mobx-react-lite';
-
 import { LayerSwitchIcon } from '@endfieldmap/web-components';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
 import { useAdapter } from '@/hooks/use_adapter';
 import uiManager from '@/services/ui_manager';
 

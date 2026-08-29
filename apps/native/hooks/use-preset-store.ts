@@ -38,7 +38,9 @@ export function useOptimisticList<T extends { id: string | number }>(
   const [operations, setOperations] = useState<Map<string | number, OptimisticOperation<T>>>(() => new Map());
 
   const getItemIdRef = useRef(getItemId);
-  getItemIdRef.current = getItemId;
+  useEffect(() => {
+    getItemIdRef.current = getItemId;
+  }, [getItemId]);
 
   const apply = useCallback((id: string | number, updates: Partial<T>) => {
     setOperations((prev) => {

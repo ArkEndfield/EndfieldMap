@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { AllStorageSetting } from '@/components/features/settings/items/data/all';

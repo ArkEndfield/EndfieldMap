@@ -1,17 +1,15 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { customPointTypes } from '@endfieldmap/map-core';
+import { cn } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Image, Pressable, ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useTranslation } from 'react-i18next';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
-import { cn } from '@endfieldmap/tools';
 
 export const PointTypeSelector: React.FC = observer(() => {
-  const { t } = useTranslation('common');
   const adapter = useAdapter();
   const entityImageBase = adapter.asset.entityImage;
   const selectedType = service.dataService.mapDataService.customPointDataService.selectedPointType;

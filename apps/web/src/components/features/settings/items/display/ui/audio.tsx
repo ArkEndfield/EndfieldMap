@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next';
 import { EndfieldSwitch } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';
@@ -16,7 +16,12 @@ export const AudioSetting = observer(() => {
       title={t('settings:display.layout.audio.title')}
       description={t('settings:display.layout.audio.description')}
     >
-      <EndfieldSwitch checked={audioEnabled} onChange={() => uiManager.toggleAudio()} onText={t('common:yes')} offText={t('common:no')} />
+      <EndfieldSwitch
+        checked={audioEnabled}
+        onChange={() => uiManager.toggleAudio()}
+        onText={t('common:yes')}
+        offText={t('common:no')}
+      />
     </SettingItem>
   );
 });

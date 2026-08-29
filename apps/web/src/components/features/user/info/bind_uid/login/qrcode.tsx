@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { ScanInfo, ScanStatusResponse } from '@/@types/game_role';
 import { service } from '@/services';
@@ -49,7 +49,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
     // 防止旧的轮询继续执行
     if (scanInfo.scan_id !== currentScanIdRef.current) return;
 
-    let result: ScanStatusResponse | null = null;
+    let result: ScanStatusResponse | null;
     try {
       result = await service.serverService.apiGet<ScanStatusResponse>(
         `/user/game-roles/scan/status?scan_id=${encodeURIComponent(scanInfo.scan_id)}`
@@ -131,13 +131,16 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
     }
   }, [clearPollTimer, onLoadingChange, t]);
 
-  // 监听外部错误信息，用于重置二维码状态
-  useEffect(() => {
+  // 外部错误信息变化时重置二维码状态。渲染期对比前值调整，避免 effect 内
+  // 同步 setState 的级联渲染。
+  const [prevErrorMessage, setPrevErrorMessage] = useState(errorMessage);
+  if (prevErrorMessage !== errorMessage) {
+    setPrevErrorMessage(errorMessage);
     if (errorMessage) {
       setError(errorMessage);
       setStatus('expired');
     }
-  }, [errorMessage]);
+  }
 
   // 轮询逻辑 - 启动首次轮询
   useEffect(() => {
@@ -159,7 +162,7 @@ export const QRCodeLogin = ({ onLogin, onLoadingChange, errorMessage }: QRCodeLo
   // 初始化生成二维码
   useEffect(() => {
     isMountedRef.current = true;
-    generateQRCode();
+    queueMicrotask(() => void generateQRCode());
 
     return () => {
       isMountedRef.current = false;

@@ -13,7 +13,7 @@ export interface AnnouncementItemProps {
 
 export const AnnouncementItem = ({ item, active, isRead, onClick }: AnnouncementItemProps) => {
   const time = new Date(item.published_at * 1000);
-  const dateTimeFormat1 = new Intl.DateTimeFormat(i18next.language, {month: "short"})
+  const dateTimeFormat1 = new Intl.DateTimeFormat(i18next.language, { month: 'short' });
   const month = dateTimeFormat1.format(time);
   const day = time.getDate();
 

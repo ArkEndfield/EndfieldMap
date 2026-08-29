@@ -1,15 +1,15 @@
-import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Stack, useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text } from 'react-native';
 
-import { StyledTextInput } from '@/components/ui/text-input';
 import { alertApi } from '@/components/ui/alert';
+import { StyledTextInput } from '@/components/ui/text-input';
+import { type ChangePasswordFormData,changePasswordSchema } from '@/const/schema/auth';
 import { service } from '@/services/map-service';
 import { catchErrorWithTip, onFormInvalid } from '@/utils/error-handler';
-import { changePasswordSchema, type ChangePasswordFormData } from '@/const/schema/auth';
 
 export default function ChangePasswordScreen() {
   const { t } = useTranslation(['header', 'error']);

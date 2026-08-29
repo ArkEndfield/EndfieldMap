@@ -1,13 +1,13 @@
 import type { BindType } from '@endfieldmap/map-service';
-import { useTranslation } from 'react-i18next';
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
+import { KeyIcon, ScanIcon } from '@endfieldmap/web-components';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { GameRole } from '@/@types/game_role';
-import { KeyIcon, ScanIcon } from '@endfieldmap/web-components';
 import { QRCodeLogin } from '@/components/features/user/info/bind_uid/login/qrcode';
 import { TokenLogin } from '@/components/features/user/info/bind_uid/login/token';
 import { service } from '@/services';

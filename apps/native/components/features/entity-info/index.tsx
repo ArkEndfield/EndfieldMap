@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
 
 import { LeftContent } from './left-content';

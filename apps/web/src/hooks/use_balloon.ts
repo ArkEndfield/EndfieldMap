@@ -51,7 +51,7 @@ export const useBalloon = ({ levelList: levelListProp }: { levelList?: string[] 
   );
 
   useEffect(() => {
-    if (levelList.length > 0) selectLevel(levelList[0]);
+    if (levelList.length > 0) queueMicrotask(() => selectLevel(levelList[0]));
   }, [levelList, selectLevel]);
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import { cn } from '@endfieldmap/tools';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Animated, Pressable, ScrollView, Text, useAnimatedValue, useWindowDimensions, View } from 'react-native';
 
 import { AboutPage } from '@/components/features/settings/items/about';
 import { DataSettings } from '@/components/features/settings/items/data';
@@ -32,7 +32,7 @@ export default function SettingsScreen() {
   const { width } = useWindowDimensions();
   const params = useLocalSearchParams<{ tab?: string; item?: string }>();
   const scrollRef = useRef<ScrollView>(null);
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const scrollX = useAnimatedValue(0);
   const tabLabels = useTabLabels();
 
   const initialIdx = params.tab

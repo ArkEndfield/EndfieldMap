@@ -1,8 +1,8 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { CurvedTabBar } from '@/components/ui/tab-bar/curved-tab-bar';
 import { IconSymbol } from '@/components/ui/icon';
+import { CurvedTabBar } from '@/components/ui/tab-bar/curved-tab-bar';
 
 import { TAB_ITEMS } from './tabs.config';
 

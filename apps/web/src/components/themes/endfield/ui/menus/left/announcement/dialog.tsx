@@ -47,7 +47,10 @@ const AnnouncementsDialogInner = <T extends React.Key>({
       }}
     >
       <motion.div
-        className={cn('w-4xl max-h-full bg-white relative flex flex-col origin-center rounded-sm overflow-hidden', isMobile ? 'h-full' : 'h-120')}
+        className={cn(
+          'w-4xl max-h-full bg-white relative flex flex-col origin-center rounded-sm overflow-hidden',
+          isMobile ? 'h-full' : 'h-120'
+        )}
         initial={{ scaleY: 0, opacity: 0 }}
         animate={{ scaleY: 1, opacity: 1, transition: { duration: 0.15, ease: 'easeOut' } }}
         exit={{ scaleY: 0, opacity: 0, transition: { duration: 0.1, ease: 'easeIn' } }}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 interface UsePiPOptions {
   onOpen?: (window: Window) => void;
@@ -7,11 +7,9 @@ interface UsePiPOptions {
 
 export function usePiP({ onOpen, onClose }: UsePiPOptions = {}) {
   const [pipWindow, setPipWindow] = useState<Window | null>(null);
-  const [isSupported, setIsSupported] = useState(false);
-
-  useEffect(() => {
-    setIsSupported('documentPictureInPicture' in window && !!window.documentPictureInPicture);
-  }, []);
+  // 环境能力探测结果在一次会话内不变，直接在渲染期求值。
+  const isSupported =
+    typeof window !== 'undefined' && 'documentPictureInPicture' in window && !!window.documentPictureInPicture;
 
   const requestPiP = useCallback(
     async (width: number, height: number) => {

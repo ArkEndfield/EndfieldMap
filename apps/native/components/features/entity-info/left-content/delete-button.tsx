@@ -2,11 +2,11 @@ import type { DataInstance } from '@endfieldmap/map-core';
 import { CustomPointKey, ElectricPoleDataInstance, ElectricPoleKey } from '@endfieldmap/map-core';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { observer } from 'mobx-react-lite';
-import { Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Pressable } from 'react-native';
 
 import { alertApi } from '@/components/ui/alert/alert-api';
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
 
 interface DeleteButtonProps {

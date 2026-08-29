@@ -1,6 +1,6 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { cn } from '@endfieldmap/tools';
-import { useIsMobile, WindowProvider,ZmdSquareButton } from '@endfieldmap/web-components';
+import { useIsMobile, WindowProvider, ZmdSquareButton } from '@endfieldmap/web-components';
 import { ChevronUp } from '@endfieldmap/web-components';
 import { ShareSelectBar } from '@themes/endfield/ui/share_select';
 import { observer } from 'mobx-react-lite';
@@ -160,9 +160,7 @@ function EndfieldMap() {
       ></div>
 
       {/* 控制组件 */}
-      {adapter && service.dataService.mapDataService && (
-        <Controllers adapter={adapter} />
-      )}
+      {adapter && service.dataService.mapDataService && <Controllers adapter={adapter} />}
     </div>
   );
 

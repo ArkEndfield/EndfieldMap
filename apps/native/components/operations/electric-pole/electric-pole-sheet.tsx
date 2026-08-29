@@ -1,16 +1,16 @@
+import { useElectricPolePresetPanel } from '@endfieldmap/map-hooks';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
-import { Dimensions, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Dimensions, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 
 import { PoleOperationButtons } from '@/components/operations/electric-pole/pole-operation-buttons';
 import { PresetList } from '@/components/operations/preset/preset-list';
 import { PresetSelectBar } from '@/components/operations/preset/preset-select-bar';
 import { PresetToolbar } from '@/components/operations/preset/preset-toolbar';
-import { useAdapter } from '@/context/adapter';
-import { useElectricPolePresetPanel } from '@endfieldmap/map-hooks';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
 
 export interface ElectricPoleSheetRef {

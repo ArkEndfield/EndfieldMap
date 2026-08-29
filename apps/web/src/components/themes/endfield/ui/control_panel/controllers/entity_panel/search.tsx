@@ -1,6 +1,5 @@
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
-
 import { CloseIcon } from '@endfieldmap/web-components';
 
 export interface SearchProps {

@@ -1,4 +1,9 @@
-import type { CustomPointNodeSchemaType, CustomPointPreset, ElectricPoleNodeSchemaType, ElectricPolePreset } from '@endfieldmap/map-service';
+import type {
+  CustomPointNodeSchemaType,
+  CustomPointPreset,
+  ElectricPoleNodeSchemaType,
+  ElectricPolePreset,
+} from '@endfieldmap/map-service';
 import { downloadData, logger, StorageManager } from '@endfieldmap/tools';
 
 import { alert } from '@/components/common/alert/alert_api';

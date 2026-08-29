@@ -1,7 +1,7 @@
 import { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
-import { useTranslation } from 'react-i18next';
 import { useIsMobile } from '@endfieldmap/web-components';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { MapService } from '@/services/map';
 

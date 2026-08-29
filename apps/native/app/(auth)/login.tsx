@@ -1,4 +1,9 @@
+import { cn } from '@endfieldmap/tools';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Stack, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
+import { Controller,useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -9,17 +14,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 
-import { StyledTextInput } from '@/components/ui/text-input';
 import { alertApi } from '@/components/ui/alert';
+import { StyledTextInput } from '@/components/ui/text-input';
+import { type LoginFormData, loginSchema, type RegisterFormData,registerSchema } from '@/const/schema/auth';
 import { service } from '@/services/map-service';
 import { catchErrorWithTip, onFormInvalid } from '@/utils/error-handler';
-import { cn } from '@endfieldmap/tools';
-import { loginSchema, registerSchema, type LoginFormData, type RegisterFormData } from '@/const/schema/auth';
 
 type AuthTab = 'login' | 'register';
 
@@ -49,9 +49,9 @@ export default function LoginScreen() {
           <TabSwitcher tab={tab} onTabChange={setTab} />
 
           {tab === 'login' ? (
-            <LoginForm onSwitchToRegister={() => setTab('register')} />
+            <LoginForm />
           ) : (
-            <RegisterForm onSwitchToLogin={() => setTab('login')} />
+            <RegisterForm />
           )}
 
           <ThirdPartySection />
@@ -86,7 +86,7 @@ function TabSwitcher({ tab, onTabChange }: { tab: AuthTab; onTabChange: (t: Auth
   );
 }
 
-function LoginForm({ onSwitchToRegister }: { onSwitchToRegister: () => void }) {
+function LoginForm() {
   const { t } = useTranslation(['header', 'error']);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -185,7 +185,7 @@ function LoginForm({ onSwitchToRegister }: { onSwitchToRegister: () => void }) {
   );
 }
 
-function RegisterForm({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
+function RegisterForm() {
   const { t } = useTranslation(['header', 'error']);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -325,7 +325,7 @@ function AgreementSheet({ onClose }: { onClose: () => void }) {
 function ThirdPartySection() {
   const { t } = useTranslation('header');
 
-  const handleThirdParty = useCallback((provider: string) => {
+  const handleThirdParty = useCallback((_provider: string) => {
     alertApi.info({
       content: t('user.third_party_unsupported', {
         defaultValue: '移动端暂不支持第三方登录',

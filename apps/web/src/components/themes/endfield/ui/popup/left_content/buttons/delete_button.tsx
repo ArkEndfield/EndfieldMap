@@ -24,7 +24,10 @@ export const DeleteButton: React.FC<DeleteButtonProps> = observer(({ entity }) =
         entity.id
       );
     } else if (isElectricPole) {
-      service.dataService.mapDataService.electricPoleDataService.deleteElectricPole(entity as ElectricPoleDataInstance, true);
+      service.dataService.mapDataService.electricPoleDataService.deleteElectricPole(
+        entity as ElectricPoleDataInstance,
+        true
+      );
     }
     // 关闭弹窗
     adapter.activeFeatureController.clearActiveFeature?.();

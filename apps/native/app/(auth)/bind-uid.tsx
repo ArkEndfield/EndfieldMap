@@ -1,19 +1,19 @@
+import { cn } from '@endfieldmap/tools';
+import { Stack, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Pressable,
   Text,
   View,
 } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
 import QRCode from 'react-native-qrcode-svg';
 
-import { StyledTextInput } from '@/components/ui/text-input';
 import { alertApi } from '@/components/ui/alert';
+import { StyledTextInput } from '@/components/ui/text-input';
 import { service } from '@/services/map-service';
 import { catchErrorWithTip } from '@/utils/error-handler';
-import { cn } from '@endfieldmap/tools';
 
 interface GameRole {
   uid: string;
@@ -124,7 +124,10 @@ function QRCodeLogin({ onRolesReady }: { onRolesReady: (roles: GameRole[]) => vo
 
   useEffect(() => {
     mountedRef.current = true;
-    generateQR();
+    queueMicrotask(() => {
+      if (!mountedRef.current) return;
+      void generateQR();
+    });
     return () => {
       mountedRef.current = false;
       stopPolling();
@@ -174,7 +177,7 @@ function QRCodeLogin({ onRolesReady }: { onRolesReady: (roles: GameRole[]) => vo
     }, 2000);
 
     return stopPolling;
-  }, [status, scanId, stopPolling, onRolesReady]);
+  }, [status, scanId, stopPolling, onRolesReady, t]);
 
   return (
     <View className="items-center py-6">

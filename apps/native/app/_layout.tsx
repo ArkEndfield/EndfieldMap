@@ -1,12 +1,12 @@
 import '../global.css';
+import 'react-native-reanimated';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Platform } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
+import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import 'react-native-reanimated';
 
 import { AlertProvider } from '@/components/ui/alert';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -22,6 +22,7 @@ const cardScreenOptions = {
   }),
 };
 
+// eslint-disable-next-line react-refresh/only-export-components -- expo-router 布局协议要求的具名导出。
 export const unstable_settings = {
   anchor: '(tabs)',
 };

@@ -1,12 +1,12 @@
 import type { UidInfo, UserInfo } from '@endfieldmap/map-service';
 import { SyncStatus } from '@endfieldmap/map-service';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ZmdSquareButton } from '@endfieldmap/web-components';
+import { CheckCircleIcon, SyncIcon } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 
-import { CheckCircleIcon, SyncIcon } from '@endfieldmap/web-components';
 import { service } from '@/services';
 
 // ==================== 用户头像组件 ====================

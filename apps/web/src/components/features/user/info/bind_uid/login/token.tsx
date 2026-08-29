@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
 

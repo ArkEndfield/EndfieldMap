@@ -1,11 +1,11 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
-import { CustomPointDataInstance, CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
+import { CustomPointDataInstance, customPointTypes } from '@endfieldmap/map-core';
 import { cn } from '@endfieldmap/tools';
 import React, { useCallback } from 'react';
-import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
 
 interface CustomPointSelectProps {

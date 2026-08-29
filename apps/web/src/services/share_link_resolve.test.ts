@@ -5,7 +5,13 @@ import { buildMapsByKey, resolveSelectPlacement } from './share_link_resolve';
 // map01: kHome | map02: kA, kB | map05: kC
 const mapData = new Map<string, Map<string, unknown>>([
   ['map01', new Map([['kHome', {}]])],
-  ['map02', new Map([['kA', {}], ['kB', {}]])],
+  [
+    'map02',
+    new Map([
+      ['kA', {}],
+      ['kB', {}],
+    ]),
+  ],
   ['map05', new Map([['kC', {}]])],
 ]);
 
@@ -65,7 +71,13 @@ describe('resolveSelectPlacement', () => {
     const tie = buildMapsByKey(
       new Map<string, Map<string, unknown>>([
         ['map02', new Map([['kB', {}]])],
-        ['map05', new Map([['kB', {}], ['kC', {}]])],
+        [
+          'map05',
+          new Map([
+            ['kB', {}],
+            ['kC', {}],
+          ]),
+        ],
       ])
     );
     const r = resolveSelectPlacement(tie, ['kB', 'kC'], 'map01', false);

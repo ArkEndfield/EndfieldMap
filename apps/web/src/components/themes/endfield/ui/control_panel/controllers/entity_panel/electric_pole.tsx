@@ -52,7 +52,10 @@ const ElectricPoleList: React.FC = observer(() => {
       const count = groupInstances.length;
 
       // 当前地图不可用的设备类型（如暗管仅 map02）：无数据时不展示分组，有历史数据仍展示便于管理
-      if (count === 0 && !isElectricPoleDeviceAvailableOnMap(deviceKey, adapter.mapController.dataManager.currentMapId)) {
+      if (
+        count === 0 &&
+        !isElectricPoleDeviceAvailableOnMap(deviceKey, adapter.mapController.dataManager.currentMapId)
+      ) {
         return;
       }
 

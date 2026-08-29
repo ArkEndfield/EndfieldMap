@@ -2,7 +2,7 @@ import '@/components/common/swiper/index.css';
 
 import type { SwiperData } from '@endfieldmap/map-service';
 import { cn } from '@endfieldmap/tools';
-import { useIsMobile,ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { useIsMobile, ZmdRoundIconButton } from '@endfieldmap/web-components';
 import { ChevronUp, ChevronUpTriangle } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';

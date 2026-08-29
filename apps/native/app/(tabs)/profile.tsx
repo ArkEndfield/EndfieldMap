@@ -1,16 +1,16 @@
+import { cn } from '@endfieldmap/tools';
+import { useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { UserAvatar } from '@/components/features/user/user-avatar';
 import { SyncBadge } from '@/components/features/user/sync-badge';
 import { UidListItem } from '@/components/features/user/uid-list-item';
+import { UserAvatar } from '@/components/features/user/user-avatar';
 import { alertApi } from '@/components/ui/alert';
 import { service } from '@/services/map-service';
 import { catchErrorWithTip } from '@/utils/error-handler';
-import { cn } from '@endfieldmap/tools';
 
 export default observer(function ProfileScreen() {
   const { isLogin } = service.userService.auth;

@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next';
 import { CheckboxToggle } from '@endfieldmap/web-components';
+import { useTranslation } from 'react-i18next';
 
 interface PresetSelectBarProps {
   total: number;

@@ -1,6 +1,7 @@
 import { cn } from '@endfieldmap/tools';
-import { alert } from '@/components/common/alert/alert_api';
 import { useTranslation } from 'react-i18next';
+
+import { alert } from '@/components/common/alert/alert_api';
 import { service } from '@/services';
 
 export const ThirdPartyButton = ({
@@ -21,8 +22,7 @@ export const ThirdPartyButton = ({
         'https://account.bilibili.com/h5/account-h5/auth/oauth?client_id=aadbd763480d47cb&callback=skip&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
       discord:
         'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&scope=identify&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fdiscord%2Fcallback',
-      github:
-        'https://github.com/login/oauth/authorize?client_id=Ov23li62rQCYlLUffuSz',
+      github: 'https://github.com/login/oauth/authorize?client_id=Ov23li62rQCYlLUffuSz',
     };
     return urls[provider as keyof typeof urls];
   };
@@ -34,7 +34,7 @@ export const ThirdPartyButton = ({
     // }
     // const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
     // sessionStorage.setItem('oauth_state', state);
-    const url = getLoginUrl(label.toLowerCase());//  + `&state=${state}`;
+    const url = getLoginUrl(label.toLowerCase()); //  + `&state=${state}`;
     const width = 500;
     const height = 600;
     const left = (window.screen.width - width) / 2;
@@ -61,8 +61,8 @@ export const ThirdPartyButton = ({
         //   console.log('State mismatch');
         //   alert.info({content: <div className="text-center">{t("login_failed") + t("state_mismatch")}</div>,});
         // } else {
-          console.log('Login success');
-          service.userService.thirdparty(event.data.userInfo.token);
+        console.log('Login success');
+        service.userService.thirdparty(event.data.userInfo.token);
         // }
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
@@ -70,7 +70,7 @@ export const ThirdPartyButton = ({
         console.log('Login failed: ', event.data.error);
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
-        alert.info({content: <div className="text-center">{t("login_failed") + t(event.data.error)}</div>,});
+        alert.info({ content: <div className="text-center">{t('login_failed') + t(event.data.error)}</div> });
       }
       // sessionStorage.removeItem('oauth_state');
     };

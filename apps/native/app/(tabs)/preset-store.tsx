@@ -3,7 +3,7 @@ import { cn } from '@endfieldmap/tools';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Animated, Pressable, ScrollView, Text, useAnimatedValue, useWindowDimensions, View } from 'react-native';
 
 import { CustomPointStore } from '@/components/features/preset-store/custom-point-store';
 import { ElectricPoleStore } from '@/components/features/preset-store/electric-pole-store';
@@ -20,7 +20,7 @@ export default function PresetStoreScreen() {
   const { width } = useWindowDimensions();
   const router = useRouter();
   const scrollRef = useRef<ScrollView>(null);
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const scrollX = useAnimatedValue(0);
   const [activeIdx, setActiveIdx] = useState(0);
 
   const activeTab = TAB_CONFIG[activeIdx].key;

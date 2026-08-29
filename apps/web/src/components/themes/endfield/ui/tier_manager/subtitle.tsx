@@ -1,9 +1,8 @@
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
-import type { ButtonHTMLAttributes } from 'react';
-
 import { LayerIcon } from '@endfieldmap/web-components';
+import type { ButtonHTMLAttributes } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface SubTitleProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;

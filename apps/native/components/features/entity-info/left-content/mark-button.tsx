@@ -2,8 +2,8 @@ import type { DataInstance } from '@endfieldmap/map-core';
 import { cn } from '@endfieldmap/tools';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { observer } from 'mobx-react-lite';
-import { Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Pressable } from 'react-native';
 
 import { service } from '@/services/map-service';
 

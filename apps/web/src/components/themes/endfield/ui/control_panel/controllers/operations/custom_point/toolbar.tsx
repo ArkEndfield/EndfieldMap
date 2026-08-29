@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next';
+import { EditAddIcon, EditDeleteIcon } from '@endfieldmap/web-components';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
-import { EditAddIcon, EditDeleteIcon } from '@endfieldmap/web-components';
 import { useCustomPointMode } from '@/hooks/use_custom_point_mode';
 
 export const CustomPointManagerToolbar = observer(() => {

@@ -4,27 +4,34 @@ import type {
   PresetStoreDetailData,
   PresetType,
 } from '@endfieldmap/map-service';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import {
   Logo,
   LogoLoading,
   ScrollArea,
+  useIsMobile,
   ZmdRoundButton,
   ZmdRoundIconButton,
-  useIsMobile,
 } from '@endfieldmap/web-components';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ArrowLeftIcon, ImportIcon, UserIcon, ViewAltIcon } from '@endfieldmap/web-components';
 import { AnimatePresence, motion } from 'motion/react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
-import { ArrowLeftIcon, ImportIcon, UserIcon, ViewAltIcon } from '@endfieldmap/web-components';
 import { MapPreview } from '@/components/common/map-preview';
 import { service } from '@/services';
 import { catchErrorWithTip } from '@/utils/handler';
 
 const TopDeco = ({ className }: { className?: string }) => (
-  <svg width="1em" height="1em" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+  <svg
+    width="1em"
+    height="1em"
+    viewBox="0 0 120 120"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
     <line x1="102.5" y1="0" x2="102.5" y2="105.464" stroke="currentColor" strokeWidth="35" />
     <line x1="12.374" y1="12.315" x2="107.416" y2="107.357" stroke="currentColor" strokeWidth="35" />
     <line x1="17.5" y1="83.941" x2="17.5" y2="120" stroke="currentColor" strokeWidth="35" />
@@ -247,7 +254,13 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
                 <span className="text-[#555] truncate">{detail.user_id}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <svg className="text-xs text-[#888] shrink-0" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
+                <svg
+                  className="text-xs text-[#888] shrink-0"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
                   <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
                 </svg>
                 <span className="text-[#555]">{formatDate(detail.created_at)}</span>
@@ -275,9 +288,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
                   className={cn(
                     'inline-flex items-center px-2 py-0.5 text-xs',
                     'bg-white/60 border',
-                    type === 'electric_pole'
-                      ? 'text-[#E8C832] border-[#E8C832]/30'
-                      : 'text-blue-600 border-blue-300/40'
+                    type === 'electric_pole' ? 'text-[#E8C832] border-[#E8C832]/30' : 'text-blue-600 border-blue-300/40'
                   )}
                 >
                   {type === 'electric_pole'
@@ -312,11 +323,7 @@ export const PresetStoreDetail = ({ id, onBack }: PresetStoreDetailProps) => {
           </ZmdRoundButton>
           <div className="flex items-center gap-2">
             {isMobile && previewMapData && previewPreset && (
-              <ZmdRoundButton
-                type="default"
-                icon={<ViewAltIcon />}
-                onClick={() => setPreviewOpen(true)}
-              >
+              <ZmdRoundButton type="default" icon={<ViewAltIcon />} onClick={() => setPreviewOpen(true)}>
                 {t('sidebar:preset_store.preview', { defaultValue: '预览' })}
               </ZmdRoundButton>
             )}

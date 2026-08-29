@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 
 export const ZoomControls = observer(function ZoomControls() {
   const adapter = useAdapter();

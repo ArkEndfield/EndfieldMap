@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next';
 import { EndfieldToggle, useIsMobile } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import { SettingItem } from '@/components/common/settings/components/setting_item';
 import { SETTINGS_KEYS } from '@/const/settings';

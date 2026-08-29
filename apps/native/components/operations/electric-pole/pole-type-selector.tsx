@@ -1,14 +1,14 @@
 import type { ElectricPoleDeviceKey } from '@endfieldmap/map-core';
 import { ELECTRIC_POLE_DEVICE_CONFIGS } from '@endfieldmap/map-core';
+import { cn } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useTranslation } from 'react-i18next';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
-import { cn } from '@endfieldmap/tools';
 
 const deviceKeys: ElectricPoleDeviceKey[] = ['pole', 'repeater', 'zipline_80', 'zipline_110'];
 

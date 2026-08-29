@@ -1,9 +1,6 @@
 import { logger } from '@endfieldmap/tools';
 import { ShareIcon } from '@endfieldmap/web-components';
-import {
-  ShareSelectAlertContent,
-  type ShareSelectAlertItem,
-} from '@themes/endfield/ui/share_select/alert_content';
+import { ShareSelectAlertContent, type ShareSelectAlertItem } from '@themes/endfield/ui/share_select/alert_content';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { service } from '@/services';

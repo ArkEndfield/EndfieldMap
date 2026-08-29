@@ -9,8 +9,15 @@ import { service } from '@/services';
 
 const GuideLightbox = lazy(() => import('@/components/common/guide/lightbox'));
 
-
-export const Guide = ({ entity, onVideoLinkChange, onUnRefreshableChange }: { entity: EntityData | CustomPointData | ElectricPoleData, onVideoLinkChange: (videoLink: string) => void, onUnRefreshableChange: (unRefreshable: boolean) => void }) => {
+export const Guide = ({
+  entity,
+  onVideoLinkChange,
+  onUnRefreshableChange,
+}: {
+  entity: EntityData | CustomPointData | ElectricPoleData;
+  onVideoLinkChange: (videoLink: string) => void;
+  onUnRefreshableChange: (unRefreshable: boolean) => void;
+}) => {
   const { data: guide, loading, error } = useGuide(service, entity.levelLogicId);
   const [showImage, setShowImage] = useState(false);
   const [lightboxLoaded, setLightboxLoaded] = useState(false);
@@ -59,11 +66,7 @@ export const Guide = ({ entity, onVideoLinkChange, onUnRefreshableChange }: { en
       {/* 图片竖向排列 */}
       <div className="flex flex-col gap-2">
         {guide?.images?.map((src, idx) => (
-          <div
-            key={idx}
-            className="group relative p-1 cursor-pointer"
-            onClick={() => handleImageClick(idx)}
-          >
+          <div key={idx} className="group relative p-1 cursor-pointer" onClick={() => handleImageClick(idx)}>
             {/* Top-left corner accent */}
             <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 transition-colors duration-200 border-white group-hover:border-yellow-400" />
             {/* Bottom-right corner accent */}

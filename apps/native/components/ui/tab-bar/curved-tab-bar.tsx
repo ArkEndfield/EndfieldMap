@@ -12,6 +12,7 @@ import Animated, {
 import Svg, { Path } from 'react-native-svg';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+
 import { TabBarGlass } from './tab-bar-glass';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);

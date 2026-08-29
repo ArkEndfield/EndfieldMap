@@ -1,14 +1,14 @@
 import type { DataInstance } from '@endfieldmap/map-core';
 import { CustomPointKey, ElectricPoleKey } from '@endfieldmap/map-core';
+import { cn } from '@endfieldmap/tools';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Image, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Image, Pressable, Text, View } from 'react-native';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
-import { cn } from '@endfieldmap/tools';
 
 interface EntityInfoSheetProps {
   instance: DataInstance | null;

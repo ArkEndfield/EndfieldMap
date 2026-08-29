@@ -1,6 +1,6 @@
-import { MmkvStorageAdapter } from '@endfieldmap/storage-mmkv';
-import { getRxStorageExpoSQLite } from '@endfieldmap/storage-expo-sqlite';
 import { MapService } from '@endfieldmap/map-service';
+import { getRxStorageExpoSQLite } from '@endfieldmap/storage-expo-sqlite';
+import { MmkvStorageAdapter } from '@endfieldmap/storage-mmkv';
 import { registerStorageAdapter } from '@endfieldmap/tools';
 import * as SQLite from 'expo-sqlite';
 import { initReactI18next } from 'react-i18next';

@@ -1,7 +1,7 @@
 import type { DealedRewardItem } from '@endfieldmap/map-service';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Text, View } from 'react-native';
 
 import { service } from '@/services/map-service';
 

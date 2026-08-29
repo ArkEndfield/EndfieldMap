@@ -1,11 +1,11 @@
+import { Stack, useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native';
 
-import { StyledTextInput } from '@/components/ui/text-input';
 import { alertApi } from '@/components/ui/alert';
+import { StyledTextInput } from '@/components/ui/text-input';
 import { service } from '@/services/map-service';
 import { catchErrorWithTip } from '@/utils/error-handler';
 

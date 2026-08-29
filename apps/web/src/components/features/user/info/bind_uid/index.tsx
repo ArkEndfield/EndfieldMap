@@ -1,8 +1,8 @@
 import type { BindType } from '@endfieldmap/map-service';
-import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { GameRole } from '@/@types/game_role';
 import { alert } from '@/components/common/alert/alert_api';

@@ -1,8 +1,8 @@
 import { SyncStatus } from '@endfieldmap/map-service';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Text, View } from 'react-native';
 
 import { service } from '@/services/map-service';
 

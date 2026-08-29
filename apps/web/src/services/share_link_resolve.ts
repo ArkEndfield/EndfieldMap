@@ -17,9 +17,7 @@ export interface SelectResolution {
 }
 
 /** Invert mapData (mapId -> key -> group) into key -> mapIds[]. */
-export function buildMapsByKey(
-  mapData: ReadonlyMap<string, ReadonlyMap<string, unknown>>
-): Map<string, string[]> {
+export function buildMapsByKey(mapData: ReadonlyMap<string, ReadonlyMap<string, unknown>>): Map<string, string[]> {
   const result = new Map<string, string[]>();
   for (const [mapId, groups] of mapData) {
     for (const key of groups.keys()) {

@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next';
 import { LocalStorageDB } from '@endfieldmap/tools';
 import { EndfieldFormButton } from '@endfieldmap/web-components';
+import { useTranslation } from 'react-i18next';
 
 import { alert } from '@/components/common/alert/alert_api';
 import { Loading } from '@/components/common/settings/components/loading';

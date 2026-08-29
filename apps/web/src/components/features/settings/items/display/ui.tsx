@@ -1,6 +1,6 @@
+import { LayoutIcon } from '@endfieldmap/web-components';
 import { useTranslation } from 'react-i18next';
 
-import { LayoutIcon } from '@endfieldmap/web-components';
 import { SettingsZone } from '@/components/common/settings/components/settings_zone';
 import { AudioSetting } from '@/components/features/settings/items/display/ui/audio';
 import { DarkModeSetting } from '@/components/features/settings/items/display/ui/dark-mode';

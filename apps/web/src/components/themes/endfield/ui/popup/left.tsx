@@ -93,7 +93,10 @@ const LeftContent = observer(({ className }: { className?: string }) => {
           transition={{ duration: 0.15 }}
           className={cn('relative z-1 flex flex-col h-full', className)}
         >
-          <PopupHeader onClose={() => adapter.activeFeatureController.clearActiveFeature?.()} start={unRefreshable && <UnrefreshableTip />}>
+          <PopupHeader
+            onClose={() => adapter.activeFeatureController.clearActiveFeature?.()}
+            start={unRefreshable && <UnrefreshableTip />}
+          >
             <PlayVideoButton videoLink={videoLink} />
             <MarkButton entity={activeFeature} />
             <ShareButton entity={activeFeature} />
@@ -104,7 +107,13 @@ const LeftContent = observer(({ className }: { className?: string }) => {
           <div className="flex-1 min-h-0 relative">
             <ScrollArea className="h-full">
               <div className="pb-12">
-                {!isCustomPoint && !isElectricPole && <Guide entity={activeFeature.data} onVideoLinkChange={setVideoLink} onUnRefreshableChange={setUnRefreshable} />}
+                {!isCustomPoint && !isElectricPole && (
+                  <Guide
+                    entity={activeFeature.data}
+                    onVideoLinkChange={setVideoLink}
+                    onUnRefreshableChange={setUnRefreshable}
+                  />
+                )}
 
                 {/* 自定义标点类型选择 */}
                 {isCustomPoint && (

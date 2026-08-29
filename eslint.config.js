@@ -43,5 +43,16 @@ export default defineConfig([
       'simple-import-sort/exports': 'warn',
     },
   },
+  {
+    // apps/*：observer() 包裹的组件导出（mobx）与 expo-router 要求的
+    // unstable_settings 常量导出是各自平台的正当形态，规则按平台语义放行。
+    files: ['apps/native/**/*.{ts,tsx}', 'apps/web/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': [
+        'error',
+        { allowConstantExport: true, extraHOCs: ['observer'] },
+      ],
+    },
+  },
   eslintConfigPrettier,
 ]);

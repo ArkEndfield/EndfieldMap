@@ -1,5 +1,5 @@
 import { cn } from '@endfieldmap/tools';
-import { ButtonWithAudio,Tooltip } from '@endfieldmap/web-components';
+import { ButtonWithAudio, Tooltip } from '@endfieldmap/web-components';
 import type React from 'react';
 
 export interface OperationConfig {

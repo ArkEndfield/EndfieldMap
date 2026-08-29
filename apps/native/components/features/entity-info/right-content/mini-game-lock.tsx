@@ -2,8 +2,8 @@ import type { Grid, ParsedLevel } from '@endfieldmap/map-service';
 import { cn } from '@endfieldmap/tools';
 import { logger } from '@endfieldmap/tools';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { service } from '@/services/map-service';
 
@@ -54,7 +54,7 @@ function useDeltaRobot({ levelList }: { levelList: string[] }) {
   );
 
   useEffect(() => {
-    if (levelList.length > 0) selectLevel(levelList[0]);
+    if (levelList.length > 0) queueMicrotask(() => selectLevel(levelList[0]));
   }, [levelList, selectLevel]);
 
   const handleSolve = useCallback(() => {

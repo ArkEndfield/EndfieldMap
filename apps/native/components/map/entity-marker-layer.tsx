@@ -1,18 +1,19 @@
 import { pixelToLngLat } from '@endfieldmap/map-adapter-maplibre';
 import type { EntityDataInstance } from '@endfieldmap/map-core';
 import {
+  type CameraRef,
   CircleLayer,
   Images,
   ShapeSource,
   SymbolLayer,
-  type CameraRef,
 } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image } from 'react-native';
 
-import { useAdapter } from '@/context/adapter';
-import { MAP_SYMBOL_FONT_STACK } from './area-name-layer';
+import { useAdapter } from '@/context/adapter-context';
+
+import { MAP_SYMBOL_FONT_STACK } from './map-symbol-fonts';
 
 const ICON_TARGET_PX = 20;
 const BG_RADIUS = ICON_TARGET_PX / 2 + 3;

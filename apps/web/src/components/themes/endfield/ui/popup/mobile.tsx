@@ -1,10 +1,10 @@
-import { useTranslation } from 'react-i18next';
 import { EndfieldSwitch, ScrollArea } from '@endfieldmap/web-components';
 import { BottomSheet } from '@themes/endfield/components/bottom_sheet';
 import { LeftContent } from '@themes/endfield/ui/popup/left';
 import { observer } from 'mobx-react-lite';
 import { motion } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { getRightComponents } from '@/components/common/popup/sub/items';
 import { useAdapter } from '@/hooks/use_adapter';

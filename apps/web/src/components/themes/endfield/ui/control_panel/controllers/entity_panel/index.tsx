@@ -1,5 +1,4 @@
 import type { Category, EntityInfoStats } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
 import { debounce } from '@endfieldmap/tools';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
@@ -7,6 +6,7 @@ import { Search } from '@themes/endfield/ui/control_panel/controllers/entity_pan
 import { observer } from 'mobx-react-lite';
 import { Reorder, useDragControls } from 'motion/react';
 import { type ReactNode, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { AreaFilter } from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/area_filter';
 import CustomPointList from '@/components/themes/endfield/ui/control_panel/controllers/entity_panel/custom_point';
@@ -155,7 +155,11 @@ const EntityPanel = observer(() => {
 
   // 大分类组头右键菜单：entities 为该分类（经搜索过滤后）的全部点位实例，带 category 以启用上移/下移
   const handleCategoryContextMenu = (categoryInfo: CategoryInfo, e: React.MouseEvent<HTMLButtonElement>) => {
-    openGroupContextMenu(new Set(categoryInfo.entities.map((entity) => entity.entityDataIdKey)), e, categoryInfo.category);
+    openGroupContextMenu(
+      new Set(categoryInfo.entities.map((entity) => entity.entityDataIdKey)),
+      e,
+      categoryInfo.category
+    );
   };
 
   // 切换分类显示/隐藏

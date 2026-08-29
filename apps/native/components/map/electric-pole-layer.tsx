@@ -5,22 +5,23 @@ import {
   MAP_EVENT,
 } from '@endfieldmap/map-core';
 import {
+  type CameraRef,
   CircleLayer,
+  type Expression,
   Images,
   LineLayer,
   ShapeSource,
   SymbolLayer,
-  type CameraRef,
 } from '@maplibre/maplibre-react-native';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image } from 'react-native';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
 
-import { MAP_SYMBOL_FONT_STACK } from './area-name-layer';
 import type { CameraPositionRef } from './entity-marker-layer';
+import { MAP_SYMBOL_FONT_STACK } from './map-symbol-fonts';
 
 const ICON_TARGET_PX = 20;
 const BG_RADIUS = ICON_TARGET_PX / 2 + 3;
@@ -46,13 +47,13 @@ const CONNECTION_WIDTH = 2;
  * MapLibre Native restricts ['zoom'] to top-level interpolate/step inputs,
  * so we pre-compute stops at every integer zoom level. With base-2 exponential
  * interpolation between adjacent stops that each double, intermediate values
- * are exact: v0 + (2^t - 1) * (2*v0 - v0) = v0 * 2^t. TODO: 去 any
+ * are exact: v0 + (2^t - 1) * (2*v0 - v0) = v0 * 2^t.
  */
-const ZONE_RADIUS_EXPR = ['interpolate', ['exponential', 2], ['zoom']] as any;
+const ZONE_RADIUS_STOPS: (number | Expression)[] = [];
 for (let z = 0; z <= 20; z++) {
-  ZONE_RADIUS_EXPR.push(z);
-  ZONE_RADIUS_EXPR.push(['*', 2 ** (z + 1), ['get', 'zoneRadius']]);
+  ZONE_RADIUS_STOPS.push(z, ['*', 2 ** (z + 1), ['get', 'zoneRadius']]);
 }
+const ZONE_RADIUS_EXPR: Expression = ['interpolate', ['exponential', 2], ['zoom'], ...ZONE_RADIUS_STOPS];
 
 /** Convert ELECTRIC_POLE_DEVICE_CONFIGS rgba fillColor to hex + opacity */
 const DEVICE_ZONE_STYLES: Record<string, { fillHex: string; fillOpacity: number; strokeHex: string }> = {};

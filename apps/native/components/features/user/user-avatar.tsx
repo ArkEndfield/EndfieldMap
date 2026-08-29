@@ -1,6 +1,6 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { Image, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 interface UserAvatarProps {
   uri?: string;

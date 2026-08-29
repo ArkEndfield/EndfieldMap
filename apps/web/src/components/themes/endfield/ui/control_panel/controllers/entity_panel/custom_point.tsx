@@ -5,10 +5,10 @@ import {
   getCustomPointEntityInfo,
   isValidCustomPointType,
 } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
 import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import EntityItem from '@themes/endfield/ui/control_panel/controllers/entity_panel/item';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';

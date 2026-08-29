@@ -1,12 +1,12 @@
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio, useIsMobile } from '@endfieldmap/web-components';
+import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import Counter from '@/components/common/count_up';
 import { Tooltip } from '@/components/common/tooltip';
-import EntityGroup from '@themes/endfield/ui/control_panel/controllers/entity_panel/group';
 import { useAdapter } from '@/hooks/use_adapter';
 import { contextMenuManager } from '@/services/context_menu_manager';
 
@@ -139,7 +139,9 @@ export const AreaFilter = observer(() => {
                     }}
                   />
                   <div className="flex flex-1 relative z-1 items-center justify-between overflow-hidden">
-                    <div className="flex-1 ml-3 mr-1 min-w-0 text-left truncate text-[0.9rem] font-bold">{displayName}</div>
+                    <div className="flex-1 ml-3 mr-1 min-w-0 text-left truncate text-[0.9rem] font-bold">
+                      {displayName}
+                    </div>
 
                     <div
                       className={cn(
@@ -157,7 +159,10 @@ export const AreaFilter = observer(() => {
                           height: '1em',
                         }}
                       >
-                        <span className="absolute left-0 bottom-0 origin-bottom-left" style={{ transform: 'scale(0.7)' }}>
+                        <span
+                          className="absolute left-0 bottom-0 origin-bottom-left"
+                          style={{ transform: 'scale(0.7)' }}
+                        >
                           {stats.count}
                         </span>
                       </span>

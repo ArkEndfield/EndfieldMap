@@ -3,7 +3,7 @@ import { modes } from '@endfieldmap/map-service/const/electric_pole';
 import { differenceArray } from '@endfieldmap/tools';
 
 import { alertApi } from '@/components/ui/alert/alert-api';
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
 
 type ModeTipTextKey = 'create' | 'connect' | 'delete' | 'connect.delete';

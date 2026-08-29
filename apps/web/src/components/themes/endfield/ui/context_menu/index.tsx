@@ -93,7 +93,7 @@ const ContextMenu: React.FC = observer(() => {
           className={cn(
             'fixed z-[9999] min-w-44 py-1',
             'bg-[#1e1e1e]/95 backdrop-blur-sm',
-            'border border-[#4a4a2a] shadow-[0_4px_24px_rgba(0,0,0,0.6)]',
+            'border border-[#4a4a2a] shadow-[0_4px_24px_rgba(0,0,0,0.6)]'
           )}
         >
           {items.map((item) => (
@@ -101,7 +101,7 @@ const ContextMenu: React.FC = observer(() => {
               key={item.id}
               className={cn(
                 'w-full flex items-center gap-2 px-3 py-2 text-sm text-white/90',
-                'hover:bg-[#fcee21]/10 hover:text-[#fcee21] transition-colors',
+                'hover:bg-[#fcee21]/10 hover:text-[#fcee21] transition-colors'
               )}
               onClick={() => {
                 item.action(context);

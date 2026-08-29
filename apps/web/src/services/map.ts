@@ -13,9 +13,9 @@ import { isDev } from '@/services/env';
 import { initActiveFeatureEventListeners } from '@/services/features/active_feature';
 import { initHoverFeatureEventListeners } from '@/services/features/hover_feature';
 import { initGroupContextMenu } from '@/services/group_context_menu';
-import { applyShareLinkParams, initShareLink } from '@/services/share_link';
 import { loadingManager } from '@/services/loading';
 import { initServiceEventBridge } from '@/services/service_event_bridge';
+import { applyShareLinkParams, initShareLink } from '@/services/share_link';
 import uiManager from '@/services/ui_manager';
 
 const assets = service.assetService.url;
@@ -47,8 +47,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | undefined>
 
 export class MapService {
   public adapter: EndfieldMapAdapter | null = null;
-  public initPromise: Promise<{ adapter: EndfieldMapAdapter } | undefined> | null =
-    null;
+  public initPromise: Promise<{ adapter: EndfieldMapAdapter } | undefined> | null = null;
   private eventDisposers: Array<() => void> = [];
 
   constructor(public container: HTMLElement) {
@@ -85,10 +84,7 @@ export class MapService {
       if (service.userService.auth.isLogin) {
         try {
           await withTimeout(service.userService.updateUidList(false), SYNC_TIMEOUT_MS);
-          await withTimeout(
-            service.userService.data.syncService.awaitInitialReplication(),
-            SYNC_TIMEOUT_MS,
-          );
+          await withTimeout(service.userService.data.syncService.awaitInitialReplication(), SYNC_TIMEOUT_MS);
         } catch (syncError) {
           logger.warn('[MapService] Sync init failed, continuing with cached data', syncError);
         }

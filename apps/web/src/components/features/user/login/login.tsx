@@ -1,11 +1,11 @@
-import { useTranslation } from 'react-i18next';
 import { CheckboxToggle, ZmdSquareButton } from '@endfieldmap/web-components';
+import { TickCircleIcon } from '@endfieldmap/web-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-import { TickCircleIcon } from '@endfieldmap/web-components';
 import { UserInput } from '@/components/common/user/input';
 import { type LoginFormData, loginSchema } from '@/const/schema/auth';
 import { service } from '@/services';

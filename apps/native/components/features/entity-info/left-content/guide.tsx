@@ -41,9 +41,11 @@ export function Guide({ entity }: GuideProps) {
   }, [entity.levelLogicId]);
 
   useEffect(() => {
-    setGuide(null);
-    fetchGuide().then((data) => {
-      if (data) setGuide(data);
+    queueMicrotask(() => {
+      setGuide(null);
+      void fetchGuide().then((data) => {
+        if (data) setGuide(data);
+      });
     });
   }, [fetchGuide]);
 

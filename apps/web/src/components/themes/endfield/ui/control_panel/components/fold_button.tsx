@@ -1,8 +1,7 @@
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
-
 import { ChevronUpTriangle } from '@endfieldmap/web-components';
+import { useTranslation } from 'react-i18next';
 
 export const FoldButton = ({
   open,

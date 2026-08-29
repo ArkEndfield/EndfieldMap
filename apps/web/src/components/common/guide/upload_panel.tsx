@@ -1,12 +1,7 @@
 import type { CustomPointData, ElectricPoleData, EntityData } from '@endfieldmap/map-core';
 import { invalidateGuideCache } from '@endfieldmap/map-hooks';
 import type { GuideInfo } from '@endfieldmap/map-service';
-import {
-  type CreateGuideReq,
-  GuideApiError,
-  GuideErrorCode,
-  type UpdateGuideReq,
-} from '@endfieldmap/map-service';
+import { type CreateGuideReq, GuideApiError, GuideErrorCode, type UpdateGuideReq } from '@endfieldmap/map-service';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
@@ -27,8 +22,7 @@ const IMAGE_MAX_COUNT = 5;
 const ACCEPTED_MIME = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'] as const;
 type AcceptedMime = (typeof ACCEPTED_MIME)[number];
 
-const isAcceptedMime = (mime: string): mime is AcceptedMime =>
-  (ACCEPTED_MIME as readonly string[]).includes(mime);
+const isAcceptedMime = (mime: string): mime is AcceptedMime => (ACCEPTED_MIME as readonly string[]).includes(mime);
 
 interface PendingImage {
   /** 客户端临时 key，仅用于 React list 去重 */

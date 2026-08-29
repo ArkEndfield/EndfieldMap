@@ -6,9 +6,7 @@ import { EndfieldUIManager } from '@/components/themes/endfield/ui/ui_manager';
 const EndfieldThemeRootProvider = ({ children }: ThemeRootContextProps) => {
   const uiManager = EndfieldUIManager.getInstance();
   return (
-    <EndfieldThemeUIManagerContext.Provider value={{ uiManager }}>
-      {children}
-    </EndfieldThemeUIManagerContext.Provider>
+    <EndfieldThemeUIManagerContext.Provider value={{ uiManager }}>{children}</EndfieldThemeUIManagerContext.Provider>
   );
 };
 

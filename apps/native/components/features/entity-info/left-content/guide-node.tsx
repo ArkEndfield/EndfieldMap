@@ -1,6 +1,6 @@
 import type { GuideImageNode, GuideNodeType, GuideTextNode } from '@endfieldmap/map-service';
-import type { TextStyle } from 'react-native';
 import React from 'react';
+import type { TextStyle } from 'react-native';
 import { Image, Pressable, Text } from 'react-native';
 
 function TextNode({ node }: { node: GuideTextNode }) {

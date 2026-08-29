@@ -1,13 +1,13 @@
 import type { MapData } from '@endfieldmap/map-core';
+import { cn } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
-import { cn } from '@endfieldmap/tools';
 
 function translateMapName(
   map: MapData,

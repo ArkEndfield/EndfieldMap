@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
 import { Dialog } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface AgreementDialogProps {
   open: boolean;

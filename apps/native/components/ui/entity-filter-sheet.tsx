@@ -1,10 +1,10 @@
 import {
-  type ElectricPoleDeviceKey,
-  ELECTRIC_POLE_DEVICE_CONFIGS,
   customPointTypes,
+  ELECTRIC_POLE_DEVICE_CONFIGS,
+  type ElectricPoleDeviceKey,
+  EntityInfoStats,
   getCustomPointEntityInfo,
   getElectricPoleDeviceConfig,
-  EntityInfoStats,
 } from '@endfieldmap/map-core';
 import {
   CustomPointKey,
@@ -13,14 +13,15 @@ import {
   MarkedFeatureFilterMode,
   NoteKey,
 } from '@endfieldmap/map-core';
+import { cn } from '@endfieldmap/tools';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { observer } from 'mobx-react-lite';
 import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
-import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useAdapter } from '@/context/adapter';
+import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-native';
+
+import { useAdapter } from '@/context/adapter-context';
 import { service } from '@/services/map-service';
-import { cn } from '@endfieldmap/tools';
 
 export interface EntityFilterSheetRef {
   present: () => void;

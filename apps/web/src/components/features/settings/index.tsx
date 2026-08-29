@@ -1,11 +1,11 @@
 import { cn } from '@endfieldmap/tools';
 import { CloseButton, shortcutService, useIsMobile, useWindow } from '@endfieldmap/web-components';
+import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@endfieldmap/web-components';
 import { ContentWrapper } from '@/components/common/settings/components/content_wrapper';
 import { BgDeco } from '@/components/common/settings/components/deco';
 import { type TabItem, TabList } from '@/components/common/settings/tabs';
@@ -124,7 +124,6 @@ const Settings: React.FC<SettingsPageProps> = observer(({ open, onClose }) => {
     </motion.dialog>
   );
 });
-
 
 export const SettingsPage: React.FC = observer(() => {
   const open = uiManager.settingsShown;

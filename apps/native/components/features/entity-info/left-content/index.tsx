@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 
-import { useAdapter } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { useActiveFeatureName } from '@/hooks/use-active-feature-name';
 
 import { CustomPointSelect } from './custom-point-select';

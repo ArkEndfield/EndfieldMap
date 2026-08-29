@@ -1,5 +1,4 @@
 import { cn } from '@endfieldmap/tools';
-
 import { DecoTriTriangle } from '@endfieldmap/web-components';
 
 export interface SubPopupTitleProps {

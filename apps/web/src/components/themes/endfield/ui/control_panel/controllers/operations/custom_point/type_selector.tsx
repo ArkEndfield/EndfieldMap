@@ -1,10 +1,10 @@
 import type { CustomPointTypeId } from '@endfieldmap/map-core';
 import { CustomPointKey, customPointTypes } from '@endfieldmap/map-core';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { OperationContainer } from '@themes/endfield/components/topbar/operation_container';
 import { OperationItem, OperationItemTitle } from '@themes/endfield/components/topbar/operation_item';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 import { service } from '@/services';
 import { getEntityIcon } from '@/utils/entity';

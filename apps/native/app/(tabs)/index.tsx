@@ -1,22 +1,23 @@
+import { useMobxSource } from '@endfieldmap/map-hooks';
 import React, { useCallback, useRef } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { EntityInfoSheet } from '@/components/features/entity-info';
 import { GameMapView } from '@/components/map/game-map-view';
-import { PointOperationTip } from '@/components/operations/custom-point/point-operation-tip';
 import { CustomPointSheet, type CustomPointSheetRef } from '@/components/operations/custom-point/custom-point-sheet';
-import { PoleOperationTip } from '@/components/operations/electric-pole/pole-operation-tip';
+import { PointOperationTip } from '@/components/operations/custom-point/point-operation-tip';
 import {
   ElectricPoleSheet,
   type ElectricPoleSheetRef,
 } from '@/components/operations/electric-pole/electric-pole-sheet';
+import { PoleOperationTip } from '@/components/operations/electric-pole/pole-operation-tip';
 import { EntityFilterSheet, type EntityFilterSheetRef } from '@/components/ui/entity-filter-sheet';
 import { MapSwitcher } from '@/components/ui/map-switcher';
 import { ZoomControls } from '@/components/ui/zoom-controls';
-import { AdapterProvider, useAdapter } from '@/context/adapter';
+import { AdapterProvider } from '@/context/adapter';
+import { useAdapter } from '@/context/adapter-context';
 import { useMapInit } from '@/hooks/use-map-init';
-import { useMobxSource } from '@endfieldmap/map-hooks';
 
 export default function MapScreen() {
   const { t } = useTranslation('common');

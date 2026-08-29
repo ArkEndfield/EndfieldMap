@@ -26,8 +26,8 @@ export const PopupHeader = ({ onClose, children, start }: PopupHeaderProps) => {
     >
       <Deco7Dots className={cn('absolute top-1/2 -translate-y-1/2 scale-x-[-1] text-lg left-1', 'text-[#383938]')} />
       <div className="h-full flex-1 flex gap-1 pl-4">
-        <div className='h-full flex items-center'>{start}</div>
-        <div className='h-full flex items-center flex-1 justify-end'>{children}</div>
+        <div className="h-full flex items-center">{start}</div>
+        <div className="h-full flex items-center flex-1 justify-end">{children}</div>
       </div>
       <CloseButton onClick={onClose} />
     </div>

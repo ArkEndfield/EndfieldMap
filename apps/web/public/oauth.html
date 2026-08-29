@@ -1,28 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<body style=" background-color: rgb(30, 30, 30)">
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh ;font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas;">
-        <svg id="icon" style="width: 20%; height: 20%;" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 48 48"><path fill="#4caf50" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#ffffff" d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"></path></svg>
-        <h2 id="status" style="color: white;">Authorized! Logging in...</h2>
+  <body style="background-color: rgb(30, 30, 30)">
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas;
+      "
+    >
+      <svg
+        id="icon"
+        style="width: 20%; height: 20%"
+        xmlns="http://www.w3.org/2000/svg"
+        x="0px"
+        y="0px"
+        viewBox="0 0 48 48"
+      >
+        <path fill="#4caf50" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path>
+        <path
+          fill="#ffffff"
+          d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"
+        ></path>
+      </svg>
+      <h2 id="status" style="color: white">Authorized! Logging in...</h2>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            token = urlParams.get('token')
-            error = urlParams.get('error')
-            if (token) {
-                window.opener.postMessage({
-                    type: 'LOGIN_SUCCESS',
-                    userInfo: { token: token }
-                }, '*');
-            } else {
-                console.error('failed:', error);
-                window.opener.postMessage({
-                    type: 'LOGIN_FAILED', error: error}, '*');
-                document.getElementById('icon').outerHTML = '<svg xmlns="http://www.w3.org/2000/svg" style="width: 20%; height: 20%;" viewBox="0 0 48 48"><path fill="#f44336" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#fff" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"></path><path fill="#fff" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"></path></svg>'
-                document.getElementById('status').textContent = 'Login failed. Please try again.';
-            }
-        });
+      document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        token = urlParams.get('token');
+        error = urlParams.get('error');
+        if (token) {
+          window.opener.postMessage(
+            {
+              type: 'LOGIN_SUCCESS',
+              userInfo: { token: token },
+            },
+            '*'
+          );
+        } else {
+          console.error('failed:', error);
+          window.opener.postMessage(
+            {
+              type: 'LOGIN_FAILED',
+              error: error,
+            },
+            '*'
+          );
+          document.getElementById('icon').outerHTML =
+            '<svg xmlns="http://www.w3.org/2000/svg" style="width: 20%; height: 20%;" viewBox="0 0 48 48"><path fill="#f44336" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path><path fill="#fff" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"></path><path fill="#fff" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"></path></svg>';
+          document.getElementById('status').textContent = 'Login failed. Please try again.';
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -1,15 +1,15 @@
+import { useMobxSource } from '@endfieldmap/map-hooks';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
 
 import { OperationTip } from '@/components/operations/operation-tip';
 import { useElectricPoleMode } from '@/hooks/use-electric-pole-mode';
 import { service } from '@/services/map-service';
 
 import { PoleTypeSelector } from './pole-type-selector';
-import { useMobxSource } from '@endfieldmap/map-hooks';
 
 export const PoleOperationTip: React.FC = observer(() => {
   const { t } = useTranslation('sidebar');

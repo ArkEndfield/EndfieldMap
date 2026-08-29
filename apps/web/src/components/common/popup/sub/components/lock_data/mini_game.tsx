@@ -1,10 +1,10 @@
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
-import { EndfieldSelect,ZmdSquareButton } from '@endfieldmap/web-components';
+import { EndfieldSelect, ZmdSquareButton } from '@endfieldmap/web-components';
+import { TickCircleIcon } from '@endfieldmap/web-components';
+import { useTranslation } from 'react-i18next';
 
 import { DeltaRobotPiece } from '@/components/common/delta_robot/piece';
 import { DeltaRobotSolutionGrid } from '@/components/common/delta_robot/solution';
-import { TickCircleIcon } from '@endfieldmap/web-components';
 import { SubPopupTitle } from '@/components/common/popup/components/title';
 import type { MiniGameLockData } from '@/components/common/popup/sub/components/lock_data/types';
 import type { SubPopupComponentProps } from '@/components/common/popup/sub/types';

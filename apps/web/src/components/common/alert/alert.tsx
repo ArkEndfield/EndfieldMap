@@ -3,9 +3,9 @@ import { shortcutService, useWindow } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 import uiManager from '@/services/ui_manager';
-import { useTranslation } from 'react-i18next';
 
 const AlertRenderer = observer((props: ZmdAlertProps) => {
   const AlertComponent = uiManager.ThemedComponents.alert.Alert;

@@ -1,6 +1,6 @@
+import type MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import type { SymbolViewProps } from 'expo-symbols';
 import type { ComponentProps } from 'react';
-import type MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 type SFSymbolName = SymbolViewProps['name'];
 type MaterialIconName = ComponentProps<typeof MaterialIcons>['name'];

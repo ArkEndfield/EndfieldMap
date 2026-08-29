@@ -76,7 +76,7 @@ export function useMapInit(): MapInitState {
   }, []);
 
   useEffect(() => {
-    init();
+    queueMicrotask(() => void init());
   }, [init]);
 
   return state;

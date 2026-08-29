@@ -7,10 +7,18 @@ const ZoomController = lazy(() => import('@themes/endfield/ui/zoom_controller'))
 const MapIndexMenu = lazy(() => import('@themes/endfield/ui/map_menu'));
 const Menus = lazy(() => import('@themes/endfield/ui/menus'));
 const ControlPanel = lazy(() => import('@themes/endfield/ui/control_panel'));
-const Alert = lazy(() => import('@endfieldmap/web-components/components/alert/alert').then((module) => ({ default: module.ZmdAlert })));
-const AlertFull = lazy(() => import('@endfieldmap/web-components/components/alert/alert_full').then((module) => ({ default: module.ZmdAlertFull })));
-const EndfieldInput = lazy(() => import('@endfieldmap/web-components/components/input/index').then((module) => ({ default: module.EndfieldInput })));
-const Tooltip = lazy(() => import('@endfieldmap/web-components/components/tooltip/index').then((module) => ({ default: module.Tooltip })));
+const Alert = lazy(() =>
+  import('@endfieldmap/web-components/components/alert/alert').then((module) => ({ default: module.ZmdAlert }))
+);
+const AlertFull = lazy(() =>
+  import('@endfieldmap/web-components/components/alert/alert_full').then((module) => ({ default: module.ZmdAlertFull }))
+);
+const EndfieldInput = lazy(() =>
+  import('@endfieldmap/web-components/components/input/index').then((module) => ({ default: module.EndfieldInput }))
+);
+const Tooltip = lazy(() =>
+  import('@endfieldmap/web-components/components/tooltip/index').then((module) => ({ default: module.Tooltip }))
+);
 const ThemeRootProvider = lazy(() => import('@themes/endfield/components/root_provider'));
 const TierManager = lazy(() => import('@themes/endfield/ui/tier_manager'));
 const ExtraOperation = lazy(() => import('@themes/endfield/ui/extra_operation'));

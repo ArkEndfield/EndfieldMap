@@ -2,10 +2,10 @@ import './announcement-content.css';
 
 import type { Announcement, CategoriedAnnouncementBreif } from '@endfieldmap/map-service/@types/announcement';
 import { cn } from '@endfieldmap/tools';
-import { ArrowLeftIcon,Logo, LogoLoading, ScrollArea, useIsMobile } from '@endfieldmap/web-components';
+import { ArrowLeftIcon, Logo, LogoLoading, ScrollArea, useIsMobile } from '@endfieldmap/web-components';
 import { AnnouncementItem } from '@themes/endfield/ui/menus/left/announcement/announcement_item';
 import { Markdown } from '@tiptap/markdown';
-import { EditorContent,useEditor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { motion } from 'motion/react';
 import { useState } from 'react';
@@ -73,10 +73,7 @@ export const Announcements = ({
   const [showListOnMobile, setShowListOnMobile] = useState(true);
   return (
     <motion.div
-      className={cn(
-        'absolute inset-0 flex flex-col md:flex-row p-4 pt-6',
-        hidden && 'pointer-events-none'
-      )}
+      className={cn('absolute inset-0 flex flex-col md:flex-row p-4 pt-6', hidden && 'pointer-events-none')}
       initial={false}
       animate={{ opacity: hidden ? 0 : 1 }}
       transition={{ duration: 0.2 }}
@@ -102,7 +99,7 @@ export const Announcements = ({
               <AnnouncementItem
                 key={item.id}
                 item={item}
-                active={((detail?.id === item.id) && !isMobile)}
+                active={detail?.id === item.id && !isMobile}
                 isRead={item.read}
                 onClick={() => {
                   loadDetail(item.id);

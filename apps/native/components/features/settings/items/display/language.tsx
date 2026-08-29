@@ -1,10 +1,10 @@
+import { useCurrentLanguage } from '@endfieldmap/map-hooks';
 import type { Language } from '@endfieldmap/tools';
 import { cn } from '@endfieldmap/tools';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { SettingSection } from '@/components/features/settings/shared';
-import { useCurrentLanguage } from '@endfieldmap/map-hooks';
 import { service } from '@/services/map-service';
 
 export const LanguageSetting = () => {

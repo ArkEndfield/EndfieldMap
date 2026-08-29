@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next';
 import { EndfieldSwitch } from '@endfieldmap/web-components';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Input } from '@/components/common/input';
 

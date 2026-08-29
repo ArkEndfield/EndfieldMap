@@ -1,8 +1,7 @@
+import { cn } from '@endfieldmap/tools';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-
-import { cn } from '@endfieldmap/tools';
 
 interface PresetListItemProps {
   index: number;

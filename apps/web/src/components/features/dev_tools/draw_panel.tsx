@@ -2,10 +2,10 @@ import { DevToolsShapeType } from '@endfieldmap/map-adapter-ol';
 import { domEventListener } from '@endfieldmap/tools';
 import { cn } from '@endfieldmap/tools';
 import { useWindow } from '@endfieldmap/web-components';
+import { CloseIcon, EditIcon, TrashIcon, ViewAltIcon } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 
-import { CloseIcon, EditIcon, TrashIcon, ViewAltIcon } from '@endfieldmap/web-components';
 import { Draws } from '@/components/features/dev_tools/draws';
 import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';

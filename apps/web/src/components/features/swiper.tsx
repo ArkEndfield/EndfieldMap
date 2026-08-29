@@ -12,10 +12,8 @@ const ZmdSwiper = observer(() => {
   useEffect(() => {
     service.dataService.swiperDataService.loadSwiperList();
   }, []);
-  
-  return (
-    <Swiper data={swiperData} expanded={expanded} className="fixed right-0 h-28 md:h-36 bottom-11 md:bottom-12" />
-  );
+
+  return <Swiper data={swiperData} expanded={expanded} className="fixed right-0 h-28 md:h-36 bottom-11 md:bottom-12" />;
 });
 
 export default ZmdSwiper;

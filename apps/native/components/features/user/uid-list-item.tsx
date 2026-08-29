@@ -1,9 +1,8 @@
 import type { UidInfo } from '@endfieldmap/map-service';
-import React from 'react';
-import { Image, Pressable, Text, View } from 'react-native';
-import { useTranslation } from 'react-i18next';
-
 import { cn } from '@endfieldmap/tools';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Image, Pressable, Text, View } from 'react-native';
 
 interface UidListItemProps {
   uid: UidInfo;

@@ -1,5 +1,7 @@
+import { cn } from '@endfieldmap/tools';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BackHandler, Image, Modal, Platform, Pressable, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
@@ -9,17 +11,16 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { useTranslation } from 'react-i18next';
 
-import { cn } from '@endfieldmap/tools';
-
-import type { AlertInstance } from './types';
 import { alertStore } from './alert-store';
+import type { AlertInstance } from './types';
 import { ZmdRoundButton } from './zmd-round-button';
 
+/* eslint-disable @typescript-eslint/no-require-imports -- Metro 打包静态图片只认 require()。 */
 const ALERT_BG = require('@/assets/images/alert/alert_bg.png') as number;
 const ALERT_BANNER_LEFT = require('@/assets/images/alert/alert_banner_bg_left.png') as number;
 const ALERT_BANNER_RIGHT = require('@/assets/images/alert/alert_banner_bg_right.png') as number;
+/* eslint-enable @typescript-eslint/no-require-imports */
 
 const GLITCH_STEP_DURATION = 20;
 const EXIT_ANIM_DURATION = 150;

@@ -2,8 +2,8 @@ import React, { Suspense } from 'react';
 
 import { LoadingScreen } from '@/components/common/loading_screen';
 import { LoadingStageId } from '@/const/loading';
-import { loadingManager } from '@/services/loading';
 import { SWUpdatePrompt } from '@/main.tsx';
+import { loadingManager } from '@/services/loading';
 
 const EndfieldMap = React.lazy(async () => {
   try {

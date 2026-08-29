@@ -1,9 +1,10 @@
-import type { PaginationLoadStatus } from '@/hooks/use-preset-store';
 import { cn } from '@endfieldmap/tools';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+
+import type { PaginationLoadStatus } from '@/hooks/use-preset-store';
 
 export interface PaginationProps<T> {
   data: T[];

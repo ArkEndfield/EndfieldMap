@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
 import { Tooltip, ZmdRoundIconButton } from '@endfieldmap/web-components';
-import { observer } from 'mobx-react-lite';
-
 import { PiPIcon } from '@endfieldmap/web-components';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
 import uiManager from '@/services/ui_manager';
 
 export const PiPButton = observer(() => {

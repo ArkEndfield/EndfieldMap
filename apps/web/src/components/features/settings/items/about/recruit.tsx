@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
-import { observer } from 'mobx-react-lite';
-
 import { UserIcon } from '@endfieldmap/web-components';
+import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
+
 import { AboutTitle } from '@/components/common/settings/components/about_title';
 import { service } from '@/services';
 

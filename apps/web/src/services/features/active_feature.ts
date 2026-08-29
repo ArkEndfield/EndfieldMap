@@ -20,8 +20,7 @@ export function initActiveFeatureEventListeners(adapter: EndfieldMapAdapter): ()
     if (service.dataService.mapDataService.electricPoleDataService.isInElectricOperateMode) {
       const epService = service.dataService.mapDataService.electricPoleDataService;
       if (epService.isConnecting || epService.isCreating) {
-        if (instance instanceof ElectricPoleDataInstance)
-          epService.connectElectricPole(instance);
+        if (instance instanceof ElectricPoleDataInstance) epService.connectElectricPole(instance);
       }
       return;
     }

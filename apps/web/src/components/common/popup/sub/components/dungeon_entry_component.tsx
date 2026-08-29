@@ -1,8 +1,8 @@
 import type { DealedRewardItem } from '@endfieldmap/map-service';
-import { useTranslation } from 'react-i18next';
 import { Logo } from '@endfieldmap/web-components';
 import { Item } from '@themes/endfield/components/item';
 import { Fragment, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { SubPopupTitle } from '@/components/common/popup/components/title';
 import type { DungeonEntryComponent } from '@/components/common/popup/sub/components/types';

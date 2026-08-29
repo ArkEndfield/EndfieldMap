@@ -1,11 +1,11 @@
-import { useTranslation } from 'react-i18next';
 import { cn } from '@endfieldmap/tools';
-import { ButtonWithAudio, ScrollArea,ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { ButtonWithAudio, ScrollArea, ZmdRoundIconButton } from '@endfieldmap/web-components';
+import { ArrowLeftIcon, CheckCircleIcon, QuestionIcon } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { GameRole } from '@/@types/game_role';
-import { ArrowLeftIcon, CheckCircleIcon, QuestionIcon } from '@endfieldmap/web-components';
 
 interface BindUidListProps {
   /** 可绑定的角色列表 */

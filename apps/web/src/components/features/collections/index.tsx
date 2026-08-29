@@ -1,5 +1,12 @@
 import { cn } from '@endfieldmap/tools';
-import { ButtonWithAudio, ChevronUp, Dialog, LogoLoading, MapIcon, ZmdRoundIconButton } from '@endfieldmap/web-components';
+import {
+  ButtonWithAudio,
+  ChevronUp,
+  Dialog,
+  LogoLoading,
+  MapIcon,
+  ZmdRoundIconButton,
+} from '@endfieldmap/web-components';
 import { AnimatePresence, motion } from 'motion/react';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 
@@ -16,13 +23,7 @@ const LoadingFallback = () => (
   </div>
 );
 
-const CollectionTabBar = ({
-  activeTab,
-  onTabChange,
-}: {
-  activeTab: string;
-  onTabChange: (key: string) => void;
-}) => {
+const CollectionTabBar = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (key: string) => void }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Map<string, HTMLElement>>(new Map());
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -87,10 +88,7 @@ const CollectionTabBar = ({
             transition={{ duration: 0.15 }}
             className="absolute left-1 z-10 h-full flex items-center"
           >
-            <ZmdRoundIconButton
-              onClick={() => scroll('left')}
-              className="text-xs"
-            >
+            <ZmdRoundIconButton onClick={() => scroll('left')} className="text-xs">
               <ChevronUp className="rotate-270" />
             </ZmdRoundIconButton>
           </motion.div>
@@ -117,7 +115,11 @@ const CollectionTabBar = ({
               onClick={() => onTabChange(tab.key)}
             >
               <span className="relative z-1 flex items-center gap-1.5">
-                {tab.icon && <span className="text-base"><tab.icon /></span>}
+                {tab.icon && (
+                  <span className="text-base">
+                    <tab.icon />
+                  </span>
+                )}
                 {tab.label}
               </span>
             </ButtonWithAudio>
@@ -143,10 +145,7 @@ const CollectionTabBar = ({
             transition={{ duration: 0.15 }}
             className="absolute right-1 z-10 h-full flex items-center"
           >
-            <ZmdRoundIconButton
-              onClick={() => scroll('right')}
-              className="text-xs"
-            >
+            <ZmdRoundIconButton onClick={() => scroll('right')} className="text-xs">
               <ChevronUp className="rotate-90" />
             </ZmdRoundIconButton>
           </motion.div>

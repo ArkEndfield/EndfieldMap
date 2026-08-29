@@ -1,13 +1,12 @@
+import { BookIcon } from '@endfieldmap/web-components';
 import type { ComponentType } from 'react';
 import { lazy } from 'react';
-
-import { BookIcon } from '@endfieldmap/web-components';
 
 export interface CollectionTab {
   key: string;
   label: string;
   icon?: ComponentType;
-  component: React.LazyExoticComponent<ComponentType<any>>;
+  component: React.LazyExoticComponent<ComponentType<{ onClose: () => void }>>;
 }
 
 export const COLLECTION_TABS: CollectionTab[] = [
