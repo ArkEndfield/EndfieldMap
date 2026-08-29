@@ -133,7 +133,7 @@ export const EntityInfoSheet = observer(function EntityInfoSheet({
   return (
     <TrueSheet
       ref={sheetRef}
-      sizes={['auto', 'large']}
+      detents={['auto', 1]}
       cornerRadius={16}
       grabber
       onDidDismiss={handleDismiss}

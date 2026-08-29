@@ -80,8 +80,8 @@ export const EntityInfoSheet = observer(function EntityInfoSheet({
 
   const handleNavigate = useCallback(() => {
     if (!instance) return;
-    adapter.moveToEntityInstance(instance, true, true, 800);
-  }, [adapter, instance]);
+    void service.dataService.mapDataService.moveToEntityInstance(instance, true, true, 800);
+  }, [instance]);
 
   const handleDismiss = useCallback(() => {
     adapter.activeFeatureController.clearActiveFeature();

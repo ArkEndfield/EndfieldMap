@@ -8,7 +8,8 @@ import { service } from '@/services/map-service';
 
 type ModeTipTextKey = 'create' | 'connect' | 'delete' | 'connect.delete';
 
-const modeTipText: Record<ElectricMode, ModeTipTextKey> = {
+// isMoving 不是带操作提示的模态模式（getCurrentMode 也永不返回它），映射只覆盖四种模态。
+const modeTipText: Partial<Record<ElectricMode, ModeTipTextKey>> = {
   isCreating: 'create',
   isConnecting: 'connect',
   isDeleting: 'delete',
