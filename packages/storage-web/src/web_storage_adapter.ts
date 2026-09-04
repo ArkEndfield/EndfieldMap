@@ -5,7 +5,15 @@ const NAMESPACE = 'endfieldmap';
 export class WebStorageAdapter implements IStorageAdapter {
   getItem<T>(key: string): T | null {
     const item = localStorage.getItem(`${NAMESPACE}.${key}`);
-    return item ? JSON.parse(item) : null;
+    if (!item) return null;
+    try {
+      return JSON.parse(item) as T;
+    } catch {
+      // 坏值若直接抛出，会在模块求值期（如恢复登录 token）炸掉整个应用，
+      // 加载页停在 0% 且只报一条 JSON 语法错误。丢弃坏值回退默认值更稳妥。
+      localStorage.removeItem(`${NAMESPACE}.${key}`);
+      return null;
+    }
   }
 
   setItem<T>(key: string, value: T): void {

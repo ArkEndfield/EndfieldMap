@@ -14,6 +14,20 @@ export interface ServerServiceConfig {
   i18nService: I18nService;
 }
 
+/**
+ * 后端请求超时。裸 fetch 遇到挂起的连接要等浏览器 TCP 栈几分钟才失败，
+ * 启动链路上（uid 列表 / 用户信息 / 同步 pull）会表现为加载页卡死。
+ */
+const REQUEST_TIMEOUT_MS = 20_000;
+
+function createTimeoutSignal(): AbortSignal | undefined {
+  // RN 等环境可能没有 AbortSignal.timeout，退化为无超时（与旧行为一致）
+  if (typeof AbortSignal === 'undefined' || typeof AbortSignal.timeout !== 'function') {
+    return undefined;
+  }
+  return AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+}
+
 export class ServerService {
   private backendHost: string;
   private i18nService: I18nService;
@@ -236,7 +250,7 @@ export class ServerService {
    */
   public async request<T>(url: string, options?: RequestInit, isRetryAfterRefresh: boolean = false): Promise<T> {
     const fullURL = new URL(url, this.backendHost || window.location.origin);
-    const response = await fetch(fullURL, options);
+    const response = await fetch(fullURL, { ...options, signal: options?.signal ?? createTimeoutSignal() });
 
     if (response.status === 401) {
       // 如果是刷新 token 后的重试请求仍然 401，直接登出，不再尝试刷新

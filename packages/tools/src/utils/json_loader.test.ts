@@ -25,7 +25,10 @@ describe('JSONLoader', () => {
     const loader = new JSONLoader();
 
     await expect(loader.loadJSON('https://example.com/data.json')).resolves.toEqual({ ok: true });
-    expect(fetchMock).toHaveBeenCalledWith('https://example.com/data.json?v=commit-1');
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://example.com/data.json?v=commit-1',
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
   });
 
   it('uses a timestamp instead of the commit hash in dev mode', async () => {
@@ -43,7 +46,10 @@ describe('JSONLoader', () => {
     const loader = new DevJSONLoader();
 
     await expect(loader.loadJSON('https://example.com/data.json')).resolves.toEqual({ ok: true });
-    expect(fetchMock).toHaveBeenCalledWith('https://example.com/data.json?v=1721000000000');
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://example.com/data.json?v=1721000000000',
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
   });
 
   it('retries failed requests until one succeeds', async () => {
