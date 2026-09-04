@@ -24,8 +24,6 @@ const translateAreaName = (name: string): string => {
   return service.i18nService.translate(name, { ns: 'lang', defaultValue: name });
 };
 
-const SYNC_TIMEOUT_MS = 10_000;
-
 /** 等主线程闲下来再跑，别和首屏渲染抢 CPU */
 function whenIdle(callback: () => void): void {
   if (typeof requestIdleCallback === 'function') {
@@ -33,16 +31,6 @@ function whenIdle(callback: () => void): void {
   } else {
     setTimeout(callback, 1_000);
   }
-}
-
-function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | undefined> {
-  let timer: ReturnType<typeof setTimeout>;
-  return Promise.race([
-    promise,
-    new Promise<undefined>((resolve) => {
-      timer = setTimeout(() => resolve(undefined), ms);
-    }),
-  ]).finally(() => clearTimeout(timer));
 }
 
 // dev 构建暴露到 window 的调试手柄（console 里直接操作地图实例）。
@@ -84,16 +72,17 @@ export class MapService {
       await StorageService.initStorage();
       loadingManager.updateStageProgress(LoadingStageId.STORAGE, 70);
 
-      // Ensure sync is running after database is initialized.
-      // updateUidList was called in UserService constructor but likely failed
-      // because the database wasn't ready yet. Re-call it now.
+      // 云端同步不进首屏关键路径。地图渲染只依赖本地 RxDB 数据，
+      // 复制本身就是 live 增量推送，后端慢/冷启动时在这里 await 会把
+      // 进度条卡在 STORAGE 段（用户看到的「卡 40%」），最长 10s+10s。
+      // 顶栏用户名 / 云端标记随后台同步到达后由 mobx 自动刷新。
       if (service.userService.auth.isLogin) {
-        try {
-          await withTimeout(service.userService.updateUidList(false), SYNC_TIMEOUT_MS);
-          await withTimeout(service.userService.data.syncService.awaitInitialReplication(), SYNC_TIMEOUT_MS);
-        } catch (syncError) {
-          logger.warn('[MapService] Sync init failed, continuing with cached data', syncError);
-        }
+        void service.userService
+          .updateUidList(false)
+          .then(() => service.userService.data.syncService.awaitInitialReplication())
+          .catch((syncError) => {
+            logger.warn('[MapService] Sync init failed, continuing with cached data', syncError);
+          });
       }
 
       // LOADING 存储与用户数据就绪
