@@ -36,6 +36,7 @@ export * from './components/icons/user';
 export * from './components/button_with_audio';
 export * from './components/close_button';
 export * from './components/dialog';
+export * from './components/dialog/content';
 export * from './components/scroll_area';
 
 // Button components

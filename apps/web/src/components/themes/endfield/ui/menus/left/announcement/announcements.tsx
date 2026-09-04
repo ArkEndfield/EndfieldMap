@@ -1,8 +1,13 @@
-import './announcement-content.css';
-
 import type { Announcement, CategoriedAnnouncementBreif } from '@endfieldmap/map-service/@types/announcement';
 import { cn } from '@endfieldmap/tools';
-import { ArrowLeftIcon, Logo, LogoLoading, ScrollArea, useIsMobile } from '@endfieldmap/web-components';
+import { Logo, LogoLoading, ScrollArea, useIsMobile } from '@endfieldmap/web-components';
+import { ArrowLeftIcon } from '@endfieldmap/web-components';
+import {
+  DialogArticle,
+  DialogContentDivider,
+  DialogContentTitle,
+  DialogMetaRow,
+} from '@endfieldmap/web-components/components/dialog/content';
 import { AnnouncementItem } from '@themes/endfield/ui/menus/left/announcement/announcement_item';
 import { Markdown } from '@tiptap/markdown';
 import { EditorContent, useEditor } from '@tiptap/react';
@@ -37,23 +42,28 @@ const CenterContainer = ({ children }: { children: React.ReactNode }) => {
   return <div className="flex items-center justify-center h-full">{children}</div>;
 };
 
-const ContentContainer = ({ content }: { content: string }) => {
+const formatAnnouncementDate = (unixSeconds: number) => {
+  const d = new Date(unixSeconds * 1000);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+const ContentContainer = ({ detail }: { detail: Announcement }) => {
   const editor = useEditor({
     extensions: [StarterKit, Markdown],
-    content,
+    content: detail.content,
     contentType: 'markdown',
     editable: false,
   });
   return (
-    <div
-      className={cn(
-        'flex-1 h-full overflow-hidden pl-6 pr-1',
-        'bg-[linear-gradient(180deg,rgba(211,213,223,.79)_0,hsla(0,0%,80%,.79)_30%,hsla(0,0%,80%,.79)_100%)]',
-        'shadow-[0_0.28125rem_0.28125rem_0_rgba(0,0,0,.4)]'
-      )}
-    >
+    <div className={cn('flex-1 h-full overflow-hidden pl-6 pr-2', 'bg-[#fafafa]')}>
       <ScrollArea scrollBarPlacementStyle="block" contentClassName="pr-2 py-3">
-        <EditorContent editor={editor} className="announcement-content" />
+        <DialogMetaRow type={detail.category} date={formatAnnouncementDate(detail.published_at)} />
+        <DialogContentTitle>{detail.title}</DialogContentTitle>
+        <DialogContentDivider />
+        <DialogArticle className="mt-2.5">
+          <EditorContent editor={editor} />
+        </DialogArticle>
       </ScrollArea>
     </div>
   );
@@ -135,14 +145,14 @@ export const Announcements = ({
           <div className="h-full flex flex-col">
             <div className="md:hidden mb-2">
               <button
-                className="inline-flex items-center px-3 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300"
+                className="inline-flex items-center px-3 py-1 text-sm text-[#191919] bg-[#e5e5e5] hover:bg-[#d9d9d9] active:bg-[#cecece]"
                 onClick={() => setShowListOnMobile(true)}
               >
                 <ArrowLeftIcon className="mr-2" />
                 Back
               </button>
             </div>
-            <ContentContainer content={detail?.content ?? ''} />
+            <ContentContainer detail={detail} />
           </div>
         )}
       </div>
