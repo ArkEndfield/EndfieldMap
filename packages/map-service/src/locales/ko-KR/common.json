@@ -56,7 +56,8 @@
   },
   "pip": {
     "playing": "지도가 PIP 모드에서 재생 중입니다",
-    "back": "탭으로 돌아가기"
+    "back": "탭으로 돌아가기",
+    "backToMain": "메인 페이지로 돌아가기"
   },
   "share_link": {
     "copy_link": "공유 링크 복사",

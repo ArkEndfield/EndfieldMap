@@ -297,6 +297,7 @@ export default interface Resources {
     },
     "pip": {
       "back": "返回标签页",
+      "backToMain": "回到主页面",
       "playing": "地图正在画中画模式播放"
     },
     "prev_page": "上一页",

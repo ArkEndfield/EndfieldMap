@@ -1,7 +1,7 @@
 import type { EndfieldMapAdapter } from '@endfieldmap/map-adapter-ol';
 import { cn } from '@endfieldmap/tools';
 import { useIsMobile, WindowProvider, ZmdSquareButton } from '@endfieldmap/web-components';
-import { ChevronUp } from '@endfieldmap/web-components';
+import { ArrowLeftIcon, ChevronUp } from '@endfieldmap/web-components';
 import { ShareSelectBar } from '@themes/endfield/ui/share_select';
 import { observer } from 'mobx-react-lite';
 import { lazy, Suspense, useEffect, useRef } from 'react';
@@ -148,20 +148,14 @@ function EndfieldMap() {
   // 监听窗口变化，同步地图目标和尺寸
   useMapPiP(adapter, container, pipWindow);
 
-  const content = (
-    <div className="relative w-full h-full overflow-hidden">
-      {/* 地图容器 */}
-      <div
-        ref={container}
-        className={cn(
-          'fixed w-full h-full',
-          "dark:bg-[url('/images/bg/page-bg-dark.jpg')] bg-[url('/images/bg/page-bg-light.jpg')] bg-cover bg-center"
-        )}
-      ></div>
-
-      {/* 控制组件 */}
-      {adapter && service.dataService.mapDataService && <Controllers adapter={adapter} />}
-    </div>
+  const mapContainer = (
+    <div
+      ref={container}
+      className={cn(
+        'fixed w-full h-full',
+        "dark:bg-[url('/images/bg/page-bg-dark.jpg')] bg-[url('/images/bg/page-bg-light.jpg')] bg-cover bg-center"
+      )}
+    ></div>
   );
 
   if (pipWindow) {
@@ -182,12 +176,35 @@ function EndfieldMap() {
             {t('pip.back')}
           </ZmdSquareButton>
         </div>
-        <WindowProvider window={pipWindow}>{createPortal(content, pipWindow.document.body)}</WindowProvider>
+        {/* 画中画窗口只保留地图本体，避免其余组件干扰小窗浏览 */}
+        <WindowProvider window={pipWindow}>
+          {createPortal(
+            <div className="relative w-full h-full overflow-hidden">
+              {mapContainer}
+              <button
+                type="button"
+                onClick={() => closePiP()}
+                className="absolute top-3 right-3 z-50 flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-sm text-white/90 backdrop-blur-sm transition-colors hover:bg-black/60 hover:text-white"
+              >
+                <ArrowLeftIcon className="text-base" />
+                {t('pip.backToMain')}
+              </button>
+            </div>,
+            pipWindow.document.body
+          )}
+        </WindowProvider>
       </>
     );
   }
 
-  return content;
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      {mapContainer}
+
+      {/* 控制组件 */}
+      {adapter && service.dataService.mapDataService && <Controllers adapter={adapter} />}
+    </div>
+  );
 }
 
 const EndfieldMapObserver = observer(EndfieldMap);
