@@ -1,60 +1,62 @@
-import type { CollectionIdItem } from '@endfieldmap/map-service/@types/note';
+import type { DataInstance } from '@endfieldmap/map-core';
+import type { CollectionIdItem, InvestigateData } from '@endfieldmap/map-service/@types/note';
 import { cn } from '@endfieldmap/tools';
-import { CheckboxToggle, ScrollArea, ZmdRoundIconButton } from '@endfieldmap/web-components';
+import {
+  CheckboxToggle,
+  FilterMarked,
+  FilterUnMarked,
+  ScrollArea,
+  useIsMobile,
+  ZmdRoundIconButton,
+} from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Input } from '@/components/common/input';
+import { useAdapter } from '@/hooks/use_adapter';
 import { service } from '@/services';
 import uiManager from '@/services/ui_manager';
 
+// ---------- 数据模型 ----------
+
 interface NoteItem {
   id: string;
-  levelLogicId: number;
-  title: string;
-  summary: string;
-  footerText: string;
-  tags: string[];
-  accentColor: string;
+  levelLogicId: number | null;
   canJump: boolean;
+  title: string;
+  icon?: string;
 }
 
-const Deco = ({ note }: { note: NoteItem }) => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-    <rect
-      x="0.5"
-      y="0.5"
-      width="11"
-      height="11"
-      stroke={note.accentColor}
-      strokeWidth="1"
-      opacity="0.5"
-      className={note.canJump ? 'group-hover:stroke-white transition-colors' : ''}
-    />
-    <line
-      x1="6"
-      y1="3"
-      x2="6"
-      y2="9"
-      stroke={note.accentColor}
-      strokeWidth="1"
-      opacity="0.5"
-      className={note.canJump ? 'group-hover:stroke-white transition-colors' : ''}
-    />
-    <line
-      x1="3"
-      y1="6"
-      x2="9"
-      y2="6"
-      stroke={note.accentColor}
-      strokeWidth="1"
-      opacity="0.5"
-      className={note.canJump ? 'group-hover:stroke-white transition-colors' : ''}
-    />
-  </svg>
-);
+interface CategoryGroup {
+  name: string;
+  displayName: string;
+  items: NoteItem[];
+}
+
+interface CollectionEntry {
+  key: string;
+  mapId: string;
+  name: string;
+  displayName: string;
+  desc: string;
+  displayDesc: string;
+  categories: CategoryGroup[];
+  /** 全量条目数 */
+  total: number;
+  /** 可定位条目的 levelLogicId（统一标记功能只针对地图实体） */
+  jumpableIds: number[];
+  /** 搜索命中的条目数（未搜索时等于 total） */
+  matchCount: number;
+}
+
+interface NoteMatch {
+  noteId: string;
+  collectionKey: string;
+}
+
+// ---------- 通用小组件 ----------
 
 // 高亮文本组件
 const HighlightText = ({ text, highlight }: { text: string; highlight: string }) => {
@@ -66,9 +68,9 @@ const HighlightText = ({ text, highlight }: { text: string; highlight: string })
     <>
       {parts.map((part, i) =>
         part.toLowerCase() === highlight.toLowerCase() ? (
-          <mark key={i} className="bg-[#fffa00] text-black rounded-sm px-0.5 font-bold">
+          <span key={i} className="text-[#3e7bd4]">
             {part}
-          </mark>
+          </span>
         ) : (
           part
         )
@@ -77,7 +79,6 @@ const HighlightText = ({ text, highlight }: { text: string; highlight: string })
   );
 };
 
-// 搜索导航按钮图标
 const ChevronUpIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
     <path
@@ -102,265 +103,483 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
+// 定位十字准星
+const CrosshairIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 16 16" fill="none" className={className}>
+    <circle cx="8" cy="8" r="4.5" stroke="currentColor" strokeWidth="1.2" />
+    <path d="M8 1v3M8 12v3M1 8h3M12 8h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <circle cx="8" cy="8" r="1" fill="currentColor" />
+  </svg>
+);
+
+// 图标加载失败时按图标族兜底为字形
+const fallbackKindOf = (icon?: string): 'book' | 'screen' | 'bag' | 'doc' => {
+  if (!icon) return 'doc';
+  if (/notebook|oldbook/.test(icon)) return 'book';
+  if (/pad|screen|appliance/.test(icon)) return 'screen';
+  if (/bag/.test(icon)) return 'bag';
+  return 'doc';
+};
+
+const FallbackGlyph = ({ kind }: { kind: 'book' | 'screen' | 'bag' | 'doc' }) => {
+  const common = {
+    stroke: 'currentColor',
+    strokeWidth: 1.3,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    fill: 'none',
+  };
+  return (
+    <svg viewBox="0 0 16 16" className="w-full h-full text-current">
+      {kind === 'book' && (
+        <g {...common}>
+          <path d="M2.5 3.5h4a2 2 0 0 1 1.5.8 2 2 0 0 1 1.5-.8h4v9h-4a2 2 0 0 0-1.5.7 2 2 0 0 0-1.5-.7h-4z" />
+          <path d="M8 4.3v8.9" />
+        </g>
+      )}
+      {kind === 'screen' && (
+        <g {...common}>
+          <rect x="2.5" y="3" width="11" height="8" />
+          <path d="M6 13.5h4M8 11v2.5" />
+        </g>
+      )}
+      {kind === 'bag' && (
+        <g {...common}>
+          <path d="M3.5 5.5h9l-.8 7h-7.4z" />
+          <path d="M6 5.5V4a2 2 0 0 1 4 0v1.5" />
+        </g>
+      )}
+      {kind === 'doc' && (
+        <g {...common}>
+          <path d="M4 2.5h5.5L12 5v8.5H4z" />
+          <path d="M9.5 2.5V5H12" />
+          <path d="M6 8h4M6 10h4" />
+        </g>
+      )}
+    </svg>
+  );
+};
+
+const NoteIcon = ({ icon }: { icon?: string }) => {
+  const [failed, setFailed] = useState(false);
+  const url = icon ? `${service.assetService.url.entityImage}/${icon}.png` : '';
+
+  if (!url || failed) {
+    return (
+      <span className="w-full h-full flex items-center justify-center text-[#8a8a8a]">
+        <FallbackGlyph kind={fallbackKindOf(icon)} />
+      </span>
+    );
+  }
+  return (
+    <img src={url} alt="" draggable={false} className="w-full h-full object-contain" onError={() => setFailed(true)} />
+  );
+};
+
+// ---------- 紧凑条目卡片 ----------
+
 const NoteCard = ({
   note,
   index,
+  entity,
   searchQuery = '',
   isFocused = false,
   onJump,
+  onToggleMark,
 }: {
   note: NoteItem;
   index: number;
+  entity?: DataInstance;
   searchQuery?: string;
   isFocused?: boolean;
   onJump?: () => void;
+  onToggleMark?: (entity: DataInstance) => void;
 }) => {
-  const handleClick = () => {
+  const marked = !!entity?.marked;
+  const markable = note.canJump && !!entity?.markable;
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (note.canJump) {
-      service.dataService.mapDataService.moveToEntity(note.levelLogicId, true, true, void 0, 5);
+      service.dataService.mapDataService.moveToEntity(note.levelLogicId as number, true, true, void 0, 5);
       onJump?.();
     }
+  };
+
+  const handleMarkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (entity) onToggleMark?.(entity);
   };
 
   return (
     <motion.div
       data-note-id={note.id}
-      onClick={handleClick}
-      initial={{ opacity: 0, y: 20 }}
+      onClick={note.canJump ? handleClick : undefined}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.06 }}
+      transition={{ duration: 0.25, delay: Math.min(index * 0.025, 0.3), ease: [0.2, 0.8, 0.2, 1] }}
       className={cn(
-        'group relative bg-[#363636] overflow-hidden transition-all duration-300',
-        note.canJump && 'hover:shadow-lg hover:shadow-black/20',
-        isFocused && 'shadow-[0_0_16px_rgba(255,250,0,0.4),0_0_4px_rgba(255,250,0,0.3)]'
+        'group/card relative flex items-center gap-2.5 h-10 pl-2 pr-1.5 select-none overflow-hidden transition-colors duration-200',
+        note.canJump ? 'cursor-pointer' : 'cursor-not-allowed opacity-55 saturate-50',
+        isFocused
+          ? 'bg-[#e2ecfc]'
+          : marked
+            ? 'bg-[#faf3d8]'
+            : note.canJump
+              ? 'bg-[#f6f5f3] hover:bg-[#edecea]'
+              : 'bg-[#f1f0ed]'
       )}
     >
-      {/* 顶部装饰条 */}
-      <div
-        className={cn('h-0.5 w-full transition-colors duration-300', note.canJump ? 'group-hover:bg-white' : '')}
-        style={{ background: isFocused ? '#fffa00' : note.accentColor }}
-      />
-
-      {/* 角落装饰 */}
-      <div
-        className={cn(
-          'absolute top-2.5 right-2 opacity-0 transition-opacity duration-300',
-          note.canJump ? 'group-hover:opacity-100' : ''
-        )}
-      >
-        <Deco note={note} />
-      </div>
-
-      <div className="p-3.5 flex flex-col gap-2.5 h-full">
-        {/* 数据ID */}
-        <span className="text-[9px] text-white/10 tracking-wider select-none font-[Outfit] break-all">
-          LOG://NOTE.
-          <HighlightText text={note.id.toUpperCase()} highlight={searchQuery} />
-        </span>
-
-        {/* 标题 */}
-        <h3
-          className={cn(
-            'text-sm font-bold text-[#e8e6e3] leading-snug tracking-wide transition-colors',
-            note.canJump ? 'group-hover:text-white' : ''
-          )}
-        >
-          <HighlightText text={note.title} highlight={searchQuery} />
-        </h3>
-
-        {/* 摘要 */}
-        <p
-          className={cn(
-            'text-xs text-[#999] leading-relaxed line-clamp-3 transition-colors flex-1',
-            note.canJump ? 'group-hover:text-[#ccc]' : ''
-          )}
-        >
-          <HighlightText text={note.summary} highlight={searchQuery} />
-        </p>
-
-        {/* 底部：标签 + 尾部文本 */}
-        <div className="flex items-center justify-between mt-1">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {note.tags.map((tag) => (
-              <span
-                key={tag}
-                className={cn(
-                  'inline-flex items-center px-1.5 py-0.5 text-[10px] border transition-colors',
-                  note.canJump ? 'group-hover:border-white/30 group-hover:text-white' : ''
-                )}
-                style={{
-                  color: note.accentColor,
-                  borderColor: `${note.accentColor}30`,
-                  backgroundColor: `${note.accentColor}08`,
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          <span
-            className={cn(
-              'text-[10px] text-[#666] shrink-0 ml-2 font-[Outfit] transition-colors',
-              note.canJump ? 'group-hover:text-[#999]' : ''
-            )}
-          >
-            <HighlightText text={note.footerText} highlight={searchQuery} />
-          </span>
+      {/* 图标 */}
+      <div className="shrink-0 w-7 h-7 bg-white/80 grid place-items-center overflow-hidden">
+        <div className="w-5 h-5">
+          <NoteIcon icon={note.icon} />
         </div>
       </div>
 
-      {/* 右下角装饰 */}
-      <div
+      {/* 名称 */}
+      <span
         className={cn(
-          'absolute bottom-0 right-0 w-4 h-4 border-b border-r opacity-0 transition-opacity duration-300',
-          note.canJump ? 'group-hover:opacity-100 group-hover:border-white/50' : ''
+          'flex-1 min-w-0 text-[13px] font-semibold leading-tight truncate transition-colors',
+          note.canJump ? 'text-[#2a2a2a] group-hover/card:text-black' : 'text-[#777]'
         )}
-        style={{ borderColor: `${note.accentColor}30` }}
-      />
+      >
+        <HighlightText text={note.title} highlight={searchQuery} />
+      </span>
+
+      {/* 定位按钮（可定位条目 hover 出现） */}
+      {note.canJump && (
+        <div
+          className="shrink-0 w-7 h-7 grid place-items-center text-[#009e6c] opacity-0 group-hover/card:opacity-100 transition-all duration-200 group-hover/card:bg-[#00ffa2]/15"
+          title={`LOC ${note.levelLogicId}`}
+        >
+          <CrosshairIcon className="w-4 h-4" />
+        </div>
+      )}
+
+      {/* 无定位标注 */}
+      {!note.canJump && (
+        <span
+          className="shrink-0 inline-flex items-center px-1.5 h-5 bg-black/5 text-[10px] text-black/40 select-none"
+          title="该条目不在地图上"
+        >
+          {/* TODO: i18n */}
+          无定位
+        </span>
+      )}
+
+      {/* 收集标记：走项目统一的实体标记（仅地图实体可标记） */}
+      {markable && (
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={handleMarkClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleMarkClick(e as unknown as React.MouseEvent);
+            }
+          }}
+          className={cn(
+            'shrink-0 w-6 h-6 grid place-items-center text-lg leading-none transition-opacity duration-150',
+            marked ? 'text-[#fffa00] opacity-100' : 'opacity-30 group-hover/card:opacity-80 hover:opacity-100!'
+          )}
+          title={marked ? '取消标记' : '标记为已收集'}
+        >
+          {marked ? <FilterMarked /> : <FilterUnMarked />}
+        </span>
+      )}
     </motion.div>
   );
 };
 
+// ---------- 左侧专题索引 ----------
+
+const SidebarCollectionItem = ({
+  entry,
+  markedCount,
+  active,
+  searching,
+  onSelect,
+  onToggleAllMarked,
+}: {
+  entry: CollectionEntry;
+  markedCount: number;
+  active: boolean;
+  searching: boolean;
+  onSelect: () => void;
+  onToggleAllMarked: () => void;
+}) => {
+  const dimmed = searching && entry.matchCount === 0;
+  const markableTotal = entry.jumpableIds.length;
+  const allMarked = markableTotal > 0 && markedCount >= markableTotal;
+  return (
+    <button
+      onClick={onSelect}
+      className={cn(
+        'group/row relative w-full flex items-center gap-2 h-8 pl-4 pr-2 text-left transition-colors duration-150',
+        active ? 'bg-white/12 text-white' : 'text-white/55 hover:text-white/90 hover:bg-white/4',
+        dimmed && !active && 'opacity-35'
+      )}
+    >
+      {active && (
+        <motion.div layoutId="collections-sidebar-active" className="absolute left-0 top-0 bottom-0 w-1 bg-[#ffff21]" />
+      )}
+      <span className="flex-1 truncate text-xs font-medium">{entry.displayName}</span>
+
+      {/* 一键标记：hover 出现；已全标记时常显 */}
+      {markableTotal > 0 && (
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleAllMarked();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleAllMarked();
+            }
+          }}
+          className={cn(
+            'shrink-0 w-4 h-4 grid place-items-center text-base leading-none transition-colors',
+            allMarked ? 'text-[#fffa00]' : 'text-white/60 opacity-0 group-hover/row:opacity-60 hover:opacity-100!'
+          )}
+          title={allMarked ? '取消全部标记' : '标记全部为已收集'}
+        >
+          {allMarked ? <FilterMarked /> : <FilterUnMarked />}
+        </span>
+      )}
+
+      {/* 计数：非搜索态展示收集进度 已标记/可标记；搜索态展示 匹配/总数 */}
+      <span className="shrink-0 text-[10px] font-[Outfit] tabular-nums tracking-wide">
+        {searching ? (
+          <span className={active ? 'text-[#ffff21]' : 'text-white/35'}>
+            {entry.matchCount}/{entry.total}
+          </span>
+        ) : (
+          <>
+            <span className={markedCount > 0 ? (active ? 'text-[#ffff21]' : 'text-[#d9c94a]') : 'text-white/35'}>
+              {markedCount}
+            </span>
+            <span className="text-white/35">/{markableTotal}</span>
+          </>
+        )}
+      </span>
+    </button>
+  );
+};
+
+// ---------- 主组件 ----------
+
 const Note = observer(({ onClose }: { onClose?: () => void }) => {
   const { t } = useTranslation(['lang', 'sidebar']);
+  const isMobile = useIsMobile();
+  const { adapter } = useAdapter();
   const data = service.dataService.noteDataService.investigateData;
   const [searchQuery, setSearchQuery] = useState('');
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [pendingScrollNoteId, setPendingScrollNoteId] = useState<string | null>(null);
+  const detailScrollRef = useRef<HTMLDivElement>(null);
 
   const closeOnJump = uiManager.noteCloseOnJump.value;
 
-  const handleJump = () => {
-    if (closeOnJump) {
-      onClose?.();
-    }
-  };
+  // 统一标记：与地图标点标记共用 entityDataService，状态落在 DataInstance.marked
+  const findEntity = useCallback(
+    (levelLogicId: number | null): DataInstance | undefined => {
+      if (!levelLogicId) return undefined;
+      return adapter?.entityRegistry.searchById(adapter.mapController.dataManager.mapIds, levelLogicId);
+    },
+    [adapter]
+  );
 
-  const {
-    data: structuredData,
-    totalCount,
-    matchIds,
-  } = useMemo(() => {
-    if (!data) return { data: [], totalCount: 0, matchIds: [] as string[] };
+  const handleToggleEntityMark = useCallback((entity: DataInstance) => {
+    service.dataService.mapDataService.entityDataService.markEntity(entity.mapId, entity.id, !entity.marked);
+  }, []);
 
-    let count = 0;
-    const ids: string[] = [];
+  const handleJump = useCallback(() => {
+    if (closeOnJump) onClose?.();
+  }, [closeOnJump, onClose]);
+
+  // 地图 ID -> 展示名
+  const mapNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    service.dataService.mapDataService.mapData?.data?.forEach((d) => {
+      map.set(d.id, t(`lang:${d.name}`, { defaultValue: d.name }));
+    });
+    return map;
+  }, [t]);
+
+  // 数据加工 + 搜索过滤（匹配范围：条目名/条目ID/levelLogicId/专题名/专题描述/分类名）
+  const { entries, regionOrder, matchIds } = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
+    const list: CollectionEntry[] = [];
+    const matches: NoteMatch[] = [];
 
-    const processNotes = (
-      collectionList: CollectionIdItem[],
-      collectionName: string,
-      collectionDesc: string,
-      categoryName: string
-    ) => {
-      const list: NoteItem[] = [];
-      const csName = t(`lang:${collectionName}`, { defaultValue: collectionName }).toLowerCase();
-      const csDesc = t(`lang:${collectionDesc}`, { defaultValue: collectionDesc || '' }).toLowerCase();
-      const cName = t(`lang:${categoryName}`, { defaultValue: categoryName }).toLowerCase();
-
-      collectionList.forEach(({ id, levelLogicId, name, desc }) => {
-        const canJump = !!levelLogicId;
-        // TODO: i18n
-        const tags = canJump ? ['地图收集'] : ['其他'];
-        const color = canJump ? '#00ffa2' : '#ff6b35';
-        const footerText = canJump ? `LOC_ID: ${levelLogicId}` : `SYS_ID: ${id.split('_').pop()}`;
-
-        const note = {
-          id,
-          levelLogicId,
-          canJump,
-          title: t(`lang:${name}`, { defaultValue: name }),
-          summary: t(`lang:${desc}`, { defaultValue: desc }),
-          footerText,
-          tags,
-          accentColor: color,
-        };
-
-        if (
-          !query ||
-          note.id.toLowerCase().includes(query) ||
-          (note.levelLogicId && String(note.levelLogicId).includes(query)) ||
-          csName.includes(query) ||
-          csDesc.includes(query) ||
-          cName.includes(query)
-        ) {
-          list.push(note);
-          ids.push(note.id);
-          count++;
-        }
-      });
-      return list.sort((a, b) => (a.canJump === b.canJump ? 0 : a.canJump ? -1 : 1));
+    const match = (raw: string | number | null | undefined, translated: string) => {
+      if (!query) return true;
+      return translated.toLowerCase().includes(query) || (raw != null && String(raw).toLowerCase().includes(query));
     };
 
-    const filteredRegions = data
-      .map((region) => {
-        const filteredCollections = region.collections
-          .map((collection) => {
-            const filteredCategories = collection.categories
-              .map((category) => ({
-                ...category,
-                notes: processNotes(
-                  category.collectionIdList ?? [],
-                  collection.name,
-                  collection.desc || '',
-                  category.name
-                ),
-              }))
-              .filter((cat) => cat.notes.length > 0);
+    (data as InvestigateData[] | undefined)?.forEach((region) => {
+      region.collections.forEach((collection) => {
+        const collectionName = t(`lang:${collection.name}`, { defaultValue: collection.name });
+        const collectionDesc = t(`lang:${collection.desc}`, { defaultValue: collection.desc || '' });
 
-            return {
-              ...collection,
-              categories: filteredCategories,
+        let total = 0;
+        let matchCount = 0;
+        const categories: CategoryGroup[] = [];
+        const jumpableIds: number[] = [];
+
+        collection.categories.forEach((category) => {
+          const categoryName = t(`lang:${category.name}`, { defaultValue: category.name });
+          const items: NoteItem[] = [];
+
+          (category.collectionIdList ?? []).forEach((raw: CollectionIdItem) => {
+            const canJump = !!raw.levelLogicId;
+            const note: NoteItem = {
+              id: raw.id,
+              levelLogicId: raw.levelLogicId ?? null,
+              canJump,
+              title: t(`lang:${raw.name}`, { defaultValue: raw.name }),
+              icon: raw.icon,
             };
-          })
-          .filter((dom) => dom.categories.length > 0);
+            total++;
+            if (canJump) jumpableIds.push(raw.levelLogicId as number);
 
-        return {
-          ...region,
-          collections: filteredCollections,
-        };
-      })
-      .filter((reg) => reg.collections.length > 0);
+            const hit =
+              !query ||
+              match(raw.name, note.title) ||
+              note.id.toLowerCase().includes(query) ||
+              (note.levelLogicId != null && String(note.levelLogicId).includes(query)) ||
+              match(collection.name, collectionName) ||
+              match(collection.desc, collectionDesc) ||
+              match(category.name, categoryName);
 
-    return { data: filteredRegions, totalCount: count, matchIds: ids };
+            if (hit) {
+              items.push(note);
+              matchCount++;
+            }
+          });
+
+          if (items.length > 0) {
+            categories.push({ name: category.name, displayName: categoryName, items });
+          }
+        });
+
+        if (total === 0) return;
+
+        const key = `${region.mapId}::${collection.id || collection.name}`;
+        categories.forEach((cat) => {
+          cat.items.forEach((item) => matches.push({ noteId: item.id, collectionKey: key }));
+        });
+
+        list.push({
+          key,
+          mapId: region.mapId,
+          name: collection.name,
+          displayName: collectionName,
+          desc: collection.desc || '',
+          displayDesc: collectionDesc,
+          categories,
+          total,
+          jumpableIds,
+          matchCount,
+        });
+      });
+    });
+
+    const order: string[] = [];
+    list.forEach((e) => {
+      if (!order.includes(e.mapId)) order.push(e.mapId);
+    });
+
+    return {
+      entries: list,
+      regionOrder: order,
+      matchIds: matches,
+    };
   }, [data, searchQuery, t]);
+
+  // 各专题已标记数（渲染期直读 DataInstance.marked，observer 自动响应标记变化）
+  const markedCountByKey = (() => {
+    const map = new Map<string, number>();
+    entries.forEach((e) => {
+      let n = 0;
+      e.jumpableIds.forEach((id) => {
+        if (findEntity(id)?.marked) n++;
+      });
+      map.set(e.key, n);
+    });
+    return map;
+  })();
+
+  // 默认选中第一个专题；搜索态下当前专题无匹配时跟随第一个有匹配的专题
+  useEffect(() => {
+    if (entries.length === 0) {
+      setActiveKey(null);
+      return;
+    }
+    const current = entries.find((e) => e.key === activeKey);
+    if (!current) {
+      setActiveKey(entries[0].key);
+      return;
+    }
+    if (searchQuery.trim() && current.matchCount === 0) {
+      const firstHit = entries.find((e) => e.matchCount > 0);
+      if (firstHit) setActiveKey(firstHit.key);
+    }
+  }, [entries, activeKey, searchQuery]);
 
   // 搜索内容变化时重置当前匹配索引
   useEffect(() => {
     setCurrentMatchIndex(0);
   }, [searchQuery]);
 
-  // 滚动到当前匹配的卡片
-  const scrollToMatch = useCallback(
+  const activeEntry = entries.find((e) => e.key === activeKey) ?? null;
+
+  // 滚动到详情区指定卡片；跨专题切换时目标卡片要等换场后才渲染，用 rAF 轮询等待
+  useEffect(() => {
+    if (!pendingScrollNoteId) return;
+    let raf = 0;
+    let tries = 0;
+    const tryScroll = () => {
+      const el = detailScrollRef.current?.querySelector(`[data-note-id="${pendingScrollNoteId}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setPendingScrollNoteId(null);
+      } else if (tries++ < 30) {
+        raf = requestAnimationFrame(tryScroll);
+      }
+    };
+    tryScroll();
+    return () => cancelAnimationFrame(raf);
+  }, [pendingScrollNoteId, activeEntry]);
+
+  const goToMatch = useCallback(
     (index: number) => {
       if (matchIds.length === 0) return;
-      const targetId = matchIds[index];
-      if (!targetId) return;
-
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      const cardEl = container.querySelector(`[data-note-id="${targetId}"]`);
-      if (cardEl) {
-        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      const target = matchIds[index];
+      if (!target) return;
+      setCurrentMatchIndex(index);
+      if (target.collectionKey !== activeKey) setActiveKey(target.collectionKey);
+      setPendingScrollNoteId(target.noteId);
     },
-    [matchIds]
+    [matchIds, activeKey]
   );
 
   const handlePrevMatch = useCallback(() => {
     if (matchIds.length === 0) return;
-    const nextIndex = currentMatchIndex <= 0 ? matchIds.length - 1 : currentMatchIndex - 1;
-    setCurrentMatchIndex(nextIndex);
-    scrollToMatch(nextIndex);
-  }, [matchIds.length, currentMatchIndex, scrollToMatch]);
+    goToMatch(currentMatchIndex <= 0 ? matchIds.length - 1 : currentMatchIndex - 1);
+  }, [matchIds.length, currentMatchIndex, goToMatch]);
 
   const handleNextMatch = useCallback(() => {
     if (matchIds.length === 0) return;
-    const nextIndex = currentMatchIndex >= matchIds.length - 1 ? 0 : currentMatchIndex + 1;
-    setCurrentMatchIndex(nextIndex);
-    scrollToMatch(nextIndex);
-  }, [matchIds.length, currentMatchIndex, scrollToMatch]);
+    goToMatch(currentMatchIndex >= matchIds.length - 1 ? 0 : currentMatchIndex + 1);
+  }, [matchIds.length, currentMatchIndex, goToMatch]);
 
   const hasSearchContent = searchQuery.trim().length > 0;
 
@@ -378,204 +597,234 @@ const Note = observer(({ onClose }: { onClose?: () => void }) => {
     [hasSearchContent, handlePrevMatch, handleNextMatch]
   );
 
-  const focusedNoteId = hasSearchContent && matchIds.length > 0 ? matchIds[currentMatchIndex] : null;
+  const focusedNoteId = hasSearchContent && matchIds.length > 0 ? matchIds[currentMatchIndex]?.noteId : null;
+
+  const groupedEntries = useMemo(
+    () =>
+      regionOrder.map((mapId) => ({
+        mapId,
+        mapName: mapNameById.get(mapId) ?? mapId.toUpperCase(),
+        entries: entries.filter((e) => e.mapId === mapId),
+      })),
+    [regionOrder, entries, mapNameById]
+  );
+
+  const renderDetail = (entry: CollectionEntry) => (
+    <motion.div
+      key={entry.key}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.18, ease: [0.2, 0.8, 0.2, 1] }}
+      className="flex flex-col gap-4 pb-8"
+    >
+      {/* 类目分组：轻量组头 + 双列紧凑卡片 */}
+      {entry.categories.length > 0 ? (
+        entry.categories.map((category) => (
+          <section key={category.name} className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <h4 className="text-xs font-bold text-[#363636] tracking-wide truncate">
+                <HighlightText text={category.displayName} highlight={searchQuery} />
+              </h4>
+              <div className="flex-1 border-t border-dashed border-black/15" />
+              <span className="shrink-0 text-[10px] font-[Outfit] tabular-nums text-[#666] tracking-wider">
+                {category.items.length}
+              </span>
+            </div>
+            <div className={cn('grid gap-2', isMobile ? 'grid-cols-1' : 'grid-cols-2')}>
+              {category.items.map((note, index) => (
+                <NoteCard
+                  key={note.id}
+                  note={note}
+                  index={index}
+                  entity={findEntity(note.levelLogicId)}
+                  searchQuery={searchQuery}
+                  isFocused={note.id === focusedNoteId}
+                  onJump={handleJump}
+                  onToggleMark={handleToggleEntityMark}
+                />
+              ))}
+            </div>
+          </section>
+        ))
+      ) : (
+        <div className="py-12 flex flex-col items-center justify-center opacity-50">
+          <span className="text-xs text-[#888] tracking-widest font-[Outfit]">NO MATCHING RECORDS FOUND</span>
+        </div>
+      )}
+    </motion.div>
+  );
+
+  // 搜索框 + 匹配导航（桌面并入标题行，移动端独立一行）
+  const searchControls = (
+    <>
+      <Input
+        defaultValue={searchQuery}
+        onValueChange={setSearchQuery}
+        placeholder={t('sidebar:search', { defaultValue: '搜索' })}
+        className={isMobile ? 'flex-1 min-w-0' : 'w-40 shrink-0'}
+      />
+
+      <AnimatePresence>
+        {hasSearchContent && (
+          <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 'auto', opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="flex items-center overflow-clip shrink-0"
+          >
+            <div className="flex items-center gap-1 pr-1">
+              <span className="text-[10px] text-[#999] font-[Outfit] whitespace-nowrap tabular-nums select-none">
+                {matchIds.length > 0 ? `${currentMatchIndex + 1}/${matchIds.length}` : '0/0'}
+              </span>
+              <ZmdRoundIconButton
+                onClick={handlePrevMatch}
+                disabled={matchIds.length === 0}
+                className="w-6 h-6 shadow-sm"
+              >
+                <ChevronUpIcon />
+              </ZmdRoundIconButton>
+              <ZmdRoundIconButton
+                onClick={handleNextMatch}
+                disabled={matchIds.length === 0}
+                className="w-6 h-6 shadow-sm"
+              >
+                <ChevronDownIcon />
+              </ZmdRoundIconButton>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <CheckboxToggle
+        checked={closeOnJump}
+        className={cn(
+          'self-center shrink-0 pl-1.5 py-1 pr-2 rounded-full shadow-[0_0_3px_rgba(0,0,0,0.1)]',
+          closeOnJump ? 'bg-[#484848]' : 'bg-[#E8E6E6]'
+        )}
+        onToggle={() => (uiManager.noteCloseOnJump.value = !uiManager.noteCloseOnJump.value)}
+        // TODO: i18n
+        label="跳转时关闭"
+        size="sm"
+        hideBorder
+      />
+    </>
+  );
 
   return (
-    <ScrollArea className="w-full h-full" scrollY scrollX={false} scrollbarY="auto">
-      <div ref={scrollContainerRef} className="p-5 flex flex-col gap-2">
-        {/* 头部 */}
-        <div className="flex items-end justify-between">
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-[#363636]/20 tracking-wider select-none font-[Outfit]">
-              SYS://COLLECTION.NOTES
-            </span>
-
-            {/* TODO: i18n */}
-            <h2 className="text-base font-bold text-[#363636] tracking-wide">情报采集</h2>
-            <p className="text-xs text-[#888]">情报档案库/情报采集</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-[#999] font-[Outfit]">{totalCount} ENTRIES</span>
-            <div className="w-1.5 h-1.5 bg-[#00ffa2]" />
-          </div>
-        </div>
-
-        {/* 搜索框 */}
-        <div className="sticky top-0 z-2 pt-2 flex items-center gap-3" onKeyDown={handleSearchKeyDown}>
-          <Input
-            defaultValue={searchQuery}
-            onValueChange={setSearchQuery}
-            placeholder={t('sidebar:search', { defaultValue: '搜索' })}
-            className="flex-1"
-          />
-
-          {/* 搜索导航：上一个 / 下一个 */}
-          <AnimatePresence>
-            {hasSearchContent && (
-              <motion.div
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 'auto', opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.2, ease: 'easeInOut' }}
-                className="flex items-center overflow-clip shrink-0"
+    <div className="flex h-full w-full overflow-hidden flex-col md:flex-row">
+      {/* ===== 左侧：专题索引 ===== */}
+      <aside
+        className={cn(
+          'shrink-0 bg-[#363636] flex flex-col overflow-hidden border-b md:border-b-0 md:border-r border-black/40',
+          isMobile ? 'h-11 flex-row items-stretch' : 'w-52'
+        )}
+      >
+        {/* 索引列表 */}
+        {isMobile ? (
+          <div className="flex-1 flex items-center overflow-x-auto scrollbar-hide">
+            {entries.map((entry) => (
+              <button
+                key={entry.key}
+                onClick={() => setActiveKey(entry.key)}
+                className={cn(
+                  'relative shrink-0 h-full px-3 text-xs whitespace-nowrap transition-colors',
+                  entry.key === activeKey ? 'text-white' : 'text-white/50 hover:text-white/80'
+                )}
               >
-                <div className="flex items-center gap-1 py-1 pr-1">
-                  {/* 匹配计数 */}
-                  <span className="text-[10px] text-[#999] font-[Outfit] whitespace-nowrap tabular-nums select-none">
-                    {matchIds.length > 0 ? `${currentMatchIndex + 1}/${matchIds.length}` : '0/0'}
-                  </span>
-
-                  {/* 上一个 */}
-                  <ZmdRoundIconButton
-                    onClick={handlePrevMatch}
-                    disabled={matchIds.length === 0}
-                    className="w-6 h-6 shadow-sm"
-                  >
-                    <ChevronUpIcon />
-                  </ZmdRoundIconButton>
-
-                  {/* 下一个 */}
-                  <ZmdRoundIconButton
-                    onClick={handleNextMatch}
-                    disabled={matchIds.length === 0}
-                    className="w-6 h-6 shadow-sm"
-                  >
-                    <ChevronDownIcon />
-                  </ZmdRoundIconButton>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <CheckboxToggle
-            checked={closeOnJump}
-            className={cn(
-              'pl-1.5 py-1 pr-2 rounded-full shadow-[0_0_3px_rgba(0,0,0,0.1)]',
-              closeOnJump ? 'bg-[#484848]' : 'bg-[#E8E6E6]'
-            )}
-            onToggle={() => (uiManager.noteCloseOnJump.value = !uiManager.noteCloseOnJump.value)}
-            // TODO: i18n
-            label="跳转时关闭本页"
-            size="sm"
-            hideBorder
-          />
-        </div>
-
-        {/* 分割线 */}
-        <div className="h-px bg-[#363636]/10" />
-
-        {/* 内容区域 */}
-        <div className="flex flex-col gap-12 pb-10">
-          {structuredData.length > 0 ? (
-            structuredData.map((region) => (
-              <div key={region.mapId} className="flex flex-col gap-10 mt-2">
-                {region.collections.map((collection) => (
-                  <div key={collection.id || collection.name} className="flex flex-col">
-                    {/* 头部：大类与地图关联信息，高度还原设计图主标题风格 */}
-                    <div className="flex flex-col mb-6">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="w-6 h-0.75 bg-[#222]" />
-                        <span className="text-[10px] font-bold font-[Outfit] tracking-widest text-[#222]">
-                          END//FIELD. {region.mapId.toUpperCase()}
-                        </span>
-                      </div>
-                      <h2 className="text-[28px] font-bold text-[#222] tracking-wider relative -left-px">
-                        <HighlightText
-                          text={t(`lang:${collection.name}`, { defaultValue: collection.name })}
-                          highlight={searchQuery}
-                        />
-                      </h2>
-                      <div className="h-px w-full bg-linear-to-r from-black/20 to-transparent mt-3 mb-3" />
-                      <p className="text-xs text-[#666] leading-relaxed max-w-3xl">
-                        <HighlightText
-                          text={t(`lang:${collection.desc}`, { defaultValue: collection.desc || 'No Description.' })}
-                          highlight={searchQuery}
-                        />
-                      </p>
-                    </div>
-
-                    {/* 小类列表 */}
-                    <div className="flex flex-col gap-6 pl-0">
-                      {collection.categories.map((category) => (
-                        <div
-                          key={category.name}
-                          className="flex flex-col border border-black/5 bg-[#fefefe]/50 shadow-[0_2px_10px_rgba(0,0,0,0.02)] relative overflow-hidden"
-                        >
-                          {/* 装饰性背景网格 */}
-                          <div
-                            className="absolute inset-0 opacity-[0.03] pointer-events-none"
-                            style={{
-                              backgroundImage: 'radial-gradient(#000 1px, transparent 1px)',
-                              backgroundSize: '16px 16px',
-                            }}
-                          />
-
-                          {/* 小类暗色标题条 (完全符合设计图左侧栏深色条风格) */}
-                          <div className="flex items-center justify-between bg-[#404040] px-3 py-1.5 shadow-sm relative border-b border-white/5">
-                            {/* 细微的对角线或杂色纹理 */}
-                            <div
-                              className="absolute inset-0 opacity-10 pointer-events-none"
-                              style={{
-                                backgroundImage:
-                                  'repeating-linear-gradient(45deg, transparent, transparent 2px, #fff 2px, #fff 4px)',
-                              }}
-                            />
-
-                            <div className="flex items-center gap-2 relative">
-                              <div className="w-1.25 h-1.25 border border-white/70 box-content" />
-                              <h4 className="text-[13px] font-bold text-[#efefef] tracking-widest relative -top-[0.5px]">
-                                <HighlightText
-                                  text={t(`lang:${category.name}`, { defaultValue: category.name })}
-                                  highlight={searchQuery}
-                                />
-                              </h4>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 bg-black/40 rounded-full px-2.5 py-0.5 backdrop-blur-sm relative">
-                              <svg
-                                width="10"
-                                height="10"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                                className="text-white/60"
-                              >
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                              </svg>
-                              {/* TODO: i18n */}
-                              <span className="text-[10px] text-white/90 font-[Outfit] tracking-wider relative top-[0.5px]">
-                                {category.notes.length}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* 卡片网格 */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-3.5 relative">
-                            {category.notes.map((note, index) => (
-                              <NoteCard
-                                key={note.id}
-                                note={note}
-                                index={index}
-                                searchQuery={searchQuery}
-                                isFocused={note.id === focusedNoteId}
-                                onJump={handleJump}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                {entry.displayName}
+                {entry.key === activeKey && (
+                  <motion.div
+                    layoutId="collections-sidebar-active"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#ffff21]"
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <ScrollArea scrollY scrollX={false} contentClassName="py-2">
+            <nav className="flex flex-col gap-3">
+              {groupedEntries.map((group) => (
+                <div key={group.mapId} className="flex flex-col">
+                  <div className="px-4 pt-2 pb-1">
+                    <span className="text-[10px] text-white/35 truncate">{group.mapName}</span>
                   </div>
-                ))}
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full py-10 flex flex-col items-center justify-center opacity-50 mt-10">
-              <span className="text-xs text-[#888] tracking-widest font-[Outfit]">NO MATCHING RECORDS FOUND</span>
+                  {group.entries.map((entry) => (
+                    <SidebarCollectionItem
+                      key={entry.key}
+                      entry={entry}
+                      markedCount={markedCountByKey.get(entry.key) ?? 0}
+                      active={entry.key === activeKey}
+                      searching={!!searchQuery.trim()}
+                      onSelect={() => setActiveKey(entry.key)}
+                      onToggleAllMarked={() => {
+                        const markableTotal = entry.jumpableIds.length;
+                        const markedCount = markedCountByKey.get(entry.key) ?? 0;
+                        service.dataService.mapDataService.entityDataService.markEntities(
+                          entry.mapId,
+                          entry.jumpableIds,
+                          markedCount < markableTotal
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
+              ))}
+            </nav>
+          </ScrollArea>
+        )}
+      </aside>
+
+      {/* ===== 右侧：专题详情 ===== */}
+      <div className="flex-1 min-w-0 flex flex-col bg-white overflow-hidden">
+        {/* 专题头（motion exit 卸载在本项目 React Compiler 下不可靠，这里只用挂载动画 + key 切换） */}
+        {activeEntry && (
+          <motion.header
+            key={activeEntry.key}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.15 }}
+            className="shrink-0 px-5 pt-4 pb-3"
+          >
+            {/* 标题行：桌面端并入搜索与跳转设置，节省一行 */}
+            <div className="flex items-center gap-2.5" onKeyDown={handleSearchKeyDown}>
+              <h3 className="flex-1 min-w-0 text-xl font-bold text-[#222] tracking-wide leading-tight truncate">
+                <HighlightText text={activeEntry.displayName} highlight={searchQuery} />
+              </h3>
+              {!isMobile && searchControls}
             </div>
-          )}
+
+            {activeEntry.displayDesc && (
+              <p className="text-[11px] text-[#888] leading-relaxed mt-1.5 line-clamp-2">
+                <HighlightText text={activeEntry.displayDesc} highlight={searchQuery} />
+              </p>
+            )}
+            <div className="h-px w-full bg-linear-to-r from-black/15 to-transparent mt-3" />
+          </motion.header>
+        )}
+
+        {/* 移动端工具行 */}
+        {isMobile && (
+          <div className="shrink-0 px-5 pb-2.5 flex items-center gap-2.5" onKeyDown={handleSearchKeyDown}>
+            {searchControls}
+          </div>
+        )}
+
+        {/* 详情滚动区 */}
+        <div ref={detailScrollRef} className="flex-1 min-h-0 relative">
+          <ScrollArea className="h-full w-full" scrollY scrollX={false} contentClassName="px-5">
+            {activeEntry ? (
+              renderDetail(activeEntry)
+            ) : (
+              <div className="py-16 flex flex-col items-center justify-center opacity-50">
+                <span className="text-xs text-[#888] tracking-widest font-[Outfit]">NO DATA</span>
+              </div>
+            )}
+          </ScrollArea>
         </div>
       </div>
-    </ScrollArea>
+    </div>
   );
 });
 

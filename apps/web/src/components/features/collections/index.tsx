@@ -2,6 +2,7 @@ import { cn } from '@endfieldmap/tools';
 import {
   ButtonWithAudio,
   ChevronUp,
+  Deco7Dots,
   Dialog,
   LogoLoading,
   MapIcon,
@@ -204,9 +205,38 @@ export const CollectionsEntry = () => {
 
   return (
     <>
-      <ZmdRoundIconButton onClick={() => setOpen(true)}>
-        <MapIcon />
-      </ZmdRoundIconButton>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1, transition: { duration: 0.2, ease: 'backOut' } }}
+        className={cn(
+          'fixed top-40 right-4 text-white bg-[#242421]/70 z-1',
+          'bg-[linear-gradient(-45deg,#3a3a3a_0,#3a3a3a_12.5%,#3a3a3a00_12.5%,#3a3a3a00_37.5%,#3a3a3a_37.5%,#3a3a3a_62.5%,#3a3a3a00_62.5%,#3a3a3a00_87.5%,#3a3a3a_87.5%,#3a3a3a_100%)]',
+          'bg-repeat bg-size-[0.3em_0.3em]'
+        )}
+      >
+        <ButtonWithAudio
+          className="flex w-full p-2 gap-1.5 hover:text-[#fdfb55] items-start"
+          onClick={() => setOpen(true)}
+        >
+          <MapIcon className="text-lg md:text-xl mt-0.5" />
+          <div className="flex-1 flex flex-col items-end">
+            <div className="text-base md:text-lg font-extrabold relative pl-3 [text-shadow:0_0.1em_0.2em_rgba(0,0,0,0.5)] whitespace-nowrap">
+              <div className="absolute text-xs left-0 top-0 font-medium text-[#d2d2d2]">//</div>
+              {/* TODO: i18n */}
+              收集专题
+            </div>
+            <div className="text-[#d2d2d2] text-[10px] md:text-xs [text-shadow:0_0.05em_0.1em_rgba(0,0,0,0.5)]">
+              <span className="font-medium">/</span>
+              {/* TODO: i18n */}
+              收集专题
+            </div>
+          </div>
+          <div className="text-xs bg-[#fffa00] p-0.5 pb-1 relative flex flex-col items-center shadow-[0_0.1em_0.5em_rgba(0,0,0,0.7)] w-4 overflow-hidden">
+            <MapIcon className="text-[#313131] w-full" />
+            <Deco7Dots className="text-[#313131]/30 w-full mx-1" />
+          </div>
+        </ButtonWithAudio>
+      </motion.div>
       <Collections open={open} onClose={() => setOpen(false)} />
     </>
   );

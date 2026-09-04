@@ -3,9 +3,10 @@ import { MapData } from '@endfieldmap/map-core';
 // 单个分类项接口
 export interface CollectionIdItem {
   id: string;
-  levelLogicId: number;
+  levelLogicId: number | null;
   name: string;
   desc: string;
+  icon?: string;
 }
 
 export interface CategoryItem {
