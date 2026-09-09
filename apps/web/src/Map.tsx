@@ -129,6 +129,7 @@ function EndfieldMap() {
   const { t } = useTranslation('common');
   const container = useRef<HTMLDivElement>(null);
   const { adapter } = useMapAdapter(container);
+  const ThemedComponents = uiManager.ThemedComponents;
   const { pipWindow, requestPiP, closePiP, isSupported } = usePiP({
     onClose: () => uiManager.setPiPStatus(false),
   });
@@ -176,7 +177,7 @@ function EndfieldMap() {
             {t('pip.back')}
           </ZmdSquareButton>
         </div>
-        {/* 画中画窗口只保留地图本体，避免其余组件干扰小窗浏览 */}
+        {/* 画中画窗口只保留地图本体与标点弹窗，避免其余组件干扰小窗浏览 */}
         <WindowProvider window={pipWindow}>
           {createPortal(
             <div className="relative w-full h-full overflow-hidden">
@@ -189,6 +190,19 @@ function EndfieldMap() {
                 <ArrowLeftIcon className="text-base" />
                 {t('pip.backToMain')}
               </button>
+
+              {/* 标点弹窗：内容经 OL Overlay 挂入地图视口，须在小窗内渲染才会跟随地图显示 */}
+              {adapter && service.dataService.mapDataService && (
+                <AdapterProvider adapter={adapter}>
+                  <Suspense>
+                    <ThemedComponents.RootProvider>
+                      <Suspense>
+                        <ThemedComponents.map.Popup />
+                      </Suspense>
+                    </ThemedComponents.RootProvider>
+                  </Suspense>
+                </AdapterProvider>
+              )}
             </div>,
             pipWindow.document.body
           )}
