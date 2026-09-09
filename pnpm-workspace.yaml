@@ -1,6 +1,6 @@
 packages:
-  - 'packages/*' # 可发布库
-  - 'apps/*' # 应用（不发布）
+  - packages/*
+  - apps/*
 
 allowBuilds:
   '@firebase/util': true
@@ -12,29 +12,34 @@ allowBuilds:
   rxdb: true
   unrs-resolver: true
 
-overrides:
-  vite: '^8.0.0-beta.13'
-  typescript: '~5.9.3'
-  lightningcss: '1.30.1'
-
 catalog:
-  typescript: '~5.9.3'
-  vite: '8.0.0-beta.16'
-  vitest: '^4.1.11'
-  react: '^19.2.8'
-  react-dom: '^19.2.8'
-  '@types/react': '^19.2.18'
-  '@types/react-dom': '^19.2.5'
-  mobx: '^6.16.1'
-  prettier: '3.9.5'
-  eslint: '^10.9.1'
-  tailwindcss: '^4.3.3'
-  '@tailwindcss/vite': '^4.3.3'
-  '@tailwindcss/postcss': '^4.3.3'
-  motion: '^12.43.0'
-  rxdb: '17.4.0'
-  i18next: '^26.4.0'
-  zod: '^4.4.3'
-  rxjs: '^7.8.2'
-  '@tanstack/react-db': '0.1.92'
-  '@tanstack/rxdb-db-collection': '0.1.80'
+  typescript: ~5.9.3
+  vite: 8.0.0-beta.16
+  vitest: ^4.1.11
+  react: ^19.2.8
+  react-dom: ^19.2.8
+  '@types/react': ^19.2.18
+  '@types/react-dom': ^19.2.7
+  mobx: ^6.16.1
+  prettier: 3.9.6
+  eslint: ^10.10.0
+  tailwindcss: ^4.3.3
+  '@tailwindcss/vite': ^4.3.3
+  '@tailwindcss/postcss': ^4.3.3
+  motion: ^12.43.0
+  rxdb: 17.4.0
+  i18next: ^26.4.2
+  zod: ^4.5.4
+  rxjs: ^7.8.2
+  '@tanstack/react-db': 0.1.92
+  '@tanstack/rxdb-db-collection': 0.1.80
+
+overrides:
+  lightningcss: 1.30.1
+  typescript: ~5.9.3
+  vite: 8.0.0-beta.16
+  postcss: '>=8.5.23'
+  serialize-javascript: '>=7.0.5'
+  decode-uri-component: '>=0.5.0'
+  uuid: ^11.1.1
+  fast-uri: '>=3.1.6'
