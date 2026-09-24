@@ -1,8 +1,9 @@
+import type { MapDataJson } from '@endfieldmap/map-core/types/map';
 import { describe, expect, it } from 'vitest';
 
 import { MapDataManager } from './map';
 
-function createMapData() {
+function createMapData(): MapDataJson {
   return {
     version: '1.0.0',
     data: [
@@ -55,6 +56,38 @@ describe('MapDataManager', () => {
 
     manager.setCurrentMap('map_2');
     expect(manager.currentMapId).toBe('map_2');
+  });
+
+  it('resolves former map ids declared in aliases to the renamed map', () => {
+    const data = createMapData();
+    data.data[1] = { ...data.data[1], id: 'map_2_lv1', aliases: ['map_2'] };
+    const manager = new MapDataManager(data);
+
+    expect(manager.getMapData('map_2')?.id).toBe('map_2_lv1');
+    expect(manager.resolveMapId('map_2')).toBe('map_2_lv1');
+    expect(manager.resolveMapId('map_1')).toBe('map_1');
+    expect(manager.resolveMapId('missing')).toBeUndefined();
+    expect(manager.xyz2crd({ x: 50, y: 0, z: 60 }, 'map_2')).toEqual(
+      manager.xyz2crd({ x: 50, y: 0, z: 60 }, 'map_2_lv1')
+    );
+    expect(manager.mapIds).toEqual(['map_1', 'map_2_lv1']);
+
+    manager.setCurrentMap('map_2');
+    expect(manager.currentMapId).toBe('map_2_lv1');
+    expect(manager.currentMap?.name).toBe('Map Two');
+  });
+
+  it('finds the map owning a level-scoped key by longest map id prefix', () => {
+    const data = createMapData();
+    data.data.push({ ...data.data[1], id: 'map_2_lv1' });
+    const manager = new MapDataManager(data);
+
+    expect(manager.getMapIdByLevelKey('map_1_lv001_2_3')).toBe('map_1');
+    expect(manager.getMapIdByLevelKey('map_2_lv001_2_3')).toBe('map_2');
+    expect(manager.getMapIdByLevelKey('map_2_lv1_3_3')).toBe('map_2_lv1');
+    expect(manager.getMapIdByLevelKey('map_2_lv1')).toBe('map_2_lv1');
+    expect(manager.getMapIdByLevelKey('map_10_lv001_1_1')).toBeUndefined();
+    expect(manager.getMapIdByLevelKey('other_lv001_1_1')).toBeUndefined();
   });
 
   it('throws for invalid map data or unknown map ids', () => {

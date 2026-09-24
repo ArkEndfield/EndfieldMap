@@ -29,7 +29,7 @@ function registerShareLinkParams(): void {
 
 export async function applyShareLinkParams(): Promise<void> {
   const params = urlStateManager.readInitialParams();
-  const mapId = params.map as string | undefined;
+  const rawMapId = params.map as string | undefined;
   const entityId = params.id as number | undefined;
   const selectKeys = params.select as string[] | undefined;
 
@@ -40,6 +40,8 @@ export async function applyShareLinkParams(): Promise<void> {
   const entityData = service.dataService.mapDataService.entityDataService;
   const dataManager = adapter.entityController.dataManager;
   const validMapIds = adapter.mapController.dataManager.mapIds;
+  // 旧链接里的地图可能已改名/拆分（如 indie -> indie_dg007），按 map_data 的 aliases 解析
+  const mapId = rawMapId === undefined ? undefined : adapter.mapController.dataManager.resolveMapId(rawMapId);
 
   const translate = (key: string, opts?: Record<string, unknown>): string =>
     service.i18nService.translate(key, { ns: 'common', ...opts });
@@ -57,9 +59,9 @@ export async function applyShareLinkParams(): Promise<void> {
   };
 
   // 1. map
-  if (mapId) {
-    if (!validMapIds.includes(mapId)) {
-      logger.warn('[ShareLink] Invalid map ID:', mapId);
+  if (rawMapId) {
+    if (!mapId) {
+      logger.warn('[ShareLink] Invalid map ID:', rawMapId);
       return;
     }
     mapState.setCurrentMap(mapId);

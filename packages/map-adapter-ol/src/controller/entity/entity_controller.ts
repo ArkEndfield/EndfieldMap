@@ -15,6 +15,7 @@ import type {
   TierDataManager
 } from '@endfieldmap/map-core';
 import { Disposer, EntityInstanceKey, EntityMapDataManager,MAP_EVENT, MarkedFeatureFilterMode, TierBadgeState } from '@endfieldmap/map-core';
+import { logger } from '@endfieldmap/tools';
 import { action, reaction } from 'mobx';
 
 export interface EntityControllerConfig {
@@ -191,6 +192,12 @@ export class EntityController extends Disposer {
     });
 
     for (const mapId of mapIds) {
+      // 实体数据与 map_data.json 分开加载，版本错开时（如 CDN 缓存）可能带着 map_data 里没有的地图：
+      // 算不出坐标，只跳过渲染，数据仍在内存
+      if (!this.mapDataManager.getMapData(mapId)) {
+        logger.warn('[EntityController] entities of unknown map, not rendered:', mapId);
+        continue;
+      }
       const groupManagers = this.dataManager.getMapGroupManagerList(mapId);
 
       for (const manager of groupManagers) {

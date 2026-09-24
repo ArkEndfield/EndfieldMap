@@ -48,8 +48,10 @@ export interface MapBaseRegionData {
 }
 
 export interface MapData {
-  /** 地图ID（map01, ...etc） */
+  /** 地图ID（map01, ...etc；单关卡独立地图直接用关卡 ID，如 indie_dg007） */
   id: string;
+  /** 旧地图 ID：地图改名/拆分后，存档与本地状态里的旧 ID 仍解析到这张图（如 indie -> indie_dg007） */
+  aliases?: string[];
   /** 地图名称（hash） */
   name: string;
   /** 地图中心点 */

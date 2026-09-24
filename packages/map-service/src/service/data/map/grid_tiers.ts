@@ -2,7 +2,7 @@ import { type GridTierItem, MAP_EVENT, type MapCoordinate, type MapData } from '
 import type { GridTiersData } from '@endfieldmap/map-service/@types/grid_tiers';
 import { AdapterRegistry } from '@endfieldmap/map-service/service/adapter_registry';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
-import { type JSONLoader } from '@endfieldmap/tools';
+import { type JSONLoader, logger } from '@endfieldmap/tools';
 import { action, computed, observable } from 'mobx';
 
 export class GridTiersDataService {
@@ -29,10 +29,17 @@ export class GridTiersDataService {
       {} as Record<MapData['id'], GridTierItem[]>
     );
     const assetUrl = this.assetService.url;
+    const mapDataManager = this.adapterRegistry.adapter.mapController.dataManager;
     const gridTiersJsonData = await this.jsonLoader.loadJSON<GridTiersData>(
       `${assetUrl.tierData}/grid_tiers.json`
     );
     Object.entries(gridTiersJsonData).forEach(([id, gridData]) => {
+      // key 是 `${关卡ID}_${x}_${y}`，地图 ID 可能自带下划线（indie_dg007），按最长地图 ID 前缀归图
+      const mapId = mapDataManager.getMapIdByLevelKey(id);
+      if (mapId === undefined) {
+        logger.warn('[GridTiersDataService] grid tier of unknown map, skipped:', id);
+        return;
+      }
       const tierData: GridTierItem = {
         id,
         name: id,
@@ -50,7 +57,6 @@ export class GridTiersDataService {
           index,
         })),
       };
-      const mapId: MapData['id'] = id.split('_')[0];
       this.adapterRegistry.adapter.tierController.addTier(mapId, tierData);
       this.gridTiersData[mapId].push(tierData);
     });

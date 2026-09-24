@@ -152,8 +152,12 @@ export class MapStateDataService {
       this.adapterRegistry.adapter.customPointController.setCustomPointVisible(visible);
     });
 
-    if (this.currentMap.value === 'unselected') {
-      this.currentMap.value = this.adapterRegistry.adapter.mapController.dataManager.mapIds[0];
+    // 首次进入是 'unselected'；存的地图也可能已改名（旧 ID 在 aliases 里）或下线：解析不了就回第一张图，
+    // 否则 setCurrentMap 抛 Invalid map id，加载页停在报错上
+    const mapDataManager = this.adapterRegistry.adapter.mapController.dataManager;
+    const storedMapId = mapDataManager.resolveMapId(this.currentMap.value) ?? mapDataManager.mapIds[0];
+    if (storedMapId !== this.currentMap.value) {
+      this.currentMap.value = storedMapId;
     }
 
     this.currentMap.registerOnValueChange((mapId) => {
@@ -222,7 +226,10 @@ export class MapStateDataService {
   }
 
   public setCurrentMap(mapId: MapData['id']) {
-    this.currentMap.value = mapId;
+    const resolved = this.adapterRegistry.hasAdapter
+      ? this.adapterRegistry.adapter.mapController.dataManager.resolveMapId(mapId)
+      : undefined;
+    this.currentMap.value = resolved ?? mapId;
   }
 
   /**

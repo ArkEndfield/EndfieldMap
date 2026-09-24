@@ -23,11 +23,34 @@ export class MapDataManager {
 
   /**
    * 获取地图数据
-   * @param id 地图id
+   * @param id 地图id，也接受地图声明的旧 ID（aliases）
    * @returns 地图数据
    */
   public getMapData(id: MapData['id']) {
-    return this.data.find((map) => map.id === id);
+    return this.data.find((map) => map.id === id) ?? this.data.find((map) => map.aliases?.includes(id));
+  }
+
+  /**
+   * 解析成当前数据里的地图 ID：旧 ID（aliases）换成新 ID，未知 ID 返回 undefined
+   * @param id 地图id
+   */
+  public resolveMapId(id: MapData['id']): MapData['id'] | undefined {
+    return this.getMapData(id)?.id;
+  }
+
+  /**
+   * 关卡级 key（关卡 ID、网格层级 ID 等，如 map01_lv001_2_3）所属的地图：
+   * 取 key 等于或以 `${id}_` 开头的最长地图 ID，indie_dg007_3_3 归 indie_dg007 而不是按首段归 indie
+   * @param key 关卡级 key
+   */
+  public getMapIdByLevelKey(key: string): MapData['id'] | undefined {
+    let matched: MapData['id'] | undefined;
+    for (const { id } of this.data) {
+      if ((key === id || key.startsWith(`${id}_`)) && (matched === undefined || id.length > matched.length)) {
+        matched = id;
+      }
+    }
+    return matched;
   }
 
   /**
@@ -106,9 +129,10 @@ export class MapDataManager {
 
   @action
   setCurrentMap(id: MapData['id']) {
-    if (!this.data.find((map) => map.id === id)) {
+    const mapId = this.resolveMapId(id);
+    if (mapId === undefined) {
       throw new Error('Invalid map id');
     }
-    this.currentMapId = id;
+    this.currentMapId = mapId;
   }
 }
