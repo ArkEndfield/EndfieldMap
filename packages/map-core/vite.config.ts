@@ -1,3 +1,4 @@
+import babel from '@rolldown/plugin-babel';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import dts from 'unplugin-dts/vite';
@@ -41,14 +42,14 @@ export default defineConfig(({ mode }) => {
       sourcemap: false,
     },
     plugins: [
-      react({
-        babel: {
-          plugins: [
-            ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-            ['@babel/plugin-transform-class-properties', { loose: true }],
-            ['@babel/plugin-transform-class-static-block'],
-          ],
-        },
+      react(),
+      // plugin-react 6 起 Babel 插件改由 @rolldown/plugin-babel 执行（插件与顺序不变）
+      babel({
+        plugins: [
+          ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+          ['@babel/plugin-transform-class-properties', { loose: true }],
+          ['@babel/plugin-transform-class-static-block'],
+        ],
       }),
       dts({
         include: ['src/**/*'],

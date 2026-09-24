@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-`pnpm@10.30.1` + Turborepo orchestrate everything; never run `npm`/`yarn`.
+`pnpm@11` (`packageManager` in root `package.json`; CI's global pnpm switches to it) + Turborepo orchestrate everything; never run `npm`/`yarn`. pnpm 11 refuses versions published less than 24 h ago, and the lockfile must stay `--frozen-lockfile`-installable for CI.
 
 **Dev**
 
@@ -102,7 +102,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Build pipeline highlights (`apps/web/vite.config.ts`)
 
-- React plugin Babel pipeline: `babel-plugin-react-compiler` (auto-memoization), `@babel/plugin-proposal-decorators` `'2023-11'`, `@babel/plugin-transform-class-properties` `loose:true`, `@babel/plugin-transform-class-static-block`.
+- Babel pipeline (`@vitejs/plugin-react` 6 no longer runs Babel; `@rolldown/plugin-babel` does): `reactCompilerPreset()` (auto-memoization), `@babel/plugin-proposal-decorators` `'2023-11'`, `@babel/plugin-transform-class-properties` `loose:true`, `@babel/plugin-transform-class-static-block`. Presets run last-to-first, so the compiler preset is listed last to keep it first; library packages use the same plugins without the compiler.
 - `manualChunks` strategy is explicit: `rxjs-vendor`, `rxdb-vendor`, `tanstack-db-vendor`, `react-vendor`, `state-vendor` (mobx), `ui-vendor` (motion + gsap), `i18n-vendor`, `map-vendor` (ol), `swiper-vendor`, `sentry-vendor`, `lightbox-vendor`. When adding a large dep, decide which bucket it falls into.
 - **Sentry is opt-in by env**: `SENTRY_AUTH_TOKEN` + `SENTRY_ORG` + `SENTRY_PROJECT` all required. When enabled, source maps build as `'hidden'` and a custom `cleanup-residual-sourcemaps` plugin deletes leftover `.map` files after upload. Locally you'll never hit this path.
 - **PWA**: `registerType: 'autoUpdate'` + manifest baked in (`name: '终末地地图资源查询 - ZMDMAP'`). `workbox-window` must remain an explicit `devDependency` of `apps/web` — Rolldown's externalization check rejects the implicit transitive import.

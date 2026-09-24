@@ -51,4 +51,20 @@ if (process.env.NODE_ENV !== 'production' && !process.env.EAS_BUILD) {
   };
 }
 
+// 原生端 react 按 RN 渲染器版本精确钉住（pnpm catalog `native`），与 web / 共享包的默认 react 不同，
+// 工作区共享包（map-hooks）因此解析到另一份 react-i18next 实例；这里强制从本应用解析，让共享 hooks 的
+// useTranslation 与 initReactI18next / I18nextProvider 使用同一实例（react / react-dom 已由 Expo 的
+// autolinking sticky resolution 去重）。
+const appSingletons = ['react-i18next'];
+const appOrigin = path.resolve(projectRoot, 'package.json');
+const upstreamResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  const isAppSingleton = appSingletons.some((name) => moduleName === name || moduleName.startsWith(`${name}/`));
+  const ctx = isAppSingleton ? { ...context, originModulePath: appOrigin } : context;
+  if (upstreamResolveRequest) {
+    return upstreamResolveRequest(ctx, moduleName, platform);
+  }
+  return ctx.resolveRequest(ctx, moduleName, platform);
+};
+
 module.exports = withNativewind(config);

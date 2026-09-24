@@ -13,31 +13,40 @@ allowBuilds:
   unrs-resolver: true
 
 catalog:
-  typescript: ~5.9.3
-  vite: 8.0.0-beta.16
-  vitest: ^4.1.11
-  react: ^19.2.8
-  react-dom: ^19.2.8
-  '@types/react': ^19.2.18
-  '@types/react-dom': ^19.2.7
+  typescript: ~6.0.3
+  vite: ^8.3.0
+  vitest: ^5.0.1
+  react: ^19.3.0
+  react-dom: ^19.3.0
+  '@types/react': ^19.3.0
+  '@types/react-dom': ^19.3.0
   mobx: ^6.16.1
-  prettier: 3.9.6
-  eslint: ^10.10.0
+  prettier: 3.9.8
+  eslint: ^10.11.0
   tailwindcss: ^4.3.3
   '@tailwindcss/vite': ^4.3.3
   '@tailwindcss/postcss': ^4.3.3
-  motion: ^12.43.0
-  rxdb: 17.4.0
+  motion: ^13.4.1
+  rxdb: 17.5.0
   i18next: ^26.4.2
-  zod: ^4.5.4
+  zod: ^4.6.5
   rxjs: ^7.8.2
-  '@tanstack/react-db': 0.1.92
-  '@tanstack/rxdb-db-collection': 0.1.80
+  '@tanstack/react-db': 0.4.1
+  '@tanstack/rxdb-db-collection': 0.1.97
+
+# 原生端 react / react-dom 必须与 react-native 内置渲染器（Libraries/Renderer/implementations/*）的
+# React 版本完全一致（Expo SDK 的 bundledNativeModules 同样精确钉住），与 web 的 react 相互独立；
+# 升级 RN / Expo SDK 时按新渲染器版本同步更新，@types/react 跟随 Expo 期望的 19.2 系列
+catalogs:
+  native:
+    react: 19.2.3
+    react-dom: 19.2.3
+    '@types/react': ~19.2.18
 
 overrides:
   lightningcss: 1.30.1
-  typescript: ~5.9.3
-  vite: 8.0.0-beta.16
+  typescript: ~6.0.3
+  vite: ^8.3.0
   postcss: '>=8.5.23'
   serialize-javascript: '>=7.0.5'
   decode-uri-component: '>=0.5.0'

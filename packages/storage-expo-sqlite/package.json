@@ -30,7 +30,7 @@
     "lint:fix": "eslint . --fix"
   },
   "peerDependencies": {
-    "expo-sqlite": "~55.0.8",
+    "expo-sqlite": "~57.0.3",
     "rxdb": "catalog:",
     "rxjs": "catalog:"
   },

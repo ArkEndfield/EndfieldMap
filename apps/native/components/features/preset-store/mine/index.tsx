@@ -1,6 +1,6 @@
 import type { PresetStoreResponseItem } from '@endfieldmap/map-service';
-import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import { useNavigation } from 'expo-router/react-navigation';
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';

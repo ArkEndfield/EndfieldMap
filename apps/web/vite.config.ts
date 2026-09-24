@@ -2,9 +2,10 @@ import { execSync } from 'node:child_process';
 import { readdirSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import babel from '@rolldown/plugin-babel';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
@@ -55,15 +56,20 @@ export default defineConfig(({ command, mode }) => {
       __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
     },
     plugins: [
-      react({
-        babel: {
-          plugins: [
-            ['babel-plugin-react-compiler'],
-            ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-            ['@babel/plugin-transform-class-properties', { loose: true }],
-            ['@babel/plugin-transform-class-static-block'],
-          ],
-        },
+      react(),
+      // plugin-react 6 起 Babel 管线由 @rolldown/plugin-babel 承担。Babel 的 presets 逆序执行：
+      // React Compiler 预设放在最后即最先运行，保持原 compiler → decorators → class-properties → static-block 顺序
+      babel({
+        presets: [
+          () => ({
+            plugins: [
+              ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+              ['@babel/plugin-transform-class-properties', { loose: true }],
+              ['@babel/plugin-transform-class-static-block'],
+            ],
+          }),
+          reactCompilerPreset(),
+        ],
       }),
       tailwindcss(),
       sentryEnabled &&

@@ -1,5 +1,6 @@
+import babel from '@rolldown/plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { copyFileSync, mkdirSync, readdirSync } from 'fs';
 import path from 'path';
 import dts from 'unplugin-dts/vite';
@@ -23,15 +24,20 @@ function copyDir(src: string, dest: string) {
 
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react({
-      babel: {
-        plugins: [
-          ['babel-plugin-react-compiler'],
-          ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-          ['@babel/plugin-transform-class-properties', { loose: true }],
-          ['@babel/plugin-transform-class-static-block'],
-        ],
-      },
+    react(),
+    // plugin-react 6 起 Babel 管线由 @rolldown/plugin-babel 承担；presets 逆序执行，
+    // React Compiler 预设放最后即最先运行，保持原 compiler → decorators → class-properties → static-block 顺序
+    babel({
+      presets: [
+        () => ({
+          plugins: [
+            ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+            ['@babel/plugin-transform-class-properties', { loose: true }],
+            ['@babel/plugin-transform-class-static-block'],
+          ],
+        }),
+        reactCompilerPreset(),
+      ],
     }),
     tailwindcss(),
     dts({
