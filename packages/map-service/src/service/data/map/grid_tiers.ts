@@ -1,5 +1,11 @@
-import { type GridTierItem, MAP_EVENT, type MapCoordinate, type MapData } from '@endfieldmap/map-core';
-import type { GridTiersData } from '@endfieldmap/map-service/@types/grid_tiers';
+import {
+  type GridTierItem,
+  MAP_EVENT,
+  type MapCoordinate,
+  type MapData,
+  type TierImageBounds,
+} from '@endfieldmap/map-core';
+import type { GridTiersData, TierVolumesData } from '@endfieldmap/map-service/@types/grid_tiers';
 import { AdapterRegistry } from '@endfieldmap/map-service/service/adapter_registry';
 import type { AssetService } from '@endfieldmap/map-service/service/asset';
 import { type JSONLoader, logger } from '@endfieldmap/tools';
@@ -30,9 +36,17 @@ export class GridTiersDataService {
     );
     const assetUrl = this.assetService.url;
     const mapDataManager = this.adapterRegistry.adapter.mapController.dataManager;
-    const gridTiersJsonData = await this.jsonLoader.loadJSON<GridTiersData>(
-      `${assetUrl.tierData}/grid_tiers.json`
-    );
+    const [gridTiersJsonData, tierVolumes] = await Promise.all([
+      this.jsonLoader.loadJSON<GridTiersData>(`${assetUrl.tierData}/grid_tiers.json`),
+      this.loadTierVolumes(`${assetUrl.tierData}/tier_volumes.json`),
+    ]);
+    // 图片 stem -> 该分层图精确覆盖的范围
+    const imageBounds = new Map<string, TierImageBounds>();
+    for (const volumes of Object.values(tierVolumes?.levels ?? {})) {
+      for (const { image } of volumes) {
+        if (image) imageBounds.set(image.stem, { lb: image.lb, rt: image.rt });
+      }
+    }
     Object.entries(gridTiersJsonData).forEach(([id, gridData]) => {
       // key 是 `${关卡ID}_${x}_${y}`，地图 ID 可能自带下划线（indie_dg007），按最长地图 ID 前缀归图
       const mapId = mapDataManager.getMapIdByLevelKey(id);
@@ -55,11 +69,15 @@ export class GridTiersDataService {
           regionId: Number(/_tier_(\d+)$/.exec(imagePath)![1]),
           level: 2,
           index,
+          bounds: imageBounds.get(imagePath),
         })),
       };
       this.adapterRegistry.adapter.tierController.addTier(mapId, tierData);
       this.gridTiersData[mapId].push(tierData);
     });
+    if (tierVolumes) {
+      this.adapterRegistry.adapter.tierController.tierDataManager.setTierVolumes(tierVolumes.levels);
+    }
 
     const initialCenter = this.adapterRegistry.adapter.mapController.getCenter();
     this.updateAvailableTiers(initialCenter);
@@ -72,6 +90,23 @@ export class GridTiersDataService {
   public dispose() {
     this.disposeFn?.();
     this.disposeFn = null;
+  }
+
+  /**
+   * tier_volumes.json 是可选数据（数据管线 maps v3 起才有）：取不到时照常显示分层，
+   * 只是无法按坐标判定所在分层，分层图也退回按分组锚定。只请求一次，不让缺文件拖慢加载。
+   */
+  private async loadTierVolumes(url: string): Promise<TierVolumesData | null> {
+    try {
+      const data = await this.jsonLoader.loadJSON<TierVolumesData>(url, 1);
+      if (data.version === 1) {
+        return data;
+      }
+      logger.warn('[GridTiersDataService] unsupported tier_volumes.json version, ignored:', data.version);
+    } catch (error) {
+      logger.warn('[GridTiersDataService] tier_volumes.json unavailable, tier detection by position disabled', error);
+    }
+    return null;
   }
 
   @action

@@ -39,8 +39,14 @@ export class TierDataInstance {
     return this.position[1];
   }
 
-  get extent() {
+  get extent(): [number, number, number, number] {
     const [crdX, crdY] = this.mapDataManager.xyz2crd({ x: this.x, y: 0, z: this.y }, this.mapId);
+    // 有精确范围（tier_volumes.json）时直接用；否则按图片尺寸从左下角推算
+    const bounds = this.data.bounds;
+    if (bounds) {
+      const [rtX, rtY] = this.mapDataManager.xyz2crd({ x: bounds.rt[0], y: 0, z: bounds.rt[1] }, this.mapId);
+      return [crdX, crdY, rtX, rtY];
+    }
     const extent: [number, number, number, number] = [
       crdX,
       crdY,

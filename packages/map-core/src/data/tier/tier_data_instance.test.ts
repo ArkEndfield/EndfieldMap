@@ -30,4 +30,26 @@ describe('TierDataInstance', () => {
     instance.setExtentExtra([5, 6]);
     expect(instance.extent).toEqual([11, 22, 16, 28]);
   });
+
+  it('uses the exact image bounds instead of the image size when known', () => {
+    const instance = new TierDataInstance(
+      'map_1' as never,
+      {
+        id: 'sub_1',
+        name: 'Sub Tier',
+        imagePath: '/tier.png',
+        regionId: 101,
+        level: 1,
+        index: 0,
+        bounds: { lb: [10, 20], rt: [40, 60] },
+      },
+      [10, 20],
+      {
+        xyz2crd: (position: { x: number; z: number }) => [position.x + 1, position.z + 2],
+      } as never
+    );
+
+    instance.setExtentExtra([5, 6]);
+    expect(instance.extent).toEqual([11, 22, 41, 62]);
+  });
 });

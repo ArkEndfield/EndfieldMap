@@ -1,3 +1,4 @@
+import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
 import { describe, expect, it } from 'vitest';
 
 import { TierDataManager } from './tier_data_manager';
@@ -87,6 +88,41 @@ describe('TierDataManager', () => {
     expect(manager.activeTier).toBeNull();
     expect(manager.activeSubTier).toBeNull();
     expect(manager.currentActiveTier).toBeNull();
+  });
+
+  it('anchors each sub tier at its exact image bounds when known', () => {
+    const manager = new TierDataManager(createMapDataManager());
+    const tier: GridTierItem = createTier('region_1');
+    tier.items[1] = { ...tier.items[1], bounds: { lb: [20, 20], rt: [30, 30] } };
+
+    const instances = manager.addTier('map_1' as never, tier);
+
+    expect(instances.get('region_1_a')?.extent).toEqual([10, 20, 10, 20]);
+    expect(instances.get('region_1_b')?.extent).toEqual([20, 20, 30, 30]);
+  });
+
+  it('locates the tier region by level and 3D position', () => {
+    const manager = new TierDataManager(createMapDataManager());
+    manager.addTier('map_1' as never, createTier('region_1'));
+    const box = { type: 'box' as const, x: 0, z: 0, yaw: 0, halfX: 10, halfZ: 10 };
+
+    expect(manager.hasTierVolumes).toBe(false);
+    manager.setTierVolumes({
+      map_1_lv001: [
+        { regionId: 101, priority: 0, shapes: [{ ...box, yMin: -30, yMax: -5 }] },
+        { regionId: 102, priority: 0, shapes: [{ ...box, yMin: 10, yMax: 40 }] },
+        // 没有叠加图的分层：判定到它时按地表处理
+        { regionId: 999, priority: 0, shapes: [{ ...box, yMin: 50, yMax: 60 }] },
+      ],
+    });
+
+    expect(manager.hasTierVolumes).toBe(true);
+    expect(manager.locateTierRegion('map_1_lv001', { x: 0, y: -10, z: 0 })?.subTierId).toBe('region_1_a');
+    expect(manager.locateTierRegion('map_1_lv001', { x: 0, y: 20, z: 0 })?.subTierId).toBe('region_1_b');
+    expect(manager.locateTierRegion('map_1_lv001', { x: 0, y: 0, z: 0 })).toBeNull();
+    expect(manager.locateTierRegion('map_1_lv001', { x: 0, y: 55, z: 0 })).toBeNull();
+    // 体积只对自己的关卡生效
+    expect(manager.locateTierRegion('map_1_lv002', { x: 0, y: -10, z: 0 })).toBeNull();
   });
 
   it('ignores missing tiers and clears active state manually', () => {

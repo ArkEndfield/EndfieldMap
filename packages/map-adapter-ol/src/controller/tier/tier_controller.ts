@@ -35,16 +35,21 @@ export class TierController {
   }
 
   public async renderTier(mapId: MapData['id'], center: Coordinate, id: string, subId?: string) {
+    await this.showTier(mapId, id, subId);
+    this.mapInstance.view.animate({
+      center: this.mapDataManager.xyz2crd({ x: center[0], y: 0, z: center[1] }, mapId),
+      duration: 300,
+    });
+  }
+
+  /** 打开分层图但不移动视图（如跟随玩家所在分层时，不打断用户正在看的位置） */
+  public async showTier(mapId: MapData['id'], id: string, subId?: string) {
     this.tierDataManager.clearActiveTier();
 
     this.tierDataManager.setActiveTier(mapId, id, subId);
 
     this.tierOverlayMaskLayer.show();
     await this.tierLayer.renderTier();
-    this.mapInstance.view.animate({
-      center: this.mapDataManager.xyz2crd({ x: center[0], y: 0, z: center[1] }, mapId),
-      duration: 300,
-    });
   }
 
   public async toggleTier(mapId: MapData['id'], center: Coordinate, id: string, subId?: string) {
