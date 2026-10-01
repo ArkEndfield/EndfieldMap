@@ -70,6 +70,79 @@
         "slower": "更慢",
         "off": "关闭"
       }
+    },
+    "player_position": {
+      "title": "玩家位置同步",
+      "description": "从森空岛同步你在终末地中的实时位置，在地图上以蓝色脉冲标记显示",
+      "need_login": "登录并绑定终末地角色后，可在地图上实时显示你的位置",
+      "need_role": "请先绑定一个终末地角色",
+      "locate": "定位到我的位置",
+      "follow_tier": {
+        "title": "跟随所在分层",
+        "description": "按森空岛同步的位置和高度判断你在洞穴、楼层等哪个分层，进出时自动打开对应的分层图"
+      }
+    }
+  },
+  "ai": {
+    "title": "AI 助手",
+    "enabled": {
+      "title": "启用 AI 助手",
+      "description": "在地图操作栏显示助手入口，可用自然语言查询点位、批量标记、规划采集路线"
+    },
+    "provider": {
+      "title": "供应商",
+      "base_url": {
+        "title": "接口地址",
+        "description": "任意 OpenAI 兼容接口的根地址，例如 https://api.deepseek.com/v1"
+      },
+      "api_key": {
+        "title": "API Key",
+        "description": "只保存在本机，请求由你的浏览器直连供应商，不会上传到 ZMDMAP 服务器"
+      },
+      "model": {
+        "title": "模型",
+        "description": "先测试连接拉取模型列表，也可以直接手动填写模型名"
+      },
+      "temperature": {
+        "title": "采样温度",
+        "description": "数值越低回答越稳定，查点位与规划路线建议保持 0 ~ 0.3"
+      },
+      "test": "测试连接",
+      "test_success": "连接成功，获取到 {{num}} 个模型",
+      "test_failed": "连接失败：{{reason}}"
+    },
+    "panel": {
+      "clear": "清空对话",
+      "close": "关闭",
+      "placeholder": "问点什么…… Enter 发送，Shift + Enter 换行",
+      "send": "发送",
+      "stop": "停止",
+      "not_configured": "还没有配置 AI 供应商。填入任意 OpenAI 兼容接口的地址与 API Key 即可开始使用。",
+      "goto_settings": "前往设置",
+      "suggestion_title": "可以这样问",
+      "suggestion": {
+        "nearby_chest": "附近还没标记的宝箱有哪些？",
+        "plan_route": "把视野附近 15 个未标记的醚质规划成一条采集路线",
+        "progress": "这张图各类点位我收集了多少？"
+      }
+    },
+    "error": {
+      "not_configured": "请先在设置里配置 AI 供应商与模型",
+      "tool_rounds_exceeded": "工具调用轮数已达上限，请把问题拆得更具体一些。"
+    },
+    "tool": {
+      "map_context": "当前地图 {{mapId}}",
+      "groups": "{{mapId}} 共 {{num}} 个点位分组",
+      "query": "命中 {{total}} 个点位，返回 {{returned}} 个",
+      "focus": "已定位到点位 {{id}}",
+      "focus_failed": "未找到点位 {{id}}",
+      "mark": "已标记 {{num}} 个点位",
+      "unmark": "已取消标记 {{num}} 个点位",
+      "highlight": "已高亮 {{num}} 个点位",
+      "unhighlight": "已取消高亮 {{num}} 个点位",
+      "route": "已规划 {{num}} 个点位，总路程约 {{distance}}",
+      "route_saved": "已规划 {{num}} 个点位，总路程约 {{distance}}，已保存为路线",
+      "route_empty": "没有可规划的点位"
     }
   },
   "data": {

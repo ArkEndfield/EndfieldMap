@@ -39,12 +39,18 @@
     "username_too_short": "El nombre de usuario debe tener al menos 3 caracteres",
     "username_too_long": "El nombre de usuario debe tener máximo 20 caracteres",
     "username_invalid": "El nombre de usuario solo puede contener letras, números y guiones bajos",
-    "password_too_short": "La contraseña debe tener al menos 6 caracteres",
-    "password_too_long": "La contraseña debe tener máximo 50 caracteres",
+    "password_too_short": "La contraseña debe tener al menos 8 caracteres",
+    "password_too_long": "La contraseña debe tener máximo 72 caracteres",
     "password_mismatch": "Las contraseñas no coinciden",
     "agree_required": "Por favor acepte el acuerdo de usuario",
     "old_password_required": "Por favor ingrese su contraseña actual",
-    "new_password_too_short": "La nueva contraseña debe tener al menos 6 caracteres",
+    "new_password_too_short": "La nueva contraseña debe tener al menos 8 caracteres",
     "confirm_password_required": "Por favor confirme su nueva contraseña"
+  },
+  "route": {
+    "empty": "The route has no points and cannot be saved",
+    "import_failed": "Failed to import route",
+    "not_found": "Route not found",
+    "no_publishable_points": "This route has no publishable points. Re-draw it on this site first."
   }
 }

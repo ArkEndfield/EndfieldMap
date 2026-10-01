@@ -45,12 +45,18 @@
     "username_too_short": "使用者名稱至少3個字元",
     "username_too_long": "使用者名稱最多20個字元",
     "username_invalid": "使用者名稱只能包含字母、數字和底線",
-    "password_too_short": "密碼至少6位",
-    "password_too_long": "密碼最多50位",
+    "password_too_short": "密碼至少8位",
+    "password_too_long": "密碼最多72位",
     "password_mismatch": "兩次輸入的密碼不一致",
     "agree_required": "請同意使用者協議",
     "old_password_required": "請輸入舊密碼",
-    "new_password_too_short": "新密碼至少6位",
+    "new_password_too_short": "新密碼至少8位",
     "confirm_password_required": "請確認新密碼"
+  },
+  "route": {
+    "empty": "路線還沒有任何點位，無法儲存",
+    "import_failed": "匯入路線失敗",
+    "not_found": "找不到該路線",
+    "no_publishable_points": "該路線沒有可發佈的點位，請在本站重新描點後再發佈"
   }
 }

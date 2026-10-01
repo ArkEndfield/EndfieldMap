@@ -191,6 +191,59 @@
           "error_tip": "文件格式不合法或解析错误"
         }
       }
+    },
+    "route_manager": "路线管理",
+    "close_route_manager": "关闭管理器",
+    "route_operating_tip": "正在处于路线操作状态，请先结束操作",
+    "route": {
+      "display": "显示路线",
+      "no_data": "暂无路线，可在地图上描点新建，或从森空岛导入",
+      "pick": {
+        "start": "新建路线",
+        "in_mode": "正在描点，点击地图上的标点依次添加"
+      },
+      "undo": "撤销上一步",
+      "save": "保存路线",
+      "cancel": "取消",
+      "name_placeholder": "请输入路线名称",
+      "point_count": "已选 {{count, number}} 个点",
+      "empty_tip": "还没有添加任何点位",
+      "delete": {
+        "confirm": "确定要删除路线「{{name}}」吗？此操作不可恢复",
+        "fail_tip": "删除失败"
+      },
+      "rename": "重命名",
+      "publish": {
+        "start": "发布到森空岛",
+        "success": "已发布到森空岛",
+        "fail": "发布失败：{{reason}}",
+        "no_skland": "该路线没有可发布的点位，请在本站重新描点后再发布"
+      },
+      "unpublish": {
+        "start": "删除森空岛路线",
+        "success": "已删除森空岛路线",
+        "confirm": "确定要删除森空岛上发布的这条路线吗？"
+      },
+      "source": {
+        "local": "本站自建",
+        "skland": "森空岛导入"
+      },
+      "import": {
+        "title": "从森空岛导入路线",
+        "desc": "浏览森空岛路线广场，选择一条导入到本地浏览器暂存；本站不会保存森空岛的数据。",
+        "search_placeholder": "搜索路线标题",
+        "sort_hot": "最热",
+        "sort_new": "最新",
+        "empty": "没有找到路线",
+        "load_more": "加载更多",
+        "import": "导入到本地",
+        "importing": "导入中...",
+        "success": "已导入到本地浏览器",
+        "fail": "导入失败：{{reason}}",
+        "author": "作者",
+        "segments": "{{count, number}} 段"
+      },
+      "untitled": "未命名路线"
     }
   }
 }

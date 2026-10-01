@@ -45,12 +45,18 @@
     "username_too_short": "Имя пользователя должно содержать минимум 3 символа",
     "username_too_long": "Имя пользователя должно содержать максимум 20 символов",
     "username_invalid": "Имя пользователя может содержать только буквы, цифры и подчеркивания",
-    "password_too_short": "Пароль должен содержать минимум 6 символов",
-    "password_too_long": "Пароль должен содержать максимум 50 символов",
+    "password_too_short": "Пароль должен содержать минимум 8 символов",
+    "password_too_long": "Пароль должен содержать максимум 72 символов",
     "password_mismatch": "Пароли не совпадают",
     "agree_required": "Пожалуйста, примите пользовательское соглашение",
     "old_password_required": "Пожалуйста, введите текущий пароль",
-    "new_password_too_short": "Новый пароль должен содержать минимум 6 символов",
+    "new_password_too_short": "Новый пароль должен содержать минимум 8 символов",
     "confirm_password_required": "Пожалуйста, подтвердите новый пароль"
+  },
+  "route": {
+    "empty": "The route has no points and cannot be saved",
+    "import_failed": "Failed to import route",
+    "not_found": "Route not found",
+    "no_publishable_points": "This route has no publishable points. Re-draw it on this site first."
   }
 }

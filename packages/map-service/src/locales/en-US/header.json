@@ -14,7 +14,8 @@
   "head_menu": {
     "filter": "Resource Filter",
     "poles": "Poles",
-    "custom": "Custom Points"
+    "custom": "Custom Points",
+    "route": "Routes"
   },
   "user": {
     "title": "Account",
@@ -96,6 +97,28 @@
       },
       "start_now": "Sync Now",
       "no_uid_tip": "Switch to a UID to start syncing data"
+    },
+    "skland": {
+      "button": "Sync Skland Marks",
+      "conflict": {
+        "title": "Data mismatch",
+        "intro": "Your Skland marks and this site differ. Choose which side to keep for each direction.",
+        "remoteOnly": "Marked on Skland, not here",
+        "remoteOnlyDesc": "Choosing \"Use Skland\" marks these points locally too.",
+        "localOnly": "Marked here, not on Skland",
+        "localOnlyDesc": "Choosing \"Use this site\" writes these marks back to Skland (requires network).",
+        "useRemote": "Use Skland",
+        "useLocal": "Use this site",
+        "skip": "Skip",
+        "apply": "Apply",
+        "applying": "Applying…",
+        "unresolved": "{{count}} mark(s) have no matching data on this site and cannot be synced",
+        "done": "Sync finished: {{localAdded}} added locally, {{pushed}} updated on Skland",
+        "pushFailed": "Local sync done, but {{count}} write(s) to Skland failed"
+      },
+      "failed": "Skland sync failed",
+      "no_role": "Bind an Endfield role first",
+      "inSync": "Skland and this site are already in sync"
     }
   }
 }

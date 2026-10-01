@@ -191,6 +191,59 @@
           "error_tip": "Invalid file format or parsing error"
         }
       }
+    },
+    "route_manager": "Routes",
+    "close_route_manager": "Close manager",
+    "route_operating_tip": "A route operation is in progress. Finish it first.",
+    "route": {
+      "display": "Show routes",
+      "no_data": "No routes yet. Draw one on the map or import from Skland.",
+      "pick": {
+        "start": "New route",
+        "in_mode": "Picking points — click map markers in order"
+      },
+      "undo": "Undo",
+      "save": "Save route",
+      "cancel": "Cancel",
+      "name_placeholder": "Enter a route name",
+      "point_count": "{{count, number}} point(s) selected",
+      "empty_tip": "No points added yet",
+      "delete": {
+        "confirm": "Delete route \"{{name}}\"? This cannot be undone.",
+        "fail_tip": "Delete failed"
+      },
+      "rename": "Rename",
+      "publish": {
+        "start": "Publish to Skland",
+        "success": "Published to Skland",
+        "fail": "Publish failed: {{reason}}",
+        "no_skland": "This route has no publishable points. Re-draw it on this site first."
+      },
+      "unpublish": {
+        "start": "Delete on Skland",
+        "success": "Deleted the route on Skland",
+        "confirm": "Delete this route on Skland?"
+      },
+      "source": {
+        "local": "Local",
+        "skland": "Imported"
+      },
+      "import": {
+        "title": "Import route from Skland",
+        "desc": "Browse the Skland route square and import one into your browser. This site does not store Skland data.",
+        "search_placeholder": "Search route title",
+        "sort_hot": "Hot",
+        "sort_new": "New",
+        "empty": "No routes found",
+        "load_more": "Load more",
+        "import": "Import locally",
+        "importing": "Importing...",
+        "success": "Imported into your browser",
+        "fail": "Import failed: {{reason}}",
+        "author": "Author",
+        "segments": "{{count, number}} segment(s)"
+      },
+      "untitled": "Untitled route"
     }
   }
 }

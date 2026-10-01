@@ -371,14 +371,20 @@ export default interface Resources {
       "generate": "生成二维码失败",
       "query_status": "查询状态失败"
     },
+    "route": {
+      "empty": "路线还没有任何点位，无法保存",
+      "import_failed": "导入路线失败",
+      "no_publishable_points": "该路线没有可发布的点位，请在本站重新描点后再发布",
+      "not_found": "找不到该路线"
+    },
     "schema": {
       "agree_required": "请同意用户协议",
       "confirm_password_required": "请确认新密码",
-      "new_password_too_short": "新密码至少6位",
+      "new_password_too_short": "新密码至少8位",
       "old_password_required": "请输入旧密码",
       "password_mismatch": "两次输入的密码不一致",
-      "password_too_long": "密码最多50位",
-      "password_too_short": "密码至少6位",
+      "password_too_long": "密码最多72位",
+      "password_too_short": "密码至少8位",
       "username_invalid": "用户名只能包含字母、数字和下划线",
       "username_too_long": "用户名最多20个字符",
       "username_too_short": "用户名至少3个字符"
@@ -396,7 +402,8 @@ export default interface Resources {
     "head_menu": {
       "custom": "自定义标点",
       "filter": "资源标点筛选",
-      "poles": "电线杆管理"
+      "poles": "电线杆管理",
+      "route": "路线管理"
     },
     "map": {
       "change_map": "切换地图",
@@ -441,6 +448,28 @@ export default interface Resources {
         "confirm": "确定要注销账户吗？",
         "success": "账户注销成功",
         "title": "注销账户"
+      },
+      "skland": {
+        "button": "同步森空岛标点",
+        "conflict": {
+          "apply": "应用",
+          "applying": "处理中…",
+          "done": "同步完成：本地新增 {{localAdded}}，森空岛更新 {{pushed}}",
+          "intro": "森空岛与本站的标点标记存在差异，请分别为两个方向选择要保留的数据。",
+          "localOnly": "本站已标记、森空岛未标记",
+          "localOnlyDesc": "选择「用本站」会把这些标点同步到森空岛（需联网写入）。",
+          "pushFailed": "已同步本地，但写入森空岛有 {{count}} 条失败",
+          "remoteOnly": "森空岛已标记、本站未标记",
+          "remoteOnlyDesc": "选择「用森空岛」会把这些标点在本地也标记上。",
+          "skip": "跳过",
+          "title": "数据不一致",
+          "unresolved": "其中 {{count}} 个标点在本站没有对应数据，无法同步",
+          "useLocal": "用本站",
+          "useRemote": "用森空岛"
+        },
+        "failed": "森空岛同步失败",
+        "inSync": "森空岛与本站数据已一致，无需同步",
+        "no_role": "请先绑定一个终末地角色"
       },
       "switch_confirm": "切换到 uid {{uid}} 以开始同步吗？",
       "switch_confirm_keep": "是否把当前本地数据合并到 UID {{uid}}？（选「不保留」会清空本地并以云端为准）",
@@ -579,6 +608,68 @@ export default interface Resources {
       "subscrible": "关注",
       "title": "关于"
     },
+    "ai": {
+      "enabled": {
+        "description": "在地图操作栏显示助手入口，可用自然语言查询点位、批量标记、规划采集路线",
+        "title": "启用 AI 助手"
+      },
+      "error": {
+        "not_configured": "请先在设置里配置 AI 供应商与模型",
+        "tool_rounds_exceeded": "工具调用轮数已达上限，请把问题拆得更具体一些。"
+      },
+      "panel": {
+        "clear": "清空对话",
+        "close": "关闭",
+        "goto_settings": "前往设置",
+        "not_configured": "还没有配置 AI 供应商。填入任意 OpenAI 兼容接口的地址与 API Key 即可开始使用。",
+        "placeholder": "问点什么…… Enter 发送，Shift + Enter 换行",
+        "send": "发送",
+        "stop": "停止",
+        "suggestion": {
+          "nearby_chest": "附近还没标记的宝箱有哪些？",
+          "plan_route": "把视野附近 15 个未标记的醚质规划成一条采集路线",
+          "progress": "这张图各类点位我收集了多少？"
+        },
+        "suggestion_title": "可以这样问"
+      },
+      "provider": {
+        "api_key": {
+          "description": "只保存在本机，请求由你的浏览器直连供应商，不会上传到 ZMDMAP 服务器",
+          "title": "API Key"
+        },
+        "base_url": {
+          "description": "任意 OpenAI 兼容接口的根地址，例如 https://api.deepseek.com/v1",
+          "title": "接口地址"
+        },
+        "model": {
+          "description": "先测试连接拉取模型列表，也可以直接手动填写模型名",
+          "title": "模型"
+        },
+        "temperature": {
+          "description": "数值越低回答越稳定，查点位与规划路线建议保持 0 ~ 0.3",
+          "title": "采样温度"
+        },
+        "test": "测试连接",
+        "test_failed": "连接失败：{{reason}}",
+        "test_success": "连接成功，获取到 {{num}} 个模型",
+        "title": "供应商"
+      },
+      "title": "AI 助手",
+      "tool": {
+        "focus": "已定位到点位 {{id}}",
+        "focus_failed": "未找到点位 {{id}}",
+        "groups": "{{mapId}} 共 {{num}} 个点位分组",
+        "highlight": "已高亮 {{num}} 个点位",
+        "map_context": "当前地图 {{mapId}}",
+        "mark": "已标记 {{num}} 个点位",
+        "query": "命中 {{total}} 个点位，返回 {{returned}} 个",
+        "route": "已规划 {{num}} 个点位，总路程约 {{distance}}",
+        "route_empty": "没有可规划的点位",
+        "route_saved": "已规划 {{num}} 个点位，总路程约 {{distance}}，已保存为路线",
+        "unhighlight": "已取消高亮 {{num}} 个点位",
+        "unmark": "已取消标记 {{num}} 个点位"
+      }
+    },
     "data": {
       "cache": {
         "clear": "清除缓存",
@@ -684,6 +775,17 @@ export default interface Resources {
         }
       },
       "move_center": "回到地图中心",
+      "player_position": {
+        "description": "从森空岛同步你在终末地中的实时位置，在地图上以蓝色脉冲标记显示",
+        "follow_tier": {
+          "description": "按森空岛同步的位置和高度判断你在洞穴、楼层等哪个分层，进出时自动打开对应的分层图",
+          "title": "跟随所在分层"
+        },
+        "locate": "定位到我的位置",
+        "need_login": "登录并绑定终末地角色后，可在地图上实时显示你的位置",
+        "need_role": "请先绑定一个终末地角色",
+        "title": "玩家位置同步"
+      },
       "title": "地图",
       "toggle_layer": "开启/关闭分层",
       "wasd_move_speed": {
@@ -742,6 +844,7 @@ export default interface Resources {
       "cancel_operation": "取消操作",
       "close_custom_point_manager": "关闭管理器",
       "close_electric_pole_manager": "关闭管理器",
+      "close_route_manager": "关闭管理器",
       "custom_point": {
         "create": {
           "in_mode": "正在创建自定义点位",
@@ -863,6 +966,58 @@ export default interface Resources {
         "empty": "暂无预设，请先创建"
       },
       "refresh": "刷新",
+      "route": {
+        "cancel": "取消",
+        "delete": {
+          "confirm": "确定要删除路线「{{name}}」吗？此操作不可恢复",
+          "fail_tip": "删除失败"
+        },
+        "display": "显示路线",
+        "empty_tip": "还没有添加任何点位",
+        "import": {
+          "author": "作者",
+          "desc": "浏览森空岛路线广场，选择一条导入到本地浏览器暂存；本站不会保存森空岛的数据。",
+          "empty": "没有找到路线",
+          "fail": "导入失败：{{reason}}",
+          "import": "导入到本地",
+          "importing": "导入中...",
+          "load_more": "加载更多",
+          "search_placeholder": "搜索路线标题",
+          "segments": "{{count, number}} 段",
+          "sort_hot": "最热",
+          "sort_new": "最新",
+          "success": "已导入到本地浏览器",
+          "title": "从森空岛导入路线"
+        },
+        "name_placeholder": "请输入路线名称",
+        "no_data": "暂无路线，可在地图上描点新建，或从森空岛导入",
+        "pick": {
+          "in_mode": "正在描点，点击地图上的标点依次添加",
+          "start": "新建路线"
+        },
+        "point_count": "已选 {{count, number}} 个点",
+        "publish": {
+          "fail": "发布失败：{{reason}}",
+          "no_skland": "该路线没有可发布的点位，请在本站重新描点后再发布",
+          "start": "发布到森空岛",
+          "success": "已发布到森空岛"
+        },
+        "rename": "重命名",
+        "save": "保存路线",
+        "source": {
+          "local": "本站自建",
+          "skland": "森空岛导入"
+        },
+        "undo": "撤销上一步",
+        "unpublish": {
+          "confirm": "确定要删除森空岛上发布的这条路线吗？",
+          "start": "删除森空岛路线",
+          "success": "已删除森空岛路线"
+        },
+        "untitled": "未命名路线"
+      },
+      "route_manager": "路线管理",
+      "route_operating_tip": "正在处于路线操作状态，请先结束操作",
       "selected_feature": "已选中 {{val, number}} 个标点",
       "selecting_operating_tip": "正在处于批量操作状态，请先结束批量操作"
     },

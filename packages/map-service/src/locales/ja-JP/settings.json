@@ -70,6 +70,79 @@
         "slower": "より遅い",
         "off": "オフ"
       }
+    },
+    "player_position": {
+      "title": "プレイヤー位置同期",
+      "description": "森空島からエンドフィールドでの現在位置を同期し、マップ上に青いパルスマーカーで表示します",
+      "need_login": "ログインしてエンドフィールドのキャラクターを連携すると、マップ上に現在位置をリアルタイム表示できます",
+      "need_role": "先にエンドフィールドのキャラクターを連携してください",
+      "locate": "現在地に移動",
+      "follow_tier": {
+        "title": "現在のレイヤーに追従",
+        "description": "森空島から同期した位置と高さで、洞窟やフロアなどどのレイヤーにいるかを判定し、出入りに合わせて対応するマップレイヤーを開きます"
+      }
+    }
+  },
+  "ai": {
+    "title": "AI アシスタント",
+    "enabled": {
+      "title": "AI アシスタントを有効にする",
+      "description": "マップの操作列にアシスタントを表示します。自然な言葉でマーカーの検索・一括マーク・採集ルートの作成ができます"
+    },
+    "provider": {
+      "title": "プロバイダー",
+      "base_url": {
+        "title": "エンドポイント",
+        "description": "OpenAI 互換 API のルート URL。例：https://api.deepseek.com/v1"
+      },
+      "api_key": {
+        "title": "API キー",
+        "description": "この端末にのみ保存されます。リクエストはブラウザから直接プロバイダーへ送られ、ZMDMAP のサーバーには届きません"
+      },
+      "model": {
+        "title": "モデル",
+        "description": "接続テストでモデル一覧を取得できます。モデル名を直接入力しても構いません"
+      },
+      "temperature": {
+        "title": "温度",
+        "description": "低いほど回答が安定します。マーカー検索やルート作成では 0 ～ 0.3 を推奨します"
+      },
+      "test": "接続テスト",
+      "test_success": "接続成功、{{num}} 件のモデルを取得しました",
+      "test_failed": "接続失敗：{{reason}}"
+    },
+    "panel": {
+      "clear": "会話をクリア",
+      "close": "閉じる",
+      "placeholder": "何でも聞いてください…… Enter で送信、Shift + Enter で改行",
+      "send": "送信",
+      "stop": "停止",
+      "not_configured": "AI プロバイダーが未設定です。OpenAI 互換 API の URL と API キーを入力すると使えるようになります。",
+      "goto_settings": "設定を開く",
+      "suggestion_title": "こんな質問ができます",
+      "suggestion": {
+        "nearby_chest": "近くでまだマークしていない宝箱はどれ？",
+        "plan_route": "表示中の範囲にある未マークのエーテル 15 個で採集ルートを作って",
+        "progress": "このマップの種類ごとの収集状況を教えて"
+      }
+    },
+    "error": {
+      "not_configured": "先に設定で AI プロバイダーとモデルを指定してください",
+      "tool_rounds_exceeded": "ツール呼び出しの上限に達しました。質問をより具体的に分けてください。"
+    },
+    "tool": {
+      "map_context": "現在のマップ {{mapId}}",
+      "groups": "{{mapId}} に {{num}} 件のマーカーグループ",
+      "query": "{{total}} 件が該当、{{returned}} 件を返却",
+      "focus": "マーカー {{id}} に移動しました",
+      "focus_failed": "マーカー {{id}} が見つかりません",
+      "mark": "{{num}} 件をマークしました",
+      "unmark": "{{num}} 件のマークを解除しました",
+      "highlight": "{{num}} 件をハイライトしました",
+      "unhighlight": "{{num}} 件のハイライトを解除しました",
+      "route": "{{num}} 件のルートを作成、総距離は約 {{distance}}",
+      "route_saved": "{{num}} 件のルートを作成、総距離は約 {{distance}}、ルートとして保存しました",
+      "route_empty": "対象となるマーカーがありません"
     }
   },
   "data": {

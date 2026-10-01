@@ -70,6 +70,79 @@
         "slower": "더 느림",
         "off": "끄기"
       }
+    },
+    "player_position": {
+      "title": "플레이어 위치 동기화",
+      "description": "센스페이스에서 엔드필드 내 실시간 위치를 동기화하여 지도에 파란색 펄스 마커로 표시합니다",
+      "need_login": "로그인 후 엔드필드 캐릭터를 연동하면 지도에서 실시간 위치를 표시할 수 있습니다",
+      "need_role": "먼저 엔드필드 캐릭터를 연동해 주세요",
+      "locate": "내 위치로 이동",
+      "follow_tier": {
+        "title": "현재 레이어 따라가기",
+        "description": "센스페이스에서 동기화한 위치와 높이로 동굴·층 등 어느 레이어에 있는지 판단해, 드나들 때 해당 지도 레이어를 자동으로 엽니다"
+      }
+    }
+  },
+  "ai": {
+    "title": "AI 어시스턴트",
+    "enabled": {
+      "title": "AI 어시스턴트 사용",
+      "description": "지도 조작 영역에 어시스턴트를 표시합니다. 자연어로 마커 검색, 일괄 표시, 채집 경로 계획을 할 수 있습니다"
+    },
+    "provider": {
+      "title": "공급자",
+      "base_url": {
+        "title": "API 주소",
+        "description": "OpenAI 호환 API의 기본 주소입니다. 예: https://api.deepseek.com/v1"
+      },
+      "api_key": {
+        "title": "API 키",
+        "description": "이 기기에만 저장됩니다. 요청은 브라우저에서 공급자로 바로 전송되며 ZMDMAP 서버를 거치지 않습니다"
+      },
+      "model": {
+        "title": "모델",
+        "description": "연결 테스트로 모델 목록을 불러오거나 모델 이름을 직접 입력할 수 있습니다"
+      },
+      "temperature": {
+        "title": "샘플링 온도",
+        "description": "값이 낮을수록 안정적입니다. 마커 조회와 경로 계획은 0 ~ 0.3을 권장합니다"
+      },
+      "test": "연결 테스트",
+      "test_success": "연결 성공, 모델 {{num}}개를 가져왔습니다",
+      "test_failed": "연결 실패: {{reason}}"
+    },
+    "panel": {
+      "clear": "대화 지우기",
+      "close": "닫기",
+      "placeholder": "무엇이든 물어보세요... Enter로 전송, Shift + Enter로 줄바꿈",
+      "send": "보내기",
+      "stop": "중지",
+      "not_configured": "AI 공급자가 설정되지 않았습니다. OpenAI 호환 API 주소와 API 키를 입력하면 바로 사용할 수 있습니다.",
+      "goto_settings": "설정 열기",
+      "suggestion_title": "이렇게 물어보세요",
+      "suggestion": {
+        "nearby_chest": "근처에 아직 표시하지 않은 상자는 어디에 있나요?",
+        "plan_route": "화면 근처의 표시되지 않은 에테르 15개로 채집 경로를 짜 줘",
+        "progress": "이 지도에서 종류별로 얼마나 모았나요?"
+      }
+    },
+    "error": {
+      "not_configured": "먼저 설정에서 AI 공급자와 모델을 지정하세요",
+      "tool_rounds_exceeded": "도구 호출 횟수가 한도에 도달했습니다. 질문을 더 구체적으로 나눠 주세요."
+    },
+    "tool": {
+      "map_context": "현재 지도 {{mapId}}",
+      "groups": "{{mapId}}에 마커 그룹 {{num}}개",
+      "query": "{{total}}개 일치, {{returned}}개 반환",
+      "focus": "마커 {{id}}(으)로 이동했습니다",
+      "focus_failed": "마커 {{id}}을(를) 찾을 수 없습니다",
+      "mark": "마커 {{num}}개를 표시했습니다",
+      "unmark": "마커 {{num}}개의 표시를 해제했습니다",
+      "highlight": "마커 {{num}}개를 강조했습니다",
+      "unhighlight": "마커 {{num}}개의 강조를 해제했습니다",
+      "route": "마커 {{num}}개 경로를 계획했습니다. 총 거리 약 {{distance}}",
+      "route_saved": "마커 {{num}}개 경로를 계획했습니다. 총 거리 약 {{distance}}, 경로로 저장했습니다",
+      "route_empty": "계획할 마커가 없습니다"
     }
   },
   "data": {

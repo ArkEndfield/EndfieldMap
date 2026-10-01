@@ -46,12 +46,18 @@
     "username_too_short": "用户名至少3个字符",
     "username_too_long": "用户名最多20个字符",
     "username_invalid": "用户名只能包含字母、数字和下划线",
-    "password_too_short": "密码至少6位",
-    "password_too_long": "密码最多50位",
+    "password_too_short": "密码至少8位",
+    "password_too_long": "密码最多72位",
     "password_mismatch": "两次输入的密码不一致",
     "agree_required": "请同意用户协议",
     "old_password_required": "请输入旧密码",
-    "new_password_too_short": "新密码至少6位",
+    "new_password_too_short": "新密码至少8位",
     "confirm_password_required": "请确认新密码"
+  },
+  "route": {
+    "empty": "路线还没有任何点位，无法保存",
+    "import_failed": "导入路线失败",
+    "not_found": "找不到该路线",
+    "no_publishable_points": "该路线没有可发布的点位，请在本站重新描点后再发布"
   }
 }

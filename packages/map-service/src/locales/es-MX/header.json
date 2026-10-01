@@ -14,7 +14,8 @@
   "head_menu": {
     "filter": "Filtro de marcadores de recursos",
     "poles": "Gestión de postes",
-    "custom": "Marcadores personalizados"
+    "custom": "Marcadores personalizados",
+    "route": "Routes"
   },
   "user": {
     "title": "Cuenta",
@@ -96,6 +97,28 @@
       },
       "start_now": "Sincronizar ahora",
       "no_uid_tip": "Cambie a un UID para comenzar a sincronizar datos"
+    },
+    "skland": {
+      "button": "Sincronizar marcas de Skland",
+      "conflict": {
+        "title": "Datos inconsistentes",
+        "intro": "Tus marcas de Skland y las de este sitio difieren. Elige qué datos conservar en cada dirección.",
+        "remoteOnly": "Marcado en Skland, no aquí",
+        "remoteOnlyDesc": "Elegir «Usar Skland» marca estos puntos también localmente.",
+        "localOnly": "Marcado aquí, no en Skland",
+        "localOnlyDesc": "Elegir «Usar este sitio» escribe estas marcas en Skland (requiere red).",
+        "useRemote": "Usar Skland",
+        "useLocal": "Usar este sitio",
+        "skip": "Omitir",
+        "apply": "Aplicar",
+        "applying": "Procesando…",
+        "unresolved": "{{count}} marca(s) no tienen datos correspondientes aquí y no se pueden sincronizar",
+        "done": "Sincronización completa: {{localAdded}} añadidas localmente, {{pushed}} actualizadas en Skland",
+        "pushFailed": "Sincronización local lista, pero {{count}} escritura(s) en Skland fallaron"
+      },
+      "failed": "Falló la sincronización de Skland",
+      "no_role": "Primero vincula un personaje de Endfield",
+      "inSync": "Skland y este sitio ya están sincronizados"
     }
   }
 }

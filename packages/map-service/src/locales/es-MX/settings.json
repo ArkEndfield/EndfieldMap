@@ -70,6 +70,79 @@
         "slower": "Más lento",
         "off": "Desactivado"
       }
+    },
+    "player_position": {
+      "title": "Sincronización de posición",
+      "description": "Sincroniza tu posición en tiempo real en Endfield desde Skland y la muestra en el mapa con un marcador azul pulsante",
+      "need_login": "Inicia sesión y vincula un personaje de Endfield para ver tu posición en el mapa en tiempo real",
+      "need_role": "Primero vincula un personaje de Endfield",
+      "locate": "Ir a mi posición",
+      "follow_tier": {
+        "title": "Seguir mi capa",
+        "description": "Usa la posición y la altura sincronizadas desde Skland para saber en qué capa (cueva, piso, etc.) estás y abre ese mapa de capa al entrar o salir"
+      }
+    }
+  },
+  "ai": {
+    "title": "Asistente de IA",
+    "enabled": {
+      "title": "Activar el asistente de IA",
+      "description": "Muestra el asistente en la barra del mapa. Pregunta con lenguaje natural para buscar puntos, marcarlos en lote y planear rutas de recoleccion"
+    },
+    "provider": {
+      "title": "Proveedor",
+      "base_url": {
+        "title": "URL de la API",
+        "description": "URL raiz de cualquier API compatible con OpenAI, por ejemplo https://api.deepseek.com/v1"
+      },
+      "api_key": {
+        "title": "Clave de API",
+        "description": "Se guarda solo en este dispositivo. Las peticiones van directo de tu navegador al proveedor y nunca pasan por los servidores de ZMDMAP"
+      },
+      "model": {
+        "title": "Modelo",
+        "description": "Prueba la conexion para cargar la lista de modelos, o escribe el nombre del modelo tu mismo"
+      },
+      "temperature": {
+        "title": "Temperatura",
+        "description": "Cuanto mas baja, mas estable. Para buscar puntos y planear rutas usa 0 - 0.3"
+      },
+      "test": "Probar conexion",
+      "test_success": "Conexion correcta, se encontraron {{num}} modelos",
+      "test_failed": "Error de conexion: {{reason}}"
+    },
+    "panel": {
+      "clear": "Limpiar la conversacion",
+      "close": "Cerrar",
+      "placeholder": "Pregunta lo que quieras... Enter para enviar, Shift + Enter para salto de linea",
+      "send": "Enviar",
+      "stop": "Detener",
+      "not_configured": "Todavia no hay un proveedor de IA configurado. Agrega la URL y la clave de API de cualquier servicio compatible con OpenAI para empezar.",
+      "goto_settings": "Abrir ajustes",
+      "suggestion_title": "Puedes preguntar",
+      "suggestion": {
+        "nearby_chest": "Que cofres cercanos siguen sin marcar?",
+        "plan_route": "Planea una ruta de recoleccion con 15 puntos de eter sin marcar cerca de la vista",
+        "progress": "Cuanto he recolectado de cada tipo de punto en este mapa?"
+      }
+    },
+    "error": {
+      "not_configured": "Configura primero un proveedor de IA y un modelo en los ajustes",
+      "tool_rounds_exceeded": "Se alcanzo el limite de llamadas a herramientas. Divide la pregunta en pasos mas concretos."
+    },
+    "tool": {
+      "map_context": "Mapa actual {{mapId}}",
+      "groups": "{{num}} grupos de puntos en {{mapId}}",
+      "query": "{{total}} puntos coinciden, {{returned}} devueltos",
+      "focus": "Se movio al punto {{id}}",
+      "focus_failed": "No se encontro el punto {{id}}",
+      "mark": "Se marcaron {{num}} puntos",
+      "unmark": "Se desmarcaron {{num}} puntos",
+      "highlight": "Se resaltaron {{num}} puntos",
+      "unhighlight": "Se quito el resaltado de {{num}} puntos",
+      "route": "Ruta planeada con {{num}} puntos, unos {{distance}} en total",
+      "route_saved": "Ruta planeada con {{num}} puntos, unos {{distance}} en total, guardada como ruta",
+      "route_empty": "No hay puntos para planear"
     }
   },
   "data": {

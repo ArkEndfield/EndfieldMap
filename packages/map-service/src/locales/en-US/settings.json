@@ -70,6 +70,79 @@
         "slower": "Slower",
         "off": "Off"
       }
+    },
+    "player_position": {
+      "title": "Player Position Sync",
+      "description": "Show your real-time Endfield position on the map as a blue pulsing marker, synced from Skland",
+      "need_login": "Log in and bind an Endfield role to show your position on the map in real time",
+      "need_role": "Bind an Endfield role first",
+      "locate": "Locate my position",
+      "follow_tier": {
+        "title": "Follow my layer",
+        "description": "Uses the position and height synced from Skland to tell which layer (cave, floor, etc.) you are on, and opens that layer map as you enter or leave it"
+      }
+    }
+  },
+  "ai": {
+    "title": "AI assistant",
+    "enabled": {
+      "title": "Enable AI assistant",
+      "description": "Show the assistant on the map toolbar. Ask in plain language to find markers, mark them in bulk and plan collection routes"
+    },
+    "provider": {
+      "title": "Provider",
+      "base_url": {
+        "title": "Base URL",
+        "description": "Root URL of any OpenAI-compatible API, e.g. https://api.deepseek.com/v1"
+      },
+      "api_key": {
+        "title": "API key",
+        "description": "Stored on this device only. Requests go straight from your browser to the provider and never reach ZMDMAP servers"
+      },
+      "model": {
+        "title": "Model",
+        "description": "Test the connection to load the model list, or type a model name yourself"
+      },
+      "temperature": {
+        "title": "Temperature",
+        "description": "Lower is steadier. Keep it at 0 - 0.3 for marker lookups and route planning"
+      },
+      "test": "Test connection",
+      "test_success": "Connected, {{num}} models found",
+      "test_failed": "Connection failed: {{reason}}"
+    },
+    "panel": {
+      "clear": "Clear chat",
+      "close": "Close",
+      "placeholder": "Ask anything... Enter to send, Shift + Enter for a new line",
+      "send": "Send",
+      "stop": "Stop",
+      "not_configured": "No AI provider configured yet. Add the base URL and API key of any OpenAI-compatible service to get started.",
+      "goto_settings": "Open settings",
+      "suggestion_title": "Try asking",
+      "suggestion": {
+        "nearby_chest": "Which chests near me are still unmarked?",
+        "plan_route": "Plan a collection route over 15 unmarked ether nodes near the view",
+        "progress": "How much of each marker type have I collected on this map?"
+      }
+    },
+    "error": {
+      "not_configured": "Configure an AI provider and model in settings first",
+      "tool_rounds_exceeded": "Reached the tool-call limit. Try breaking the question into smaller steps."
+    },
+    "tool": {
+      "map_context": "Current map {{mapId}}",
+      "groups": "{{num}} marker groups on {{mapId}}",
+      "query": "{{total}} markers matched, {{returned}} returned",
+      "focus": "Moved to marker {{id}}",
+      "focus_failed": "Marker {{id}} not found",
+      "mark": "Marked {{num}} markers",
+      "unmark": "Unmarked {{num}} markers",
+      "highlight": "Highlighted {{num}} markers",
+      "unhighlight": "Cleared highlight on {{num}} markers",
+      "route": "Planned {{num}} markers, about {{distance}} in total",
+      "route_saved": "Planned {{num}} markers, about {{distance}} in total, saved as a route",
+      "route_empty": "No markers to plan"
     }
   },
   "data": {

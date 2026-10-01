@@ -45,12 +45,18 @@
     "username_too_short": "사용자 이름은 3자 이상이어야 합니다",
     "username_too_long": "사용자 이름은 20자 이하여야 합니다",
     "username_invalid": "사용자 이름에는 문자, 숫자, 밑줄만 사용할 수 있습니다",
-    "password_too_short": "비밀번호는 6자 이상이어야 합니다",
-    "password_too_long": "비밀번호는 50자 이하여야 합니다",
+    "password_too_short": "비밀번호는 8자 이상이어야 합니다",
+    "password_too_long": "비밀번호는 72자 이하여야 합니다",
     "password_mismatch": "비밀번호가 일치하지 않습니다",
     "agree_required": "이용약관에 동의해 주세요",
     "old_password_required": "현재 비밀번호를 입력해 주세요",
-    "new_password_too_short": "새 비밀번호는 6자 이상이어야 합니다",
+    "new_password_too_short": "새 비밀번호는 8자 이상이어야 합니다",
     "confirm_password_required": "새 비밀번호를 확인해 주세요"
+  },
+  "route": {
+    "empty": "The route has no points and cannot be saved",
+    "import_failed": "Failed to import route",
+    "not_found": "Route not found",
+    "no_publishable_points": "This route has no publishable points. Re-draw it on this site first."
   }
 }

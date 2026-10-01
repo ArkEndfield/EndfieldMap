@@ -14,7 +14,8 @@
   "head_menu": {
     "filter": "资源标点筛选",
     "poles": "电线杆管理",
-    "custom": "自定义标点"
+    "custom": "自定义标点",
+    "route": "路线管理"
   },
   "user": {
     "title": "账户",
@@ -96,6 +97,28 @@
       },
       "start_now": "立即同步",
       "no_uid_tip": "切换一个UID后开始同步数据"
+    },
+    "skland": {
+      "button": "同步森空岛标点",
+      "conflict": {
+        "title": "数据不一致",
+        "intro": "森空岛与本站的标点标记存在差异，请分别为两个方向选择要保留的数据。",
+        "remoteOnly": "森空岛已标记、本站未标记",
+        "remoteOnlyDesc": "选择「用森空岛」会把这些标点在本地也标记上。",
+        "localOnly": "本站已标记、森空岛未标记",
+        "localOnlyDesc": "选择「用本站」会把这些标点同步到森空岛（需联网写入）。",
+        "useRemote": "用森空岛",
+        "useLocal": "用本站",
+        "skip": "跳过",
+        "apply": "应用",
+        "applying": "处理中…",
+        "unresolved": "其中 {{count}} 个标点在本站没有对应数据，无法同步",
+        "done": "同步完成：本地新增 {{localAdded}}，森空岛更新 {{pushed}}",
+        "pushFailed": "已同步本地，但写入森空岛有 {{count}} 条失败"
+      },
+      "failed": "森空岛同步失败",
+      "no_role": "请先绑定一个终末地角色",
+      "inSync": "森空岛与本站数据已一致，无需同步"
     }
   }
 }

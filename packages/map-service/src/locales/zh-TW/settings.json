@@ -70,6 +70,79 @@
         "slower": "更慢",
         "off": "關閉"
       }
+    },
+    "player_position": {
+      "title": "玩家位置同步",
+      "description": "從森空島同步你在終末地中的即時位置，在地圖上以藍色脈衝標記顯示",
+      "need_login": "登入並綁定終末地角色後，可在地圖上即時顯示你的位置",
+      "need_role": "請先綁定一個終末地角色",
+      "locate": "定位到我的位置",
+      "follow_tier": {
+        "title": "跟隨所在分層",
+        "description": "依森空島同步的位置與高度判斷你在洞穴、樓層等哪個分層，進出時自動開啟對應的分層圖"
+      }
+    }
+  },
+  "ai": {
+    "title": "AI 助手",
+    "enabled": {
+      "title": "啟用 AI 助手",
+      "description": "在地圖操作列顯示助手入口，可用自然語言查詢點位、批次標記、規劃採集路線"
+    },
+    "provider": {
+      "title": "供應商",
+      "base_url": {
+        "title": "介面位址",
+        "description": "任意 OpenAI 相容介面的根位址，例如 https://api.deepseek.com/v1"
+      },
+      "api_key": {
+        "title": "API Key",
+        "description": "只儲存在本機，請求由你的瀏覽器直連供應商，不會上傳到 ZMDMAP 伺服器"
+      },
+      "model": {
+        "title": "模型",
+        "description": "先測試連線取得模型清單，也可以直接手動填寫模型名稱"
+      },
+      "temperature": {
+        "title": "取樣溫度",
+        "description": "數值越低回答越穩定，查點位與規劃路線建議保持 0 ~ 0.3"
+      },
+      "test": "測試連線",
+      "test_success": "連線成功，取得 {{num}} 個模型",
+      "test_failed": "連線失敗：{{reason}}"
+    },
+    "panel": {
+      "clear": "清空對話",
+      "close": "關閉",
+      "placeholder": "問點什麼…… Enter 送出，Shift + Enter 換行",
+      "send": "送出",
+      "stop": "停止",
+      "not_configured": "尚未設定 AI 供應商。填入任意 OpenAI 相容介面的位址與 API Key 即可開始使用。",
+      "goto_settings": "前往設定",
+      "suggestion_title": "可以這樣問",
+      "suggestion": {
+        "nearby_chest": "附近還沒標記的寶箱有哪些？",
+        "plan_route": "把視野附近 15 個未標記的乙太規劃成一條採集路線",
+        "progress": "這張圖各類點位我收集了多少？"
+      }
+    },
+    "error": {
+      "not_configured": "請先在設定裡設定 AI 供應商與模型",
+      "tool_rounds_exceeded": "工具呼叫輪數已達上限，請把問題拆得更具體一些。"
+    },
+    "tool": {
+      "map_context": "目前地圖 {{mapId}}",
+      "groups": "{{mapId}} 共 {{num}} 個點位分組",
+      "query": "命中 {{total}} 個點位，回傳 {{returned}} 個",
+      "focus": "已定位到點位 {{id}}",
+      "focus_failed": "找不到點位 {{id}}",
+      "mark": "已標記 {{num}} 個點位",
+      "unmark": "已取消標記 {{num}} 個點位",
+      "highlight": "已高亮 {{num}} 個點位",
+      "unhighlight": "已取消高亮 {{num}} 個點位",
+      "route": "已規劃 {{num}} 個點位，總路程約 {{distance}}",
+      "route_saved": "已規劃 {{num}} 個點位，總路程約 {{distance}}，已儲存為路線",
+      "route_empty": "沒有可規劃的點位"
     }
   },
   "data": {
