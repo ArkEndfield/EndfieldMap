@@ -1,5 +1,6 @@
 export * from '@endfieldmap/map-service/const/index';
 export * from '@endfieldmap/map-service/service/adapter_registry';
+export * from '@endfieldmap/map-service/service/ai/export';
 export * from '@endfieldmap/map-service/service/data/export';
 export * from '@endfieldmap/map-service/service/db/export';
 export * from '@endfieldmap/map-service/service/i18n';
@@ -12,6 +13,7 @@ export * from '@endfieldmap/map-service/service/user/data/marked/entity';
 export * from '@endfieldmap/map-service/service/user/data/preset/_base';
 export * from '@endfieldmap/map-service/service/user/data/preset/custom_point';
 export * from '@endfieldmap/map-service/service/user/data/preset/electric_pole';
+export * from '@endfieldmap/map-service/service/user/data/route';
 export * from '@endfieldmap/map-service/service/user/data/sync';
 export * from '@endfieldmap/map-service/service/user/data/visibility/entity';
 export * from '@endfieldmap/map-service/service/user/index';

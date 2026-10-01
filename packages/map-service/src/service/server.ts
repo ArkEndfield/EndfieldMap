@@ -1,4 +1,3 @@
-import type { ServerResponse } from '@endfieldmap/map-service/@types/server';
 import type {
   PullResponse,
   PushDocumentRow,
@@ -8,6 +7,8 @@ import type {
 } from '@endfieldmap/map-service/@types/sync';
 import type { I18nService } from '@endfieldmap/map-service/service/i18n';
 import { logger } from '@endfieldmap/tools';
+
+import { ApiError } from './api_error';
 
 export interface ServerServiceConfig {
   backendHost: string;
@@ -27,6 +28,8 @@ function createTimeoutSignal(): AbortSignal | undefined {
   }
   return AbortSignal.timeout(REQUEST_TIMEOUT_MS);
 }
+
+export { ApiError } from './api_error';
 
 export class ServerService {
   private backendHost: string;
@@ -61,6 +64,10 @@ export class ServerService {
    */
   public getToken(): string | null {
     return this.token;
+  }
+
+  public getUid(): string | null {
+    return this.uid;
   }
 
   public setUid(uid?: string | null) {
@@ -186,31 +193,19 @@ export class ServerService {
     this.isRefreshing = true;
 
     try {
-      const refreshResponse = await this.request<ServerResponse<{ token: string; expire: string }>>(
-        `/api/v1/auth/refresh`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.token}`,
-          },
-        }
-      );
+      // V2：刷新令牌经 HttpOnly cookie 携带（request 已加 credentials），
+      // 响应为裸 JSON；非 2xx 时 request 内部已按 401/错误流程抛出
+      const refreshResponse = await this.request<{ access_token?: string }>(`/api/v1/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.token}`,
+        },
+      });
 
-      if (refreshResponse.code !== 0) {
-        throw new Error(
-          refreshResponse.message ||
-            this.i18nService.translate('unknown', {
-              ns: 'error',
-              defaultValue: '未知错误',
-            })
-        );
-      }
-
-      const response = refreshResponse.data;
-
-      if (response?.token) {
-        this.token = response.token;
+      const newAccessToken = refreshResponse?.access_token;
+      if (newAccessToken) {
+        this.token = newAccessToken;
         this.isRefreshing = false;
 
         this.onTokenRefreshed?.(this.token);
@@ -229,11 +224,10 @@ export class ServerService {
       }
 
       throw new Error(
-        refreshResponse.message ||
-          this.i18nService.translate('unknown', {
-            ns: 'error',
-            defaultValue: '未知错误',
-          })
+        this.i18nService.translate('unknown', {
+          ns: 'error',
+          defaultValue: '未知错误',
+        })
       );
     } catch (error) {
       this.isRefreshing = false;
@@ -250,7 +244,12 @@ export class ServerService {
    */
   public async request<T>(url: string, options?: RequestInit, isRetryAfterRefresh: boolean = false): Promise<T> {
     const fullURL = new URL(url, this.backendHost || window.location.origin);
-    const response = await fetch(fullURL, { ...options, signal: options?.signal ?? createTimeoutSignal() });
+    // credentials: 'include' —— V2 的刷新令牌走 HttpOnly cookie，跨域必须显式携带
+    const response = await fetch(fullURL, {
+      credentials: 'include',
+      ...options,
+      signal: options?.signal ?? createTimeoutSignal(),
+    });
 
     if (response.status === 401) {
       // 如果是刷新 token 后的重试请求仍然 401，直接登出，不再尝试刷新
@@ -264,11 +263,11 @@ export class ServerService {
         );
       }
 
-      // 解析响应体获取后端返回的 message
+      // 解析响应体获取后端返回的 message（V2：{error:{message}}；兼容旧版顶层 message）
       let backendMessage: string | undefined;
       try {
         const errorData = await response.json();
-        backendMessage = errorData?.message;
+        backendMessage = errorData?.error?.message ?? errorData?.message;
       } catch {
         logger.debug('Failed to parse 401 response body, using default message');
       }
@@ -276,28 +275,26 @@ export class ServerService {
     }
 
     if (!response.ok) {
-      // 尝试获取后端返回的错误消息
+      // V2 错误体 {error:{code,message}}；兼容旧版顶层 {code,message}
+      let code = '';
+      let message = '';
       try {
         const errorData = await response.json();
-        throw new Error(
-          errorData?.message ||
-            this.i18nService.translate('unknown', {
-              ns: 'error',
-              defaultValue: '未知错误',
-            })
-        );
-      } catch (e) {
-        if (e instanceof Error) {
-          throw e;
-        }
-        // eslint-disable-next-line
-        throw new Error(
+        const rawCode = errorData?.error?.code ?? errorData?.code;
+        code = rawCode == null ? '' : String(rawCode);
+        message = errorData?.error?.message ?? errorData?.message ?? '';
+      } catch {
+        // 响应体不是 JSON，落到默认文案
+      }
+      throw new ApiError(
+        response.status,
+        code,
+        message ||
           this.i18nService.translate('unknown', {
             ns: 'error',
             defaultValue: '未知错误',
           })
-        );
-      }
+      );
     }
 
     return (await response.json()) as T;
@@ -321,26 +318,14 @@ export class ServerService {
           ...(_options?.headers || {}),
           Authorization: `Bearer ${newToken}`,
           Lang: currentLocale,
-          Uid: this.uid || '',
         },
       };
-      const fullApiUrl = `/api/v1${url}`;
-      const data = await this.request<ServerResponse<T>>(fullApiUrl, options, true);
-
-      if (data.code !== 0) {
-        throw new Error(
-          data.message ||
-            this.i18nService.translate('unknown', {
-              ns: 'error',
-              defaultValue: '未知错误',
-            })
-        );
-      }
-
-      return data.data;
+      // V2：成功响应即业务负载本身（无 {code,message,data} 信封），
+      // 错误由 request 统一抛出
+      return this.request<T>(`/api/v1${url}`, options, true);
     }
 
-    // 正常请求流程
+    // 正常请求流程（Uid 头已废弃：V2 后端不读取，且不在其 CORS 白名单内）
     const options = {
       ...(_options || {}),
       headers: {
@@ -348,24 +333,10 @@ export class ServerService {
         ...(_options?.headers || {}),
         Authorization: this.token ? `Bearer ${this.token}` : '',
         Lang: currentLocale,
-        Uid: this.uid || '',
       },
     };
 
-    const fullApiUrl = `/api/v1${url}`;
-    const data = await this.request<ServerResponse<T>>(fullApiUrl, options);
-
-    if (data.code !== 0) {
-      throw new Error(
-        data.message ||
-          this.i18nService.translate('unknown', {
-            ns: 'error',
-            defaultValue: '未知错误',
-          })
-      );
-    }
-
-    return data.data;
+    return this.request<T>(`/api/v1${url}`, options);
   }
 
   public async apiPost<T, D = unknown>(url: string, data?: D, options?: RequestInit) {
@@ -424,9 +395,10 @@ export class ServerService {
   public async syncPull(
     collection: SyncCollectionName,
     checkpoint: SyncCheckpoint | null,
-    limit: number = 50
+    limit: number,
+    roleId: string
   ): Promise<PullResponse> {
-    if (!this.uid) {
+    if (!roleId || roleId !== this.uid) {
       throw new Error(
         this.i18nService.translate('not_login', {
           ns: 'error',
@@ -447,7 +419,7 @@ export class ServerService {
       params.set('checkpoint_id', checkpoint.id);
     }
     params.set('limit', limit.toString());
-    params.set('role_id', this.uid);
+    params.set('role_id', roleId);
 
     return this.apiGet<PullResponse>(`/sync/${collection}/pull`, params);
   }
@@ -457,8 +429,12 @@ export class ServerService {
    * @param collection 集合名称
    * @param docs 推送的文档列表
    */
-  public async syncPush(collection: SyncCollectionName, docs: PushDocumentRow[]): Promise<PushResponse> {
-    if (!this.uid) {
+  public async syncPush(
+    collection: SyncCollectionName,
+    docs: PushDocumentRow[],
+    roleId: string
+  ): Promise<PushResponse> {
+    if (!roleId || roleId !== this.uid) {
       throw new Error(
         this.i18nService.translate('not_login', {
           ns: 'error',
@@ -467,7 +443,7 @@ export class ServerService {
       );
     }
     const params = new URLSearchParams();
-    params.set('role_id', this.uid);
+    params.set('role_id', roleId);
     return this.apiPost<PushResponse>(`/sync/${collection}/push?${params.toString()}`, { docs });
   }
 }

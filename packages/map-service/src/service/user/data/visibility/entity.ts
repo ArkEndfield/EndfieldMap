@@ -1,7 +1,6 @@
 import type { EntityData, MapData } from '@endfieldmap/map-core';
 import type { VisibilityDataSchemaType } from '@endfieldmap/map-service/service/db/export';
 import { BaseUserDataService, type BaseUserDataServiceConfig } from '@endfieldmap/map-service/service/user/data/_base';
-import { logger } from '@endfieldmap/tools';
 
 export type EntityVisibilityCallback = (
   mapId: MapData['id'],
@@ -41,35 +40,36 @@ export class EntityVisibilityService<T, R> extends BaseUserDataService<EntityVis
     this.registerDBSubscriptions();
   }
 
+  private displayedVisibility = new Map<string, { mapId: string; entityKey: string; visible: boolean }>();
+
+  public override updateDB(): void {
+    this.registerDBSubscriptions();
+  }
+
   protected registerDBSubscriptions(): void {
     this.clearSubscriptions();
-
-    const sub = this.db.$.subscribe((changeEvent) => {
-      const entityKey = changeEvent.documentData.entityKey;
-      if (entityKey.includes(':')) return;
-
-      for (const callback of this.callbacks as EntityVisibilityCallback[]) {
-        try {
-          switch (changeEvent.operation) {
-            case 'INSERT':
-            case 'UPDATE':
-              callback(
-                changeEvent.documentData.mapId,
-                entityKey as EntityData['entityDataIdKey'],
-                changeEvent.documentData.visible
-              );
-              break;
-            case 'DELETE':
-              callback(changeEvent.documentData.mapId, entityKey as EntityData['entityDataIdKey'], false);
-              break;
-          }
-        } catch (e) {
-          logger.warn('Entity visibility callback error', e);
+    this.subscriptions.push(
+      this.db.find().$.subscribe((allDocs) => {
+        const docs = allDocs
+          .filter((doc) => !doc.entityKey.includes(':'))
+          .map((doc) => ({
+            id: doc.id,
+            mapId: doc.mapId,
+            entityKey: doc.entityKey,
+            visible: doc.visible,
+          }));
+        const next = new Map(docs.map((doc) => [doc.id, doc]));
+        for (const [id, previous] of this.displayedVisibility) {
+          if (!next.has(id)) this.executeCallbacks(previous.mapId, previous.entityKey, true);
         }
-      }
-    });
-
-    this.subscriptions.push(sub);
+        for (const doc of docs) {
+          if (this.displayedVisibility.get(doc.id)?.visible !== doc.visible) {
+            this.executeCallbacks(doc.mapId, doc.entityKey, doc.visible);
+          }
+        }
+        this.displayedVisibility = next;
+      })
+    );
   }
 
   public async clearAllData() {
@@ -140,31 +140,36 @@ export class ScopedEntityVisibilityService<T, R> extends BaseUserDataService<Sco
     this.registerDBSubscriptions();
   }
 
+  private displayedVisibility = new Map<string, { mapId: string; entityKey: string; visible: boolean }>();
+
+  public override updateDB(): void {
+    this.registerDBSubscriptions();
+  }
+
   protected registerDBSubscriptions(): void {
     this.clearSubscriptions();
-
-    const sub = this.db.$.subscribe((changeEvent) => {
-      const data = changeEvent.documentData;
-      if (!data.entityKey.startsWith(this.keyPrefix)) return;
-      const entityKey = this.stripPrefix(data.entityKey);
-      for (const callback of this.callbacks as ScopedVisibilityCallback[]) {
-        try {
-          switch (changeEvent.operation) {
-            case 'INSERT':
-            case 'UPDATE':
-              callback(data.mapId, entityKey, data.visible);
-              break;
-            case 'DELETE':
-              callback(data.mapId, entityKey, false);
-              break;
-          }
-        } catch (e) {
-          logger.warn('Scoped visibility callback error', e);
+    this.subscriptions.push(
+      this.db.find().$.subscribe((allDocs) => {
+        const docs = allDocs
+          .filter((doc) => doc.entityKey.startsWith(this.keyPrefix))
+          .map((doc) => ({
+            id: doc.id,
+            mapId: doc.mapId,
+            entityKey: this.stripPrefix(doc.entityKey),
+            visible: doc.visible,
+          }));
+        const next = new Map(docs.map((doc) => [doc.id, doc]));
+        for (const [id, previous] of this.displayedVisibility) {
+          if (!next.has(id)) this.executeCallbacks(previous.mapId, previous.entityKey, true);
         }
-      }
-    });
-
-    this.subscriptions.push(sub);
+        for (const doc of docs) {
+          if (this.displayedVisibility.get(doc.id)?.visible !== doc.visible) {
+            this.executeCallbacks(doc.mapId, doc.entityKey, doc.visible);
+          }
+        }
+        this.displayedVisibility = next;
+      })
+    );
   }
 
   public async clearAllData() {

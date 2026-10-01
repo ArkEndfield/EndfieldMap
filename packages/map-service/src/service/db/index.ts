@@ -1,3 +1,4 @@
+import { UserLocalStorageKey } from '@endfieldmap/map-service/const/storage';
 import {
   GameDataCollections,
   gameDataCollectionsSchema,
@@ -7,12 +8,14 @@ import {
   type UserDataDBCollections,
 } from '@endfieldmap/map-service/service/db/collections';
 import { createAuditLogPlugin } from '@endfieldmap/map-service/service/db/plugins/audit-log';
-import { logger } from '@endfieldmap/tools';
+import { LocalStorageValue, logger } from '@endfieldmap/tools';
 import { computed, makeObservable, observable, runInAction } from 'mobx';
 import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
 import { addRxPlugin, createRxDatabase, type RxDatabase, type RxStorage } from 'rxdb/plugins/core';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
+import { RxDBLocalDocumentsPlugin } from 'rxdb/plugins/local-documents';
+import { RxDBMigrationSchemaPlugin } from 'rxdb/plugins/migration-schema';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
@@ -26,12 +29,32 @@ interface UserDataSnapshot {
   customPointPreset: unknown[];
   entityMark: unknown[];
   entityVisibility: unknown[];
+  route: unknown[];
+}
+
+export interface UserDatabaseScope {
+  userId: number;
+  roleId: string;
 }
 
 export interface DatabaseServiceConfig<Internals, InstanceCreationOptions> {
   isDev?: boolean;
   storage: RxStorage<Internals, InstanceCreationOptions>;
 }
+
+function snapshotDocument(doc: { toJSON(withMetaFields: true): unknown }): Record<string, unknown> {
+  const {
+    syncScope: _scope,
+    _rev,
+    _meta,
+    _attachments,
+    _deleted,
+    ...data
+  } = doc.toJSON(true) as Record<string, unknown>;
+  return data;
+}
+
+const auditLogPlugin = createAuditLogPlugin({ logger });
 
 export class DatabaseService<Internals, InstanceCreationOptions> {
   // 仅在开发环境使用 AJV 验证，生产环境直接使用 Dexie 存储以提高性能
@@ -49,8 +72,10 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
   @observable.ref
   accessor user_collections: UserCollections | null = null;
 
-  // 用于数据迁移的临时存储
-  private prepareToMigrate: UserDataSnapshot | null = null;
+  private activeScope = new LocalStorageValue<UserDatabaseScope | null>({
+    storageKey: UserLocalStorageKey.DATABASE_SCOPE,
+    initialValue: null,
+  });
 
   private isInitialized = false;
 
@@ -67,10 +92,12 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
 
     this.storage = options.isDev ? wrappedValidateAjvStorage({ storage: options.storage }) : options.storage;
 
+    addRxPlugin(RxDBLocalDocumentsPlugin);
+    addRxPlugin(RxDBMigrationSchemaPlugin);
     addRxPlugin(RxDBUpdatePlugin);
     addRxPlugin(RxDBCleanupPlugin);
     addRxPlugin(RxDBLeaderElectionPlugin);
-    addRxPlugin(createAuditLogPlugin({ logger }));
+    addRxPlugin(auditLogPlugin);
   }
 
   /**
@@ -92,8 +119,9 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
 
     // 初始化本地用户数据库
     this.user_db = await createRxDatabase<UserDataDBCollections>({
-      name: DatabaseService.USER_DB_NAME,
+      name: DatabaseService.userDatabaseName(this.activeScope.value ?? undefined),
       storage: this.storage,
+      localDocuments: true,
     });
     await this.user_db.addCollections(userDataCollectionsSchema);
     this.user_collections = new UserCollections(this.user_db);
@@ -156,100 +184,109 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
     };
   }
 
-  /**
-   * 创建用户数据库
-   * @param uid 用户 ID
-   * @param migrate 是否迁移本地数据，默认 false
-   */
-  public async createUserDB(migrate: boolean = false): Promise<void> {
-    const dbName = DatabaseService.USER_DB_NAME;
-
-    const prevUserDB = this.user_db;
-
-    // 用户选择「不保留」或登出清除本地时，必须丢弃此前失败流程可能残留的待迁移快照，
-    // 否则 migrateUserData 会把旧快照写进新库，与当前选择不一致。
-    if (!migrate) {
-      this.prepareToMigrate = null;
+  public static userDatabaseName(scope?: UserDatabaseScope): string {
+    if (!scope) return DatabaseService.USER_DB_NAME;
+    if (!Number.isSafeInteger(scope.userId) || scope.userId <= 0 || !/^\d+$/.test(scope.roleId)) {
+      throw new Error('Invalid user database scope');
     }
-
-    // 如果需要迁移，先保存 local_user_db 的数据
-    if (migrate && prevUserDB) {
-      logger.info('[Storage] Preparing data migration from local to user database');
-      this.prepareToMigrate = await this.snapshotUserData(prevUserDB);
-    }
-
-    // 清空 local_user_db 的数据并触发更新事件
-    if (prevUserDB) {
-      await this.clearUserDataWithEvents(prevUserDB);
-    }
-
-    // 如果已经存在 user_db，需要销毁
-    if (prevUserDB) {
-      logger.info('[Storage] Destroying existing user database');
-
-      // 无论 migrate 为何值都要销毁已存在的 user_db
-      await prevUserDB.remove();
-    }
-
-    // 创建新的 user_db
-    logger.info(`[Storage] Creating user database: ${dbName}`);
-    const newDb = await createRxDatabase<UserDataDBCollections>({
-      name: dbName,
-      storage: this.storage,
-    });
-    await newDb.addCollections(userDataCollectionsSchema);
-
-    runInAction(() => {
-      this.user_db = newDb;
-      this.user_collections = new UserCollections(newDb);
-    });
+    return `${DatabaseService.USER_DB_NAME}_u${scope.userId}_r${scope.roleId}`;
   }
 
-  /**
-   * 将待迁移数据迁移到本地数据库
-   */
-  public async migrateUserData(): Promise<void> {
-    if (!this.prepareToMigrate) {
-      logger.info('[Storage] No data to migrate to local');
-      return;
-    }
+  public async createUserDB(
+    migrate: boolean = false,
+    scope?: UserDatabaseScope,
+    legacyOnly: boolean = false
+  ): Promise<void> {
+    const dbName = DatabaseService.userDatabaseName(scope);
+    const prevUserDB = this.user_db;
+    if (prevUserDB?.name === dbName) return;
 
-    logger.info('[Storage] Migrating data to local database');
-    await this.restoreUserData(this.database, this.prepareToMigrate);
-    this.prepareToMigrate = null;
+    if (legacyOnly && prevUserDB && (await prevUserDB.getLocal('sync-legacy-imported'))) migrate = false;
+    const snapshot = migrate && prevUserDB ? await this.snapshotUserData(prevUserDB) : null;
+    await prevUserDB?.close();
+    let newDb: RxDatabase<UserDataDBCollections> | undefined;
+    try {
+      newDb = await createRxDatabase<UserDataDBCollections>({
+        name: dbName,
+        storage: this.storage,
+        localDocuments: true,
+      });
+      await newDb.addCollections(userDataCollectionsSchema);
+      if (snapshot) await this.restoreUserData(newDb, snapshot);
+      if (scope && prevUserDB?.name === DatabaseService.USER_DB_NAME) {
+        const legacy = await createRxDatabase({ name: prevUserDB.name, storage: this.storage, localDocuments: true });
+        try {
+          await legacy.upsertLocal('sync-legacy-imported', { database: dbName });
+        } finally {
+          await legacy.close();
+        }
+      }
+    } catch (error) {
+      await newDb?.close();
+      if (prevUserDB) {
+        const restored = await createRxDatabase<UserDataDBCollections>({
+          name: prevUserDB.name,
+          storage: this.storage,
+          localDocuments: true,
+        });
+        await restored.addCollections(userDataCollectionsSchema);
+        runInAction(() => {
+          this.user_db = restored;
+          this.user_collections = new UserCollections(restored);
+        });
+      }
+      throw error;
+    }
+    const activeDb = newDb;
+    runInAction(() => {
+      this.user_db = activeDb;
+      this.user_collections = new UserCollections(activeDb);
+      this.activeScope.value = scope ?? null;
+    });
   }
 
   /**
    * 创建用户数据快照
    */
   private async snapshotUserData(db: RxDatabase<UserDataDBCollections>): Promise<UserDataSnapshot> {
-    const [electricPoleNode, electricPolePreset, customPointNode, customPointPreset, entityMark, entityVisibility] =
-      await Promise.all([
-        db.electricPoleNode
-          .find()
-          .exec()
-          .then((docs) => docs.map((d) => d.toJSON())),
-        db.electricPolePreset
-          .find()
-          .exec()
-          .then((docs) => docs.map((d) => d.toJSON())),
-        db.customPointNode
-          .find()
-          .exec()
-          .then((docs) => docs.map((d) => d.toJSON())),
-        db.customPointPreset
-          .find()
-          .exec()
-          .then((docs) => docs.map((d) => d.toJSON())),
-        db.entityMark
-          .find()
-          .exec()
-          .then((docs) => docs.map((d) => d.toJSON())),
-        db.entityVisibility
-          .find()
-          .exec()
-          .then((docs) => docs.map((d) => d.toJSON())),
-      ]);
+    const [
+      electricPoleNode,
+      electricPolePreset,
+      customPointNode,
+      customPointPreset,
+      entityMark,
+      entityVisibility,
+      route,
+    ] = await Promise.all([
+      db.electricPoleNode
+        .find()
+        .exec()
+        .then((docs) => docs.map(snapshotDocument)),
+      db.electricPolePreset
+        .find()
+        .exec()
+        .then((docs) => docs.map(snapshotDocument)),
+      db.customPointNode
+        .find()
+        .exec()
+        .then((docs) => docs.map(snapshotDocument)),
+      db.customPointPreset
+        .find()
+        .exec()
+        .then((docs) => docs.map(snapshotDocument)),
+      db.entityMark
+        .find()
+        .exec()
+        .then((docs) => docs.map(snapshotDocument)),
+      db.entityVisibility
+        .find()
+        .exec()
+        .then((docs) => docs.map(snapshotDocument)),
+      db.route
+        .find()
+        .exec()
+        .then((docs) => docs.map(snapshotDocument)),
+    ]);
 
     return {
       electricPoleNode,
@@ -258,6 +295,7 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
       customPointPreset,
       entityMark,
       entityVisibility,
+      route,
     };
   }
 
@@ -272,10 +310,19 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
       db.customPointPreset.bulkInsert(snapshot.customPointPreset as never[]),
       db.entityMark.bulkInsert(snapshot.entityMark as never[]),
       db.entityVisibility.bulkInsert(snapshot.entityVisibility as never[]),
+      db.route.bulkInsert(snapshot.route as never[]),
     ]);
-    const failures = results.filter((r) => r.status === 'rejected');
+    const failures: unknown[] = [];
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        failures.push(result.reason);
+      } else {
+        // 合并时保留目标角色已有文档；其余写入错误必须让调用方可见。
+        failures.push(...result.value.error.filter((error) => error.status !== 409));
+      }
+    }
     if (failures.length > 0) {
-      logger.error('[Storage] Partial restore failure:', failures);
+      throw new AggregateError(failures, 'Failed to restore user data');
     }
   }
 
@@ -291,6 +338,7 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
       db.customPointPreset.find().remove(),
       db.entityMark.find().remove(),
       db.entityVisibility.find().remove(),
+      db.route.find().remove(),
     ]);
   }
 }

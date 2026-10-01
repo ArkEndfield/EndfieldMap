@@ -8,3 +8,4 @@ export * from '@endfieldmap/map-service/service/data/map/entity';
 export * from '@endfieldmap/map-service/service/data/map/grid_tiers';
 export * from '@endfieldmap/map-service/service/data/map/index';
 export * from '@endfieldmap/map-service/service/data/map/map_state';
+export * from '@endfieldmap/map-service/service/data/map/route';

@@ -26,6 +26,7 @@ export interface SyncCheckpoint {
  * 后端返回的文档格式
  */
 export interface SyncDocumentState {
+  scope?: string;
   id: string;
   updated_at: number;
   deleted: boolean;
@@ -59,11 +60,7 @@ export interface PushResponse {
  * 支持同步的 Collection 名称
  */
 export type SyncCollectionName =
-  | 'custom_point_node'
-  | 'custom_point_preset'
-  | 'electric_pole_node'
-  | 'electric_pole_preset'
-  | 'entity_mark';
+  'custom_point_node' | 'custom_point_preset' | 'electric_pole_node' | 'electric_pole_preset' | 'entity_mark';
 
 /**
  * RxDB Collection 名称到后端 Collection 名称的映射

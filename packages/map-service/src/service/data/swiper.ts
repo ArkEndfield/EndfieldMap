@@ -19,9 +19,10 @@ export class SwiperDataService {
 
   public async loadSwiperList() {
     try {
-      const data = await this.serverService.apiGet<SwiperData[]>('/banners');
+      // V2：响应包裹在 {banners:[...]}（旧版为裸数组）
+      const data = await this.serverService.apiGet<{ banners: SwiperData[] }>('/banners');
       runInAction(() => {
-        this.data = data;
+        this.data = data.banners ?? [];
       });
     } catch (error) {
       logger.error('Failed to load swiper data:', error);

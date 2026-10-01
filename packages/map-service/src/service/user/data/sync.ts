@@ -28,11 +28,12 @@ const SYNC_COLLECTION_NAMES = [
 type SyncCollectionKey = (typeof SYNC_COLLECTION_NAMES)[number];
 
 function toBackendDoc(doc: Record<string, unknown>): SyncDocumentState {
-  const { id, updatedAt, _deleted, _meta, _rev, _attachments, ...fields } = doc;
+  const { id, updatedAt, syncScope, _deleted, _meta, _rev, _attachments, ...fields } = doc;
   const deleted = _deleted === true;
 
   return {
     id: id as string,
+    ...(typeof syncScope === 'string' ? { scope: syncScope } : {}),
     updated_at: (updatedAt as number) || Date.now(),
     deleted,
     fields: fields as Record<string, unknown>,
@@ -42,10 +43,11 @@ function toBackendDoc(doc: Record<string, unknown>): SyncDocumentState {
 function fromBackendDoc(backendDoc: SyncDocumentState): SyncDocument {
   const { _deleted, _meta, _rev, _attachments, ...cleanFields } = backendDoc.fields as Record<string, unknown>;
   return {
+    ...cleanFields,
     id: backendDoc.id,
     updatedAt: backendDoc.updated_at,
     _deleted: backendDoc.deleted,
-    ...cleanFields,
+    ...(backendDoc.scope ? { syncScope: backendDoc.scope } : {}),
   };
 }
 
@@ -67,7 +69,7 @@ export class SyncService<T, R> {
 
   private replicationStates: Map<SyncCollectionKey, RxReplicationState<SyncDocument, SyncCheckpoint>> = new Map();
   private isSyncing: boolean = false;
-  private startingSyncPromise: Promise<void> | null = null;
+  private lifecycleQueue: Promise<void> = Promise.resolve();
   private consecutiveErrorCount: number = 0;
   private static readonly MAX_CONSECUTIVE_ERRORS = 5;
   private databaseService: DatabaseService<T, R>;
@@ -91,29 +93,43 @@ export class SyncService<T, R> {
     return this.status === SyncStatus.Error;
   }
 
-  public async startSync(): Promise<void> {
-    if (this.startingSyncPromise) {
-      return this.startingSyncPromise;
-    }
-    this.startingSyncPromise = this._startSync();
-    return this.startingSyncPromise.finally(() => {
-      this.startingSyncPromise = null;
+  private enqueueLifecycle(work: () => Promise<void>): Promise<void> {
+    const next = this.lifecycleQueue.then(work);
+    this.lifecycleQueue = next.catch(() => undefined);
+    return next;
+  }
+
+  public startSync(): Promise<void> {
+    return this.enqueueLifecycle(() => this._startSync());
+  }
+
+  /**
+   * 未在同步时启动；已在同步则保持原状态。
+   * 与 startSync 的区别：startSync 会先停掉旧 replication 再重建，
+   * 适用于换库后的强制重启；这里用于 uid 列表刷新等重复触发的场景，
+   * 避免 replication 反复 cancel/重建打断正常推送。
+   */
+  public ensureSyncing(): Promise<void> {
+    return this.enqueueLifecycle(async () => {
+      if (this.isSyncing) return;
+      await this._startSync();
     });
   }
 
   private async _startSync(): Promise<void> {
     if (this.isSyncing) {
       logger.warn('[SyncService] Sync already running, stopping first...');
-      await this.stopSync();
+      await this._stopSync();
     }
 
-    if (!this.databaseService.user_db) {
+    if (!this.databaseService.user_db || !this.serverService.getUid()) {
       logger.debug('[SyncService] User database not initialized yet, skipping sync start');
       return;
     }
 
     logger.info('[SyncService] Starting sync...');
     this.isSyncing = true;
+    this.consecutiveErrorCount = 0;
 
     runInAction(() => {
       this.status = SyncStatus.Syncing;
@@ -148,6 +164,7 @@ export class SyncService<T, R> {
       logger.info('[SyncService] Sync started successfully');
     } catch (error) {
       logger.error('[SyncService] Failed to start sync:', error);
+      await this._stopSync(true);
       runInAction(() => {
         this.status = SyncStatus.Error;
         this.lastError = error instanceof Error ? error.message : 'Unknown error';
@@ -155,7 +172,11 @@ export class SyncService<T, R> {
     }
   }
 
-  public async stopSync(keepErrorState: boolean = false): Promise<void> {
+  public stopSync(keepErrorState: boolean = false): Promise<void> {
+    return this.enqueueLifecycle(() => this._stopSync(keepErrorState));
+  }
+
+  private async _stopSync(keepErrorState: boolean = false): Promise<void> {
     logger.info('[SyncService] Stopping sync...');
 
     const cancelPromises: Promise<void>[] = [];
@@ -189,19 +210,23 @@ export class SyncService<T, R> {
       promises.push(
         state.awaitInitialReplication().catch((err) => {
           logger.warn(`[SyncService] Initial replication failed for ${name}:`, err);
-        }),
+        })
       );
     }
     await Promise.all(promises);
     logger.info('[SyncService] All initial replications completed');
   }
 
-  public async triggerSync(): Promise<void> {
+  public triggerSync(): Promise<void> {
+    return this.enqueueLifecycle(() => this._triggerSync());
+  }
+
+  private async _triggerSync(): Promise<void> {
     this.consecutiveErrorCount = 0;
 
     if (!this.isSyncing) {
       logger.warn('[SyncService] Sync not running, starting first...');
-      await this.startSync();
+      await this._startSync();
       return;
     }
 
@@ -260,10 +285,12 @@ export class SyncService<T, R> {
     logger.info(`[SyncService] Creating replication for ${collectionName} -> ${backendCollectionName}`);
 
     const serverService = this.serverService;
+    const roleId = serverService.getUid();
+    if (!roleId) throw new Error('Sync role is not selected');
 
     const replicationState = replicateRxCollection<SyncDocument, SyncCheckpoint>({
       collection: collection as RxCollection<SyncDocument>,
-      replicationIdentifier: `sync-${backendCollectionName}`,
+      replicationIdentifier: `sync-v2-${collection.database.name}-${roleId}-${backendCollectionName}`,
       live: true,
       retryTime: 5000,
       waitForLeadership: true,
@@ -277,7 +304,8 @@ export class SyncService<T, R> {
             const response = await serverService.syncPull(
               backendCollectionName,
               checkpointOrNull as SyncCheckpoint | null,
-              batchSize
+              batchSize,
+              roleId
             );
 
             const documents = response.documents.map(fromBackendDoc);
@@ -308,7 +336,7 @@ export class SyncService<T, R> {
               new_fork_state: toBackendDoc(doc.newDocumentState as Record<string, unknown>),
             }));
 
-            const response = await serverService.syncPush(backendCollectionName, pushDocs);
+            const response = await serverService.syncPush(backendCollectionName, pushDocs, roleId);
 
             const conflicts = response.conflicts.map(fromBackendDoc);
 

@@ -1,3 +1,4 @@
+export * from '@endfieldmap/map-service/@types/ai';
 export * from '@endfieldmap/map-service/@types/balloon';
 export * from '@endfieldmap/map-service/@types/custom_point';
 export * from '@endfieldmap/map-service/@types/delta_robot';
@@ -7,7 +8,7 @@ export * from '@endfieldmap/map-service/@types/grid_tiers';
 export * from '@endfieldmap/map-service/@types/guide';
 export * from '@endfieldmap/map-service/@types/preset_base';
 export * from '@endfieldmap/map-service/@types/preset_store';
-export * from '@endfieldmap/map-service/@types/server';
+export * from '@endfieldmap/map-service/@types/route';
 export * from '@endfieldmap/map-service/@types/swiper';
 export * from '@endfieldmap/map-service/@types/sync';
 export * from '@endfieldmap/map-service/@types/user';

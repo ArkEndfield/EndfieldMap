@@ -4,7 +4,7 @@ import { PresetService } from './preset_service';
 
 describe('PresetService', () => {
   it('builds query params for electric pole presets', async () => {
-    const apiGet = vi.fn().mockResolvedValue({ list: [], count: 0 });
+    const apiGet = vi.fn().mockResolvedValue({ shares: [], total: 0 });
     const service = new PresetService({
       serverService: {
         apiGet,
@@ -19,11 +19,12 @@ describe('PresetService', () => {
 
     const [path, params] = apiGet.mock.calls[0] as [string, URLSearchParams];
     expect(path).toBe('/share/presets/electric-pole');
-    expect(params.toString()).toBe('page=2&limit=8&sub_type=zipline&name=tower&sort_by=like_count&sort_order=desc');
+    // V2：分页参数为 size；name/sort 暂不支持（不再转发）
+    expect(params.toString()).toBe('page=2&size=8&sub_type=zipline');
   });
 
   it('builds query params for custom point presets', async () => {
-    const apiGet = vi.fn().mockResolvedValue({ list: [], count: 0 });
+    const apiGet = vi.fn().mockResolvedValue({ shares: [], total: 0 });
     const service = new PresetService({
       serverService: {
         apiGet,
@@ -38,13 +39,22 @@ describe('PresetService', () => {
 
     const [path, params] = apiGet.mock.calls[0] as [string, URLSearchParams];
     expect(path).toBe('/share/presets/custom-point');
-    expect(params.toString()).toBe('page=3&limit=5&name=ore&sort_by=created_at&sort_order=asc');
+    expect(params.toString()).toBe('page=3&size=5');
   });
 
   it('parses snapshot payloads when fetching preset details or import data', async () => {
+    // V2：snapshot 为解析好的 JSON 值
     const payload = {
       id: 1,
-      snapshot: JSON.stringify([{ id: 100 }]),
+      share_code: 'abc',
+      preset_type: 'electric_pole',
+      name: 'n',
+      is_public: true,
+      import_count: 0,
+      like_count: 0,
+      view_count: 0,
+      user_id: 1,
+      snapshot: [{ id: 100 }],
     };
     const apiGet = vi.fn().mockResolvedValue(payload);
     const apiPost = vi.fn().mockResolvedValue(payload);
@@ -73,11 +83,11 @@ describe('PresetService', () => {
     expect(apiPost).toHaveBeenCalledWith('/share/presets/1/import');
   });
 
-  it('serializes snapshots and routes share, like, unlike, update, and mine requests correctly', async () => {
+  it('routes share, like, unlike, update, and mine requests correctly', async () => {
     const apiPost = vi.fn().mockResolvedValue({});
     const apiPut = vi.fn().mockResolvedValue({});
     const apiDelete = vi.fn().mockResolvedValue({});
-    const apiGet = vi.fn().mockResolvedValue({});
+    const apiGet = vi.fn().mockResolvedValue({ shares: [], total: 0 });
     const service = new PresetService({
       serverService: {
         apiPost,
@@ -104,7 +114,7 @@ describe('PresetService', () => {
       description: 'Desc',
       is_public: true,
       sub_type: 'pole',
-      snapshot: JSON.stringify(snapshot),
+      snapshot, // V2：snapshot 直接传 JSON 值
     });
     expect(apiPost).toHaveBeenNthCalledWith(2, '/share/presets', {
       preset_type: 'custom_point',
@@ -112,7 +122,7 @@ describe('PresetService', () => {
       name: 'Point',
       description: 'Desc',
       is_public: true,
-      snapshot: JSON.stringify(snapshot),
+      snapshot,
     });
     expect(apiPut).toHaveBeenCalledWith('/share/presets/9', { name: 'Updated', is_public: false });
     expect(apiDelete).toHaveBeenNthCalledWith(1, '/share/presets/9');
@@ -122,8 +132,8 @@ describe('PresetService', () => {
     const [minePath, mineParams] = apiGet.mock.calls[0] as [string, URLSearchParams];
     const [likedPath, likedParams] = apiGet.mock.calls[1] as [string, URLSearchParams];
     expect(minePath).toBe('/share/presets/mine');
-    expect(mineParams.toString()).toBe('page=2&limit=4&preset_type=custom_point');
+    expect(mineParams.toString()).toBe('page=2&size=4');
     expect(likedPath).toBe('/share/presets/liked');
-    expect(likedParams.toString()).toBe('page=3&limit=6&preset_type=electric_pole');
+    expect(likedParams.toString()).toBe('page=3&size=6');
   });
 });

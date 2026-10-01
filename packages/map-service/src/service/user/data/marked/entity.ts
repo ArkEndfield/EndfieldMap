@@ -1,11 +1,11 @@
 import type { EntityData, MapData } from '@endfieldmap/map-core';
 import { BaseUserDataService, type BaseUserDataServiceConfig } from '@endfieldmap/map-service/service/user/data/_base';
-import { logger } from '@endfieldmap/tools';
 
 export type EntityMarkCallback = (mapId: MapData['id'], id: EntityData['levelLogicId'], marked: boolean) => void;
 
 export class EntityMarkService<T, R> extends BaseUserDataService<EntityMarkCallback, T, R> {
   protected callbacks: EntityMarkCallback[] = [];
+  private displayedMarks = new Map<string, { mapId: string; entityId: number; marked: boolean }>();
   constructor(config: BaseUserDataServiceConfig<T, R>) {
     super(config);
   }
@@ -55,32 +55,26 @@ export class EntityMarkService<T, R> extends BaseUserDataService<EntityMarkCallb
     this.registerDBSubscriptions();
   }
 
+  public override updateDB(): void {
+    this.registerDBSubscriptions();
+  }
+
   protected registerDBSubscriptions(): void {
     this.clearSubscriptions();
-
-    const sub = this.db.$.subscribe((changeEvent) => {
-      for (const callback of this.callbacks as EntityMarkCallback[]) {
-        try {
-          switch (changeEvent.operation) {
-            case 'INSERT':
-            case 'UPDATE':
-              callback(
-                changeEvent.documentData.mapId,
-                changeEvent.documentData.entityId,
-                changeEvent.documentData.marked
-              );
-              break;
-            case 'DELETE':
-              callback(changeEvent.documentData.mapId, changeEvent.documentData.entityId, false);
-              break;
-          }
-        } catch (e) {
-          logger.error('[EntityMarkService] Callback error', e);
+    this.subscriptions.push(
+      this.db.find().$.subscribe((docs) => {
+        const next = new Map(docs.map((doc) => [doc.id, doc]));
+        for (const [id, previous] of this.displayedMarks) {
+          if (!next.has(id)) this.executeCallbacks(previous.mapId, previous.entityId, false);
         }
-      }
-    });
-
-    this.subscriptions.push(sub);
+        for (const doc of docs) {
+          if (this.displayedMarks.get(doc.id)?.marked !== doc.marked) {
+            this.executeCallbacks(doc.mapId, doc.entityId, doc.marked);
+          }
+        }
+        this.displayedMarks = next;
+      })
+    );
   }
 
   public clearAllData() {
