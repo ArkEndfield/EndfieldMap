@@ -4,6 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { alert } from '@/components/common/alert/alert_api';
 import { service } from '@/services';
 
+// 回调页由后端（VITE_BACKEND_HOST）渲染并与本站跨源：postMessage 的 event.origin
+// 是发送方（后端）的源，钉到后端源而不是 window.location.origin，否则合法登录消息
+// 会被整体丢弃。同源部署/本地 oauth.html 流程兜底放行本站源。
+const allowedOrigins = (() => {
+  const origins = [window.location.origin];
+  try {
+    origins.push(new URL(import.meta.env.VITE_BACKEND_HOST ?? window.location.origin).origin);
+  } catch {
+    // VITE_BACKEND_HOST 缺失或非法时退化为仅本站源
+  }
+  return origins;
+})();
+
 export const ThirdPartyButton = ({
   icon,
   label,
@@ -36,11 +49,11 @@ export const ThirdPartyButton = ({
 
     const loginWindow = window.open(url, label + ' Login', `width=${width},height=${height},left=${left},top=${top}`);
 
-    // 监听登录结果。回调页与本站同源，origin/source 双校验缺一不可：
+    // 监听登录结果。origin（后端回调源，见 allowedOrigins）/source 双校验缺一不可：
     // 只看 type 的话，任何持有本窗口引用的页面（钓鱼 opener / 内嵌 iframe）
     // 都能伪造 LOGIN_SUCCESS 把会话换成攻击者账号（会话固定）。
     const messageHandler = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin || event.source !== loginWindow) return;
+      if (!allowedOrigins.includes(event.origin) || event.source !== loginWindow) return;
       const data = event.data as { type?: string; userInfo?: { token?: string }; error?: string } | null;
       if (!data || typeof data !== 'object') return;
       if (data.type === 'LOGIN_SUCCESS' && data.userInfo?.token) {
