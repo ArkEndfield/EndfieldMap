@@ -76,6 +76,8 @@ export default defineConfig(({ mode }) => ({
       external: (id) => {
         if (id.startsWith('\0')) return false;
         if (id.startsWith('.') || id.startsWith('/')) return false;
+        // 别名解析后的绝对路径不排除（Windows 盘符路径不以 / 开头，需单独判断）
+        if (path.isAbsolute(id)) return false;
         // 资源作为 external，消费者 bundler 会解析并处理
         if (id.startsWith('@endfieldmap/web-components/assets/')) return true;
         if (id.startsWith('@endfieldmap/web-components')) return false;

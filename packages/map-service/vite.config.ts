@@ -1,3 +1,4 @@
+import babel from '@rolldown/plugin-babel';
 import path from 'path';
 import dts from 'unplugin-dts/vite';
 import { defineConfig } from 'vite';
@@ -44,6 +45,16 @@ export default defineConfig(({ mode }) => {
       sourcemap: false,
     },
     plugins: [
+      // 服务类里大量 @observable/@computed/@action 装饰器（user/sync/preset 等），
+      // 库构建期必须转译——vite 8 / rolldown 只解析不降级，漏挂会把装饰器语法
+      // 原样带进 dist。与其余库包保持同一插件三元组。
+      babel({
+        plugins: [
+          ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+          ['@babel/plugin-transform-class-properties', { loose: true }],
+          ['@babel/plugin-transform-class-static-block'],
+        ],
+      }),
       dts({
         include: ['src/**/*.ts'],
         tsconfigPath: 'tsconfig.build.json',

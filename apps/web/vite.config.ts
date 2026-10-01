@@ -36,6 +36,12 @@ function gitCommitHash(): string {
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
   const sentryEnabled = Boolean(process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT);
+  const proxy = {
+    '/api': {
+      target: 'http://127.0.0.1:8848',
+      changeOrigin: true,
+    },
+  };
   const alias = {
     '@endfieldmap/map-adapter-ol': resolve(__dirname, '../../packages/map-adapter-ol/src'),
     '@endfieldmap/map-core': resolve(__dirname, '../../packages/map-core/src'),
@@ -126,7 +132,9 @@ export default defineConfig(({ command, mode }) => {
     },
     server: {
       allowedHosts: ['.cnb.run'],
+      proxy,
     },
+    preview: { proxy },
     build: {
       sourcemap: sentryEnabled ? 'hidden' : false,
       rollupOptions: {

@@ -13,6 +13,8 @@ export default defineConfig({
       external: (id) => {
         if (id.startsWith('\0')) return false;
         if (id.startsWith('.') || id.startsWith('/')) return false;
+        // 别名解析后的绝对路径不排除（Windows 盘符路径不以 / 开头，需单独判断）
+        if (path.isAbsolute(id)) return false;
         if (id.startsWith('@endfieldmap/storage-expo-sqlite')) return false;
         return true;
       },
