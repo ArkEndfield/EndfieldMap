@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800;900&family=Noto+Serif+SC:wght@400;700&family=Outfit:wght@400;700&display=swap"
       rel="stylesheet"
       media="print"
-      onload="this.media='all'"
+      onload="this.media = 'all'"
     />
     <noscript>
       <link
@@ -670,15 +670,12 @@
           // rAF 兜底：后台 / 失焦 / 被遮挡的标签页里 requestAnimationFrame 会被
           // 浏览器节流甚至冻结，animate 循环收不了尾，应用加载完了加载条也不退场
           // （实测卡 50s+）。这里用不受渲染节流的定时器强制收尾。
-          setTimeout(
-            () => {
-              if (this.outroPlayed || this.error) return;
-              this.current = 100;
-              this.render();
-              this.playOutro();
-            },
-            1500
-          );
+          setTimeout(() => {
+            if (this.outroPlayed || this.error) return;
+            this.current = 100;
+            this.render();
+            this.playOutro();
+          }, 1500);
         },
 
         playOutro() {

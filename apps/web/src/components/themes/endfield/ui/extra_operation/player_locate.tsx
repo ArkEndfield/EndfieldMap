@@ -33,10 +33,7 @@ export const PlayerLocateButton = observer(() => {
       if (dataManager.currentMapId !== position.mapId) {
         switchMap(position.mapId);
       }
-      const coordinate = dataManager.xyz2crd(
-        { x: position.x, y: position.y, z: position.z },
-        position.mapId
-      );
+      const coordinate = dataManager.xyz2crd({ x: position.x, y: position.y, z: position.z }, position.mapId);
       adapter.mapController.moveViewCenter(coordinate);
     } catch (error) {
       logger.debug('[PlayerLocate] coordinate transform failed', error);

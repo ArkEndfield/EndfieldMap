@@ -92,7 +92,7 @@ export const RouteImportDialog = observer(({ open, onClose }: RouteImportDialogP
         setFailed(false);
         setPageToken(res.pageToken ?? null);
         setHasMore(Boolean(res.hasMore));
-        setItems((prev) => (append ? [...prev, ...(res.routeAggs ?? [])] : res.routeAggs ?? []));
+        setItems((prev) => (append ? [...prev, ...(res.routeAggs ?? [])] : (res.routeAggs ?? [])));
       } catch (error) {
         logger.error('[RouteImportDialog] fetch route list failed', error);
         setFailed(true);
@@ -168,7 +168,9 @@ export const RouteImportDialog = observer(({ open, onClose }: RouteImportDialogP
 
         <div className="max-h-80 overflow-y-auto">
           <div className="flex flex-col gap-2 pr-1">
-            {failed && <div className="text-white/40 text-xs py-4 text-center">{t('operation.route.import.empty')}</div>}
+            {failed && (
+              <div className="text-white/40 text-xs py-4 text-center">{t('operation.route.import.empty')}</div>
+            )}
             {!failed && items.length === 0 && !loading && (
               <div className="text-white/40 text-xs py-4 text-center">{t('operation.route.import.empty')}</div>
             )}

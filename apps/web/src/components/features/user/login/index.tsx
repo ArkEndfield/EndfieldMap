@@ -1,4 +1,4 @@
-import { BilibiliIcon, DiscordIcon, GitHubIcon,Logo, QQIcon } from '@endfieldmap/web-components';
+import { BilibiliIcon, DiscordIcon, GitHubIcon, Logo, QQIcon } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';

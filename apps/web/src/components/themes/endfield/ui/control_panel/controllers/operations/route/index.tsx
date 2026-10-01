@@ -146,9 +146,7 @@ const RouteItem = observer(({ route }: { route: StoredRoute }) => {
           <span
             className={cn(
               'shrink-0 text-[10px] px-1.5 py-0.5 border rounded',
-              route.source === 'skland'
-                ? 'border-[#01ffa2]/40 text-[#01ffa2]'
-                : 'border-white/20 text-white/50'
+              route.source === 'skland' ? 'border-[#01ffa2]/40 text-[#01ffa2]' : 'border-white/20 text-white/50'
             )}
           >
             {sourceLabel}

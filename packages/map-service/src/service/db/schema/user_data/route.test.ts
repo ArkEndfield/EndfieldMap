@@ -1,10 +1,9 @@
-import { describe, expect, it } from 'vitest';
-
-import { routeSchema, type RouteDocType } from '@endfieldmap/map-service/service/db/schema/user_data/route';
+import { type RouteDocType,routeSchema } from '@endfieldmap/map-service/service/db/schema/user_data/route';
 import { addRxPlugin, createRxDatabase, type RxCollection } from 'rxdb/plugins/core';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { getRxStorageMemory } from 'rxdb/plugins/storage-memory';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
+import { describe, expect, it } from 'vitest';
 
 /**
  * 用内存存储 + dev 模式（含 checkSchema + AJV 校验）真实创建 route collection，
