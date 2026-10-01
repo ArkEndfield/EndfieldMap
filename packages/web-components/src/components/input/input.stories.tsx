@@ -75,36 +75,39 @@ export const WithMaxLength: Story = {
 /**
  * 受控模式：外部持有状态驱动 value，autoFocus 关掉避免两个输入框抢焦点。
  * 两个输入框同页互不干扰是回归点（ autoFocus 默认 true 曾让同页第二框失焦）。
+ * 组件提为具名大写函数：render 回调里直接调 Hook 会被 rules-of-hooks 拒绝。
  */
+function ControlledPairDemo() {
+  const [name, setName] = useState('route-42');
+  const [note, setNote] = useState('');
+  return (
+    <div className="flex flex-col gap-6 w-80">
+      <EndfieldInput
+        value={name}
+        onValueChange={setName}
+        autoFocus={false}
+        placeholder="Name"
+        inputType="text"
+      />
+      <EndfieldInput
+        value={note}
+        onValueChange={setNote}
+        autoFocus={false}
+        placeholder="Note (controlled, empty string allowed)"
+        inputType="text"
+      />
+      <div className="text-xs opacity-60">
+        name=&quot;{name}&quot; note=&quot;{note}&quot;
+      </div>
+    </div>
+  );
+}
+
 export const ControlledPair: Story = {
   name: 'Controlled (two inputs, no focus fight)',
   argTypes: {
     value: { control: false },
     onValueChange: { action: 'valueChanged' },
   },
-  render: () => {
-    const [name, setName] = useState('route-42');
-    const [note, setNote] = useState('');
-    return (
-      <div className="flex flex-col gap-6 w-80">
-        <EndfieldInput
-          value={name}
-          onValueChange={setName}
-          autoFocus={false}
-          placeholder="Name"
-          inputType="text"
-        />
-        <EndfieldInput
-          value={note}
-          onValueChange={setNote}
-          autoFocus={false}
-          placeholder="Note (controlled, empty string allowed)"
-          inputType="text"
-        />
-        <div className="text-xs opacity-60">
-          name=&quot;{name}&quot; note=&quot;{note}&quot;
-        </div>
-      </div>
-    );
-  },
+  render: () => <ControlledPairDemo />,
 };

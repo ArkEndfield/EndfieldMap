@@ -3,7 +3,6 @@ import type { InputProps } from '@endfieldmap/map-web-theme-types/input';
 import { cn } from '@endfieldmap/tools';
 import { ButtonWithAudio } from '@endfieldmap/web-components/components/button_with_audio';
 import { InVisibleIcon, VisibleIcon } from '@endfieldmap/web-components/components/icons/common';
-import { useWindow } from '@endfieldmap/web-components/contexts/window';
 import { useAudio } from '@endfieldmap/web-components/hooks/use_audio';
 import { useState } from 'react';
 
@@ -30,7 +29,6 @@ export const EndfieldInput = ({
   // 受控 / 非受控二选一：设置页这类外部持有状态的场景传 value，弹窗里的一次性输入沿用内部 state
   const value = controlledValue ?? innerValue;
   const { play } = useAudio();
-  const currentWindow = useWindow();
 
   const commonProps = {
     className: cn(
