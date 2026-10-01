@@ -133,4 +133,43 @@ describe('role database isolation', () => {
     await vi.waitFor(() => expect(visibleCallback).toHaveBeenCalledWith('m', 'e', true));
     expect(await db.database.entityMark.find().exec()).toHaveLength(0);
   });
+
+  it('restoreUserData applies last-write-wins on 409 instead of dropping newer edits', async () => {
+    const db = await createService();
+    // legacy 持有旧版本
+    await db.database.entityMark.insert({
+      id: 'm|1', mapId: 'm', entityId: 1, marked: false, createdAt: 1, updatedAt: 10,
+    });
+    // 角色库通过首次迁移拿到 @10 副本
+    await db.createUserDB(true, { userId: 32, roleId: '0' });
+    // 回到 legacy 并在登出态继续编辑（updatedAt 前进到 20）
+    await db.createUserDB(false);
+    await (await db.database.entityMark.findOne('m|1').exec())?.incrementalPatch({
+      marked: true,
+      updatedAt: 20,
+    });
+    // 再次迁移：目标角色库已有 @10 旧副本，快照 @20 较新——409 必须被 LWW 覆盖
+    await db.createUserDB(true, { userId: 32, roleId: '0' });
+    const doc = await db.database.entityMark.findOne('m|1').exec();
+    expect(doc?.marked).toBe(true);
+    expect(doc?.updatedAt).toBe(20);
+  });
+
+  it('removeUserDatabase physically discards the active role database', async () => {
+    const db = await createService();
+    await db.database.entityMark.insert({
+      id: 'm|1', mapId: 'm', entityId: 1, marked: true, createdAt: 1, updatedAt: 2,
+    });
+    await db.createUserDB(true, { userId: 32, roleId: '0' });
+    await db.database.entityMark.insert({
+      id: 'm|2', mapId: 'm', entityId: 2, marked: true, createdAt: 1, updatedAt: 3,
+    });
+    const roleName = db.database.name;
+    await db.removeUserDatabase();
+    expect(db.user_db).toBeNull();
+    // 重新打开同名库应当是全新的：旧文档、墓碑与 replication 元数据都不复存在
+    await db.createUserDB(false, { userId: 32, roleId: '0' });
+    expect(db.database.name).toBe(roleName);
+    expect(await db.database.entityMark.find().exec()).toHaveLength(0);
+  });
 });

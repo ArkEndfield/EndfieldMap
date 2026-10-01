@@ -176,6 +176,29 @@ export class SyncService<T, R> {
     return this.enqueueLifecycle(() => this._stopSync(keepErrorState));
   }
 
+  /**
+   * 停止同步并物理清除 replication 元数据（checkpoint + assumed-master-state）。
+   * 「清除标点数据」等本地重置用：只停同步会把墓碑与元数据留在库里，
+   * 下次 startSync 把删除推上云 / 或让清空后的本地拉不回云端存量。
+   * 元数据由各 replicationState.remove() 抹掉（同时会 cancel 自身）。
+   */
+  public async stopSyncAndPurgeMeta(): Promise<void> {
+    await this.enqueueLifecycle(async () => {
+      const removes: Promise<void>[] = [];
+      for (const [name, state] of this.replicationStates) {
+        logger.info(`[SyncService] Removing replication meta for ${name}...`);
+        removes.push(state.remove());
+      }
+      await Promise.all(removes);
+      this.replicationStates.clear();
+      this.isSyncing = false;
+      runInAction(() => {
+        this.status = SyncStatus.Idle;
+      });
+      logger.info('[SyncService] Stopped and replication meta purged');
+    });
+  }
+
   private async _stopSync(keepErrorState: boolean = false): Promise<void> {
     logger.info('[SyncService] Stopping sync...');
 

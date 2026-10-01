@@ -12,11 +12,19 @@ export const EntitySetting = () => {
   const { t } = useTranslation('settings');
 
   const { loading, execute } = usePromiseState({
-    fun: () =>
-      Promise.all([
+    fun: async () => {
+      // 墓碑与 replication 元数据都必须物理清除：同步运行中删除会把云端
+      // 标记一并删光；只停同步的话，重载后 replication 又会把墓碑推上云
+      await service.userService.stopSyncAndPurgeMeta();
+      await Promise.all([
         service.databaseService.database.entityMark.find().remove(),
         service.databaseService.database.entityVisibility.find().remove(),
-      ]),
+      ]);
+      await Promise.all([
+        service.databaseService.database.entityMark.cleanup(0),
+        service.databaseService.database.entityVisibility.cleanup(0),
+      ]);
+    },
     onSuccess() {
       alert.info({
         content: t('data.entity_data.success'),

@@ -11,7 +11,13 @@ import { createAuditLogPlugin } from '@endfieldmap/map-service/service/db/plugin
 import { LocalStorageValue, logger } from '@endfieldmap/tools';
 import { computed, makeObservable, observable, runInAction } from 'mobx';
 import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
-import { addRxPlugin, createRxDatabase, type RxDatabase, type RxStorage } from 'rxdb/plugins/core';
+import {
+  addRxPlugin,
+  createRxDatabase,
+  removeRxDatabase,
+  type RxDatabase,
+  type RxStorage,
+} from 'rxdb/plugins/core';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
 import { RxDBLocalDocumentsPlugin } from 'rxdb/plugins/local-documents';
@@ -300,25 +306,44 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
   }
 
   /**
-   * 恢复用户数据到数据库
+   * 恢复用户数据到数据库。目标已存在（409）的文档按 updatedAt 做 LWW：
+   * 登出→编辑→再登录的往返中，较新编辑必须胜过目标库里的旧副本——
+   * 早期版本把 409 直接吞掉，登出视图会永久冻结在首次登出时的数据。
    */
   private async restoreUserData(db: RxDatabase<UserDataDBCollections>, snapshot: UserDataSnapshot): Promise<void> {
-    const results = await Promise.allSettled([
-      db.electricPoleNode.bulkInsert(snapshot.electricPoleNode as never[]),
-      db.electricPolePreset.bulkInsert(snapshot.electricPolePreset as never[]),
-      db.customPointNode.bulkInsert(snapshot.customPointNode as never[]),
-      db.customPointPreset.bulkInsert(snapshot.customPointPreset as never[]),
-      db.entityMark.bulkInsert(snapshot.entityMark as never[]),
-      db.entityVisibility.bulkInsert(snapshot.entityVisibility as never[]),
-      db.route.bulkInsert(snapshot.route as never[]),
-    ]);
     const failures: unknown[] = [];
-    for (const result of results) {
-      if (result.status === 'rejected') {
-        failures.push(result.reason);
-      } else {
-        // 合并时保留目标角色已有文档；其余写入错误必须让调用方可见。
-        failures.push(...result.value.error.filter((error) => error.status !== 409));
+    const plans: Array<{ collection: keyof UserDataDBCollections; docs: unknown[] }> = [
+      { collection: 'electricPoleNode', docs: snapshot.electricPoleNode },
+      { collection: 'electricPolePreset', docs: snapshot.electricPolePreset },
+      { collection: 'customPointNode', docs: snapshot.customPointNode },
+      { collection: 'customPointPreset', docs: snapshot.customPointPreset },
+      { collection: 'entityMark', docs: snapshot.entityMark },
+      { collection: 'entityVisibility', docs: snapshot.entityVisibility },
+      { collection: 'route', docs: snapshot.route },
+    ];
+    for (const { collection, docs } of plans) {
+      const result = await db[collection].bulkInsert(docs as never[]);
+      const conflicts = result.error.filter((error) => error.status === 409);
+      failures.push(...result.error.filter((error) => error.status !== 409));
+      if (conflicts.length === 0) continue;
+
+      const existing = await db[collection]
+        .findByIds(conflicts.map((error) => error.documentId))
+        .exec();
+      const newer: unknown[] = [];
+      for (const doc of docs as Array<Record<string, unknown>>) {
+        const id = String(doc?.id ?? '');
+        const target = existing.get(id);
+        if (!target) continue;
+        if (Number(doc.updatedAt ?? 0) > Number(target.updatedAt ?? 0)) {
+          newer.push(doc);
+        } else {
+          logger.debug(`[DatabaseService] restore keeps newer local ${collection}/${id}`);
+        }
+      }
+      if (newer.length > 0) {
+        const upsert = await db[collection].bulkUpsert(newer as never[]);
+        failures.push(...upsert.error);
       }
     }
     if (failures.length > 0) {
@@ -340,5 +365,40 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
       db.entityVisibility.find().remove(),
       db.route.find().remove(),
     ]);
+  }
+
+  /**
+   * 物理丢弃指定范围的本地用户库（文档、墓碑与 replication 元数据一并抹掉，
+   * 云端不受影响）。供「不保留本地」「清除储存数据」这类以云端为准的重置用：
+   * 软删 + 停同步的组合会把墓碑留到下次登录推上云，整体丢弃才是干净的。
+   * 调用前必须已停止同步（stopSync / stopSyncAndPurgeMeta）。
+   * 不传 scope 时丢弃【当前活跃】的库（角色库或未登录的本地库）。
+   */
+  public async removeUserDatabase(scope?: UserDatabaseScope): Promise<void> {
+    if (scope) {
+      const dbName = DatabaseService.userDatabaseName(scope);
+      if (this.user_db?.name === dbName) {
+        await this.discardActiveUserDb();
+      }
+      await removeRxDatabase(dbName, this.storage);
+      return;
+    }
+    if (this.user_db) {
+      const name = this.user_db.name;
+      await this.discardActiveUserDb();
+      await removeRxDatabase(name, this.storage);
+    } else {
+      await removeRxDatabase(DatabaseService.USER_DB_NAME, this.storage);
+    }
+    this.activeScope.value = null;
+  }
+
+  private async discardActiveUserDb(): Promise<void> {
+    if (!this.user_db) return;
+    await this.user_db.close();
+    runInAction(() => {
+      this.user_db = null;
+      this.user_collections = null;
+    });
   }
 }

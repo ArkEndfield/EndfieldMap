@@ -21,6 +21,12 @@ export interface ServerServiceConfig {
  */
 const REQUEST_TIMEOUT_MS = 20_000;
 
+/**
+ * 刷新令牌的超时单独放宽：refresh 一次网络慢就被 20s 掐掉的话，整个等待
+ * 队列会被连坐 reject 并强制登出（伴随换库迁移），代价远高于多等一会儿。
+ */
+const REFRESH_TIMEOUT_MS = 60_000;
+
 function createTimeoutSignal(): AbortSignal | undefined {
   // RN 等环境可能没有 AbortSignal.timeout，退化为无超时（与旧行为一致）
   if (typeof AbortSignal === 'undefined' || typeof AbortSignal.timeout !== 'function') {
@@ -201,6 +207,11 @@ export class ServerService {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.token}`,
         },
+        // 显式放宽超时（request 对未传 signal 的请求默认套 20s）
+        signal:
+          typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
+            ? AbortSignal.timeout(REFRESH_TIMEOUT_MS)
+            : undefined,
       });
 
       const newAccessToken = refreshResponse?.access_token;
@@ -232,7 +243,14 @@ export class ServerService {
     } catch (error) {
       this.isRefreshing = false;
       this.processQueue(error);
-      this.triggerLogout();
+      // 只有拿到 HTTP 级响应的失败（ApiError）才判定会话失效；
+      // 网络/超时类异常（TypeError / DOMException）不该把用户登出——
+      // 等待队列虽被 reject，但调用方（replication 5s 重试）会自然重试
+      if (error instanceof ApiError) {
+        this.triggerLogout();
+      } else {
+        logger.warn('[ServerService] refresh failed transiently, keep session:', error);
+      }
       throw error;
     }
   }

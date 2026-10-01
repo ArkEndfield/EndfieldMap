@@ -41,7 +41,10 @@ export class UserService<T, R> {
     this.serverService.setUnauthorizedHandler(() => {
       logger.warn('Unauthorized, logging out');
       serviceEmitter.fire(SERVICE_EVENT.ALERT_INFO, this.i18nService.translate('login_expired', { ns: 'error' }));
-      this.logout();
+      // 悬空 Promise：logout 内部换库可能抛错，不接住会变成未处理拒绝
+      void this.logout().catch((error) => {
+        logger.error('[UserService] auto logout failed:', error);
+      });
     });
 
     this.serverService.setOnTokenRefreshed((newToken) => {
@@ -128,6 +131,17 @@ export class UserService<T, R> {
     await this.stopSync();
   }
 
+  /**
+   * 停止同步并物理清除 replication 元数据（checkpoint + assumed-master-state）。
+   * 「清除标点数据」「不保留本地」这类「以云端为准重置本地」的操作必须用这个：
+   * 只停同步是不够的——墓碑和元数据留在库里，下次 startSync 照样把删除推上云；
+   * 元数据还在还会让清空后的本地永远拉不回云端存量。清完删除后需再对各集合
+   * cleanup(0) 物理抹掉墓碑（见设置页实现），下次 startSync 即全新全量拉取。
+   */
+  public async stopSyncAndPurgeMeta(): Promise<void> {
+    await this.data.syncService.stopSyncAndPurgeMeta();
+  }
+
   private async startSync() {
     await this.data.syncService.startSync();
   }
@@ -210,6 +224,12 @@ export class UserService<T, R> {
       const userId = this.auth.userInfo?.id;
       if (uid && !userId) throw new Error('User information is not loaded');
       await this.stopSync();
+      if (result === 2 && uid && userId) {
+        // 「不保留（用云端）」承诺清空本地并以云端为准：物理丢弃目标角色库
+        //（含 replication 元数据与未上推的离线编辑），否则旧库连同离线编辑
+        // 会在 startSync 时继续上云，「不保留」名不副实
+        await this.databaseService.removeUserDatabase({ userId, roleId: uid });
+      }
       await this.changeDatabase(result === 1, uid && userId ? { userId, roleId: uid } : undefined);
       this.auth.switchUid(uid);
       this.serverService.setUid(uid);
@@ -239,12 +259,17 @@ export class UserService<T, R> {
 
   public async logout(migrateData: boolean = true): Promise<void> {
     await this.runDatabaseTransition(async () => {
-      await this.stopSync();
-      await this.auth.logout();
-      this.serverService.setToken(null);
-      this.serverService.setUid(null);
-      await this.changeDatabase(migrateData);
-      this.serverService.resetLogoutState();
+      try {
+        await this.stopSync();
+        await this.auth.logout();
+        this.serverService.setToken(null);
+        this.serverService.setUid(null);
+        await this.changeDatabase(migrateData);
+      } finally {
+        // 闩锁必须兜底复位：换库/恢复数据中途抛错的话，本会话内 401 将永远
+        // 无法再次触发登出（triggerLogout 对 isLoggingOut 直接返回）
+        this.serverService.resetLogoutState();
+      }
     });
   }
 
