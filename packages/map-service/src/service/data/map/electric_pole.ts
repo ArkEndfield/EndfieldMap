@@ -675,30 +675,41 @@ export class ElectricPoleDataService extends BasePresetDataService<
   }
 
   protected applyPresetToAdapter(preset: ElectricPolePreset) {
-    try {
-      this.deps.adapterRegistry.adapter.electricPoleController.loadElectricPoleData(preset.data ?? []);
-    } catch (error) {
-      logger.error(
-        '[ElectricPoleDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data',
-        {
-          presetId: preset.id,
-          presetName: preset.name,
-          error,
-          preset: preset,
-        }
-      );
-
-      const adapter = this.deps.adapterRegistry.adapter;
-      serviceEmitter.fire(SERVICE_EVENT.ALERT_SHOW, {
-        content: this.translate('error:electric_pole.preset_corrupted', {
-          defaultValue: '电线杆预设 "{{name}}" 数据已损坏，请检查并重新创建预设。',
-          name: preset.name,
-        }),
-        onCancel: () => {
-          adapter?.electricPoleController.loadElectricPoleData([]);
-        },
-      });
+    // 未知地图的节点过滤而不是整包失败：节点实例化要走 xyz2crd，未知 mapId
+    // 会抛 'Invalid map id'，一段坏数据会把整包预设当「已损坏」丢弃。
+    // 用 getMapData（含 aliases）判定，与渲染层坐标换算的解析口径一致。
+    const raw = preset.data ?? [];
+    const mapDataManager = this.deps.adapterRegistry.adapter.mapController.dataManager;
+    const data = raw.filter((node) => !!mapDataManager.getMapData(node.mapId));
+    if (raw.length > 0 && data.length === 0) {
+      this.handleCorruptedPreset(preset, new Error('all nodes reference unknown maps'));
+      return;
     }
+    try {
+      this.deps.adapterRegistry.adapter.electricPoleController.loadElectricPoleData(data);
+    } catch (error) {
+      this.handleCorruptedPreset(preset, error);
+    }
+  }
+
+  private handleCorruptedPreset(preset: ElectricPolePreset, error: unknown): void {
+    logger.error('[ElectricPoleDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data', {
+      presetId: preset.id,
+      presetName: preset.name,
+      error,
+      preset: preset,
+    });
+
+    const adapter = this.deps.adapterRegistry.adapter;
+    serviceEmitter.fire(SERVICE_EVENT.ALERT_SHOW, {
+      content: this.translate('error:electric_pole.preset_corrupted', {
+        defaultValue: '电线杆预设 "{{name}}" 数据已损坏，请检查并重新创建预设。',
+        name: preset.name,
+      }),
+      onCancel: () => {
+        adapter?.electricPoleController.loadElectricPoleData([]);
+      },
+    });
   }
 
   public override reset() {

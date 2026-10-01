@@ -36,6 +36,8 @@ export class CustomPointController implements ICustomPointController {
   }
 
   loadCustomPointData(data: CustomPointNodeData[]): void {
+    // 先清空所有地图的数据（对齐 OL 版），避免缺席地图残留旧预设数据、空数组兜底变 no-op
+    this.dataManager.clearAllMaps();
     const mapData: Record<MapData['id'], CustomPointData[]> = {};
     for (const node of data) {
       const mapId = node.mapId;

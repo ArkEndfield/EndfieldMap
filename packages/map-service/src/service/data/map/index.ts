@@ -57,6 +57,7 @@ export class MapDataService<T, R> {
       adapterRegistry,
       entityMarkService: userService.data.entityMarkService,
       entityVisibilityService: userService.data.entityVisibilityService,
+      i18nService,
     });
     this.electricPoleDataService = new ElectricPoleDataService({
       ...baseDeps,

@@ -147,30 +147,40 @@ export class CustomPointDataService extends BasePresetDataService<
   }
 
   protected applyPresetToAdapter(preset: CustomPointPreset) {
-    try {
-      this.deps.adapterRegistry.adapter.customPointController.loadCustomPointData(preset.data ?? []);
-    } catch (error) {
-      logger.error(
-        '[CustomPointDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data',
-        {
-          presetId: preset.id,
-          presetName: preset.name,
-          error,
-          preset: preset,
-        }
-      );
-
-      const adapter = this.deps.adapterRegistry.adapter;
-      serviceEmitter.fire(SERVICE_EVENT.ALERT_SHOW, {
-        content: this.translate('error:custom_point.preset_corrupted', {
-          defaultValue: '自定义标点预设 "{{name}}" 数据已损坏，请检查并重新创建预设。',
-          name: preset.name,
-        }),
-        onCancel: () => {
-          adapter?.customPointController.loadCustomPointData([]);
-        },
-      });
+    // 未知地图的节点过滤而不是整包失败（与电线杆预设同口径）：
+    // 节点实例化对未知 mapId 会抛错，一段坏数据不该把整包预设当「已损坏」丢弃
+    const raw = preset.data ?? [];
+    const mapDataManager = this.deps.adapterRegistry.adapter.mapController.dataManager;
+    const data = raw.filter((node) => !!mapDataManager.getMapData(node.mapId));
+    if (raw.length > 0 && data.length === 0) {
+      this.handleCorruptedPreset(preset, new Error('all nodes reference unknown maps'));
+      return;
     }
+    try {
+      this.deps.adapterRegistry.adapter.customPointController.loadCustomPointData(data);
+    } catch (error) {
+      this.handleCorruptedPreset(preset, error);
+    }
+  }
+
+  private handleCorruptedPreset(preset: CustomPointPreset, error: unknown): void {
+    logger.error('[CustomPointDataService|applyPresetToAdapter] Failed to apply preset, falling back to empty data', {
+      presetId: preset.id,
+      presetName: preset.name,
+      error,
+      preset: preset,
+    });
+
+    const adapter = this.deps.adapterRegistry.adapter;
+    serviceEmitter.fire(SERVICE_EVENT.ALERT_SHOW, {
+      content: this.translate('error:custom_point.preset_corrupted', {
+        defaultValue: '自定义标点预设 "{{name}}" 数据已损坏，请检查并重新创建预设。',
+        name: preset.name,
+      }),
+      onCancel: () => {
+        adapter?.customPointController.loadCustomPointData([]);
+      },
+    });
   }
 
   public clearActiveFeature() {

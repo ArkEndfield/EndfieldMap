@@ -25,6 +25,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json --noEmit && vite build",
     "prepack": "cp ../../LICENSE . 2>/dev/null || true",
+    "test": "vitest",
+    "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"

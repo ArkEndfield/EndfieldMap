@@ -275,7 +275,24 @@ export class ElectricPoleRenderer {
    */
   public addConnection(data: ConnectionData, options?: AddConnectionOptions): void {
     const key = `${data.fromInstance.id}-${data.targetId}`;
-    if (this.connectionMap.has(key)) return;
+    if (this.connectionMap.has(key)) {
+      // 收缩窗口内对同一 key 重建连线：取消收缩并立即恢复完整线段，
+      // 否则收缩动画结束会把本应属于新连接的占位移除，造成「已连接但无连线」。
+      if (this.shrinkingConnections.has(key)) {
+        this.shrinkingConnections.delete(key);
+        const feature = this.connectionMap.get(key);
+        if (feature) {
+          feature.set('fromCoordinates', data.fromCoordinates);
+          feature.set('targetCoordinates', data.targetCoordinates);
+          feature.setGeometry(new LineString([data.fromCoordinates, data.targetCoordinates]));
+        }
+      }
+      return;
+    }
+
+    // 新建前清掉同 key 的残留收缩状态：否则下一帧 tick 会拿到新 feature
+    // 继续收缩并在动画结束时把它移除（新连线被旧动画误删）
+    this.shrinkingConnections.delete(key);
 
     const animate = options?.animate === true;
     const from = data.fromCoordinates;
@@ -307,7 +324,11 @@ export class ElectricPoleRenderer {
   public removeConnection(fromId: number, targetId: number, options?: RemoveConnectionOptions): void {
     const key = `${fromId}-${targetId}`;
     const feature = this.connectionMap.get(key);
-    if (!feature) return;
+    if (!feature) {
+      // feature 已不在也要清残留收缩状态：否则同 key 的新连线会被旧动画误删
+      this.shrinkingConnections.delete(key);
+      return;
+    }
 
     if (this.hoveredFeature === feature) {
       this.hoveredFeature = null;
@@ -332,6 +353,8 @@ export class ElectricPoleRenderer {
       }
     }
 
+    // 立即移除：连同收缩状态一并清掉，防止「删了 feature 但动画状态残留」
+    this.shrinkingConnections.delete(key);
     this.connectionSource.removeFeature(feature);
     this.connectionMap.delete(key);
   }

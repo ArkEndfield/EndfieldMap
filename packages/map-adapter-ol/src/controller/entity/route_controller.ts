@@ -3,6 +3,7 @@ import { RouteRender } from '@endfieldmap/map-adapter-ol/render/renderer/entity/
 import type { RouteLineData } from '@endfieldmap/map-adapter-ol/render/renderer/entity/route/route_renderer';
 import type { IRouteController, MapData, MapDataManager, RouteRenderItem } from '@endfieldmap/map-core';
 import { Disposer } from '@endfieldmap/map-core';
+import { logger } from '@endfieldmap/tools';
 import { reaction } from 'mobx';
 
 export interface RouteControllerConfig {
@@ -67,23 +68,39 @@ export class RouteController extends Disposer implements IRouteController {
     const byMap = new Map<MapData['id'], RouteLineData[]>();
     for (const route of this.routes) {
       route.segments.forEach((segment, segIndex) => {
-        const mapId = segment.mapId as MapData['id'];
         // 空段跳过；单点段保留——草稿只描了第一个点时，渲染器画起点圆点给反馈
         if (segment.points.length < 1) return;
 
+        // 未知地图段跳过：xyz2crd 对未知 mapId 会抛 'Invalid map id'，一段坏数据
+        // 会击穿整条 reload/applyToAdapter/init 链路（森空岛导入的 mapId 不受本地校验）
+        // 用 getMapData（含 aliases）判定，与下方坐标换算的解析口径一致
+        if (!this.mapDataManager.getMapData(segment.mapId)) {
+          logger.warn('[RouteController] Skip segment with unknown mapId', {
+            mapId: segment.mapId,
+            routeId: route.id,
+            segIndex,
+          });
+          return;
+        }
+
+        // 统一用解析后的规范 mapId 做分组键：RouteRender 的渲染器按规范 id
+        // 索引（mapIds 来自 mapDataManager），别名 id 做键的话该段折线永远
+        // 进不了任何图层（setLinesByMap get 不到）
+        const resolvedId = this.mapDataManager.resolveMapId(segment.mapId)!;
+
         const coordinates = segment.points.map((p) => {
-          const crd = this.mapDataManager.xyz2crd({ x: p.x, y: p.y, z: p.z }, mapId);
+          const crd = this.mapDataManager.xyz2crd({ x: p.x, y: p.y, z: p.z }, resolvedId);
           return [crd[0], crd[1]] as [number, number];
         });
 
-        const list = byMap.get(mapId) ?? [];
+        const list = byMap.get(resolvedId) ?? [];
         list.push({
           id: `${route.id}#${segIndex}`,
           coordinates,
           color: segment.color,
           draft: route.draft,
         });
-        byMap.set(mapId, list);
+        byMap.set(resolvedId, list);
       });
     }
     return byMap;

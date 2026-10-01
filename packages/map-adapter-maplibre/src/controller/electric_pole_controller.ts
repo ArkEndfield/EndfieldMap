@@ -38,6 +38,9 @@ export class ElectricPoleController implements IElectricPoleController {
   }
 
   loadElectricPoleData(data: ElectricPoleNodeData[]): void {
+    // 先清空所有地图的数据（对齐 OL 版）：loadData 只替换输入中出现过的 mapId，
+    // 不清空会让切换预设后缺席地图残留旧预设的杆，空数组兜底也会变成 no-op
+    this.dataManager.clearAllMaps();
     const mapData: Record<MapData['id'], ElectricPoleData[]> = {};
     for (const node of data) {
       const mapId = node.mapId;
@@ -105,7 +108,9 @@ export class ElectricPoleController implements IElectricPoleController {
   @action
   deleteElectricPole(mapId: MapData['id'], id: number): boolean {
     const manager = this.dataManager.getMapManager(mapId);
-    const result = manager.remove(id);
+    // removeWithCleanup 会 clearAllConnections：邻杆的出/入边引用同步摘除，
+    // 否则 connectionCount 虚高、后续连接被虚假的槽位已满阻挡，直到整预设重载
+    const result = manager.removeWithCleanup(id);
     if (result) this.bumpVersion();
     return result;
   }

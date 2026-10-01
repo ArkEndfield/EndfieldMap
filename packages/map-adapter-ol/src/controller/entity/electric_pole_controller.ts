@@ -462,17 +462,13 @@ export class ElectricPoleController extends Disposer {
       }
     }
 
-    // 连线距离校验：移动后与所有已连接杆的距离须在各自 zone 内
+    // 连线距离校验：与连接语义对齐——连接只要求任一方覆盖范围可达（findAutoConnectTarget），
+    // 移动同样只要求任一方可达，否则中继器↔电线杆等混合连接的两端杆会被永久锁死无法拖动
     for (const other of instance.connectedPoles) {
       const distance = calculateDistance(newCoordinate as [number, number], other.coordinates);
-      if (distance > instance.zoneRadius) {
+      if (distance > instance.zoneRadius && distance > other.zoneRadius) {
         throw new Error(
-          `[ElectricPoleController] Move would exceed zone radius to pole ${other.id} (distance: ${distance}, limit: ${instance.zoneRadius})`
-        );
-      }
-      if (distance > other.zoneRadius) {
-        throw new Error(
-          `[ElectricPoleController] Move would exceed target pole zone radius (distance: ${distance}, limit: ${other.zoneRadius})`
+          `[ElectricPoleController] Move would exceed zone radius to pole ${other.id} (distance: ${distance}, limits: ${instance.zoneRadius}/${other.zoneRadius})`
         );
       }
     }

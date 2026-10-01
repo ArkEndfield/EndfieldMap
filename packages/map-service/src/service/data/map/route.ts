@@ -233,9 +233,27 @@ export class RouteDataService<T, R> {
     }
     const now = Date.now();
     const route = sklandAggToStoredRoute(agg, now, this.translate('sidebar:operation.route.untitled'));
-    await this.deps.routeUserDataService.upsert(route);
+    // 落库前丢弃未知地图段：渲染层对未知 mapId 会抛错，一段坏数据会击穿整条路线链路
+    // 用 getMapData（含 aliases）判定，与渲染层坐标换算的解析口径一致
+    const mapDataManager = this.deps.adapterRegistry.adapter.mapController.dataManager;
+    const segments = route.segments.filter((seg) => !!mapDataManager.getMapData(seg.mapId));
+    if (segments.length === 0) {
+      throw new Error(this.translate('error:route.import_failed'));
+    }
+    const filtered = segments.length === route.segments.length ? route : { ...route, segments };
+    await this.deps.routeUserDataService.upsert(filtered);
     await this.reload();
-    return route;
+    // 部分段被滤掉时显式告知：静默丢段会让用户误以为完整路线已导入
+    if (segments.length < route.segments.length) {
+      serviceEmitter.fire(SERVICE_EVENT.ALERT_INFO, {
+        content: this.translate('error:route.import_partial', {
+          defaultValue: '已导入 {{kept}} 段路线，跳过 {{dropped}} 段（未知地图）',
+          kept: segments.length,
+          dropped: route.segments.length - segments.length,
+        }),
+      });
+    }
+    return filtered;
   }
 
   /**

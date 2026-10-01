@@ -361,7 +361,7 @@ export class AiToolset<T, R> {
       : { ok: false, data: { id, error: 'point not found' }, summary: this.summary('focus_failed', { id }) };
   };
 
-  private markPoints = (args: Record<string, unknown>): AiToolResult => {
+  private markPoints = async (args: Record<string, unknown>): Promise<AiToolResult> => {
     const ids = asNumberArray(args.ids);
     const marked = asBoolean(args.marked) ?? true;
     if (ids.length === 0) return { ok: false, data: { error: 'ids is required' } };
@@ -373,13 +373,15 @@ export class AiToolset<T, R> {
       const instance = adapter?.entityController.getInstanceById(mapId, id);
       return !!instance && instance.markable;
     });
+    // await 持久化：应答的 ok 必须反映真实落库结果，失败时用户侧另有告警
+    let persisted = true;
     if (valid.length > 0) {
-      this.ctx.mapDataService.entityDataService.markEntities(mapId, valid, marked);
+      persisted = await this.ctx.mapDataService.entityDataService.markEntities(mapId, valid, marked);
     }
 
     return {
-      ok: valid.length > 0,
-      data: { mapId, marked, applied: valid.length, skipped: ids.length - valid.length },
+      ok: valid.length > 0 && persisted,
+      data: { mapId, marked, applied: valid.length, skipped: ids.length - valid.length, persisted },
       summary: this.summary(marked ? 'mark' : 'unmark', { num: valid.length }),
     };
   };

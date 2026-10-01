@@ -45,8 +45,15 @@ export class DeleteElectricPoleCommand implements Command {
     private readonly instance: ElectricPoleDataInstance
   ) {
     this.description = `删除电线杆 #${instance.id}`;
-    // 保存删除前的数据用于恢复
-    this.deletedData = { ...instance.data } as ElectricPoleData;
+    // 保存删除前的数据用于恢复（properties 必须深拷贝：
+    // removeWithCleanup→clearAllConnections→disconnectOutgoingTo 会就地重写共享的 connections 数组）
+    this.deletedData = {
+      ...instance.data,
+      properties: {
+        ...instance.data.properties,
+        connections: [...(instance.data.properties.connections ?? [])],
+      },
+    } as ElectricPoleData;
     this.outgoingTargetIds = [...instance.outgoingConnectionIds];
     this.incomingSourceIds = instance.incomingConnections.map((p) => p.id);
   }
@@ -56,42 +63,52 @@ export class DeleteElectricPoleCommand implements Command {
   }
 
   undo(): void {
-    if (this.deletedData) {
-      // 恢复电线杆
-      const manager = this.controller.dataManager.getMapManager(this.mapId);
-      const restored = manager.addWithConnection(this.deletedData);
+    if (!this.deletedData) {
+      return;
+    }
 
-      if (!restored) return;
+    // 经 controller 恢复：数据层 addWithConnection（按快照重连出边）+ 渲染层点/zone/连线
+    const restored = this.controller.addElectricPoleData(this.mapId, this.deletedData);
+    if (!restored) {
+      return;
+    }
 
-      // 恢复：由 restored 发出的连线
-      for (const targetId of this.outgoingTargetIds) {
-        const target = manager.getById(targetId);
-        if (target) {
-          try {
-            restored.connectTo(target);
-          } catch (error) {
-            logger.warn('[DeleteElectricPoleCommand] Failed to restore outgoing connection', {
-              from: restored.id,
-              to: targetId,
-              error: error instanceof Error ? error.message : String(error),
-            });
-          }
+    const manager = this.controller.dataManager.getMapManager(this.mapId);
+
+    // 恢复：由 restored 发出的连线（快照完好的已被 addWithConnection 重连，跳过避免重复告警）
+    for (const targetId of this.outgoingTargetIds) {
+      if (restored.isConnectedTo(targetId)) {
+        continue;
+      }
+      const target = manager.getById(targetId);
+      if (target) {
+        try {
+          this.controller.connectElectricPoles(this.mapId, restored.id, targetId);
+        } catch (error) {
+          logger.warn('[DeleteElectricPoleCommand] Failed to restore outgoing connection', {
+            from: restored.id,
+            to: targetId,
+            error: error instanceof Error ? error.message : String(error),
+          });
         }
       }
+    }
 
-      // 恢复：由其他节点发出到 restored 的连线
-      for (const sourceId of this.incomingSourceIds) {
-        const source = manager.getById(sourceId);
-        if (source) {
-          try {
-            source.connectTo(restored);
-          } catch (error) {
-            logger.warn('[DeleteElectricPoleCommand] Failed to restore incoming connection', {
-              from: sourceId,
-              to: restored.id,
-              error: error instanceof Error ? error.message : String(error),
-            });
-          }
+    // 恢复：由其他节点发出到 restored 的连线（删除时来源杆的 connections 已被摘除本杆 id，必须显式重连）
+    for (const sourceId of this.incomingSourceIds) {
+      if (restored.isConnectedTo(sourceId)) {
+        continue;
+      }
+      const source = manager.getById(sourceId);
+      if (source) {
+        try {
+          this.controller.connectElectricPoles(this.mapId, sourceId, restored.id);
+        } catch (error) {
+          logger.warn('[DeleteElectricPoleCommand] Failed to restore incoming connection', {
+            from: sourceId,
+            to: restored.id,
+            error: error instanceof Error ? error.message : String(error),
+          });
         }
       }
     }
@@ -167,7 +184,14 @@ export class BatchDeleteElectricPolesCommand implements Command {
       const instance = manager.getById(id);
       if (instance) {
         this.deletedData.push({
-          data: { ...instance.data } as ElectricPoleData,
+          // properties 深拷贝：clearAllConnections 会就地重写共享的 connections 数组
+          data: {
+            ...instance.data,
+            properties: {
+              ...instance.data.properties,
+              connections: [...(instance.data.properties.connections ?? [])],
+            },
+          } as ElectricPoleData,
           outgoingTargetIds: [...instance.outgoingConnectionIds],
           incomingSourceIds: instance.incomingConnections.map((p) => p.id),
         });
@@ -179,10 +203,10 @@ export class BatchDeleteElectricPolesCommand implements Command {
   undo(): void {
     const manager = this.controller.dataManager.getMapManager(this.mapId);
 
-    // 第一阶段：先恢复所有电线杆实例
+    // 第一阶段：先恢复所有电线杆实例（数据层 addWithConnection 重连出边 + 渲染层点/zone/连线）
     const restoredMap = new Map<number, ElectricPoleDataInstance>();
     for (const { data } of this.deletedData) {
-      const restored = manager.addWithConnection(data);
+      const restored = this.controller.addElectricPoleData(this.mapId, data);
       if (restored) {
         restoredMap.set(data.levelLogicId, restored);
       }
@@ -194,10 +218,13 @@ export class BatchDeleteElectricPolesCommand implements Command {
       if (!restored) continue;
 
       for (const targetId of outgoingTargetIds) {
+        if (restored.isConnectedTo(targetId)) {
+          continue;
+        }
         const target = manager.getById(targetId);
         if (target) {
           try {
-            restored.connectTo(target);
+            this.controller.connectElectricPoles(this.mapId, restored.id, targetId);
           } catch (error) {
             logger.warn('[BatchDeleteElectricPolesCommand] Failed to restore outgoing connection', {
               from: restored.id,
@@ -209,10 +236,13 @@ export class BatchDeleteElectricPolesCommand implements Command {
       }
 
       for (const sourceId of incomingSourceIds) {
+        if (restored.isConnectedTo(sourceId)) {
+          continue;
+        }
         const source = manager.getById(sourceId);
         if (source) {
           try {
-            source.connectTo(restored);
+            this.controller.connectElectricPoles(this.mapId, sourceId, restored.id);
           } catch (error) {
             logger.warn('[BatchDeleteElectricPolesCommand] Failed to restore incoming connection', {
               from: sourceId,

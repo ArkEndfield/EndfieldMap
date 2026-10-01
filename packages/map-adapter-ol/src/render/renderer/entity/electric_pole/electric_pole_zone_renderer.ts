@@ -262,6 +262,27 @@ export class ElectricPoleZoneRenderer {
    */
   private addSingleZone(item: ZoneData, animate: boolean = false): void {
     logger.debug('[ElectricPoleZoneRenderer] addSingleZone', { id: item.id, visible: item.visible, animate });
+
+    // 已有同 id 的 feature（含收缩/展开动画进行中）：复用并就地刷新。
+    // 直接覆盖 featureMap 会让旧 feature 滞留 source，且收缩动画结束时
+    // tick 会按 featureMap 移除新 feature——zone 彻底消失或重复渲染。
+    const existing = this.featureMap.get(item.id);
+    if (existing) {
+      this.shrinkingZones.delete(item.id);
+      this.animatingZoneStarts.delete(item.id);
+      if (item.visible) {
+        existing.setGeometry(new CircleGeom(item.coordinates, item.radius));
+      } else {
+        existing.setGeometry(undefined);
+      }
+      existing.set('visible', item.visible);
+      existing.set('deviceKey', item.dataInstance.deviceKey);
+      existing.set('instanceId', item.id);
+      existing.set('targetRadius', item.radius);
+      existing.set('targetCoordinates', item.coordinates);
+      return;
+    }
+
     const feature = new Feature();
 
     const wantAnimate = animate && item.visible && item.radius > 0;
