@@ -38,7 +38,7 @@
   "devDependencies": {
     "@endfieldmap/map-core": "workspace:*",
     "@endfieldmap/tools": "workspace:*",
-    "i18next-cli": "^1.74.1"
+    "i18next-cli": "^1.74.2"
   },
   "peerDependencies": {
     "@endfieldmap/map-core": "workspace:*",

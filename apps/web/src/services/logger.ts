@@ -9,8 +9,6 @@ if (!isDev) {
   void import('@sentry/react').then((Sentry) => {
     Sentry.init({
       dsn: sentryDsn,
-      enableLogs: true,
-      sendDefaultPii: true,
       integrations: [Sentry.replayIntegration()],
       replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
