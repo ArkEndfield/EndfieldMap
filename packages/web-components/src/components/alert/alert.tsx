@@ -127,6 +127,9 @@ const AlertInner: React.FC<ZmdAlertProps> = ({
             disabled={loading}
             onClick={() => onConfirm?.()}
             icon={<ZmdAlertTickIcon />}
+            // 语义钩子：EndfieldInput 在弹窗内按回车时通过 .zmd-alert-confirm
+            // 定位本弹窗的确认键（见 input/index.tsx）
+            className="zmd-alert-confirm"
             classNames={{
               button: 'w-1/2',
             }}

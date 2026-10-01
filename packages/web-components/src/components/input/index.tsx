@@ -22,9 +22,13 @@ export const EndfieldInput = ({
   soundType = SoundType.TICK,
   rows = 3,
   cols,
+  autoFocus = true,
+  value: controlledValue,
 }: InputProps) => {
-  const [value, setValue] = useState(defaultValue);
+  const [innerValue, setInnerValue] = useState(defaultValue);
   const [showPassword, setShowPassword] = useState(false);
+  // 受控 / 非受控二选一：设置页这类外部持有状态的场景传 value，弹窗里的一次性输入沿用内部 state
+  const value = controlledValue ?? innerValue;
   const { play } = useAudio();
   const currentWindow = useWindow();
 
@@ -52,16 +56,18 @@ export const EndfieldInput = ({
     value,
     maxLength,
     minLength,
-    autoFocus: true,
+    autoFocus,
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setValue(e.target.value);
+      setInnerValue(e.target.value);
       onValueChange?.(e.target.value);
     },
     onKeyDown: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (e.key === 'Enter' && inputType !== 'textarea') {
         e.preventDefault();
-        const confirmBtn = currentWindow.document.querySelector<HTMLButtonElement>('[data-alert-confirm]');
-        confirmBtn?.click();
+        // 只确认自己所在弹窗：设置页等非弹窗场景（closest 为 null）不触发，
+        // 也不会误点页面上其它开着的弹窗的确认键
+        const scope = e.currentTarget.closest('dialog');
+        scope?.querySelector<HTMLButtonElement>('[data-alert-confirm], .zmd-alert-confirm')?.click();
       }
     },
   };
