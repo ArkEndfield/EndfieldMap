@@ -5,4 +5,5 @@ export * from '@endfieldmap/map-core/types/entity';
 export * from '@endfieldmap/map-core/types/event';
 export * from '@endfieldmap/map-core/types/map';
 export * from '@endfieldmap/map-core/types/position';
+export * from '@endfieldmap/map-core/types/route';
 export * from '@endfieldmap/map-core/types/tier';

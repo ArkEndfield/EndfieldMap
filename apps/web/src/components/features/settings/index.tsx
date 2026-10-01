@@ -1,6 +1,6 @@
 import { cn } from '@endfieldmap/tools';
 import { CloseButton, shortcutService, useIsMobile, useWindow } from '@endfieldmap/web-components';
-import { DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@endfieldmap/web-components';
+import { ChatIcon, DataBaseIcon, LayoutAndLanguageIcon, MapIcon, QuestionIcon } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
@@ -10,6 +10,7 @@ import { ContentWrapper } from '@/components/common/settings/components/content_
 import { BgDeco } from '@/components/common/settings/components/deco';
 import { type TabItem, TabList } from '@/components/common/settings/tabs';
 import { AboutPage } from '@/components/features/settings/items/about';
+import { AiSettings } from '@/components/features/settings/items/ai';
 import { DataSettings } from '@/components/features/settings/items/data';
 import { DisplaySettings } from '@/components/features/settings/items/display';
 import { MapSettings } from '@/components/features/settings/items/map';
@@ -39,6 +40,11 @@ const settingList = [
     key: SETTINGS_PAGE.DISPLAY,
     icon: <LayoutAndLanguageIcon />,
     Component: DisplaySettings,
+  },
+  {
+    key: SETTINGS_PAGE.AI,
+    icon: <ChatIcon />,
+    Component: AiSettings,
   },
   {
     key: SETTINGS_PAGE.DATA,

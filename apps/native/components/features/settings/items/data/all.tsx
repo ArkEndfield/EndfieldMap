@@ -9,6 +9,7 @@ import { service } from '@/services/map-service';
 const clearAll = async (confirmText: string): Promise<boolean> => {
   const confirmed = await alertApi.confirm({ content: confirmText });
   if (!confirmed) return false;
+  await service.userService.stopSyncBeforeLocalClear();
   await service.databaseService.clearUserDataWithEvents();
   LocalStorageDB.clear();
   return true;

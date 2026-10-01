@@ -14,6 +14,7 @@ const clearAll = (confirmText: string): Promise<boolean> => {
     alert.confirm({
       content: confirmText,
       async onConfirm() {
+        await service.userService.stopSyncBeforeLocalClear();
         await service.databaseService.clearUserDataWithEvents();
         LocalStorageDB.clear();
         resolve(true);

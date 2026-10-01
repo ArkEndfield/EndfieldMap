@@ -6,6 +6,7 @@ import { AdjustViewSetting } from '@/components/features/settings/items/map/adju
 import { CenterViewSetting } from '@/components/features/settings/items/map/center_view';
 import { ClusterSetting } from '@/components/features/settings/items/map/cluster';
 import { HoverSetting } from '@/components/features/settings/items/map/hover';
+import { PlayerPositionSetting, PlayerTierSetting } from '@/components/features/settings/items/map/player_position';
 import { WasdSetting } from '@/components/features/settings/items/map/wasd_movespeed';
 
 export const MapSettings = observer(() => {
@@ -17,6 +18,8 @@ export const MapSettings = observer(() => {
       <AdjustViewSetting />
       <HoverSetting />
       <WasdSetting />
+      <PlayerPositionSetting />
+      <PlayerTierSetting />
     </SettingsZone>
   );
 });

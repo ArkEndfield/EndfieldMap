@@ -15,12 +15,16 @@ export const Z_INDEX = {
   ZONE: 3,
   /** 电线杆连线 */
   CONNECTION: 4,
+  /** 地图路线折线 */
+  ROUTE_LINE: 4.5,
   /** 通用标点 */
   ENTITY: 5,
   /** 创建点（电线杆、自定义标点） */
   CREATE_POINT: 7,
   /** 悬浮动画 */
   HOVER: 8,
+  /** 玩家实时位置 */
+  PLAYER: 8.5,
   /** 激活指示器 */
   ACTIVE: 9,
   /** 开发者工具 */

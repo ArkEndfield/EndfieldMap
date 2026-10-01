@@ -1,6 +1,7 @@
 export const SETTINGS_PAGE = {
   GENERAL: 'general',
   DISPLAY: 'display',
+  AI: 'ai',
   DATA: 'data',
   ABOUT: 'about',
 } as const;
@@ -12,6 +13,8 @@ export const SETTINGS_KEYS = {
     ADJUST_VIEW: 'general.adjust_view',
     HOVER: 'general.hover',
     WASD: 'general.wasd',
+    PLAYER_POSITION: 'general.player_position',
+    PLAYER_TIER: 'general.player_tier',
   },
   DISPLAY: {
     THEME: 'display.theme',
@@ -19,6 +22,12 @@ export const SETTINGS_KEYS = {
     LANGUAGE: 'display.language',
     AUDIO: 'display.audio',
     POPUP: 'display.popup',
+  },
+  AI: {
+    ENABLED: 'ai.enabled',
+    PROVIDER: 'ai.provider',
+    MODEL: 'ai.model',
+    TEMPERATURE: 'ai.temperature',
   },
   DATA: {
     ENTITY: 'data.entity',

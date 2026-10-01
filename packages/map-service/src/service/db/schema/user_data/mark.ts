@@ -6,10 +6,11 @@ import {
 } from 'rxdb';
 
 const markDataSchemaLiteral = {
-  version: 0,
+  version: 1,
   primaryKey: 'id',
   type: 'object',
   properties: {
+    syncScope: { type: 'string' },
     id: { type: 'string', maxLength: 128 },
     entityId: { type: 'number' },
     mapId: { type: 'string', maxLength: 100 },

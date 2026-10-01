@@ -7,10 +7,12 @@ import { ElectricPoleDataService } from '@endfieldmap/map-service/service/data/m
 import { EntityDataService } from '@endfieldmap/map-service/service/data/map/entity';
 import { GridTiersDataService } from '@endfieldmap/map-service/service/data/map/grid_tiers';
 import { MapStateDataService } from '@endfieldmap/map-service/service/data/map/map_state';
+import { RouteDataService } from '@endfieldmap/map-service/service/data/map/route';
 import type { I18nService } from '@endfieldmap/map-service/service/i18n';
 import { PresetService } from '@endfieldmap/map-service/service/preset_service';
 import { serviceEmitter } from '@endfieldmap/map-service/service/service_emitter';
 import { SERVICE_EVENT } from '@endfieldmap/map-service/service/service_emitter';
+import type { SklandRouteService } from '@endfieldmap/map-service/service/skland_route';
 import type { UserService } from '@endfieldmap/map-service/service/user';
 import { type JSONLoader, logger } from '@endfieldmap/tools';
 
@@ -21,6 +23,7 @@ export interface MapDataServiceDeps<T, R> {
   jsonLoader: JSONLoader;
   adapterRegistry: AdapterRegistry;
   userService: UserService<T, R>;
+  sklandRouteService: SklandRouteService;
 }
 
 /**
@@ -33,6 +36,7 @@ export class MapDataService<T, R> {
   public entityDataService: EntityDataService;
   public electricPoleDataService: ElectricPoleDataService;
   public customPointDataService: CustomPointDataService;
+  public routeDataService: RouteDataService<T, R>;
   public mapStateDataService: MapStateDataService;
   public gridTiersDataService: GridTiersDataService;
 
@@ -66,6 +70,12 @@ export class MapDataService<T, R> {
       customPointPresetDataService: userService.data.customPointPresetDataService,
       presetService: presetService,
     });
+    this.routeDataService = new RouteDataService({
+      adapterRegistry,
+      i18nService,
+      routeUserDataService: userService.data.routeUserDataService,
+      sklandRouteService: deps.sklandRouteService,
+    });
 
     this.mapStateDataService = new MapStateDataService(adapterRegistry);
     this.gridTiersDataService = new GridTiersDataService(this.jsonLoader, adapterRegistry, deps.assetService);
@@ -76,6 +86,7 @@ export class MapDataService<T, R> {
       () => this.entityDataService.init(),
       () => this.electricPoleDataService.init(),
       () => this.customPointDataService.init(),
+      () => this.routeDataService.init(),
       () => this.gridTiersDataService.init(),
       () => this.mapStateDataService.init(),
     ];
@@ -108,6 +119,7 @@ export class MapDataService<T, R> {
   public stopAllOperation() {
     this.customPointDataService.stopAllOperation();
     this.electricPoleDataService.stopAllOperation();
+    this.routeDataService.stopAllOperation();
   }
 
   /**

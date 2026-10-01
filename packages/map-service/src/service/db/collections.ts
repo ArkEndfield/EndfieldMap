@@ -32,6 +32,11 @@ import {
   type PresetSchemaType,
 } from '@endfieldmap/map-service/service/db/schema/user_data/preset';
 import {
+  type RouteCollection,
+  type RouteDocType,
+  routeSchema,
+} from '@endfieldmap/map-service/service/db/schema/user_data/route';
+import {
   type VisibilityDataCollection,
   visibilityDataSchema,
   type VisibilityDataSchemaType,
@@ -50,6 +55,8 @@ export type UserDataDBCollections = {
 
   entityMark: MarkDataCollection;
   entityVisibility: VisibilityDataCollection;
+
+  route: RouteCollection;
 };
 
 /**
@@ -70,21 +77,29 @@ export type DBCollections = UserDataDBCollections & GameDataDBCollections;
 export const userDataCollectionsSchema = {
   electricPoleNode: {
     schema: electricPoleNodeSchema,
+    migrationStrategies: { 1: (doc: ElectricPoleNodeSchemaType) => doc },
   },
   electricPolePreset: {
     schema: presetSchema,
+    migrationStrategies: { 1: (doc: PresetSchemaType) => doc },
   },
   customPointNode: {
     schema: customPointNodeSchema,
+    migrationStrategies: { 1: (doc: CustomPointNodeSchemaType) => doc },
   },
   customPointPreset: {
     schema: presetSchema,
+    migrationStrategies: { 1: (doc: PresetSchemaType) => doc },
   },
   entityMark: {
     schema: markDataSchema,
+    migrationStrategies: { 1: (doc: MarkDataSchemaType) => doc },
   },
   entityVisibility: {
     schema: visibilityDataSchema,
+  },
+  route: {
+    schema: routeSchema,
   },
 };
 
@@ -113,6 +128,8 @@ export class UserCollections {
   public entityMark: Collection<MarkDataSchemaType>;
   public entityVisibility: Collection<VisibilityDataSchemaType>;
 
+  public route: Collection<RouteDocType>;
+
   constructor(db: RxDatabase<UserDataDBCollections>) {
     this.electricPoleNode = new Collection(db.electricPoleNode);
     this.electricPolePreset = new Collection(db.electricPolePreset);
@@ -122,6 +139,8 @@ export class UserCollections {
 
     this.entityMark = new Collection(db.entityMark);
     this.entityVisibility = new Collection(db.entityVisibility);
+
+    this.route = new Collection(db.route);
   }
 }
 

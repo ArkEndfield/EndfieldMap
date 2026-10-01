@@ -6,10 +6,11 @@ import {
 } from 'rxdb';
 
 const customPointNodeSchemaLiteral = {
-  version: 0,
+  version: 1,
   primaryKey: 'id', // 注意：这里需要是唯一的 UUID
   type: 'object',
   properties: {
+    syncScope: { type: 'string' },
     // 物理主键: 建议格式 `${presetId}|${mapId}|${levelLogicId}` 或者是纯 UUID
     id: { type: 'string', maxLength: 128 },
 

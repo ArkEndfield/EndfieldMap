@@ -42,23 +42,24 @@ export class UserAuthService {
   }
 
   public async login(username: string, password: string) {
-    const { token } = await this.serverService.apiPost<{ token: string; expire: string }>('/auth/login', {
+    // V2：{access_token, token_type, expires_in}，刷新令牌走 HttpOnly cookie
+    const { access_token } = await this.serverService.apiPost<{ access_token: string }>('/auth/login', {
       username,
       password,
     });
     runInAction(() => {
-      this.token.value = token;
+      this.token.value = access_token;
     });
     return true;
   }
 
   public async register(username: string, password: string) {
-    const { token } = await this.serverService.apiPost<{ token: string; expire: string }>(
+    const { access_token } = await this.serverService.apiPost<{ access_token: string }>(
       '/auth/register',
       { username, password }
     );
     runInAction(() => {
-      this.token.value = token;
+      this.token.value = access_token;
     });
     return true;
   }
@@ -124,9 +125,17 @@ export class UserAuthService {
         })
       );
     }
-    const { list } = await this.serverService.apiGet<{ list: UidInfo[] }>('/user/game-roles');
+    // V2：{roles:[{roleId, isDefault, nickName?}]}（camelCase），映射回 UidInfo
+    const { roles } = await this.serverService.apiGet<{
+      roles: { roleId: string; isDefault: boolean; nickName?: string }[];
+    }>('/user/game-roles');
     runInAction(() => {
-      this.uidList = list;
+      this.uidList = (roles ?? []).map((r) => ({
+        uid: r.roleId,
+        nickname: r.nickName ?? '',
+        avatar: '',
+        is_default: r.isDefault,
+      }));
     });
   }
 
@@ -139,7 +148,8 @@ export class UserAuthService {
         })
       );
     }
-    await this.serverService.apiPost('/user/game-roles/bind', { role_id: uid, form: type });
+    // V2 body：{form, roleId}
+    await this.serverService.apiPost('/user/game-roles/bind', { form: type, roleId: uid });
   }
 
   public async unbindUid(uid: UidInfo['uid']) {
@@ -151,7 +161,8 @@ export class UserAuthService {
         })
       );
     }
-    await this.serverService.apiPost('/user/game-roles/unbind', { role_id: uid });
+    // V2 body：{roleId}
+    await this.serverService.apiPost('/user/game-roles/unbind', { roleId: uid });
   }
 
   public async fetchUserInfo() {
@@ -163,7 +174,8 @@ export class UserAuthService {
         })
       );
     }
-    const userInfo = (await this.serverService.apiGet<{ user: UserInfo }>('/user/me')).user;
+    // V2：/user/me 直接返回用户对象（无 {user:...} 包裹）
+    const userInfo = await this.serverService.apiGet<UserInfo>('/user/me');
     runInAction(() => {
       this.userInfo = userInfo;
     });

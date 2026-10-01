@@ -6,6 +6,7 @@ import { DevToolsController } from '@endfieldmap/map-adapter-ol/controller/dev_t
 import { CustomPointController } from '@endfieldmap/map-adapter-ol/controller/entity/custom_point_controller';
 import { ElectricPoleController } from '@endfieldmap/map-adapter-ol/controller/entity/electric_pole_controller';
 import { EntityController } from '@endfieldmap/map-adapter-ol/controller/entity/entity_controller';
+import { RouteController } from '@endfieldmap/map-adapter-ol/controller/entity/route_controller';
 import { ActiveFeatureController } from '@endfieldmap/map-adapter-ol/controller/feature/active_feature';
 import {
   ElectricPoleDragController,
@@ -65,6 +66,8 @@ export class EndfieldMapAdapter {
   /** 电线杆数据管理器 */
   public electricPoleController!: ElectricPoleController;
   public customPointController!: CustomPointController;
+  /** 路线控制器（折线覆盖层，不参与实体搜索/hover） */
+  public routeController!: RouteController;
   public tierController!: TierController;
   public eventController!: EventController;
   /** 激活特征控制器 */
@@ -160,6 +163,10 @@ export class EndfieldMapAdapter {
       mapDataManager,
       mapInstance,
       asset: this.asset,
+    });
+    this.routeController = new RouteController({
+      mapDataManager,
+      mapInstance,
     });
   }
 
@@ -395,6 +402,7 @@ export class EndfieldMapAdapter {
     this.entityController.dispose();
     this.electricPoleController.dispose();
     this.customPointController.dispose();
+    this.routeController.dispose();
 
     // 清理其他控制器
     this.areaNameController.dispose();

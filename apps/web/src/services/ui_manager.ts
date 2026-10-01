@@ -139,6 +139,20 @@ class UIManager {
   }
   // endregion
 
+  // region: AI 助手面板
+  @observable accessor aiPanelOpen: boolean = false;
+
+  @action
+  public setAiPanelOpen(open: boolean) {
+    this.aiPanelOpen = open;
+  }
+
+  @action
+  public toggleAiPanel() {
+    this.aiPanelOpen = !this.aiPanelOpen;
+  }
+  // endregion
+
   // region: 调整弹出层
   @action
   public toggleAdjustPopup() {

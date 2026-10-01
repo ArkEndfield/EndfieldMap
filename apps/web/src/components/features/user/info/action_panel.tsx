@@ -1,4 +1,4 @@
-import { EditIcon, LogoutIcon, PlusIcon } from '@endfieldmap/web-components';
+import { EditIcon, LogoutIcon, PlusIcon, SyncIcon } from '@endfieldmap/web-components';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,9 +9,11 @@ interface ActionPanelProps {
   onBindUid?: () => void;
   onEditInfo?: () => void;
   onLogout?: () => void;
+  onSyncSkland?: () => void;
+  syncSklandLoading?: boolean;
 }
 
-export const ActionPanel = ({ onBindUid, onEditInfo, onLogout }: ActionPanelProps) => {
+export const ActionPanel = ({ onBindUid, onEditInfo, onLogout, onSyncSkland, syncSklandLoading }: ActionPanelProps) => {
   const { t } = useTranslation('header');
   return (
     <motion.div
@@ -30,6 +32,15 @@ export const ActionPanel = ({ onBindUid, onEditInfo, onLogout }: ActionPanelProp
       <div className="flex flex-col gap-2 w-full mt-auto">
         <ActionButton variant="primary" icon={<PlusIcon />} onClick={onBindUid} className="w-full">
           {t('user.uid.bind')}
+        </ActionButton>
+        <ActionButton
+          variant="secondary"
+          icon={<SyncIcon />}
+          onClick={onSyncSkland}
+          className="w-full"
+          disabled={syncSklandLoading}
+        >
+          {t('user.skland.button')}
         </ActionButton>
         <ActionButton variant="secondary" icon={<EditIcon />} onClick={onEditInfo} className="w-full">
           {t('user.info.edit')}

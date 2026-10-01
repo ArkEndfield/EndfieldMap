@@ -14,6 +14,7 @@ import type { DatabaseService } from '@endfieldmap/map-service/service/db';
 import type { I18nService } from '@endfieldmap/map-service/service/i18n';
 import type { PresetService } from '@endfieldmap/map-service/service/preset_service';
 import type { ServerService } from '@endfieldmap/map-service/service/server';
+import type { SklandRouteService } from '@endfieldmap/map-service/service/skland_route';
 import type { UserService } from '@endfieldmap/map-service/service/user';
 import type { JSONLoader } from '@endfieldmap/tools';
 
@@ -26,6 +27,7 @@ export interface DataServiceConfig<T, R> {
   presetService: PresetService;
   adapterRegistry: AdapterRegistry;
   serverService: ServerService;
+  sklandRouteService: SklandRouteService;
 }
 
 export class DataService<T, R> {
@@ -84,6 +86,7 @@ export class DataService<T, R> {
       jsonLoader: config.jsonLoader,
       userService: config.userService,
       presetService: config.presetService,
+      sklandRouteService: config.sklandRouteService,
     });
     this.announcementDataService = new AnnouncementDataService({
       serverService: config.serverService,

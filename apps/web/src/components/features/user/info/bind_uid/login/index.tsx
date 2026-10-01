@@ -33,10 +33,31 @@ export const Login = ({
    * @param credential 凭证：scan_code 或 hypergryph_token
    */
   const fetchBindableRoles = async (form: BindType, credential: string): Promise<GameRole[] | undefined> => {
+    // V2 /user/game-roles/bindable 的 wire 形状（camelCase）
+    interface BindableRoleWire {
+      roleId: string;
+      uid: string;
+      channelName: string;
+      serverId: string;
+      serverName: string;
+      nickName: string;
+      level: number;
+    }
     const params =
       form === 'scan' ? { form: 'scan', scan_code: credential } : { form: 'token', hypergryph_token: credential };
-    const response = await service.serverService.apiPost<{ roles: GameRole[] }>('/user/game-roles/bindable', params);
-    return response?.roles ?? [];
+    const response = await service.serverService.apiPost<{ roles: BindableRoleWire[] }>(
+      '/user/game-roles/bindable',
+      params
+    );
+    return (response?.roles ?? []).map((r) => ({
+      uid: r.uid,
+      channel_name: r.channelName,
+      server_id: r.serverId,
+      server_name: r.serverName,
+      role_id: r.roleId,
+      nick_name: r.nickName,
+      level: r.level,
+    }));
   };
 
   const handleLogin = async (form: BindType, credential: string) => {

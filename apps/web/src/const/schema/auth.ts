@@ -14,7 +14,7 @@ export const registerSchema = z.object({
     .min(3, 'username_too_short')
     .max(20, 'username_too_long')
     .regex(/^[a-zA-Z0-9_]+$/, 'username_invalid'),
-  password: z.string().min(6, 'password_too_short').max(50, 'password_too_long'),
+  password: z.string().min(8, 'password_too_short').max(72, 'password_too_long'),
   agree: z.boolean().refine((value) => value, 'agree_required'),
 });
 
@@ -23,7 +23,7 @@ export type RegisterFormData = z.infer<typeof registerSchema>;
 export const changePasswordSchema = z
   .object({
     oldPassword: z.string().min(1, 'old_password_required'),
-    newPassword: z.string().min(6, 'new_password_too_short'),
+    newPassword: z.string().min(8, 'new_password_too_short').max(72, 'password_too_long'),
     confirmPassword: z.string().min(1, 'confirm_password_required'),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

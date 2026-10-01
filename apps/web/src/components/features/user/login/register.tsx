@@ -1,4 +1,4 @@
-import { CheckboxToggle, ZmdSquareButton } from '@endfieldmap/web-components';
+import { ZmdSquareButton } from '@endfieldmap/web-components';
 import { TickCircleIcon } from '@endfieldmap/web-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
@@ -11,7 +11,7 @@ import { type RegisterFormData, registerSchema } from '@/const/schema/auth';
 import { service } from '@/services';
 import { catchErrorWithTip, onFormInvalid } from '@/utils/handler';
 
-import { AgreementDialog, AgreementLink } from './agreement';
+import { AgreementConsent, AgreementDialog } from './agreement';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
@@ -83,17 +83,10 @@ export const RegisterForm = observer(({ onSwitchToLogin }: RegisterFormProps) =>
         name="agree"
         control={control}
         render={({ field }) => (
-          <CheckboxToggle
+          <AgreementConsent
             checked={field.value}
             onToggle={() => field.onChange(!field.value)}
-            label={
-              <div className="flex flex-wrap items-center gap-1 justify-center">
-                <AgreementLink onClick={handleOpenAgreement} />
-              </div>
-            }
-            hideBorder
-            size="sm"
-            className="gap-1 mx-auto bg-black/20 py-1 px-4 rounded-full [text-shadow:0_2px_2px_rgba(0,0,0,0.8)]"
+            onClick={handleOpenAgreement}
           />
         )}
       />

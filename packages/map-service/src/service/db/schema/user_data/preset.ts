@@ -6,10 +6,11 @@ import {
 } from 'rxdb';
 
 export const presetSchemaLiteral = {
-  version: 0,
+  version: 1,
   primaryKey: 'id',
   type: 'object',
   properties: {
+    syncScope: { type: 'string' },
     id: { type: 'string', maxLength: 64 },
     name: { type: 'string' },
     createdAt: { type: 'number' },

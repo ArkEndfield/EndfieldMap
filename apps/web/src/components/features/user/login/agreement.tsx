@@ -1,4 +1,4 @@
-import { Dialog } from '@endfieldmap/web-components';
+import { CheckboxToggle, Dialog } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,11 @@ export interface AgreementDialogProps {
 
 export interface AgreementLinkProps {
   onClick: (type: 'agreement' | 'privacy') => void;
+}
+
+export interface AgreementConsentProps extends AgreementLinkProps {
+  checked: boolean;
+  onToggle: () => void;
 }
 
 const AgreementContent = observer(({ type }: { type: 'agreement' | 'privacy' }) => {
@@ -290,12 +295,20 @@ const PrivacyPolicyContent = ({ t }: { t: (key: string) => string }) => (
   </div>
 );
 
-export const AgreementLink = ({ onClick }: AgreementLinkProps) => {
+export const AgreementConsent = ({ checked, onToggle, onClick }: AgreementConsentProps) => {
   const { t } = useTranslation('agreement');
 
   return (
-    <>
-      <span>{t('common.read_and_agree')}</span>
+    <div className="flex flex-wrap items-center justify-center gap-1 mx-auto bg-black/20 py-1 px-4 rounded-full text-xs text-[#919191] [text-shadow:0_2px_2px_rgba(0,0,0,0.8)]">
+      <CheckboxToggle
+        checked={checked}
+        onToggle={onToggle}
+        label={t('common.read_and_agree')}
+        aria-label={`${t('common.read_and_agree')} ${t('user_agreement.title')} ${t('common.and')} ${t('privacy_policy.title')}`}
+        hideBorder
+        size="sm"
+        className="gap-1"
+      />
       <button
         type="button"
         onClick={(e) => {
@@ -317,7 +330,7 @@ export const AgreementLink = ({ onClick }: AgreementLinkProps) => {
       >
         {t('privacy_policy.title')}
       </button>
-    </>
+    </div>
   );
 };
 

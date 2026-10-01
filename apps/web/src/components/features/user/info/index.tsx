@@ -1,3 +1,5 @@
+import type { SklandSyncPreview } from '@endfieldmap/map-service';
+import { logger } from '@endfieldmap/tools';
 import { Dialog } from '@endfieldmap/web-components';
 import { BindIcon, EditIcon } from '@endfieldmap/web-components';
 import { observer } from 'mobx-react-lite';
@@ -9,6 +11,7 @@ import { UserModal } from '@/components/common/user/modal';
 import { ActionPanel } from '@/components/features/user/info/action_panel';
 import { BindUid } from '@/components/features/user/info/bind_uid';
 import { Settings } from '@/components/features/user/info/settings';
+import { SklandConflictDialog, type SklandConflictResolution } from '@/components/features/user/info/skland_conflict';
 import { UidList } from '@/components/features/user/info/uid_list';
 import { UserProfile } from '@/components/features/user/info/user_profile';
 import { service } from '@/services';
@@ -18,6 +21,8 @@ import { catchErrorWithTip } from '@/utils/handler';
 export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const [bindUidOpen, setBindUidOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [sklandSyncing, setSklandSyncing] = useState(false);
+  const [sklandPreview, setSklandPreview] = useState<SklandSyncPreview | null>(null);
   const { t } = useTranslation('header');
 
   const uidList = service.userService.auth.uidList;
@@ -76,6 +81,62 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
     setSettingsOpen(false);
   };
 
+  // 第一步：只读比对，拉出两边差异后弹窗让用户逐方向选择。
+  const handleSyncSkland = async () => {
+    if (!uidInfo?.uid) {
+      alert.info(t('user.skland.no_role'));
+      return;
+    }
+    setSklandSyncing(true);
+    try {
+      const preview = await service.sklandSyncService.preview(uidInfo.uid);
+      if (!preview.hasConflict) {
+        alert.info(t('user.skland.inSync'));
+        return;
+      }
+      setSklandPreview(preview);
+    } catch (error) {
+      logger.error('[UserInfoModal] skland preview failed', error);
+      alert.info(t('user.skland.failed'));
+    } finally {
+      setSklandSyncing(false);
+    }
+  };
+
+  // 第二步：按用户选择分别写本地 / 写森空岛。
+  const handleResolveConflict = async (resolution: SklandConflictResolution) => {
+    const preview = sklandPreview;
+    if (!preview) return;
+    setSklandSyncing(true);
+    try {
+      const sync = service.sklandSyncService;
+      let localAdded = 0;
+      let pushed = 0;
+      let pushFailed = 0;
+
+      if (resolution.remote === 'remote') {
+        localAdded = sync.applyLocal(preview.remoteOnlyByMap, true);
+      }
+      if (resolution.local === 'local') {
+        const result = await sync.pushRemote(preview.localOnlyByMap, true, preview.roleId);
+        pushed = result.applied;
+        pushFailed = result.failed;
+      }
+
+      setSklandPreview(null);
+      if (pushFailed > 0) {
+        alert.info(t('user.skland.conflict.pushFailed', { count: pushFailed }));
+      } else {
+        alert.info(t('user.skland.conflict.done', { localAdded, pushed }));
+      }
+    } catch (error) {
+      logger.error('[UserInfoModal] skland resolve failed', error);
+      alert.info(t('user.skland.failed'));
+    } finally {
+      setSklandSyncing(false);
+    }
+  };
+
   if (!userInfo) {
     return (
       <UserModal open={open} onClose={onClose} className="w-4xl" keyboardCloseable={!bindUidOpen && !settingsOpen}>
@@ -116,9 +177,24 @@ export const UserInfoModal = observer(({ open, onClose }: { open: boolean; onClo
           />
 
           {/* 右侧 - 操作面板 */}
-          <ActionPanel onLogout={handleLogout} onBindUid={handleBindUid} onEditInfo={handleEditInfo} />
+          <ActionPanel
+            onLogout={handleLogout}
+            onBindUid={handleBindUid}
+            onEditInfo={handleEditInfo}
+            onSyncSkland={handleSyncSkland}
+            syncSklandLoading={sklandSyncing}
+          />
         </div>
       </UserModal>
+
+      {/* 森空岛双向同步差异确认 */}
+      <SklandConflictDialog
+        open={sklandPreview !== null}
+        preview={sklandPreview}
+        loading={sklandSyncing}
+        onResolve={handleResolveConflict}
+        onCancel={() => setSklandPreview(null)}
+      />
 
       {/* 绑定 UID 对话框 */}
       <Dialog

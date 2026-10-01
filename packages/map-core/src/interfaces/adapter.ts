@@ -8,6 +8,7 @@ import type {
   IHoverConnectionController,
   IHoverFeatureController,
   IMapController,
+  IRouteController,
   ITierController,
 } from '@endfieldmap/map-core/interfaces/controllers';
 import type { MapEventEmitter } from '@endfieldmap/map-core/types/event';
@@ -31,6 +32,11 @@ export interface IMapAdapter {
   readonly hoverFeatureController: IHoverFeatureController;
   readonly hoverConnectionController: IHoverConnectionController;
   readonly entityRegistry: EntitySearchRegistry;
+  /**
+   * 路线控制器。地图路线是 web 端能力，原生适配器（MapLibre）暂未实现，
+   * 故为可选；调用方需按可选处理（无则不渲染路线）。
+   */
+  readonly routeController?: IRouteController;
 
   enableHover: boolean;
   hoverDebounceTime: number;

@@ -1,6 +1,6 @@
 import type { BindType } from '@endfieldmap/map-service/@types/game_role';
 import type { UidInfo } from '@endfieldmap/map-service/@types/user';
-import { DatabaseService } from '@endfieldmap/map-service/service/db';
+import { DatabaseService, type UserDatabaseScope } from '@endfieldmap/map-service/service/db';
 import { I18nService } from '@endfieldmap/map-service/service/i18n';
 import { ServerService } from '@endfieldmap/map-service/service/server';
 import { serviceEmitter } from '@endfieldmap/map-service/service/service_emitter';
@@ -21,6 +21,7 @@ export class UserService<T, R> {
   private serverService: ServerService;
   private i18nService: I18nService;
   private databaseService: DatabaseService<T, R>;
+  private databaseTransition: Promise<void> = Promise.resolve();
 
   constructor(config: UserServiceConfig<T, R>) {
     this.serverService = config.serverService;
@@ -36,14 +37,10 @@ export class UserService<T, R> {
       databaseService: this.databaseService,
     });
     this.serverService.setToken(this.auth.token.value);
-    this.updateUidList(false);
 
     this.serverService.setUnauthorizedHandler(() => {
       logger.warn('Unauthorized, logging out');
-      serviceEmitter.fire(
-        SERVICE_EVENT.ALERT_INFO,
-        this.i18nService.translate('login_expired', { ns: 'error' })
-      );
+      serviceEmitter.fire(SERVICE_EVENT.ALERT_INFO, this.i18nService.translate('login_expired', { ns: 'error' }));
       this.logout();
     });
 
@@ -55,6 +52,7 @@ export class UserService<T, R> {
 
   public async login(username: string, password: string): Promise<void> {
     logger.info('[UserService] Logging in user:', username);
+    await this.stopSync();
     await this.auth.login(username, password);
     this.serverService.setToken(this.auth.token.value);
     await this.updateUidList();
@@ -62,6 +60,7 @@ export class UserService<T, R> {
 
   public async register(username: string, password: string): Promise<void> {
     logger.info('[UserService] Registering user:', username);
+    await this.stopSync();
     await this.auth.register(username, password);
     this.serverService.setToken(this.auth.token.value);
     await this.updateUidList();
@@ -69,6 +68,7 @@ export class UserService<T, R> {
 
   public async thirdparty(token: string): Promise<void> {
     logger.info('[UserService] Adding user');
+    await this.stopSync();
     this.auth.token.value = token;
     this.serverService.setToken(this.auth.token.value);
     await this.updateUidList();
@@ -76,14 +76,14 @@ export class UserService<T, R> {
 
   public async updateUidList(autoSwitch: boolean = true) {
     if (!this.auth.isLogin) {
-      this.stopSync();
+      await this.stopSync();
       return;
     }
     await Promise.all([this.auth.fetchUidList(), this.auth.fetchUserInfo()]);
     const currentUid = this.auth.currentUid.value;
     if (!currentUid) {
       if (this.auth.uidList.length <= 0 || !autoSwitch) {
-        this.stopSync();
+        await this.stopSync();
         return;
       }
       await this.switchUid(this.auth.uidList[0].uid);
@@ -95,12 +95,37 @@ export class UserService<T, R> {
       await this.switchUid(void 0);
       return;
     }
-    this.serverService.setUid(currentUid);
-    this.startSync();
+    await this.runDatabaseTransition(async () => {
+      const userId = this.auth.userInfo?.id;
+      if (!userId) return;
+      // 目标角色的库已打开且 uid 已就位时（bind/unbind/重复刷新触发），
+      // 不停同步换库，只确保同步在跑，避免 replication 反复重建
+      const targetName = DatabaseService.userDatabaseName({ userId, roleId: currentUid });
+      if (this.databaseService.database.name === targetName && this.serverService.getUid() === currentUid) {
+        await this.data.syncService.ensureSyncing();
+        return;
+      }
+      await this.stopSync();
+      await this.changeDatabase(
+        this.databaseService.database.name === DatabaseService.USER_DB_NAME,
+        { userId, roleId: currentUid },
+        true
+      );
+      this.serverService.setUid(currentUid);
+      await this.startSync();
+    });
   }
 
   private async stopSync() {
     await this.data.syncService.stopSync();
+  }
+
+  /**
+   * 设置页「清除储存数据」前调用：清库产生的本地删除若在同步运行时发生，
+   * 会被 replication 推送为墓碑把云端数据一并删除，必须先停同步。
+   */
+  public async stopSyncBeforeLocalClear(): Promise<void> {
+    await this.stopSync();
   }
 
   private async startSync() {
@@ -128,8 +153,7 @@ export class UserService<T, R> {
         }),
         dismissible: false,
         onConfirm: async () => {
-          const uidLabel =
-            uid === '0' ? this.i18nService.translate('user.uid.default', { ns: 'header' }) : uid;
+          const uidLabel = uid === '0' ? this.i18nService.translate('user.uid.default', { ns: 'header' }) : uid;
           serviceEmitter.fire(SERVICE_EVENT.ALERT_CONFIRM, {
             dismissible: false,
             content: this.i18nService.translate('user.switch_confirm_keep', {
@@ -159,23 +183,38 @@ export class UserService<T, R> {
     });
   }
 
+  private async changeDatabase(migrate: boolean, scope?: UserDatabaseScope, legacyOnly = false): Promise<void> {
+    try {
+      await this.databaseService.createUserDB(migrate, scope, legacyOnly);
+    } finally {
+      await this.data.updateDB();
+    }
+  }
+
+  private runDatabaseTransition(work: () => Promise<void>): Promise<void> {
+    const next = this.databaseTransition.then(work);
+    this.databaseTransition = next.catch(() => undefined);
+    return next;
+  }
+
   public async switchUid(uid?: UidInfo['uid']): Promise<void> {
-    logger.info('[UserService] Switching user database');
+    if (uid && uid === this.auth.currentUid.value) {
+      logger.info('[UserService] Switch target is the current uid, skipping');
+      return;
+    }
 
     const result = await this.confirmModal(uid);
+    if (result <= 0) return;
 
-    if (result && result > 0) {
-      const migrate = result === 1 ? true : false;
+    await this.runDatabaseTransition(async () => {
+      const userId = this.auth.userInfo?.id;
+      if (uid && !userId) throw new Error('User information is not loaded');
+      await this.stopSync();
+      await this.changeDatabase(result === 1, uid && userId ? { userId, roleId: uid } : undefined);
       this.auth.switchUid(uid);
       this.serverService.setUid(uid);
-      await this.databaseService.createUserDB(migrate);
-      await this.data.updateDB();
-      await this.databaseService.migrateUserData();
-      if (uid) {
-        await this.startSync();
-      }
-      logger.info('[UserService] User database switched');
-    }
+      if (uid) await this.startSync();
+    });
   }
 
   public async bindUid(uid: UidInfo['uid'], type: BindType) {
@@ -199,17 +238,14 @@ export class UserService<T, R> {
   }
 
   public async logout(migrateData: boolean = true): Promise<void> {
-    logger.info('[UserService] Logging out user, migrate data:', migrateData);
-    await this.stopSync();
-    await this.auth.logout();
-    this.serverService.setToken(null);
-    await this.databaseService.createUserDB(migrateData);
-    await this.data.updateDB();
-    if (migrateData) {
-      await this.databaseService.migrateUserData();
-    }
-    this.serverService.resetLogoutState();
-    logger.info('[UserService] User logged out');
+    await this.runDatabaseTransition(async () => {
+      await this.stopSync();
+      await this.auth.logout();
+      this.serverService.setToken(null);
+      this.serverService.setUid(null);
+      await this.changeDatabase(migrateData);
+      this.serverService.resetLogoutState();
+    });
   }
 
   public async changePassword(oldPassword: string, newPassword: string) {

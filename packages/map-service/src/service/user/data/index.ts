@@ -1,6 +1,7 @@
 import { EntityMarkService } from '@endfieldmap/map-service/service/user/data/marked/entity';
 import { CustomPointPresetDataService } from '@endfieldmap/map-service/service/user/data/preset/custom_point';
 import { ElectricPolePresetDataService } from '@endfieldmap/map-service/service/user/data/preset/electric_pole';
+import { RouteUserDataService } from '@endfieldmap/map-service/service/user/data/route';
 import { SyncService } from '@endfieldmap/map-service/service/user/data/sync';
 import {
   EntityVisibilityService,
@@ -25,6 +26,7 @@ export class UserDataService<T, R> {
   public customPointVisibilityService: ScopedEntityVisibilityService<T, R>;
   public customPointPresetDataService: CustomPointPresetDataService<T, R>;
   public electricPolePresetDataService: ElectricPolePresetDataService<T, R>;
+  public routeUserDataService: RouteUserDataService<T, R>;
   public syncService: SyncService<T, R>;
 
   constructor(config: UserDataServiceConfig<T, R>) {
@@ -46,6 +48,9 @@ export class UserDataService<T, R> {
     this.electricPolePresetDataService = new ElectricPolePresetDataService({
       databaseService: config.databaseService,
     });
+    this.routeUserDataService = new RouteUserDataService({
+      databaseService: config.databaseService,
+    });
     this.syncService = new SyncService({
       serverService: config.serverService,
       i18nService: config.i18nService,
@@ -62,6 +67,7 @@ export class UserDataService<T, R> {
     this.electricPoleVisibilityService.updateDB();
     this.customPointPresetDataService.updateDB();
     this.electricPolePresetDataService.updateDB();
+    this.routeUserDataService.updateDB();
   }
 
   public async clearAllData() {
@@ -72,6 +78,7 @@ export class UserDataService<T, R> {
       this.electricPoleVisibilityService.clearAllData(),
       this.customPointPresetDataService.clearAllData(),
       this.electricPolePresetDataService.clearAllData(),
+      this.routeUserDataService.clearAllData(),
     ]);
   }
 }

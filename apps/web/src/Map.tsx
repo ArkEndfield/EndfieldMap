@@ -14,12 +14,14 @@ import { SettingsPage } from '@/components/features/settings';
 import { useMapAdapter } from '@/hooks/use_init_map_adapter';
 import { useMapPiP } from '@/hooks/use_map_pip';
 import { usePiP } from '@/hooks/use_pip';
+import { usePlayerPositionLayer } from '@/hooks/use_player_position_layer';
 import { service } from '@/services';
 import { isDev } from '@/services/env';
 import uiManager from '@/services/ui_manager';
 
 const DevTools = isDev ? lazy(() => import('@/components/features/dev_tools')) : null;
 const ZmdSwiper = lazy(() => import('@/components/features/swiper'));
+const AiAssistantPanel = lazy(() => import('@/components/features/ai_assistant'));
 const PresetStore = lazy(() => import('@/components/features/preset_store'));
 const ContextMenu = lazy(() => import('@/components/themes/endfield/ui/context_menu'));
 
@@ -32,6 +34,9 @@ const Controllers = observer(({ adapter }: ControllersProps) => {
   const enableHover = adapter.enableHover;
   const hoverHitTestTime = service.dataService.mapDataService.mapStateDataService.hoverTime.value;
   const ThemedComponents = uiManager.ThemedComponents;
+
+  // 玩家实时位置图层（森空岛位置同步，设置页可开关）
+  usePlayerPositionLayer(adapter);
 
   useEffect(() => {
     if (isMobile && enableHover) {
@@ -111,6 +116,11 @@ const Controllers = observer(({ adapter }: ControllersProps) => {
           {/* 轮播组件 */}
           <Suspense>
             <ZmdSwiper />
+          </Suspense>
+
+          {/* AI 助手面板 */}
+          <Suspense>
+            <AiAssistantPanel />
           </Suspense>
 
           <DevTip />

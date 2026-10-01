@@ -22,6 +22,7 @@ import type {
 } from '@endfieldmap/map-core/types/entity';
 import type { DataInstance } from '@endfieldmap/map-core/types/event';
 import type { MapData } from '@endfieldmap/map-core/types/map';
+import type { RouteRenderItem } from '@endfieldmap/map-core/types/route';
 import type { GridTierItem } from '@endfieldmap/map-core/types/tier';
 
 /**
@@ -106,11 +107,7 @@ export interface ICustomPointController {
   readonly dataManager: CustomPointMapDataManager;
 
   loadCustomPointData(data: CustomPointNodeData[]): void;
-  createCustomPointData(
-    mapId: MapData['id'],
-    position: MapCoordinate,
-    type: CustomPointTypeId
-  ): CustomPointData;
+  createCustomPointData(mapId: MapData['id'], position: MapCoordinate, type: CustomPointTypeId): CustomPointData;
   addCustomPointData(mapId: MapData['id'], data: CustomPointData): CustomPointDataInstance;
   deleteCustomPoint(mapId: MapData['id'], id: number): boolean;
   setCustomPointVisible(visible: boolean): void;
@@ -118,6 +115,22 @@ export interface ICustomPointController {
   getTypeVisible(typeId: string): boolean;
   setMapTypeVisible(mapId: MapData['id'], typeId: string, visible: boolean): void;
   importVisibility(data: Array<{ mapId: MapData['id']; entityKey: string; visible: boolean }>): void;
+}
+
+/**
+ * 地图路线控制器接口。
+ *
+ * 路线是用户在地图上按顺序串起来的折线（可多段，每段一张地图），与标点/电线杆
+ * 无关，因此独立于实体系统：控制器只负责把路线渲染数据交给渲染器，不参与
+ * 实体搜索、hover、active feature 等。
+ */
+export interface IRouteController {
+  /** 全量替换当前路线集合（按地图分组渲染）。 */
+  setRoutes(routes: RouteRenderItem[]): void;
+  /** 整体可见性。 */
+  setVisible(visible: boolean): void;
+  getVisible(): boolean;
+  dispose(): void;
 }
 
 /**

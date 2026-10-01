@@ -6,6 +6,7 @@ import { Panel } from '@themes/endfield/ui/control_panel/components/panel';
 import { FilterAndEntityPanelPC } from '@themes/endfield/ui/control_panel/controllers/filter_and_entity_panel.pc';
 import { CustomPointManager } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point';
 import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
+import { RouteManager } from '@themes/endfield/ui/control_panel/controllers/operations/route';
 import { observer } from 'mobx-react-lite';
 
 const PCControlPanel = observer(() => {
@@ -46,6 +47,9 @@ const PCControlPanel = observer(() => {
           </Panel>
           <Panel open={shouldPanelOpen(CurrentOperatePanel.CUSTOM_POINT)}>
             <CustomPointManager />
+          </Panel>
+          <Panel open={shouldPanelOpen(CurrentOperatePanel.ROUTE)}>
+            <RouteManager />
           </Panel>
         </div>
       </div>

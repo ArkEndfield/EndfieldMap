@@ -25,6 +25,29 @@ interface GameRole {
   level: number;
 }
 
+/** V2 /user/game-roles/bindable 的 wire 形状（camelCase） */
+interface BindableRoleWire {
+  roleId: string;
+  uid: string;
+  channelName: string;
+  serverId: string;
+  serverName: string;
+  nickName: string;
+  level: number;
+}
+
+function mapBindableRoles(roles: BindableRoleWire[] | undefined): GameRole[] {
+  return (roles ?? []).map((r) => ({
+    uid: r.uid,
+    channel_name: r.channelName,
+    server_id: r.serverId,
+    server_name: r.serverName,
+    role_id: r.roleId,
+    nick_name: r.nickName,
+    level: r.level,
+  }));
+}
+
 type LoginMethod = 'scan' | 'token';
 
 export default function BindUidScreen() {
@@ -157,7 +180,7 @@ function QRCodeLogin({ onRolesReady }: { onRolesReady: (roles: GameRole[]) => vo
         stopPolling();
         setStatus('confirmed');
         const rolesResult = await catchErrorWithTip(async () => {
-          const res = await service.serverService.apiPost<{ roles: GameRole[] }>(
+          const res = await service.serverService.apiPost<{ roles: BindableRoleWire[] }>(
             '/user/game-roles/bindable',
             { form: 'scan', scan_code: result.scan_code }
           );
@@ -169,7 +192,7 @@ function QRCodeLogin({ onRolesReady }: { onRolesReady: (roles: GameRole[]) => vo
           setStatus('expired');
           return;
         }
-        onRolesReady(rolesResult.roles);
+        onRolesReady(mapBindableRoles(rolesResult.roles));
       } else if (result.status === 'expired') {
         stopPolling();
         setStatus('expired');
@@ -233,7 +256,7 @@ function TokenLogin({ onRolesReady }: { onRolesReady: (roles: GameRole[]) => voi
     }
     setLoading(true);
     const result = await catchErrorWithTip(async () => {
-      const res = await service.serverService.apiPost<{ roles: GameRole[] }>(
+      const res = await service.serverService.apiPost<{ roles: BindableRoleWire[] }>(
         '/user/game-roles/bindable',
         { form: 'token', hypergryph_token: token.trim() }
       );
@@ -241,7 +264,7 @@ function TokenLogin({ onRolesReady }: { onRolesReady: (roles: GameRole[]) => voi
     });
     setLoading(false);
     if (result !== false) {
-      onRolesReady(result.roles);
+      onRolesReady(mapBindableRoles(result.roles));
     }
   }, [token, onRolesReady, t]);
 

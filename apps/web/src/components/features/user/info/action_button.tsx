@@ -9,6 +9,7 @@ export interface ActionButtonProps {
   size?: 'sm' | 'md';
   icon?: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }
 
 export const ActionButton = ({
@@ -18,6 +19,7 @@ export const ActionButton = ({
   size = 'md',
   icon,
   className,
+  disabled,
 }: ActionButtonProps) => {
   const baseStyles =
     'flex items-center justify-center gap-1.5 font-medium transition-all duration-200 rounded relative group/action-button';
@@ -42,7 +44,16 @@ export const ActionButton = ({
   };
 
   return (
-    <ButtonWithAudio onClick={onClick} className={cn(baseStyles, variantStyles[variant], sizeStyles[size], className)}>
+    <ButtonWithAudio
+      onClick={disabled ? undefined : onClick}
+      className={cn(
+        baseStyles,
+        variantStyles[variant],
+        sizeStyles[size],
+        disabled && 'opacity-50 cursor-not-allowed',
+        className
+      )}
+    >
       <div
         className={cn(
           'absolute left-1 top-2 bottom-2 w-1 rounded-full transition-all duration-200 group-hover/action-button:top-1.5 group-hover/action-button:bottom-1.5',
@@ -50,7 +61,7 @@ export const ActionButton = ({
         )}
       />
       {icon && <span className="w-4 h-4">{icon}</span>}
-      <span className="w-16">{children}</span>
+      <span className="min-w-16 whitespace-nowrap">{children}</span>
     </ButtonWithAudio>
   );
 };

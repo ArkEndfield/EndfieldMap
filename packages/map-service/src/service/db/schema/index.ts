@@ -6,4 +6,5 @@ export * from '@endfieldmap/map-service/service/db/schema/user_data/custom_point
 export * from '@endfieldmap/map-service/service/db/schema/user_data/electric_pole';
 export * from '@endfieldmap/map-service/service/db/schema/user_data/mark';
 export * from '@endfieldmap/map-service/service/db/schema/user_data/preset';
+export * from '@endfieldmap/map-service/service/db/schema/user_data/route';
 export * from '@endfieldmap/map-service/service/db/schema/user_data/visibility';

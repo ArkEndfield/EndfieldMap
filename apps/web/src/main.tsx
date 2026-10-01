@@ -3,6 +3,7 @@ import '@/index.css';
 
 import { WebStorageAdapter } from '@endfieldmap/storage-web';
 import { disablePageZoom, registerStorageAdapter } from '@endfieldmap/tools';
+import i18n from 'i18next';
 import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +27,7 @@ if (isScanEnabled) {
 const SW_UPDATE_CHECK_INTERVAL_MS = 60 * 60 * 1000; // 1 小时
 
 export function SWUpdatePrompt() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('common', { i18n, useSuspense: false });
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,

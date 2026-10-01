@@ -1,6 +1,6 @@
 import { SoundType } from '@endfieldmap/map-web-theme-types/audio';
 import { InVisibleIcon, useAudio, useIsMobile, VisibleIcon } from '@endfieldmap/web-components';
-import { CustomPointIcon, ElectricPoleIconPole, FilterIcon } from '@endfieldmap/web-components';
+import { CustomPointIcon, EditConnectIcon, ElectricPoleIconPole, FilterIcon } from '@endfieldmap/web-components';
 import { CurrentOperatePanel } from '@themes/endfield/const/ui';
 import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { MenuContainer } from '@themes/endfield/ui/menus/center/menu_container';
@@ -44,6 +44,21 @@ const CustomPointViewIcon = observer(() => {
       }}
     >
       {isCustomPointVisible ? <VisibleIcon /> : <InVisibleIcon />}
+    </div>
+  );
+});
+
+const RouteViewIcon = observer(() => {
+  const isVisible = service.dataService.mapDataService.routeDataService.visible;
+
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        service.dataService.mapDataService.routeDataService.toggleVisibility();
+      }}
+    >
+      {isVisible ? <VisibleIcon /> : <InVisibleIcon />}
     </div>
   );
 });
@@ -108,6 +123,16 @@ export const OperateList = observer(
           }}
         >
           {isMobile ? <CustomPointIcon /> : t('header:head_menu.custom')}
+        </OperateMenu>
+        <OperateMenu
+          active={currentTab === CurrentOperatePanel.ROUTE}
+          startIcon={!isMobile && <RouteViewIcon />}
+          rightBorder={isMobile}
+          onToggle={() => {
+            uiManager.togglePanel(CurrentOperatePanel.ROUTE);
+          }}
+        >
+          {isMobile ? <EditConnectIcon /> : t('header:head_menu.route')}
         </OperateMenu>
         {endContent}
       </div>

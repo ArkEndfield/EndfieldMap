@@ -6,10 +6,11 @@ import {
 } from 'rxdb';
 
 const electricPoleNodeSchemaLiteral = {
-  version: 0,
+  version: 1,
   primaryKey: 'id', // 每一个点都是独立的文档
   type: 'object',
   properties: {
+    syncScope: { type: 'string' },
     id: { type: 'string', maxLength: 128 },
     presetId: { type: 'string', maxLength: 64 },
     mapId: { type: 'string', maxLength: 64 },

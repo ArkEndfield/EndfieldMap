@@ -80,6 +80,7 @@ export const enum LayerType {
   ENTITY = 'entity',
   ELECTRIC_POLE = 'electricPole',
   CUSTOM_POINT = 'customPoint',
+  ROUTE = 'route',
   ACTIVE_FEATURE = 'activeFeature',
   HOVER_FEATURE = 'hoverFeature',
 }

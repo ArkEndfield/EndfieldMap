@@ -4,6 +4,7 @@ import { useEndfieldUIManager } from '@themes/endfield/hooks/ui_manager';
 import { FilterAndEntityPanelMobile } from '@themes/endfield/ui/control_panel/controllers/filter_and_entity_panel.mobile';
 import { CustomPointManager } from '@themes/endfield/ui/control_panel/controllers/operations/custom_point';
 import { ElectricPoleManager } from '@themes/endfield/ui/control_panel/controllers/operations/electric_pole';
+import { RouteManager } from '@themes/endfield/ui/control_panel/controllers/operations/route';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
@@ -39,6 +40,14 @@ const MobileControlPanel = observer(() => {
     toggleCollapse();
   };
 
+  const handleToggleRoute = () => {
+    if (service.dataService.mapDataService.routeDataService.isInRouteOperateMode) {
+      alert.info(t('operation.route_operating_tip'));
+      return;
+    }
+    toggleCollapse();
+  };
+
   const logo = <Logo className="fixed h-5 bottom-2 left-1/2 -translate-x-1/2 text-white/20 z-20" />;
   if (isNoneCurrentPanel) return logo;
 
@@ -69,6 +78,15 @@ const MobileControlPanel = observer(() => {
         dismissible={!service.dataService.mapDataService.customPointDataService.isInCustomPointOperateMode}
       >
         <CustomPointManager />
+      </BottomSheet>
+
+      <BottomSheet
+        open={currentPanel === CurrentOperatePanel.ROUTE}
+        collapsed={!isOpen}
+        onToggleCollapse={handleToggleRoute}
+        dismissible={!service.dataService.mapDataService.routeDataService.isInRouteOperateMode}
+      >
+        <RouteManager />
       </BottomSheet>
     </>
   );
