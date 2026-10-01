@@ -21,9 +21,13 @@ export const EntitySetting = () => {
         service.databaseService.database.entityMark.cleanup(0),
         service.databaseService.database.entityVisibility.cleanup(0),
       ]);
+      // native 无法靠 reload 恢复同步：原地重启 replication，从云端全量拉回
+      // 存量（元数据已清，必然全新拉取）。未登录/未选角色时 startSync 会自行
+      // 跳过。不重启的话同步停摆整会话、徽标谎报「已同步」、新写入成孤儿数据
+      await service.userService.triggerSync();
     },
     onSuccess() {
-      alertApi.info({ content: t('data.entity_data.success') });
+      alertApi.info({ content: t('data.entity_data.success_resync') });
     },
     onFailed(e) {
       alertApi.info({

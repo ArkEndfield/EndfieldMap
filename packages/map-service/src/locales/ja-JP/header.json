@@ -47,7 +47,9 @@
     "remove_account": {
       "title": "アカウント削除",
       "confirm": "本当にアカウントを削除しますか？",
-      "success": "アカウントを削除しました"
+      "success": "アカウントを削除しました",
+      "password_required": "アカウント削除にはパスワードの入力が必要です",
+      "relogin_required": "ログアウトして再度ログインしてから削除してください"
     },
     "info": {
       "title": "個人情報",

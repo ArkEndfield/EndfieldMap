@@ -198,11 +198,31 @@ export class UserService<T, R> {
   }
 
   private async changeDatabase(migrate: boolean, scope?: UserDatabaseScope, legacyOnly = false): Promise<void> {
+    let createError: unknown;
     try {
       await this.databaseService.createUserDB(migrate, scope, legacyOnly);
-    } finally {
-      await this.data.updateDB();
+    } catch (error) {
+      createError = error;
     }
+    try {
+      await this.data.updateDB();
+    } catch (updateError) {
+      // 换库失败时 updateDB 的 getter 抛错（'User database not initialized'）
+      // 会掩盖真实原因，只记录不上抛；换库成功时 updateDB 失败才是真实错误
+      if (!createError) throw updateError;
+      logger.error('[UserService] updateDB failed after createUserDB failure:', updateError);
+    }
+    if (createError) throw createError;
+  }
+
+  /**
+   * 收集当前账号所有角色对应的库范围，供「清除储存数据」整体丢弃用。
+   * 必须在登出/清 uidList 之前调用。
+   */
+  public getKnownDatabaseScopes(): UserDatabaseScope[] {
+    const userId = this.auth.userInfo?.id;
+    if (!userId) return [];
+    return this.auth.uidList.map((info) => ({ userId, roleId: info.uid }));
   }
 
   private runDatabaseTransition(work: () => Promise<void>): Promise<void> {
@@ -252,8 +272,8 @@ export class UserService<T, R> {
     await this.auth.fetchUserInfo();
   }
 
-  public async deleteAccount() {
-    await this.auth.deleteAccount();
+  public async deleteAccount(password?: string) {
+    await this.auth.deleteAccount(password);
     await this.logout();
   }
 

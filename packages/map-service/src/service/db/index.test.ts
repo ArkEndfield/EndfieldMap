@@ -172,4 +172,36 @@ describe('role database isolation', () => {
     expect(db.database.name).toBe(roleName);
     expect(await db.database.entityMark.find().exec()).toHaveLength(0);
   });
+
+  it('removeAllUserDatabases discards legacy, active and registry-recorded role databases', async () => {
+    const db = await createService();
+    await db.database.entityMark.insert({
+      id: 'm|1', mapId: 'm', entityId: 1, marked: true, createdAt: 1, updatedAt: 2,
+    });
+    await db.createUserDB(true, { userId: 32, roleId: '0' });
+    await db.database.entityMark.insert({
+      id: 'm|2', mapId: 'm', entityId: 2, marked: true, createdAt: 1, updatedAt: 3,
+    });
+    // 第二个角色库（模拟事后被解绑、不在实时 uidList 里的角色）
+    await db.createUserDB(false, { userId: 32, roleId: '1429794416' });
+    await db.database.entityMark.insert({
+      id: 'm|3', mapId: 'm', entityId: 3, marked: true, createdAt: 1, updatedAt: 4,
+    });
+    // 持久登记覆盖两个角色，即使调用方只补充活跃角色
+    expect(db.getKnownScopes()).toEqual(
+      expect.arrayContaining([{ userId: 32, roleId: '0' }, { userId: 32, roleId: '1429794416' }])
+    );
+
+    await db.removeAllUserDatabases([{ userId: 32, roleId: '1429794416' }]);
+    expect(db.user_db).toBeNull();
+    expect(db.getKnownScopes()).toEqual([]);
+
+    // 登记过的每个库重开都应为空：旧数据不再随按名打开复活
+    await db.createUserDB(false, { userId: 32, roleId: '1429794416' });
+    expect(await db.database.entityMark.find().exec()).toHaveLength(0);
+    await db.createUserDB(false, { userId: 32, roleId: '0' });
+    expect(await db.database.entityMark.find().exec()).toHaveLength(0);
+    await db.createUserDB(false);
+    expect(await db.database.entityMark.find().exec()).toHaveLength(0);
+  });
 });

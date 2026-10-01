@@ -70,15 +70,7 @@ export class UserDataService<T, R> {
     this.routeUserDataService.updateDB();
   }
 
-  public async clearAllData() {
-    await Promise.all([
-      this.entityMarkService.clearAllData(),
-      this.entityVisibilityService.clearAllData(),
-      this.customPointVisibilityService.clearAllData(),
-      this.electricPoleVisibilityService.clearAllData(),
-      this.customPointPresetDataService.clearAllData(),
-      this.electricPolePresetDataService.clearAllData(),
-      this.routeUserDataService.clearAllData(),
-    ]);
-  }
+  // clearAllData 已删除：无调用方，且不做停同步保护——直接对同步集合做空删会
+  // 产生墓碑并实时上云（与「清除标点数据」曾有的数据丢失路径同构）。
+  // 如需全量清空，必须走 stopSyncAndPurgeMeta / removeUserDatabase 的既定清库链路。
 }

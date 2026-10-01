@@ -47,7 +47,9 @@
     "remove_account": {
       "title": "注销账户",
       "confirm": "确定要注销账户吗？",
-      "success": "账户注销成功"
+      "success": "账户注销成功",
+      "password_required": "注销需要输入账号密码确认",
+      "relogin_required": "请退出登录并重新登录后，再进行注销"
     },
     "info": {
       "title": "个人信息",

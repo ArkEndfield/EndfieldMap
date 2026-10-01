@@ -112,6 +112,7 @@ class AlertStore {
         isPrompt: true,
         promptDefaultValue: promptConfig.defaultValue,
         promptPlaceholder: promptConfig.placeholder,
+        promptSecure: promptConfig.secure,
       };
       this.alerts.push(instance);
     });

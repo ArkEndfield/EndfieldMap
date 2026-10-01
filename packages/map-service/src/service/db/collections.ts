@@ -41,7 +41,33 @@ import {
   visibilityDataSchema,
   type VisibilityDataSchemaType,
 } from '@endfieldmap/map-service/service/db/schema/user_data/visibility';
-import type { RxCollection, RxDatabase } from 'rxdb';
+import type { RxCollection, RxConflictHandler, RxDatabase } from 'rxdb';
+
+/**
+ * 同步集合的 updatedAt-LWW 冲突处理器。
+ * RxDB 默认处理器是「主胜」（realMasterState 恒胜）：与服务端
+ * assumed.UpdatedAt != current.UpdatedAt 即拒写回显的语义组合后，
+ * 离线/停同步期间的本机编辑一旦撞上服务端已变更的文档会被静默整体回滚。
+ * 这里按 updatedAt 新者胜，平局偏向 realMasterState（避免同时间戳在
+ * 两端来回推送）。只挂到参与同步且 schema 含 updatedAt 的集合上。
+ */
+const makeUpdatedAtLwwConflictHandler = <T extends { updatedAt?: number }>(): RxConflictHandler<T> => ({
+  isEqual(a, b) {
+    return a.updatedAt === b.updatedAt && a._deleted === b._deleted;
+  },
+  async resolve(i) {
+    const masterTs = i.realMasterState.updatedAt ?? 0;
+    const forkTs = i.newDocumentState.updatedAt ?? 0;
+    if (masterTs >= forkTs) {
+      return i.realMasterState;
+    }
+    // fork 较新时保留本地内容，但把时间戳钳到 masterTs+1：服务端接受写入后
+    // 会以自己的 NOW() 重盖 updated_at（必然 ≥ masterTs+1），回拉时 master
+    // 不再落后于 fork，一次往返即收敛。不钳的话客户端时钟偏快（哪怕几十秒）
+    // 会让 fork 永远"更新"，resolve→重推→服务端重盖→再 resolve 循环不收敛。
+    return { ...i.newDocumentState, updatedAt: masterTs + 1 };
+  },
+});
 
 /**
  * 用户数据数据库 Collections 类型定义
@@ -78,22 +104,27 @@ export const userDataCollectionsSchema = {
   electricPoleNode: {
     schema: electricPoleNodeSchema,
     migrationStrategies: { 1: (doc: ElectricPoleNodeSchemaType) => doc },
+    conflictHandler: makeUpdatedAtLwwConflictHandler<ElectricPoleNodeSchemaType>(),
   },
   electricPolePreset: {
     schema: presetSchema,
     migrationStrategies: { 1: (doc: PresetSchemaType) => doc },
+    conflictHandler: makeUpdatedAtLwwConflictHandler<PresetSchemaType>(),
   },
   customPointNode: {
     schema: customPointNodeSchema,
     migrationStrategies: { 1: (doc: CustomPointNodeSchemaType) => doc },
+    conflictHandler: makeUpdatedAtLwwConflictHandler<CustomPointNodeSchemaType>(),
   },
   customPointPreset: {
     schema: presetSchema,
     migrationStrategies: { 1: (doc: PresetSchemaType) => doc },
+    conflictHandler: makeUpdatedAtLwwConflictHandler<PresetSchemaType>(),
   },
   entityMark: {
     schema: markDataSchema,
     migrationStrategies: { 1: (doc: MarkDataSchemaType) => doc },
+    conflictHandler: makeUpdatedAtLwwConflictHandler<MarkDataSchemaType>(),
   },
   entityVisibility: {
     schema: visibilityDataSchema,

@@ -24,6 +24,9 @@
     "create_failed": "Ошибка создания: {{message}}",
     "delete_failed": "Ошибка удаления: {{message}}"
   },
+  "entity": {
+    "mark_persist_failed": "Не удалось сохранить метки. После обновления они могут пропасть — повторите попытку."
+  },
   "not_login": "Не выполнен вход",
   "not_bind_uid": "UID не привязан",
   "unknown": "Неизвестная ошибка",
@@ -56,6 +59,7 @@
   "route": {
     "empty": "The route has no points and cannot be saved",
     "import_failed": "Failed to import route",
+    "import_partial": "Импортировано сегментов маршрута: {{kept}}, пропущено: {{dropped}} (неизвестные карты)",
     "not_found": "Route not found",
     "no_publishable_points": "This route has no publishable points. Re-draw it on this site first."
   }

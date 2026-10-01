@@ -1,3 +1,4 @@
+import { ApiError } from '@endfieldmap/map-service/service/api_error';
 import { ZmdSquareButton } from '@endfieldmap/web-components';
 import { TrashIcon } from '@endfieldmap/web-components';
 import { useTranslation } from 'react-i18next';
@@ -8,13 +9,30 @@ import { catchErrorWithTip } from '@/utils/handler';
 
 export const DeleteAccount = () => {
   const { t } = useTranslation('header');
-  /** 注销账户（预留） */
+  /** 注销账户：服务端 step-up——有密码账号需输入密码，第三方登录账号需最近重新登录 */
   const handleDeleteAccount = () => {
     alert.confirm({
       content: t('user.remove_account.confirm'),
       onConfirm: () =>
         catchErrorWithTip(async () => {
-          await service.userService.deleteAccount();
+          try {
+            await service.userService.deleteAccount();
+          } catch (error) {
+            if (error instanceof ApiError && error.code === 'PASSWORD_REQUIRED') {
+              const password = await alert.prompt({
+                content: t('user.remove_account.password_required'),
+                inputType: 'password',
+                maxLength: 72,
+              });
+              if (!password) return;
+              await service.userService.deleteAccount(password);
+            } else if (error instanceof ApiError && error.code === 'RECENT_LOGIN_REQUIRED') {
+              alert.info({ content: t('user.remove_account.relogin_required') });
+              return;
+            } else {
+              throw error;
+            }
+          }
           alert.info(t('user.remove_account.success'));
           return true;
         }),

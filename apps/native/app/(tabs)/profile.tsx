@@ -1,3 +1,4 @@
+import { ApiError } from '@endfieldmap/map-service/service/api_error';
 import { cn } from '@endfieldmap/tools';
 import { useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
@@ -167,9 +168,28 @@ const ActionSection = observer(function ActionSection() {
       dismissible: false,
     });
     if (confirmed) {
-      await catchErrorWithTip(() => service.userService.deleteAccount());
-      alertApi.info({
-        content: t('user.remove_account.success'),
+      await catchErrorWithTip(async () => {
+        try {
+          await service.userService.deleteAccount();
+        } catch (error) {
+          // 服务端 step-up：有密码账号需输入密码，第三方登录账号需最近重新登录
+          if (error instanceof ApiError && error.code === 'PASSWORD_REQUIRED') {
+            const password = await alertApi.prompt({
+              content: t('user.remove_account.password_required'),
+              secure: true,
+            });
+            if (!password) return;
+            await service.userService.deleteAccount(password);
+          } else if (error instanceof ApiError && error.code === 'RECENT_LOGIN_REQUIRED') {
+            alertApi.info({ content: t('user.remove_account.relogin_required') });
+            return;
+          } else {
+            throw error;
+          }
+        }
+        alertApi.info({
+          content: t('user.remove_account.success'),
+        });
       });
     }
   }, [t]);

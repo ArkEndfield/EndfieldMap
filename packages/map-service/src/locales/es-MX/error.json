@@ -24,6 +24,9 @@
     "create_failed": "Creación fallida: {{message}}",
     "delete_failed": "Eliminación fallida: {{message}}"
   },
+  "entity": {
+    "mark_persist_failed": "No se pudieron guardar las marcas. Es posible que se pierdan al actualizar la página; inténtalo de nuevo."
+  },
   "not_login": "No ha iniciado sesión",
   "not_bind_uid": "UID no vinculado",
   "unknown": "Error desconocido",
@@ -50,6 +53,7 @@
   "route": {
     "empty": "The route has no points and cannot be saved",
     "import_failed": "Failed to import route",
+    "import_partial": "Se importaron {{kept}} segmentos de ruta y se omitieron {{dropped}} (mapas desconocidos)",
     "not_found": "Route not found",
     "no_publishable_points": "This route has no publishable points. Re-draw it on this site first."
   }

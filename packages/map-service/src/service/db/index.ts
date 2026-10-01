@@ -83,7 +83,23 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
     initialValue: null,
   });
 
+  // 本机出现过的角色库范围登记：解绑角色/登出后 uidList 不再包含该角色，
+  // 但其本地库仍在。「清除储存数据」要全量删库就必须依赖这份持久登记，
+  // 否则旧库会在重新绑定/登录时被按名打开、旧数据随同步复活。
+  private knownScopes = new LocalStorageValue<UserDatabaseScope[]>({
+    storageKey: UserLocalStorageKey.KNOWN_DB_SCOPES,
+    initialValue: [],
+  });
+
   private isInitialized = false;
+
+  /**
+   * 当前持久化的活跃库范围（重启后仍可读）。同步层在内存态缺位时
+   * 用它推导 replicationIdentifier。
+   */
+  public get currentScope(): UserDatabaseScope | null {
+    return this.activeScope.value;
+  }
 
   // 数据库名称常量
   public static readonly GAME_DB_NAME = 'endfieldmap_game_data';
@@ -240,6 +256,25 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
           this.user_db = restored;
           this.user_collections = new UserCollections(restored);
         });
+      } else {
+        // 原库已被物理丢弃（清除储存数据/不保留）后重建失败时 prevUserDB 为 null：
+        // 兜底重建 legacy 空库句柄，避免 user_db 永久为 null 让全部用户数据操作
+        // 抛错直到重启。兜底也失败则维持原错误抛出。
+        try {
+          const fallback = await createRxDatabase<UserDataDBCollections>({
+            name: DatabaseService.USER_DB_NAME,
+            storage: this.storage,
+            localDocuments: true,
+          });
+          await fallback.addCollections(userDataCollectionsSchema);
+          runInAction(() => {
+            this.user_db = fallback;
+            this.user_collections = new UserCollections(fallback);
+          });
+          this.activeScope.value = null;
+        } catch (fallbackError) {
+          logger.error('[DatabaseService] Fallback legacy db creation failed:', fallbackError);
+        }
       }
       throw error;
     }
@@ -249,6 +284,20 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
       this.user_collections = new UserCollections(activeDb);
       this.activeScope.value = scope ?? null;
     });
+    if (scope) this.recordKnownScope(scope);
+  }
+
+  private recordKnownScope(scope: UserDatabaseScope): void {
+    const current = this.knownScopes.value ?? [];
+    if (current.some((s) => s.userId === scope.userId && s.roleId === scope.roleId)) return;
+    this.knownScopes.value = [...current, scope];
+  }
+
+  /**
+   * 本机登记过的全部角色库范围（跨登录会话持久）。
+   */
+  public getKnownScopes(): UserDatabaseScope[] {
+    return this.knownScopes.value ?? [];
   }
 
   /**
@@ -377,20 +426,93 @@ export class DatabaseService<Internals, InstanceCreationOptions> {
   public async removeUserDatabase(scope?: UserDatabaseScope): Promise<void> {
     if (scope) {
       const dbName = DatabaseService.userDatabaseName(scope);
-      if (this.user_db?.name === dbName) {
+      const wasActive = this.user_db?.name === dbName;
+      if (wasActive) {
         await this.discardActiveUserDb();
       }
-      await removeRxDatabase(dbName, this.storage);
+      try {
+        await removeRxDatabase(dbName, this.storage);
+      } catch (error) {
+        // 与无 scope 分支同口径：句柄已丢弃后删除失败要尽力恢复，
+        // 否则「不保留」换库中途失败会让后续一切换库操作抛错直到刷新
+        if (wasActive) {
+          await this.restoreUserDbHandle(dbName);
+        }
+        throw error;
+      }
       return;
     }
     if (this.user_db) {
       const name = this.user_db.name;
       await this.discardActiveUserDb();
-      await removeRxDatabase(name, this.storage);
+      try {
+        await removeRxDatabase(name, this.storage);
+      } catch (error) {
+        // 丢弃句柄后删除失败（多标签页占用/配额/瞬时 IO）：尽力恢复一个
+        // 可用句柄，避免 user_db 永久为 null；原始错误照常上抛
+        await this.restoreUserDbHandle(name);
+        throw error;
+      }
     } else {
       await removeRxDatabase(DatabaseService.USER_DB_NAME, this.storage);
     }
     this.activeScope.value = null;
+  }
+
+  /**
+   * 物理丢弃本地全部用户库：legacy 库、当前活跃库、持久登记过的全部角色库
+   * 与调用方补充的范围（登录态下的实时 uidList）。解绑角色/登出后 uidList
+   * 不再覆盖的库靠 knownScopes 登记补齐——否则旧库在重新绑定/登录时被按名
+   * 打开，旧数据随同步复活（「清了又回来」）。
+   * 调用前必须已停止同步。
+   */
+  public async removeAllUserDatabases(extraScopes: UserDatabaseScope[] = []): Promise<void> {
+    const names = new Set<string>([DatabaseService.USER_DB_NAME]);
+    if (this.user_db) names.add(this.user_db.name);
+    for (const scope of [...this.getKnownScopes(), ...extraScopes]) {
+      try {
+        names.add(DatabaseService.userDatabaseName(scope));
+      } catch {
+        // 无效 scope（角色 id 非数字等）直接忽略，只清能确定的库
+      }
+    }
+    const activeName = this.user_db?.name;
+    if (this.user_db) await this.discardActiveUserDb();
+
+    const failures: unknown[] = [];
+    for (const name of names) {
+      try {
+        await removeRxDatabase(name, this.storage);
+      } catch (error) {
+        failures.push(error);
+        logger.error(`[DatabaseService] Failed to remove database ${name}:`, error);
+      }
+    }
+    if (failures.length > 0) {
+      // 只要有失败就恢复一个可用句柄（活跃库已删则重建空 legacy），避免
+      // user_db 永久为 null 让后续 logout/换库链路整体抛错
+      await this.restoreUserDbHandle(activeName ?? DatabaseService.USER_DB_NAME);
+      throw new AggregateError(failures, 'Failed to remove user databases');
+    }
+    this.activeScope.value = null;
+    this.knownScopes.value = [];
+  }
+
+  private async restoreUserDbHandle(name: string): Promise<void> {
+    try {
+      const restored = await createRxDatabase<UserDataDBCollections>({
+        name,
+        storage: this.storage,
+        localDocuments: true,
+      });
+      await restored.addCollections(userDataCollectionsSchema);
+      runInAction(() => {
+        this.user_db = restored;
+        this.user_collections = new UserCollections(restored);
+      });
+    } catch (restoreError) {
+      logger.error(`[DatabaseService] Failed to restore db handle for ${name}:`, restoreError);
+    }
   }
 
   private async discardActiveUserDb(): Promise<void> {

@@ -25,6 +25,9 @@
     "create_failed": "创建失败：{{message}}",
     "delete_failed": "删除失败：{{message}}"
   },
+  "entity": {
+    "mark_persist_failed": "标记保存失败，刷新后可能丢失本次标记，请重试。"
+  },
   "not_login": "未登录",
   "not_bind_uid": "未绑定 uid",
   "unknown": "未知错误",
@@ -57,6 +60,7 @@
   "route": {
     "empty": "路线还没有任何点位，无法保存",
     "import_failed": "导入路线失败",
+    "import_partial": "已导入 {{kept}} 段路线，跳过 {{dropped}} 段（未知地图）",
     "not_found": "找不到该路线",
     "no_publishable_points": "该路线没有可发布的点位，请在本站重新描点后再发布"
   }

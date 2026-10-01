@@ -181,6 +181,9 @@ export class SyncService<T, R> {
    * 「清除标点数据」等本地重置用：只停同步会把墓碑与元数据留在库里，
    * 下次 startSync 把删除推上云 / 或让清空后的本地拉不回云端存量。
    * 元数据由各 replicationState.remove() 抹掉（同时会 cancel 自身）。
+   * 内存 replicationStates 为空（启动时后端不可达、连续错误自动停止等）
+   * 时上一会话持久化的元数据仍在库里，因此再按确定性 replicationIdentifier
+   * 逐集合兜底清除，不依赖内存态。
    */
   public async stopSyncAndPurgeMeta(): Promise<void> {
     await this.enqueueLifecycle(async () => {
@@ -195,8 +198,57 @@ export class SyncService<T, R> {
       runInAction(() => {
         this.status = SyncStatus.Idle;
       });
+      await this.purgeMetaByIdentifier();
       logger.info('[SyncService] Stopped and replication meta purged');
     });
+  }
+
+  /**
+   * 按确定性 replicationIdentifier 清除各同步集合的 replication 元数据。
+   * 以 autoStart:false 建立不启动的 replication 再 remove()：RxDB 会为
+   * 从未启动的 replication 创建并删除同一份元数据存储，正好抹掉上一会话
+   * 残留的 checkpoint / assumed-master-state。
+   * 任一集合清除失败即抛错：残留 checkpoint 会让清空后的本地永远拉不回
+   * 云端存量，吞错报「清除成功」等于把故障藏成静默数据丢失。
+   */
+  private async purgeMetaByIdentifier(): Promise<void> {
+    const db = this.databaseService.user_db;
+    if (!db) return;
+    const roleId = this.serverService.getUid() ?? this.databaseService.currentScope?.roleId;
+    if (!roleId) return;
+
+    const failures: unknown[] = [];
+    for (const collectionName of SYNC_COLLECTION_NAMES) {
+      const backendCollectionName = RXDB_TO_BACKEND_COLLECTION[collectionName];
+      const collection = db[collectionName] as RxCollection<unknown> | undefined;
+      if (!collection || !backendCollectionName) continue;
+      try {
+        const state = replicateRxCollection<SyncDocument, SyncCheckpoint>({
+          collection: collection as RxCollection<SyncDocument>,
+          replicationIdentifier: `sync-v2-${db.name}-${roleId}-${backendCollectionName}`,
+          live: false,
+          autoStart: false,
+          pull: {
+            async handler() {
+              return { documents: [], checkpoint: undefined };
+            },
+          },
+          push: {
+            async handler() {
+              return [];
+            },
+          },
+        });
+        await state.remove();
+        logger.info(`[SyncService] Purged replication meta by identifier for ${collectionName}`);
+      } catch (error) {
+        failures.push(error);
+        logger.error(`[SyncService] Failed to purge replication meta for ${collectionName}:`, error);
+      }
+    }
+    if (failures.length > 0) {
+      throw new AggregateError(failures, 'Failed to purge replication metadata');
+    }
   }
 
   private async _stopSync(keepErrorState: boolean = false): Promise<void> {

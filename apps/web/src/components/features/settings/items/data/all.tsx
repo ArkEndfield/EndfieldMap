@@ -14,12 +14,14 @@ const clearAll = (confirmText: string): Promise<boolean> => {
     alert.confirm({
       content: confirmText,
       async onConfirm() {
-        // 先停同步并清 replication 元数据，再整体丢弃当前角色库：
-        // 软删留下的墓碑会在下次登录续订同步时被推上云，把云端数据删光。
-        // 丢弃后立刻走 logout(false) 重建空 legacy 库，避免弹窗期间
-        // user_db 为 null 让响应式读取 database getter 的代码抛错
+        // 先停同步并清 replication 元数据，再整体丢弃全部本地用户库：
+        // 软删留下的墓碑会在下次登录续订同步时被推上云，把云端数据删光；
+        // 只丢活跃库的话 legacy 快照与其他角色库会残留，下次登录「保留」
+        // 迁移时旧数据照样回来。丢弃后立刻走 logout(false) 重建空 legacy 库，
+        // 避免弹窗期间 user_db 为 null 让响应式读取 database getter 的代码抛错
+        const scopes = service.userService.getKnownDatabaseScopes();
         await service.userService.stopSyncAndPurgeMeta();
-        await service.databaseService.removeUserDatabase();
+        await service.databaseService.removeAllUserDatabases(scopes);
         await service.userService.logout(false);
         LocalStorageDB.clear();
         resolve(true);

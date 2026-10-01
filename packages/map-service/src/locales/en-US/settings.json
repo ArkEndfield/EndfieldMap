@@ -164,6 +164,7 @@
       "title": "Marker Data",
       "clear": "Clear Marker Data",
       "success": "Marker data cleared successfully, refresh page to take effect",
+      "success_resync": "Marker data cleared. Resyncing from the cloud",
       "failed": "Failed to clear marker data: {{reason}}",
       "description": "Includes different marker type visibility filter states, all marker marking states, all marker states will be reset after clearing"
     },
@@ -172,6 +173,7 @@
       "clear": "Clear Storage Data",
       "confirm": "[Dangerous Operation] Are you sure you want to delete all data? This action cannot be undone! Deleted data includes state data, marker filter data, marking data, all electric pole data and custom point data.",
       "success": "All storage data cleared successfully, refresh page to take effect",
+      "success_in_place": "All stored data has been cleared",
       "failed": "Failed to clear all storage data: {{reason}}",
       "description": "[Dangerous Operation] Delete all stored data, including state data, marker filter data, all electric pole data and custom point data"
     },

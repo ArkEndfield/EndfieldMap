@@ -24,6 +24,9 @@
     "create_failed": "作成失敗：{{message}}",
     "delete_failed": "削除失敗：{{message}}"
   },
+  "entity": {
+    "mark_persist_failed": "マークの保存に失敗しました。更新すると今回のマークが失われる可能性があります。もう一度お試しください。"
+  },
   "not_login": "ログインしていません",
   "not_bind_uid": "UIDが紐付けられていません",
   "unknown": "不明なエラー",
@@ -56,6 +59,7 @@
   "route": {
     "empty": "The route has no points and cannot be saved",
     "import_failed": "Failed to import route",
+    "import_partial": "{{kept}} 区間のルートをインポートし、{{dropped}} 区間をスキップしました（未知のマップ）",
     "not_found": "Route not found",
     "no_publishable_points": "This route has no publishable points. Re-draw it on this site first."
   }

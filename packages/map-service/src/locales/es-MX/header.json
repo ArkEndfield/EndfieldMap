@@ -47,7 +47,9 @@
     "remove_account": {
       "title": "Eliminar cuenta",
       "confirm": "¿Está seguro de que desea eliminar su cuenta?",
-      "success": "Cuenta eliminada con éxito"
+      "success": "Cuenta eliminada con éxito",
+      "password_required": "Introduce la contraseña de tu cuenta para confirmar la eliminación",
+      "relogin_required": "Cierra sesión y vuelve a iniciarla antes de eliminar tu cuenta"
     },
     "info": {
       "title": "Información personal",

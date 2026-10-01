@@ -47,7 +47,9 @@
     "remove_account": {
       "title": "계정 삭제",
       "confirm": "계정을 삭제하시겠습니까?",
-      "success": "계정이 삭제되었습니다"
+      "success": "계정이 삭제되었습니다",
+      "password_required": "계정 삭제 확인을 위해 비밀번호를 입력하세요",
+      "relogin_required": "로그아웃 후 다시 로그인한 뒤 삭제해 주세요"
     },
     "info": {
       "title": "개인 정보",

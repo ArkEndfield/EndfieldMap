@@ -81,7 +81,7 @@ export class UserAuthService {
     return true;
   }
 
-  public async deleteAccount() {
+  public async deleteAccount(password?: string) {
     if (!this.isLogin) {
       throw new Error(
         this.i18nService.translate('not_login', {
@@ -90,7 +90,9 @@ export class UserAuthService {
         })
       );
     }
-    await this.serverService.apiPost('/user/delete');
+    // 服务端 step-up：有密码账号必须携带密码（PASSWORD_REQUIRED），
+    // 纯第三方登录账号要求最近重新登录（RECENT_LOGIN_REQUIRED）
+    await this.serverService.apiPost('/user/delete', { password: password ?? '' });
   }
 
   @computed

@@ -24,6 +24,9 @@
     "create_failed": "Creation failed: {{message}}",
     "delete_failed": "Deletion failed: {{message}}"
   },
+  "entity": {
+    "mark_persist_failed": "Failed to save marks. Your changes may be lost after a refresh, please retry."
+  },
   "not_login": "Not logged in",
   "not_bind_uid": "UID not bound",
   "unknown": "Unknown error",
@@ -56,6 +59,7 @@
   "route": {
     "empty": "The route has no points and cannot be saved",
     "import_failed": "Failed to import route",
+    "import_partial": "Imported {{kept}} route segments, skipped {{dropped}} (unknown maps)",
     "not_found": "Route not found",
     "no_publishable_points": "This route has no publishable points. Re-draw it on this site first."
   }

@@ -164,6 +164,7 @@
       "title": "Datos de marcadores",
       "clear": "Limpiar datos de marcadores",
       "success": "Datos de marcadores limpiados exitosamente, actualice la página para aplicar",
+      "success_resync": "Datos de marcadores borrados. Resincronizando desde la nube",
       "failed": "Error al limpiar datos de marcadores: {{reason}}",
       "description": "Incluye estados de filtro de visibilidad de diferentes tipos de marcadores, estados de marcado de todos los marcadores, todos los estados de marcadores se restablecerán después de limpiar"
     },
@@ -172,6 +173,7 @@
       "clear": "Limpiar datos de almacenamiento",
       "confirm": "[Operación peligrosa] ¿Está seguro de que desea eliminar todos los datos? ¡Esta acción no se puede deshacer! Los datos eliminados incluyen datos de estado, datos de filtro de marcadores, datos de marcado, todos los datos de postes eléctricos y datos de puntos personalizados.",
       "success": "Todos los datos de almacenamiento limpiados exitosamente, actualice la página para aplicar",
+      "success_in_place": "Se han borrado todos los datos almacenados",
       "failed": "Error al limpiar todos los datos de almacenamiento: {{reason}}",
       "description": "[Operación peligrosa] Eliminar todos los datos almacenados, incluidos datos de estado, datos de filtro de marcadores, todos los datos de postes eléctricos y datos de puntos personalizados"
     },

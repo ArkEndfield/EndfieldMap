@@ -358,6 +358,9 @@ export default interface Resources {
       "switch": "切换",
       "target_slots_full": "目标设备的连接槽位已满"
     },
+    "entity": {
+      "mark_persist_failed": "标记保存失败，刷新后可能丢失本次标记，请重试。"
+    },
     "illegal_nickname": "昵称违规",
     "login_expired": "登录已过期，请重新登录",
     "login_failed": "登录失败：",
@@ -374,6 +377,7 @@ export default interface Resources {
     "route": {
       "empty": "路线还没有任何点位，无法保存",
       "import_failed": "导入路线失败",
+      "import_partial": "已导入 {{kept}} 段路线，跳过 {{dropped}} 段（未知地图）",
       "no_publishable_points": "该路线没有可发布的点位，请在本站重新描点后再发布",
       "not_found": "找不到该路线"
     },
@@ -446,6 +450,8 @@ export default interface Resources {
       "register_username_placeholder": "请输入用户名",
       "remove_account": {
         "confirm": "确定要注销账户吗？",
+        "password_required": "注销需要输入账号密码确认",
+        "relogin_required": "请退出登录并重新登录后，再进行注销",
         "success": "账户注销成功",
         "title": "注销账户"
       },
@@ -697,6 +703,7 @@ export default interface Resources {
         "description": "包括不同类型标点可见性筛选状态、所有标点标记状态，清除后所有标点状态将重置",
         "failed": "清除标点数据失败：{{reason}}",
         "success": "清除标点数据成功，刷新网页生效",
+        "success_resync": "标点数据已清除，正在从云端重新同步",
         "title": "标点数据"
       },
       "state_data": {
@@ -712,6 +719,7 @@ export default interface Resources {
         "description": "[危险操作]删除所有存储数据，包括状态数据、标点筛选数据以及所有电线杆数据和自定义点位数据",
         "failed": "清除所有储存数据失败：{{reason}}",
         "success": "清除所有储存数据成功，刷新网页生效",
+        "success_in_place": "所有储存数据已清除",
         "title": "储存数据"
       },
       "title": "数据管理"

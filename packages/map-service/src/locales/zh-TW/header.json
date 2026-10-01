@@ -47,7 +47,9 @@
     "remove_account": {
       "title": "註銷帳戶",
       "confirm": "確定要註銷帳戶嗎？",
-      "success": "帳戶註銷成功"
+      "success": "帳戶註銷成功",
+      "password_required": "註銷需要輸入帳號密碼確認",
+      "relogin_required": "請登出並重新登入後，再進行註銷"
     },
     "info": {
       "title": "個人資訊",

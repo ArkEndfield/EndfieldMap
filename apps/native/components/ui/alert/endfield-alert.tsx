@@ -33,7 +33,7 @@ interface EndfieldAlertProps {
 }
 
 export const EndfieldAlert: React.FC<EndfieldAlertProps> = observer(({ instance }) => {
-  const { config, visible, id, isPrompt, promptDefaultValue, promptPlaceholder } = instance;
+  const { config, visible, id, isPrompt, promptDefaultValue, promptPlaceholder, promptSecure } = instance;
   const { t } = useTranslation();
   const { width: screenWidth } = useWindowDimensions();
 
@@ -282,6 +282,7 @@ export const EndfieldAlert: React.FC<EndfieldAlertProps> = observer(({ instance 
                 onChangeText={handlePromptChange}
                 placeholder={promptPlaceholder}
                 placeholderTextColor="#999"
+                secureTextEntry={promptSecure}
                 autoFocus
                 selectTextOnFocus
               />
