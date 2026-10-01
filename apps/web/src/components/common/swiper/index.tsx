@@ -10,6 +10,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import uiManager from '@/services/ui_manager';
 
+/**
+ * 轮播外链只放行 http(s)：link_url 来自管理后台录入，React 的 href 不会拦
+ * javascript:/data: 这类协议，被写入恶意 URI 就是全站 XSS。
+ */
+function isSafeBannerLink(url: string | undefined): url is string {
+  if (!url) return false;
+  return /^https?:\/\//i.test(url);
+}
+
 export interface SwiperProps {
   expanded?: boolean;
   autoplayDelay?: number;
@@ -127,7 +136,7 @@ export const Swiper = observer(
                 {data.map((item, index) => (
                   <a
                     key={`${item.image_url}-${index}`}
-                    href={item.link_url}
+                    href={isSafeBannerLink(item.link_url) ? item.link_url : undefined}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(

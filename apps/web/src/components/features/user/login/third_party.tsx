@@ -36,20 +36,36 @@ export const ThirdPartyButton = ({
 
     const loginWindow = window.open(url, label + ' Login', `width=${width},height=${height},left=${left},top=${top}`);
 
-    // 监听登录结果
+    // 监听登录结果。回调页与本站同源，origin/source 双校验缺一不可：
+    // 只看 type 的话，任何持有本窗口引用的页面（钓鱼 opener / 内嵌 iframe）
+    // 都能伪造 LOGIN_SUCCESS 把会话换成攻击者账号（会话固定）。
     const messageHandler = (event: MessageEvent) => {
-      if (event.data.type === 'LOGIN_SUCCESS') {
-        service.userService.thirdparty(event.data.userInfo.token);
+      if (event.origin !== window.location.origin || event.source !== loginWindow) return;
+      const data = event.data as { type?: string; userInfo?: { token?: string }; error?: string } | null;
+      if (!data || typeof data !== 'object') return;
+      if (data.type === 'LOGIN_SUCCESS' && data.userInfo?.token) {
+        void service.userService.thirdparty(data.userInfo.token);
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
-      } else if (event.data.type === 'LOGIN_FAILED') {
+      } else if (data.type === 'LOGIN_FAILED') {
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
-        alert.info({ content: <div className="text-center">{t('login_failed') + t(event.data.error)}</div> });
+        alert.info({ content: <div className="text-center">{t('login_failed') + t(data.error ?? '')}</div> });
       }
     };
 
     window.addEventListener('message', messageHandler);
+    // 弹窗被拦截（返回 null）或用户直接关掉时兜底移除监听，避免 handler 泄漏常驻
+    if (!loginWindow) {
+      window.removeEventListener('message', messageHandler);
+      return;
+    }
+    const pollClosed = window.setInterval(() => {
+      if (loginWindow.closed) {
+        window.clearInterval(pollClosed);
+        window.removeEventListener('message', messageHandler);
+      }
+    }, 1000);
   };
 
   return (

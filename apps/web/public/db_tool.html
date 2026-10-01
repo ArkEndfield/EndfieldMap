@@ -283,16 +283,28 @@
           dbs.forEach((db) => {
             const li = document.createElement('li');
             li.className = 'db-item';
-            li.innerHTML = `
-                    <div class="db-info">
-                        <span class="db-name">${db.name}</span>
-                        <span class="db-version">版本: ${db.version}</span>
-                    </div>
-                    <div class="actions">
-                <button class="btn btn-primary" onclick="exportDB('${db.name}', ${db.version}, 'download')">导出文件 (Download)</button>
-                        <button class="btn btn-primary" onclick="exportDB('${db.name}', ${db.version}, 'copy')">复制数据 (Copy)</button>
-                    </div>
-                `;
+            // 全部用 DOM API 构造：库名可由「导入备份」写入任意字符串，
+            // 拼进 innerHTML / 内联 onclick 就是同源 XSS（可读 userToken）。
+            const info = document.createElement('div');
+            info.className = 'db-info';
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'db-name';
+            nameSpan.textContent = db.name;
+            const versionSpan = document.createElement('span');
+            versionSpan.className = 'db-version';
+            versionSpan.textContent = `版本: ${db.version}`;
+            info.append(nameSpan, versionSpan);
+
+            const actions = document.createElement('div');
+            actions.className = 'actions';
+            for (const mode of ['download', 'copy']) {
+              const btn = document.createElement('button');
+              btn.className = 'btn btn-primary';
+              btn.textContent = mode === 'download' ? '导出文件 (Download)' : '复制数据 (Copy)';
+              btn.addEventListener('click', () => exportDB(db.name, db.version, mode));
+              actions.appendChild(btn);
+            }
+            li.append(info, actions);
             listEl.appendChild(li);
           });
         } catch (e) {
@@ -547,6 +559,12 @@
       function validateAndRestore(data) {
         if (!data.database || !data.stores) {
           showStatus('无效的备份文件格式 (缺少 database 或 stores 字段)。', 'error');
+          return;
+        }
+        // 备份文件是外部输入：库名会被写进 IndexedDB 并出现在列表 UI，
+        // 限定安全字符集，杜绝把标记/引号结构带进任何下游字符串拼接。
+        if (!/^[\w.-]{1,120}$/.test(String(data.database))) {
+          showStatus('备份中的 database 名含非法字符（只允许字母数字 _ . -）。', 'error');
           return;
         }
         restoreDB(data);
