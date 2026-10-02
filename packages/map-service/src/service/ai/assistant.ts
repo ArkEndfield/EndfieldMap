@@ -89,6 +89,16 @@ export class AiAssistantService<T, R> {
   public stop(): void {
     this.abortController?.abort();
     this.abortController = null;
+    let lastAssistant = this.history.length - 1;
+    while (lastAssistant >= 0 && this.history[lastAssistant].role !== 'assistant') lastAssistant--;
+    if (lastAssistant >= 0) {
+      const answered = new Set(this.history.slice(lastAssistant + 1).map((message) => message.tool_call_id));
+      for (const call of this.history[lastAssistant].tool_calls ?? []) {
+        if (!answered.has(call.id)) {
+          this.history.push({ role: 'tool', tool_call_id: call.id, content: '{"ok":false,"error":"cancelled"}' });
+        }
+      }
+    }
     runInAction(() => {
       this.running = false;
     });
@@ -140,11 +150,14 @@ export class AiAssistantService<T, R> {
           tools: Object.values(this.toolset.tools).map((tool) => tool.schema),
           signal: controller.signal,
           onDelta: (delta) => {
+            if (controller.signal.aborted) return;
             runInAction(() => {
               pending.content += delta;
             });
           },
         });
+
+        if (controller.signal.aborted) return;
 
         runInAction(() => {
           pending.content = completion.content;
@@ -154,18 +167,18 @@ export class AiAssistantService<T, R> {
           }
         });
 
-        if (completion.toolCalls.length === 0) {
-          return;
-        }
-
         this.history.push({
           role: 'assistant',
           content: completion.content,
           tool_calls: completion.toolCalls,
         });
 
+        if (completion.toolCalls.length === 0) return;
+
         for (const call of completion.toolCalls) {
-          const result = await this.runTool(call);
+          if (controller.signal.aborted) return;
+          const result = await this.runTool(call, controller.signal);
+          if (controller.signal.aborted) return;
           this.history.push({
             role: 'tool',
             tool_call_id: call.id,
@@ -174,6 +187,8 @@ export class AiAssistantService<T, R> {
           });
         }
       }
+
+      if (controller.signal.aborted) return;
 
       // 轮数用尽仍在调工具：给用户一个明确的收尾，而不是静默停住
       this.push({
@@ -184,6 +199,7 @@ export class AiAssistantService<T, R> {
         error: true,
       });
     } catch (error) {
+      if (controller.signal.aborted) return;
       // 不用 DOMException 判定：RN 等环境不一定有这个全局构造器
       const aborted = error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError');
       if (!aborted) {
@@ -197,10 +213,10 @@ export class AiAssistantService<T, R> {
     } finally {
       if (this.abortController === controller) {
         this.abortController = null;
+        runInAction(() => {
+          this.running = false;
+        });
       }
-      runInAction(() => {
-        this.running = false;
-      });
     }
   }
 
@@ -223,7 +239,7 @@ export class AiAssistantService<T, R> {
     this.history = [system, ...this.history.slice(cut)];
   }
 
-  private async runTool(call: AiToolCall): Promise<AiToolResult> {
+  private async runTool(call: AiToolCall, signal: AbortSignal): Promise<AiToolResult> {
     const tool = this.toolset.tools[call.function.name];
     if (!tool) {
       return { ok: false, data: { error: `unknown tool: ${call.function.name}` } };
@@ -243,6 +259,7 @@ export class AiAssistantService<T, R> {
 
     try {
       const result = await tool.execute(args);
+      if (signal.aborted) return result;
       this.push({
         role: 'tool',
         content: '',
@@ -252,6 +269,7 @@ export class AiAssistantService<T, R> {
       });
       return result;
     } catch (error) {
+      if (signal.aborted) return { ok: false, data: { error: 'cancelled' } };
       const message = error instanceof Error ? error.message : String(error);
       logger.error(`[AiAssistantService] tool ${call.function.name} failed`, error);
       this.push({ role: 'tool', content: '', toolName: call.function.name, toolSummary: message, error: true });

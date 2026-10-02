@@ -59,7 +59,6 @@ export class SklandSyncService<T, R> {
     for (const [mapId, marks] of Object.entries(response.maps ?? {})) {
       const markedIds = marks?.marked ?? [];
       remoteTotal += markedIds.length;
-      if (!markedIds.length) continue;
 
       const typedMapId = mapId as MapData['id'];
       const groups = adapter.entityController.getMapGroupManagerList(typedMapId);
@@ -122,17 +121,37 @@ export class SklandSyncService<T, R> {
 
   /** 把标记态写回森空岛；返回上游成功/失败条数。 */
   public async pushRemote(byMap: MarksByMap, marked: boolean, roleId?: string): Promise<SklandPushResponse> {
-    const changes = Object.entries(byMap)
-      .filter(([, ids]) => ids.length > 0)
-      .map(([mapId, levelLogicIds]) => ({ mapId, levelLogicIds, marked }));
-    if (!changes.length) {
-      return { roleId: roleId ?? '', serverId: '', applied: 0, failed: 0 };
+    const result: SklandPushResponse = { roleId: roleId ?? '', serverId: '', applied: 0, failed: 0 };
+    let changes: Array<{ mapId: string; levelLogicIds: number[]; marked: boolean }> = [];
+    let size = 0;
+    const flush = async () => {
+      if (size === 0) return;
+      const response = await this.serverService.apiPost<SklandPushResponse>(
+        '/user/game-roles/sync-skland-markers/push',
+        {
+          roleId: roleId ?? '',
+          changes,
+        }
+      );
+      result.roleId = response.roleId;
+      result.serverId = response.serverId;
+      result.applied += response.applied;
+      result.failed += response.failed;
+      changes = [];
+      size = 0;
+    };
+    for (const [mapId, ids] of Object.entries(byMap)) {
+      let offset = 0;
+      while (offset < ids.length) {
+        const chunk = ids.slice(offset, offset + 2000 - size);
+        changes.push({ mapId, levelLogicIds: chunk, marked });
+        size += chunk.length;
+        offset += chunk.length;
+        if (size === 2000) await flush();
+      }
     }
-    const response = await this.serverService.apiPost<SklandPushResponse>('/user/game-roles/sync-skland-markers/push', {
-      roleId: roleId ?? '',
-      changes,
-    });
-    logger.info(`[SklandSyncService] push marked=${marked}: applied ${response.applied}, failed ${response.failed}`);
-    return response;
+    await flush();
+    logger.info(`[SklandSyncService] push marked=${marked}: applied ${result.applied}, failed ${result.failed}`);
+    return result;
   }
 }

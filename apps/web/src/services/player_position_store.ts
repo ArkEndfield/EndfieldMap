@@ -49,7 +49,7 @@ export interface PlayerPosition {
  * usePlayerPositionLayer 负责。位置同步需登录 + 绑定角色，未登录时
  * start() 会被 hook 调用方跳过。
  */
-class PlayerPositionStore {
+export class PlayerPositionStore {
   /** 是否开启位置同步（用户设置项，持久化） */
   @observable
   accessor enabled: boolean = readFlag(STORAGE_KEY, false);
@@ -63,7 +63,7 @@ class PlayerPositionStore {
   accessor position: PlayerPosition | null = null;
 
   private timer: ReturnType<typeof setTimeout> | null = null;
-  private inflight = false;
+  private inflightEpoch: number | null = null;
   private roleId: string | null = null;
   private intervalMs = POLL_INTERVAL_MS;
   /** 每次 start/stop 自增，让旧轮询链的回调自行失效，防止双定时器 */
@@ -151,12 +151,14 @@ class PlayerPositionStore {
 
   /** 立即拉取一次位置；返回是否成功。并发调用会被合并。 */
   public async refresh(): Promise<boolean> {
-    if (this.inflight) {
+    const epoch = this.epoch;
+    if (this.inflightEpoch === epoch) {
       return true;
     }
-    this.inflight = true;
+    this.inflightEpoch = epoch;
     try {
       const res = await service.sklandPositionService.fetchPosition(this.roleId ?? undefined);
+      if (epoch !== this.epoch) return false;
       runInAction(() => {
         // 玩家离线或坐标缺省时清空位置，避免残留一个过时标记
         this.position =
@@ -176,7 +178,7 @@ class PlayerPositionStore {
       logger.debug('[PlayerPosition] refresh failed', err);
       return false;
     } finally {
-      this.inflight = false;
+      if (this.inflightEpoch === epoch) this.inflightEpoch = null;
     }
   }
 }

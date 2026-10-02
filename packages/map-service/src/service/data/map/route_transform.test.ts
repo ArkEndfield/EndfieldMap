@@ -83,6 +83,20 @@ describe('storedRouteToPushSegments', () => {
 });
 
 describe('draft point collection', () => {
+  it('preserves click order when returning to an earlier map and undoing', () => {
+    const first = { x: 1, y: 0, z: 1, levelLogicId: 1 };
+    const second = { x: 2, y: 0, z: 2, levelLogicId: 2 };
+    const third = { x: 3, y: 0, z: 3, levelLogicId: 3 };
+    let draft = appendDraftPoint([], 'map01', first);
+    draft = appendDraftPoint(draft, 'map02', second);
+    draft = appendDraftPoint(draft, 'map01', third);
+    expect(draft.map((s) => s.mapId)).toEqual(['map01', 'map02', 'map01']);
+    expect(undoLastDraftPoint(draft)).toEqual([
+      { mapId: 'map01', points: [first] },
+      { mapId: 'map02', points: [second] },
+    ]);
+  });
+
   it('appends points into per-map segments keeping first-appearance order', () => {
     let draft = appendDraftPoint([], 'map01', { x: 1, y: 2, z: 3, levelLogicId: 42 });
     draft = appendDraftPoint(draft, 'map01', { x: 4, y: 5, z: 6, levelLogicId: 43 });

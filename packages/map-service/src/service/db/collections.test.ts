@@ -1,8 +1,8 @@
 import type { RxConflictHandler, WithDeleted } from 'rxdb';
 import { describe, expect, it } from 'vitest';
 
-import type { MarkDataSchemaType } from './schema/user_data/mark';
 import { userDataCollectionsSchema } from './collections';
+import type { MarkDataSchemaType } from './schema/user_data/mark';
 
 // 同步集合挂的 updatedAt-LWW 冲突处理器：钉住方向语义与时间戳钳制
 const handler = userDataCollectionsSchema.entityMark.conflictHandler as RxConflictHandler<MarkDataSchemaType>;

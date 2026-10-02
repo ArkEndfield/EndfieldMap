@@ -52,6 +52,15 @@ const createHarness = (maps: BackendMaps) => {
 };
 
 describe('SklandSyncService.preview', () => {
+  it('includes locally marked points when the remote map has no marks', async () => {
+    const { service } = createHarness({ map01: { total: 2, marked: [] } });
+    const preview = await service.preview();
+    expect(preview.localOnlyByMap).toEqual({ map01: [9990000001] });
+    expect(preview.remoteOnlyByMap).toEqual({});
+    expect(preview.remoteTotal).toBe(0);
+    expect(preview.hasConflict).toBe(true);
+  });
+
   it('maps remote md5 ids to local ids and splits the two directions', async () => {
     const { service } = createHarness({
       map01: {
@@ -115,6 +124,21 @@ describe('SklandSyncService.applyLocal', () => {
 });
 
 describe('SklandSyncService.pushRemote', () => {
+  it('pushes every marker in bounded batches across maps', async () => {
+    const { service, serverService } = createHarness({});
+    const ids = Array.from({ length: 2300 }, (_, i) => i + 1);
+    const result = await service.pushRemote({ map01: ids.slice(0, 1500), map02: ids.slice(1500) }, true, '111');
+    const batches = serverService.apiPost.mock.calls.map(([, body]) => body.changes);
+    expect(batches).toHaveLength(2);
+    expect(
+      batches.map((batch) =>
+        batch.reduce((sum: number, change: { levelLogicIds: number[] }) => sum + change.levelLogicIds.length, 0)
+      )
+    ).toEqual([2000, 300]);
+    expect(batches.flat().flatMap((change: { levelLogicIds: number[] }) => change.levelLogicIds)).toEqual(ids);
+    expect(result.applied).toBe(2);
+  });
+
   it('posts changes grouped by map and returns upstream counts', async () => {
     const { service, serverService } = createHarness({});
 

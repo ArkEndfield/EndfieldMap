@@ -1,4 +1,10 @@
-import type { SklandRouteAgg, SklandRoutePushSegment, StoredRoute, StoredRoutePoint, StoredRouteSegment } from '@endfieldmap/map-service/@types/route';
+import type {
+  SklandRouteAgg,
+  SklandRoutePushSegment,
+  StoredRoute,
+  StoredRoutePoint,
+  StoredRouteSegment,
+} from '@endfieldmap/map-service/@types/route';
 
 /**
  * 路线数据转换（纯函数，无 MobX / 无副作用）。
@@ -45,15 +51,15 @@ export function storedRouteToPushSegments(route: StoredRoute): SklandRoutePushSe
     .filter((seg) => seg.levelLogicIds.length > 0);
 }
 
-/** 描点：把一个点追加到对应地图的草稿段（不存在则新建段，保持首次出现顺序）。 */
+/** 描点按点击顺序追加；切换地图后新建一段。 */
 export function appendDraftPoint(
   segments: StoredRouteSegment[],
   mapId: string,
   point: StoredRoutePoint
 ): StoredRouteSegment[] {
   const next = segments.map((seg) => ({ ...seg, points: [...seg.points] }));
-  let segment = next.find((seg) => seg.mapId === mapId);
-  if (!segment) {
+  let segment = next.at(-1);
+  if (!segment || segment.mapId !== mapId) {
     segment = { mapId, points: [] };
     next.push(segment);
   }
