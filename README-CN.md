@@ -41,12 +41,12 @@
 
 | 层 | 技术 |
 | --- | --- |
-| 包管理 / 构建编排 | pnpm `10.30.1` · Turborepo `2.8` · Changesets |
-| 应用框架 | React `19.2` · Vite `8`（beta） · TypeScript `5.9`（strict） |
+| 包管理 / 构建编排 | pnpm `11.1.3` · Turborepo `2.11` · Changesets |
+| 应用框架 | Web React `19.3` / Native React `19.2.3` · Vite `8.3` · TypeScript `6.0`（strict） |
 | 样式 | Tailwind CSS v4（`@tailwindcss/vite`） |
-| 状态 / 数据 | MobX 6 · `mobx-react-lite` · RxDB 16 · Dexie storage · `@tanstack/react-db` |
-| 动画 | `motion` 12（framer-motion 后继） · GSAP 3 + `@gsap/react` |
-| i18n | i18next 25 · `react-i18next` · `LanguageDetector` |
+| 状态 / 数据 | MobX 6 · `mobx-react-lite` · RxDB 17 · Dexie storage · `@tanstack/react-db` |
+| 动画 | `motion` 13（framer-motion 后继） · GSAP 3 + `@gsap/react` |
+| i18n | i18next 26 · `react-i18next` · `LanguageDetector` |
 | 地图引擎 | OpenLayers 10 · MapLibre（adapter 化、可选） |
 | 网络 | 原生 `fetch`（无 axios），自封装 `ServerService`，JWT + 401 刷新队列 |
 | PWA | `vite-plugin-pwa` · `workbox-window` |
@@ -91,7 +91,7 @@ EndfieldMap/
 **环境要求**
 
 - Node.js LTS 22+（Vite 8 / React 19 的要求）
-- pnpm `10.30.1` 或更高 —— 推荐用 `corepack enable && corepack prepare pnpm@latest --activate`
+- pnpm `11.1.3`，与根目录 `packageManager` 一致。
 
 **初始化**
 
@@ -129,6 +129,9 @@ pnpm test               # 通过 Turbo 跑整个 monorepo
 
 # 只跑单个 package 的测试
 pnpm --filter ./packages/map-core test
+
+# Expo 工具链的 RSA 签名回归检查
+node --test scripts/forge-signature.test.cjs
 ```
 
 ## 脚本一览

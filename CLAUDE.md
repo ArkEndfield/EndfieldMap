@@ -71,7 +71,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - All HTTP goes through `packages/map-service/src/service/server.ts` (`ServerService`, **no axios — native fetch**).
 - 401 handling owns a refresh queue: while `isRefreshing` is true, in-flight requests park on a promise and replay with the new token. `setUnauthorizedHandler` fires only when refresh itself returns 401 (the "real" logout signal). When adding new endpoints, always go through `ServerService.request` (or wrappers like `apiRequest`) — bypassing it loses the refresh queue.
-- The backend's standard envelope is `{ code, message, data }`. Backend error codes are grouped by domain (e.g., `80001–80999` for the guide / marker module).
+- DijiangV2 returns the business payload directly on success and `{ error: { code, message, details } }` on failure. `ApiError` preserves the HTTP status and string error code. Browser OAuth login starts at `/api/v1/auth/oauth/{provider}/authorize` so the backend can issue state and the nonce cookie.
 
 ### Storage abstraction
 

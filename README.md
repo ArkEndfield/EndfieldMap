@@ -41,12 +41,12 @@ A pnpm monorepo powering both the web map site (`apps/web`) and a shared Expo ap
 
 | Layer | Technology |
 | --- | --- |
-| Package manager / build orchestration | pnpm `10.30.1` · Turborepo `2.8` · Changesets |
-| App framework | React `19.2` · Vite `8` (beta) · TypeScript `5.9` (strict) |
+| Package manager / build orchestration | pnpm `11.1.3` · Turborepo `2.11` · Changesets |
+| App framework | Web React `19.3` / Native React `19.2.3` · Vite `8.3` · TypeScript `6.0` (strict) |
 | Styling | Tailwind CSS v4 (`@tailwindcss/vite`) |
-| State / data | MobX 6 · `mobx-react-lite` · RxDB 16 · Dexie storage · `@tanstack/react-db` |
-| Animation | `motion` 12 (framer-motion successor) · GSAP 3 + `@gsap/react` |
-| i18n | i18next 25 · `react-i18next` · `LanguageDetector` |
+| State / data | MobX 6 · `mobx-react-lite` · RxDB 17 · Dexie storage · `@tanstack/react-db` |
+| Animation | `motion` 13 (framer-motion successor) · GSAP 3 + `@gsap/react` |
+| i18n | i18next 26 · `react-i18next` · `LanguageDetector` |
 | Map engines | OpenLayers 10 · MapLibre (adapter-based, optional) |
 | Networking | Native `fetch` (no axios) · custom `ServerService` with JWT + 401 refresh queue |
 | PWA | `vite-plugin-pwa` · `workbox-window` |
@@ -91,7 +91,7 @@ EndfieldMap/
 **Prerequisites**
 
 - Node.js LTS 22+ (required by Vite 8 / React 19)
-- pnpm `10.30.1` or newer — install via `corepack enable && corepack prepare pnpm@latest --activate`
+- pnpm `11.1.3`, matching the root `packageManager` field.
 
 **Bootstrap**
 

@@ -5,8 +5,8 @@
 本文档约束 EndfieldMap 从 UI 组件到后端 / 本地存储 / 同步 引擎的"数据传递路径"，目标是：
 
 - 明确"哪个 service 写在 `apps/web/src/services/` vs `packages/map-service/src/service/`"的判断准则；
-- 统一所有 HTTP 请求经过 `ServerService`，复用 token、Lang、Uid header 与 401 refresh 队列；
-- 规范错误约定（`{ code, message, data }`、`code !== 0 → throw`、错误码分段）；
+- 统一后端请求经过 `ServerService`，复用 token、Lang header 与 401 refresh 队列；
+- 规范错误约定（成功返回业务对象，失败返回 `{error:{code,message,details}}`，由 `ApiError` 保留状态码和错误码）；
 - 给出 MobX store 与 React 的绑定方式、RxDB 集合定义与同步、跨平台存储 (`IStorageAdapter`) 的使用规范。
 
 适用于 `apps/web/src/services/**`、`packages/map-service/src/**`、`packages/storage-*/**` 及任何会产生网络 / 数据库 / 持久化副作用的代码。
@@ -69,7 +69,7 @@
 
 ## 4. ServerService 使用
 
-所有 HTTP 必须经过 `packages/map-service/src/service/server.ts` 的 `ServerService`。它内部使用 **原生 fetch**（无 axios），接口前缀 `/api/v1`，自动注入 `Authorization` / `Lang` / `Uid` 三个 header。
+本站后端请求必须经过 `packages/map-service/src/service/server.ts` 的 `ServerService`。它使用原生 fetch，接口前缀 `/api/v1`，自动注入 `Authorization` / `Lang`。角色在对应接口的 `role_id` 或 `roleId` 参数中传递，不再发送 `Uid` header。AI 供应商请求由 `AiClient` 独立处理，避免向第三方发送本站 token 和 cookie。
 
 ### 4.1 方法表
 
@@ -96,7 +96,7 @@ const created = await server.apiPost<Marked>('/marked', { x, y, note });
 ❌ 反例：
 
 ```ts
-// 直接 fetch，绕开 token / Lang / Uid header / 401 处理
+// 直接 fetch，绕开 token / Lang header / 401 处理
 const res = await fetch('/api/v1/user/profile', { headers: { Authorization: '...' } });
 ```
 
@@ -111,7 +111,6 @@ import axios from 'axios';
 | --- | --- |
 | `Authorization: Bearer <token>` | `ServerService` 内部 token 状态 |
 | `Lang` | `i18nService.currentLocale` |
-| `Uid` | 当前用户 uid（登录后写入） |
 
 后端拿到 `Lang` 用于返回该语种的错误文案 / 数据—— 因此**不要**在业务调用方再次手动加 `Lang` header。
 
@@ -126,7 +125,7 @@ import axios from 'axios';
         ├─ isRefreshing? 否：置 true，开始 refresh
         │     ↓ 同时来的请求 B/C/D → push 进 requestsQueue 等待
         │     ↓ refresh 成功：flush 队列，挨个 retry (isRetryAfterRefresh: true)
-        │     ↓ refresh 失败：isLoggingOut = true，触发登出
+        │     ↓ refresh 返回 401：触发登出；网络故障、超时或 5xx：保留会话并拒绝等待请求
         └─ isRefreshing? 是：当前请求也入队
 ```
 
@@ -150,27 +149,22 @@ import axios from 'axios';
 ### 6.1 响应包结构
 
 ```jsonc
-{ "code": 0, "message": "ok", "data": { ... } }
+// 成功：直接返回业务对象
+{ "id": 1, "username": "alice", "nickname": "Alice" }
+
+// 失败：真实的 4xx / 5xx 状态码与错误体
+{ "error": { "code": "INVALID_CREDENTIALS", "message": "invalid credentials" } }
 ```
 
-- `code === 0` —— 成功，业务取 `data`；
-- `code !== 0` —— 失败，`ServerService` `throw new Error(data.message ?? i18n('error:unknown'))`；
-- HTTP 非 200（4xx / 5xx）—— 同样 throw 标准化 Error，不暴露原始 Response。
+成功响应无需拆 `data`。失败响应转为 `ApiError`，保留 `status`、`code` 和 `message`；调用方不读取原始 Response。登录凭据错误直接返回，不刷新已有会话。
 
-### 6.2 错误码分段（示例约定）
+### 6.2 错误码
 
-| 段位 | 含义 |
-| --- | --- |
-| `10000-19999` | auth / token / 账号 |
-| `20000-29999` | user data（visibility / marked / collection 等） |
-| `80001-80999` | 标点 / guide 相关 |
-| `90000-99999` | 系统级 / 限流 / 维护中 |
-
-新接口分配错误码前先与后端对齐，避免段位冲突。错误文案统一进入 `error` namespace（见 `docs/I18N.md`）。
+错误码以 DijiangV2 `internal/httpx/codes.go` 为准，例如 `GUIDE_ALREADY_EXISTS`、`RATE_LIMITED` 和 `RECENT_LOGIN_REQUIRED`。不再使用旧版数字分段。面向用户的本地化文案放在 `error` namespace。
 
 ### 6.3 UI 侧消费
 
-UI 侧只 try/catch 同 `err.message`，不要 case `err.code` —— 因为 `ServerService` 已把 code 转译为文案。如确需根据 code 做差异化处理（例如 80001 → 跳引导页），由对应的领域 service 在 `ServerService` 之上自行抛业务化的子类 Error（如 `class GuideNotFoundError extends Error`），UI 用 `instanceof` 判别。
+普通错误展示 `err.message`；需要区分处理时先确认 `err instanceof ApiError`，再判断字符串 `err.code`。领域服务可转为自己的错误类型，例如 `GuideApiError`。
 
 ---
 
@@ -283,7 +277,7 @@ localStorage.setItem('lang', 'zh-CN'); // RN 端崩溃
 
 | 反例 | 问题 | 推荐 |
 | --- | --- | --- |
-| 业务代码直接 `fetch(...)` 后端接口 | 绕过 token / Lang / Uid / 401 队列 | `server.apiGet` 等 |
+| 业务代码直接 `fetch(...)` 后端接口 | 绕过 token / Lang / 401 队列 | `server.apiGet` 等 |
 | 引入 axios | 项目无 axios 依赖，分裂请求层 | 用 `ServerService` |
 | UI 组件捕获 401 自己跳登录 | 与 `unauthorizedHandler` 双重处理 | 让 `ServerService` 处理 |
 | 在 React 组件内 `reaction(...)` 不 dispose | 内存泄漏 | 写在 store/service，或用 `useMobxSource` |
