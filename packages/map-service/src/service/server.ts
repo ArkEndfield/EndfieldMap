@@ -72,6 +72,13 @@ export class ServerService {
     return this.token;
   }
 
+  public getOAuthAuthorizeUrl(provider: string): string {
+    if (!['github', 'discord', 'qq', 'bilibili'].includes(provider)) {
+      throw new Error('Unsupported OAuth provider');
+    }
+    return new URL(`/api/v1/auth/oauth/${provider}/authorize`, this.backendHost || window.location.origin).href;
+  }
+
   public getUid(): string | null {
     return this.uid;
   }
@@ -149,6 +156,13 @@ export class ServerService {
    * @param backendMessage 后端返回的错误消息
    */
   private async unauthorizedHandler<T>(url: string, options?: RequestInit, backendMessage?: string): Promise<T> {
+    if (url === '/api/v1/auth/login' || url === '/api/v1/auth/register') {
+      throw new ApiError(
+        401,
+        'INVALID_CREDENTIALS',
+        backendMessage || this.i18nService.translate('login_failed', { ns: 'error' })
+      );
+    }
     // 如果没有 Token（登录/注册失败），直接拒绝，不尝试刷新
     if (!this.token) {
       // 如果是登录/注册请求，显示后端返回的 message
@@ -246,7 +260,7 @@ export class ServerService {
       // 只有拿到 HTTP 级响应的失败（ApiError）才判定会话失效；
       // 网络/超时类异常（TypeError / DOMException）不该把用户登出——
       // 等待队列虽被 reject，但调用方（replication 5s 重试）会自然重试
-      if (error instanceof ApiError) {
+      if (error instanceof ApiError && error.status === 401) {
         this.triggerLogout();
       } else {
         logger.warn('[ServerService] refresh failed transiently, keep session:', error);
@@ -333,6 +347,7 @@ export class ServerService {
       const options = {
         ...(_options || {}),
         headers: {
+          'Content-Type': 'application/json',
           ...(_options?.headers || {}),
           Authorization: `Bearer ${newToken}`,
           Lang: currentLocale,

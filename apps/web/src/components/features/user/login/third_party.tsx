@@ -27,21 +27,8 @@ export const ThirdPartyButton = ({
   className?: string;
 }) => {
   const { t } = useTranslation('error');
-  // 根据label获取登录URL
-  const getLoginUrl = (provider: string) => {
-    const urls = {
-      qq: 'https://graph.qq.com/oauth2.0/authorize?client_id=102898137&response_type=code&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fqq%2Fcallback',
-      bilibili:
-        'https://account.bilibili.com/h5/account-h5/auth/oauth?client_id=aadbd763480d47cb&callback=skip&gourl=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fbilibili%2Fcallback',
-      discord:
-        'https://discord.com/oauth2/authorize?client_id=1469921961961459712&response_type=code&scope=identify&redirect_uri=https%3A%2F%2Fapi.zmdmap.com%2Fapi%2Fv1%2Fauth%2Foauth%2Fdiscord%2Fcallback',
-      github: 'https://github.com/login/oauth/authorize?client_id=Ov23li62rQCYlLUffuSz',
-    };
-    return urls[provider as keyof typeof urls];
-  };
-
   const handleClick = () => {
-    const url = getLoginUrl(label.toLowerCase());
+    const url = service.serverService.getOAuthAuthorizeUrl(label.toLowerCase());
     const width = 500;
     const height = 600;
     const left = (window.screen.width - width) / 2;
@@ -57,7 +44,9 @@ export const ThirdPartyButton = ({
       const data = event.data as { type?: string; userInfo?: { token?: string }; error?: string } | null;
       if (!data || typeof data !== 'object') return;
       if (data.type === 'LOGIN_SUCCESS' && data.userInfo?.token) {
-        void service.userService.thirdparty(data.userInfo.token);
+        void service.userService.thirdparty(data.userInfo.token).catch(() => {
+          alert.info({ content: <div className="text-center">{t('login_failed')}</div> });
+        });
         loginWindow?.close();
         window.removeEventListener('message', messageHandler);
       } else if (data.type === 'LOGIN_FAILED') {
