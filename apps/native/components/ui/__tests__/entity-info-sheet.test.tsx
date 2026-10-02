@@ -20,8 +20,8 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 jest.mock('@lodev09/react-native-true-sheet', () => {
-  const React = jest.requireActual('react');
-  const { View } = jest.requireActual('react-native');
+  const React = jest.requireActual<typeof import('react')>('react');
+  const { View } = jest.requireActual<typeof import('react-native')>('react-native');
   return {
     TrueSheet: React.forwardRef((props: { children?: React.ReactNode }, _ref: unknown) =>
       React.createElement(View, { testID: 'true-sheet' }, props.children),
